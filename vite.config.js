@@ -3,10 +3,14 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/', // 👈 Set to root for local development
+  base: '/',
   server: {
-    port: 5000,
-    host: true, // 👈 This allows access from other devices on network
-    open: true, // 👈 Automatically opens browser
+    port: 3000,
+    host: true,
+    open: true,
+  },
+  preview: {
+    port: 3000,
+    host: true,
   },
 })
