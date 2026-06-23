@@ -9,8 +9,13 @@ export default defineConfig({
     host: true,
     open: true,
   },
-  preview: {
-    port: 3000,
-    host: true,
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
 })
