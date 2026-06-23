@@ -298,7 +298,7 @@ const Verify = () => {
   const inputRefs = useRef([]);
 
   // ✅ FIXED: Vite uses import.meta.env instead of process.env
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   // Load user data from localStorage
   useEffect(() => {

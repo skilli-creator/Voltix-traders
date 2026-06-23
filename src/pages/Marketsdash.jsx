@@ -505,7 +505,7 @@ const Dashboard = () => {
     setTimeout(() => btnEffect.remove(), 400);
 
     setTimeout(() => {
-      if (market === 'deriv') navigate('/derivdash');
+      if (market === 'deriv') navigate('/derivhome');
       else if (market === 'binance') navigate('/binancehome');
       else if (market === 'forex') navigate('/forexhome');
     }, 120);

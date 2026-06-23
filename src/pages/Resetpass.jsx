@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
 // ============================================
-// GLOBAL STYLES
+// GLOBAL STYLES - FIXED
 // ============================================
 const GlobalStyle = createGlobalStyle`
   * {
@@ -21,6 +21,15 @@ const GlobalStyle = createGlobalStyle`
     background: radial-gradient(ellipse at 30% 20%, #0a1428, #02040c);
     color: #f1f5f9;
     padding: 20px;
+    margin: 0;
+  }
+
+  #root {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
   }
 `;
 
@@ -48,6 +57,16 @@ const fadeSlideUp = keyframes`
 // STYLED COMPONENTS
 // ============================================
 
+const PageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background: radial-gradient(ellipse at 30% 20%, #0a1428, #02040c);
+  padding: 20px;
+`;
+
 const Container = styled.div`
   max-width: 450px;
   width: 100%;
@@ -59,6 +78,7 @@ const Container = styled.div`
   border: 1px solid rgba(34, 197, 94, 0.2);
   animation: ${fadeSlideUp} 0.6s ease;
   transition: transform 0.3s ease;
+  margin: 0 auto;
 
   &.error-shake {
     animation: ${shake} 0.3s ease-in-out;
@@ -267,12 +287,10 @@ const ResetPassword = () => {
   const [strengthColor, setStrengthColor] = useState('#ef4444');
   const [strengthLabel, setStrengthLabel] = useState('Enter a strong password');
 
-  // ✅ FIXED: Vite uses import.meta.env instead of process.env
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   // Check for reset token in URL or sessionStorage
   useEffect(() => {
-    // Check URL params for token
     const params = new URLSearchParams(location.search);
     const tokenFromUrl = params.get('token');
     
@@ -280,12 +298,10 @@ const ResetPassword = () => {
       setResetToken(tokenFromUrl);
       sessionStorage.setItem('resetToken', tokenFromUrl);
     } else {
-      // Check sessionStorage
       const storedToken = sessionStorage.getItem('resetToken');
       if (storedToken) {
         setResetToken(storedToken);
       } else {
-        // No token, redirect to forgot password
         setMessage('⚠️ No reset token found. Please request a password reset.');
         setMessageColor('#fbbf24');
         setMessageBg('rgba(251, 191, 36, 0.1)');
@@ -355,12 +371,10 @@ const ResetPassword = () => {
     const newPasswordTrimmed = newPassword.trim();
     const confirmPasswordTrimmed = confirmPassword.trim();
     
-    // Clear previous message
     setMessage('');
     setMessageColor('#94a3b8');
     setMessageBg('rgba(0, 0, 0, 0.3)');
 
-    // Validation
     if (!newPasswordTrimmed || !confirmPasswordTrimmed) {
       setMessage('❌ Please fill in all fields');
       setMessageColor('#f87171');
@@ -420,7 +434,6 @@ const ResetPassword = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Clear session data
         sessionStorage.clear();
         localStorage.removeItem('resetToken');
         
@@ -452,77 +465,75 @@ const ResetPassword = () => {
   return (
     <>
       <GlobalStyle />
+      <PageWrapper>
+        <Container ref={containerRef}>
+          <Logo>🔷Voltix Traders</Logo>
+          <Title>Create New Password</Title>
+          <Subhead>Enter your new password below</Subhead>
 
-      <Container ref={containerRef}>
-        <Logo>⚡ Voltix</Logo>
-        <Title>Create New Password</Title>
-        <Subhead>Enter your new password below</Subhead>
+          <Form onSubmit={handleSubmit}>
+            <InputGroup>
+              <label>🔒 New Password</label>
+              <InputWrapper>
+                <Input
+                  type={showNewPassword ? 'text' : 'password'}
+                  placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  autoFocus
+                  required
+                />
+                <TogglePasswordBtn
+                  type="button"
+                  onClick={() => togglePasswordVisibility('new')}
+                  aria-label="Toggle password visibility"
+                >
+                  {showNewPassword ? '🙈' : '👁️'}
+                </TogglePasswordBtn>
+              </InputWrapper>
+              
+              <StrengthMeter>
+                <StrengthFill width={strengthWidth} color={strengthColor} />
+              </StrengthMeter>
+              <StrengthText color={strengthColor}>
+                {strengthLabel}
+              </StrengthText>
+            </InputGroup>
 
-        <Form onSubmit={handleSubmit}>
-          {/* New Password */}
-          <InputGroup>
-            <label>🔒 New Password</label>
-            <InputWrapper>
-              <Input
-                type={showNewPassword ? 'text' : 'password'}
-                placeholder="Enter new password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                autoFocus
-                required
-              />
-              <TogglePasswordBtn
-                type="button"
-                onClick={() => togglePasswordVisibility('new')}
-                aria-label="Toggle password visibility"
-              >
-                {showNewPassword ? '🙈' : '👁️'}
-              </TogglePasswordBtn>
-            </InputWrapper>
-            
-            {/* Password Strength Meter */}
-            <StrengthMeter>
-              <StrengthFill width={strengthWidth} color={strengthColor} />
-            </StrengthMeter>
-            <StrengthText color={strengthColor}>
-              {strengthLabel}
-            </StrengthText>
-          </InputGroup>
+            <InputGroup>
+              <label>✓ Confirm Password</label>
+              <InputWrapper>
+                <Input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Confirm your new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <TogglePasswordBtn
+                  type="button"
+                  onClick={() => togglePasswordVisibility('confirm')}
+                  aria-label="Toggle confirm password visibility"
+                >
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </TogglePasswordBtn>
+              </InputWrapper>
+            </InputGroup>
 
-          {/* Confirm Password */}
-          <InputGroup>
-            <label>✓ Confirm Password</label>
-            <InputWrapper>
-              <Input
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirm your new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              <TogglePasswordBtn
-                type="button"
-                onClick={() => togglePasswordVisibility('confirm')}
-                aria-label="Toggle confirm password visibility"
-              >
-                {showConfirmPassword ? '🙈' : '👁️'}
-              </TogglePasswordBtn>
-            </InputWrapper>
-          </InputGroup>
+            <SubmitButton type="submit" disabled={isLoading}>
+              {isLoading ? '⏳ Resetting...' : 'Reset Password →'}
+            </SubmitButton>
+          </Form>
 
-          <SubmitButton type="submit" disabled={isLoading}>
-            {isLoading ? '⏳ Resetting...' : 'Reset Password →'}
-          </SubmitButton>
-        </Form>
+          <Message color={messageColor} bg={messageBg}>
+            {message || '\u00A0'}
+          </Message>
 
-        <Message color={messageColor} bg={messageBg}>
-          {message || '\u00A0'}
-        </Message>
-
-        <BackLink>
-          <Link to="/login">← Back to Login</Link>
-        </BackLink>
-      </Container>
+          <BackLink>
+            <Link to="/login">← Back to Login</Link>
+          </BackLink>
+        </Container>
+      </PageWrapper>
     </>
   );
 };

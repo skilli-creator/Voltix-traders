@@ -387,7 +387,7 @@ const Login = () => {
   const [resendEmail, setResendEmail] = useState('');
   const [resendUserId, setResendUserId] = useState(null);
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   // Validate phone number format
   const validatePhone = (phone) => {

@@ -1,6 +1,7 @@
+// src/App.jsx
+
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import styled from 'styled-components';
+import { Routes, Route } from 'react-router-dom';
 
 // Import Pages ONLY
 import Index from './pages/Index';
@@ -16,51 +17,27 @@ import Derivdash from './pages/Derivdash';
 import Binancehome from './pages/Binancehome';
 import Forexhome from './pages/Forexhome';
 
-// ============================================
-// DASHBOARD LAYOUT
-// ============================================
-
-const DashboardLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: #0a0f1f;
-  overflow: hidden;
-`;
-
-const MainContent = styled.div`
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-`;
-
-// ============================================
-// APP COMPONENT
-// ============================================
-
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public Pages */}
-        <Route path="/" element={<Index />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify" element={<Authentication />} />
-        <Route path="/forgotpass" element={<Forgotpass />} />
-        <Route path="/verifyresetcode" element={<Verifyresetcode />} />
-        <Route path="/resetpass" element={<Resetpass />} />
+    <Routes>
+      {/* Public Pages */}
+      <Route path="/" element={<Index />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/verify" element={<Authentication />} />
+      <Route path="/forgotpass" element={<Forgotpass />} />
+      <Route path="/verifyresetcode" element={<Verifyresetcode />} />
+      <Route path="/resetpass" element={<Resetpass />} />
 
-        {/* Dashboard Pages */}
-        <Route path="/marketsdash" element={<Marketsdash />} />
-        <Route path="/derivhome" element={<Derivhome />} />
-        <Route path="/binancehome" element={<Binancehome />} />
-        <Route path="/forexhome" element={<Forexhome />} />
+      {/* Dashboard Pages */}
+      <Route path="/marketsdash" element={<Marketsdash />} />
+      <Route path="/derivhome" element={<Derivhome />} />
+      <Route path="/binancehome" element={<Binancehome />} />
+      <Route path="/forexhome" element={<Forexhome />} />
 
-        {/* Deriv Trading Dashboard */}
-        <Route path="/derivdash" element={<Derivdash />} />
-      </Routes>
-    </BrowserRouter>
+      {/* Deriv Trading Dashboard */}
+      <Route path="/derivdash" element={<Derivdash />} />
+    </Routes>
   );
 };
 

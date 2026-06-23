@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
@@ -13,360 +13,278 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-    background: radial-gradient(ellipse at 30% 10%, #0b1a2e, #03050b);
-    color: #f1f5f9;
-    line-height: 1.5;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0a0a0f;
+    color: #ffffff;
+    line-height: 1.6;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #0f172a;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #2d3a5e;
-    border-radius: 8px;
-  }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: #1a1a2e; }
+  ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 10px; }
 `;
 
 // ============================================
 // KEYFRAMES
 // ============================================
-const fadeSlideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const pulse = keyframes`
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.95); }
+`;
+
+const rotateGlow = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 `;
 
 // ============================================
 // STYLED COMPONENTS
 // ============================================
 
+// ===== BACKGROUND =====
+const Background = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(138, 43, 226, 0.03) 0%, transparent 60%),
+    #0a0a0f;
+`;
+
+const Grid = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+`;
+
+const GlowLine = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  z-index: 0;
+  background: linear-gradient(90deg, transparent, #00d4ff, #8a2be2, transparent);
+  opacity: 0.3;
+`;
+
 // ===== TOPBAR =====
 const Topbar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 40px;
-  background: rgba(3, 7, 18, 0.75);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 16px 48px;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+  animation: ${fadeIn} 0.6s ease;
 
-  @media (max-width: 720px) {
-    padding: 14px 20px;
+  @media (max-width: 768px) {
+    padding: 12px 20px;
   }
 `;
 
-const Logo = styled.div`
+const Logo = styled(Link)`
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
 `;
 
-const LogoIcon = styled.span`
-  font-size: 28px;
-  filter: drop-shadow(0 0 6px #38bdf8);
+const LogoIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #00d4ff, #8a2be2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0a0a0f;
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.15);
 `;
 
-const LogoText = styled.h2`
+const LogoText = styled.div`
+  font-size: 18px;
   font-weight: 700;
-  background: linear-gradient(135deg, #e0f2fe, #38bdf8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
   letter-spacing: -0.3px;
+
+  .voltix {
+    color: #ffffff;
+  }
+
+  .deriv {
+    background: linear-gradient(135deg, #00d4ff, #8a2be2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 400;
+    margin-left: 4px;
+  }
+`;
+
+const TopbarActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
 `;
 
 const BackButton = styled(Link)`
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 40px;
-  padding: 8px 20px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #cbd5e1;
   display: flex;
   align-items: center;
   gap: 8px;
-  text-decoration: none;
-
-  &:hover {
-    background: #2d3a5e;
-    border-color: #38bdf8;
-    color: white;
-  }
-`;
-
-// ===== CONTAINER =====
-const Container = styled.div`
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 40px 28px;
-  text-align: center;
-
-  @media (max-width: 720px) {
-    padding: 24px 20px;
-  }
-`;
-
-const BadgeGlow = styled.div`
-  display: inline-flex;
-  background: rgba(15, 42, 68, 0.7);
-  backdrop-filter: blur(4px);
-  padding: 8px 20px;
-  border-radius: 60px;
-  border: 1px solid rgba(56, 189, 248, 0.4);
+  padding: 8px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  color: #8888aa;
   font-size: 13px;
   font-weight: 500;
-  color: #7dd3fc;
-  letter-spacing: 0.3px;
-  margin-bottom: 24px;
-`;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.02);
 
-const Title = styled.h1`
-  font-size: 64px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #ffffff, #94a3b8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin: 16px 0 20px;
-  letter-spacing: -1px;
-
-  @media (max-width: 720px) {
-    font-size: 42px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(0, 212, 255, 0.2);
+    color: #ffffff;
   }
 `;
 
-const Highlight = styled.span`
-  background: linear-gradient(135deg, #38bdf8, #818cf8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+// ===== MAIN =====
+const Main = styled.div`
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+
+  @media (max-width: 768px) {
+    padding: 30px 16px 60px;
+  }
 `;
 
-const Subtitle = styled.p`
-  font-size: 1.2rem;
-  color: #9ca3af;
-  max-width: 700px;
-  margin: 0 auto 36px;
-  line-height: 1.5;
+// ===== HERO =====
+const Hero = styled.div`
+  text-align: center;
+  margin-bottom: 60px;
+  animation: ${fadeIn} 0.8s ease;
 `;
 
-// ===== BUTTONS =====
-const Button = styled.button`
+const Badge = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
-  background: linear-gradient(105deg, #0ea5e9, #3b82f6);
-  color: white;
-  border-radius: 40px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  cursor: pointer;
-  border: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 6px 14px rgba(14, 165, 233, 0.2);
-
-  &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 20px rgba(14, 165, 233, 0.3);
-    background: linear-gradient(105deg, #0284c7, #2563eb);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  &.secondary {
-    background: #1e293b;
-    border: 1px solid #334155;
-    box-shadow: none;
-
-    &:hover:not(:disabled) {
-      background: #2d3a5e;
-      border-color: #38bdf8;
-      transform: translateY(-2px);
-    }
-  }
-`;
-
-// ===== CONNECT PANEL =====
-const ConnectPanel = styled.div`
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(12px);
-  border-radius: 36px;
-  padding: 32px 28px;
-  margin: 40px 0 20px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  transition: all 0.2s;
-`;
-
-const SectionTitle = styled.div`
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 24px;
-  color: #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-`;
-
-const OrDivider = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin: 20px 0;
-  color: #4b5563;
-  font-size: 14px;
-
-  hr {
-    width: 80px;
-    background: #2d3a5e;
-    height: 1px;
-    border: none;
-  }
-`;
-
-const TokenBox = styled.div`
-  max-width: 440px;
-  margin: 0 auto;
-`;
-
-const PasswordWrapper = styled.div`
-  position: relative;
-  width: 100%;
-  margin-bottom: 18px;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 14px 44px 14px 20px;
-  background: #0f172a;
-  border: 1.5px solid #1e293b;
-  border-radius: 60px;
-  color: #f1f5f9;
-  font-size: 14px;
-  transition: all 0.2s;
-  outline: none;
-
-  &:focus {
-    border-color: #38bdf8;
-    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
-  }
-`;
-
-const ToggleEye = styled.button`
-  position: absolute;
-  right: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #94a3b8;
-  font-size: 18px;
-  transition: 0.2s;
-  background: none;
-  border: none;
-
-  &:hover {
-    color: #38bdf8;
-  }
-`;
-
-const AccountSignup = styled.div`
-  margin-top: 20px;
-  font-size: 14px;
-  color: #9ca3af;
-`;
-
-const SignupLink = styled.a`
-  color: #38bdf8;
-  text-decoration: none;
+  gap: 10px;
+  padding: 6px 18px 6px 10px;
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  border-radius: 6px;
+  font-size: 11px;
   font-weight: 500;
-  border-bottom: 1px dashed #38bdf8;
+  color: #00d4ff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
 
-  &:hover {
-    border-bottom-style: solid;
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00d4ff;
+    animation: ${pulse} 1.5s ease-in-out infinite;
   }
 `;
 
-// ===== MESSAGE =====
-const MessageArea = styled.div`
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  display: ${props => props.show ? 'block' : 'none'};
-  background: ${props => {
-    switch(props.type) {
-      case 'success': return 'rgba(34, 197, 94, 0.2)';
-      case 'error': return 'rgba(239, 68, 68, 0.2)';
-      case 'info': return 'rgba(56, 189, 248, 0.2)';
-      default: return 'rgba(0, 0, 0, 0.3)';
-    }
-  }};
-  color: ${props => {
-    switch(props.type) {
-      case 'success': return '#22c55e';
-      case 'error': return '#ef4444';
-      case 'info': return '#38bdf8';
-      default: return '#94a3b8';
-    }
-  }};
-  border: 1px solid ${props => {
-    switch(props.type) {
-      case 'success': return '#22c55e';
-      case 'error': return '#ef4444';
-      case 'info': return '#38bdf8';
-      default: return 'transparent';
-    }
-  }};
-  white-space: pre-line;
+const HeroTitle = styled.h1`
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  letter-spacing: -1.5px;
+
+  .highlight {
+    background: linear-gradient(135deg, #00d4ff, #8a2be2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 34px;
+  }
 `;
 
-// ===== CARDS =====
-const Cards = styled.div`
-  display: flex;
-  gap: 28px;
-  margin-top: 70px;
-  justify-content: center;
-  flex-wrap: wrap;
+const HeroSub = styled.p`
+  font-size: 16px;
+  color: #666688;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.8;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
-const Card = styled.div`
-  background: rgba(11, 22, 38, 0.75);
-  backdrop-filter: blur(4px);
-  padding: 28px 24px;
-  width: 300px;
-  border-radius: 28px;
-  text-align: left;
-  border: 1px solid rgba(51, 65, 85, 0.6);
-  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+// ===== CONNECT SECTION =====
+const ConnectSection = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
+  animation: ${fadeIn} 0.8s ease 0.2s both;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+`;
+
+const ConnectCard = styled.div`
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 40px 36px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
 
   &:hover {
-    transform: translateY(-6px);
-    border-color: #38bdf8;
-    background: rgba(20, 34, 58, 0.85);
-    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(0, 212, 255, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
@@ -376,32 +294,156 @@ const CardIcon = styled.div`
 `;
 
 const CardTitle = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 12px;
-  background: linear-gradient(120deg, #f1f5f9, #b9d0f0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ffffff;
 `;
 
-const CardDescription = styled.p`
-  color: #a0afc7;
-  line-height: 1.5;
+const CardDesc = styled.p`
+  font-size: 14px;
+  color: #666688;
+  margin-bottom: 24px;
+  line-height: 1.7;
 `;
 
-const Powered = styled.div`
-  margin-top: 80px;
-  font-size: 12px;
-  color: #4b5563;
-  padding-top: 20px;
-  border-top: 1px solid #1e2a44;
+const ConnectButton = styled.button`
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 24px;
+  background: ${props => props.primary ? 'linear-gradient(135deg, #00d4ff, #8a2be2)' : 'rgba(255, 255, 255, 0.04)'};
+  border: ${props => props.primary ? 'none' : '1px solid rgba(255, 255, 255, 0.06)'};
+  border-radius: 10px;
+  color: ${props => props.primary ? '#0a0a0f' : '#8888aa'};
+  font-size: 14px;
+  font-weight: 600;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 
-  span {
-    color: #38bdf8;
-    font-weight: 600;
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.primary ? '0 8px 30px rgba(0, 212, 255, 0.2)' : 'none'};
+    background: ${props => props.primary ? 'linear-gradient(135deg, #00d4ff, #8a2be2)' : 'rgba(255, 255, 255, 0.06)'};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  .spinner {
+    animation: ${rotateGlow} 1s linear infinite;
+  }
+`;
+
+const FeatureList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+`;
+
+const Feature = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #8888aa;
+
+  .check {
+    color: #00d4ff;
+    font-size: 16px;
+  }
+`;
+
+// ===== STATS =====
+const StatsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 40px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const Stat = styled.div`
+  text-align: center;
+
+  .number {
+    font-size: 32px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #8888aa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .label {
+    font-size: 12px;
+    color: #444466;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+`;
+
+// ===== MESSAGE =====
+const Message = styled.div`
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  display: ${props => props.show ? 'flex' : 'none'};
+  align-items: center;
+  gap: 10px;
+  background: ${props => {
+    switch(props.type) {
+      case 'success': return 'rgba(0, 212, 255, 0.06)';
+      case 'error': return 'rgba(255, 68, 68, 0.06)';
+      case 'info': return 'rgba(255, 255, 255, 0.03)';
+      default: return 'rgba(0, 0, 0, 0.3)';
+    }
+  }};
+  color: ${props => {
+    switch(props.type) {
+      case 'success': return '#00d4ff';
+      case 'error': return '#ff4444';
+      case 'info': return '#8888aa';
+      default: return '#8888aa';
+    }
+  }};
+  border: 1px solid ${props => {
+    switch(props.type) {
+      case 'success': return 'rgba(0, 212, 255, 0.08)';
+      case 'error': return 'rgba(255, 68, 68, 0.08)';
+      case 'info': return 'rgba(255, 255, 255, 0.04)';
+      default: return 'rgba(255, 255, 255, 0.04)';
+    }
+  }};
+`;
+
+// ===== FOOTER =====
+const Footer = styled.div`
+  text-align: center;
+  padding-top: 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  margin-top: 20px;
+
+  p {
+    font-size: 12px;
+    color: #333355;
+
+    span {
+      color: #00d4ff;
+    }
   }
 `;
 
@@ -411,45 +453,32 @@ const Powered = styled.div`
 
 const DerivTrading = () => {
   const navigate = useNavigate();
-  const [apiToken, setApiToken] = useState('');
-  const [showToken, setShowToken] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // ✅ FIXED: Vite uses import.meta.env instead of process.env
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-  // Check authentication on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       setMessage('Please login first to connect your Deriv account');
       setMessageType('error');
       setShowMessage(true);
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      setTimeout(() => navigate('/login'), 2000);
     } else {
       setIsAuthenticated(true);
     }
   }, [navigate]);
 
-  // Auto-hide message after 5 seconds
   useEffect(() => {
     if (showMessage) {
-      const timer = setTimeout(() => {
-        setShowMessage(false);
-      }, 5000);
+      const timer = setTimeout(() => setShowMessage(false), 5000);
       return () => clearTimeout(timer);
     }
   }, [showMessage]);
-
-  const toggleTokenVisibility = () => {
-    setShowToken(!showToken);
-  };
 
   const showCustomMessage = (msg, type) => {
     setMessage(msg);
@@ -457,181 +486,187 @@ const DerivTrading = () => {
     setShowMessage(true);
   };
 
-  // Connect with API Token
-  const handleConnect = async () => {
+  const handleOAuthConnect = async () => {
     if (!isAuthenticated) return;
 
-    const token = apiToken.trim();
-    const accountType = 'Demo'; // Can be 'Real' or 'Demo'
-
-    if (!token) {
-      showCustomMessage('⚠️ Please paste your Deriv API token', 'error');
-      return;
-    }
-
     setIsLoading(true);
-    setMessage('🔄 Connecting...');
-    setMessageType('info');
-    setShowMessage(true);
+    showCustomMessage('Connecting to Deriv...', 'info');
 
     try {
       const authToken = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/deriv/connect`, {
+      const response = await fetch(`${API_BASE_URL}/deriv/oauth/initiate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken}`
-        },
-        body: JSON.stringify({
-          api_token: token,
-          account_type: accountType
-        })
+        }
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        showCustomMessage(
-          `✅ ${data.message}!\n\nAccount ID: ${data.account.account_id}\nBalance: $${data.account.balance} ${data.account.currency}`,
-          'success'
-        );
-
-        // Store connection info in localStorage
-        localStorage.setItem('deriv_connected', 'true');
-        localStorage.setItem('deriv_account_id', data.account.account_id);
-        localStorage.setItem('deriv_balance', data.account.balance);
-
-        setIsLoading(false);
-
-        // Redirect to trading dashboard after 2 seconds
-        setTimeout(() => {
-          navigate('/derivdash');
-        }, 2000);
+      if (response.ok && data.auth_url) {
+        window.location.href = data.auth_url;
       } else {
-        showCustomMessage(`❌ Connection failed: ${data.error}`, 'error');
+        showCustomMessage(`Connection failed: ${data.error || 'Unknown error'}`, 'error');
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Connection error:', error);
-      showCustomMessage(
-        '❌ Cannot connect to server. Please make sure the backend is running.',
-        'error'
-      );
+      showCustomMessage('Cannot connect to server. Please check your connection.', 'error');
       setIsLoading(false);
     }
-  };
-
-  // OAuth button handler
-  const handleOAuth = () => {
-    showCustomMessage(
-      '🔐 Deriv OAuth integration coming soon! Please use API token for now.',
-      'info'
-    );
   };
 
   return (
     <>
       <GlobalStyle />
+      <Background />
+      <Grid />
+      <GlowLine />
 
-      {/* Topbar */}
       <Topbar>
-        <Logo>
-          <LogoText>🔷Voltix Traders• Deriv</LogoText>
+        <Logo to="/">
+          <LogoIcon>⟡</LogoIcon>
+          <LogoText>
+            <span className="voltix">Voltix</span>
+            <span className="deriv">• deriv</span>
+          </LogoText>
         </Logo>
-        <BackButton to="/Marketsdash">← Back to Markets</BackButton>
+        <TopbarActions>
+          <BackButton to="/Marketsdash">← Back</BackButton>
+        </TopbarActions>
       </Topbar>
 
-      {/* Main Content */}
-      <Container>
-        <BadgeGlow>🤖 AI-Powered Deriv Trading Signals</BadgeGlow>
-        <Title>
-          Trade Deriv with <Highlight>Voltix </Highlight>
-        </Title>
-        <Subtitle>
-          Precision execution, multi-contract intelligence, and real-time confidence analytics.
-        </Subtitle>
+      <Main>
+        <Hero>
+          <Badge>
+            <span className="dot" />
+            Live • Secure • Fast
+          </Badge>
+          <HeroTitle>
+            Trade <span className="highlight">Deriv</span><br />Like a Pro
+          </HeroTitle>
+          <HeroSub>
+            Connect your account and start trading with AI-powered tools
+          </HeroSub>
+        </Hero>
 
-        <ConnectPanel>
-          <SectionTitle>
-            <span>🔄</span>Connect Your Deriv Account
-          </SectionTitle>
+        <ConnectSection>
+          {/* OAuth Card */}
+          <ConnectCard>
+            <CardIcon>🔐</CardIcon>
+            <CardTitle>OAuth Connection</CardTitle>
+            <CardDesc>
+              Securely connect your Deriv account using OAuth 2.0. 
+              Your credentials never touch our servers.
+            </CardDesc>
 
-          <Button onClick={handleOAuth} id="oauthBtn">
-            🔵 Connect via Deriv OAuth (Recommended)
-          </Button>
+            <FeatureList>
+              <Feature>
+                <span className="check">✓</span>
+                Zero credential storage
+              </Feature>
+              <Feature>
+                <span className="check">✓</span>
+                Real & Demo accounts
+              </Feature>
+              <Feature>
+                <span className="check">✓</span>
+                Instant market access
+              </Feature>
+            </FeatureList>
 
-          <OrDivider>
-            <hr /> <span>secure alternative</span> <hr />
-          </OrDivider>
-
-          <TokenBox>
-            <PasswordWrapper>
-              <Input
-                type={showToken ? 'text' : 'password'}
-                placeholder="Paste your Deriv API token (read/trade)"
-                value={apiToken}
-                onChange={(e) => setApiToken(e.target.value)}
-                disabled={isLoading}
-              />
-              <ToggleEye onClick={toggleTokenVisibility}>
-                {showToken ? '🙈' : '👁️'}
-              </ToggleEye>
-            </PasswordWrapper>
-            <Button
-              className="secondary"
-              onClick={handleConnect}
-              disabled={isLoading}
+            <ConnectButton 
+              primary 
+              onClick={handleOAuthConnect}
+              disabled={isLoading || !isAuthenticated}
             >
-              {isLoading ? '🔄 Connecting...' : '🔐 Connect with API Token'}
-            </Button>
-            <AccountSignup>
-              🚀 New to Deriv trading?
-              <SignupLink
-                href="https://deriv.com/"
-                target="_blank"
+              {isLoading ? (
+                <>
+                  <span className="spinner">⟳</span> Connecting...
+                </>
+              ) : (
+                'Connect with Deriv OAuth'
+              )}
+            </ConnectButton>
+
+            <Message show={showMessage} type={messageType}>
+              <span>
+                {messageType === 'success' ? '✓' : 
+                 messageType === 'error' ? '✕' : 
+                 '•'}
+              </span>
+              {message}
+            </Message>
+          </ConnectCard>
+
+          {/* Info Card */}
+          <ConnectCard>
+            <CardIcon>🚀</CardIcon>
+            <CardTitle>Why Voltix?</CardTitle>
+            <CardDesc>
+              Built for traders who demand precision, speed, and reliability.
+            </CardDesc>
+
+            <FeatureList>
+              <Feature>
+                <span className="check">✓</span>
+                AI-powered trading signals
+              </Feature>
+              <Feature>
+                <span className="check">✓</span>
+                Real-time market analytics
+              </Feature>
+              <Feature>
+                <span className="check">✓</span>
+                Automated risk management
+              </Feature>
+              <Feature>
+                <span className="check">✓</span>
+                24/7 market monitoring
+              </Feature>
+            </FeatureList>
+
+            <div style={{ marginTop: '16px' }}>
+              <a 
+                href="https://deriv.com/" 
+                target="_blank" 
                 rel="noopener noreferrer"
+                style={{
+                  color: '#666688',
+                  textDecoration: 'none',
+                  fontSize: '13px',
+                  transition: 'color 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.target.style.color = '#00d4ff'}
+                onMouseLeave={(e) => e.target.style.color = '#666688'}
               >
-                Open a free Deriv account →
-              </SignupLink>
-            </AccountSignup>
-          </TokenBox>
+                New to Deriv? Create account →
+              </a>
+            </div>
+          </ConnectCard>
+        </ConnectSection>
 
-          <MessageArea
-            show={showMessage}
-            type={messageType}
-          >
-            {message}
-          </MessageArea>
-        </ConnectPanel>
+        <StatsGrid>
+          <Stat>
+            <div className="number">99.9%</div>
+            <div className="label">Uptime</div>
+          </Stat>
+          <Stat>
+            <div className="number">50ms</div>
+            <div className="label">Execution Speed</div>
+          </Stat>
+          <Stat>
+            <div className="number">256-bit</div>
+            <div className="label">Encryption</div>
+          </Stat>
+        </StatsGrid>
 
-        <Cards>
-          <Card>
-            <CardIcon>⚙️</CardIcon>
-            <CardTitle>All Trades Engine</CardTitle>
-            <CardDescription>
-              Executes all types of trades with smart order flow and risk-aware logic.
-            </CardDescription>
-          </Card>
-          <Card>
-            <CardIcon>📈</CardIcon>
-            <CardTitle>High-Spec Analysis</CardTitle>
-            <CardDescription>
-              Real-time market analysis, confidence scoring &amp; AI-driven entry points.
-            </CardDescription>
-          </Card>
-          <Card>
-            <CardIcon>🔒</CardIcon>
-            <CardTitle>Secure Connection Layer</CardTitle>
-            <CardDescription>
-              OAuth + token authentication with encrypted infrastructure.
-            </CardDescription>
-          </Card>
-        </Cards>
-
-        <Powered>
-          Powered by <span>Deriv</span> — All trading actions executed on Deriv's official infrastructure. Trade responsibly.
-        </Powered>
-      </Container>
+        <Footer>
+          <p>
+            Powered by <span>Deriv</span> • All trades executed on official infrastructure • Trade responsibly
+          </p>
+        </Footer>
+      </Main>
     </>
   );
 };
