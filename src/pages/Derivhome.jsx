@@ -393,14 +393,15 @@ const DerivTrading = () => {
     showCustomMessage('Connecting to Deriv...', 'info');
 
     try {
-      const userId = localStorage.getItem('user_id');
       const authToken = localStorage.getItem('token');
+
       const response = await fetch(
         `${API_BASE_URL}/deriv/oauth/initiate`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${authToken}`
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
           }
         }
       );
@@ -408,17 +409,26 @@ const DerivTrading = () => {
       const data = await response.json();
 
       if (response.ok && data.auth_url) {
+        // 🚀 Redirect to Deriv
         window.location.href = data.auth_url;
       } else {
-        showCustomMessage(`Connection failed: ${data.error || 'Unknown error'}`, 'error');
+        showCustomMessage(
+          `Connection failed: ${data.error || 'Unknown error'}`,
+          'error'
+        );
         setIsLoading(false);
       }
     } catch (error) {
       console.error('OAuth error:', error);
-      showCustomMessage('Cannot connect to server. Please check your connection.', 'error');
+      showCustomMessage(
+        'Cannot connect to server. Please check your connection.',
+        'error'
+      );
       setIsLoading(false);
     }
   };
+
+
 
   return (
     <>
@@ -511,3 +521,4 @@ export default DerivTrading;// Force rebuild: Wed Jun 24 12:33:14 PM EAT 2026
 // Force rebuild: Wed Jun 24 02:32:28 PM EAT 2026
 // Force rebuild: Wed Jun 24 02:39:58 PM EAT 2026
 // Force rebuild: Wed Jun 24 02:46:37 PM EAT 2026
+// Force rebuild: Wed Jun 24 07:44:27 PM EAT 2026
