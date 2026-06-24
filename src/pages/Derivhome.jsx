@@ -395,21 +395,27 @@ const DerivTrading = () => {
     try {
       const authToken = localStorage.getItem('token');
 
+      console.log("Sending token:", authToken); // ✅ DEBUG
+
       const response = await fetch(
         `${API_BASE_URL}/deriv/oauth/initiate`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${authToken}`,
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            token: authToken
+          })
         }
       );
 
       const data = await response.json();
 
+      console.log("Backend response:", data); // ✅ DEBUG
+
       if (response.ok && data.auth_url) {
-        // 🚀 Redirect to Deriv
         window.location.href = data.auth_url;
       } else {
         showCustomMessage(
@@ -427,7 +433,6 @@ const DerivTrading = () => {
       setIsLoading(false);
     }
   };
-
 
 
   return (
