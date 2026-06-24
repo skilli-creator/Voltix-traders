@@ -393,14 +393,16 @@ const DerivTrading = () => {
     showCustomMessage('Connecting to Deriv...', 'info');
 
     try {
-      const authToken = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}/deriv/oauth/initiate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${authToken}`
+      const userId = localStorage.getItem('user_id');
+      const response = await fetch(
+        `${API_BASE_URL}/deriv/oauth/initiate?user_id=${userId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
         }
-      });
+      );
 
       const data = await response.json();
 
@@ -505,3 +507,4 @@ const DerivTrading = () => {
 
 export default DerivTrading;// Force rebuild: Wed Jun 24 12:33:14 PM EAT 2026
 // Force rebuild: Wed Jun 24 12:33:31 PM EAT 2026
+// Force rebuild: Wed Jun 24 02:32:28 PM EAT 2026
