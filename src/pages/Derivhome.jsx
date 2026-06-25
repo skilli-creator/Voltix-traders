@@ -51,6 +51,21 @@ const pulse = keyframes`
   50% { opacity: 0.4; }
 `;
 
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const float = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -348,6 +363,124 @@ const Powered = styled.div`
 `;
 
 // ============================================
+// FLOATING POPUP / MODAL
+// ============================================
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${fadeSlideUp} 0.3s ease;
+`;
+
+const PopupCard = styled.div`
+  background: linear-gradient(145deg, #0f1a2e, #0a1220);
+  border-radius: 32px;
+  padding: 48px 40px;
+  max-width: 440px;
+  width: 90%;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #38bdf8);
+    background-size: 200% 100%;
+    animation: ${shimmer} 3s ease-in-out infinite;
+  }
+`;
+
+const PopupSpinner = styled.div`
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  position: relative;
+
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: #38bdf8;
+    animation: ${spin} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+  .ring:nth-child(1) {
+    animation-duration: 1.2s;
+  }
+  .ring:nth-child(2) {
+    inset: 12px;
+    border-top-color: #818cf8;
+    animation-duration: 1.8s;
+    animation-direction: reverse;
+  }
+  .ring:nth-child(3) {
+    inset: 24px;
+    border-top-color: #c084fc;
+    animation-duration: 2.4s;
+  }
+`;
+
+const PopupIcon = styled.div`
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: ${float} 2s ease-in-out infinite;
+`;
+
+const PopupTitle = styled.h2`
+  font-size: 24px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 8px;
+`;
+
+const PopupSubtitle = styled.p`
+  color: #94a3b8;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 4px;
+`;
+
+const PopupHint = styled.p`
+  color: #4b5563;
+  font-size: 12px;
+  margin-top: 16px;
+  animation: ${pulse} 2s ease-in-out infinite;
+`;
+
+const PopupCloseButton = styled.button`
+  margin-top: 20px;
+  padding: 8px 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 40px;
+  color: #94a3b8;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+  }
+`;
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 
@@ -357,6 +490,8 @@ const DerivTrading = () => {
   const [messageType, setMessageType] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('Connecting to Deriv...');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
@@ -390,12 +525,14 @@ const DerivTrading = () => {
     if (!isAuthenticated) return;
 
     setIsLoading(true);
-    showCustomMessage('Connecting to Deriv...', 'info');
+    setShowPopup(true);
+    setPopupMessage('🔐 Initiating secure connection...');
 
     try {
       const authToken = localStorage.getItem('token');
 
-      console.log("Sending token:", authToken); // ✅ DEBUG
+      setPopupMessage('🔄 Authenticating with Deriv...');
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       const response = await fetch(
         `${API_BASE_URL}/deriv/oauth/initiate`,
@@ -413,27 +550,38 @@ const DerivTrading = () => {
 
       const data = await response.json();
 
-      console.log("Backend response:", data); // ✅ DEBUG
-
       if (response.ok && data.auth_url) {
+        setPopupMessage('🚀 Redirecting to Deriv login...');
+        await new Promise(resolve => setTimeout(resolve, 600));
+
+        // Redirect to Deriv
         window.location.href = data.auth_url;
       } else {
+        setPopupMessage('❌ Connection failed');
         showCustomMessage(
           `Connection failed: ${data.error || 'Unknown error'}`,
           'error'
         );
         setIsLoading(false);
+        setTimeout(() => setShowPopup(false), 1500);
       }
     } catch (error) {
       console.error('OAuth error:', error);
+      setPopupMessage('❌ Connection error');
       showCustomMessage(
         'Cannot connect to server. Please check your connection.',
         'error'
       );
       setIsLoading(false);
+      setTimeout(() => setShowPopup(false), 2000);
     }
   };
 
+  const closePopup = () => {
+    if (!isLoading) {
+      setShowPopup(false);
+    }
+  };
 
   return (
     <>
@@ -517,13 +665,45 @@ const DerivTrading = () => {
           Powered by <span>Deriv</span> — All trading actions executed on Deriv's official infrastructure. Trade responsibly.
         </Powered>
       </Container>
+
+      {/* ===== FLOATING POPUP ===== */}
+      {showPopup && (
+        <Overlay onClick={closePopup}>
+          <PopupCard onClick={(e) => e.stopPropagation()}>
+            {popupMessage.includes('❌') ? (
+              <PopupIcon>⚠️</PopupIcon>
+            ) : popupMessage.includes('🚀') ? (
+              <PopupIcon>🚀</PopupIcon>
+            ) : (
+              <>
+                <PopupSpinner>
+                  <div className="ring" />
+                  <div className="ring" />
+                  <div className="ring" />
+                </PopupSpinner>
+              </>
+            )}
+
+            <PopupTitle>
+              {popupMessage.includes('❌') ? 'Oops!' : 'Connecting...'}
+            </PopupTitle>
+
+            <PopupSubtitle>
+              {popupMessage}
+            </PopupSubtitle>
+
+            {!popupMessage.includes('❌') && !popupMessage.includes('🚀') && (
+              <PopupHint>⏳ Hang tight — we're redirecting you to Deriv securely...</PopupHint>
+            )}
+
+            {popupMessage.includes('❌') && (
+              <PopupCloseButton onClick={closePopup}>Close</PopupCloseButton>
+            )}
+          </PopupCard>
+        </Overlay>
+      )}
     </>
   );
 };
 
-export default DerivTrading;// Force rebuild: Wed Jun 24 12:33:14 PM EAT 2026
-// Force rebuild: Wed Jun 24 12:33:31 PM EAT 2026
-// Force rebuild: Wed Jun 24 02:32:28 PM EAT 2026
-// Force rebuild: Wed Jun 24 02:39:58 PM EAT 2026
-// Force rebuild: Wed Jun 24 02:46:37 PM EAT 2026
-// Force rebuild: Wed Jun 24 07:44:27 PM EAT 2026
+export default DerivTrading;
