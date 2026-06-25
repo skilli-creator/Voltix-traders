@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     background: #050a18;
     color: #f1f5f9;
-    padding: 16px;
+    padding: 12px;
     overflow: hidden;
     position: relative;
   }
@@ -32,6 +32,12 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     min-height: 100vh;
   }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 8px;
+    }
+  }
 `;
 
 // ============================================
@@ -40,23 +46,19 @@ const GlobalStyle = createGlobalStyle`
 const floatIn = keyframes`
   0% { 
     opacity: 0; 
-    transform: translateY(60px) scale(0.92) rotateX(5deg);
-    filter: blur(8px);
-  }
-  60% { 
-    transform: translateY(-8px) scale(1.01) rotateX(0deg);
-    filter: blur(0px);
+    transform: translateY(40px) scale(0.95);
+    filter: blur(4px);
   }
   100% { 
     opacity: 1; 
-    transform: translateY(0) scale(1) rotateX(0deg);
+    transform: translateY(0) scale(1);
     filter: blur(0px);
   }
 `;
 
 const pulseRing = keyframes`
   0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2.5); opacity: 0; }
+  100% { transform: scale(2); opacity: 0; }
 `;
 
 const shimmer = keyframes`
@@ -65,8 +67,8 @@ const shimmer = keyframes`
 `;
 
 const breathe = keyframes`
-  0%, 100% { opacity: 0.15; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.08); }
+  0%, 100% { opacity: 0.12; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.05); }
 `;
 
 const slideGlow = keyframes`
@@ -77,12 +79,6 @@ const slideGlow = keyframes`
 const rotateGlow = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-`;
-
-const inputFocus = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
 `;
 
 // ============================================
@@ -99,34 +95,34 @@ const BackgroundContainer = styled.div`
 const GradientOrb = styled.div`
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
+  filter: blur(80px);
   animation: ${breathe} 7s ease-in-out infinite;
 
   &:nth-child(1) {
-    width: 350px;
-    height: 350px;
-    top: -150px;
-    right: -120px;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.12), transparent 70%);
+    width: 250px;
+    height: 250px;
+    top: -100px;
+    right: -80px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.10), transparent 70%);
     animation-delay: 0s;
   }
 
   &:nth-child(2) {
-    width: 280px;
-    height: 280px;
-    bottom: -120px;
-    left: -80px;
-    background: radial-gradient(circle, rgba(129, 140, 248, 0.08), transparent 70%);
+    width: 200px;
+    height: 200px;
+    bottom: -80px;
+    left: -60px;
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.06), transparent 70%);
     animation-delay: -2.5s;
   }
 
   &:nth-child(3) {
-    width: 180px;
-    height: 180px;
+    width: 120px;
+    height: 120px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(192, 132, 252, 0.05), transparent 70%);
+    background: radial-gradient(circle, rgba(192, 132, 252, 0.04), transparent 70%);
     animation-delay: -5s;
   }
 `;
@@ -138,36 +134,49 @@ const GlowLine = styled.div`
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-  opacity: 0.08;
+  opacity: 0.06;
 `;
 
 // ============================================
-// FLOATING FORM CONTAINER
+// COMPACT FLOATING FORM
 // ============================================
 const FloatingFormContainer = styled.div`
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
   padding: 0;
-  background: transparent;
   position: relative;
   z-index: 2;
-  animation: ${floatIn} 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: ${floatIn} 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 96vh;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.2);
+    border-radius: 4px;
+  }
 
   @media (max-width: 480px) {
     max-width: 100%;
-    padding: 0 8px;
+    padding: 0 4px;
+    max-height: 98vh;
   }
 `;
 
 const FormCard = styled.div`
-  background: rgba(8, 18, 38, 0.65);
+  background: rgba(8, 18, 38, 0.6);
   backdrop-filter: blur(32px);
-  border-radius: 48px;
-  padding: 32px 28px 28px;
-  border: 1px solid rgba(56, 189, 248, 0.06);
+  border-radius: 36px;
+  padding: 24px 22px 20px;
+  border: 1px solid rgba(56, 189, 248, 0.04);
   box-shadow: 
-    0 40px 100px -20px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(56, 189, 248, 0.04),
+    0 30px 80px -15px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(56, 189, 248, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.02);
   position: relative;
   overflow: hidden;
@@ -176,16 +185,14 @@ const FormCard = styled.div`
     content: '';
     position: absolute;
     inset: -1px;
-    border-radius: 49px;
+    border-radius: 37px;
     padding: 1px;
     background: conic-gradient(
       from 0deg,
       transparent,
-      rgba(56, 189, 248, 0.06),
+      rgba(56, 189, 248, 0.05),
       transparent,
-      rgba(129, 140, 248, 0.06),
-      transparent,
-      rgba(192, 132, 252, 0.04),
+      rgba(129, 140, 248, 0.05),
       transparent
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -199,72 +206,62 @@ const FormCard = styled.div`
     content: '';
     position: absolute;
     top: -1px;
-    left: 20%;
-    right: 20%;
-    height: 2px;
+    left: 25%;
+    right: 25%;
+    height: 1.5px;
     background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-    opacity: 0.15;
+    opacity: 0.12;
     border-radius: 0 0 4px 4px;
   }
 
-  .shimmer-overlay {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at 30% 40%, rgba(56, 189, 248, 0.02), transparent 60%);
-    pointer-events: none;
-  }
-
   @media (max-width: 480px) {
-    padding: 24px 16px 20px;
-    border-radius: 32px;
+    padding: 18px 14px 16px;
+    border-radius: 28px;
     &::before {
-      border-radius: 33px;
+      border-radius: 29px;
     }
   }
 `;
 
 // ============================================
-// PREMIUM BRAND SECTION
+// BRAND SECTION - COMPACT
 // ============================================
 const BrandSection = styled.div`
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 
   @media (max-width: 480px) {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
 `;
 
 const PremiumLogo = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 5px 18px 5px 12px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.06), rgba(129, 140, 248, 0.02));
-  border: 1px solid rgba(56, 189, 248, 0.04);
-  border-radius: 40px;
-  margin-bottom: 12px;
+  gap: 6px;
+  padding: 3px 14px 3px 10px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(129, 140, 248, 0.02));
+  border: 1px solid rgba(56, 189, 248, 0.03);
+  border-radius: 30px;
+  margin-bottom: 8px;
 
   .logo-icon {
-    font-size: 16px;
+    font-size: 13px;
   }
 
   .logo-text {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     background: linear-gradient(135deg, #e0f2fe, #38bdf8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
   }
 
   .status-dot {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background: #22c55e;
     position: relative;
@@ -272,7 +269,7 @@ const PremiumLogo = styled.div`
     &::before {
       content: '';
       position: absolute;
-      inset: -3px;
+      inset: -2px;
       border-radius: 50%;
       background: #22c55e;
       animation: ${pulseRing} 2s ease-out infinite;
@@ -280,18 +277,17 @@ const PremiumLogo = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 12px 4px 8px;
-    gap: 6px;
-    .logo-text { font-size: 10px; }
-    .logo-icon { font-size: 14px; }
+    padding: 2px 10px 2px 8px;
+    .logo-text { font-size: 9px; }
+    .logo-icon { font-size: 11px; }
   }
 `;
 
 const PremiumTitle = styled.h1`
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 
   .gradient-text {
     background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
@@ -303,143 +299,120 @@ const PremiumTitle = styled.h1`
   }
 
   @media (max-width: 480px) {
-    font-size: 22px;
+    font-size: 18px;
   }
 `;
 
 const PremiumSubhead = styled.p`
-  font-size: 13px;
+  font-size: 11px;
   color: #94a3b8;
   font-weight: 400;
 
   @media (max-width: 480px) {
-    font-size: 11px;
+    font-size: 10px;
   }
 `;
 
 // ============================================
-// SPLIT NAME ROW - PHONE OPTIMIZED
-// ============================================
-const SplitRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-`;
-
-// ============================================
-// FORM ELEMENTS
+// COMPACT FORM ELEMENTS
 // ============================================
 const Form = styled.form`
   width: 100%;
 `;
 
 const InputGroup = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   text-align: left;
 
   @media (max-width: 480px) {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
 `;
 
 const FloatingLabel = styled.label`
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: #94a3b8;
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: 4px;
+  margin-bottom: 2px;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
 
   .icon {
-    font-size: 12px;
+    font-size: 10px;
   }
 
   @media (max-width: 480px) {
-    font-size: 9px;
-    .icon { font-size: 10px; }
+    font-size: 8px;
+    .icon { font-size: 9px; }
   }
 `;
 
 const PremiumInputWrapper = styled.div`
   position: relative;
   background: rgba(255, 255, 255, 0.02);
-  border-radius: 24px;
-  border: 1.5px solid rgba(255, 255, 255, 0.04);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    padding: 1px;
-    background: linear-gradient(135deg, transparent, rgba(56, 189, 248, 0.03), transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-  }
-
   &:focus-within {
-    border-color: rgba(56, 189, 248, 0.15);
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.04);
-    background: rgba(255, 255, 255, 0.04);
-    animation: ${inputFocus} 0.3s ease;
-  }
-
-  &:focus-within::before {
-    opacity: 1;
+    border-color: rgba(56, 189, 248, 0.12);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.03);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   @media (max-width: 480px) {
-    border-radius: 18px;
-    border-width: 1px;
+    border-radius: 16px;
   }
 `;
 
 const PremiumInput = styled.input`
   width: 100%;
-  padding: 11px 16px;
+  padding: 8px 14px;
   background: transparent;
   border: none;
   color: #f1f5f9;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
   font-family: inherit;
-  letter-spacing: 0.2px;
 
   &::placeholder {
     color: #4b5563;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 400;
   }
 
   @media (max-width: 480px) {
-    padding: 9px 12px;
-    font-size: 13px;
-    &::placeholder { font-size: 12px; }
+    padding: 6px 10px;
+    font-size: 12px;
+    &::placeholder { font-size: 11px; }
+  }
+`;
+
+const SplitRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+
+  @media (max-width: 480px) {
+    gap: 6px;
   }
 `;
 
 const TogglePasswordBtn = styled.button`
   position: absolute;
-  right: 12px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 15px;
+  font-size: 13px;
   color: #6b7280;
-  padding: 4px;
+  padding: 2px;
   transition: color 0.3s ease;
 
   &:hover {
@@ -447,33 +420,33 @@ const TogglePasswordBtn = styled.button`
   }
 
   @media (max-width: 480px) {
-    right: 10px;
-    font-size: 13px;
+    right: 8px;
+    font-size: 11px;
   }
 `;
 
 const PhoneHelper = styled.div`
-  font-size: 9px;
+  font-size: 8px;
   color: #4b5563;
-  margin-top: 2px;
+  margin-top: 1px;
   padding-left: 4px;
 
   @media (max-width: 480px) {
-    font-size: 8px;
+    font-size: 7px;
   }
 `;
 
 // ============================================
-// PASSWORD STRENGTH
+// PASSWORD STRENGTH - COMPACT
 // ============================================
 const StrengthContainer = styled.div`
-  margin-top: 6px;
+  margin-top: 3px;
 `;
 
 const StrengthMeter = styled.div`
-  height: 3px;
+  height: 2px;
   background: rgba(255, 255, 255, 0.04);
-  border-radius: 4px;
+  border-radius: 2px;
   overflow: hidden;
 `;
 
@@ -481,49 +454,48 @@ const StrengthFill = styled.div`
   width: ${props => props.width || '0%'};
   height: 100%;
   background: ${props => props.color || '#ef4444'};
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 4px;
-  box-shadow: 0 0 20px ${props => props.color ? `${props.color}30` : 'transparent'};
+  transition: width 0.4s ease;
+  border-radius: 2px;
 `;
 
 const StrengthText = styled.div`
-  font-size: 10px;
-  margin-top: 3px;
+  font-size: 8px;
+  margin-top: 2px;
   color: ${props => props.color || '#6b7280'};
   transition: color 0.3s ease;
   font-weight: 500;
 
   @media (max-width: 480px) {
-    font-size: 9px;
+    font-size: 7px;
   }
 `;
 
 // ============================================
-// PREMIUM REGISTER BUTTON
+// BUTTON - COMPACT
 // ============================================
 const PremiumButton = styled.button`
   width: 100%;
-  padding: 13px;
+  padding: 10px;
   border: none;
-  border-radius: 32px;
-  background: linear-gradient(135deg, #22c55e, #16a34a, #0d9488);
+  border-radius: 24px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   background-size: 200% 200%;
   color: #0a0f1f;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  margin-top: 4px;
-  box-shadow: 0 4px 30px rgba(34, 197, 94, 0.12);
+  margin-top: 2px;
+  box-shadow: 0 3px 20px rgba(34, 197, 94, 0.08);
   animation: ${shimmer} 6s ease-in-out infinite;
 
   .btn-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     position: relative;
     z-index: 2;
   }
@@ -534,7 +506,7 @@ const PremiumButton = styled.button`
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
     animation: ${slideGlow} 4s ease-in-out infinite;
     z-index: 1;
   }
@@ -542,15 +514,15 @@ const PremiumButton = styled.button`
   .btn-glow {
     position: absolute;
     inset: -50%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.06), transparent 70%);
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04), transparent 70%);
     opacity: 0;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.4s ease;
     z-index: 0;
   }
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 8px 40px rgba(34, 197, 94, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 30px rgba(34, 197, 94, 0.15);
   }
 
   &:hover:not(:disabled) .btn-glow {
@@ -558,7 +530,7 @@ const PremiumButton = styled.button`
   }
 
   &:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: scale(0.98);
   }
 
   &:disabled {
@@ -569,40 +541,40 @@ const PremiumButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 11px;
-    font-size: 14px;
-    border-radius: 28px;
+    padding: 8px;
+    font-size: 12px;
+    border-radius: 20px;
   }
 `;
 
 // ============================================
-// MESSAGE
+// MESSAGE - COMPACT
 // ============================================
 const PremiumMessage = styled.div`
-  margin-top: 12px;
-  font-size: 12px;
-  min-height: 34px;
-  padding: 6px 14px;
-  border-radius: 24px;
-  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.12)'};
+  margin-top: 8px;
+  font-size: 11px;
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: 18px;
+  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.1)'};
   color: ${props => props.color || '#94a3b8'};
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.06)' : 'transparent'};
+  gap: 4px;
+  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'transparent'};
 
   .msg-icon {
-    font-size: 13px;
+    font-size: 11px;
   }
 
   @media (max-width: 480px) {
-    font-size: 11px;
-    min-height: 28px;
-    padding: 4px 10px;
-    border-radius: 18px;
-    .msg-icon { font-size: 11px; }
+    font-size: 10px;
+    min-height: 24px;
+    padding: 3px 8px;
+    border-radius: 14px;
+    .msg-icon { font-size: 10px; }
   }
 `;
 
@@ -610,11 +582,11 @@ const PremiumMessage = styled.div`
 // FOOTER
 // ============================================
 const PremiumFooter = styled.div`
-  margin-top: 16px;
+  margin-top: 12px;
   display: flex;
   justify-content: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 11px;
   color: #94a3b8;
 
   a {
@@ -627,10 +599,10 @@ const PremiumFooter = styled.div`
     &::after {
       content: '';
       position: absolute;
-      bottom: -2px;
+      bottom: -1px;
       left: 0;
       width: 0;
-      height: 1.5px;
+      height: 1px;
       background: linear-gradient(90deg, #38bdf8, #818cf8);
       transition: width 0.3s ease;
     }
@@ -645,8 +617,8 @@ const PremiumFooter = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 11px;
-    margin-top: 14px;
+    font-size: 10px;
+    margin-top: 10px;
   }
 `;
 
@@ -782,7 +754,7 @@ const Register = () => {
     }
 
     setIsLoading(true);
-    setMessage('Creating your account...');
+    setMessage('Creating account...');
     setMessageColor('#94a3b8');
     setIsError(false);
 
@@ -841,8 +813,6 @@ const Register = () => {
 
       <FloatingFormContainer>
         <FormCard>
-          <div className="shimmer-overlay" />
-
           <BrandSection>
             <PremiumLogo>
               <span className="logo-icon">🔷</span>
@@ -860,7 +830,7 @@ const Register = () => {
             <SplitRow>
               <InputGroup>
                 <FloatingLabel>
-                  <span className="icon">📝</span> First Name
+                  <span className="icon">📝</span> First
                 </FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
@@ -875,7 +845,7 @@ const Register = () => {
 
               <InputGroup>
                 <FloatingLabel>
-                  <span className="icon">📝</span> Last Name
+                  <span className="icon">📝</span> Last
                 </FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
@@ -889,10 +859,10 @@ const Register = () => {
               </InputGroup>
             </SplitRow>
 
-            {/* PHONE NUMBER */}
+            {/* PHONE */}
             <InputGroup>
               <FloatingLabel>
-                <span className="icon">📞</span> Phone Number
+                <span className="icon">📞</span> Phone
               </FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
@@ -909,7 +879,7 @@ const Register = () => {
             {/* EMAIL */}
             <InputGroup>
               <FloatingLabel>
-                <span className="icon">📧</span> Email Address
+                <span className="icon">📧</span> Email
               </FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
@@ -930,7 +900,7 @@ const Register = () => {
               <PremiumInputWrapper>
                 <PremiumInput
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="Create a strong password"
+                  placeholder="Create strong password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -956,7 +926,7 @@ const Register = () => {
             {/* CONFIRM PASSWORD */}
             <InputGroup>
               <FloatingLabel>
-                <span className="icon">✓</span> Confirm Password
+                <span className="icon">✓</span> Confirm
               </FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
@@ -979,7 +949,7 @@ const Register = () => {
               <div className="btn-shimmer" />
               <div className="btn-glow" />
               <div className="btn-content">
-                {isLoading ? '⏳ Creating Account...' : '🚀 Register & Start Trading'}
+                {isLoading ? '⏳ Creating...' : '🚀 Register & Start Trading'}
               </div>
             </PremiumButton>
           </Form>
