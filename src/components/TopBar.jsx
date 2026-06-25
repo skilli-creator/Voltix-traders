@@ -17,6 +17,7 @@ const TopBar = styled.div`
   top: 0;
   z-index: 100;
   height: 64px;
+  flex-shrink: 0;
 
   @media (max-width: 1024px) {
     padding: 10px 20px;
@@ -27,7 +28,13 @@ const TopBar = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: 12px 16px;
+    padding: 10px 16px;
+    height: auto;
+    gap: 6px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
   }
 `;
 
@@ -56,7 +63,6 @@ const Brand = styled.div`
     -webkit-text-fill-color: transparent;
   }
 
-  /* 🔥 DERIV STYLE (from screenshot) */
   .deriv {
     color: #ff444f;
     font-style: italic;
@@ -66,6 +72,10 @@ const Brand = styled.div`
 
   @media (max-width: 768px) {
     font-size: 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
   }
 `;
 
@@ -78,12 +88,18 @@ const RightSection = styled.div`
   @media (max-width: 1024px) {
     flex-wrap: wrap;
     gap: 10px;
+    justify-content: center;
   }
 
   @media (max-width: 768px) {
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 6px;
   }
 `;
 
@@ -100,6 +116,12 @@ const AccountCode = styled.span`
 
   @media (max-width: 768px) {
     font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+    padding: 2px 4px;
   }
 `;
 
@@ -143,6 +165,30 @@ const AccountBadge = styled.div`
       transform: rotate(180deg);
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 4px 12px 4px 8px;
+    .balance {
+      font-size: 12px;
+    }
+    .flag {
+      font-size: 16px;
+    }
+    .chevron {
+      font-size: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 3px 8px 3px 6px;
+    .balance {
+      font-size: 11px;
+    }
+    .flag {
+      font-size: 14px;
+    }
+    gap: 4px;
+  }
 `;
 
 // ===== DROPDOWN MENU =====
@@ -163,6 +209,11 @@ const DropdownMenu = styled.div`
   transition: all 0.2s ease;
   z-index: 200;
   overflow: hidden;
+
+  @media (max-width: 480px) {
+    min-width: 180px;
+    right: -10px;
+  }
 `;
 
 const DropdownItem = styled.div`
@@ -206,6 +257,11 @@ const DropdownItem = styled.div`
     display: none;
     color: #38bdf8;
   }
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
 `;
 
 // ===== ACTION BUTTONS =====
@@ -231,6 +287,17 @@ const ActionButton = styled.button`
 
   &:active {
     transform: scale(0.97);
+  }
+
+  @media (max-width: 768px) {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 8px;
+    font-size: 10px;
+    gap: 4px;
   }
 `;
 
@@ -280,7 +347,6 @@ const TopPanel = () => {
 
   return (
     <TopBar>
-      {/* ✅ UPDATED TITLE */}
       <Brand>
         <span className="icon">🔷</span>
         <span className="brand-text">
