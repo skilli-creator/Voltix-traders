@@ -78,11 +78,6 @@ const slideGlow = keyframes`
   100% { transform: translateX(200%) skewX(-20deg); }
 `;
 
-const orbit = keyframes`
-  0% { transform: rotate(0deg) translateX(120px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
-`;
-
 const pulseText = keyframes`
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
@@ -91,6 +86,15 @@ const pulseText = keyframes`
 // ============================================
 // STYLED COMPONENTS - CINEMATIC
 // ============================================
+
+// ---- Particle Container ----
+const ParticleContainer = styled.div`
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+`;
 
 // ---- Animated Background ----
 const BackgroundContainer = styled.div`
