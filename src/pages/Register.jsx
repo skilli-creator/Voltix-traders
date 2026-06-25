@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     background: #050a18;
     color: #f1f5f9;
-    padding: 12px;
+    padding: 8px;
     overflow: hidden;
     position: relative;
   }
@@ -35,7 +35,7 @@ const GlobalStyle = createGlobalStyle`
 
   @media (max-width: 480px) {
     body {
-      padding: 8px;
+      padding: 4px;
     }
   }
 `;
@@ -46,8 +46,8 @@ const GlobalStyle = createGlobalStyle`
 const floatIn = keyframes`
   0% { 
     opacity: 0; 
-    transform: translateY(40px) scale(0.95);
-    filter: blur(4px);
+    transform: translateY(30px) scale(0.96);
+    filter: blur(3px);
   }
   100% { 
     opacity: 1; 
@@ -58,7 +58,7 @@ const floatIn = keyframes`
 
 const pulseRing = keyframes`
   0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
 `;
 
 const shimmer = keyframes`
@@ -67,8 +67,8 @@ const shimmer = keyframes`
 `;
 
 const breathe = keyframes`
-  0%, 100% { opacity: 0.12; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(1.05); }
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(1.04); }
 `;
 
 const slideGlow = keyframes`
@@ -82,7 +82,7 @@ const rotateGlow = keyframes`
 `;
 
 // ============================================
-// BACKGROUND
+// BACKGROUND - MINIMAL
 // ============================================
 const BackgroundContainer = styled.div`
   position: fixed;
@@ -95,89 +95,56 @@ const BackgroundContainer = styled.div`
 const GradientOrb = styled.div`
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(60px);
   animation: ${breathe} 7s ease-in-out infinite;
 
   &:nth-child(1) {
-    width: 250px;
-    height: 250px;
-    top: -100px;
-    right: -80px;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.10), transparent 70%);
+    width: 180px;
+    height: 180px;
+    top: -80px;
+    right: -60px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.08), transparent 70%);
     animation-delay: 0s;
   }
 
   &:nth-child(2) {
-    width: 200px;
-    height: 200px;
-    bottom: -80px;
-    left: -60px;
-    background: radial-gradient(circle, rgba(129, 140, 248, 0.06), transparent 70%);
+    width: 150px;
+    height: 150px;
+    bottom: -60px;
+    left: -50px;
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.05), transparent 70%);
     animation-delay: -2.5s;
   }
-
-  &:nth-child(3) {
-    width: 120px;
-    height: 120px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(192, 132, 252, 0.04), transparent 70%);
-    animation-delay: -5s;
-  }
-`;
-
-const GlowLine = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-  opacity: 0.06;
 `;
 
 // ============================================
-// COMPACT FLOATING FORM
+// ULTRA COMPACT FORM
 // ============================================
 const FloatingFormContainer = styled.div`
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
   padding: 0;
   position: relative;
   z-index: 2;
-  animation: ${floatIn} 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  max-height: 96vh;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 2px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.2);
-    border-radius: 4px;
-  }
+  animation: ${floatIn} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 100vh;
+  overflow: visible;
 
   @media (max-width: 480px) {
     max-width: 100%;
-    padding: 0 4px;
-    max-height: 98vh;
+    padding: 0 2px;
   }
 `;
 
 const FormCard = styled.div`
-  background: rgba(8, 18, 38, 0.6);
+  background: rgba(8, 18, 38, 0.65);
   backdrop-filter: blur(32px);
-  border-radius: 36px;
-  padding: 24px 22px 20px;
+  border-radius: 28px;
+  padding: 16px 16px 14px;
   border: 1px solid rgba(56, 189, 248, 0.04);
   box-shadow: 
-    0 30px 80px -15px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(56, 189, 248, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    0 20px 60px -12px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(56, 189, 248, 0.03);
   position: relative;
   overflow: hidden;
 
@@ -185,14 +152,14 @@ const FormCard = styled.div`
     content: '';
     position: absolute;
     inset: -1px;
-    border-radius: 37px;
+    border-radius: 29px;
     padding: 1px;
     background: conic-gradient(
       from 0deg,
       transparent,
-      rgba(56, 189, 248, 0.05),
+      rgba(56, 189, 248, 0.04),
       transparent,
-      rgba(129, 140, 248, 0.05),
+      rgba(129, 140, 248, 0.04),
       transparent
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -206,51 +173,51 @@ const FormCard = styled.div`
     content: '';
     position: absolute;
     top: -1px;
-    left: 25%;
-    right: 25%;
+    left: 30%;
+    right: 30%;
     height: 1.5px;
     background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-    opacity: 0.12;
+    opacity: 0.1;
     border-radius: 0 0 4px 4px;
   }
 
   @media (max-width: 480px) {
-    padding: 18px 14px 16px;
-    border-radius: 28px;
+    padding: 12px 12px 10px;
+    border-radius: 20px;
     &::before {
-      border-radius: 29px;
+      border-radius: 21px;
     }
   }
 `;
 
 // ============================================
-// BRAND SECTION - COMPACT
+// BRAND - MINIMAL
 // ============================================
 const BrandSection = styled.div`
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 
   @media (max-width: 480px) {
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
 `;
 
 const PremiumLogo = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 14px 3px 10px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(129, 140, 248, 0.02));
-  border: 1px solid rgba(56, 189, 248, 0.03);
-  border-radius: 30px;
-  margin-bottom: 8px;
+  gap: 5px;
+  padding: 2px 10px 2px 8px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.04), rgba(129, 140, 248, 0.02));
+  border: 1px solid rgba(56, 189, 248, 0.02);
+  border-radius: 20px;
+  margin-bottom: 4px;
 
   .logo-icon {
-    font-size: 13px;
+    font-size: 11px;
   }
 
   .logo-text {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
     background: linear-gradient(135deg, #e0f2fe, #38bdf8);
     -webkit-background-clip: text;
@@ -260,8 +227,8 @@ const PremiumLogo = styled.div`
   }
 
   .status-dot {
-    width: 4px;
-    height: 4px;
+    width: 3px;
+    height: 3px;
     border-radius: 50%;
     background: #22c55e;
     position: relative;
@@ -272,21 +239,22 @@ const PremiumLogo = styled.div`
       inset: -2px;
       border-radius: 50%;
       background: #22c55e;
-      animation: ${pulseRing} 2s ease-out infinite;
+      animation: ${pulseRing} 1.8s ease-out infinite;
     }
   }
 
   @media (max-width: 480px) {
-    padding: 2px 10px 2px 8px;
-    .logo-text { font-size: 9px; }
-    .logo-icon { font-size: 11px; }
+    padding: 1px 8px 1px 6px;
+    .logo-text { font-size: 8px; }
+    .logo-icon { font-size: 10px; }
+    gap: 4px;
   }
 `;
 
 const PremiumTitle = styled.h1`
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
   margin-bottom: 1px;
 
   .gradient-text {
@@ -299,148 +267,147 @@ const PremiumTitle = styled.h1`
   }
 
   @media (max-width: 480px) {
-    font-size: 18px;
+    font-size: 15px;
   }
 `;
 
 const PremiumSubhead = styled.p`
-  font-size: 11px;
+  font-size: 10px;
   color: #94a3b8;
   font-weight: 400;
 
   @media (max-width: 480px) {
-    font-size: 10px;
+    font-size: 9px;
   }
 `;
 
 // ============================================
-// COMPACT FORM ELEMENTS
+// ULTRA COMPACT FORM ELEMENTS
 // ============================================
 const Form = styled.form`
   width: 100%;
 `;
 
 const InputGroup = styled.div`
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   text-align: left;
 
   @media (max-width: 480px) {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 `;
 
 const FloatingLabel = styled.label`
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 600;
   color: #94a3b8;
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-bottom: 2px;
+  gap: 3px;
+  margin-bottom: 1px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 
   .icon {
-    font-size: 10px;
+    font-size: 9px;
   }
 
   @media (max-width: 480px) {
-    font-size: 8px;
-    .icon { font-size: 9px; }
+    font-size: 7px;
+    .icon { font-size: 8px; }
   }
 `;
 
 const PremiumInputWrapper = styled.div`
   position: relative;
   background: rgba(255, 255, 255, 0.02);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.25s ease;
   overflow: hidden;
 
   &:focus-within {
-    border-color: rgba(56, 189, 248, 0.12);
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.03);
+    border-color: rgba(56, 189, 248, 0.1);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.02);
     background: rgba(255, 255, 255, 0.03);
   }
 
   @media (max-width: 480px) {
-    border-radius: 16px;
+    border-radius: 12px;
   }
 `;
 
 const PremiumInput = styled.input`
   width: 100%;
-  padding: 8px 14px;
+  padding: 6px 10px;
   background: transparent;
   border: none;
   color: #f1f5f9;
-  font-size: 13px;
+  font-size: 12px;
   outline: none;
   font-family: inherit;
 
   &::placeholder {
     color: #4b5563;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 400;
   }
 
   @media (max-width: 480px) {
-    padding: 6px 10px;
-    font-size: 12px;
-    &::placeholder { font-size: 11px; }
+    padding: 4px 8px;
+    font-size: 11px;
+    &::placeholder { font-size: 10px; }
   }
 `;
 
 const SplitRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
 
   @media (max-width: 480px) {
-    gap: 6px;
+    gap: 4px;
   }
 `;
 
 const TogglePasswordBtn = styled.button`
   position: absolute;
-  right: 10px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 13px;
+  font-size: 11px;
   color: #6b7280;
   padding: 2px;
-  transition: color 0.3s ease;
 
   &:hover {
     color: #f1f5f9;
   }
 
   @media (max-width: 480px) {
-    right: 8px;
-    font-size: 11px;
+    right: 6px;
+    font-size: 10px;
   }
 `;
 
 const PhoneHelper = styled.div`
-  font-size: 8px;
+  font-size: 7px;
   color: #4b5563;
   margin-top: 1px;
   padding-left: 4px;
 
   @media (max-width: 480px) {
-    font-size: 7px;
+    font-size: 6px;
   }
 `;
 
 // ============================================
-// PASSWORD STRENGTH - COMPACT
+// PASSWORD STRENGTH - ULTRA COMPACT
 // ============================================
 const StrengthContainer = styled.div`
-  margin-top: 3px;
+  margin-top: 2px;
 `;
 
 const StrengthMeter = styled.div`
@@ -454,48 +421,48 @@ const StrengthFill = styled.div`
   width: ${props => props.width || '0%'};
   height: 100%;
   background: ${props => props.color || '#ef4444'};
-  transition: width 0.4s ease;
+  transition: width 0.3s ease;
   border-radius: 2px;
 `;
 
 const StrengthText = styled.div`
-  font-size: 8px;
-  margin-top: 2px;
+  font-size: 7px;
+  margin-top: 1px;
   color: ${props => props.color || '#6b7280'};
   transition: color 0.3s ease;
   font-weight: 500;
 
   @media (max-width: 480px) {
-    font-size: 7px;
+    font-size: 6px;
   }
 `;
 
 // ============================================
-// BUTTON - COMPACT
+// BUTTON - ULTRA COMPACT
 // ============================================
 const PremiumButton = styled.button`
   width: 100%;
-  padding: 10px;
+  padding: 8px;
   border: none;
-  border-radius: 24px;
+  border-radius: 20px;
   background: linear-gradient(135deg, #22c55e, #16a34a);
   background-size: 200% 200%;
   color: #0a0f1f;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   margin-top: 2px;
-  box-shadow: 0 3px 20px rgba(34, 197, 94, 0.08);
+  box-shadow: 0 2px 16px rgba(34, 197, 94, 0.06);
   animation: ${shimmer} 6s ease-in-out infinite;
 
   .btn-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     position: relative;
     z-index: 2;
   }
@@ -506,7 +473,7 @@ const PremiumButton = styled.button`
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
     animation: ${slideGlow} 4s ease-in-out infinite;
     z-index: 1;
   }
@@ -514,15 +481,15 @@ const PremiumButton = styled.button`
   .btn-glow {
     position: absolute;
     inset: -50%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.04), transparent 70%);
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 70%);
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.3s ease;
     z-index: 0;
   }
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 6px 30px rgba(34, 197, 94, 0.15);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
   }
 
   &:hover:not(:disabled) .btn-glow {
@@ -541,22 +508,22 @@ const PremiumButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 8px;
-    font-size: 12px;
-    border-radius: 20px;
+    padding: 6px;
+    font-size: 11px;
+    border-radius: 16px;
   }
 `;
 
 // ============================================
-// MESSAGE - COMPACT
+// MESSAGE - ULTRA COMPACT
 // ============================================
 const PremiumMessage = styled.div`
-  margin-top: 8px;
-  font-size: 11px;
-  min-height: 28px;
-  padding: 4px 12px;
-  border-radius: 18px;
-  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.1)'};
+  margin-top: 6px;
+  font-size: 10px;
+  min-height: 22px;
+  padding: 3px 10px;
+  border-radius: 14px;
+  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.08)'};
   color: ${props => props.color || '#94a3b8'};
   transition: all 0.3s ease;
   display: flex;
@@ -566,27 +533,27 @@ const PremiumMessage = styled.div`
   border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'transparent'};
 
   .msg-icon {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    min-height: 24px;
-    padding: 3px 8px;
-    border-radius: 14px;
-    .msg-icon { font-size: 10px; }
+    font-size: 9px;
+    min-height: 18px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    .msg-icon { font-size: 9px; }
   }
 `;
 
 // ============================================
-// FOOTER
+// FOOTER - ULTRA COMPACT
 // ============================================
 const PremiumFooter = styled.div`
-  margin-top: 12px;
+  margin-top: 8px;
   display: flex;
   justify-content: center;
-  gap: 4px;
-  font-size: 11px;
+  gap: 3px;
+  font-size: 10px;
   color: #94a3b8;
 
   a {
@@ -617,8 +584,8 @@ const PremiumFooter = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    margin-top: 10px;
+    font-size: 9px;
+    margin-top: 6px;
   }
 `;
 
@@ -704,7 +671,7 @@ const Register = () => {
     const confirmPasswordTrimmed = confirmPassword;
 
     if (!firstNameTrimmed || !lastNameTrimmed) {
-      setMessage('First and last name required');
+      setMessage('First & last name required');
       setMessageColor('#f87171');
       setIsError(true);
       return;
@@ -807,8 +774,6 @@ const Register = () => {
       <BackgroundContainer>
         <GradientOrb />
         <GradientOrb />
-        <GradientOrb />
-        <GlowLine />
       </BackgroundContainer>
 
       <FloatingFormContainer>
@@ -826,12 +791,9 @@ const Register = () => {
           </BrandSection>
 
           <Form onSubmit={handleSubmit}>
-            {/* FIRST & LAST NAME - SPLIT ROW */}
             <SplitRow>
               <InputGroup>
-                <FloatingLabel>
-                  <span className="icon">📝</span> First
-                </FloatingLabel>
+                <FloatingLabel><span className="icon">📝</span> First</FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
                     type="text"
@@ -844,9 +806,7 @@ const Register = () => {
               </InputGroup>
 
               <InputGroup>
-                <FloatingLabel>
-                  <span className="icon">📝</span> Last
-                </FloatingLabel>
+                <FloatingLabel><span className="icon">📝</span> Last</FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
                     type="text"
@@ -859,11 +819,8 @@ const Register = () => {
               </InputGroup>
             </SplitRow>
 
-            {/* PHONE */}
             <InputGroup>
-              <FloatingLabel>
-                <span className="icon">📞</span> Phone
-              </FloatingLabel>
+              <FloatingLabel><span className="icon">📞</span> Phone</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type="tel"
@@ -876,11 +833,8 @@ const Register = () => {
               <PhoneHelper>Include country code (e.g., +1, +44)</PhoneHelper>
             </InputGroup>
 
-            {/* EMAIL */}
             <InputGroup>
-              <FloatingLabel>
-                <span className="icon">📧</span> Email
-              </FloatingLabel>
+              <FloatingLabel><span className="icon">📧</span> Email</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type="email"
@@ -892,11 +846,8 @@ const Register = () => {
               </PremiumInputWrapper>
             </InputGroup>
 
-            {/* PASSWORD */}
             <InputGroup>
-              <FloatingLabel>
-                <span className="icon">🔒</span> Password
-              </FloatingLabel>
+              <FloatingLabel><span className="icon">🔒</span> Password</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type={showPassword ? 'text' : 'password'}
@@ -912,22 +863,16 @@ const Register = () => {
                   {showPassword ? '🙈' : '👁️'}
                 </TogglePasswordBtn>
               </PremiumInputWrapper>
-              
               <StrengthContainer>
                 <StrengthMeter>
                   <StrengthFill width={strengthWidth} color={strengthColor} />
                 </StrengthMeter>
-                <StrengthText color={strengthColor}>
-                  {strengthLabel}
-                </StrengthText>
+                <StrengthText color={strengthColor}>{strengthLabel}</StrengthText>
               </StrengthContainer>
             </InputGroup>
 
-            {/* CONFIRM PASSWORD */}
             <InputGroup>
-              <FloatingLabel>
-                <span className="icon">✓</span> Confirm
-              </FloatingLabel>
+              <FloatingLabel><span className="icon">✓</span> Confirm</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type={showConfirmPassword ? 'text' : 'password'}
