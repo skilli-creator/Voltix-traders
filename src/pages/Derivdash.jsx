@@ -1,6 +1,6 @@
-// src/pages/Derivdash.jsx
+// src/pages/Derivdash.jsx (Swipeable Version)
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import TopBar from '../components/TopBar';
 import LeftPanel from '../components/LeftPanel';
@@ -15,7 +15,6 @@ const DashboardContainer = styled.div`
   overflow: hidden;
 `;
 
-// ===== DESKTOP LAYOUT =====
 const DesktopLayout = styled.div`
   display: flex;
   flex: 1;
@@ -26,27 +25,53 @@ const DesktopLayout = styled.div`
   }
 `;
 
-// ===== MOBILE LAYOUT =====
 const MobileLayout = styled.div`
   display: none;
   flex: 1;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
 
   @media (max-width: 768px) {
     display: flex;
   }
 `;
 
-// ---- Mobile Chart Area ----
-const MobileChartArea = styled.div`
+const PanelsContainer = styled.div`
+  display: flex;
   flex: 1;
   overflow: hidden;
   position: relative;
-  min-height: 0;
 `;
 
-// ---- Mobile Bottom Tabs ----
+const PanelWrapper = styled.div`
+  flex: 0 0 100%;
+  height: 100%;
+  overflow-y: auto;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-${props => props.index * 100}%);
+  display: flex;
+  flex-direction: column;
+
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #2a2e3d;
+    border-radius: 2px;
+  }
+`;
+
+const PanelContent = styled.div`
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
 const MobileTabs = styled.div`
   display: flex;
   background: #0f131a;
@@ -54,6 +79,7 @@ const MobileTabs = styled.div`
   flex-shrink: 0;
   padding: 4px 8px;
   gap: 4px;
+  z-index: 10;
 `;
 
 const TabButton = styled.button`
@@ -87,24 +113,40 @@ const TabButton = styled.button`
   }
 `;
 
-// ---- Mobile Panel Container ----
-const MobilePanel = styled.div`
-  flex: 1;
-  overflow: hidden;
-  display: ${props => props.active ? 'flex' : 'none'};
-  flex-direction: column;
-  background: #0a0e17;
-`;
+const panels = [
+  { id: 'chart', label: 'Chart', icon: '📊', component: ChartPanel },
+  { id: 'trade', label: 'Trade', icon: '📈', component: RightPanel },
+  { id: 'positions', label: 'Positions', icon: '💼', component: LeftPanel },
+];
 
 const Derivdash = () => {
-  const [activeTab, setActiveTab] = useState('chart');
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    const diff = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && activeIndex < panels.length - 1) {
+        setActiveIndex(activeIndex + 1);
+      } else if (diff < 0 && activeIndex > 0) {
+        setActiveIndex(activeIndex - 1);
+      }
+    }
+  };
 
   return (
     <DashboardContainer>
@@ -117,65 +159,40 @@ const Derivdash = () => {
       </DesktopLayout>
 
       <MobileLayout>
-        {/* Chart Area */}
-        <MobileChartArea>
-          <ChartPanel />
-        </MobileChartArea>
+        <PanelsContainer
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {panels.map((panel, index) => {
+            const Component = panel.component;
+            return (
+              <PanelWrapper
+                key={panel.id}
+                index={activeIndex}
+                style={{
+                  transform: `translateX(-${activeIndex * 100}%)`
+                }}
+              >
+                <PanelContent>
+                  <Component />
+                </PanelContent>
+              </PanelWrapper>
+            );
+          })}
+        </PanelsContainer>
 
-        {/* Bottom Tabs */}
         <MobileTabs>
-          <TabButton 
-            active={activeTab === 'chart'} 
-            onClick={() => setActiveTab('chart')}
-          >
-            <span className="icon">📊</span>
-            <span className="label">Chart</span>
-          </TabButton>
-
-          <TabButton 
-            active={activeTab === 'trade'} 
-            onClick={() => setActiveTab('trade')}
-          >
-            <span className="icon">📈</span>
-            <span className="label">Trade</span>
-          </TabButton>
-
-          <TabButton 
-            active={activeTab === 'positions'} 
-            onClick={() => setActiveTab('positions')}
-          >
-            <span className="icon">💼</span>
-            <span className="label">Positions</span>
-          </TabButton>
-
-          <TabButton 
-            active={activeTab === 'analytics'} 
-            onClick={() => setActiveTab('analytics')}
-          >
-            <span className="icon">📊</span>
-            <span className="label">Stats</span>
-          </TabButton>
+          {panels.map((panel, index) => (
+            <TabButton
+              key={panel.id}
+              active={activeIndex === index}
+              onClick={() => setActiveIndex(index)}
+            >
+              <span className="icon">{panel.icon}</span>
+              <span className="label">{panel.label}</span>
+            </TabButton>
+          ))}
         </MobileTabs>
-
-        {/* Panel Content */}
-        <MobilePanel active={activeTab === 'chart'}>
-          <ChartPanel />
-        </MobilePanel>
-
-        <MobilePanel active={activeTab === 'trade'}>
-          <RightPanel />
-        </MobilePanel>
-
-        <MobilePanel active={activeTab === 'positions'}>
-          <LeftPanel />
-        </MobilePanel>
-
-        <MobilePanel active={activeTab === 'analytics'}>
-          {/* Analytics Panel - You can add this */}
-          <div style={{ padding: '20px', color: '#94a3b8', textAlign: 'center' }}>
-            📊 Analytics coming soon
-          </div>
-        </MobilePanel>
       </MobileLayout>
     </DashboardContainer>
   );
