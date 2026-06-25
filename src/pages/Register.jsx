@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     background: #050a18;
     color: #f1f5f9;
-    padding: 12px;
+    padding: 16px;
     overflow: hidden;
     position: relative;
   }
@@ -33,15 +33,15 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
     body {
-      padding: 8px;
+      padding: 32px;
     }
   }
 `;
 
 // ============================================
-// KEYFRAMES - CINEMATIC ANIMATIONS
+// KEYFRAMES
 // ============================================
 const float = keyframes`
   0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -84,19 +84,8 @@ const pulseText = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - CINEMATIC
+// BACKGROUND COMPONENTS
 // ============================================
-
-// ---- Particle Container ----
-const ParticleContainer = styled.div`
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-`;
-
-// ---- Animated Background ----
 const BackgroundContainer = styled.div`
   position: fixed;
   inset: 0;
@@ -139,7 +128,7 @@ const GradientOrb = styled.div`
     animation-delay: -5s;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     &:nth-child(1) {
       width: 250px;
       height: 250px;
@@ -167,6 +156,11 @@ const GridOverlay = styled.div`
     linear-gradient(90deg, rgba(56, 189, 248, 0.02) 1px, transparent 1px);
   background-size: 50px 50px;
   opacity: 0.5;
+
+  @media (max-width: 768px) {
+    background-size: 30px 30px;
+    opacity: 0.3;
+  }
 `;
 
 const GlowLine = styled.div`
@@ -180,7 +174,18 @@ const GlowLine = styled.div`
   animation: ${pulseText} 4s ease-in-out infinite;
 `;
 
-// ---- Floating Particles ----
+const ParticleContainer = styled.div`
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
 const Particle = styled.div`
   position: absolute;
   width: ${props => props.size || '3px'};
@@ -192,17 +197,11 @@ const Particle = styled.div`
   animation: ${float} ${props => props.duration || '8s'} ease-in-out infinite;
   animation-delay: ${props => props.delay || '0s'};
   box-shadow: 0 0 25px ${props => props.color || 'rgba(56, 189, 248, 0.08)'};
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: -8px;
-    border-radius: 50%;
-    background: radial-gradient(circle, ${props => props.color || 'rgba(56, 189, 248, 0.05)'}, transparent);
-  }
 `;
 
-// ---- Main Container ----
+// ============================================
+// MAIN CONTAINER - DIFFERENT ON PHONE VS LAPTOP
+// ============================================
 const RegisterContainer = styled.div`
   width: 100%;
   max-width: 440px;
@@ -251,22 +250,40 @@ const RegisterContainer = styled.div`
     border-radius: 0 0 4px 4px;
   }
 
-  @media (max-width: 480px) {
+  /* ===== LAPTOP: Wider, more spacious ===== */
+  @media (min-width: 769px) {
+    max-width: 540px;
+    padding: 48px 44px 40px;
+    border-radius: 64px;
+
+    &::before {
+      border-radius: 65px;
+    }
+  }
+
+  /* ===== PHONE: Compact, full width ===== */
+  @media (max-width: 768px) {
     padding: 24px 16px 20px;
-    border-radius: 36px;
+    border-radius: 32px;
     max-width: 100%;
     &::before {
-      border-radius: 37px;
+      border-radius: 33px;
     }
   }
 `;
 
-// ---- Brand Section ----
+// ============================================
+// BRAND SECTION - DIFFERENT SIZES
+// ============================================
 const BrandSection = styled.div`
   text-align: center;
   margin-bottom: 28px;
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    margin-bottom: 36px;
+  }
+
+  @media (max-width: 768px) {
     margin-bottom: 20px;
   }
 `;
@@ -323,7 +340,20 @@ const LogoWrapper = styled.div`
     }
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    padding: 8px 28px 8px 18px;
+    gap: 12px;
+    margin-bottom: 24px;
+
+    .logo-icon {
+      font-size: 22px;
+    }
+    .logo-text {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 768px) {
     padding: 4px 14px 4px 10px;
     gap: 6px;
     .logo-text { font-size: 11px; }
@@ -346,7 +376,12 @@ const Title = styled.h1`
     animation: ${shimmer} 5s ease-in-out infinite;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    font-size: 38px;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 768px) {
     font-size: 24px;
   }
 `;
@@ -357,12 +392,18 @@ const Subhead = styled.p`
   font-weight: 400;
   letter-spacing: 0.2px;
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
     font-size: 12px;
   }
 `;
 
-// ---- Form ----
+// ============================================
+// FORM ELEMENTS - RESPONSIVE
+// ============================================
 const Form = styled.form`
   width: 100%;
 `;
@@ -371,7 +412,11 @@ const InputGroup = styled.div`
   margin-bottom: 14px;
   text-align: left;
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    margin-bottom: 18px;
+  }
+
+  @media (max-width: 768px) {
     margin-bottom: 10px;
   }
 `;
@@ -391,7 +436,13 @@ const InputLabel = styled.label`
     font-size: 13px;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    font-size: 12px;
+    margin-bottom: 6px;
+    .label-icon { font-size: 15px; }
+  }
+
+  @media (max-width: 768px) {
     font-size: 10px;
     .label-icon { font-size: 11px; }
   }
@@ -427,7 +478,12 @@ const InputWrapper = styled.div`
     opacity: 1;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    border-radius: 32px;
+    border-width: 2px;
+  }
+
+  @media (max-width: 768px) {
     border-radius: 20px;
   }
 `;
@@ -449,7 +505,13 @@ const Input = styled.input`
     font-weight: 400;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    padding: 14px 20px;
+    font-size: 16px;
+    &::placeholder { font-size: 14px; }
+  }
+
+  @media (max-width: 768px) {
     padding: 10px 14px;
     font-size: 13px;
     &::placeholder { font-size: 12px; }
@@ -461,7 +523,11 @@ const NameRow = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    gap: 16px;
+  }
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 0;
   }
@@ -485,7 +551,12 @@ const TogglePasswordBtn = styled.button`
     transform: translateY(-50%) scale(1.1);
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    right: 18px;
+    font-size: 18px;
+  }
+
+  @media (max-width: 768px) {
     right: 10px;
     font-size: 14px;
   }
@@ -497,14 +568,25 @@ const PhoneHelper = styled.div`
   margin-top: 3px;
   padding-left: 4px;
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 768px) {
     font-size: 9px;
   }
 `;
 
-// ---- Password Strength ----
+// ============================================
+// PASSWORD STRENGTH
+// ============================================
 const StrengthContainer = styled.div`
   margin-top: 6px;
+
+  @media (min-width: 769px) {
+    margin-top: 8px;
+  }
 `;
 
 const StrengthMeter = styled.div`
@@ -512,6 +594,10 @@ const StrengthMeter = styled.div`
   background: rgba(255, 255, 255, 0.04);
   border-radius: 4px;
   overflow: hidden;
+
+  @media (min-width: 769px) {
+    height: 4px;
+  }
 `;
 
 const StrengthFill = styled.div`
@@ -530,12 +616,19 @@ const StrengthText = styled.div`
   transition: color 0.3s ease;
   font-weight: 500;
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 768px) {
     font-size: 9px;
   }
 `;
 
-// ---- Register Button ----
+// ============================================
+// BUTTON
+// ============================================
 const RegisterButton = styled.button`
   width: 100%;
   padding: 14px;
@@ -603,14 +696,23 @@ const RegisterButton = styled.button`
     animation: none;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    padding: 16px;
+    font-size: 17px;
+    border-radius: 40px;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 768px) {
     padding: 12px;
     font-size: 14px;
     border-radius: 28px;
   }
 `;
 
-// ---- Message ----
+// ============================================
+// MESSAGE
+// ============================================
 const MessageArea = styled.div`
   margin-top: 14px;
   font-size: 13px;
@@ -631,7 +733,16 @@ const MessageArea = styled.div`
     font-size: 14px;
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    margin-top: 18px;
+    font-size: 14px;
+    min-height: 44px;
+    padding: 10px 20px;
+    border-radius: 32px;
+    .msg-icon { font-size: 16px; }
+  }
+
+  @media (max-width: 768px) {
     font-size: 12px;
     min-height: 32px;
     padding: 6px 12px;
@@ -640,7 +751,9 @@ const MessageArea = styled.div`
   }
 `;
 
-// ---- Footer ----
+// ============================================
+// FOOTER
+// ============================================
 const FooterLinks = styled.div`
   margin-top: 20px;
   display: flex;
@@ -676,7 +789,13 @@ const FooterLinks = styled.div`
     }
   }
 
-  @media (max-width: 480px) {
+  @media (min-width: 769px) {
+    margin-top: 28px;
+    font-size: 14px;
+    gap: 6px;
+  }
+
+  @media (max-width: 768px) {
     font-size: 12px;
     margin-top: 16px;
   }
