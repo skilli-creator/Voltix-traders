@@ -866,7 +866,7 @@ const Dashboard = () => {
       const routes = {
         deriv: '/derivhome',
         binance: '/binancehome',
-        forex: '/forexhome'
+        forex: '/derivdash'
       };
       navigate(routes[market]);
     }, 150);
