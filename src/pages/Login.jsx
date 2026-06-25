@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
@@ -18,9 +18,9 @@ const GlobalStyle = createGlobalStyle`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #060b18;
+    background: #050a18;
     color: #f1f5f9;
-    padding: 12px;
+    padding: 16px;
     overflow: hidden;
     position: relative;
   }
@@ -32,25 +32,46 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     min-height: 100vh;
   }
+`;
 
-  @media (max-width: 480px) {
-    body {
-      padding: 8px;
-    }
+// ============================================
+// ANIMATIONS
+// ============================================
+const floatIn = keyframes`
+  0% { 
+    opacity: 0; 
+    transform: translateY(60px) scale(0.92) rotateX(5deg);
+    filter: blur(8px);
+  }
+  60% { 
+    transform: translateY(-8px) scale(1.01) rotateX(0deg);
+    filter: blur(0px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1) rotateX(0deg);
+    filter: blur(0px);
   }
 `;
 
-// ============================================
-// KEYFRAMES - ADVANCED ANIMATIONS
-// ============================================
-const float = keyframes`
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(3deg); }
+const pulseRing = keyframes`
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
 `;
 
 const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% { background-position: -300% center; }
+  100% { background-position: 300% center; }
+`;
+
+const breathe = keyframes`
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.08); }
+`;
+
+const slideGlow = keyframes`
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
 `;
 
 const rotateGlow = keyframes`
@@ -58,32 +79,10 @@ const rotateGlow = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const fadeSlideUp = keyframes`
-  from { opacity: 0; transform: translateY(40px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-`;
-
-const pulseRing = keyframes`
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(2); opacity: 0; }
-`;
-
-const breathe = keyframes`
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.05); }
-`;
-
-const slideGlow = keyframes`
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(200%) skewX(-15deg); }
-`;
-
 // ============================================
-// STYLED COMPONENTS - ADVANCED
+// BACKGROUND
 // ============================================
-
-// ---- Background Particles ----
-const ParticleContainer = styled.div`
+const BackgroundContainer = styled.div`
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -91,95 +90,82 @@ const ParticleContainer = styled.div`
   overflow: hidden;
 `;
 
-const Particle = styled.div`
-  position: absolute;
-  width: ${props => props.size || '4px'};
-  height: ${props => props.size || '4px'};
-  background: ${props => props.color || 'rgba(56, 189, 248, 0.3)'};
-  border-radius: 50%;
-  top: ${props => props.top || '50%'};
-  left: ${props => props.left || '50%'};
-  animation: ${float} ${props => props.duration || '6s'} ease-in-out infinite;
-  animation-delay: ${props => props.delay || '0s'};
-  box-shadow: 0 0 20px ${props => props.color || 'rgba(56, 189, 248, 0.1)'};
-`;
-
-// ---- Background Orbs ----
-const OrbContainer = styled.div`
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-`;
-
-const Orb = styled.div`
+const GradientOrb = styled.div`
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  animation: ${breathe} 6s ease-in-out infinite;
+  filter: blur(100px);
+  animation: ${breathe} 7s ease-in-out infinite;
 
   &:nth-child(1) {
     width: 350px;
     height: 350px;
     top: -150px;
-    right: -100px;
+    right: -120px;
     background: radial-gradient(circle, rgba(56, 189, 248, 0.12), transparent 70%);
     animation-delay: 0s;
   }
 
   &:nth-child(2) {
-    width: 300px;
-    height: 300px;
+    width: 280px;
+    height: 280px;
     bottom: -120px;
     left: -80px;
     background: radial-gradient(circle, rgba(129, 140, 248, 0.08), transparent 70%);
-    animation-delay: -2s;
+    animation-delay: -2.5s;
   }
 
   &:nth-child(3) {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(192, 132, 252, 0.06), transparent 70%);
-    animation-delay: -4s;
-  }
-
-  @media (max-width: 480px) {
-    &:nth-child(1) {
-      width: 200px;
-      height: 200px;
-      top: -100px;
-      right: -60px;
-    }
-    &:nth-child(2) {
-      width: 180px;
-      height: 180px;
-      bottom: -80px;
-      left: -50px;
-    }
-    &:nth-child(3) {
-      width: 120px;
-      height: 120px;
-    }
+    background: radial-gradient(circle, rgba(192, 132, 252, 0.05), transparent 70%);
+    animation-delay: -5s;
   }
 `;
 
-// ---- Main Container ----
-const LoginContainer = styled.div`
+const GlowLine = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
+  opacity: 0.08;
+`;
+
+// ============================================
+// FLOATING FORM CONTAINER (PHONE PREMIUM)
+// ============================================
+const FloatingFormContainer = styled.div`
   width: 100%;
-  max-width: 420px;
-  padding: 40px 32px 32px;
-  background: rgba(8, 18, 38, 0.6);
-  backdrop-filter: blur(32px);
-  border-radius: 48px;
+  max-width: 400px;
+  padding: 0;
+  background: transparent;
   position: relative;
   z-index: 2;
-  animation: ${fadeSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: ${floatIn} 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Phone: floating card with shadow */
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 0 8px;
+  }
+`;
+
+const FormCard = styled.div`
+  background: rgba(8, 18, 38, 0.65);
+  backdrop-filter: blur(32px);
+  border-radius: 48px;
+  padding: 36px 28px 32px;
   border: 1px solid rgba(56, 189, 248, 0.06);
-  box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.6);
+  box-shadow: 
+    0 40px 100px -20px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(56, 189, 248, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  position: relative;
+  overflow: hidden;
 
   /* Animated gradient border */
   &::before {
@@ -191,43 +177,56 @@ const LoginContainer = styled.div`
     background: conic-gradient(
       from 0deg,
       transparent,
-      rgba(56, 189, 248, 0.1),
+      rgba(56, 189, 248, 0.06),
       transparent,
-      rgba(129, 140, 248, 0.1),
+      rgba(129, 140, 248, 0.06),
+      transparent,
+      rgba(192, 132, 252, 0.04),
       transparent
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: ${rotateGlow} 8s linear infinite;
+    animation: ${rotateGlow} 15s linear infinite;
     pointer-events: none;
   }
 
-  /* Top glow line */
+  /* Top glow */
   &::after {
     content: '';
     position: absolute;
-    top: 0;
+    top: -1px;
     left: 20%;
     right: 20%;
     height: 2px;
     background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-    opacity: 0.3;
+    opacity: 0.15;
     border-radius: 0 0 4px 4px;
+  }
+
+  /* Floating shimmer overlay */
+  .shimmer-overlay {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(56, 189, 248, 0.02), transparent 60%);
+    pointer-events: none;
   }
 
   @media (max-width: 480px) {
     padding: 28px 18px 24px;
     border-radius: 32px;
-    max-width: 100%;
-
     &::before {
       border-radius: 33px;
     }
   }
 `;
 
-// ---- Brand Section ----
+// ============================================
+// PREMIUM BRAND SECTION
+// ============================================
 const BrandSection = styled.div`
   text-align: center;
   margin-bottom: 28px;
@@ -237,15 +236,16 @@ const BrandSection = styled.div`
   }
 `;
 
-const LogoWrapper = styled.div`
+const PremiumLogo = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 18px 6px 12px;
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.04));
-  border: 1px solid rgba(34, 197, 94, 0.1);
+  gap: 10px;
+  padding: 5px 18px 5px 12px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.06), rgba(129, 140, 248, 0.02));
+  border: 1px solid rgba(56, 189, 248, 0.04);
   border-radius: 40px;
   margin-bottom: 14px;
+  position: relative;
 
   .logo-icon {
     font-size: 16px;
@@ -253,18 +253,19 @@ const LogoWrapper = styled.div`
 
   .logo-text {
     font-size: 11px;
-    font-weight: 600;
-    color: #4ade80;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    font-weight: 700;
+    background: linear-gradient(135deg, #e0f2fe, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.3px;
   }
 
-  .live-dot {
-    width: 6px;
-    height: 6px;
+  .status-dot {
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: #22c55e;
-    animation: ${pulseRing} 2s ease-out infinite;
     position: relative;
 
     &::before {
@@ -278,28 +279,26 @@ const LogoWrapper = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 14px 4px 10px;
-    .logo-text {
-      font-size: 10px;
-    }
+    padding: 4px 12px 4px 8px;
+    gap: 6px;
+    .logo-text { font-size: 10px; }
+    .logo-icon { font-size: 14px; }
   }
 `;
 
-const Title = styled.h1`
+const PremiumTitle = styled.h1`
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #f1f5f9, #94a3b8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 
-  .highlight {
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
+  .gradient-text {
+    background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+    background-size: 300% 300%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: ${shimmer} 6s ease-in-out infinite;
   }
 
   @media (max-width: 480px) {
@@ -307,21 +306,23 @@ const Title = styled.h1`
   }
 `;
 
-const Subhead = styled.p`
-  font-size: 14px;
+const PremiumSubhead = styled.p`
+  font-size: 13px;
   color: #94a3b8;
   font-weight: 400;
 
   @media (max-width: 480px) {
-    font-size: 12px;
+    font-size: 11px;
   }
 `;
 
-// ---- Toggle ----
-const MethodToggle = styled.div`
+// ============================================
+// TOGGLE - PREMIUM
+// ============================================
+const ToggleWrapper = styled.div`
   display: flex;
   gap: 6px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 40px;
   padding: 4px;
   margin-bottom: 22px;
@@ -338,8 +339,8 @@ const ToggleOption = styled.button`
   flex: 1;
   padding: 8px 12px;
   border-radius: 32px;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   background: ${props => props.active ? 'linear-gradient(135deg, #22c55e, #16a34a)' : 'transparent'};
@@ -349,16 +350,16 @@ const ToggleOption = styled.button`
   overflow: hidden;
 
   ${props => props.active && `
-    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.25);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2);
   `}
 
-  .btn-shimmer {
+  .toggle-shimmer {
     position: absolute;
     top: 0;
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
     animation: ${props => props.active ? slideGlow : 'none'} 3s ease-in-out infinite;
   }
 
@@ -368,186 +369,137 @@ const ToggleOption = styled.button`
   }
 `;
 
-// ---- Form ----
+// ============================================
+// FORM ELEMENTS - PREMIUM
+// ============================================
 const Form = styled.form`
   width: 100%;
 `;
 
 const InputGroup = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   text-align: left;
 
   @media (max-width: 480px) {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 `;
 
-const InputLabel = styled.label`
-  font-size: 12px;
-  font-weight: 500;
-  color: #cbd5e1;
+const FloatingLabel = styled.label`
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
 
-  .label-icon {
-    font-size: 14px;
+  .icon {
+    font-size: 12px;
   }
 
   @media (max-width: 480px) {
-    font-size: 11px;
-    margin-bottom: 4px;
-    .label-icon {
-      font-size: 12px;
-    }
+    font-size: 9px;
+    .icon { font-size: 10px; }
   }
 `;
 
-const InputWrapper = styled.div`
+const PremiumInputWrapper = styled.div`
   position: relative;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 24px;
   border: 1.5px solid rgba(255, 255, 255, 0.04);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, transparent, rgba(56, 189, 248, 0.03), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
 
   &:focus-within {
-    border-color: rgba(34, 197, 94, 0.3);
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.06);
-    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(56, 189, 248, 0.15);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.04);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &:focus-within::before {
+    opacity: 1;
   }
 
   @media (max-width: 480px) {
     border-radius: 18px;
+    border-width: 1px;
   }
 `;
 
-const Input = styled.input`
+const PremiumInput = styled.input`
   width: 100%;
-  padding: 12px 16px;
+  padding: 11px 16px;
   background: transparent;
   border: none;
   color: #f1f5f9;
   font-size: 14px;
   outline: none;
   font-family: inherit;
+  letter-spacing: 0.2px;
 
   &::placeholder {
     color: #4b5563;
     font-size: 13px;
+    font-weight: 400;
   }
 
   @media (max-width: 480px) {
-    padding: 10px 14px;
+    padding: 9px 12px;
     font-size: 13px;
-    &::placeholder {
-      font-size: 12px;
-    }
+    &::placeholder { font-size: 12px; }
   }
 `;
 
-const TogglePasswordBtn = styled.button`
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-size: 16px;
-  color: #6b7280;
-  padding: 4px;
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: #f1f5f9;
-  }
+// ============================================
+// SPLIT ROW - PHONE OPTIMIZED
+// ============================================
+const SplitRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 
   @media (max-width: 480px) {
-    right: 10px;
-    font-size: 14px;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 `;
 
-const PhoneHelper = styled.div`
-  font-size: 10px;
-  color: #4b5563;
-  margin-top: 4px;
-  padding-left: 4px;
-
-  @media (max-width: 480px) {
-    font-size: 9px;
-  }
-`;
-
-// ---- Options ----
-const OptionsRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 14px 0 22px;
-
-  @media (max-width: 480px) {
-    margin: 10px 0 16px;
-  }
-`;
-
-const RememberMe = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: #94a3b8;
-  cursor: pointer;
-
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    accent-color: #22c55e;
-    cursor: pointer;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 11px;
-    input[type="checkbox"] {
-      width: 14px;
-      height: 14px;
-    }
-  }
-`;
-
-const ForgotLink = styled(Link)`
-  color: #38bdf8;
-  cursor: pointer;
-  font-size: 12px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-
-  &:hover {
-    color: #7dd3fc;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 11px;
-  }
-`;
-
-// ---- Login Button ----
-const LoginButton = styled.button`
+// ============================================
+// PREMIUM BUTTON
+// ============================================
+const PremiumButton = styled.button`
   width: 100%;
-  padding: 14px;
+  padding: 13px;
   border: none;
   border-radius: 32px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, #22c55e, #16a34a, #0d9488);
+  background-size: 200% 200%;
   color: #0a0f1f;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(34, 197, 94, 0.15);
+  margin-top: 4px;
+  box-shadow: 0 4px 30px rgba(34, 197, 94, 0.12);
+  animation: ${shimmer} 6s ease-in-out infinite;
 
   .btn-content {
     display: flex;
@@ -564,22 +516,23 @@ const LoginButton = styled.button`
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
     animation: ${slideGlow} 4s ease-in-out infinite;
+    z-index: 1;
   }
 
   .btn-glow {
     position: absolute;
     inset: -50%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.06), transparent 70%);
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: opacity 0.6s ease;
     z-index: 0;
   }
 
   &:hover:not(:disabled) {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 40px rgba(34, 197, 94, 0.3);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 8px 40px rgba(34, 197, 94, 0.2);
   }
 
   &:hover:not(:disabled) .btn-glow {
@@ -594,68 +547,126 @@ const LoginButton = styled.button`
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+    animation: none;
   }
 
   @media (max-width: 480px) {
-    padding: 12px;
+    padding: 11px;
     font-size: 14px;
     border-radius: 28px;
   }
 `;
 
-// ---- Message ----
-const MessageArea = styled.div`
-  margin-top: 14px;
-  font-size: 13px;
-  min-height: 36px;
-  padding: 8px 14px;
-  border-radius: 24px;
-  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.06)' : 'rgba(0, 0, 0, 0.2)'};
-  color: ${props => props.color || '#94a3b8'};
-  transition: all 0.3s ease;
+// ============================================
+// OPTIONS ROW
+// ============================================
+const OptionsRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0 18px;
+
+  @media (max-width: 480px) {
+    margin: 8px 0 14px;
+  }
+`;
+
+const RememberMe = styled.label`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.08)' : 'transparent'};
+  gap: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+  cursor: pointer;
 
-  .msg-icon {
-    font-size: 14px;
+  input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #22c55e;
+    cursor: pointer;
   }
 
   @media (max-width: 480px) {
-    font-size: 12px;
-    min-height: 32px;
-    padding: 6px 10px;
-    border-radius: 18px;
-    .msg-icon {
-      font-size: 12px;
+    font-size: 10px;
+    input[type="checkbox"] {
+      width: 12px;
+      height: 12px;
     }
   }
 `;
 
-// ---- Resend Button ----
-const ResendButton = styled.button`
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 28px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
+const ForgotLink = styled(Link)`
+  color: #38bdf8;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+  font-size: 11px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #7dd3fc;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+  }
+`;
+
+// ============================================
+// MESSAGE
+// ============================================
+const PremiumMessage = styled.div`
+  margin-top: 12px;
+  font-size: 12px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-radius: 24px;
+  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.12)'};
+  color: ${props => props.color || '#94a3b8'};
+  transition: all 0.4s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
+  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.06)' : 'transparent'};
+
+  .msg-icon {
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    min-height: 28px;
+    padding: 4px 10px;
+    border-radius: 18px;
+    .msg-icon { font-size: 11px; }
+  }
+`;
+
+// ============================================
+// RESEND BUTTON
+// ============================================
+const ResendButton = styled.button`
+  width: 100%;
+  padding: 9px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 8px 28px rgba(59, 130, 246, 0.2);
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
   }
 
@@ -666,53 +677,55 @@ const ResendButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 8px;
-    font-size: 12px;
-    border-radius: 22px;
+    padding: 7px;
+    font-size: 11px;
+    border-radius: 20px;
   }
 `;
 
-// ---- Footer Links ----
-const FooterLinks = styled.div`
-  margin-top: 20px;
+// ============================================
+// FOOTER LINKS
+// ============================================
+const PremiumFooter = styled.div`
+  margin-top: 18px;
   display: flex;
   justify-content: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 4px;
+  font-size: 12px;
   color: #94a3b8;
 
   a {
     color: #38bdf8;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      transition: width 0.3s ease;
+    }
 
     &:hover {
       color: #7dd3fc;
-      text-decoration: underline;
+    }
+
+    &:hover::after {
+      width: 100%;
     }
   }
 
   @media (max-width: 480px) {
-    font-size: 12px;
-    margin-top: 16px;
-    gap: 4px;
+    font-size: 11px;
+    margin-top: 14px;
   }
 `;
-
-// ============================================
-// PARTICLES DATA
-// ============================================
-const particles = [
-  { size: '3px', top: '10%', left: '5%', duration: '8s', delay: '0s', color: 'rgba(56, 189, 248, 0.2)' },
-  { size: '4px', top: '20%', left: '85%', duration: '10s', delay: '1s', color: 'rgba(129, 140, 248, 0.15)' },
-  { size: '2px', top: '40%', left: '10%', duration: '7s', delay: '2s', color: 'rgba(192, 132, 252, 0.2)' },
-  { size: '5px', top: '60%', left: '90%', duration: '12s', delay: '0.5s', color: 'rgba(56, 189, 248, 0.15)' },
-  { size: '3px', top: '75%', left: '15%', duration: '9s', delay: '3s', color: 'rgba(129, 140, 248, 0.2)' },
-  { size: '4px', top: '85%', left: '80%', duration: '11s', delay: '1.5s', color: 'rgba(192, 132, 252, 0.15)' },
-  { size: '2px', top: '5%', left: '50%', duration: '6s', delay: '2.5s', color: 'rgba(56, 189, 248, 0.3)' },
-  { size: '3px', top: '95%', left: '45%', duration: '13s', delay: '0.8s', color: 'rgba(129, 140, 248, 0.15)' },
-];
 
 // ============================================
 // MAIN COMPONENT
@@ -784,7 +797,7 @@ const Login = () => {
           localStorage.setItem('tempUserId', resendUserId);
         }
         
-        setMessage('✅ New verification code sent! Redirecting...');
+        setMessage('✅ New code sent! Redirecting...');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
@@ -794,14 +807,14 @@ const Login = () => {
           navigate('/verify');
         }, 1500);
       } else {
-        setMessage(`❌ ${data.error || 'Failed to resend code'}`);
+        setMessage(`❌ ${data.error || 'Failed to resend'}`);
         setMessageColor('#f87171');
         setIsError(true);
         setIsLoading(false);
       }
     } catch (error) {
       console.error('Resend error:', error);
-      setMessage('Cannot connect to server. Please try again.');
+      setMessage('Cannot connect to server.');
       setMessageColor('#f87171');
       setIsError(true);
       setIsLoading(false);
@@ -818,7 +831,7 @@ const Login = () => {
     if (activeMethod === 'email') {
       identifier = email.trim();
       if (!identifier || !identifier.includes('@')) {
-        setMessage('Please enter a valid email address');
+        setMessage('Valid email required');
         setMessageColor('#f87171');
         setIsError(true);
         isValid = false;
@@ -826,12 +839,12 @@ const Login = () => {
     } else {
       identifier = phone.trim();
       if (!identifier) {
-        setMessage('Please enter your phone number');
+        setMessage('Phone number required');
         setMessageColor('#f87171');
         setIsError(true);
         isValid = false;
       } else if (!validatePhone(identifier)) {
-        setMessage('Please enter a valid phone number with country code');
+        setMessage('Valid phone with country code');
         setMessageColor('#f87171');
         setIsError(true);
         isValid = false;
@@ -839,7 +852,7 @@ const Login = () => {
     }
 
     if (!passwordTrimmed) {
-      setMessage('Please enter your password');
+      setMessage('Password required');
       setMessageColor('#f87171');
       setIsError(true);
       isValid = false;
@@ -872,7 +885,7 @@ const Login = () => {
         }
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        setMessage('✅ Login successful! Redirecting...');
+        setMessage('✅ Welcome back! Redirecting...');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
@@ -882,7 +895,7 @@ const Login = () => {
         }, 1500);
       } else {
         const errorMsg = data.error || '';
-        if (errorMsg.toLowerCase().includes('verify') || errorMsg.toLowerCase().includes('verified')) {
+        if (errorMsg.toLowerCase().includes('verify')) {
           setResendEmail(identifier);
           setResendUserId(data.user_id || null);
           setShowResendButton(true);
@@ -899,7 +912,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      setMessage('Cannot connect to server. Please try again.');
+      setMessage('Cannot connect to server.');
       setMessageColor('#f87171');
       setIsError(true);
       setIsLoading(false);
@@ -910,148 +923,155 @@ const Login = () => {
     <>
       <GlobalStyle />
       
-      <OrbContainer>
-        <Orb />
-        <Orb />
-        <Orb />
-      </OrbContainer>
+      <BackgroundContainer>
+        <GradientOrb />
+        <GradientOrb />
+        <GradientOrb />
+        <GlowLine />
+      </BackgroundContainer>
 
-      <ParticleContainer>
-        {particles.map((p, i) => (
-          <Particle key={i} {...p} />
-        ))}
-      </ParticleContainer>
+      <FloatingFormContainer>
+        <FormCard>
+          <div className="shimmer-overlay" />
 
-      <LoginContainer>
-        <BrandSection>
-          <LogoWrapper>
-            <span className="logo-icon">🔷</span>
-            <span className="logo-text">Voltix Traders</span>
-            <span className="live-dot" />
-          </LogoWrapper>
-          <Title>
-            Welcome <span className="highlight">Back</span>
-          </Title>
-          <Subhead>Access your trading dashboard</Subhead>
-        </BrandSection>
+          <BrandSection>
+            <PremiumLogo>
+              <span className="logo-icon">🔷</span>
+              <span className="logo-text">Voltix Traders</span>
+              <span className="status-dot" />
+            </PremiumLogo>
+            <PremiumTitle>
+              Welcome <span className="gradient-text">Back</span>
+            </PremiumTitle>
+            <PremiumSubhead>Access your trading dashboard</PremiumSubhead>
+          </BrandSection>
 
-        <MethodToggle>
-          <ToggleOption 
-            active={activeMethod === 'email'} 
-            onClick={() => handleMethodToggle('email')}
-          >
-            <span className="btn-shimmer" />
-            📧 Email
-          </ToggleOption>
-          <ToggleOption 
-            active={activeMethod === 'phone'} 
-            onClick={() => handleMethodToggle('phone')}
-          >
-            <span className="btn-shimmer" />
-            📱 Phone
-          </ToggleOption>
-        </MethodToggle>
+          <ToggleWrapper>
+            <ToggleOption 
+              active={activeMethod === 'email'} 
+              onClick={() => handleMethodToggle('email')}
+            >
+              <span className="toggle-shimmer" />
+              📧 Email
+            </ToggleOption>
+            <ToggleOption 
+              active={activeMethod === 'phone'} 
+              onClick={() => handleMethodToggle('phone')}
+            >
+              <span className="toggle-shimmer" />
+              📱 Phone
+            </ToggleOption>
+          </ToggleWrapper>
 
-        <Form onSubmit={handleSubmit}>
-          {activeMethod === 'email' && (
+          <Form onSubmit={handleSubmit}>
+            {activeMethod === 'email' ? (
+              <InputGroup>
+                <FloatingLabel>
+                  <span className="icon">📧</span> Email Address
+                </FloatingLabel>
+                <PremiumInputWrapper>
+                  <PremiumInput
+                    type="email"
+                    placeholder="trader@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    required
+                  />
+                </PremiumInputWrapper>
+              </InputGroup>
+            ) : (
+              <InputGroup>
+                <FloatingLabel>
+                  <span className="icon">📞</span> Phone Number
+                </FloatingLabel>
+                <PremiumInputWrapper>
+                  <PremiumInput
+                    type="tel"
+                    placeholder="+1 234 567 8900"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    autoComplete="tel"
+                    required
+                  />
+                </PremiumInputWrapper>
+              </InputGroup>
+            )}
+
             <InputGroup>
-              <InputLabel>
-                <span className="label-icon">📧</span> Email Address
-              </InputLabel>
-              <InputWrapper>
-                <Input
-                  type="email"
-                  placeholder="trader@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
+              <FloatingLabel>
+                <span className="icon">🔒</span> Password
+              </FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-              </InputWrapper>
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    color: '#6b7280',
+                    fontSize: '15px',
+                    cursor: 'pointer',
+                    padding: '4px',
+                  }}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </PremiumInputWrapper>
             </InputGroup>
-          )}
 
-          {activeMethod === 'phone' && (
-            <InputGroup>
-              <InputLabel>
-                <span className="label-icon">📞</span> Phone Number
-              </InputLabel>
-              <InputWrapper>
-                <Input
-                  type="tel"
-                  placeholder="+1 234 567 8900"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  autoComplete="tel"
-                  required
+            <OptionsRow>
+              <RememberMe>
+                <input 
+                  type="checkbox" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
-              </InputWrapper>
-              <PhoneHelper>Include country code (e.g., +1, +44)</PhoneHelper>
-            </InputGroup>
+                Remember me
+              </RememberMe>
+              <ForgotLink to="/forgotpass">
+                Forgot password?
+              </ForgotLink>
+            </OptionsRow>
+
+            <PremiumButton type="submit" disabled={isLoading}>
+              <div className="btn-shimmer" />
+              <div className="btn-glow" />
+              <div className="btn-content">
+                {isLoading ? '⏳ Signing In...' : '🚀 Sign In'}
+              </div>
+            </PremiumButton>
+          </Form>
+
+          <PremiumMessage color={messageColor} isError={isError}>
+            <span className="msg-icon">
+              {isError ? '❌' : messageColor === '#22c55e' ? '✅' : messageColor === '#fbbf24' ? '⚠️' : 'ℹ️'}
+            </span>
+            {message || '\u00A0'}
+          </PremiumMessage>
+
+          {showResendButton && (
+            <ResendButton onClick={handleResendVerification} disabled={isLoading}>
+              📧 Resend Verification Code
+            </ResendButton>
           )}
 
-          <InputGroup>
-            <InputLabel>
-              <span className="label-icon">🔒</span> Password
-            </InputLabel>
-            <InputWrapper>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <TogglePasswordBtn 
-                type="button" 
-                onClick={togglePasswordVisibility}
-                aria-label="Toggle password visibility"
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </TogglePasswordBtn>
-            </InputWrapper>
-          </InputGroup>
-
-          <OptionsRow>
-            <RememberMe>
-              <input 
-                type="checkbox" 
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              Remember me
-            </RememberMe>
-            <ForgotLink to="/forgotpass">
-              Forgot password?
-            </ForgotLink>
-          </OptionsRow>
-
-          <LoginButton type="submit" disabled={isLoading}>
-            <div className="btn-shimmer" />
-            <div className="btn-glow" />
-            <div className="btn-content">
-              {isLoading ? '⏳ Signing In...' : '🚀 Sign In'}
-            </div>
-          </LoginButton>
-        </Form>
-
-        <MessageArea color={messageColor} isError={isError}>
-          <span className="msg-icon">
-            {isError ? '❌' : messageColor === '#22c55e' ? '✅' : messageColor === '#fbbf24' ? '⚠️' : 'ℹ️'}
-          </span>
-          {message || '\u00A0'}
-        </MessageArea>
-
-        {showResendButton && (
-          <ResendButton onClick={handleResendVerification} disabled={isLoading}>
-            📧 Resend Verification Code
-          </ResendButton>
-        )}
-
-        <FooterLinks>
-          New to Voltix? <Link to="/register">Create free account →</Link>
-        </FooterLinks>
-      </LoginContainer>
+          <PremiumFooter>
+            New to Voltix? <Link to="/register">Create free account →</Link>
+          </PremiumFooter>
+        </FormCard>
+      </FloatingFormContainer>
     </>
   );
 };
