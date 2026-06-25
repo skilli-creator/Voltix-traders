@@ -346,8 +346,12 @@ const Subhead = styled.p`
 `;
 
 // ============================================
-// CODE INPUT - PREMIUM
+// FORM - ADDED MISSING FORM COMPONENT
 // ============================================
+const Form = styled.form`
+  width: 100%;
+`;
+
 const InputGroup = styled.div`
   text-align: center;
   margin-bottom: 20px;
