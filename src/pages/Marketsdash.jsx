@@ -864,7 +864,7 @@ const Dashboard = () => {
 
     setTimeout(() => {
       const routes = {
-        deriv: '/derivdash',
+        deriv: '/derivhome',
         binance: '/binancehome',
         forex: '/forexhome'
       };
