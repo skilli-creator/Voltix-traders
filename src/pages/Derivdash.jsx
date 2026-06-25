@@ -11,59 +11,24 @@ const DashboardContainer = styled.div`
   height: 100vh;
   background: #0a0f1f;
   overflow: hidden;
-
-  /* Phone: allow full page scroll */
-  @media (max-width: 768px) {
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
+  position: relative;
 `;
 
 const MainContent = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 
-  /* Phone: stack vertically with scroll */
   @media (max-width: 768px) {
     flex-direction: column;
-    overflow: visible;
-    flex: none;
-    height: auto;
-    gap: 0;
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
   }
 `;
 
-// ===== LEFT PANEL (Responsive) =====
-const LeftPanelWrapper = styled.div`
-  flex: 0 0 260px;
-  min-width: 260px;
-  height: 100%;
-  overflow-y: auto;
-  border-right: 1px solid #1e2a3a;
-
-  /* Tablet: smaller width */
-  @media (max-width: 1024px) and (min-width: 769px) {
-    flex: 0 0 200px;
-    min-width: 200px;
-  }
-
-  /* Phone: FULL WIDTH at BOTTOM */
-  @media (max-width: 768px) {
-    flex: none;
-    width: 100%;
-    min-width: unset;
-    height: auto;
-    max-height: 280px;
-    min-height: 180px;
-    border-right: none;
-    border-top: 1px solid #1e2a3a;
-    overflow-y: auto;
-    order: 3; /* 👈 BOTTOM */
-  }
-`;
-
-// ===== CHART PANEL (Responsive) =====
+// ===== CHART PANEL =====
 const ChartWrapper = styled.div`
   flex: 1;
   min-width: 0;
@@ -71,24 +36,20 @@ const ChartWrapper = styled.div`
   overflow: hidden;
   background: #0d1117;
 
-  /* Phone: TOP (after TopBar) */
   @media (max-width: 768px) {
-    flex: none;
-    width: 100%;
-    height: 300px;
-    min-height: 250px;
+    flex: 0 0 38%;
+    height: auto;
+    min-height: 0;
     overflow: hidden;
-    order: 0; /* 👈 TOP */
+    order: 0;
   }
 
-  /* Small phones */
   @media (max-width: 480px) {
-    height: 220px;
-    min-height: 180px;
+    flex: 0 0 35%;
   }
 `;
 
-// ===== RIGHT PANEL (Responsive) =====
+// ===== RIGHT PANEL =====
 const RightPanelWrapper = styled.div`
   flex: 0 0 290px;
   min-width: 290px;
@@ -96,51 +57,100 @@ const RightPanelWrapper = styled.div`
   overflow-y: auto;
   border-left: 1px solid #1e2a3a;
 
-  /* Tablet: smaller width */
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.2);
+    border-radius: 10px;
+  }
+
   @media (max-width: 1024px) and (min-width: 769px) {
     flex: 0 0 220px;
     min-width: 220px;
   }
 
-  /* Phone: LANDSCAPE - full width, shorter height */
   @media (max-width: 768px) {
-    flex: none;
+    flex: 0 0 31%;
     width: 100%;
     min-width: unset;
     height: auto;
-    max-height: 200px;
-    min-height: 150px;
+    min-height: 0;
     border-left: none;
     border-top: 1px solid #1e2a3a;
     overflow-y: auto;
-    order: 1; /* 👈 MIDDLE */
+    order: 1;
+    padding: 6px 8px;
+    background: #0f131a;
   }
 
-  /* Small phones: even shorter */
   @media (max-width: 480px) {
-    max-height: 160px;
-    min-height: 120px;
+    flex: 0 0 28%;
+    padding: 4px 6px;
   }
 `;
 
-// ============================================
-// MAIN COMPONENT
-// ============================================
+// ===== LEFT PANEL =====
+const LeftPanelWrapper = styled.div`
+  flex: 0 0 260px;
+  min-width: 260px;
+  height: 100%;
+  overflow-y: auto;
+  border-right: 1px solid #1e2a3a;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.2);
+    border-radius: 10px;
+  }
+
+  @media (max-width: 1024px) and (min-width: 769px) {
+    flex: 0 0 180px;
+    min-width: 180px;
+  }
+
+  @media (max-width: 768px) {
+    flex: 0 0 31%;
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    min-height: 0;
+    border-right: none;
+    border-top: 1px solid #1e2a3a;
+    overflow-y: auto;
+    order: 2;
+    padding: 4px 6px;
+    background: #0d1117;
+  }
+
+  @media (max-width: 480px) {
+    flex: 0 0 28%;
+    padding: 4px 4px;
+  }
+`;
 
 const Derivdash = () => {
   return (
     <DashboardContainer>
       <TopBar />
       <MainContent>
-        <LeftPanelWrapper>
-          <LeftPanel />
-        </LeftPanelWrapper>
         <ChartWrapper>
           <ChartPanel />
         </ChartWrapper>
         <RightPanelWrapper>
           <RightPanel />
         </RightPanelWrapper>
+        <LeftPanelWrapper>
+          <LeftPanel />
+        </LeftPanelWrapper>
       </MainContent>
     </DashboardContainer>
   );
