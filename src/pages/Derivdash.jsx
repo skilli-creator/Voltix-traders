@@ -1,4 +1,6 @@
-import React from 'react';
+// src/pages/Derivdash.jsx (Swipeable Version)
+
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import TopBar from '../components/TopBar';
 import LeftPanel from '../components/LeftPanel';
@@ -11,147 +13,187 @@ const DashboardContainer = styled.div`
   height: 100vh;
   background: #0a0f1f;
   overflow: hidden;
-  position: relative;
 `;
 
-const MainContent = styled.div`
+const DesktopLayout = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
-  min-height: 0;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    overflow: hidden;
-    flex: 1;
-    min-height: 0;
+    display: none;
   }
 `;
 
-// ===== CHART PANEL =====
-const ChartWrapper = styled.div`
+const MobileLayout = styled.div`
+  display: none;
   flex: 1;
-  min-width: 0;
-  height: 100%;
+  flex-direction: column;
   overflow: hidden;
-  background: #0d1117;
+  position: relative;
 
   @media (max-width: 768px) {
-    flex: 0 0 38%;
-    height: auto;
-    min-height: 0;
-    overflow: hidden;
-    order: 0;
-  }
-
-  @media (max-width: 480px) {
-    flex: 0 0 35%;
+    display: flex;
   }
 `;
 
-// ===== RIGHT PANEL =====
-const RightPanelWrapper = styled.div`
-  flex: 0 0 290px;
-  min-width: 290px;
+const PanelsContainer = styled.div`
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+`;
+
+const PanelWrapper = styled.div`
+  flex: 0 0 100%;
   height: 100%;
   overflow-y: auto;
-  border-left: 1px solid #1e2a3a;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(-${props => props.index * 100}%);
+  display: flex;
+  flex-direction: column;
 
   &::-webkit-scrollbar {
-    width: 3px;
+    width: 2px;
   }
   &::-webkit-scrollbar-track {
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.2);
-    border-radius: 10px;
-  }
-
-  @media (max-width: 1024px) and (min-width: 769px) {
-    flex: 0 0 220px;
-    min-width: 220px;
-  }
-
-  @media (max-width: 768px) {
-    flex: 0 0 31%;
-    width: 100%;
-    min-width: unset;
-    height: auto;
-    min-height: 0;
-    border-left: none;
-    border-top: 1px solid #1e2a3a;
-    overflow-y: auto;
-    order: 1;
-    padding: 6px 8px;
-    background: #0f131a;
-  }
-
-  @media (max-width: 480px) {
-    flex: 0 0 28%;
-    padding: 4px 6px;
+    background: #2a2e3d;
+    border-radius: 2px;
   }
 `;
 
-// ===== LEFT PANEL =====
-const LeftPanelWrapper = styled.div`
-  flex: 0 0 260px;
-  min-width: 260px;
-  height: 100%;
-  overflow-y: auto;
-  border-right: 1px solid #1e2a3a;
+const PanelContent = styled.div`
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
 
-  &::-webkit-scrollbar {
-    width: 3px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.2);
-    border-radius: 10px;
+const MobileTabs = styled.div`
+  display: flex;
+  background: #0f131a;
+  border-top: 1px solid #1e2a3a;
+  flex-shrink: 0;
+  padding: 4px 8px;
+  gap: 4px;
+  z-index: 10;
+`;
+
+const TabButton = styled.button`
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: ${props => props.active ? 'rgba(41, 98, 255, 0.15)' : 'transparent'};
+  color: ${props => props.active ? '#2962ff' : '#8a93a6'};
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+
+  .icon {
+    font-size: 18px;
   }
 
-  @media (max-width: 1024px) and (min-width: 769px) {
-    flex: 0 0 180px;
-    min-width: 180px;
+  .label {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  @media (max-width: 768px) {
-    flex: 0 0 31%;
-    width: 100%;
-    min-width: unset;
-    height: auto;
-    min-height: 0;
-    border-right: none;
-    border-top: 1px solid #1e2a3a;
-    overflow-y: auto;
-    order: 2;
-    padding: 4px 6px;
-    background: #0d1117;
-  }
-
-  @media (max-width: 480px) {
-    flex: 0 0 28%;
-    padding: 4px 4px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
   }
 `;
+
+const panels = [
+  { id: 'chart', label: 'Chart', icon: '📊', component: ChartPanel },
+  { id: 'trade', label: 'Trade', icon: '📈', component: RightPanel },
+  { id: 'positions', label: 'Positions', icon: '💼', component: LeftPanel },
+];
 
 const Derivdash = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    const diff = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && activeIndex < panels.length - 1) {
+        setActiveIndex(activeIndex + 1);
+      } else if (diff < 0 && activeIndex > 0) {
+        setActiveIndex(activeIndex - 1);
+      }
+    }
+  };
+
   return (
     <DashboardContainer>
       <TopBar />
-      <MainContent>
-        <ChartWrapper>
-          <ChartPanel />
-        </ChartWrapper>
-        <RightPanelWrapper>
-          <RightPanel />
-        </RightPanelWrapper>
-        <LeftPanelWrapper>
-          <LeftPanel />
-        </LeftPanelWrapper>
-      </MainContent>
+
+      <DesktopLayout>
+        <LeftPanel />
+        <ChartPanel />
+        <RightPanel />
+      </DesktopLayout>
+
+      <MobileLayout>
+        <PanelsContainer
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {panels.map((panel, index) => {
+            const Component = panel.component;
+            return (
+              <PanelWrapper
+                key={panel.id}
+                index={activeIndex}
+                style={{
+                  transform: `translateX(-${activeIndex * 100}%)`
+                }}
+              >
+                <PanelContent>
+                  <Component />
+                </PanelContent>
+              </PanelWrapper>
+            );
+          })}
+        </PanelsContainer>
+
+        <MobileTabs>
+          {panels.map((panel, index) => (
+            <TabButton
+              key={panel.id}
+              active={activeIndex === index}
+              onClick={() => setActiveIndex(index)}
+            >
+              <span className="icon">{panel.icon}</span>
+              <span className="label">{panel.label}</span>
+            </TabButton>
+          ))}
+        </MobileTabs>
+      </MobileLayout>
     </DashboardContainer>
   );
 };
