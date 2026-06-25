@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
 // ============================================
-// GLOBAL STYLES (applied to body)
+// GLOBAL STYLES
 // ============================================
 const GlobalStyle = createGlobalStyle`
   * {
@@ -13,143 +13,354 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Poppins', sans-serif;
-    background: #0a0f1f;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #050a18;
     color: #f1f5f9;
     overflow-x: hidden;
-    line-height: 1.5;
+    line-height: 1.6;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0f1f;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #22c55e, #38bdf8);
+    border-radius: 4px;
   }
 `;
 
 // ============================================
-// KEYFRAMES
+// KEYFRAMES - PREMIUM ANIMATIONS
 // ============================================
+const float = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -300% center; }
+  100% { background-position: 300% center; }
+`;
+
 const fadeSlideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(40px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+const pulseGlow = keyframes`
+  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.2); }
+`;
+
+const breathe = keyframes`
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.05); }
+`;
+
+const rotateGlow = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const slideGlow = keyframes`
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
 `;
 
 // ============================================
 // STYLED COMPONENTS
 // ============================================
 
-// Background gradient (replaces body::before)
-const BackgroundGradient = styled.div`
+// ---- Background ----
+const BackgroundContainer = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 30%, rgba(34, 197, 94, 0.08), transparent 70%),
-              radial-gradient(circle at 80% 70%, rgba(56, 189, 248, 0.08), transparent 70%);
+  inset: 0;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
 `;
 
-const Container = styled.div`
-  width: 90%;
-  max-width: 1280px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-`;
+const GradientOrb = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: ${breathe} 7s ease-in-out infinite;
 
-const Navbar = styled.nav`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 0;
-  border-bottom: 1px solid rgba(34, 197, 94, 0.2);
-  backdrop-filter: blur(8px);
+  &:nth-child(1) {
+    width: 500px;
+    height: 500px;
+    top: -200px;
+    right: -150px;
+    background: radial-gradient(circle, rgba(34, 197, 94, 0.08), transparent 70%);
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    width: 400px;
+    height: 400px;
+    bottom: -150px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.06), transparent 70%);
+    animation-delay: -2.5s;
+  }
+
+  &:nth-child(3) {
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.04), transparent 70%);
+    animation-delay: -5s;
+  }
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 16px;
-  }
-`;
-
-const Logo = styled.div`
-  font-size: 1.8rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #22c55e, #38bdf8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  letter-spacing: -0.5px;
-`;
-
-const NavLinks = styled.div`
-  display: flex;
-  gap: 32px;
-
-  a {
-    color: #cbd5e1;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: 0.2s;
-
-    &:hover {
-      color: #22c55e;
+    &:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: -120px;
+      right: -80px;
+    }
+    &:nth-child(2) {
+      width: 250px;
+      height: 250px;
+      bottom: -80px;
+      left: -60px;
+    }
+    &:nth-child(3) {
+      width: 180px;
+      height: 180px;
     }
   }
 `;
 
+const GridOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.4;
+`;
+
+const GlowLine = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, transparent);
+  opacity: 0.15;
+`;
+
+// ---- Container ----
+const Container = styled.div`
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+
+  @media (max-width: 768px) {
+    width: 95%;
+  }
+`;
+
+// ---- Navbar ----
+const Navbar = styled.nav`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.15), transparent);
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 0;
+  }
+`;
+
+const Logo = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+
+  .logo-icon {
+    font-size: 1.8rem;
+  }
+
+  .logo-text {
+    background: linear-gradient(135deg, #e0f2fe, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .logo-deriv {
+    color: #ff444f;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+    .logo-icon { font-size: 1.4rem; }
+    .logo-deriv { font-size: 1rem; }
+  }
+`;
+
+const NavLinks = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 32px;
+
+  a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #22c55e, #38bdf8);
+      transition: width 0.3s ease;
+    }
+
+    &:hover {
+      color: #f1f5f9;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    a { font-size: 0.75rem; }
+  }
+`;
+
+// ---- Hero ----
 const Hero = styled.section`
   text-align: center;
-  padding: 100px 20px 80px;
+  padding: 80px 20px 60px;
   animation: ${fadeSlideUp} 0.8s ease;
+
+  @media (max-width: 768px) {
+    padding: 50px 12px 40px;
+  }
 `;
 
 const HeroBadge = styled.div`
-  display: inline-block;
-  background: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  padding: 6px 18px;
-  border-radius: 60px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #22c55e;
-  margin-bottom: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.12);
+  padding: 6px 18px 6px 12px;
+  border-radius: 40px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4ade80;
+  margin-bottom: 24px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: ${pulseGlow} 2s ease-in-out infinite;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    padding: 4px 12px 4px 8px;
+  }
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 64px;
+  font-size: 62px;
   font-weight: 800;
-  background: linear-gradient(125deg, #ffffff, #22c55e, #38bdf8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  line-height: 1.05;
   margin-bottom: 20px;
-  letter-spacing: -1.2px;
+  letter-spacing: -2px;
+
+  .gradient-text {
+    background: linear-gradient(135deg, #22c55e, #38bdf8, #818cf8);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: ${shimmer} 6s ease-in-out infinite;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 48px;
+  }
 
   @media (max-width: 768px) {
-    font-size: 42px;
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 26px;
   }
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: 1.2rem;
-  color: #9ca3cf;
-  max-width: 700px;
-  margin: 0 auto 36px;
+  font-size: 1.1rem;
+  color: #94a3b8;
+  max-width: 600px;
+  margin: 0 auto 32px;
+  line-height: 1.8;
+
+  @media (max-width: 768px) {
+    font-size: 0.95rem;
+  }
 `;
 
 const HeroButtons = styled.div`
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 16px;
   flex-wrap: wrap;
 `;
 
-// ===== BUTTONS =====
-const Button = styled.a`
+// ---- Buttons ----
+const Button = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -157,258 +368,376 @@ const Button = styled.a`
   border-radius: 40px;
   font-weight: 600;
   font-size: 0.9rem;
-  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   cursor: pointer;
   border: none;
+  position: relative;
+  overflow: hidden;
+
+  .btn-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    animation: ${slideGlow} 4s ease-in-out infinite;
+    z-index: 1;
+  }
 
   &.primary {
-    background: linear-gradient(105deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     color: #0a0f1f;
-    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 4px 24px rgba(34, 197, 94, 0.15);
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 15px 28px rgba(34, 197, 94, 0.45);
-      background: linear-gradient(105deg, #2dd4bf, #22c55e);
+      box-shadow: 0 12px 36px rgba(34, 197, 94, 0.25);
     }
   }
 
   &.secondary {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #f1f5f9;
 
     &:hover {
-      background: rgba(34, 197, 94, 0.2);
-      border-color: #22c55e;
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.12);
       transform: translateY(-2px);
     }
   }
 
-  &.outline-light {
-    background: transparent;
-    border: 1px solid #22c55e;
-    color: #22c55e;
-
-    &:hover {
-      background: #22c55e;
-      color: #0a0f1f;
-    }
+  &:active {
+    transform: scale(0.97);
   }
 
-  &.white-bg {
-    background: white;
-    color: #0a0f1f;
-
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 28px rgba(34, 197, 94, 0.45);
-    }
+  @media (max-width: 768px) {
+    padding: 10px 20px;
+    font-size: 0.8rem;
   }
 `;
 
-// ===== FEATURES =====
+// ---- Features ----
 const FeaturesSection = styled.section`
-  padding: 80px 0;
-  background: rgba(2, 6, 23, 0.5);
+  padding: 60px 0;
+  position: relative;
+
+  @media (max-width: 768px) {
+    padding: 40px 0;
+  }
 `;
 
 const SectionTitle = styled.h2`
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  margin-bottom: 56px;
-  background: linear-gradient(135deg, #ffffff, #94a3b8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  margin-bottom: 48px;
+  letter-spacing: -0.5px;
+
+  .gradient {
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+    margin-bottom: 32px;
+  }
 `;
 
 const FeatureGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-  gap: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 `;
 
 const FeatureCard = styled.div`
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(12px);
-  padding: 32px 24px;
-  border-radius: 28px;
-  border: 1px solid rgba(34, 197, 94, 0.2);
-  transition: all 0.3s ease;
+  padding: 28px 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
 
   &:hover {
-    transform: translateY(-8px);
-    border-color: #22c55e;
-    background: rgba(20, 35, 55, 0.85);
-    box-shadow: 0 20px 35px -12px rgba(34, 197, 94, 0.2);
+    transform: translateY(-6px);
+    border-color: rgba(34, 197, 94, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
   }
-`;
 
-const FeatureIcon = styled.div`
-  font-size: 42px;
-  margin-bottom: 20px;
-`;
+  &:hover::before {
+    opacity: 1;
+  }
 
-const FeatureTitle = styled.h3`
-  font-size: 1.5rem;
-  margin-bottom: 12px;
-  font-weight: 600;
-`;
+  .icon {
+    font-size: 32px;
+    margin-bottom: 14px;
+    display: block;
+  }
 
-const FeatureDescription = styled.p`
-  color: #9ca3af;
-  line-height: 1.5;
-`;
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #f1f5f9;
+  }
 
-// ===== STEPS =====
-const StepsSection = styled.section`
-  padding: 80px 0;
-`;
+  p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.7;
+  }
 
-const StepsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 40px;
-  margin-top: 40px;
-`;
-
-const StepItem = styled.div`
-  text-align: center;
-  padding: 24px;
-`;
-
-const StepNumber = styled.div`
-  width: 56px;
-  height: 56px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  border-radius: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: 800;
-  margin: 0 auto 20px;
-  color: #0a0f1f;
-`;
-
-// ===== MARKET PREVIEW =====
-const MarketPreview = styled.section`
-  padding: 80px 0;
-  background: linear-gradient(0deg, #020617, #0a0f1f);
-`;
-
-const MarketShowcase = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: center;
-
-  img {
-    width: 100%;
-    border-radius: 28px;
-    box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    transition: 0.3s;
+  .feature-number {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    font-size: 40px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.02);
+    letter-spacing: -4px;
+    z-index: 0;
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    text-align: center;
+    padding: 20px 18px;
+    .icon { font-size: 26px; }
+    h3 { font-size: 1rem; }
+    p { font-size: 0.8rem; }
   }
 `;
 
-// ===== STATS =====
+// ---- Stats ----
 const StatsSection = styled.section`
-  padding: 80px 0;
-  text-align: center;
+  padding: 60px 0;
+  background: rgba(255, 255, 255, 0.01);
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+
+  @media (max-width: 768px) {
+    padding: 40px 0;
+  }
 `;
 
 const StatsGrid = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 64px;
-  flex-wrap: wrap;
-  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 800px;
+  margin: 0 auto;
 
   @media (max-width: 768px) {
-    gap: 32px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
 `;
 
 const StatCard = styled.div`
-  h2 {
-    font-size: 48px;
-    font-weight: 800;
-    color: #22c55e;
+  text-align: center;
+  padding: 20px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(34, 197, 94, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px 12px;
+    .number { font-size: 1.6rem; }
+    .label { font-size: 0.65rem; }
   }
 `;
 
-// ===== CTA =====
+// ---- CTA ----
 const CTASection = styled.section`
-  padding: 100px 20px;
+  padding: 80px 20px;
   text-align: center;
-  background: linear-gradient(135deg, #0b1a2e, #051220);
-  border-top: 1px solid rgba(34, 197, 94, 0.2);
-  border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+  background: linear-gradient(180deg, transparent, rgba(34, 197, 94, 0.02), transparent);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
+  }
+
+  @media (max-width: 768px) {
+    padding: 50px 16px;
+  }
 `;
 
-// ===== FOOTER =====
+const CTATitle = styled.h2`
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+
+  .gradient {
+    background: linear-gradient(135deg, #22c55e, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
+`;
+
+const CTASub = styled.p`
+  font-size: 1rem;
+  color: #94a3b8;
+  margin-bottom: 28px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (max-width: 768px) {
+    font-size: 0.85rem;
+  }
+`;
+
+// ---- Footer ----
 const PremiumFooter = styled.footer`
-  background: #030712;
-  padding: 56px 32px 32px;
-  border-top: 1px solid #1e293b;
+  background: rgba(3, 7, 18, 0.9);
+  backdrop-filter: blur(20px);
+  padding: 48px 32px 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+
+  @media (max-width: 768px) {
+    padding: 32px 16px 20px;
+  }
 `;
 
 const FooterGrid = styled.div`
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 48px;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
   text-align: left;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
 `;
 
 const FooterCol = styled.div`
   h4 {
-    color: #22c55e;
-    font-size: 1.1rem;
-    margin-bottom: 20px;
+    color: #f1f5f9;
+    font-size: 0.9rem;
     font-weight: 600;
-    border-left: 3px solid #22c55e;
-    padding-left: 12px;
+    margin-bottom: 16px;
+    letter-spacing: 0.3px;
   }
 
-  p,
-  a {
+  p, a {
     font-size: 0.8rem;
-    color: #8b9ac0;
-    line-height: 1.7;
+    color: #94a3b8;
+    line-height: 1.8;
     text-decoration: none;
     display: block;
-    margin-bottom: 10px;
-    transition: 0.2s;
+    transition: all 0.3s ease;
   }
 
   a:hover {
     color: #22c55e;
-    transform: translateX(5px);
-    display: inline-block;
+    transform: translateX(4px);
+  }
+
+  .footer-logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #e0f2fe, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 480px) {
+    h4 { font-size: 0.8rem; }
+    p, a { font-size: 0.7rem; }
   }
 `;
 
 const SocialIcons = styled.div`
   display: flex;
-  gap: 18px;
+  gap: 14px;
   margin-top: 12px;
 
+  @media (max-width: 480px) {
+    justify-content: center;
+  }
+
   span {
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.3s ease;
+    color: #94a3b8;
 
     &:hover {
       color: #22c55e;
@@ -419,11 +748,21 @@ const SocialIcons = styled.div`
 
 const FooterBottom = styled.div`
   text-align: center;
-  margin-top: 48px;
-  padding-top: 24px;
-  border-top: 1px solid #1e2a44;
-  font-size: 12px;
-  color: #5f6e97;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.7rem;
+  color: #4b5563;
+
+  span {
+    color: #22c55e;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.6rem;
+    margin-top: 24px;
+    padding-top: 16px;
+  }
 `;
 
 // ============================================
@@ -432,9 +771,7 @@ const FooterBottom = styled.div`
 
 const Index = () => {
   const [timestamp, setTimestamp] = useState('');
-  const statsRef = useRef([]);
 
-  // Update timestamp
   useEffect(() => {
     const updateTimestamp = () => {
       const now = new Date();
@@ -445,289 +782,149 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Counter animation
-  useEffect(() => {
-    const counters = document.querySelectorAll('.stat-card h2');
-    counters.forEach((counter) => {
-      const text = counter.innerText;
-      const numeric = parseInt(text.replace(/[^0-9]/g, ''));
-      if (!isNaN(numeric) && text.includes('+')) {
-        let current = 0;
-        const increment = Math.ceil(numeric / 50);
-        const updateCounter = () => {
-          current += increment;
-          if (current >= numeric) {
-            counter.innerText = text;
-            return;
-          }
-          counter.innerText = current.toLocaleString() + '+';
-          requestAnimationFrame(updateCounter);
-        };
-        const observer = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-            updateCounter();
-            observer.disconnect();
-          }
-        });
-        observer.observe(counter);
-      }
-    });
-  }, []);
-
-  // Smooth scroll for anchor links
-  useEffect(() => {
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-      anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-        if (href !== '#' && href !== '') {
-          const target = document.querySelector(href);
-          if (target) {
-            e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth' });
-          }
-        }
-      });
-    });
-  }, []);
-
   return (
     <>
       <GlobalStyle />
-      <BackgroundGradient />
+
+      <BackgroundContainer>
+        <GradientOrb />
+        <GradientOrb />
+        <GradientOrb />
+        <GridOverlay />
+        <GlowLine />
+      </BackgroundContainer>
 
       <div className="app-wrapper">
         {/* ===== HEADER ===== */}
         <header>
           <Container>
             <Navbar>
-              <Logo>🔷Voltix Traders</Logo>
+              <Logo to="/">
+                <span className="logo-icon">🔷</span>
+                <span className="logo-text">Voltix</span>
+                <span className="logo-deriv">.deriv</span>
+              </Logo>
               <NavLinks>
-                <a href="#">Features</a>
-                <a href="#">Markets</a>
-                <a href="#">Pricing</a>
-                <a href="#">Docs</a>
+                <a href="#features">Features</a>
+                <a href="#markets">Markets</a>
+                <a href="#stats">Stats</a>
+                <Link to="/login">Login</Link>
               </NavLinks>
             </Navbar>
           </Container>
         </header>
 
-        {/* ===== MAIN CONTENT ===== */}
-        <main>
-          {/* Hero Section */}
-          <Container>
-            <Hero>
-              <HeroBadge>⚡ AI-Powered Trading Infrastructure</HeroBadge>
-              <HeroTitle>
-                Automate Your Trading
-                <br />
-                with{' '}
-                <span
-                  style={{
-                    background: 'linear-gradient(125deg,#22c55e,#38bdf8)',
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    color: 'transparent',
-                  }}
-                >
-                  Voltix
-                </span>
-              </HeroTitle>
-              <HeroSubtitle>
-                Deploy powerful trading bots, monitor markets in real-time, and grow your strategy — all from one
-                dashboard.
-              </HeroSubtitle>
-              <HeroButtons>
-                <Button href="/Register" className="primary">
-                  🚀 Start Trading
-                </Button>
-                <Button href="/Login" className="secondary">
-                  🔐 Login
-                </Button>
-              </HeroButtons>
-            </Hero>
-          </Container>
-
-          {/* Features Section */}
-          <FeaturesSection>
-            <Container>
-              <SectionTitle>Platform Features</SectionTitle>
-              <FeatureGrid>
-                <FeatureCard>
-                  <FeatureIcon>🤖</FeatureIcon>
-                  <FeatureTitle>Automated Bots</FeatureTitle>
-                  <FeatureDescription>24/7 trading bots with custom strategies and backtesting.</FeatureDescription>
-                </FeatureCard>
-                <FeatureCard>
-                  <FeatureIcon>📊</FeatureIcon>
-                  <FeatureTitle>Live Market Data</FeatureTitle>
-                  <FeatureDescription>Real-time charts, order books, and price feeds from top exchanges.</FeatureDescription>
-                </FeatureCard>
-                <FeatureCard>
-                  <FeatureIcon>🛡️</FeatureIcon>
-                  <FeatureTitle>Risk Management</FeatureTitle>
-                  <FeatureDescription>Stop-loss, take-profit, and portfolio protection tools.</FeatureDescription>
-                </FeatureCard>
-                <FeatureCard>
-                  <FeatureIcon>☁️</FeatureIcon>
-                  <FeatureTitle>Cloud Ready</FeatureTitle>
-                  <FeatureDescription>Run bots securely 24/7 with 99.99% uptime SLA.</FeatureDescription>
-                </FeatureCard>
-              </FeatureGrid>
-            </Container>
-          </FeaturesSection>
-
-          {/* Steps Section */}
-          <StepsSection>
-            <Container>
-              <SectionTitle>How It Works</SectionTitle>
-              <StepsGrid>
-                <StepItem>
-                  <StepNumber>1</StepNumber>
-                  <h3>Create Account</h3>
-                  <p>Sign up and access your trading dashboard instantly.</p>
-                </StepItem>
-                <StepItem>
-                  <StepNumber>2</StepNumber>
-                  <h3>Deploy Markets</h3>
-                  <p>Select your market and connect exchange via API.</p>
-                </StepItem>
-                <StepItem>
-                  <StepNumber>3</StepNumber>
-                  <h3>Monitor Profits</h3>
-                  <p>Track performance with live analytics and reports.</p>
-                </StepItem>
-              </StepsGrid>
-            </Container>
-          </StepsSection>
-
-          {/* Market Preview */}
-          <MarketPreview>
-            <Container>
-              <MarketShowcase>
-                <div>
-                  <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>
-                    Trade Global Markets
-                    <br />
-                    in Real-Time
-                  </h2>
-                  <p style={{ color: '#9ca3af', marginBottom: '28px' }}>
-                    Forex, Crypto, Synthetic Indices — all in one powerful platform. Low latency, deep liquidity,
-                    and institutional execution.
-                  </p>
-                  <Button href="#" className="outline-light">
-                    Explore Markets →
-                  </Button>
-                </div>
-                <img
-                  src="https://images.pexels.com/photos/34482029/pexels-photo-34482029.jpeg"
-                  alt="Trading on mobile"
-                />
-              </MarketShowcase>
-            </Container>
-          </MarketPreview>
-
-          {/* Why Choose Voltix */}
-          <section style={{ padding: '80px 0' }}>
-            <Container>
-              <SectionTitle>Why Traders Choose Voltix</SectionTitle>
-              <FeatureGrid>
-                <FeatureCard>
-                  <FeatureIcon>⚡</FeatureIcon>
-                  <FeatureTitle>Fast Execution</FeatureTitle>
-                  <FeatureDescription>Ultra-low latency matching engine.</FeatureDescription>
-                </FeatureCard>
-                <FeatureCard>
-                  <FeatureIcon>📡</FeatureIcon>
-                  <FeatureTitle>AI Signals</FeatureTitle>
-                  <FeatureDescription>Advanced algorithms analyze markets.</FeatureDescription>
-                </FeatureCard>
-                <FeatureCard>
-                  <FeatureIcon>🔐</FeatureIcon>
-                  <FeatureTitle>Secure Platform</FeatureTitle>
-                  <FeatureDescription>Bank-level encryption &amp; MPC custody.</FeatureDescription>
-                </FeatureCard>
-                <FeatureCard>
-                  <FeatureIcon>📈</FeatureIcon>
-                  <FeatureTitle>Multi-Market Access</FeatureTitle>
-                  <FeatureDescription>Trade Forex, Crypto, Deriv indices.</FeatureDescription>
-                </FeatureCard>
-              </FeatureGrid>
-            </Container>
-          </section>
-
-          {/* Built for Real Traders */}
-          <section style={{ padding: '80px 0', background: 'rgba(2, 6, 23, 0.6)' }}>
-            <Container
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '48px',
-                alignItems: 'center',
-              }}
-            >
-              <div>
-                <h2 style={{ fontSize: '2rem' }}>Built for Real Traders</h2>
-                <p style={{ color: '#9ca3af', margin: '20px 0' }}>
-                  Voltix gives you full control of your strategy. Monitor charts, automate trades, and react
-                  to markets instantly with our advanced suite.
-                </p>
-                <Button href="/Register" className="primary">
-                  Get Started
-                </Button>
-              </div>
-              <img
-                src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3"
-                style={{ width: '100%', borderRadius: '28px', border: '1px solid #22c55e30' }}
-                alt="Trading charts"
-              />
-            </Container>
-          </section>
-
-          {/* Stats Section */}
-          <StatsSection>
-            <Container>
-              <SectionTitle>Platform Growth</SectionTitle>
-              <StatsGrid>
-                <StatCard className="stat-card">
-                  <h2>10K+</h2>
-                  <p>Active Traders</p>
-                </StatCard>
-                <StatCard className="stat-card">
-                  <h2>$2M+</h2>
-                  <p>Trades Executed</p>
-                </StatCard>
-                <StatCard className="stat-card">
-                  <h2>99.99%</h2>
-                  <p>Uptime</p>
-                </StatCard>
-                <StatCard className="stat-card">
-                  <h2>24/7</h2>
-                  <p>Support</p>
-                </StatCard>
-              </StatsGrid>
-            </Container>
-          </StatsSection>
-
-          {/* CTA Section */}
-          <CTASection>
-            <Container>
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '20px' }}>Start Trading Smarter Today</h2>
-              <p style={{ marginBottom: '32px', color: '#cbd5e1' }}>
-                Join thousands of traders using Voltix to automate and grow.
-              </p>
-              <Button href="/Register" className="white-bg">
-                Create Free Account →
+        {/* ===== HERO ===== */}
+        <Container>
+          <Hero>
+            <HeroBadge>
+              <span className="live-dot" />
+              Live Trading • 99.9% Uptime
+            </HeroBadge>
+            <HeroTitle>
+              Automate Your Trading <br />
+              with <span className="gradient-text">Voltix</span>
+            </HeroTitle>
+            <HeroSubtitle>
+              Deploy powerful trading bots, monitor markets in real-time, and grow your strategy —
+              all from one premium dashboard.
+            </HeroSubtitle>
+            <HeroButtons>
+              <Button to="/Register" className="primary">
+                <span className="btn-shimmer" />
+                🚀 Start Trading
               </Button>
-            </Container>
-          </CTASection>
-        </main>
+              <Button to="/Login" className="secondary">
+                🔐 Login
+              </Button>
+            </HeroButtons>
+          </Hero>
+        </Container>
+
+        {/* ===== FEATURES ===== */}
+        <FeaturesSection id="features">
+          <Container>
+            <SectionTitle>
+              <span className="gradient">Platform Features</span>
+            </SectionTitle>
+            <FeatureGrid>
+              <FeatureCard>
+                <span className="icon">🤖</span>
+                <h3>Automated Bots</h3>
+                <p>24/7 trading bots with custom strategies, backtesting, and real-time optimization.</p>
+                <span className="feature-number">01</span>
+              </FeatureCard>
+              <FeatureCard>
+                <span className="icon">📊</span>
+                <h3>Live Market Data</h3>
+                <p>Real-time charts, order books, and price feeds from top global exchanges.</p>
+                <span className="feature-number">02</span>
+              </FeatureCard>
+              <FeatureCard>
+                <span className="icon">🛡️</span>
+                <h3>Risk Management</h3>
+                <p>Advanced stop-loss, take-profit, and multi-layer portfolio protection tools.</p>
+                <span className="feature-number">03</span>
+              </FeatureCard>
+              <FeatureCard>
+                <span className="icon">☁️</span>
+                <h3>Cloud Native</h3>
+                <p>Run bots securely 24/7 with enterprise-grade infrastructure and 99.99% uptime SLA.</p>
+                <span className="feature-number">04</span>
+              </FeatureCard>
+            </FeatureGrid>
+          </Container>
+        </FeaturesSection>
+
+        {/* ===== STATS ===== */}
+        <StatsSection id="stats">
+          <Container>
+            <SectionTitle>
+              <span className="gradient">Platform Growth</span>
+            </SectionTitle>
+            <StatsGrid>
+              <StatCard>
+                <div className="number">10K+</div>
+                <div className="label">Active Traders</div>
+              </StatCard>
+              <StatCard>
+                <div className="number">$2M+</div>
+                <div className="label">Trades Executed</div>
+              </StatCard>
+              <StatCard>
+                <div className="number">99.99%</div>
+                <div className="label">Uptime</div>
+              </StatCard>
+              <StatCard>
+                <div className="number">24/7</div>
+                <div className="label">Support</div>
+              </StatCard>
+            </StatsGrid>
+          </Container>
+        </StatsSection>
+
+        {/* ===== CTA ===== */}
+        <CTASection>
+          <Container>
+            <CTATitle>
+              Start Trading <span className="gradient">Smarter</span> Today
+            </CTATitle>
+            <CTASub>
+              Join thousands of traders using Voltix to automate and grow their portfolios.
+            </CTASub>
+            <Button to="/Register" className="primary">
+              <span className="btn-shimmer" />
+              Create Free Account →
+            </Button>
+          </Container>
+        </CTASection>
 
         {/* ===== FOOTER ===== */}
         <PremiumFooter>
           <FooterGrid>
             <FooterCol>
-              <h4>🔷 Voltix Traders</h4>
-              <p>Next-gen trading automation platform for retail &amp; institutional traders.</p>
+              <div className="footer-logo">🔷 Voltix Traders</div>
+              <p>Next-gen trading automation platform for retail and institutional traders.</p>
               <SocialIcons>
                 <span>🐦</span>
                 <span>📘</span>
