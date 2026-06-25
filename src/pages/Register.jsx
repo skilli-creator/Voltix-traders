@@ -32,35 +32,26 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     min-height: 100vh;
   }
+`;
 
-  @media (min-width: 769px) {
-    body {
-      padding: 32px;
-    }
+// ============================================
+// ANIMATIONS
+// ============================================
+const floatIn = keyframes`
+  0% { 
+    opacity: 0; 
+    transform: translateY(60px) scale(0.92) rotateX(5deg);
+    filter: blur(8px);
   }
-`;
-
-// ============================================
-// KEYFRAMES
-// ============================================
-const float = keyframes`
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-25px) rotate(2deg); }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -300% center; }
-  100% { background-position: 300% center; }
-`;
-
-const rotateGlow = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const fadeSlideUp = keyframes`
-  from { opacity: 0; transform: translateY(50px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  60% { 
+    transform: translateY(-8px) scale(1.01) rotateX(0deg);
+    filter: blur(0px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1) rotateX(0deg);
+    filter: blur(0px);
+  }
 `;
 
 const pulseRing = keyframes`
@@ -68,9 +59,14 @@ const pulseRing = keyframes`
   100% { transform: scale(2.5); opacity: 0; }
 `;
 
+const shimmer = keyframes`
+  0% { background-position: -300% center; }
+  100% { background-position: 300% center; }
+`;
+
 const breathe = keyframes`
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.08); }
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.08); }
 `;
 
 const slideGlow = keyframes`
@@ -78,13 +74,19 @@ const slideGlow = keyframes`
   100% { transform: translateX(200%) skewX(-20deg); }
 `;
 
-const pulseText = keyframes`
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+const rotateGlow = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const inputFocus = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
 `;
 
 // ============================================
-// BACKGROUND COMPONENTS
+// BACKGROUND
 // ============================================
 const BackgroundContainer = styled.div`
   position: fixed;
@@ -101,65 +103,31 @@ const GradientOrb = styled.div`
   animation: ${breathe} 7s ease-in-out infinite;
 
   &:nth-child(1) {
-    width: 450px;
-    height: 450px;
-    top: -200px;
-    right: -150px;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.10), transparent 70%);
+    width: 350px;
+    height: 350px;
+    top: -150px;
+    right: -120px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.12), transparent 70%);
     animation-delay: 0s;
   }
 
   &:nth-child(2) {
-    width: 380px;
-    height: 380px;
-    bottom: -180px;
-    left: -120px;
+    width: 280px;
+    height: 280px;
+    bottom: -120px;
+    left: -80px;
     background: radial-gradient(circle, rgba(129, 140, 248, 0.08), transparent 70%);
     animation-delay: -2.5s;
   }
 
   &:nth-child(3) {
-    width: 250px;
-    height: 250px;
+    width: 180px;
+    height: 180px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: radial-gradient(circle, rgba(192, 132, 252, 0.05), transparent 70%);
     animation-delay: -5s;
-  }
-
-  @media (max-width: 768px) {
-    &:nth-child(1) {
-      width: 250px;
-      height: 250px;
-      top: -120px;
-      right: -80px;
-    }
-    &:nth-child(2) {
-      width: 220px;
-      height: 220px;
-      bottom: -100px;
-      left: -60px;
-    }
-    &:nth-child(3) {
-      width: 150px;
-      height: 150px;
-    }
-  }
-`;
-
-const GridOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(56, 189, 248, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56, 189, 248, 0.02) 1px, transparent 1px);
-  background-size: 50px 50px;
-  opacity: 0.5;
-
-  @media (max-width: 768px) {
-    background-size: 30px 30px;
-    opacity: 0.3;
   }
 `;
 
@@ -170,71 +138,60 @@ const GlowLine = styled.div`
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-  opacity: 0.15;
-  animation: ${pulseText} 4s ease-in-out infinite;
+  opacity: 0.08;
 `;
 
-const ParticleContainer = styled.div`
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
+// ============================================
+// FLOATING FORM CONTAINER
+// ============================================
+const FloatingFormContainer = styled.div`
+  width: 100%;
+  max-width: 420px;
+  padding: 0;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+  animation: ${floatIn} 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 
-  @media (max-width: 768px) {
-    display: none;
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 0 8px;
   }
 `;
 
-const Particle = styled.div`
-  position: absolute;
-  width: ${props => props.size || '3px'};
-  height: ${props => props.size || '3px'};
-  background: ${props => props.color || 'rgba(56, 189, 248, 0.25)'};
-  border-radius: 50%;
-  top: ${props => props.top || '50%'};
-  left: ${props => props.left || '50%'};
-  animation: ${float} ${props => props.duration || '8s'} ease-in-out infinite;
-  animation-delay: ${props => props.delay || '0s'};
-  box-shadow: 0 0 25px ${props => props.color || 'rgba(56, 189, 248, 0.08)'};
-`;
-
-// ============================================
-// MAIN CONTAINER - DIFFERENT ON PHONE VS LAPTOP
-// ============================================
-const RegisterContainer = styled.div`
-  width: 100%;
-  max-width: 440px;
-  padding: 40px 32px 32px;
-  background: rgba(8, 18, 38, 0.55);
-  backdrop-filter: blur(40px);
-  border-radius: 56px;
+const FormCard = styled.div`
+  background: rgba(8, 18, 38, 0.65);
+  backdrop-filter: blur(32px);
+  border-radius: 48px;
+  padding: 32px 28px 28px;
+  border: 1px solid rgba(56, 189, 248, 0.06);
+  box-shadow: 
+    0 40px 100px -20px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(56, 189, 248, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
   position: relative;
-  z-index: 2;
-  animation: ${fadeSlideUp} 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1px solid rgba(56, 189, 248, 0.05);
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
 
   &::before {
     content: '';
     position: absolute;
     inset: -1px;
-    border-radius: 57px;
+    border-radius: 49px;
     padding: 1px;
     background: conic-gradient(
       from 0deg,
       transparent,
-      rgba(56, 189, 248, 0.08),
+      rgba(56, 189, 248, 0.06),
       transparent,
-      rgba(129, 140, 248, 0.08),
+      rgba(129, 140, 248, 0.06),
       transparent,
-      rgba(192, 132, 252, 0.05),
+      rgba(192, 132, 252, 0.04),
       transparent
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: ${rotateGlow} 12s linear infinite;
+    animation: ${rotateGlow} 15s linear infinite;
     pointer-events: none;
   }
 
@@ -242,30 +199,27 @@ const RegisterContainer = styled.div`
     content: '';
     position: absolute;
     top: -1px;
-    left: 15%;
-    right: 15%;
+    left: 20%;
+    right: 20%;
     height: 2px;
     background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
-    opacity: 0.2;
+    opacity: 0.15;
     border-radius: 0 0 4px 4px;
   }
 
-  /* ===== LAPTOP: Wider, more spacious ===== */
-  @media (min-width: 769px) {
-    max-width: 540px;
-    padding: 48px 44px 40px;
-    border-radius: 64px;
-
-    &::before {
-      border-radius: 65px;
-    }
+  .shimmer-overlay {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(56, 189, 248, 0.02), transparent 60%);
+    pointer-events: none;
   }
 
-  /* ===== PHONE: Compact, full width ===== */
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     padding: 24px 16px 20px;
     border-radius: 32px;
-    max-width: 100%;
     &::before {
       border-radius: 33px;
     }
@@ -273,50 +227,44 @@ const RegisterContainer = styled.div`
 `;
 
 // ============================================
-// BRAND SECTION - DIFFERENT SIZES
+// PREMIUM BRAND SECTION
 // ============================================
 const BrandSection = styled.div`
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 
-  @media (min-width: 769px) {
-    margin-bottom: 36px;
-  }
-
-  @media (max-width: 768px) {
-    margin-bottom: 20px;
+  @media (max-width: 480px) {
+    margin-bottom: 18px;
   }
 `;
 
-const LogoWrapper = styled.div`
+const PremiumLogo = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 20px 6px 14px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(129, 140, 248, 0.04));
-  border: 1px solid rgba(56, 189, 248, 0.06);
+  padding: 5px 18px 5px 12px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.06), rgba(129, 140, 248, 0.02));
+  border: 1px solid rgba(56, 189, 248, 0.04);
   border-radius: 40px;
-  margin-bottom: 16px;
-  position: relative;
-  backdrop-filter: blur(10px);
+  margin-bottom: 12px;
 
   .logo-icon {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .logo-text {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     background: linear-gradient(135deg, #e0f2fe, #38bdf8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
   }
 
-  .live-dot {
-    width: 6px;
-    height: 6px;
+  .status-dot {
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: #22c55e;
     position: relative;
@@ -324,48 +272,26 @@ const LogoWrapper = styled.div`
     &::before {
       content: '';
       position: absolute;
-      inset: -4px;
+      inset: -3px;
       border-radius: 50%;
       background: #22c55e;
-      animation: ${pulseRing} 2.5s ease-out infinite;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      background: #22c55e;
-      animation: ${pulseRing} 2.5s ease-out infinite 0.5s;
+      animation: ${pulseRing} 2s ease-out infinite;
     }
   }
 
-  @media (min-width: 769px) {
-    padding: 8px 28px 8px 18px;
-    gap: 12px;
-    margin-bottom: 24px;
-
-    .logo-icon {
-      font-size: 22px;
-    }
-    .logo-text {
-      font-size: 14px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 4px 14px 4px 10px;
+  @media (max-width: 480px) {
+    padding: 4px 12px 4px 8px;
     gap: 6px;
-    .logo-text { font-size: 11px; }
-    .logo-icon { font-size: 16px; }
+    .logo-text { font-size: 10px; }
+    .logo-icon { font-size: 14px; }
   }
 `;
 
-const Title = styled.h1`
-  font-size: 30px;
+const PremiumTitle = styled.h1`
+  font-size: 28px;
   font-weight: 800;
-  letter-spacing: -1px;
-  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+  margin-bottom: 2px;
 
   .gradient-text {
     background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
@@ -373,56 +299,56 @@ const Title = styled.h1`
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: ${shimmer} 5s ease-in-out infinite;
+    animation: ${shimmer} 6s ease-in-out infinite;
   }
 
-  @media (min-width: 769px) {
-    font-size: 38px;
-    margin-bottom: 8px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 24px;
+  @media (max-width: 480px) {
+    font-size: 22px;
   }
 `;
 
-const Subhead = styled.p`
-  font-size: 14px;
+const PremiumSubhead = styled.p`
+  font-size: 13px;
   color: #94a3b8;
   font-weight: 400;
-  letter-spacing: 0.2px;
 
-  @media (min-width: 769px) {
-    font-size: 16px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 12px;
+  @media (max-width: 480px) {
+    font-size: 11px;
   }
 `;
 
 // ============================================
-// FORM ELEMENTS - RESPONSIVE
+// SPLIT NAME ROW - PHONE OPTIMIZED
+// ============================================
+const SplitRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+`;
+
+// ============================================
+// FORM ELEMENTS
 // ============================================
 const Form = styled.form`
   width: 100%;
 `;
 
 const InputGroup = styled.div`
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   text-align: left;
 
-  @media (min-width: 769px) {
-    margin-bottom: 18px;
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     margin-bottom: 10px;
   }
 `;
 
-const InputLabel = styled.label`
-  font-size: 11px;
+const FloatingLabel = styled.label`
+  font-size: 10px;
   font-weight: 600;
   color: #94a3b8;
   display: flex;
@@ -430,28 +356,22 @@ const InputLabel = styled.label`
   gap: 6px;
   margin-bottom: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 
-  .label-icon {
-    font-size: 13px;
-  }
-
-  @media (min-width: 769px) {
+  .icon {
     font-size: 12px;
-    margin-bottom: 6px;
-    .label-icon { font-size: 15px; }
   }
 
-  @media (max-width: 768px) {
-    font-size: 10px;
-    .label-icon { font-size: 11px; }
+  @media (max-width: 480px) {
+    font-size: 9px;
+    .icon { font-size: 10px; }
   }
 `;
 
-const InputWrapper = styled.div`
+const PremiumInputWrapper = styled.div`
   position: relative;
   background: rgba(255, 255, 255, 0.02);
-  border-radius: 28px;
+  border-radius: 24px;
   border: 1.5px solid rgba(255, 255, 255, 0.04);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
@@ -460,7 +380,7 @@ const InputWrapper = styled.div`
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 28px;
+    border-radius: 24px;
     padding: 1px;
     background: linear-gradient(135deg, transparent, rgba(56, 189, 248, 0.03), transparent);
     opacity: 0;
@@ -469,28 +389,25 @@ const InputWrapper = styled.div`
   }
 
   &:focus-within {
-    border-color: rgba(56, 189, 248, 0.2);
+    border-color: rgba(56, 189, 248, 0.15);
     box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.04);
     background: rgba(255, 255, 255, 0.04);
+    animation: ${inputFocus} 0.3s ease;
   }
 
   &:focus-within::before {
     opacity: 1;
   }
 
-  @media (min-width: 769px) {
-    border-radius: 32px;
-    border-width: 2px;
-  }
-
-  @media (max-width: 768px) {
-    border-radius: 20px;
+  @media (max-width: 480px) {
+    border-radius: 18px;
+    border-width: 1px;
   }
 `;
 
-const Input = styled.input`
+const PremiumInput = styled.input`
   width: 100%;
-  padding: 12px 16px;
+  padding: 11px 16px;
   background: transparent;
   border: none;
   color: #f1f5f9;
@@ -505,76 +422,44 @@ const Input = styled.input`
     font-weight: 400;
   }
 
-  @media (min-width: 769px) {
-    padding: 14px 20px;
-    font-size: 16px;
-    &::placeholder { font-size: 14px; }
-  }
-
-  @media (max-width: 768px) {
-    padding: 10px 14px;
+  @media (max-width: 480px) {
+    padding: 9px 12px;
     font-size: 13px;
     &::placeholder { font-size: 12px; }
   }
 `;
 
-const NameRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-
-  @media (min-width: 769px) {
-    gap: 16px;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-`;
-
 const TogglePasswordBtn = styled.button`
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 16px;
+  font-size: 15px;
   color: #6b7280;
   padding: 4px;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 
   &:hover {
     color: #f1f5f9;
-    transform: translateY(-50%) scale(1.1);
   }
 
-  @media (min-width: 769px) {
-    right: 18px;
-    font-size: 18px;
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     right: 10px;
-    font-size: 14px;
+    font-size: 13px;
   }
 `;
 
 const PhoneHelper = styled.div`
-  font-size: 10px;
+  font-size: 9px;
   color: #4b5563;
-  margin-top: 3px;
+  margin-top: 2px;
   padding-left: 4px;
 
-  @media (min-width: 769px) {
-    font-size: 11px;
-    margin-top: 4px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 9px;
+  @media (max-width: 480px) {
+    font-size: 8px;
   }
 `;
 
@@ -583,10 +468,6 @@ const PhoneHelper = styled.div`
 // ============================================
 const StrengthContainer = styled.div`
   margin-top: 6px;
-
-  @media (min-width: 769px) {
-    margin-top: 8px;
-  }
 `;
 
 const StrengthMeter = styled.div`
@@ -594,10 +475,6 @@ const StrengthMeter = styled.div`
   background: rgba(255, 255, 255, 0.04);
   border-radius: 4px;
   overflow: hidden;
-
-  @media (min-width: 769px) {
-    height: 4px;
-  }
 `;
 
 const StrengthFill = styled.div`
@@ -611,29 +488,24 @@ const StrengthFill = styled.div`
 
 const StrengthText = styled.div`
   font-size: 10px;
-  margin-top: 4px;
+  margin-top: 3px;
   color: ${props => props.color || '#6b7280'};
   transition: color 0.3s ease;
   font-weight: 500;
 
-  @media (min-width: 769px) {
-    font-size: 11px;
-    margin-top: 6px;
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     font-size: 9px;
   }
 `;
 
 // ============================================
-// BUTTON
+// PREMIUM REGISTER BUTTON
 // ============================================
-const RegisterButton = styled.button`
+const PremiumButton = styled.button`
   width: 100%;
-  padding: 14px;
+  padding: 13px;
   border: none;
-  border-radius: 36px;
+  border-radius: 32px;
   background: linear-gradient(135deg, #22c55e, #16a34a, #0d9488);
   background-size: 200% 200%;
   color: #0a0f1f;
@@ -643,8 +515,8 @@ const RegisterButton = styled.button`
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  margin-top: 6px;
-  box-shadow: 0 4px 30px rgba(34, 197, 94, 0.15);
+  margin-top: 4px;
+  box-shadow: 0 4px 30px rgba(34, 197, 94, 0.12);
   animation: ${shimmer} 6s ease-in-out infinite;
 
   .btn-content {
@@ -662,23 +534,23 @@ const RegisterButton = styled.button`
     left: -100%;
     width: 60%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
-    animation: ${slideGlow} 5s ease-in-out infinite;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: ${slideGlow} 4s ease-in-out infinite;
     z-index: 1;
   }
 
   .btn-glow {
     position: absolute;
     inset: -50%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 70%);
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.06), transparent 70%);
     opacity: 0;
     transition: opacity 0.6s ease;
     z-index: 0;
   }
 
   &:hover:not(:disabled) {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 8px 50px rgba(34, 197, 94, 0.25);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 8px 40px rgba(34, 197, 94, 0.2);
   }
 
   &:hover:not(:disabled) .btn-glow {
@@ -696,15 +568,8 @@ const RegisterButton = styled.button`
     animation: none;
   }
 
-  @media (min-width: 769px) {
-    padding: 16px;
-    font-size: 17px;
-    border-radius: 40px;
-    margin-top: 10px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 12px;
+  @media (max-width: 480px) {
+    padding: 11px;
     font-size: 14px;
     border-radius: 28px;
   }
@@ -713,53 +578,43 @@ const RegisterButton = styled.button`
 // ============================================
 // MESSAGE
 // ============================================
-const MessageArea = styled.div`
-  margin-top: 14px;
-  font-size: 13px;
-  min-height: 38px;
-  padding: 8px 16px;
-  border-radius: 28px;
-  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.15)'};
+const PremiumMessage = styled.div`
+  margin-top: 12px;
+  font-size: 12px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-radius: 24px;
+  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.12)'};
   color: ${props => props.color || '#94a3b8'};
   transition: all 0.4s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.06)' : 'transparent'};
-  backdrop-filter: blur(10px);
 
   .msg-icon {
-    font-size: 14px;
+    font-size: 13px;
   }
 
-  @media (min-width: 769px) {
-    margin-top: 18px;
-    font-size: 14px;
-    min-height: 44px;
-    padding: 10px 20px;
-    border-radius: 32px;
-    .msg-icon { font-size: 16px; }
-  }
-
-  @media (max-width: 768px) {
-    font-size: 12px;
-    min-height: 32px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    .msg-icon { font-size: 12px; }
+  @media (max-width: 480px) {
+    font-size: 11px;
+    min-height: 28px;
+    padding: 4px 10px;
+    border-radius: 18px;
+    .msg-icon { font-size: 11px; }
   }
 `;
 
 // ============================================
 // FOOTER
 // ============================================
-const FooterLinks = styled.div`
-  margin-top: 20px;
+const PremiumFooter = styled.div`
+  margin-top: 16px;
   display: flex;
   justify-content: center;
   gap: 4px;
-  font-size: 13px;
+  font-size: 12px;
   color: #94a3b8;
 
   a {
@@ -789,31 +644,11 @@ const FooterLinks = styled.div`
     }
   }
 
-  @media (min-width: 769px) {
-    margin-top: 28px;
-    font-size: 14px;
-    gap: 6px;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 12px;
-    margin-top: 16px;
+  @media (max-width: 480px) {
+    font-size: 11px;
+    margin-top: 14px;
   }
 `;
-
-// ============================================
-// PARTICLES DATA
-// ============================================
-const particles = [
-  { size: '3px', top: '8%', left: '3%', duration: '9s', delay: '0s', color: 'rgba(56, 189, 248, 0.2)' },
-  { size: '4px', top: '15%', left: '88%', duration: '11s', delay: '1.2s', color: 'rgba(129, 140, 248, 0.15)' },
-  { size: '2px', top: '35%', left: '5%', duration: '7s', delay: '2.5s', color: 'rgba(192, 132, 252, 0.2)' },
-  { size: '5px', top: '55%', left: '93%', duration: '13s', delay: '0.8s', color: 'rgba(56, 189, 248, 0.12)' },
-  { size: '3px', top: '70%', left: '10%', duration: '10s', delay: '3.5s', color: 'rgba(129, 140, 248, 0.18)' },
-  { size: '4px', top: '85%', left: '85%', duration: '12s', delay: '1.8s', color: 'rgba(192, 132, 252, 0.12)' },
-  { size: '2px', top: '3%', left: '45%', duration: '6s', delay: '2s', color: 'rgba(56, 189, 248, 0.25)' },
-  { size: '3px', top: '95%', left: '50%', duration: '14s', delay: '0.5s', color: 'rgba(129, 140, 248, 0.12)' },
-];
 
 // ============================================
 // MAIN COMPONENT
@@ -897,28 +732,28 @@ const Register = () => {
     const confirmPasswordTrimmed = confirmPassword;
 
     if (!firstNameTrimmed || !lastNameTrimmed) {
-      setMessage('First name and last name are required');
+      setMessage('First and last name required');
       setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
     if (!phoneTrimmed || !emailTrimmed || !passwordTrimmed) {
-      setMessage('All fields are required');
+      setMessage('All fields required');
       setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
     if (!validatePhone(phoneTrimmed)) {
-      setMessage('Please enter a valid phone number with country code');
+      setMessage('Valid phone with country code');
       setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
     if (!emailTrimmed.includes('@') || !emailTrimmed.includes('.')) {
-      setMessage('Please enter a valid email address');
+      setMessage('Valid email address');
       setMessageColor('#f87171');
       setIsError(true);
       return;
@@ -932,7 +767,7 @@ const Register = () => {
     }
 
     if (passwordTrimmed.length < 6) {
-      setMessage('Password must be at least 6 characters');
+      setMessage('Password must be 6+ characters');
       setMessageColor('#fbbf24');
       setIsError(false);
       return;
@@ -940,7 +775,7 @@ const Register = () => {
 
     const strength = checkStrength(passwordTrimmed);
     if (strength < 2) {
-      setMessage('Please choose a stronger password');
+      setMessage('Choose a stronger password');
       setMessageColor('#fbbf24');
       setIsError(false);
       return;
@@ -970,7 +805,7 @@ const Register = () => {
         localStorage.setItem('tempUserId', data.user_id);
         localStorage.setItem('userEmail', emailTrimmed);
         
-        setMessage('✅ Account created! Check your email for verification code.');
+        setMessage('✅ Account created! Check your email.');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
@@ -986,7 +821,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setMessage('Cannot connect to server. Please try again.');
+      setMessage('Cannot connect to server.');
       setMessageColor('#f87171');
       setIsError(true);
       setIsLoading(false);
@@ -1001,166 +836,166 @@ const Register = () => {
         <GradientOrb />
         <GradientOrb />
         <GradientOrb />
-        <GridOverlay />
         <GlowLine />
       </BackgroundContainer>
 
-      <ParticleContainer>
-        {particles.map((p, i) => (
-          <Particle key={i} {...p} />
-        ))}
-      </ParticleContainer>
+      <FloatingFormContainer>
+        <FormCard>
+          <div className="shimmer-overlay" />
 
-      <RegisterContainer>
-        <BrandSection>
-          <LogoWrapper>
-            <span className="logo-icon">🔷</span>
-            <span className="logo-text">Voltix Traders</span>
-            <span className="live-dot" />
-          </LogoWrapper>
-          <Title>
-            Create <span className="gradient-text">Account</span>
-          </Title>
-          <Subhead>Start your automated trading journey</Subhead>
-        </BrandSection>
+          <BrandSection>
+            <PremiumLogo>
+              <span className="logo-icon">🔷</span>
+              <span className="logo-text">Voltix Traders</span>
+              <span className="status-dot" />
+            </PremiumLogo>
+            <PremiumTitle>
+              Create <span className="gradient-text">Account</span>
+            </PremiumTitle>
+            <PremiumSubhead>Start your automated trading journey</PremiumSubhead>
+          </BrandSection>
 
-        <Form onSubmit={handleSubmit}>
-          <NameRow>
+          <Form onSubmit={handleSubmit}>
+            {/* FIRST & LAST NAME - SPLIT ROW */}
+            <SplitRow>
+              <InputGroup>
+                <FloatingLabel>
+                  <span className="icon">📝</span> First Name
+                </FloatingLabel>
+                <PremiumInputWrapper>
+                  <PremiumInput
+                    type="text"
+                    placeholder="John"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </PremiumInputWrapper>
+              </InputGroup>
+
+              <InputGroup>
+                <FloatingLabel>
+                  <span className="icon">📝</span> Last Name
+                </FloatingLabel>
+                <PremiumInputWrapper>
+                  <PremiumInput
+                    type="text"
+                    placeholder="Doe"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                  />
+                </PremiumInputWrapper>
+              </InputGroup>
+            </SplitRow>
+
+            {/* PHONE NUMBER */}
             <InputGroup>
-              <InputLabel>
-                <span className="label-icon">📝</span> First Name
-              </InputLabel>
-              <InputWrapper>
-                <Input
-                  type="text"
-                  placeholder="John"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+              <FloatingLabel>
+                <span className="icon">📞</span> Phone Number
+              </FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type="tel"
+                  placeholder="+1 234 567 8900"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                   required
                 />
-              </InputWrapper>
+              </PremiumInputWrapper>
+              <PhoneHelper>Include country code (e.g., +1, +44)</PhoneHelper>
             </InputGroup>
 
+            {/* EMAIL */}
             <InputGroup>
-              <InputLabel>
-                <span className="label-icon">📝</span> Last Name
-              </InputLabel>
-              <InputWrapper>
-                <Input
-                  type="text"
-                  placeholder="Doe"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+              <FloatingLabel>
+                <span className="icon">📧</span> Email Address
+              </FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type="email"
+                  placeholder="trader@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-              </InputWrapper>
+              </PremiumInputWrapper>
             </InputGroup>
-          </NameRow>
 
-          <InputGroup>
-            <InputLabel>
-              <span className="label-icon">📞</span> Phone Number
-            </InputLabel>
-            <InputWrapper>
-              <Input
-                type="tel"
-                placeholder="+1 234 567 8900"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                required
-              />
-            </InputWrapper>
-            <PhoneHelper>Include country code (e.g., +1, +44)</PhoneHelper>
-          </InputGroup>
+            {/* PASSWORD */}
+            <InputGroup>
+              <FloatingLabel>
+                <span className="icon">🔒</span> Password
+              </FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Create a strong password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <TogglePasswordBtn 
+                  type="button" 
+                  onClick={() => togglePasswordVisibility('password')}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </TogglePasswordBtn>
+              </PremiumInputWrapper>
+              
+              <StrengthContainer>
+                <StrengthMeter>
+                  <StrengthFill width={strengthWidth} color={strengthColor} />
+                </StrengthMeter>
+                <StrengthText color={strengthColor}>
+                  {strengthLabel}
+                </StrengthText>
+              </StrengthContainer>
+            </InputGroup>
 
-          <InputGroup>
-            <InputLabel>
-              <span className="label-icon">📧</span> Email Address
-            </InputLabel>
-            <InputWrapper>
-              <Input
-                type="email"
-                placeholder="trader@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </InputWrapper>
-          </InputGroup>
+            {/* CONFIRM PASSWORD */}
+            <InputGroup>
+              <FloatingLabel>
+                <span className="icon">✓</span> Confirm Password
+              </FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <TogglePasswordBtn 
+                  type="button" 
+                  onClick={() => togglePasswordVisibility('confirm')}
+                >
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </TogglePasswordBtn>
+              </PremiumInputWrapper>
+            </InputGroup>
 
-          <InputGroup>
-            <InputLabel>
-              <span className="label-icon">🔒</span> Password
-            </InputLabel>
-            <InputWrapper>
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Create a strong password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <TogglePasswordBtn 
-                type="button" 
-                onClick={() => togglePasswordVisibility('password')}
-                aria-label="Toggle password visibility"
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </TogglePasswordBtn>
-            </InputWrapper>
-            
-            <StrengthContainer>
-              <StrengthMeter>
-                <StrengthFill width={strengthWidth} color={strengthColor} />
-              </StrengthMeter>
-              <StrengthText color={strengthColor}>
-                {strengthLabel}
-              </StrengthText>
-            </StrengthContainer>
-          </InputGroup>
+            <PremiumButton type="submit" disabled={isLoading}>
+              <div className="btn-shimmer" />
+              <div className="btn-glow" />
+              <div className="btn-content">
+                {isLoading ? '⏳ Creating Account...' : '🚀 Register & Start Trading'}
+              </div>
+            </PremiumButton>
+          </Form>
 
-          <InputGroup>
-            <InputLabel>
-              <span className="label-icon">✓</span> Confirm Password
-            </InputLabel>
-            <InputWrapper>
-              <Input
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              <TogglePasswordBtn 
-                type="button" 
-                onClick={() => togglePasswordVisibility('confirm')}
-                aria-label="Toggle confirm password visibility"
-              >
-                {showConfirmPassword ? '🙈' : '👁️'}
-              </TogglePasswordBtn>
-            </InputWrapper>
-          </InputGroup>
+          <PremiumMessage color={messageColor} isError={isError}>
+            <span className="msg-icon">
+              {isError ? '❌' : messageColor === '#22c55e' ? '✅' : messageColor === '#fbbf24' ? '⚠️' : 'ℹ️'}
+            </span>
+            {message || '\u00A0'}
+          </PremiumMessage>
 
-          <RegisterButton type="submit" disabled={isLoading}>
-            <div className="btn-shimmer" />
-            <div className="btn-glow" />
-            <div className="btn-content">
-              {isLoading ? '⏳ Creating Account...' : '🚀 Register & Start Trading'}
-            </div>
-          </RegisterButton>
-        </Form>
-
-        <MessageArea color={messageColor} isError={isError}>
-          <span className="msg-icon">
-            {isError ? '❌' : messageColor === '#22c55e' ? '✅' : messageColor === '#fbbf24' ? '⚠️' : 'ℹ️'}
-          </span>
-          {message || '\u00A0'}
-        </MessageArea>
-
-        <FooterLinks>
-          Already have an account? <Link to="/login">Sign in →</Link>
-        </FooterLinks>
-      </RegisterContainer>
+          <PremiumFooter>
+            Already have an account? <Link to="/login">Sign in →</Link>
+          </PremiumFooter>
+        </FormCard>
+      </FloatingFormContainer>
     </>
   );
 };
