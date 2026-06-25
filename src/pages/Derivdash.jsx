@@ -12,9 +12,10 @@ const DashboardContainer = styled.div`
   background: #0a0f1f;
   overflow: hidden;
 
-  /* Phone: allow scrolling */
+  /* Phone: allow full page scroll */
   @media (max-width: 768px) {
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 `;
 
@@ -23,13 +24,13 @@ const MainContent = styled.div`
   flex: 1;
   overflow: hidden;
 
-  /* Phone: stack vertically, each panel gets equal space */
+  /* Phone: stack vertically with scroll */
   @media (max-width: 768px) {
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
+    flex: none;
+    height: auto;
     gap: 0;
-    flex: 1;
-    min-height: 0; /* 👈 CRITICAL: allows flex children to shrink */
   }
 `;
 
@@ -47,18 +48,18 @@ const LeftPanelWrapper = styled.div`
     min-width: 200px;
   }
 
-  /* Phone: FULL WIDTH at BOTTOM, equal height */
+  /* Phone: FULL WIDTH at BOTTOM */
   @media (max-width: 768px) {
-    flex: 1 1 0; /* 👈 EQUAL FLEX GROW */
+    flex: none;
     width: 100%;
     min-width: unset;
     height: auto;
-    min-height: 0;
+    max-height: 280px;
+    min-height: 180px;
     border-right: none;
     border-top: 1px solid #1e2a3a;
     overflow-y: auto;
     order: 3; /* 👈 BOTTOM */
-    padding: 0;
   }
 `;
 
@@ -70,13 +71,20 @@ const ChartWrapper = styled.div`
   overflow: hidden;
   background: #0d1117;
 
-  /* Phone: TOP (after TopBar), equal height */
+  /* Phone: TOP (after TopBar) */
   @media (max-width: 768px) {
-    flex: 1 1 0; /* 👈 EQUAL FLEX GROW */
-    min-height: 0;
-    height: auto;
+    flex: none;
+    width: 100%;
+    height: 300px;
+    min-height: 250px;
     overflow: hidden;
     order: 0; /* 👈 TOP */
+  }
+
+  /* Small phones */
+  @media (max-width: 480px) {
+    height: 220px;
+    min-height: 180px;
   }
 `;
 
@@ -94,18 +102,24 @@ const RightPanelWrapper = styled.div`
     min-width: 220px;
   }
 
-  /* Phone: FULL WIDTH in MIDDLE, equal height */
+  /* Phone: LANDSCAPE - full width, shorter height */
   @media (max-width: 768px) {
-    flex: 1 1 0; /* 👈 EQUAL FLEX GROW */
+    flex: none;
     width: 100%;
     min-width: unset;
     height: auto;
-    min-height: 0;
+    max-height: 200px;
+    min-height: 150px;
     border-left: none;
     border-top: 1px solid #1e2a3a;
     overflow-y: auto;
-    order: 1; /* 👈 MIDDLE (after Chart) */
-    padding: 0;
+    order: 1; /* 👈 MIDDLE */
+  }
+
+  /* Small phones: even shorter */
+  @media (max-width: 480px) {
+    max-height: 160px;
+    min-height: 120px;
   }
 `;
 
