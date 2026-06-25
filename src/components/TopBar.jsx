@@ -1,5 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+// ============================================
+// KEYFRAMES FOR LIVE DOT
+// ============================================
+const pulseRing = keyframes`
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+`;
 
 // ============================================
 // STYLED COMPONENTS
@@ -38,7 +46,7 @@ const TopBar = styled.div`
   }
 `;
 
-// ===== LEFT SIDE - BRAND =====
+// ===== LEFT SIDE - BRAND WITH LIVE DOT =====
 const Brand = styled.div`
   display: flex;
   align-items: center;
@@ -70,12 +78,53 @@ const Brand = styled.div`
     letter-spacing: 0.5px;
   }
 
+  /* ===== LIVE DOT ===== */
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    position: relative;
+    margin-left: 4px;
+    flex-shrink: 0;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite 0.5s;
+    }
+  }
+
   @media (max-width: 768px) {
     font-size: 1.2rem;
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      &::before { inset: -3px; }
+      &::after { inset: -6px; }
+    }
   }
 
   @media (max-width: 480px) {
     font-size: 1rem;
+    .live-dot {
+      width: 5px;
+      height: 5px;
+      &::before { inset: -2px; }
+      &::after { inset: -5px; }
+    }
   }
 `;
 
@@ -353,6 +402,7 @@ const TopPanel = () => {
           <span className="voltix">Voltix Traders.</span>
           <span className="deriv">deriv</span>
         </span>
+        <span className="live-dot" />
       </Brand>
 
       <RightSection>
