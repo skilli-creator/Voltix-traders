@@ -30,11 +30,7 @@ const MainContent = styled.div`
     overflow-y: auto;
     overflow-x: hidden;
     gap: 0;
-  }
-
-  /* Tablet: adjust spacing */
-  @media (min-width: 769px) and (max-width: 1024px) {
-    gap: 0;
+    flex: 1;
   }
 `;
 
@@ -52,16 +48,18 @@ const LeftPanelWrapper = styled.div`
     min-width: 200px;
   }
 
-  /* Phone: full width, compact */
+  /* Phone: FULL WIDTH at BOTTOM */
   @media (max-width: 768px) {
     flex: none;
     width: 100%;
     min-width: unset;
     height: auto;
-    max-height: 180px;
+    max-height: 160px;
+    min-height: 120px;
     border-right: none;
-    border-bottom: 1px solid #1e2a3a;
+    border-top: 1px solid #1e2a3a;
     overflow-y: auto;
+    order: 3; /* 👈 BOTTOM */
   }
 `;
 
@@ -73,17 +71,18 @@ const ChartWrapper = styled.div`
   overflow: hidden;
   background: #0d1117;
 
-  /* Phone: takes most of the space */
+  /* Phone: TOP (after TopBar) */
   @media (max-width: 768px) {
     flex: 1;
-    min-height: 45vh;
+    min-height: 35vh;
     height: auto;
     overflow: hidden;
+    order: 0; /* 👈 TOP */
   }
 
   /* Small phones: ensure chart is visible */
   @media (max-width: 480px) {
-    min-height: 40vh;
+    min-height: 30vh;
   }
 `;
 
@@ -101,21 +100,24 @@ const RightPanelWrapper = styled.div`
     min-width: 220px;
   }
 
-  /* Phone: full width, at bottom */
+  /* Phone: FULL WIDTH in MIDDLE */
   @media (max-width: 768px) {
     flex: none;
     width: 100%;
     min-width: unset;
     height: auto;
-    max-height: 280px;
+    max-height: 250px;
+    min-height: 180px;
     border-left: none;
     border-top: 1px solid #1e2a3a;
     overflow-y: auto;
+    order: 1; /* 👈 MIDDLE (after Chart) */
   }
 
-  /* Small phones: taller panel */
+  /* Small phones */
   @media (max-width: 480px) {
-    max-height: 320px;
+    max-height: 220px;
+    min-height: 150px;
   }
 `;
 
