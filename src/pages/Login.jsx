@@ -925,8 +925,8 @@ const Login = () => {
       <LoginContainer>
         <BrandSection>
           <LogoWrapper>
-            <span className="logo-icon">⚡</span>
-            <span className="logo-text">Voltix</span>
+            <span className="logo-icon">🔷</span>
+            <span className="logo-text">Voltix Traders</span>
             <span className="live-dot" />
           </LogoWrapper>
           <Title>
