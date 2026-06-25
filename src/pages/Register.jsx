@@ -13,17 +13,16 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Poppins', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(ellipse at 30% 20%, #0a1428, #02040c);
+    background: #060b18;
     color: #f1f5f9;
-    padding: 20px;
+    padding: 12px;
+    overflow: hidden;
     position: relative;
-    overflow-x: hidden;
   }
 
   #root {
@@ -33,173 +32,416 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     min-height: 100vh;
   }
-`;
 
-// ============================================
-// KEYFRAMES
-// ============================================
-const fadeSlideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-// ============================================
-// STYLED COMPONENTS
-// ============================================
-
-// Background grid overlay (replaces body::before)
-const BackgroundGrid = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px);
-  background-size: 35px 35px;
-  pointer-events: none;
-  z-index: 0;
-`;
-
-const RegisterContainer = styled.div`
-  width: 100%;
-  max-width: 480px;
-  padding: 44px 40px;
-  background: rgba(8, 18, 38, 0.85);
-  backdrop-filter: blur(18px);
-  border-radius: 52px;
-  box-shadow: 0 30px 55px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(34, 197, 94, 0.2);
-  text-align: center;
-  position: relative;
-  z-index: 2;
-  animation: ${fadeSlideUp} 0.6s ease;
-
-  @media (max-width: 520px) {
-    padding: 32px 24px;
-    margin: 16px;
-
-    h2 {
-      font-size: 1.6rem;
+  @media (max-width: 480px) {
+    body {
+      padding: 8px;
     }
   }
 `;
 
-const LogoBadge = styled.div`
+// ============================================
+// KEYFRAMES - ADVANCED ANIMATIONS
+// ============================================
+const float = keyframes`
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(3deg); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const rotateGlow = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const fadeSlideUp = keyframes`
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+const pulseRing = keyframes`
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2); opacity: 0; }
+`;
+
+const breathe = keyframes`
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+`;
+
+const slideGlow = keyframes`
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+`;
+
+// ============================================
+// STYLED COMPONENTS - ADVANCED
+// ============================================
+
+// ---- Background Particles ----
+const ParticleContainer = styled.div`
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+`;
+
+const Particle = styled.div`
+  position: absolute;
+  width: ${props => props.size || '4px'};
+  height: ${props => props.size || '4px'};
+  background: ${props => props.color || 'rgba(56, 189, 248, 0.3)'};
+  border-radius: 50%;
+  top: ${props => props.top || '50%'};
+  left: ${props => props.left || '50%'};
+  animation: ${float} ${props => props.duration || '6s'} ease-in-out infinite;
+  animation-delay: ${props => props.delay || '0s'};
+  box-shadow: 0 0 20px ${props => props.color || 'rgba(56, 189, 248, 0.1)'};
+`;
+
+// ---- Background Orbs ----
+const OrbContainer = styled.div`
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+`;
+
+const Orb = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: ${breathe} 6s ease-in-out infinite;
+
+  &:nth-child(1) {
+    width: 350px;
+    height: 350px;
+    top: -150px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.12), transparent 70%);
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    width: 300px;
+    height: 300px;
+    bottom: -120px;
+    left: -80px;
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.08), transparent 70%);
+    animation-delay: -2s;
+  }
+
+  &:nth-child(3) {
+    width: 200px;
+    height: 200px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(192, 132, 252, 0.06), transparent 70%);
+    animation-delay: -4s;
+  }
+
+  @media (max-width: 480px) {
+    &:nth-child(1) {
+      width: 200px;
+      height: 200px;
+      top: -100px;
+      right: -60px;
+    }
+    &:nth-child(2) {
+      width: 180px;
+      height: 180px;
+      bottom: -80px;
+      left: -50px;
+    }
+    &:nth-child(3) {
+      width: 120px;
+      height: 120px;
+    }
+  }
+`;
+
+// ---- Main Container ----
+const RegisterContainer = styled.div`
+  width: 100%;
+  max-width: 420px;
+  padding: 36px 28px 28px;
+  background: rgba(8, 18, 38, 0.6);
+  backdrop-filter: blur(32px);
+  border-radius: 48px;
+  position: relative;
+  z-index: 2;
+  animation: ${fadeSlideUp} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(56, 189, 248, 0.06);
+  box-shadow: 0 32px 80px -16px rgba(0, 0, 0, 0.6);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 49px;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(56, 189, 248, 0.1),
+      transparent,
+      rgba(129, 140, 248, 0.1),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 8s linear infinite;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
+    opacity: 0.3;
+    border-radius: 0 0 4px 4px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 24px 16px 20px;
+    border-radius: 32px;
+    max-width: 100%;
+    &::before {
+      border-radius: 33px;
+    }
+  }
+`;
+
+// ---- Brand Section ----
+const BrandSection = styled.div`
+  text-align: center;
+  margin-bottom: 24px;
+
+  @media (max-width: 480px) {
+    margin-bottom: 18px;
+  }
+`;
+
+const LogoWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  padding: 8px 22px;
-  border-radius: 60px;
-  margin-bottom: 28px;
-  font-weight: 700;
-  font-size: 14px;
-  color: #0a0f1f;
+  padding: 6px 18px 6px 12px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12), rgba(34, 197, 94, 0.04));
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  border-radius: 40px;
+  margin-bottom: 14px;
+
+  .logo-icon {
+    font-size: 16px;
+  }
+
+  .logo-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: #4ade80;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: ${pulseRing} 2s ease-out infinite;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 14px 4px 10px;
+    .logo-text {
+      font-size: 10px;
+    }
+  }
 `;
 
-const Title = styled.h2`
-  font-size: 2rem;
+const Title = styled.h1`
+  font-size: 26px;
   font-weight: 700;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, #ffffff, #94a3b8);
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #f1f5f9, #94a3b8);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  margin-bottom: 4px;
+
+  .highlight {
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 20px;
+  }
 `;
 
 const Subhead = styled.p`
-  font-size: 0.85rem;
-  color: #9ca3af;
-  margin-bottom: 32px;
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 400;
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+  }
 `;
 
-// ===== FORM ELEMENTS =====
+// ---- Form ----
 const Form = styled.form`
   width: 100%;
 `;
 
 const InputGroup = styled.div`
-  margin-bottom: 22px;
+  margin-bottom: 14px;
   text-align: left;
 
-  label {
+  @media (max-width: 480px) {
+    margin-bottom: 10px;
+  }
+`;
+
+const InputLabel = styled.label`
+  font-size: 12px;
+  font-weight: 500;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+
+  .label-icon {
     font-size: 13px;
-    font-weight: 500;
-    color: #cbd5e1;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    margin-bottom: 3px;
+    .label-icon {
+      font-size: 11px;
+    }
+  }
+`;
+
+const InputWrapper = styled.div`
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.06);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  @media (max-width: 480px) {
+    border-radius: 18px;
+  }
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 11px 16px;
+  background: transparent;
+  border: none;
+  color: #f1f5f9;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+
+  &::placeholder {
+    color: #4b5563;
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 9px 12px;
+    font-size: 13px;
+    &::placeholder {
+      font-size: 12px;
+    }
   }
 `;
 
 const NameRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
+  gap: 12px;
 
-  @media (max-width: 520px) {
+  @media (max-width: 480px) {
     grid-template-columns: 1fr;
     gap: 0;
   }
 `;
 
-const Input = styled.input`
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 32px;
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  background: #0a122a;
-  color: white;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.2s ease;
-  font-family: inherit;
-
-  &:focus {
-    border-color: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-    background: #0f1838;
-  }
-
-  &::placeholder {
-    color: #6b7280;
-  }
-`;
-
-const PasswordWrapper = styled.div`
-  position: relative;
-`;
-
 const TogglePasswordBtn = styled.button`
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 18px;
-  color: #9ca3af;
+  font-size: 16px;
+  color: #6b7280;
   padding: 4px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #f1f5f9;
+  }
+
+  @media (max-width: 480px) {
+    right: 10px;
+    font-size: 14px;
+  }
 `;
 
 const PhoneHelper = styled.div`
   font-size: 10px;
-  color: #6b7280;
-  margin-top: 4px;
+  color: #4b5563;
+  margin-top: 3px;
+  padding-left: 4px;
+
+  @media (max-width: 480px) {
+    font-size: 9px;
+  }
 `;
 
-// ===== PASSWORD STRENGTH =====
+// ---- Password Strength ----
 const StrengthMeter = styled.div`
-  margin-top: 8px;
-  height: 4px;
-  background: #1e293b;
+  margin-top: 6px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -208,67 +450,164 @@ const StrengthFill = styled.div`
   width: ${props => props.width || '0%'};
   height: 100%;
   background-color: ${props => props.color || '#ef4444'};
-  transition: width 0.3s ease;
+  transition: width 0.4s ease;
+  border-radius: 4px;
 `;
 
 const StrengthText = styled.div`
   font-size: 10px;
-  margin-top: 6px;
-  color: #9ca3af;
+  margin-top: 4px;
+  color: ${props => props.color || '#6b7280'};
+  transition: color 0.3s ease;
+
+  @media (max-width: 480px) {
+    font-size: 9px;
+  }
 `;
 
-// ===== BUTTONS =====
+// ---- Register Button ----
 const RegisterButton = styled.button`
   width: 100%;
-  padding: 14px;
+  padding: 13px;
   border: none;
-  border-radius: 40px;
-  background: linear-gradient(105deg, #22c55e, #16a34a);
+  border-radius: 32px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #0a0f1f;
-  font-size: 1rem;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  margin-top: 4px;
+  box-shadow: 0 4px 24px rgba(34, 197, 94, 0.15);
 
-  &:hover {
-    transform: translateY(-2px);
-    background: linear-gradient(105deg, #2dd4bf, #22c55e);
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .btn-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    animation: ${slideGlow} 4s ease-in-out infinite;
+  }
+
+  .btn-glow {
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 0;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 40px rgba(34, 197, 94, 0.3);
+  }
+
+  &:hover:not(:disabled) .btn-glow {
+    opacity: 1;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
   }
+
+  @media (max-width: 480px) {
+    padding: 11px;
+    font-size: 14px;
+    border-radius: 28px;
+  }
 `;
 
+// ---- Message ----
 const MessageArea = styled.div`
-  margin-top: 18px;
+  margin-top: 12px;
   font-size: 13px;
-  min-height: 44px;
-  padding: 8px;
-  border-radius: 60px;
-  background: rgba(0, 0, 0, 0.3);
+  min-height: 34px;
+  padding: 8px 14px;
+  border-radius: 24px;
+  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.06)' : 'rgba(0, 0, 0, 0.2)'};
   color: ${props => props.color || '#94a3b8'};
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.08)' : 'transparent'};
+
+  .msg-icon {
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    min-height: 30px;
+    padding: 6px 10px;
+    border-radius: 18px;
+    .msg-icon {
+      font-size: 12px;
+    }
+  }
 `;
 
-const LoginLink = styled.div`
-  margin-top: 28px;
+// ---- Footer Links ----
+const FooterLinks = styled.div`
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
   font-size: 13px;
   color: #94a3b8;
 
   a {
-    color: #22c55e;
+    color: #38bdf8;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
+    transition: color 0.2s ease;
 
     &:hover {
+      color: #7dd3fc;
       text-decoration: underline;
     }
   }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    margin-top: 14px;
+    gap: 4px;
+  }
 `;
+
+// ============================================
+// PARTICLES DATA
+// ============================================
+const particles = [
+  { size: '3px', top: '10%', left: '5%', duration: '8s', delay: '0s', color: 'rgba(56, 189, 248, 0.2)' },
+  { size: '4px', top: '20%', left: '85%', duration: '10s', delay: '1s', color: 'rgba(129, 140, 248, 0.15)' },
+  { size: '2px', top: '40%', left: '10%', duration: '7s', delay: '2s', color: 'rgba(192, 132, 252, 0.2)' },
+  { size: '5px', top: '60%', left: '90%', duration: '12s', delay: '0.5s', color: 'rgba(56, 189, 248, 0.15)' },
+  { size: '3px', top: '75%', left: '15%', duration: '9s', delay: '3s', color: 'rgba(129, 140, 248, 0.2)' },
+  { size: '4px', top: '85%', left: '80%', duration: '11s', delay: '1.5s', color: 'rgba(192, 132, 252, 0.15)' },
+  { size: '2px', top: '5%', left: '50%', duration: '6s', delay: '2.5s', color: 'rgba(56, 189, 248, 0.3)' },
+  { size: '3px', top: '95%', left: '45%', duration: '13s', delay: '0.8s', color: 'rgba(129, 140, 248, 0.15)' },
+];
 
 // ============================================
 // MAIN COMPONENT
@@ -277,7 +616,6 @@ const LoginLink = styled.div`
 const Register = () => {
   const navigate = useNavigate();
   
-  // Form state
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -285,23 +623,20 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  // UI state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [messageColor, setMessageColor] = useState('#94a3b8');
+  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Password strength
   const [strengthScore, setStrengthScore] = useState(0);
   const [strengthWidth, setStrengthWidth] = useState('0%');
   const [strengthColor, setStrengthColor] = useState('#ef4444');
   const [strengthLabel, setStrengthLabel] = useState('Enter a strong password');
 
-  // ✅ FIXED: Vite uses import.meta.env instead of process.env
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-  // Password strength checker
   const checkStrength = (pw) => {
     let score = 0;
     if (pw.length >= 6) score++;
@@ -322,7 +657,6 @@ const Register = () => {
     return score;
   };
 
-  // Handle password input
   useEffect(() => {
     if (password) {
       checkStrength(password);
@@ -333,13 +667,11 @@ const Register = () => {
     }
   }, [password]);
 
-  // Validate phone number
   const validatePhone = (phone) => {
     const digits = phone.replace(/\D/g, '');
     return digits.length >= 8 && digits.length <= 15;
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = (field) => {
     if (field === 'password') {
       setShowPassword(!showPassword);
@@ -348,7 +680,6 @@ const Register = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -359,53 +690,60 @@ const Register = () => {
     const passwordTrimmed = password;
     const confirmPasswordTrimmed = confirmPassword;
 
-    // Validation
     if (!firstNameTrimmed || !lastNameTrimmed) {
-      setMessage('❌ First name and last name are required');
+      setMessage('First name and last name are required');
       setMessageColor('#f87171');
+      setIsError(true);
       return;
     }
 
     if (!phoneTrimmed || !emailTrimmed || !passwordTrimmed) {
-      setMessage('❌ All fields are required');
+      setMessage('All fields are required');
       setMessageColor('#f87171');
+      setIsError(true);
       return;
     }
 
     if (!validatePhone(phoneTrimmed)) {
-      setMessage('❌ Please enter a valid phone number with country code');
+      setMessage('Please enter a valid phone number with country code');
       setMessageColor('#f87171');
+      setIsError(true);
       return;
     }
 
     if (!emailTrimmed.includes('@') || !emailTrimmed.includes('.')) {
-      setMessage('❌ Please enter a valid email address');
+      setMessage('Please enter a valid email address');
       setMessageColor('#f87171');
+      setIsError(true);
       return;
     }
 
     if (passwordTrimmed !== confirmPasswordTrimmed) {
-      setMessage('❌ Passwords do not match');
+      setMessage('Passwords do not match');
       setMessageColor('#f87171');
+      setIsError(true);
       return;
     }
 
     if (passwordTrimmed.length < 6) {
-      setMessage('⚠️ Password must be at least 6 characters');
+      setMessage('Password must be at least 6 characters');
       setMessageColor('#fbbf24');
+      setIsError(false);
       return;
     }
 
     const strength = checkStrength(passwordTrimmed);
     if (strength < 2) {
-      setMessage('⚠️ Please choose a stronger password');
+      setMessage('Please choose a stronger password');
       setMessageColor('#fbbf24');
+      setIsError(false);
       return;
     }
 
     setIsLoading(true);
-    setMessage('⏳ Creating your account...');
+    setMessage('Creating your account...');
     setMessageColor('#94a3b8');
+    setIsError(false);
 
     try {
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
@@ -428,6 +766,7 @@ const Register = () => {
         
         setMessage('✅ Account created! Check your email for verification code.');
         setMessageColor('#22c55e');
+        setIsError(false);
         setIsLoading(false);
         
         setTimeout(() => {
@@ -436,12 +775,14 @@ const Register = () => {
       } else {
         setMessage(`❌ ${data.error || 'Registration failed'}`);
         setMessageColor('#f87171');
+        setIsError(true);
         setIsLoading(false);
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setMessage('❌ Cannot connect to server. Please make sure the backend is running.');
+      setMessage('Cannot connect to server. Please try again.');
       setMessageColor('#f87171');
+      setIsError(true);
       setIsLoading(false);
     }
   };
@@ -449,68 +790,101 @@ const Register = () => {
   return (
     <>
       <GlobalStyle />
-      <BackgroundGrid />
+      
+      <OrbContainer>
+        <Orb />
+        <Orb />
+        <Orb />
+      </OrbContainer>
+
+      <ParticleContainer>
+        {particles.map((p, i) => (
+          <Particle key={i} {...p} />
+        ))}
+      </ParticleContainer>
 
       <RegisterContainer>
-        <LogoBadge>🔷Voltix Traders• Join the future</LogoBadge>
-        <Title>Create Account</Title>
-        <Subhead>Start your automated trading journey</Subhead>
+        <BrandSection>
+          <LogoWrapper>
+            <span className="logo-icon">🔷</span>
+            <span className="logo-text">Voltix Traders</span>
+            <span className="live-dot" />
+          </LogoWrapper>
+          <Title>
+            Create <span className="highlight">Account</span>
+          </Title>
+          <Subhead>Start your automated trading journey</Subhead>
+        </BrandSection>
 
         <Form onSubmit={handleSubmit}>
-          {/* Name Row */}
           <NameRow>
             <InputGroup>
-              <label>📝 First Name</label>
-              <Input
-                type="text"
-                placeholder="John"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-              />
+              <InputLabel>
+                <span className="label-icon">📝</span> First Name
+              </InputLabel>
+              <InputWrapper>
+                <Input
+                  type="text"
+                  placeholder="John"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </InputWrapper>
             </InputGroup>
 
             <InputGroup>
-              <label>📝 Last Name</label>
-              <Input
-                type="text"
-                placeholder="Doe"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
+              <InputLabel>
+                <span className="label-icon">📝</span> Last Name
+              </InputLabel>
+              <InputWrapper>
+                <Input
+                  type="text"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </InputWrapper>
             </InputGroup>
           </NameRow>
 
-          {/* Phone Number */}
           <InputGroup>
-            <label>📞 Phone Number</label>
-            <Input
-              type="tel"
-              placeholder="+1 234 567 8900"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              required
-            />
+            <InputLabel>
+              <span className="label-icon">📞</span> Phone Number
+            </InputLabel>
+            <InputWrapper>
+              <Input
+                type="tel"
+                placeholder="+1 234 567 8900"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+              />
+            </InputWrapper>
             <PhoneHelper>Include country code (e.g., +1, +44)</PhoneHelper>
           </InputGroup>
 
-          {/* Email */}
           <InputGroup>
-            <label>📧 Email Address</label>
-            <Input
-              type="email"
-              placeholder="trader@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <InputLabel>
+              <span className="label-icon">📧</span> Email Address
+            </InputLabel>
+            <InputWrapper>
+              <Input
+                type="email"
+                placeholder="trader@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </InputWrapper>
           </InputGroup>
 
-          {/* Password */}
           <InputGroup>
-            <label>🔒 Password</label>
-            <PasswordWrapper>
+            <InputLabel>
+              <span className="label-icon">🔒</span> Password
+            </InputLabel>
+            <InputWrapper>
               <Input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Create a strong password"
@@ -525,19 +899,21 @@ const Register = () => {
               >
                 {showPassword ? '🙈' : '👁️'}
               </TogglePasswordBtn>
-            </PasswordWrapper>
+            </InputWrapper>
             
-            {/* Password Strength Meter */}
             <StrengthMeter>
               <StrengthFill width={strengthWidth} color={strengthColor} />
             </StrengthMeter>
-            <StrengthText>{strengthLabel}</StrengthText>
+            <StrengthText color={strengthColor}>
+              {strengthLabel}
+            </StrengthText>
           </InputGroup>
 
-          {/* Confirm Password */}
           <InputGroup>
-            <label>✓ Confirm Password</label>
-            <PasswordWrapper>
+            <InputLabel>
+              <span className="label-icon">✓</span> Confirm Password
+            </InputLabel>
+            <InputWrapper>
               <Input
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm your password"
@@ -552,24 +928,28 @@ const Register = () => {
               >
                 {showConfirmPassword ? '🙈' : '👁️'}
               </TogglePasswordBtn>
-            </PasswordWrapper>
+            </InputWrapper>
           </InputGroup>
 
-          {/* Submit Button */}
           <RegisterButton type="submit" disabled={isLoading}>
-            {isLoading ? '⏳ Creating Account...' : '🚀 Register & Start Trading'}
+            <div className="btn-shimmer" />
+            <div className="btn-glow" />
+            <div className="btn-content">
+              {isLoading ? '⏳ Creating Account...' : '🚀 Register & Start Trading'}
+            </div>
           </RegisterButton>
         </Form>
 
-        {/* Message Area */}
-        <MessageArea color={messageColor}>
+        <MessageArea color={messageColor} isError={isError}>
+          <span className="msg-icon">
+            {isError ? '❌' : messageColor === '#22c55e' ? '✅' : messageColor === '#fbbf24' ? '⚠️' : 'ℹ️'}
+          </span>
           {message || '\u00A0'}
         </MessageArea>
 
-        {/* Login Link */}
-        <LoginLink>
+        <FooterLinks>
           Already have an account? <Link to="/login">Sign in →</Link>
-        </LoginLink>
+        </FooterLinks>
       </RegisterContainer>
     </>
   );
