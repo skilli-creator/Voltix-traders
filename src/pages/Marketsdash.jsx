@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
 // ============================================
@@ -171,11 +171,10 @@ const Topbar = styled.div`
   }
 `;
 
-const Brand = styled(Link)`
+const Brand = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  text-decoration: none;
   font-size: 1.4rem;
   font-weight: 800;
 
@@ -905,7 +904,7 @@ const Dashboard = () => {
       </BackgroundContainer>
 
       <Topbar>
-        <Brand to="/">
+        <Brand>
           <span className="logo-icon">🔷</span>
           <span className="logo-text">Voltix Traders</span>
           <span className="live-dot" />
