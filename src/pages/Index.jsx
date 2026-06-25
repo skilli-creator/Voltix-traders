@@ -50,9 +50,9 @@ const fadeSlideUp = keyframes`
   to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
-const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.1); }
-  50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.2); }
+const pulseRing = keyframes`
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
 `;
 
 const breathe = keyframes`
@@ -60,24 +60,14 @@ const breathe = keyframes`
   50% { opacity: 0.3; transform: scale(1.05); }
 `;
 
-const rotateGlow = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
 const slideGlow = keyframes`
   0% { transform: translateX(-100%) skewX(-20deg); }
   100% { transform: translateX(200%) skewX(-20deg); }
 `;
 
-const textReveal = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
-
-const marquee = keyframes`
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+const pulseGlow = keyframes`
+  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.2); }
 `;
 
 // ============================================
@@ -208,10 +198,38 @@ const Logo = styled(Link)`
     font-size: 1.2rem;
   }
 
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    position: relative;
+    margin-left: 4px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite 0.5s;
+    }
+  }
+
   @media (max-width: 768px) {
     font-size: 1.3rem;
     .logo-icon { font-size: 1.4rem; }
     .logo-traders { font-size: 1rem; }
+    .live-dot { width: 6px; height: 6px; }
   }
 `;
 
@@ -401,7 +419,7 @@ const Button = styled(Link)`
 `;
 
 // ============================================
-// PLATFORM CARDS (Deriv, Binance, Forex)
+// PLATFORM SHOWCASE WITH IMAGES
 // ============================================
 const PlatformsSection = styled.section`
   padding: 60px 0;
@@ -460,13 +478,11 @@ const PlatformGrid = styled.div`
 const PlatformCard = styled.div`
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(12px);
-  padding: 32px 28px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.03);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  text-align: center;
-  position: relative;
   overflow: hidden;
+  position: relative;
 
   &::before {
     content: '';
@@ -478,11 +494,12 @@ const PlatformCard = styled.div`
     background: ${props => props.color || 'linear-gradient(90deg, #22c55e, #38bdf8)'};
     opacity: 0;
     transition: opacity 0.4s ease;
+    z-index: 1;
   }
 
   &:hover {
     transform: translateY(-8px);
-    border-color: ${props => props.color ? props.color.replace('gradient', '') : 'rgba(34, 197, 94, 0.08)'};
+    border-color: rgba(34, 197, 94, 0.08);
     background: rgba(255, 255, 255, 0.04);
     box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
   }
@@ -491,47 +508,75 @@ const PlatformCard = styled.div`
     opacity: 1;
   }
 
-  .platform-icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+  .platform-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
     display: block;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .platform-content {
+    padding: 24px 20px 20px;
+  }
+
+  .platform-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .platform-icon {
+    font-size: 32px;
+  }
+
+  .platform-badge {
+    font-size: 0.6rem;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
 
   .platform-name {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #f1f5f9;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .platform-desc {
     font-size: 0.85rem;
     color: #94a3b8;
     line-height: 1.7;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   .platform-features {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 6px;
   }
 
   .feature-tag {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     padding: 3px 10px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.04);
     color: #94a3b8;
   }
 
   @media (max-width: 768px) {
-    padding: 24px 18px;
-    .platform-icon { font-size: 36px; }
-    .platform-name { font-size: 1.1rem; }
+    .platform-image { height: 140px; }
+    .platform-content { padding: 16px 16px 14px; }
+    .platform-name { font-size: 1rem; }
     .platform-desc { font-size: 0.8rem; }
+    .platform-icon { font-size: 26px; }
   }
 `;
 
@@ -590,7 +635,62 @@ const FeatureCard = styled.div`
 `;
 
 // ============================================
-// STATS SECTION
+// HOW IT WORKS
+// ============================================
+const StepsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+`;
+
+const StepCard = styled.div`
+  text-align: center;
+  padding: 24px;
+
+  .step-number {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0a0f1f;
+    margin: 0 auto 14px;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #f1f5f9;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    .step-number { width: 40px; height: 40px; font-size: 15px; }
+    h3 { font-size: 1rem; }
+    p { font-size: 0.8rem; }
+  }
+`;
+
+// ============================================
+// STATS
 // ============================================
 const StatsGrid = styled.div`
   display: grid;
@@ -723,18 +823,42 @@ const FooterCol = styled.div`
   }
 
   .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 1.2rem;
     font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .footer-logo-text {
     background: linear-gradient(135deg, #f1f5f9, #94a3b8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    margin-bottom: 8px;
+  }
+
+  .footer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite;
+    }
   }
 
   @media (max-width: 480px) {
     h4 { font-size: 0.8rem; }
     p, a { font-size: 0.7rem; }
+    .footer-logo { justify-content: center; }
   }
 `;
 
@@ -780,6 +904,16 @@ const FooterBottom = styled.div`
 `;
 
 // ============================================
+// IMAGE URLS (Unsplash - Free)
+// ============================================
+const IMAGES = {
+  deriv: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop',
+  binance: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800&h=400&fit=crop',
+  forex: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop',
+  hero: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop',
+};
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 
@@ -816,10 +950,12 @@ const Index = () => {
                 <span className="logo-icon">🔷</span>
                 <span className="logo-text">Voltix</span>
                 <span className="logo-traders">Traders</span>
+                <span className="live-dot" />
               </Logo>
               <NavLinks>
                 <a href="#platforms">Platforms</a>
                 <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
                 <a href="#stats">Stats</a>
                 <Link to="/login">Login</Link>
               </NavLinks>
@@ -862,48 +998,84 @@ const Index = () => {
             </SectionTitle>
             <SectionSub>Connect and trade on the world's leading financial markets</SectionSub>
             <PlatformGrid>
+              {/* Deriv */}
               <PlatformCard color="linear-gradient(90deg, #a855f7, #7c3aed)">
-                <span className="platform-icon">🔷</span>
-                <div className="platform-name">Deriv</div>
-                <div className="platform-desc">
-                  Trade synthetic indices, forex, and cryptocurrencies with low spreads and
-                  high leverage on Deriv's award-winning platform.
-                </div>
-                <div className="platform-features">
-                  <span className="feature-tag">Synthetic Indices</span>
-                  <span className="feature-tag">Forex</span>
-                  <span className="feature-tag">Crypto</span>
-                  <span className="feature-tag">High Leverage</span>
+                <img
+                  src={IMAGES.deriv}
+                  alt="Deriv Trading Platform"
+                  className="platform-image"
+                  loading="lazy"
+                />
+                <div className="platform-content">
+                  <div className="platform-header">
+                    <span className="platform-icon">🔷</span>
+                    <span className="platform-badge">Synthetic Indices</span>
+                  </div>
+                  <div className="platform-name">Deriv</div>
+                  <div className="platform-desc">
+                    Trade synthetic indices, forex, and cryptocurrencies with low spreads and
+                    high leverage on Deriv's award-winning platform.
+                  </div>
+                  <div className="platform-features">
+                    <span className="feature-tag">Synthetic Indices</span>
+                    <span className="feature-tag">Forex</span>
+                    <span className="feature-tag">Crypto</span>
+                    <span className="feature-tag">High Leverage</span>
+                  </div>
                 </div>
               </PlatformCard>
 
+              {/* Binance */}
               <PlatformCard color="linear-gradient(90deg, #f7931a, #e68a00)">
-                <span className="platform-icon">🟠</span>
-                <div className="platform-name">Binance</div>
-                <div className="platform-desc">
-                  Access the world's largest cryptocurrency exchange with deep liquidity,
-                  hundreds of trading pairs, and advanced order types.
-                </div>
-                <div className="platform-features">
-                  <span className="feature-tag">Spot Trading</span>
-                  <span className="feature-tag">Futures</span>
-                  <span className="feature-tag">Margin</span>
-                  <span className="feature-tag">500+ Pairs</span>
+                <img
+                  src={IMAGES.binance}
+                  alt="Binance Crypto Exchange"
+                  className="platform-image"
+                  loading="lazy"
+                />
+                <div className="platform-content">
+                  <div className="platform-header">
+                    <span className="platform-icon">🟠</span>
+                    <span className="platform-badge">Crypto Exchange</span>
+                  </div>
+                  <div className="platform-name">Binance</div>
+                  <div className="platform-desc">
+                    Access the world's largest cryptocurrency exchange with deep liquidity,
+                    hundreds of trading pairs, and advanced order types.
+                  </div>
+                  <div className="platform-features">
+                    <span className="feature-tag">Spot Trading</span>
+                    <span className="feature-tag">Futures</span>
+                    <span className="feature-tag">Margin</span>
+                    <span className="feature-tag">500+ Pairs</span>
+                  </div>
                 </div>
               </PlatformCard>
 
+              {/* Forex */}
               <PlatformCard color="linear-gradient(90deg, #2563eb, #1d4ed8)">
-                <span className="platform-icon">💱</span>
-                <div className="platform-name">Forex</div>
-                <div className="platform-desc">
-                  Trade major, minor, and exotic currency pairs with institutional-grade
-                  execution and real-time market analysis.
-                </div>
-                <div className="platform-features">
-                  <span className="feature-tag">Major Pairs</span>
-                  <span className="feature-tag">Exotic Pairs</span>
-                  <span className="feature-tag">Low Spreads</span>
-                  <span className="feature-tag">24/5 Trading</span>
+                <img
+                  src={IMAGES.forex}
+                  alt="Forex Trading"
+                  className="platform-image"
+                  loading="lazy"
+                />
+                <div className="platform-content">
+                  <div className="platform-header">
+                    <span className="platform-icon">💱</span>
+                    <span className="platform-badge">Currency Trading</span>
+                  </div>
+                  <div className="platform-name">Forex</div>
+                  <div className="platform-desc">
+                    Trade major, minor, and exotic currency pairs with institutional-grade
+                    execution and real-time market analysis.
+                  </div>
+                  <div className="platform-features">
+                    <span className="feature-tag">Major Pairs</span>
+                    <span className="feature-tag">Exotic Pairs</span>
+                    <span className="feature-tag">Low Spreads</span>
+                    <span className="feature-tag">24/5 Trading</span>
+                  </div>
                 </div>
               </PlatformCard>
             </PlatformGrid>
@@ -952,8 +1124,35 @@ const Index = () => {
           </Container>
         </section>
 
+        {/* ===== HOW IT WORKS ===== */}
+        <section id="how-it-works" style={{ padding: '60px 0', background: 'rgba(255,255,255,0.005)' }}>
+          <Container>
+            <SectionTitle>
+              <span className="gradient">How It Works</span>
+            </SectionTitle>
+            <SectionSub>Get started in three simple steps</SectionSub>
+            <StepsGrid>
+              <StepCard>
+                <div className="step-number">1</div>
+                <h3>Create Account</h3>
+                <p>Sign up and access your trading dashboard instantly. No credit card required.</p>
+              </StepCard>
+              <StepCard>
+                <div className="step-number">2</div>
+                <h3>Connect Exchange</h3>
+                <p>Link your Deriv, Binance, or Forex accounts via secure API connection.</p>
+              </StepCard>
+              <StepCard>
+                <div className="step-number">3</div>
+                <h3>Start Trading</h3>
+                <p>Deploy AI bots, monitor markets, and grow your portfolio in real-time.</p>
+              </StepCard>
+            </StepsGrid>
+          </Container>
+        </section>
+
         {/* ===== STATS ===== */}
-        <section id="stats" style={{ padding: '60px 0', background: 'rgba(255,255,255,0.005)' }}>
+        <section id="stats" style={{ padding: '60px 0' }}>
           <Container>
             <SectionTitle>
               <span className="gradient">Platform Growth</span>
@@ -999,7 +1198,11 @@ const Index = () => {
         <PremiumFooter>
           <FooterGrid>
             <FooterCol>
-              <div className="footer-logo">🔷 Voltix Traders</div>
+              <div className="footer-logo">
+                <span>🔷</span>
+                <span className="footer-logo-text">Voltix Traders</span>
+                <span className="footer-dot" />
+              </div>
               <p>The ultimate multi-platform trading automation platform.</p>
               <SocialIcons>
                 <span>🐦</span>
