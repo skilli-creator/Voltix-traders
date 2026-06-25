@@ -72,22 +72,6 @@ const pulseGlow = keyframes`
   50% { box-shadow: 0 0 50px rgba(247, 147, 26, 0.2); }
 `;
 
-const float = keyframes`
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-12px) scale(1.02); }
-`;
-
-const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const shimmerBorder = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-`;
-
 const countUp = keyframes`
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -300,7 +284,7 @@ const BackButton = styled(Link)`
     font-size: 11px;
     padding: 6px 12px;
   }
-};
+`;
 
 // ============================================
 // MAIN CONTENT
@@ -940,12 +924,12 @@ const Binancehome = () => {
   const sentimentRef = useRef(null);
 
   const sentiments = [
-    "📊 AI Sentiment: Strong buy signal on ETH/BTC pair",
-    "🔮 Short-term volatility expected – hedge mode active",
-    "💡 Whale accumulation detected on BNB chain",
-    "🔵 High confidence: Layer 2 tokens showing strength",
-    "📈 Bullish divergence detected on BTC dominance",
-    "🔴 Bearish signal: Altcoin season cooling off"
+    '📊 AI Sentiment: Strong buy signal on ETH/BTC pair',
+    '🔮 Short-term volatility expected – hedge mode active',
+    '💡 Whale accumulation detected on BNB chain',
+    '🔵 High confidence: Layer 2 tokens showing strength',
+    '📈 Bullish divergence detected on BTC dominance',
+    '🔴 Bearish signal: Altcoin season cooling off'
   ];
 
   useEffect(() => {
