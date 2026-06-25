@@ -13,216 +13,301 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Poppins', sans-serif;
-    background: radial-gradient(ellipse at 30% 20%, #0c1a2f, #03050c);
-    color: #f0f4ff;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #050a18;
+    color: #f1f5f9;
     min-height: 100vh;
-    position: relative;
     overflow-x: hidden;
+    position: relative;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0f1f;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #22c55e, #38bdf8);
+    border-radius: 4px;
   }
 `;
 
 // ============================================
 // KEYFRAMES
 // ============================================
-const fadeSlideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const pulseEffect = keyframes`
-  0% { opacity: 0.8; transform: scale(0.95); }
-  100% { opacity: 0; transform: scale(1.2); }
+const floatIn = keyframes`
+  0% { opacity: 0; transform: translateY(30px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
 const shimmer = keyframes`
-  0% { left: -100%; }
-  100% { left: 100%; }
+  0% { background-position: -300% center; }
+  100% { background-position: 300% center; }
+`;
+
+const pulseRing = keyframes`
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+`;
+
+const breathe = keyframes`
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(1.05); }
+`;
+
+const slideGlow = keyframes`
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+`;
+
+const pulseGlow = keyframes`
+  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.1); }
+  50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.2); }
+`;
+
+const countUp = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const rotateGlow = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 `;
 
 // ============================================
-// STYLED COMPONENTS
+// BACKGROUND
 // ============================================
-
-// Background overlay
-const BackgroundOverlay = styled.div`
+const BackgroundContainer = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
+  inset: 0;
   pointer-events: none;
   z-index: 0;
+  overflow: hidden;
 `;
 
-// ===== TOPBAR =====
+const GradientOrb = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: ${breathe} 8s ease-in-out infinite;
+
+  &:nth-child(1) {
+    width: 500px;
+    height: 500px;
+    top: -200px;
+    right: -150px;
+    background: radial-gradient(circle, rgba(34, 197, 94, 0.06), transparent 70%);
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    width: 400px;
+    height: 400px;
+    bottom: -150px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.05), transparent 70%);
+    animation-delay: -2.5s;
+  }
+
+  &:nth-child(3) {
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.03), transparent 70%);
+    animation-delay: -5s;
+  }
+
+  @media (max-width: 768px) {
+    &:nth-child(1) { width: 250px; height: 250px; top: -100px; right: -80px; }
+    &:nth-child(2) { width: 200px; height: 200px; bottom: -80px; left: -60px; }
+    &:nth-child(3) { width: 150px; height: 150px; }
+  }
+`;
+
+const GridOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(56, 189, 248, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.015) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.3;
+`;
+
+const GlowLine = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, transparent);
+  opacity: 0.1;
+`;
+
+// ============================================
+// TOPBAR
+// ============================================
 const Topbar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 48px;
-  background: rgba(3, 10, 25, 0.75);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 14px 32px;
+  background: rgba(5, 10, 24, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.06);
   position: sticky;
   top: 0;
   z-index: 100;
+  animation: ${floatIn} 0.6s ease;
 
-  @media (max-width: 680px) {
-    padding: 14px 20px;
+  @media (max-width: 768px) {
+    padding: 12px 16px;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 `;
 
-const Brand = styled.div`
-  h2 {
-    font-size: 1.7rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ffffff, #38bdf8);
+const Brand = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 800;
+
+  .logo-icon {
+    font-size: 1.6rem;
+  }
+
+  .logo-text {
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    letter-spacing: -0.5px;
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite;
+    }
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    .logo-icon { font-size: 1.3rem; }
+    .live-dot { width: 6px; height: 6px; }
   }
 `;
 
 const ProfileArea = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: rgba(15, 30, 55, 0.6);
-  padding: 6px 18px;
-  border-radius: 60px;
-  backdrop-filter: blur(4px);
+  gap: 14px;
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
 `;
 
 const Greeting = styled.span`
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: #cbd5e6;
+  color: #94a3b8;
+
+  .highlight {
+    color: #f1f5f9;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+  }
 `;
 
 const ProfilePic = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 2px solid #38bdf8;
+  border: 2px solid rgba(56, 189, 248, 0.15);
   object-fit: cover;
-  background: #1e293b;
+  background: #1a2332;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #38bdf8;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
 `;
 
 const LogoutButton = styled.button`
-  background: rgba(239, 68, 68, 0.2);
-  border: 1px solid #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
   color: #ef4444;
   padding: 6px 14px;
-  border-radius: 40px;
+  border-radius: 30px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 
   &:hover {
     background: #ef4444;
-    color: white;
+    color: #0a0f1f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    padding: 4px 10px;
   }
 `;
 
-// ===== CONTAINER =====
+// ============================================
+// MAIN CONTENT
+// ============================================
 const Container = styled.div`
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 40px 24px 80px;
+  padding: 30px 24px 60px;
   position: relative;
   z-index: 2;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px 40px;
+  }
 `;
 
-// ===== WELCOME BANNER =====
+// ---- Welcome Banner ----
 const WelcomeBanner = styled.div`
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(56, 189, 248, 0.1));
-  border-radius: 20px;
-  padding: 20px 30px;
-  margin-bottom: 30px;
-  text-align: center;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 8px;
-  }
-
-  p {
-    color: #9ca3af;
-  }
-`;
-
-// ===== SLOGAN =====
-const Slogan = styled.div`
-  text-align: center;
-  font-size: 1.3rem;
-  font-weight: 500;
-  background: linear-gradient(120deg, #e2e8f0, #94a3b8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 16px;
-  letter-spacing: -0.2px;
-  animation: ${fadeSlideUp} 0.6s ease;
-  transition: opacity 0.3s ease;
-`;
-
-const MarketIntro = styled.div`
-  text-align: center;
-  margin: 20px 0 40px;
-  font-size: 1rem;
-  color: #9ca9cc;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: 500;
-`;
-
-// ===== MARKET GRID =====
-const MarketContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const MarketGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 280px);
-  gap: 38px;
-
-  @media (max-width: 900px) {
-    grid-template-columns: repeat(2, 280px);
-    gap: 30px;
-  }
-
-  @media (max-width: 680px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-`;
-
-const MarketCard = styled.div`
-  background: linear-gradient(145deg, #0a142e, #050e1f);
-  border-radius: 28px;
-  padding: 42px 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.04), rgba(56, 189, 248, 0.04));
+  border-radius: 24px;
+  padding: 24px 32px;
+  margin-bottom: 28px;
+  border: 1px solid rgba(56, 189, 248, 0.04);
+  animation: ${floatIn} 0.7s ease;
   position: relative;
   overflow: hidden;
 
@@ -230,156 +315,440 @@ const MarketCard = styled.div`
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.1), transparent);
-    transition: left 0.5s;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, transparent);
+    opacity: 0.3;
   }
 
-  &:hover::before {
-    left: 100%;
+  h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+
+    .highlight {
+      background: linear-gradient(135deg, #22c55e, #38bdf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+
+  p {
+    color: #94a3b8;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 18px 20px;
+    h3 { font-size: 1.1rem; }
+    p { font-size: 0.8rem; }
+  }
+`;
+
+// ---- Slogan ----
+const Slogan = styled.div`
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  transition: opacity 0.3s ease;
+  padding: 0 16px;
+
+  .quote-mark {
+    color: #22c55e;
+    font-size: 1.6rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    .quote-mark { font-size: 1.2rem; }
+  }
+`;
+
+const MarketIntro = styled.div`
+  text-align: center;
+  margin: 16px 0 32px;
+  font-size: 0.75rem;
+  color: #4b5563;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+
+  .accent {
+    color: #38bdf8;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.65rem;
+    margin: 12px 0 20px;
+  }
+`;
+
+// ---- Market Grid ----
+const MarketGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+`;
+
+const MarketCard = styled.div`
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  padding: 32px 24px 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+  animation: ${floatIn} 0.8s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: ${props => props.color || 'linear-gradient(90deg, #22c55e, #38bdf8)'};
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(56, 189, 248, 0.02),
+      transparent,
+      rgba(129, 140, 248, 0.02),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 20s linear infinite;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
   &:hover {
-    transform: translateY(-10px) scale(1.02);
-    border-color: #38bdf8;
-    box-shadow: 0 30px 45px -15px rgba(56, 189, 248, 0.3);
-    background: linear-gradient(145deg, #11203f, #07112a);
+    transform: translateY(-8px) scale(1.01);
+    border-color: rgba(56, 189, 248, 0.06);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &:hover::after {
+    opacity: 1;
   }
 
   &:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
+  }
+
+  .card-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+    transition: left 0.6s ease;
+    pointer-events: none;
+  }
+
+  &:hover .card-shimmer {
+    left: 100%;
+  }
+
+  .market-icon {
+    font-size: 44px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .market-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+  }
+
+  .market-desc {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    line-height: 1.6;
+  }
+
+  .market-badge {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.6rem;
+    padding: 3px 12px;
+    border-radius: 20px;
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.06);
+    color: #4ade80;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .market-status {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.6rem;
+    color: #4ade80;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseGlow} 2s ease-in-out infinite;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 24px 18px 20px;
+    .market-icon { font-size: 36px; }
+    .market-title { font-size: 1.2rem; }
+    .market-desc { font-size: 0.75rem; }
+    .market-status { font-size: 0.5rem; top: 10px; right: 10px; }
   }
 `;
 
-const MarketIcon = styled.div`
-  font-size: 52px;
-  margin-bottom: 20px;
-  display: inline-block;
-  transition: 0.2s;
-`;
-
-const MarketTitle = styled.div`
-  font-size: 26px;
-  font-weight: 800;
-  margin-bottom: 12px;
-  background: linear-gradient(135deg, #ffffff, #b9e0ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-`;
-
-const MarketDesc = styled.div`
-  color: #9ca3cf;
-  font-size: 14px;
-  line-height: 1.5;
-`;
-
-// ===== STATS TICKER =====
+// ---- Stats Ticker ----
 const StatsTicker = styled.div`
-  margin-top: 55px;
-  background: rgba(5, 15, 30, 0.6);
+  margin-top: 40px;
+  background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(12px);
-  border-radius: 60px;
-  padding: 14px 24px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-  border: 1px solid #38bdf830;
+  border-radius: 20px;
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  animation: ${floatIn} 1s ease;
 
-  @media (max-width: 680px) {
-    flex-direction: column;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    padding: 12px 16px;
     gap: 12px;
-    border-radius: 32px;
+    border-radius: 16px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px 12px;
   }
 `;
 
 const StatBlock = styled.div`
-  flex: 1;
   text-align: center;
+  padding: 4px 0;
+  position: relative;
 
-  @media (max-width: 680px) {
-    border-bottom: 1px solid #1e2f4e;
-    padding-bottom: 8px;
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.03);
+  }
 
-    &:last-child {
-      border-bottom: none;
+  &:last-child::after {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    &:nth-child(2)::after {
+      display: none;
     }
+  }
+
+  @media (max-width: 480px) {
+    padding: 2px 0;
   }
 `;
 
 const StatLabel = styled.div`
-  font-size: 11px;
-  color: #7e8bb3;
-  letter-spacing: 1px;
+  font-size: 0.65rem;
+  color: #4b5563;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+
+  @media (max-width: 768px) {
+    font-size: 0.55rem;
+  }
 `;
 
 const StatNumber = styled.div`
-  font-size: 20px;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: #38bdf8;
+  background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ${countUp} 0.6s ease;
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+  }
 `;
 
-// ===== FOOTER =====
+// ============================================
+// FOOTER
+// ============================================
 const PremiumFooter = styled.footer`
-  margin-top: 70px;
-  background: linear-gradient(0deg, #020617, #030816);
-  border-top: 1px solid #1e2f4e;
-  padding: 44px 32px 28px;
-  position: relative;
-  z-index: 2;
+  margin-top: 50px;
+  background: rgba(3, 7, 18, 0.9);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  padding: 40px 32px 24px;
+
+  @media (max-width: 768px) {
+    padding: 28px 16px 18px;
+    margin-top: 30px;
+  }
 `;
 
-const FooterContent = styled.div`
-  max-width: 1200px;
+const FooterGrid = styled.div`
+  max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 40px;
-  text-align: left;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 32px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    text-align: center;
+  }
 `;
 
 const FooterCol = styled.div`
   h4 {
-    color: #38bdf8;
-    font-size: 1.1rem;
-    margin-bottom: 20px;
+    color: #f1f5f9;
+    font-size: 0.85rem;
     font-weight: 600;
-    border-left: 3px solid #38bdf8;
-    padding-left: 12px;
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
   }
 
   p, a {
-    font-size: 0.8rem;
-    color: #9aa9c9;
-    line-height: 1.7;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.8;
     text-decoration: none;
     display: block;
-    margin-bottom: 8px;
-    transition: 0.2s;
+    transition: all 0.3s ease;
   }
 
   a:hover {
-    color: #38bdf8;
-    transform: translateX(5px);
-    display: inline-block;
+    color: #22c55e;
+    transform: translateX(4px);
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .footer-logo-text {
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .footer-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #22c55e;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 2s ease-out infinite;
+    }
+  }
+
+  @media (max-width: 480px) {
+    h4 { font-size: 0.75rem; }
+    p, a { font-size: 0.7rem; }
+    .footer-logo { justify-content: center; }
   }
 `;
 
 const SocialIcons = styled.div`
   display: flex;
-  gap: 18px;
-  margin-top: 12px;
+  gap: 12px;
+  margin-top: 8px;
+
+  @media (max-width: 480px) {
+    justify-content: center;
+  }
 
   span {
-    font-size: 20px;
+    font-size: 16px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.3s ease;
+    color: #94a3b8;
 
     &:hover {
-      color: #38bdf8;
+      color: #22c55e;
       transform: translateY(-3px);
     }
   }
@@ -387,11 +756,21 @@ const SocialIcons = styled.div`
 
 const FooterBottom = styled.div`
   text-align: center;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #1e2a44;
-  font-size: 12px;
-  color: #5f6e97;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  font-size: 0.65rem;
+  color: #4b5563;
+
+  span {
+    color: #22c55e;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.55rem;
+    margin-top: 20px;
+    padding-top: 12px;
+  }
 `;
 
 // ============================================
@@ -417,10 +796,6 @@ const Dashboard = () => {
     '"Emotions are the enemy of good trading."'
   ];
 
-  // ✅ FIXED: No process.env needed in this component (no API calls)
-  // All good here!
-
-  // Get user data from localStorage
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -437,27 +812,15 @@ const Dashboard = () => {
     setGreeting(fullName);
   }, [navigate]);
 
-  // Dynamic stats updater
   useEffect(() => {
     const statsInterval = setInterval(() => {
-      setVolume(prev => {
-        let newVol = prev + (Math.random() - 0.5) * 2.4;
-        return Math.max(165, Math.min(220, newVol));
-      });
-      setSignals(prev => {
-        let newSignals = prev + Math.floor(Math.random() * 5) - 1;
-        return Math.max(120, Math.min(320, newSignals));
-      });
-      setUsers(prev => {
-        let newUsers = prev + Math.floor(Math.random() * 7) - 2;
-        return Math.max(2500, Math.min(3600, newUsers));
-      });
+      setVolume(prev => Math.max(165, Math.min(220, prev + (Math.random() - 0.5) * 2.4)));
+      setSignals(prev => Math.max(120, Math.min(320, prev + Math.floor(Math.random() * 5) - 1)));
+      setUsers(prev => Math.max(2500, Math.min(3600, prev + Math.floor(Math.random() * 7) - 2)));
     }, 5500);
-
     return () => clearInterval(statsInterval);
   }, []);
 
-  // Timestamp updater
   useEffect(() => {
     const updateTimestamp = () => {
       const now = new Date();
@@ -468,7 +831,6 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Rotate quotes
   useEffect(() => {
     const quoteInterval = setInterval(() => {
       quoteIndexRef.current = (quoteIndexRef.current + 1) % quotes.length;
@@ -481,48 +843,45 @@ const Dashboard = () => {
         }, 200);
       }
     }, 7000);
-
     return () => clearInterval(quoteInterval);
   }, [quotes]);
 
-  // Handle market navigation
   const openMarket = (market, e) => {
     const card = e.currentTarget;
-    const btnEffect = document.createElement('div');
-    btnEffect.style.cssText = `
+    const ripple = document.createElement('div');
+    ripple.style.cssText = `
       position: absolute;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle, rgba(56,189,248,0.4) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(56,189,248,0.15), transparent 70%);
       top: 0;
       left: 0;
-      border-radius: 28px;
+      border-radius: 24px;
       pointer-events: none;
-      animation: pulseEffect 0.4s ease-out;
+      animation: fadeOut 0.5s ease-out forwards;
     `;
-    card.style.position = 'relative';
-    card.appendChild(btnEffect);
-    setTimeout(() => btnEffect.remove(), 400);
+    card.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 500);
 
     setTimeout(() => {
-      if (market === 'deriv') navigate('/derivdash');
-      else if (market === 'binance') navigate('/binancehome');
-      else if (market === 'forex') navigate('/forexhome');
-    }, 120);
+      const routes = {
+        deriv: '/derivdash',
+        binance: '/binancehome',
+        forex: '/forexhome'
+      };
+      navigate(routes[market]);
+    }, 150);
   };
 
-  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
   };
 
-  // Get avatar URL
   const getAvatarUrl = () => {
     if (user?.email) {
       const email = user.email.trim().toLowerCase();
-      // Using a simple hash for avatar
       let hash = 0;
       for (let i = 0; i < email.length; i++) {
         hash = email.charCodeAt(i) + ((hash << 5) - hash);
@@ -536,82 +895,121 @@ const Dashboard = () => {
   return (
     <>
       <GlobalStyle />
-      <BackgroundOverlay />
 
-      {/* Topbar */}
+      <BackgroundContainer>
+        <GradientOrb />
+        <GradientOrb />
+        <GradientOrb />
+        <GridOverlay />
+        <GlowLine />
+      </BackgroundContainer>
+
       <Topbar>
-        <Brand>
-          <h2>🔷Voltix Traders</h2>
+        <Brand to="/">
+          <span className="logo-icon">🔷</span>
+          <span className="logo-text">Voltix Traders</span>
+          <span className="live-dot" />
         </Brand>
         <ProfileArea>
-          <Greeting>Hi 👋 {greeting}</Greeting>
+          <Greeting>
+            👋 <span className="highlight">{greeting}</span>
+          </Greeting>
           <ProfilePic src={getAvatarUrl()} alt="Profile" />
           <LogoutButton onClick={handleLogout}>🚪 Logout</LogoutButton>
         </ProfileArea>
       </Topbar>
 
-      {/* Main Content */}
       <Container>
         <WelcomeBanner>
-          <h3>Welcome back, <span style={{ color: '#38bdf8' }}>{greeting}</span>! 👋</h3>
+          <h3>
+            Welcome back, <span className="highlight">{greeting}</span>! 👋
+          </h3>
           <p>Your AI-powered trading terminal is ready. Select a market to begin.</p>
         </WelcomeBanner>
 
-        <Slogan id="animatedQuote">{quote}</Slogan>
-        <MarketIntro>🔵 SELECT YOUR TRADING ARENA 🔵</MarketIntro>
+        <Slogan id="animatedQuote">
+          <span className="quote-mark">“</span>
+          {quote.replace(/"/g, '')}
+          <span className="quote-mark">”</span>
+        </Slogan>
 
-        <MarketContainer>
-          <MarketGrid>
-            <MarketCard onClick={(e) => openMarket('deriv', e)}>
-              <MarketIcon>📊</MarketIcon>
-              <MarketTitle>Deriv</MarketTitle>
-              <MarketDesc>Synthetic indices • Options • High-frequency</MarketDesc>
-            </MarketCard>
+        <MarketIntro>
+          <span className="accent">⟡</span> SELECT YOUR TRADING ARENA <span className="accent">⟡</span>
+        </MarketIntro>
 
-            <MarketCard onClick={(e) => openMarket('binance', e)}>
-              <MarketIcon>₿</MarketIcon>
-              <MarketTitle>Binance</MarketTitle>
-              <MarketDesc>Spot • Futures • 350+ crypto pairs</MarketDesc>
-            </MarketCard>
+        <MarketGrid>
+          <MarketCard color="linear-gradient(90deg, #a855f7, #7c3aed)" onClick={(e) => openMarket('deriv', e)}>
+            <div className="card-shimmer" />
+            <span className="market-status">
+              <span className="status-dot" />
+              Live
+            </span>
+            <span className="market-icon">📊</span>
+            <div className="market-title">Deriv</div>
+            <div className="market-desc">Synthetic indices • Options • High-frequency</div>
+            <span className="market-badge">24/7 Trading</span>
+          </MarketCard>
 
-            <MarketCard onClick={(e) => openMarket('forex', e)}>
-              <MarketIcon>💱</MarketIcon>
-              <MarketTitle>Forex</MarketTitle>
-              <MarketDesc>Major, minor & exotic currency pairs</MarketDesc>
-            </MarketCard>
-          </MarketGrid>
-        </MarketContainer>
+          <MarketCard color="linear-gradient(90deg, #f7931a, #e68a00)" onClick={(e) => openMarket('binance', e)}>
+            <div className="card-shimmer" />
+            <span className="market-status">
+              <span className="status-dot" />
+              Live
+            </span>
+            <span className="market-icon">₿</span>
+            <div className="market-title">Binance</div>
+            <div className="market-desc">Spot • Futures • 350+ crypto pairs</div>
+            <span className="market-badge">Deep Liquidity</span>
+          </MarketCard>
 
-        {/* Stats Ticker */}
+          <MarketCard color="linear-gradient(90deg, #2563eb, #1d4ed8)" onClick={(e) => openMarket('forex', e)}>
+            <div className="card-shimmer" />
+            <span className="market-status">
+              <span className="status-dot" />
+              Live
+            </span>
+            <span className="market-icon">💱</span>
+            <div className="market-title">Forex</div>
+            <div className="market-desc">Major, minor & exotic currency pairs</div>
+            <span className="market-badge">24/5 Trading</span>
+          </MarketCard>
+        </MarketGrid>
+
         <StatsTicker>
           <StatBlock>
-            <StatLabel>🌍 TOTAL VOLUME (24H)</StatLabel>
+            <StatLabel>🌍 24h Volume</StatLabel>
             <StatNumber>${volume.toFixed(1)}B</StatNumber>
           </StatBlock>
           <StatBlock>
-            <StatLabel>📈 ACTIVE MARKETS</StatLabel>
+            <StatLabel>📊 Active Markets</StatLabel>
             <StatNumber>3</StatNumber>
           </StatBlock>
           <StatBlock>
-            <StatLabel>🔵 AI SIGNALS TODAY</StatLabel>
+            <StatLabel>🔵 AI Signals Today</StatLabel>
             <StatNumber>{signals}</StatNumber>
           </StatBlock>
           <StatBlock>
-            <StatLabel>🔗 CONNECTED USERS</StatLabel>
+            <StatLabel>👥 Connected Users</StatLabel>
             <StatNumber>{users.toLocaleString()}</StatNumber>
           </StatBlock>
         </StatsTicker>
       </Container>
 
-      {/* Footer */}
       <PremiumFooter>
-        <FooterContent>
+        <FooterGrid>
           <FooterCol>
-            <h4>🔷Voltix Traders</h4>
+            <div className="footer-logo">
+              <span>🔷</span>
+              <span className="footer-logo-text">Voltix Traders</span>
+              <span className="footer-dot" />
+            </div>
             <p>Next-gen multi-market execution engine</p>
             <p>Smart order routing • AI predictive models • Risk management</p>
             <SocialIcons>
-              <span>🐦</span> <span>📘</span> <span>💼</span> <span>📸</span>
+              <span>🐦</span>
+              <span>📘</span>
+              <span>💼</span>
+              <span>📸</span>
             </SocialIcons>
           </FooterCol>
           <FooterCol>
@@ -628,23 +1026,22 @@ const Dashboard = () => {
             <a href="#">Support center</a>
           </FooterCol>
           <FooterCol>
-            <h4>⚖️ Legal & Compliance</h4>
-            <p>CFDs and crypto trading involve high risk. 74-89% of retail traders lose money.</p>
-            <p>© 2026 Voltix — All rights reserved</p>
+            <h4>⚖️ Legal</h4>
+            <p>CFDs and crypto trading involve high risk.</p>
+            <p>74-89% of retail traders lose money.</p>
             <a href="#">Privacy policy</a>
             <a href="#">Terms of service</a>
           </FooterCol>
-        </FooterContent>
+        </FooterGrid>
         <FooterBottom>
-          {timestamp} • Trade responsibly • AI insights for educational purposes only
+          <span>{timestamp}</span> • Trade responsibly • AI insights for educational purposes only
         </FooterBottom>
       </PremiumFooter>
 
-      {/* Add pulseEffect animation */}
       <style>
         {`
-          @keyframes pulseEffect {
-            0% { opacity: 0.8; transform: scale(0.95); }
+          @keyframes fadeOut {
+            0% { opacity: 0.8; transform: scale(0.9); }
             100% { opacity: 0; transform: scale(1.2); }
           }
         `}
