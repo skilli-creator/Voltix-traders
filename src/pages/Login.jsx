@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Poppins', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
     align-items: center;
     background: radial-gradient(ellipse at 30% 20%, #0a1428, #02040c);
     color: #f1f5f9;
-    padding: 20px;
+    padding: 16px;
     position: relative;
     overflow-x: hidden;
   }
@@ -32,6 +32,14 @@ const GlobalStyle = createGlobalStyle`
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 8px;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 480px) {
+    body {
+      padding: 8px;
+    }
   }
 `;
 
@@ -41,17 +49,17 @@ const GlobalStyle = createGlobalStyle`
 const fadeSlideUp = keyframes`
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(30px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 `;
 
 const pulse = keyframes`
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  50% { opacity: 0.6; }
 `;
 
 // ============================================
@@ -64,111 +72,142 @@ const BackgroundGrid = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(rgba(56, 189, 248, 0.06) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-image: radial-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
   pointer-events: none;
   z-index: 0;
+
+  @media (max-width: 480px) {
+    background-size: 20px 20px;
+  }
 `;
 
 const Orb = styled.div`
   position: fixed;
   border-radius: 50%;
   filter: blur(60px);
-  opacity: 0.3;
+  opacity: 0.25;
   pointer-events: none;
   z-index: 0;
 
   &.orb-1 {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     background: #22c55e;
-    top: -100px;
-    left: -100px;
+    top: -80px;
+    left: -80px;
   }
 
   &.orb-2 {
-    width: 400px;
-    height: 400px;
+    width: 300px;
+    height: 300px;
     background: #3b82f6;
-    bottom: -150px;
-    right: -100px;
+    bottom: -120px;
+    right: -80px;
+  }
+
+  @media (max-width: 480px) {
+    &.orb-1 {
+      width: 150px;
+      height: 150px;
+      top: -60px;
+      left: -60px;
+    }
+    &.orb-2 {
+      width: 200px;
+      height: 200px;
+      bottom: -80px;
+      right: -60px;
+    }
   }
 `;
 
 const LoginContainer = styled.div`
   width: 100%;
-  max-width: 480px;
-  padding: 44px 40px;
-  background: rgba(8, 18, 38, 0.8);
-  backdrop-filter: blur(18px);
-  border-radius: 52px;
-  box-shadow: 0 30px 55px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(34, 197, 94, 0.2);
+  max-width: 440px;
+  padding: 36px 28px;
+  background: rgba(8, 18, 38, 0.85);
+  backdrop-filter: blur(20px);
+  border-radius: 40px;
+  box-shadow: 0 30px 55px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(34, 197, 94, 0.15);
   text-align: center;
   position: relative;
   z-index: 2;
-  animation: ${fadeSlideUp} 0.6s ease;
-  transition: transform 0.3s ease;
+  animation: ${fadeSlideUp} 0.5s ease;
 
-  &:hover {
-    transform: translateY(-3px);
-  }
-
-  @media (max-width: 520px) {
-    padding: 32px 24px;
-    margin: 16px;
-
-    h2 {
-      font-size: 1.6rem;
-    }
+  @media (max-width: 480px) {
+    padding: 24px 16px;
+    border-radius: 28px;
+    max-width: 100%;
   }
 `;
 
 const LogoBadge = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: linear-gradient(135deg, #22c55e, #16a34a);
-  padding: 8px 22px;
-  border-radius: 60px;
-  margin-bottom: 28px;
-  font-weight: 700;
-  font-size: 14px;
+  padding: 6px 16px;
+  border-radius: 40px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 12px;
   color: #0a0f1f;
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    padding: 5px 12px;
+    margin-bottom: 16px;
+  }
 `;
 
 const Title = styled.h2`
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   background: linear-gradient(135deg, #ffffff, #94a3b8);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const Subhead = styled.p`
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #9ca3af;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+    margin-bottom: 18px;
+  }
 `;
 
 const MethodToggle = styled.div`
   display: flex;
-  gap: 12px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 60px;
-  padding: 6px;
-  margin-bottom: 28px;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 40px;
+  padding: 5px;
+  margin-bottom: 20px;
+
+  @media (max-width: 480px) {
+    gap: 6px;
+    padding: 4px;
+  }
 `;
 
 const ToggleOption = styled.button`
   flex: 1;
-  padding: 10px;
-  border-radius: 40px;
-  font-size: 0.9rem;
+  padding: 8px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
-  transition: 0.2s;
+  transition: all 0.25s ease;
   background: transparent;
   color: #94a3b8;
   border: none;
@@ -176,7 +215,12 @@ const ToggleOption = styled.button`
   &.active {
     background: linear-gradient(105deg, #22c55e, #16a34a);
     color: #0a0f1f;
-    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 2px 12px rgba(34, 197, 94, 0.25);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+    padding: 6px 8px;
   }
 `;
 
@@ -185,40 +229,59 @@ const Form = styled.form`
 `;
 
 const InputGroup = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   text-align: left;
 
-  label {
-    font-size: 13px;
-    font-weight: 500;
-    color: #cbd5e1;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
+  @media (max-width: 480px) {
+    margin-bottom: 12px;
+  }
+`;
+
+const InputLabel = styled.label`
+  font-size: 12px;
+  font-weight: 500;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    margin-bottom: 4px;
   }
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 14px 16px;
-  border-radius: 32px;
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1.5px solid rgba(255, 255, 255, 0.06);
   background: #0a122a;
   color: white;
   font-size: 14px;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   font-family: inherit;
 
   &:focus {
     border-color: #22c55e;
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
     background: #0f1838;
   }
 
   &::placeholder {
     color: #6b7280;
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 20px;
+    &::placeholder {
+      font-size: 12px;
+    }
   }
 `;
 
@@ -228,121 +291,153 @@ const PasswordWrapper = styled.div`
 
 const TogglePasswordBtn = styled.button`
   position: absolute;
-  right: 16px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
   color: #9ca3af;
   padding: 4px;
+
+  @media (max-width: 480px) {
+    right: 10px;
+    font-size: 14px;
+  }
 `;
 
 const PhoneHelper = styled.div`
   font-size: 10px;
   color: #6b7280;
   margin-top: 4px;
+
+  @media (max-width: 480px) {
+    font-size: 9px;
+  }
 `;
 
 const OptionsRow = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin: 16px 0 24px;
+  margin: 12px 0 20px;
+
+  @media (max-width: 480px) {
+    margin: 8px 0 14px;
+  }
 `;
 
 const ForgotLink = styled(Link)`
   color: #3b82f6;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   text-decoration: none;
+  font-weight: 500;
 
   &:hover {
     text-decoration: underline;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
   }
 `;
 
 const LoginButton = styled.button`
   width: 100%;
-  padding: 14px;
+  padding: 13px;
   border: none;
-  border-radius: 40px;
+  border-radius: 32px;
   background: linear-gradient(105deg, #22c55e, #16a34a);
   color: #0a0f1f;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
 
-  &:hover {
+  &:hover:not(:disabled) {
     transform: translateY(-2px);
     background: linear-gradient(105deg, #2dd4bf, #22c55e);
+    box-shadow: 0 8px 24px rgba(34, 197, 94, 0.3);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+  }
+
+  @media (max-width: 480px) {
+    padding: 11px;
+    font-size: 0.85rem;
+    border-radius: 28px;
   }
 `;
 
 const MessageArea = styled.div`
-  margin-top: 20px;
+  margin-top: 16px;
   font-size: 13px;
-  min-height: 44px;
-  padding: 8px;
-  border-radius: 60px;
-  background: rgba(0, 0, 0, 0.3);
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 30px;
+  background: rgba(0, 0, 0, 0.25);
   color: ${props => props.color || '#94a3b8'};
   transition: all 0.3s ease;
-`;
-
-// ✅ Professional Resend/Verify Button
-const ResendButton = styled.button`
-  width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  border: none;
-  border-radius: 40px;
-  background: linear-gradient(105deg, #3b82f6, #2563eb);
-  color: #ffffff;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  letter-spacing: 0.3px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
 
-  &:hover {
+  @media (max-width: 480px) {
+    font-size: 12px;
+    min-height: 36px;
+    padding: 6px 10px;
+  }
+`;
+
+const ResendButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(105deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  &:hover:not(:disabled) {
     transform: translateY(-2px);
     background: linear-gradient(105deg, #2563eb, #1d4ed8);
-    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
-  }
-
-  &:active {
-    transform: translateY(0px);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
-    box-shadow: none;
   }
 
-  &::before {
-    content: '📧';
-    margin-right: 4px;
+  @media (max-width: 480px) {
+    padding: 8px;
+    font-size: 0.75rem;
+    border-radius: 24px;
+    &::before {
+      content: '📧';
+      margin-right: 2px;
+    }
   }
 `;
 
 const RegisterLink = styled.div`
-  margin-top: 28px;
+  margin-top: 20px;
   font-size: 13px;
   color: #94a3b8;
 
@@ -355,16 +450,26 @@ const RegisterLink = styled.div`
       text-decoration: underline;
     }
   }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
+    margin-top: 16px;
+  }
 `;
 
 const FooterNote = styled.footer`
   position: fixed;
-  bottom: 16px;
+  bottom: 12px;
   width: 100%;
   text-align: center;
-  font-size: 12px;
+  font-size: 10px;
   color: #4b5563;
   z-index: 2;
+
+  @media (max-width: 480px) {
+    bottom: 8px;
+    font-size: 9px;
+  }
 `;
 
 // ============================================
@@ -381,21 +486,17 @@ const Login = () => {
   const [message, setMessage] = useState('');
   const [messageColor, setMessageColor] = useState('#94a3b8');
   const [isLoading, setIsLoading] = useState(false);
-  
-  // State for resend verification
   const [showResendButton, setShowResendButton] = useState(false);
   const [resendEmail, setResendEmail] = useState('');
   const [resendUserId, setResendUserId] = useState(null);
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
-  // Validate phone number format
   const validatePhone = (phone) => {
     const digits = phone.replace(/\D/g, '');
     return digits.length >= 8 && digits.length <= 15;
   };
 
-  // Handle login method toggle
   const handleMethodToggle = (method) => {
     setActiveMethod(method);
     setMessage('');
@@ -403,12 +504,10 @@ const Login = () => {
     setShowResendButton(false);
   };
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Resend verification code
   const handleResendVerification = async () => {
     if (!resendEmail) {
       setMessage('❌ No email found. Please register again.');
@@ -438,7 +537,7 @@ const Login = () => {
           localStorage.setItem('tempUserId', resendUserId);
         }
         
-        setMessage('✅ New verification code sent! Redirecting to verification...');
+        setMessage('✅ New verification code sent! Redirecting...');
         setMessageColor('#22c55e');
         setIsLoading(false);
         setShowResendButton(false);
@@ -459,7 +558,6 @@ const Login = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -481,7 +579,7 @@ const Login = () => {
         setMessageColor('#f87171');
         isValid = false;
       } else if (!validatePhone(identifier)) {
-        setMessage('❌ Please enter a valid phone number with country code (e.g., +1234567890)');
+        setMessage('❌ Please enter a valid phone number with country code');
         setMessageColor('#f87171');
         isValid = false;
       }
@@ -540,19 +638,9 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      setMessage('❌ Cannot connect to server. Please make sure the backend is running.');
+      setMessage('❌ Cannot connect to server. Please try again.');
       setMessageColor('#f87171');
       setIsLoading(false);
-    }
-  };
-
-  // Handle forgot password
-  const handleForgotPassword = () => {
-    const identifier = activeMethod === 'email' ? email : phone;
-    if (identifier) {
-      alert(`Password reset request for: ${identifier}\n\nPlease contact admin@voltix.com for assistance.`);
-    } else {
-      alert('Please enter your email or phone number first.');
     }
   };
 
@@ -564,7 +652,7 @@ const Login = () => {
       <Orb className="orb-2" />
 
       <LoginContainer>
-        <LogoBadge>🔷Voltix Traders• Sign In</LogoBadge>
+        <LogoBadge>🔷 Voltix Traders</LogoBadge>
         <Title>Welcome Back</Title>
         <Subhead>Access your trading dashboard</Subhead>
 
@@ -586,7 +674,7 @@ const Login = () => {
         <Form onSubmit={handleSubmit}>
           {activeMethod === 'email' && (
             <InputGroup>
-              <label>📧 Email Address</label>
+              <InputLabel>📧 Email Address</InputLabel>
               <Input
                 type="email"
                 placeholder="trader@example.com"
@@ -600,7 +688,7 @@ const Login = () => {
 
           {activeMethod === 'phone' && (
             <InputGroup>
-              <label>📞 Phone Number</label>
+              <InputLabel>📞 Phone Number</InputLabel>
               <Input
                 type="tel"
                 placeholder="+1 234 567 8900"
@@ -614,7 +702,7 @@ const Login = () => {
           )}
 
           <InputGroup>
-            <label>🔒 Password</label>
+            <InputLabel>🔒 Password</InputLabel>
             <PasswordWrapper>
               <Input
                 type={showPassword ? 'text' : 'password'}
@@ -648,7 +736,6 @@ const Login = () => {
           {message || '\u00A0'}
         </MessageArea>
 
-        {/* ✅ Professional Resend/Verify Button - Below Message Area */}
         {showResendButton && (
           <ResendButton onClick={handleResendVerification} disabled={isLoading}>
             Resend Verification Code
