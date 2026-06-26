@@ -2,6 +2,22 @@ import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
+// ALL VOLATILITY MARKETS (Deriv Official) - COPIED FROM CHARTPANEL
+// ============================================
+const VOLATILITY_MARKETS = [
+  { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true },
+  { symbol: 'R_10_1S', name: 'Volatility 10 (1s) Index', display: '10 (1s)', color: '#2962ff', isOneSec: true },
+  { symbol: 'R_25_1S', name: 'Volatility 25 (1s) Index', display: '25 (1s)', color: '#3b82f6', isOneSec: true },
+  { symbol: 'R_50_1S', name: 'Volatility 50 (1s) Index', display: '50 (1s)', color: '#6366f1', isOneSec: true },
+  { symbol: 'R_75_1S', name: 'Volatility 75 (1s) Index', display: '75 (1s)', color: '#8b5cf6', isOneSec: true },
+  { symbol: 'R_10', name: 'Volatility 10 Index', display: '10', color: '#10b981', isOneSec: false },
+  { symbol: 'R_25', name: 'Volatility 25 Index', display: '25', color: '#059669', isOneSec: false },
+  { symbol: 'R_50', name: 'Volatility 50 Index', display: '50', color: '#047857', isOneSec: false },
+  { symbol: 'R_75', name: 'Volatility 75 Index', display: '75', color: '#065f46', isOneSec: false },
+  { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false },
+];
+
+// ============================================
 // ANIMATIONS
 // ============================================
 
@@ -60,20 +76,187 @@ const PanelContainer = styled.div`
     width: 100%;
     min-width: unset;
     height: 100%;
-    padding: 6px 10px 4px 10px;
+    padding: 6px 8px 4px 8px;
     border-left: none;
     background: #0a0e17;
     gap: 4px;
   }
 
   @media (max-width: 480px) {
-    padding: 4px 6px 2px 6px;
+    padding: 4px 4px 2px 4px;
     gap: 3px;
   }
 `;
 
 // ============================================
-// 1. TRADE TYPE SELECTOR
+// 1. MARKET SELECTOR (NEW - SYNCED WITH CHARTPANEL)
+// ============================================
+
+const MarketSelectorWrapper = styled.div`
+  position: relative;
+  animation: ${fadeIn} 0.3s ease;
+  margin-bottom: 4px;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
+
+const MarketSelectorButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(41, 98, 255, 0.3);
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .market-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.color || '#2962ff'};
+    flex-shrink: 0;
+  }
+
+  .market-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .market-badge {
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    flex-shrink: 0;
+  }
+
+  .arrow {
+    font-size: 10px;
+    color: #5a6070;
+    transition: transform 0.3s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    .market-name { font-size: 12px; }
+    .market-dot { width: 6px; height: 6px; }
+  }
+`;
+
+const MarketDropdown = styled.div`
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(21, 26, 38, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  animation: ${slideDown} 0.2s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  max-height: 200px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+`;
+
+const MarketOption = styled.div`
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
+  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.color || '#2962ff'};
+    flex-shrink: 0;
+  }
+
+  .name {
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .badge-1s {
+    font-size: 7px;
+    font-weight: 700;
+    color: #ffffff;
+    background: #ff4444;
+    padding: 1px 4px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .check {
+    color: #2962ff;
+    font-size: 14px;
+    opacity: ${props => props.active ? 1 : 0};
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    .name { font-size: 11px; }
+    .dot { width: 6px; height: 6px; }
+  }
+`;
+
+// ============================================
+// 2. TRADE TYPE SELECTOR
 // ============================================
 
 const TradeTypeWrapper = styled.div`
@@ -167,7 +350,7 @@ const DropdownOption = styled.div`
 `;
 
 // ============================================
-// 2. TRADE MODE TOGGLE
+// 3. TRADE MODE TOGGLE
 // ============================================
 
 const TradeModeWrapper = styled.div`
@@ -243,7 +426,7 @@ const TradeModeButton = styled.button`
 `;
 
 // ============================================
-// 3. BOT SELECTION
+// 4. BOT SELECTION
 // ============================================
 
 const BotGrid = styled.div`
@@ -329,7 +512,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 4. INPUT FIELDS
+// 5. INPUT FIELDS
 // ============================================
 
 const InputGrid = styled.div`
@@ -430,7 +613,7 @@ const StyledInput = styled.input`
 `;
 
 // ============================================
-// 5. MARTINGALE
+// 6. MARTINGALE
 // ============================================
 
 const MartingaleLabel = styled.div`
@@ -535,7 +718,7 @@ const ToggleStatus = styled.span`
 `;
 
 // ============================================
-// 6. DIGIT STATS - EXACT MATCH FROM CHARTPANEL
+// 7. DIGIT STATS - EXACT MATCH FROM CHARTPANEL
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -548,7 +731,7 @@ const DigitStatsContainer = styled.div`
   background: transparent;
   border: none;
   box-shadow: none;
-  gap: 3px;
+  gap: 2px;
 
   /* Only show on phone */
   @media (min-width: 769px) {
@@ -556,7 +739,8 @@ const DigitStatsContainer = styled.div`
   }
 
   @media (max-width: 480px) {
-    gap: 2px;
+    gap: 1px;
+    padding: 2px 1px;
   }
 `;
 
@@ -567,10 +751,11 @@ const DigitItem = styled.div`
   align-items: center;
   position: relative;
   padding-bottom: 6px;
+  min-width: 0;
 
   .circle-badge {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -586,24 +771,25 @@ const DigitItem = styled.div`
     transition: all 0.15s ease;
 
     @media (max-width: 480px) {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
+      border-width: 1.5px;
     }
   }
 
   .digit-num {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
 
     @media (max-width: 480px) {
-      font-size: 10px;
+      font-size: 9px;
     }
   }
 
   .pct-text {
-    font-size: 8px;
+    font-size: 7px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -615,27 +801,27 @@ const DigitItem = styled.div`
     margin-top: 1px;
 
     @media (max-width: 480px) {
-      font-size: 7px;
+      font-size: 6px;
     }
   }
 
   .active-arrow {
     position: absolute;
     bottom: -2px;
-    font-size: 8px;
+    font-size: 7px;
     color: #ff9800; 
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
 
     @media (max-width: 480px) {
-      font-size: 7px;
+      font-size: 6px;
       bottom: -1px;
     }
   }
 `;
 
 // ============================================
-// 7. DIGIT GRID
+// 8. DIGIT GRID
 // ============================================
 
 const DigitGridWrapper = styled.div`
@@ -697,7 +883,7 @@ const DigitButton = styled.button`
 `;
 
 // ============================================
-// 8. EVEN/ODD BUTTONS
+// 9. EVEN/ODD BUTTONS
 // ============================================
 
 const EvenOddButtons = styled.div`
@@ -749,7 +935,7 @@ const EvenOddButton = styled.button`
 `;
 
 // ============================================
-// 9. TRADE BUTTONS
+// 10. TRADE BUTTONS
 // ============================================
 
 const TradeButtonsWrapper = styled.div`
@@ -801,7 +987,7 @@ const TradeButton = styled.button`
 `;
 
 // ============================================
-// 10. RUN BUTTON
+// 11. RUN BUTTON
 // ============================================
 
 const RunButton = styled.button`
@@ -845,7 +1031,7 @@ const RunButton = styled.button`
 `;
 
 // ============================================
-// 11. SESSION INFO (Bottom)
+// 12. SESSION INFO (Bottom)
 // ============================================
 
 const SessionInfo = styled.div`
@@ -967,7 +1153,7 @@ const BOTS = [
 // MAIN COMPONENT
 // ============================================
 
-const RightPanel = () => {
+const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [tradeType, setTradeType] = useState('overunder');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [tradeMode, setTradeMode] = useState('auto');
@@ -978,7 +1164,14 @@ const RightPanel = () => {
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
 
-  // === DIGIT STATS STATE (EXACT MATCH FROM CHARTPANEL) ===
+  // === MARKET SELECTOR STATE ===
+  const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
+  const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
+
+  // Use external market if provided, otherwise use local
+  const selectedMarket = externalMarket || localSelectedMarket;
+
+  // === DIGIT STATS STATE ===
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
   const [lastDigit, setLastDigit] = useState(5);
   const [movementDirection, setMovementDirection] = useState('down');
@@ -996,25 +1189,21 @@ const RightPanel = () => {
     return BOTS.filter(bot => bot.type === getCurrentTrade().label);
   }, [tradeType]);
 
-  // === DIGIT STATS LOGIC (EXACT MATCH FROM CHARTPANEL) ===
+  // === DIGIT STATS LOGIC ===
   useEffect(() => {
-    // Simulate price updates for digit stats - matches ChartPanel behavior
     const interval = setInterval(() => {
       const delta = (Math.random() - 0.5) * 2;
       const newPrice = parseFloat((price + delta).toFixed(2));
       setPrice(newPrice);
       
-      // Update last digit
       const priceStr = newPrice.toFixed(2);
       const currentLastDigit = parseInt(priceStr.slice(-1));
       if (!isNaN(currentLastDigit)) {
         setLastDigit(currentLastDigit);
       }
       
-      // Update movement direction
       setMovementDirection(delta >= 0 ? 'up' : 'down');
       
-      // Update digit stats - simulate changing percentages like ChartPanel
       setDigitStats(prev => {
         return prev.map(stat => {
           let newPct = stat.pct + (Math.random() - 0.5) * 2;
@@ -1079,7 +1268,20 @@ const RightPanel = () => {
 
   const toggleMartingale = () => setMartingale(!martingale);
 
-  // === CALCULATE DIGIT STATS (EXACT MATCH FROM CHARTPANEL) ===
+  // === MARKET SELECTOR HANDLERS ===
+  const handleMarketSelect = (market) => {
+    setLocalSelectedMarket(market);
+    setIsMarketDropdownOpen(false);
+    if (onMarketChange) {
+      onMarketChange(market);
+    }
+  };
+
+  const toggleMarketDropdown = () => {
+    setIsMarketDropdownOpen(!isMarketDropdownOpen);
+  };
+
+  // === CALCULATE DIGIT STATS ===
   const allPercentages = digitStats.map(s => s.pct);
   const maxPct = Math.max(...allPercentages);
   const minPct = Math.min(...allPercentages);
@@ -1167,7 +1369,7 @@ const RightPanel = () => {
     </>
   );
 
-  // ===== RENDER DIGIT STATS (EXACT MATCH FROM CHARTPANEL) =====
+  // ===== RENDER DIGIT STATS =====
   const renderDigitStats = () => (
     <DigitStatsContainer>
       {digitStats.map((stat) => {
@@ -1189,6 +1391,42 @@ const RightPanel = () => {
         );
       })}
     </DigitStatsContainer>
+  );
+
+  // ===== RENDER MARKET SELECTOR =====
+  const renderMarketSelector = () => (
+    <MarketSelectorWrapper>
+      <MarketSelectorButton 
+        isOpen={isMarketDropdownOpen}
+        onClick={toggleMarketDropdown}
+        color={selectedMarket.color}
+      >
+        <div className="left">
+          <span className="market-dot" />
+          <span className="market-name">{selectedMarket.display}</span>
+          <span className="market-badge">{selectedMarket.isOneSec ? '1s' : ''}</span>
+        </div>
+        <span className="arrow">▾</span>
+      </MarketSelectorButton>
+      
+      <MarketDropdown isOpen={isMarketDropdownOpen}>
+        {VOLATILITY_MARKETS.map((market) => (
+          <MarketOption
+            key={market.symbol}
+            active={selectedMarket.symbol === market.symbol}
+            color={market.color}
+            onClick={() => handleMarketSelect(market)}
+          >
+            <div className="left">
+              <span className="dot" />
+              <span className="name">{market.display}</span>
+              {market.isOneSec && <span className="badge-1s">1s</span>}
+            </div>
+            <span className="check">✓</span>
+          </MarketOption>
+        ))}
+      </MarketDropdown>
+    </MarketSelectorWrapper>
   );
 
   // ===== RENDER DIGIT GRID =====
@@ -1277,7 +1515,10 @@ const RightPanel = () => {
 
   return (
     <PanelContainer>
-      {/* 1. TRADE TYPE SELECTOR */}
+      {/* 1. MARKET SELECTOR - ONLY ON PHONE */}
+      {isPhone && renderMarketSelector()}
+
+      {/* 2. TRADE TYPE SELECTOR */}
       <TradeTypeWrapper>
         <TradeTypeButton isOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           <div className="left">
@@ -1303,7 +1544,7 @@ const RightPanel = () => {
         </Dropdown>
       </TradeTypeWrapper>
 
-      {/* 2. TRADE MODE */}
+      {/* 3. TRADE MODE */}
       <TradeModeWrapper>
         <TradeModeLabel>
           <span>Trade Mode</span>
@@ -1322,7 +1563,7 @@ const RightPanel = () => {
         </TradeModeButtons>
       </TradeModeWrapper>
 
-      {/* 3. BOT SELECTION */}
+      {/* 4. BOT SELECTION */}
       {tradeMode === 'use-bots' && (
         <>
           <BotHeader>
@@ -1357,16 +1598,16 @@ const RightPanel = () => {
         </>
       )}
 
-      {/* 4. INPUTS */}
+      {/* 5. INPUTS */}
       {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
 
-      {/* 5. DIGIT STATS - EXACT COPY FROM CHARTPANEL - ONLY ON PHONE IN MANUAL MODE */}
+      {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
-      {/* 6. DIGIT GRID */}
+      {/* 7. DIGIT GRID */}
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
 
-      {/* 7. TRADE BUTTONS */}
+      {/* 8. TRADE BUTTONS */}
       {tradeMode === 'manual' ? (
         tradeType === 'evenodd' ? renderEvenOddButtons() : renderTradeButtons()
       ) : tradeMode === 'use-bots' ? (
@@ -1375,7 +1616,7 @@ const RightPanel = () => {
         renderRunButton(false)
       )}
 
-      {/* 8. SESSION INFO (Bottom) */}
+      {/* 9. SESSION INFO (Bottom) */}
       <SessionInfo>
         <div className="left">
           <div className="label">Last Session</div>
