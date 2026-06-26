@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
@@ -535,7 +535,78 @@ const ToggleStatus = styled.span`
 `;
 
 // ============================================
-// 6. DIGIT GRID
+// 6. DIGIT STATS (COPIED FROM CHARTPANEL)
+// ============================================
+
+const DigitStatsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 4px 2px;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  margin-bottom: 4px;
+
+  /* Only show on phone */
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
+
+const DigitStatItem = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 0;
+  border-radius: 4px;
+  background: ${props => props.isLastDigit ? 'rgba(255, 255, 255, 0.04)' : 'transparent'};
+  border: 1px solid ${props => 
+    props.isLastDigit 
+      ? (props.direction === 'up' ? 'rgba(0, 230, 118, 0.2)' : 'rgba(255, 74, 74, 0.2)') 
+      : 'transparent'
+  };
+  transition: all 0.2s ease;
+
+  .digit-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => 
+      props.isLastDigit 
+        ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
+        : '#9ca3af'
+    };
+    line-height: 1.2;
+  }
+
+  .pct-text {
+    font-size: 7px;
+    font-family: monospace;
+    font-weight: 500;
+    color: ${props => 
+      props.isMax 
+        ? '#00e676' 
+        : (props.isMin ? '#ff4a4a' : '#728096')
+    };
+    line-height: 1;
+  }
+
+  .arrow-indicator {
+    font-size: 6px;
+    color: ${props => 
+      props.isLastDigit 
+        ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
+        : 'transparent'
+    };
+    line-height: 1;
+  }
+`;
+
+// ============================================
+// 7. DIGIT GRID
 // ============================================
 
 const DigitGridWrapper = styled.div`
@@ -597,7 +668,7 @@ const DigitButton = styled.button`
 `;
 
 // ============================================
-// 7. EVEN/ODD BUTTONS
+// 8. EVEN/ODD BUTTONS
 // ============================================
 
 const EvenOddButtons = styled.div`
@@ -649,7 +720,7 @@ const EvenOddButton = styled.button`
 `;
 
 // ============================================
-// 8. TRADE BUTTONS
+// 9. TRADE BUTTONS
 // ============================================
 
 const TradeButtonsWrapper = styled.div`
@@ -701,7 +772,7 @@ const TradeButton = styled.button`
 `;
 
 // ============================================
-// 9. RUN BUTTON
+// 10. RUN BUTTON
 // ============================================
 
 const RunButton = styled.button`
@@ -745,7 +816,7 @@ const RunButton = styled.button`
 `;
 
 // ============================================
-// 10. SESSION INFO (Bottom)
+// 11. SESSION INFO (Bottom)
 // ============================================
 
 const SessionInfo = styled.div`
@@ -878,6 +949,12 @@ const RightPanel = () => {
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
 
+  // === DIGIT STATS STATE (COPIED FROM CHARTPANEL) ===
+  const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
+  const [lastDigit, setLastDigit] = useState(5);
+  const [movementDirection, setMovementDirection] = useState('down');
+  const [price, setPrice] = useState(8459.65);
+
   const tradeTypes = [
     { id: 'overunder', label: 'Over/Under', icon: '📈' },
     { id: 'evenodd', label: 'Even/Odd', icon: '🔢' },
@@ -889,6 +966,41 @@ const RightPanel = () => {
   const filteredBots = useMemo(() => {
     return BOTS.filter(bot => bot.type === getCurrentTrade().label);
   }, [tradeType]);
+
+  // === DIGIT STATS LOGIC (COPIED FROM CHARTPANEL) ===
+  useEffect(() => {
+    // Simulate price updates for digit stats
+    const interval = setInterval(() => {
+      const delta = (Math.random() - 0.5) * 2;
+      const newPrice = parseFloat((price + delta).toFixed(2));
+      setPrice(newPrice);
+      
+      // Update last digit
+      const priceStr = newPrice.toFixed(2);
+      const currentLastDigit = parseInt(priceStr.slice(-1));
+      if (!isNaN(currentLastDigit)) {
+        setLastDigit(currentLastDigit);
+      }
+      
+      // Update movement direction
+      setMovementDirection(delta >= 0 ? 'up' : 'down');
+      
+      // Update digit stats
+      setDigitStats(prev => {
+        // Simulate percentage changes
+        return prev.map(stat => {
+          let newPct = stat.pct + (Math.random() - 0.5) * 2;
+          newPct = Math.max(5, Math.min(20, newPct));
+          return {
+            ...stat,
+            pct: parseFloat(newPct.toFixed(1))
+          };
+        });
+      });
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [price]);
 
   const handleStakeChange = (e) => {
     const val = parseFloat(e.target.value);
@@ -938,6 +1050,11 @@ const RightPanel = () => {
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
+
+  // === CALCULATE DIGIT STATS ===
+  const allPercentages = digitStats.map(s => s.pct);
+  const maxPct = Math.max(...allPercentages);
+  const minPct = Math.min(...allPercentages);
 
   // ===== RENDER INPUTS =====
   const renderInputs = (showAdvanced = true) => (
@@ -1017,6 +1134,30 @@ const RightPanel = () => {
         )}
       </InputGrid>
     </>
+  );
+
+  // ===== RENDER DIGIT STATS (NEW - COPIED FROM CHARTPANEL) =====
+  const renderDigitStats = () => (
+    <DigitStatsContainer>
+      {digitStats.map((stat) => {
+        const isLastDigit = stat.digit === lastDigit;
+        return (
+          <DigitStatItem
+            key={stat.digit}
+            isLastDigit={isLastDigit}
+            isMax={stat.pct === maxPct}
+            isMin={stat.pct === minPct}
+            direction={movementDirection}
+          >
+            <span className="digit-num">{stat.digit}</span>
+            <span className="pct-text">{stat.pct}%</span>
+            <span className="arrow-indicator">
+              {isLastDigit ? (movementDirection === 'up' ? '▲' : '▼') : ''}
+            </span>
+          </DigitStatItem>
+        );
+      })}
+    </DigitStatsContainer>
   );
 
   // ===== RENDER DIGIT GRID =====
@@ -1103,6 +1244,9 @@ const RightPanel = () => {
     return null;
   };
 
+  // Check if we're on phone view
+  const isPhone = window.innerWidth <= 768;
+
   return (
     <PanelContainer>
       {/* 1. TRADE TYPE SELECTOR */}
@@ -1188,10 +1332,13 @@ const RightPanel = () => {
       {/* 4. INPUTS */}
       {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
 
-      {/* 5. DIGIT GRID */}
+      {/* 5. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
+      {tradeMode === 'manual' && isPhone && renderDigitStats()}
+
+      {/* 6. DIGIT GRID */}
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
 
-      {/* 6. TRADE BUTTONS */}
+      {/* 7. TRADE BUTTONS */}
       {tradeMode === 'manual' ? (
         tradeType === 'evenodd' ? renderEvenOddButtons() : renderTradeButtons()
       ) : tradeMode === 'use-bots' ? (
@@ -1200,7 +1347,7 @@ const RightPanel = () => {
         renderRunButton(false)
       )}
 
-      {/* 7. SESSION INFO (Bottom) */}
+      {/* 8. SESSION INFO (Bottom) */}
       <SessionInfo>
         <div className="left">
           <div className="label">Last Session</div>
