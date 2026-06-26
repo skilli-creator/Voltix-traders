@@ -535,7 +535,7 @@ const ToggleStatus = styled.span`
 `;
 
 // ============================================
-// 6. DIGIT STATS (COPIED FROM CHARTPANEL)
+// 6. DIGIT STATS - EXACT MATCH FROM CHARTPANEL
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -543,47 +543,67 @@ const DigitStatsContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  max-width: 680px;
   padding: 4px 2px;
-  gap: 2px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  margin-bottom: 4px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  gap: 3px;
 
   /* Only show on phone */
   @media (min-width: 769px) {
     display: none;
   }
+
+  @media (max-width: 480px) {
+    gap: 2px;
+  }
 `;
 
-const DigitStatItem = styled.div`
+const DigitItem = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2px 0;
-  border-radius: 4px;
-  background: ${props => props.isLastDigit ? 'rgba(255, 255, 255, 0.04)' : 'transparent'};
-  border: 1px solid ${props => 
-    props.isLastDigit 
-      ? (props.direction === 'up' ? 'rgba(0, 230, 118, 0.2)' : 'rgba(255, 74, 74, 0.2)') 
-      : 'transparent'
-  };
-  transition: all 0.2s ease;
+  position: relative;
+  padding-bottom: 6px;
+
+  .circle-badge {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(20, 28, 43, 0.95);
+    border: 1.5px solid ${props => 
+      props.isLastDigit 
+        ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
+        : 'rgba(255, 255, 255, 0.08)'
+    };
+    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
+    transition: all 0.15s ease;
+
+    @media (max-width: 480px) {
+      width: 28px;
+      height: 28px;
+    }
+  }
 
   .digit-num {
     font-size: 11px;
     font-weight: 700;
-    color: ${props => 
-      props.isLastDigit 
-        ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
-        : '#9ca3af'
-    };
-    line-height: 1.2;
+    color: #ffffff;
+    line-height: 1;
+
+    @media (max-width: 480px) {
+      font-size: 10px;
+    }
   }
 
   .pct-text {
-    font-size: 7px;
+    font-size: 8px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -592,16 +612,25 @@ const DigitStatItem = styled.div`
         : (props.isMin ? '#ff4a4a' : '#728096')
     };
     line-height: 1;
+    margin-top: 1px;
+
+    @media (max-width: 480px) {
+      font-size: 7px;
+    }
   }
 
-  .arrow-indicator {
-    font-size: 6px;
-    color: ${props => 
-      props.isLastDigit 
-        ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
-        : 'transparent'
-    };
+  .active-arrow {
+    position: absolute;
+    bottom: -2px;
+    font-size: 8px;
+    color: #ff9800; 
+    display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
+
+    @media (max-width: 480px) {
+      font-size: 7px;
+      bottom: -1px;
+    }
   }
 `;
 
@@ -949,7 +978,7 @@ const RightPanel = () => {
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
 
-  // === DIGIT STATS STATE (COPIED FROM CHARTPANEL) ===
+  // === DIGIT STATS STATE (EXACT MATCH FROM CHARTPANEL) ===
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
   const [lastDigit, setLastDigit] = useState(5);
   const [movementDirection, setMovementDirection] = useState('down');
@@ -967,9 +996,9 @@ const RightPanel = () => {
     return BOTS.filter(bot => bot.type === getCurrentTrade().label);
   }, [tradeType]);
 
-  // === DIGIT STATS LOGIC (COPIED FROM CHARTPANEL) ===
+  // === DIGIT STATS LOGIC (EXACT MATCH FROM CHARTPANEL) ===
   useEffect(() => {
-    // Simulate price updates for digit stats
+    // Simulate price updates for digit stats - matches ChartPanel behavior
     const interval = setInterval(() => {
       const delta = (Math.random() - 0.5) * 2;
       const newPrice = parseFloat((price + delta).toFixed(2));
@@ -985,9 +1014,8 @@ const RightPanel = () => {
       // Update movement direction
       setMovementDirection(delta >= 0 ? 'up' : 'down');
       
-      // Update digit stats
+      // Update digit stats - simulate changing percentages like ChartPanel
       setDigitStats(prev => {
-        // Simulate percentage changes
         return prev.map(stat => {
           let newPct = stat.pct + (Math.random() - 0.5) * 2;
           newPct = Math.max(5, Math.min(20, newPct));
@@ -1051,10 +1079,13 @@ const RightPanel = () => {
 
   const toggleMartingale = () => setMartingale(!martingale);
 
-  // === CALCULATE DIGIT STATS ===
+  // === CALCULATE DIGIT STATS (EXACT MATCH FROM CHARTPANEL) ===
   const allPercentages = digitStats.map(s => s.pct);
   const maxPct = Math.max(...allPercentages);
   const minPct = Math.min(...allPercentages);
+
+  // Check if we're on phone view
+  const isPhone = window.innerWidth <= 768;
 
   // ===== RENDER INPUTS =====
   const renderInputs = (showAdvanced = true) => (
@@ -1136,25 +1167,25 @@ const RightPanel = () => {
     </>
   );
 
-  // ===== RENDER DIGIT STATS (NEW - COPIED FROM CHARTPANEL) =====
+  // ===== RENDER DIGIT STATS (EXACT MATCH FROM CHARTPANEL) =====
   const renderDigitStats = () => (
     <DigitStatsContainer>
       {digitStats.map((stat) => {
         const isLastDigit = stat.digit === lastDigit;
         return (
-          <DigitStatItem
+          <DigitItem
             key={stat.digit}
             isLastDigit={isLastDigit}
             isMax={stat.pct === maxPct}
             isMin={stat.pct === minPct}
             direction={movementDirection}
           >
-            <span className="digit-num">{stat.digit}</span>
-            <span className="pct-text">{stat.pct}%</span>
-            <span className="arrow-indicator">
-              {isLastDigit ? (movementDirection === 'up' ? '▲' : '▼') : ''}
-            </span>
-          </DigitStatItem>
+            <div className="circle-badge">
+              <span className="digit-num">{stat.digit}</span>
+              <span className="pct-text">{stat.pct}%</span>
+            </div>
+            <span className="active-arrow">▲</span>
+          </DigitItem>
         );
       })}
     </DigitStatsContainer>
@@ -1244,9 +1275,6 @@ const RightPanel = () => {
     return null;
   };
 
-  // Check if we're on phone view
-  const isPhone = window.innerWidth <= 768;
-
   return (
     <PanelContainer>
       {/* 1. TRADE TYPE SELECTOR */}
@@ -1332,7 +1360,7 @@ const RightPanel = () => {
       {/* 4. INPUTS */}
       {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
 
-      {/* 5. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
+      {/* 5. DIGIT STATS - EXACT COPY FROM CHARTPANEL - ONLY ON PHONE IN MANUAL MODE */}
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
       {/* 6. DIGIT GRID */}
