@@ -389,12 +389,10 @@ const MarketIntro = styled.div`
 // ---- Market Grid ----
 const MarketGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr 1fr;
-  }
+  max-width: 800px;
+  margin: 0 auto;
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -865,7 +863,6 @@ const Dashboard = () => {
     setTimeout(() => {
       const routes = {
         deriv: '/derivhome',
-        binance: '/binancehome',
         forex: '/derivdash'
       };
       navigate(routes[market]);
@@ -949,18 +946,6 @@ const Dashboard = () => {
             <span className="market-badge">24/7 Trading</span>
           </MarketCard>
 
-          <MarketCard color="linear-gradient(90deg, #f7931a, #e68a00)" onClick={(e) => openMarket('binance', e)}>
-            <div className="card-shimmer" />
-            <span className="market-status">
-              <span className="status-dot" />
-              Live
-            </span>
-            <span className="market-icon">₿</span>
-            <div className="market-title">Binance</div>
-            <div className="market-desc">Spot • Futures • 350+ crypto pairs</div>
-            <span className="market-badge">Deep Liquidity</span>
-          </MarketCard>
-
           <MarketCard color="linear-gradient(90deg, #2563eb, #1d4ed8)" onClick={(e) => openMarket('forex', e)}>
             <div className="card-shimmer" />
             <span className="market-status">
@@ -981,7 +966,7 @@ const Dashboard = () => {
           </StatBlock>
           <StatBlock>
             <StatLabel>📊 Active Markets</StatLabel>
-            <StatNumber>3</StatNumber>
+            <StatNumber>2</StatNumber>
           </StatBlock>
           <StatBlock>
             <StatLabel>🔵 AI Signals Today</StatLabel>
@@ -1014,7 +999,6 @@ const Dashboard = () => {
           <FooterCol>
             <h4>📊 Market Hours</h4>
             <p>Forex: 24/5 (Sun 22:00 - Fri 22:00 GMT)</p>
-            <p>Crypto: 24/7 perpetual</p>
             <p>Deriv: 24/7 synthetic indices</p>
           </FooterCol>
           <FooterCol>
@@ -1026,7 +1010,7 @@ const Dashboard = () => {
           </FooterCol>
           <FooterCol>
             <h4>⚖️ Legal</h4>
-            <p>CFDs and crypto trading involve high risk.</p>
+            <p>CFDs and forex trading involve high risk.</p>
             <p>74-89% of retail traders lose money.</p>
             <a href="#">Privacy policy</a>
             <a href="#">Terms of service</a>
