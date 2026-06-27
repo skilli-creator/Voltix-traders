@@ -885,7 +885,7 @@ const Login = () => {
         }
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        setMessage('✅ Welcome back! Redirecting...');
+        setMessage('Welcome back! Redirecting...');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
