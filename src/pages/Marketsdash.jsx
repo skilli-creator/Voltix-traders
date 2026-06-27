@@ -240,23 +240,46 @@ const Greeting = styled.span`
   }
 `;
 
-const ProfilePic = styled.img`
-  width: 38px;
-  height: 38px;
+// ============================================
+// OPTION 2: TRADING-THEMED INITIALS AVATAR
+// ============================================
+const ProfileAvatar = styled.div`
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 2px solid rgba(56, 189, 248, 0.15);
-  object-fit: cover;
-  background: #1a2332;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  background: linear-gradient(135deg, #1a2332, #0a0f1f);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
   transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  text-transform: uppercase;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.05);
 
   &:hover {
-    border-color: #38bdf8;
-    transform: scale(1.05);
+    border-color: #22c55e;
+    transform: scale(1.08) rotate(-3deg);
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.15);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    animation: ${pulseRing} 2s ease-out infinite;
   }
 
   @media (max-width: 768px) {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
   }
 `;
 
@@ -875,17 +898,17 @@ const Dashboard = () => {
     navigate('/login');
   };
 
-  const getAvatarUrl = () => {
-    if (user?.email) {
-      const email = user.email.trim().toLowerCase();
-      let hash = 0;
-      for (let i = 0; i < email.length; i++) {
-        hash = email.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      const hex = (hash & 0xFFFFFFFF).toString(16);
-      return `https://www.gravatar.com/avatar/${hex}?s=200&d=identicon`;
+  // ============================================
+  // OPTION 2: GET INITIALS FUNCTION
+  // ============================================
+  const getInitials = () => {
+    if (user?.first_name && user?.last_name) {
+      return `${user.first_name[0]}${user.last_name[0]}`;
     }
-    return 'https://www.gravatar.com/avatar/?s=200&d=identicon';
+    if (user?.email) {
+      return user.email[0].toUpperCase();
+    }
+    return 'T';
   };
 
   return (
@@ -910,7 +933,8 @@ const Dashboard = () => {
           <Greeting>
             👋 <span className="highlight">{greeting}</span>
           </Greeting>
-          <ProfilePic src={getAvatarUrl()} alt="Profile" />
+          {/* REPLACED ProfilePic with ProfileAvatar */}
+          <ProfileAvatar>{getInitials()}</ProfileAvatar>
           <LogoutButton onClick={handleLogout}>🚪 Logout</LogoutButton>
         </ProfileArea>
       </Topbar>
