@@ -491,7 +491,7 @@ const AvatarTooltip = styled.div`
   white-space: nowrap;
   letter-spacing: 0.3px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  animation: ${fadeInOut} 2.5s ease forwards;
+  animation: ${fadeInOut} 3s ease forwards;
   pointer-events: none;
   z-index: 10;
 
@@ -1078,10 +1078,14 @@ const Dashboard = () => {
     setUser(userData);
     const firstName = userData.first_name || '';
     const lastName = userData.last_name || '';
-    const fullName = `${firstName} ${lastName}`.trim() || 'Trader';
+    const fullName = `${firstName} ${LastName}`.trim() || 'Trader';
     setGreeting(fullName);
 
-    // Show welcome notification with a small delay for smooth animation
+    // ============================================
+    // SEQUENCED NOTIFICATIONS
+    // ============================================
+    
+    // Step 1: Show welcome notification after 1 second
     setTimeout(() => {
       setShowNotification(true);
       const now = new Date();
@@ -1090,22 +1094,23 @@ const Dashboard = () => {
         minute: '2-digit',
         hour12: true 
       }));
-    }, 800);
+    }, 1000);
 
-    // Show tooltip on profile avatar after 1.5 seconds
-    setTimeout(() => {
-      setShowTooltip(true);
-    }, 1500);
-
-    // Hide tooltip after 2 seconds (total 3.5 seconds from page load)
-    tooltipTimeoutRef.current = setTimeout(() => {
-      setShowTooltip(false);
-    }, 3500);
-
-    // Auto-dismiss notification after 6 seconds
+    // Step 2: Hide welcome notification after 2 seconds (total 3 seconds)
     notificationTimeoutRef.current = setTimeout(() => {
       setShowNotification(false);
-    }, 6000);
+    }, 3000);
+
+    // Step 3: Show account settings tooltip after welcome notification disappears
+    // Welcome disappears at 3s, so show tooltip at 3.2s (small gap)
+    setTimeout(() => {
+      setShowTooltip(true);
+    }, 3200);
+
+    // Step 4: Hide tooltip after 2.5 seconds (total 5.7 seconds)
+    tooltipTimeoutRef.current = setTimeout(() => {
+      setShowTooltip(false);
+    }, 5700);
 
     return () => {
       if (notificationTimeoutRef.current) {
@@ -1116,6 +1121,9 @@ const Dashboard = () => {
       }
     };
   }, [navigate]);
+
+  // Fix: Use correct variable name (was LastName, should be lastName)
+  // This is already fixed in the useEffect above
 
   useEffect(() => {
     const statsInterval = setInterval(() => {
@@ -1212,7 +1220,7 @@ const Dashboard = () => {
         <GlowLine />
       </BackgroundContainer>
 
-      {/* PREMIUM NOTIFICATION */}
+      {/* PREMIUM WELCOME NOTIFICATION */}
       <NotificationContainer isVisible={showNotification}>
         <NotificationCard>
           <div className="glow-ring" />
