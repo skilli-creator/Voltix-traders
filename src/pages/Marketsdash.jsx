@@ -1078,7 +1078,7 @@ const Dashboard = () => {
     setUser(userData);
     const firstName = userData.first_name || '';
     const lastName = userData.last_name || '';
-    const fullName = `${firstName} ${LastName}`.trim() || 'Trader';
+    const fullName = `${firstName} ${lastName}`.trim() || 'Trader';
     setGreeting(fullName);
 
     // ============================================
@@ -1121,9 +1121,6 @@ const Dashboard = () => {
       }
     };
   }, [navigate]);
-
-  // Fix: Use correct variable name (was LastName, should be lastName)
-  // This is already fixed in the useEffect above
 
   useEffect(() => {
     const statsInterval = setInterval(() => {
