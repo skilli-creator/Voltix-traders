@@ -489,6 +489,247 @@ const LogoutButton = styled.button`
 `;
 
 // ============================================
+// ACCOUNT SETTINGS COMPONENTS
+// ============================================
+const SettingsSection = styled.section`
+  margin: 40px 0 20px;
+  animation: ${floatIn} 0.9s ease;
+`;
+
+const SettingsHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .icon {
+      font-size: 1.3rem;
+    }
+
+    .gradient {
+      background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+
+  .settings-badge {
+    font-size: 0.65rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.06);
+    color: #4ade80;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    h2 { font-size: 1.2rem; }
+  }
+`;
+
+const SettingsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const SettingsCard = styled.div`
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(34, 197, 94, 0.05);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+
+    .title-icon {
+      font-size: 1.1rem;
+    }
+  }
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 16px;
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #94a3b8;
+    margin-bottom: 5px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+
+  .field-value {
+    font-size: 0.95rem;
+    color: #f1f5f9;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+
+    &:focus {
+      outline: none;
+      border-color: rgba(34, 197, 94, 0.3);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.05);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    &::placeholder {
+      color: #4b5563;
+    }
+  }
+
+  select.field-input {
+    appearance: none;
+    cursor: pointer;
+
+    option {
+      background: #0a0f1f;
+      color: #f1f5f9;
+    }
+  }
+`;
+
+const SettingsButton = styled.button`
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+
+  &.primary {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #0a0f1f;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.2);
+    }
+  }
+
+  &.secondary {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #f1f5f9;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  &.danger {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.1);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 16px;
+    font-size: 0.7rem;
+  }
+`;
+
+const ButtonRow = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+`;
+
+const DangerZone = styled.div`
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: rgba(239, 68, 68, 0.03);
+  border: 1px solid rgba(239, 68, 68, 0.06);
+
+  .danger-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .danger-desc {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 12px;
+  }
+`;
+
+// ============================================
 // MAIN CONTENT
 // ============================================
 const Container = styled.div`
@@ -989,6 +1230,15 @@ const Dashboard = () => {
   const [timestamp, setTimestamp] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [notificationTime, setNotificationTime] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    phone: '',
+    date_of_birth: '',
+    gender: '',
+    email: ''
+  });
   const quoteIndexRef = useRef(0);
   const notificationTimeoutRef = useRef(null);
 
@@ -1015,7 +1265,15 @@ const Dashboard = () => {
     const fullName = `${firstName} ${lastName}`.trim() || 'Trader';
     setGreeting(fullName);
 
-    // Show welcome notification with a small delay for smooth animation
+    setFormData({
+      first_name: userData.first_name || '',
+      last_name: userData.last_name || '',
+      phone: userData.phone || '',
+      date_of_birth: userData.date_of_birth || '',
+      gender: userData.gender || '',
+      email: userData.email || ''
+    });
+
     setTimeout(() => {
       setShowNotification(true);
       const now = new Date();
@@ -1026,7 +1284,6 @@ const Dashboard = () => {
       }));
     }, 800);
 
-    // Auto-dismiss notification after 6 seconds
     notificationTimeoutRef.current = setTimeout(() => {
       setShowNotification(false);
     }, 6000);
@@ -1121,6 +1378,36 @@ const Dashboard = () => {
     return 'T';
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSaveProfile = () => {
+    // Update user data in localStorage
+    const updatedUser = { ...user, ...formData };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    const fullName = `${formData.first_name} ${formData.last_name}`.trim() || 'Trader';
+    setGreeting(fullName);
+    setIsEditing(false);
+    // Show success notification logic here
+  };
+
+  const handleChangePassword = () => {
+    // Password change logic here
+    alert('Password change functionality will be implemented here.');
+  };
+
+  const handleDeleteAccount = () => {
+    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+      // Delete account logic here
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/login');
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -1213,6 +1500,187 @@ const Dashboard = () => {
             <span className="market-badge">24/5 Trading</span>
           </MarketCard>
         </MarketGrid>
+
+        {/* ===== ACCOUNT SETTINGS ===== */}
+        <SettingsSection>
+          <SettingsHeader>
+            <h2>
+              <span className="icon">⚙️</span>
+              <span className="gradient">Account Settings</span>
+            </h2>
+            <span className="settings-badge">● Secure</span>
+          </SettingsHeader>
+
+          <SettingsGrid>
+            {/* Personal Information Card */}
+            <SettingsCard>
+              <div className="card-title">
+                <span className="title-icon">👤</span>
+                Personal Information
+              </div>
+
+              <FormGroup>
+                <label>First Name</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="first_name"
+                    className="field-input"
+                    value={formData.first_name}
+                    onChange={handleInputChange}
+                    placeholder="Enter first name"
+                  />
+                ) : (
+                  <div className="field-value">{formData.first_name || 'Not set'}</div>
+                )}
+              </FormGroup>
+
+              <FormGroup>
+                <label>Last Name</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="last_name"
+                    className="field-input"
+                    value={formData.last_name}
+                    onChange={handleInputChange}
+                    placeholder="Enter last name"
+                  />
+                ) : (
+                  <div className="field-value">{formData.last_name || 'Not set'}</div>
+                )}
+              </FormGroup>
+
+              <FormGroup>
+                <label>Email Address</label>
+                <div className="field-value" style={{ color: '#94a3b8' }}>
+                  {formData.email || 'Not set'}
+                </div>
+              </FormGroup>
+
+              <FormGroup>
+                <label>Phone Number</label>
+                {isEditing ? (
+                  <input
+                    type="tel"
+                    name="phone"
+                    className="field-input"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="Enter phone number"
+                  />
+                ) : (
+                  <div className="field-value">{formData.phone || 'Not set'}</div>
+                )}
+              </FormGroup>
+
+              <FormGroup>
+                <label>Date of Birth</label>
+                {isEditing ? (
+                  <input
+                    type="date"
+                    name="date_of_birth"
+                    className="field-input"
+                    value={formData.date_of_birth}
+                    onChange={handleInputChange}
+                  />
+                ) : (
+                  <div className="field-value">{formData.date_of_birth || 'Not set'}</div>
+                )}
+              </FormGroup>
+
+              <FormGroup>
+                <label>Gender</label>
+                {isEditing ? (
+                  <select
+                    name="gender"
+                    className="field-input"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not">Prefer not to say</option>
+                  </select>
+                ) : (
+                  <div className="field-value">
+                    {formData.gender ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) : 'Not set'}
+                  </div>
+                )}
+              </FormGroup>
+
+              <ButtonRow>
+                {isEditing ? (
+                  <>
+                    <SettingsButton className="primary" onClick={handleSaveProfile}>
+                      💾 Save Changes
+                    </SettingsButton>
+                    <SettingsButton className="secondary" onClick={() => setIsEditing(false)}>
+                      Cancel
+                    </SettingsButton>
+                  </>
+                ) : (
+                  <SettingsButton className="primary" onClick={() => setIsEditing(true)}>
+                    ✏️ Edit Profile
+                  </SettingsButton>
+                )}
+              </ButtonRow>
+            </SettingsCard>
+
+            {/* Security Card */}
+            <SettingsCard>
+              <div className="card-title">
+                <span className="title-icon">🔒</span>
+                Security & Privacy
+              </div>
+
+              <FormGroup>
+                <label>Password</label>
+                <div className="field-value" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>••••••••</span>
+                  <SettingsButton className="secondary" onClick={handleChangePassword}>
+                    Change Password
+                  </SettingsButton>
+                </div>
+              </FormGroup>
+
+              <FormGroup>
+                <label>Two-Factor Authentication</label>
+                <div className="field-value" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: '#4ade80' }}>✓ Enabled</span>
+                  <SettingsButton className="secondary">
+                    Configure
+                  </SettingsButton>
+                </div>
+              </FormGroup>
+
+              <FormGroup>
+                <label>Session Management</label>
+                <div className="field-value" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Active: 1 session</span>
+                  <SettingsButton className="secondary">
+                    View Sessions
+                  </SettingsButton>
+                </div>
+              </FormGroup>
+
+              {/* Danger Zone */}
+              <DangerZone>
+                <div className="danger-title">
+                  ⚠️ Danger Zone
+                </div>
+                <div className="danger-desc">
+                  Permanently delete your account and all associated data. This action cannot be undone.
+                </div>
+                <SettingsButton className="danger" onClick={handleDeleteAccount}>
+                  🗑️ Delete Account
+                </SettingsButton>
+              </DangerZone>
+            </SettingsCard>
+          </SettingsGrid>
+        </SettingsSection>
 
         <StatsTicker>
           <StatBlock>
