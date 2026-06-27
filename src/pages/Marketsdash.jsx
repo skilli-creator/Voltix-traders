@@ -77,6 +77,24 @@ const rotateGlow = keyframes`
 `;
 
 // ============================================
+// PREMIUM NOTIFICATION ANIMATIONS
+// ============================================
+const slideIn = keyframes`
+  0% { transform: translateX(100%) scale(0.9); opacity: 0; }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+`;
+
+const slideOut = keyframes`
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(100%) scale(0.9); opacity: 0; }
+`;
+
+const shimmerLine = keyframes`
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+`;
+
+// ============================================
 // BACKGROUND
 // ============================================
 const BackgroundContainer = styled.div`
@@ -146,6 +164,172 @@ const GlowLine = styled.div`
   height: 1px;
   background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, transparent);
   opacity: 0.1;
+`;
+
+// ============================================
+// PREMIUM NOTIFICATION COMPONENT
+// ============================================
+const NotificationContainer = styled.div`
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  z-index: 1000;
+  max-width: 420px;
+  width: 100%;
+  animation: ${props => props.isVisible ? slideIn : slideOut} 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: ${props => props.isVisible ? 'auto' : 'none'};
+
+  @media (max-width: 768px) {
+    top: 80px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+    width: auto;
+  }
+`;
+
+const NotificationCard = styled.div`
+  background: linear-gradient(135deg, rgba(5, 10, 24, 0.95), rgba(10, 20, 40, 0.95));
+  backdrop-filter: blur(24px);
+  border-radius: 20px;
+  padding: 20px 24px 20px 24px;
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(34, 197, 94, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, transparent);
+    animation: ${shimmerLine} 2s linear infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(34, 197, 94, 0.03), transparent 70%);
+    pointer-events: none;
+  }
+
+  .glow-ring {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(34, 197, 94, 0.05), transparent 70%);
+    animation: ${pulseGlow} 3s ease-in-out infinite;
+  }
+`;
+
+const NotificationHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+
+  .icon-wrapper {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(56, 189, 248, 0.15));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    flex-shrink: 0;
+  }
+
+  .title {
+    font-size: 14px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #22c55e, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.3px;
+  }
+
+  .close-btn {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      transform: rotate(90deg);
+    }
+  }
+`;
+
+const NotificationBody = styled.div`
+  position: relative;
+  z-index: 1;
+
+  .greeting-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #f1f5f9;
+    line-height: 1.3;
+
+    .highlight {
+      background: linear-gradient(135deg, #22c55e, #38bdf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+  }
+
+  .sub-text {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseGlow} 2s ease-in-out infinite;
+    }
+
+    .time-stamp {
+      color: #4b5563;
+      font-size: 11px;
+    }
+  }
 `;
 
 // ============================================
@@ -240,9 +424,6 @@ const Greeting = styled.span`
   }
 `;
 
-// ============================================
-// OPTION 2: TRADING-THEMED INITIALS AVATAR
-// ============================================
 const ProfileAvatar = styled.div`
   width: 42px;
   height: 42px;
@@ -806,7 +987,10 @@ const Dashboard = () => {
   const [signals, setSignals] = useState(142);
   const [users, setUsers] = useState(2847);
   const [timestamp, setTimestamp] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationTime, setNotificationTime] = useState('');
   const quoteIndexRef = useRef(0);
+  const notificationTimeoutRef = useRef(null);
 
   const quotes = [
     '"Trade Smart. Stay Disciplined. Let the Market Reward Your Patience."',
@@ -830,6 +1014,28 @@ const Dashboard = () => {
     const lastName = userData.last_name || '';
     const fullName = `${firstName} ${lastName}`.trim() || 'Trader';
     setGreeting(fullName);
+
+    // Show welcome notification with a small delay for smooth animation
+    setTimeout(() => {
+      setShowNotification(true);
+      const now = new Date();
+      setNotificationTime(now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      }));
+    }, 800);
+
+    // Auto-dismiss notification after 6 seconds
+    notificationTimeoutRef.current = setTimeout(() => {
+      setShowNotification(false);
+    }, 6000);
+
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
   }, [navigate]);
 
   useEffect(() => {
@@ -898,9 +1104,13 @@ const Dashboard = () => {
     navigate('/login');
   };
 
-  // ============================================
-  // OPTION 2: GET INITIALS FUNCTION
-  // ============================================
+  const handleCloseNotification = () => {
+    setShowNotification(false);
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+  };
+
   const getInitials = () => {
     if (user?.first_name && user?.last_name) {
       return `${user.first_name[0]}${user.last_name[0]}`;
@@ -923,6 +1133,28 @@ const Dashboard = () => {
         <GlowLine />
       </BackgroundContainer>
 
+      {/* PREMIUM NOTIFICATION */}
+      <NotificationContainer isVisible={showNotification}>
+        <NotificationCard>
+          <div className="glow-ring" />
+          <NotificationHeader>
+            <div className="icon-wrapper">🎉</div>
+            <span className="title">Welcome Back</span>
+            <button className="close-btn" onClick={handleCloseNotification}>✕</button>
+          </NotificationHeader>
+          <NotificationBody>
+            <div className="greeting-text">
+              Hello, <span className="highlight">{greeting}</span> 👋
+            </div>
+            <div className="sub-text">
+              <span className="status-dot" />
+              You're now connected to Voltix Traders
+              <span className="time-stamp">• {notificationTime}</span>
+            </div>
+          </NotificationBody>
+        </NotificationCard>
+      </NotificationContainer>
+
       <Topbar>
         <Brand>
           <span className="logo-icon">🔷</span>
@@ -933,7 +1165,6 @@ const Dashboard = () => {
           <Greeting>
             👋 <span className="highlight">{greeting}</span>
           </Greeting>
-          {/* REPLACED ProfilePic with ProfileAvatar */}
           <ProfileAvatar>{getInitials()}</ProfileAvatar>
           <LogoutButton onClick={handleLogout}>🚪 Logout</LogoutButton>
         </ProfileArea>
