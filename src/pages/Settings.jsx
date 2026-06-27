@@ -388,6 +388,26 @@ const FormGroup = styled.div`
     min-height: 44px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+
+  .field-value-with-age {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .age-badge {
+    font-size: 0.7rem;
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.06);
+    padding: 2px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(34, 197, 94, 0.06);
+    font-weight: 500;
+    white-space: nowrap;
+    margin-left: 12px;
   }
 
   .field-input {
@@ -411,6 +431,11 @@ const FormGroup = styled.div`
     &::placeholder {
       color: #4b5563;
     }
+
+    &.error {
+      border-color: rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.05);
+    }
   }
 
   select.field-input {
@@ -421,6 +446,15 @@ const FormGroup = styled.div`
       background: #0a0f1f;
       color: #f1f5f9;
     }
+  }
+
+  .error-message {
+    font-size: 0.7rem;
+    color: #ef4444;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 `;
 
@@ -474,6 +508,12 @@ const SettingsButton = styled.button`
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(239, 68, 68, 0.1);
     }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
   }
 
   @media (max-width: 768px) {
@@ -530,6 +570,8 @@ const Settings = () => {
   const [greeting, setGreeting] = useState('Trader');
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [dobError, setDobError] = useState('');
+  const [calculatedAge, setCalculatedAge] = useState(null);
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -538,6 +580,57 @@ const Settings = () => {
     gender: '',
     email: ''
   });
+
+  // Calculate age from date of birth
+  const calculateAge = (dob) => {
+    if (!dob) return null;
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  // Get max date (10 years ago from today)
+  const getMaxDate = () => {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 10);
+    return date.toISOString().split('T')[0];
+  };
+
+  // Validate date of birth
+  const validateDob = (dob) => {
+    if (!dob) {
+      setDobError('');
+      setCalculatedAge(null);
+      return true;
+    }
+
+    const birthDate = new Date(dob);
+    const today = new Date();
+    const maxDate = new Date(getMaxDate());
+
+    if (birthDate > maxDate) {
+      setDobError('You must be at least 10 years old');
+      setCalculatedAge(null);
+      return false;
+    }
+
+    const age = calculateAge(dob);
+    setCalculatedAge(age);
+    setDobError('');
+    return true;
+  };
+
+  // Handle date of birth change with validation
+  const handleDobChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, date_of_birth: value }));
+    validateDob(value);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -554,14 +647,22 @@ const Settings = () => {
     const fullName = `${firstName} ${lastName}`.trim() || 'Trader';
     setGreeting(fullName);
 
+    const dob = userData.date_of_birth || '';
     setFormData({
       first_name: userData.first_name || '',
       last_name: userData.last_name || '',
       phone: userData.phone || '',
-      date_of_birth: userData.date_of_birth || '',
+      date_of_birth: dob,
       gender: userData.gender || '',
       email: userData.email || ''
     });
+
+    // Calculate age if DOB exists
+    if (dob) {
+      const age = calculateAge(dob);
+      setCalculatedAge(age);
+      validateDob(dob);
+    }
   }, [navigate]);
 
   const handleInputChange = (e) => {
@@ -570,6 +671,11 @@ const Settings = () => {
   };
 
   const handleSaveProfile = () => {
+    // Validate DOB before saving
+    if (formData.date_of_birth && !validateDob(formData.date_of_birth)) {
+      return;
+    }
+
     const updatedUser = { ...user, ...formData };
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setUser(updatedUser);
@@ -715,15 +821,40 @@ const Settings = () => {
             <FormGroup>
               <label>Date of Birth</label>
               {isEditing ? (
-                <input
-                  type="date"
-                  name="date_of_birth"
-                  className="field-input"
-                  value={formData.date_of_birth}
-                  onChange={handleInputChange}
-                />
+                <>
+                  <input
+                    type="date"
+                    name="date_of_birth"
+                    className={`field-input ${dobError ? 'error' : ''}`}
+                    value={formData.date_of_birth}
+                    onChange={handleDobChange}
+                    max={getMaxDate()}
+                  />
+                  {dobError && (
+                    <div className="error-message">
+                      ⚠️ {dobError}
+                    </div>
+                  )}
+                  {formData.date_of_birth && !dobError && calculatedAge !== null && (
+                    <div style={{ 
+                      fontSize: '0.75rem', 
+                      color: '#4ade80', 
+                      marginTop: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}>
+                      ✓ Age: <strong>{calculatedAge}</strong> years old
+                    </div>
+                  )}
+                </>
               ) : (
-                <div className="field-value">{formData.date_of_birth || 'Not set'}</div>
+                <div className="field-value">
+                  <span>{formData.date_of_birth || 'Not set'}</span>
+                  {formData.date_of_birth && calculatedAge !== null && (
+                    <span className="age-badge">🎂 {calculatedAge} years</span>
+                  )}
+                </div>
               )}
             </FormGroup>
 
@@ -752,10 +883,26 @@ const Settings = () => {
             <ButtonRow>
               {isEditing ? (
                 <>
-                  <SettingsButton className="primary" onClick={handleSaveProfile}>
+                  <SettingsButton 
+                    className="primary" 
+                    onClick={handleSaveProfile}
+                    disabled={!!dobError}
+                  >
                     💾 Save Changes
                   </SettingsButton>
-                  <SettingsButton className="secondary" onClick={() => setIsEditing(false)}>
+                  <SettingsButton className="secondary" onClick={() => {
+                    setIsEditing(false);
+                    setDobError('');
+                    // Reset DOB to original value
+                    setFormData(prev => ({ 
+                      ...prev, 
+                      date_of_birth: user?.date_of_birth || '' 
+                    }));
+                    if (user?.date_of_birth) {
+                      const age = calculateAge(user.date_of_birth);
+                      setCalculatedAge(age);
+                    }
+                  }}>
                     Cancel
                   </SettingsButton>
                 </>
