@@ -16,6 +16,10 @@ import Derivhome from './pages/Derivhome';
 import Derivdash from './pages/Derivdash';
 import Binancehome from './pages/Binancehome';
 import Forexhome from './pages/Forexhome';
+import Settings from './pages/Settings';
+
+// In your routes:
+
 
 const App = () => {
   return (
@@ -29,11 +33,13 @@ const App = () => {
       <Route path="/verifyresetcode" element={<Verifyresetcode />} />
       <Route path="/resetpass" element={<Resetpass />} />
 
+
       {/* Dashboard Pages */}
       <Route path="/marketsdash" element={<Marketsdash />} />
       <Route path="/derivhome" element={<Derivhome />} />
       <Route path="/binancehome" element={<Binancehome />} />
       <Route path="/forexhome" element={<Forexhome />} />
+      <Route path="/settings" element={<Settings />} />
 
       {/* Deriv Trading Dashboard */}
       <Route path="/derivdash" element={<Derivdash />} />
