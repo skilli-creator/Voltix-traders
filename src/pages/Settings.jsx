@@ -635,7 +635,7 @@ const Settings = () => {
 
       <Container>
         <SettingsHeader>
-          <Link to="/marketdash" className="back-link">
+          <Link to="/marketsdash" className="back-link">
             ← Back to Dashboard
           </Link>
           <h1>
