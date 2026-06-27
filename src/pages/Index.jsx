@@ -419,7 +419,7 @@ const Button = styled(Link)`
 `;
 
 // ============================================
-// PLATFORM SHOWCASE WITH IMAGES
+// PLATFORM SHOWCASE WITH PREMIUM IMAGES
 // ============================================
 const PlatformsSection = styled.section`
   padding: 60px 0;
@@ -463,15 +463,14 @@ const SectionSub = styled.p`
 
 const PlatformGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
+  max-width: 900px;
+  margin: 0 auto;
 
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
+    max-width: 100%;
   }
 `;
 
@@ -510,7 +509,7 @@ const PlatformCard = styled.div`
 
   .platform-image {
     width: 100%;
-    height: 180px;
+    height: 200px;
     object-fit: cover;
     display: block;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
@@ -572,7 +571,7 @@ const PlatformCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    .platform-image { height: 140px; }
+    .platform-image { height: 160px; }
     .platform-content { padding: 16px 16px 14px; }
     .platform-name { font-size: 1rem; }
     .platform-desc { font-size: 0.8rem; }
@@ -904,13 +903,13 @@ const FooterBottom = styled.div`
 `;
 
 // ============================================
-// IMAGE URLS (Unsplash - Free)
+// PREMIUM IMAGE URLS
 // ============================================
 const IMAGES = {
-  deriv: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop',
-  binance: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=800&h=400&fit=crop',
-  forex: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop',
-  hero: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop',
+  deriv: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop&crop=center',
+  forex: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center',
+  hero: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop&crop=center',
+  trading: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center',
 };
 
 // ============================================
@@ -971,12 +970,12 @@ const Index = () => {
               Multi-Platform Trading • 99.9% Uptime
             </HeroBadge>
             <HeroTitle>
-              Trade <span className="gradient-text">Deriv, Binance,</span> <br />
-              and <span className="gradient-text">Forex</span> All-in-One
+              Trade <span className="gradient-text">Deriv</span> and <br />
+              <span className="gradient-text">Forex</span> All-in-One
             </HeroTitle>
             <HeroSubtitle>
               The ultimate trading automation platform. Deploy AI-powered strategies across
-              multiple markets from a single premium dashboard.
+              Deriv and Forex markets from a single premium dashboard.
             </HeroSubtitle>
             <HeroButtons>
               <Button to="/Register" className="primary">
@@ -1008,7 +1007,7 @@ const Index = () => {
                 />
                 <div className="platform-content">
                   <div className="platform-header">
-                    <span className="platform-icon">🔷</span>
+                    <span className="platform-icon">📊</span>
                     <span className="platform-badge">Synthetic Indices</span>
                   </div>
                   <div className="platform-name">Deriv</div>
@@ -1019,35 +1018,8 @@ const Index = () => {
                   <div className="platform-features">
                     <span className="feature-tag">Synthetic Indices</span>
                     <span className="feature-tag">Forex</span>
-                    <span className="feature-tag">Crypto</span>
+                    <span className="feature-tag">Options</span>
                     <span className="feature-tag">High Leverage</span>
-                  </div>
-                </div>
-              </PlatformCard>
-
-              {/* Binance */}
-              <PlatformCard color="linear-gradient(90deg, #f7931a, #e68a00)">
-                <img
-                  src={IMAGES.binance}
-                  alt="Binance Crypto Exchange"
-                  className="platform-image"
-                  loading="lazy"
-                />
-                <div className="platform-content">
-                  <div className="platform-header">
-                    <span className="platform-icon">🟠</span>
-                    <span className="platform-badge">Crypto Exchange</span>
-                  </div>
-                  <div className="platform-name">Binance</div>
-                  <div className="platform-desc">
-                    Access the world's largest cryptocurrency exchange with deep liquidity,
-                    hundreds of trading pairs, and advanced order types.
-                  </div>
-                  <div className="platform-features">
-                    <span className="feature-tag">Spot Trading</span>
-                    <span className="feature-tag">Futures</span>
-                    <span className="feature-tag">Margin</span>
-                    <span className="feature-tag">500+ Pairs</span>
                   </div>
                 </div>
               </PlatformCard>
@@ -1140,7 +1112,7 @@ const Index = () => {
               <StepCard>
                 <div className="step-number">2</div>
                 <h3>Connect Exchange</h3>
-                <p>Link your Deriv, Binance, or Forex accounts via secure API connection.</p>
+                <p>Link your Deriv or Forex accounts via secure API connection.</p>
               </StepCard>
               <StepCard>
                 <div className="step-number">3</div>
@@ -1214,7 +1186,6 @@ const Index = () => {
             <FooterCol>
               <h4>📊 Platforms</h4>
               <a href="#">Deriv</a>
-              <a href="#">Binance</a>
               <a href="#">Forex</a>
             </FooterCol>
             <FooterCol>
