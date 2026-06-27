@@ -581,6 +581,7 @@ const Settings = () => {
   };
 
   const handleChangePassword = () => {
+    // Implement password change logic
     alert('Password change functionality will be implemented here.');
   };
 
@@ -780,6 +781,26 @@ const Settings = () => {
                 <span>••••••••</span>
                 <SettingsButton className="secondary" onClick={handleChangePassword}>
                   Change Password
+                </SettingsButton>
+              </div>
+            </FormGroup>
+
+            <FormGroup>
+              <label>Two-Factor Authentication</label>
+              <div className="field-value" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#4ade80' }}>✓ Enabled</span>
+                <SettingsButton className="secondary">
+                  Configure
+                </SettingsButton>
+              </div>
+            </FormGroup>
+
+            <FormGroup>
+              <label>Session Management</label>
+              <div className="field-value" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Active: 1 session</span>
+                <SettingsButton className="secondary">
+                  View Sessions
                 </SettingsButton>
               </div>
             </FormGroup>
