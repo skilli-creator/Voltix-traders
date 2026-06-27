@@ -520,71 +520,6 @@ const SuccessMessage = styled.div`
   animation: ${floatIn} 0.4s ease;
 `;
 
-// Phone Settings specific styles
-const PhoneSettingsGroup = styled.div`
-  margin-top: 8px;
-  padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-
-  .phone-status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .phone-number {
-    font-size: 0.95rem;
-    color: #f1f5f9;
-    font-weight: 500;
-  }
-
-  .phone-verified {
-    font-size: 0.7rem;
-    color: #4ade80;
-    background: rgba(34, 197, 94, 0.06);
-    padding: 2px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(34, 197, 94, 0.06);
-  }
-
-  .phone-unverified {
-    font-size: 0.7rem;
-    color: #f59e0b;
-    background: rgba(245, 158, 11, 0.06);
-    padding: 2px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(245, 158, 11, 0.06);
-  }
-
-  .phone-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-  }
-`;
-
-const VerifyButton = styled.button`
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: #0a0f1f;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
-  }
-`;
-
 // ============================================
 // MAIN COMPONENT
 // ============================================
@@ -599,7 +534,6 @@ const Settings = () => {
     first_name: '',
     last_name: '',
     phone: '',
-    phone_verified: false,
     date_of_birth: '',
     gender: '',
     email: ''
@@ -624,7 +558,6 @@ const Settings = () => {
       first_name: userData.first_name || '',
       last_name: userData.last_name || '',
       phone: userData.phone || '',
-      phone_verified: userData.phone_verified || false,
       date_of_birth: userData.date_of_birth || '',
       gender: userData.gender || '',
       email: userData.email || ''
@@ -648,7 +581,6 @@ const Settings = () => {
   };
 
   const handleChangePassword = () => {
-    // Implement password change logic
     alert('Password change functionality will be implemented here.');
   };
 
@@ -658,11 +590,6 @@ const Settings = () => {
       localStorage.removeItem('user');
       navigate('/login');
     }
-  };
-
-  const handleVerifyPhone = () => {
-    // Implement phone verification logic
-    alert('Phone verification functionality will be implemented here. A verification code will be sent to your phone.');
   };
 
   const getInitials = () => {
@@ -778,46 +705,12 @@ const Settings = () => {
                   className="field-input"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  placeholder="Enter phone number (e.g., +1234567890)"
+                  placeholder="Enter phone number"
                 />
               ) : (
                 <div className="field-value">{formData.phone || 'Not set'}</div>
               )}
             </FormGroup>
-
-            {/* Phone Settings */}
-            {formData.phone && (
-              <PhoneSettingsGroup>
-                <div className="phone-status">
-                  <span className="phone-number">{formData.phone}</span>
-                  {formData.phone_verified ? (
-                    <span className="phone-verified">✓ Verified</span>
-                  ) : (
-                    <span className="phone-unverified">⚠ Not Verified</span>
-                  )}
-                </div>
-                <div className="phone-actions">
-                  {!formData.phone_verified && (
-                    <VerifyButton onClick={handleVerifyPhone}>
-                      Verify Phone
-                    </VerifyButton>
-                  )}
-                  {isEditing && formData.phone && (
-                    <SettingsButton 
-                      className="secondary" 
-                      onClick={() => {
-                        // Logic to change phone number
-                        // This would typically send a verification code
-                        alert('Phone number update functionality will be implemented here.');
-                      }}
-                      style={{ fontSize: '0.7rem', padding: '4px 14px' }}
-                    >
-                      Change Number
-                    </SettingsButton>
-                  )}
-                </div>
-              </PhoneSettingsGroup>
-            )}
 
             <FormGroup>
               <label>Date of Birth</label>
@@ -874,7 +767,7 @@ const Settings = () => {
             </ButtonRow>
           </SettingsCard>
 
-          {/* Security Card - Updated */}
+          {/* Security Card */}
           <SettingsCard>
             <div className="card-title">
               <span className="title-icon">🔒</span>
