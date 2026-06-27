@@ -507,12 +507,29 @@ const PlatformCard = styled.div`
     opacity: 1;
   }
 
+  .platform-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
+  }
+
   .platform-image {
     width: 100%;
-    height: 200px;
+    height: 100%;
     object-fit: cover;
     display: block;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: transform 0.6s ease;
+  }
+
+  .platform-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(5, 10, 24, 0.8) 100%);
+    pointer-events: none;
+  }
+
+  &:hover .platform-image {
+    transform: scale(1.05);
   }
 
   .platform-content {
@@ -571,7 +588,7 @@ const PlatformCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    .platform-image { height: 160px; }
+    .platform-image-wrapper { height: 160px; }
     .platform-content { padding: 16px 16px 14px; }
     .platform-name { font-size: 1rem; }
     .platform-desc { font-size: 0.8rem; }
@@ -903,13 +920,14 @@ const FooterBottom = styled.div`
 `;
 
 // ============================================
-// PREMIUM IMAGE URLS
+// PREMIUM TRADING IMAGES
 // ============================================
 const IMAGES = {
-  deriv: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop&crop=center',
+  deriv: 'https://images.unsplash.com/photo-1642104704073-2ce4af2da869?w=800&h=400&fit=crop&crop=center',
   forex: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center',
   hero: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop&crop=center',
   trading: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center',
+  finance: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center',
 };
 
 // ============================================
@@ -999,12 +1017,15 @@ const Index = () => {
             <PlatformGrid>
               {/* Deriv */}
               <PlatformCard color="linear-gradient(90deg, #a855f7, #7c3aed)">
-                <img
-                  src={IMAGES.deriv}
-                  alt="Deriv Trading Platform"
-                  className="platform-image"
-                  loading="lazy"
-                />
+                <div className="platform-image-wrapper">
+                  <img
+                    src={IMAGES.deriv}
+                    alt="Deriv Trading Platform"
+                    className="platform-image"
+                    loading="lazy"
+                  />
+                  <div className="platform-image-overlay" />
+                </div>
                 <div className="platform-content">
                   <div className="platform-header">
                     <span className="platform-icon">📊</span>
@@ -1026,12 +1047,15 @@ const Index = () => {
 
               {/* Forex */}
               <PlatformCard color="linear-gradient(90deg, #2563eb, #1d4ed8)">
-                <img
-                  src={IMAGES.forex}
-                  alt="Forex Trading"
-                  className="platform-image"
-                  loading="lazy"
-                />
+                <div className="platform-image-wrapper">
+                  <img
+                    src={IMAGES.forex}
+                    alt="Forex Trading"
+                    className="platform-image"
+                    loading="lazy"
+                  />
+                  <div className="platform-image-overlay" />
+                </div>
                 <div className="platform-content">
                   <div className="platform-header">
                     <span className="platform-icon">💱</span>
