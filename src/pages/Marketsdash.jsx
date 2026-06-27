@@ -76,9 +76,11 @@ const rotateGlow = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const spin = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+const fadeInOut = keyframes`
+  0% { opacity: 0; transform: translateY(-10px) scale(0.9); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  85% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.9); }
 `;
 
 // ============================================
@@ -407,6 +409,7 @@ const ProfileArea = styled.div`
   display: flex;
   align-items: center;
   gap: 14px;
+  position: relative;
 
   @media (max-width: 768px) {
     flex-wrap: wrap;
@@ -471,55 +474,57 @@ const ProfileAvatar = styled(Link)`
   }
 `;
 
-const SettingsIcon = styled(Link)`
-  color: #94a3b8;
-  font-size: 20px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  position: relative;
+// Tooltip that appears on the profile avatar
+const AvatarTooltip = styled.div`
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(5, 10, 24, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  color: #f1f5f9;
+  padding: 4px 14px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: ${fadeInOut} 2.5s ease forwards;
+  pointer-events: none;
+  z-index: 10;
 
-  &:hover {
-    color: #22c55e;
-    transform: rotate(90deg);
-    background: rgba(34, 197, 94, 0.05);
-    border-color: rgba(34, 197, 94, 0.1);
-    box-shadow: 0 0 30px rgba(34, 197, 94, 0.05);
-  }
-
-  .tooltip {
+  &::before {
+    content: '';
     position: absolute;
-    bottom: -32px;
+    top: -6px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 10px;
-    color: #94a3b8;
-    background: rgba(5, 10, 24, 0.9);
-    padding: 2px 10px;
-    border-radius: 6px;
-    white-space: nowrap;
-    opacity: 0;
-    transition: all 0.3s ease;
-    pointer-events: none;
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid rgba(34, 197, 94, 0.15);
   }
 
-  &:hover .tooltip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+  &::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid rgba(5, 10, 24, 0.95);
+  }
+
+  .tooltip-icon {
+    margin-right: 4px;
   }
 
   @media (max-width: 768px) {
-    width: 32px;
-    height: 32px;
-    font-size: 17px;
+    font-size: 9px;
+    padding: 3px 12px;
+    bottom: -36px;
   }
 `;
 
@@ -1048,8 +1053,10 @@ const Dashboard = () => {
   const [timestamp, setTimestamp] = useState('');
   const [showNotification, setShowNotification] = useState(false);
   const [notificationTime, setNotificationTime] = useState('');
+  const [showTooltip, setShowTooltip] = useState(false);
   const quoteIndexRef = useRef(0);
   const notificationTimeoutRef = useRef(null);
+  const tooltipTimeoutRef = useRef(null);
 
   const quotes = [
     '"Trade Smart. Stay Disciplined. Let the Market Reward Your Patience."',
@@ -1085,6 +1092,16 @@ const Dashboard = () => {
       }));
     }, 800);
 
+    // Show tooltip on profile avatar after 1.5 seconds
+    setTimeout(() => {
+      setShowTooltip(true);
+    }, 1500);
+
+    // Hide tooltip after 2 seconds (total 3.5 seconds from page load)
+    tooltipTimeoutRef.current = setTimeout(() => {
+      setShowTooltip(false);
+    }, 3500);
+
     // Auto-dismiss notification after 6 seconds
     notificationTimeoutRef.current = setTimeout(() => {
       setShowNotification(false);
@@ -1093,6 +1110,9 @@ const Dashboard = () => {
     return () => {
       if (notificationTimeoutRef.current) {
         clearTimeout(notificationTimeoutRef.current);
+      }
+      if (tooltipTimeoutRef.current) {
+        clearTimeout(tooltipTimeoutRef.current);
       }
     };
   }, [navigate]);
@@ -1224,13 +1244,17 @@ const Dashboard = () => {
           <Greeting>
             👋 <span className="highlight">{greeting}</span>
           </Greeting>
-          <ProfileAvatar to="/settings" title="Account Settings">
-            {getInitials()}
-          </ProfileAvatar>
-          <SettingsIcon to="/settings" title="Account Settings">
-            ⚙️
-            <span className="tooltip">Settings</span>
-          </SettingsIcon>
+          <div style={{ position: 'relative' }}>
+            <ProfileAvatar to="/settings" title="Click to access account settings">
+              {getInitials()}
+            </ProfileAvatar>
+            {showTooltip && (
+              <AvatarTooltip>
+                <span className="tooltip-icon">⚙️</span>
+                Click to access Settings
+              </AvatarTooltip>
+            )}
+          </div>
           <LogoutButton onClick={handleLogout}>🚪 Logout</LogoutButton>
         </ProfileArea>
       </Topbar>
