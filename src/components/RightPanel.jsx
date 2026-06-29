@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
-// ALL VOLATILITY MARKETS (Deriv Official)
+// ALL VOLATILITY MARKETS (Deriv Official) - COPIED FROM CHARTPANEL
 // ============================================
 const VOLATILITY_MARKETS = [
   { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true },
@@ -89,17 +89,16 @@ const PanelContainer = styled.div`
 `;
 
 // ============================================
-// 1. MARKET SELECTOR (UPDATED WITH PROFESSIONAL DESIGN)
+// 1. MARKET SELECTOR (NEW - SYNCED WITH CHARTPANEL)
 // ============================================
 
 const MarketSelectorWrapper = styled.div`
   position: relative;
   animation: ${fadeIn} 0.3s ease;
   margin-bottom: 4px;
-  display: block;
 
-  @media (max-width: 768px) {
-    display: block;
+  @media (min-width: 769px) {
+    display: none;
   }
 `;
 
@@ -107,9 +106,9 @@ const MarketSelectorButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: 8px 12px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid ${props => props.isOpen ? 'rgba(41, 98, 255, 0.6)' : 'rgba(255, 255, 255, 0.06)'};
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -122,21 +121,20 @@ const MarketSelectorButton = styled.div`
   .left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
   }
 
   .market-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: ${props => props.color || '#2962ff'};
     flex-shrink: 0;
-    box-shadow: 0 0 12px ${props => props.color || '#2962ff'}40;
   }
 
   .market-name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: #f1f5f9;
     white-space: nowrap;
@@ -146,44 +144,25 @@ const MarketSelectorButton = styled.div`
 
   .market-badge {
     font-size: 8px;
-    padding: 2px 8px;
+    padding: 1px 6px;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.06);
     color: #94a3b8;
     flex-shrink: 0;
-    font-weight: 600;
-  }
-
-  .market-badge-1s {
-    font-size: 7px;
-    font-weight: 700;
-    color: #ffffff;
-    background: #ff4444;
-    padding: 1px 6px;
-    border-radius: 3px;
-    flex-shrink: 0;
   }
 
   .arrow {
-    font-size: 12px;
+    font-size: 10px;
     color: #5a6070;
     transition: transform 0.3s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
   }
 
-  @media (max-width: 768px) {
-    padding: 8px 12px;
-    .market-name { font-size: 13px; }
-    .market-dot { width: 8px; height: 8px; }
-  }
-
   @media (max-width: 480px) {
     padding: 6px 10px;
     .market-name { font-size: 12px; }
-    .market-dot { width: 7px; height: 7px; }
-    .market-badge { font-size: 7px; padding: 1px 6px; }
-    .market-badge-1s { font-size: 6px; padding: 1px 4px; }
+    .market-dot { width: 6px; height: 6px; }
   }
 `;
 
@@ -201,7 +180,7 @@ const MarketDropdown = styled.div`
   animation: ${slideDown} 0.2s ease;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(20px);
-  max-height: 260px;
+  max-height: 200px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -214,7 +193,7 @@ const MarketDropdown = styled.div`
 `;
 
 const MarketOption = styled.div`
-  padding: 10px 14px;
+  padding: 8px 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -232,20 +211,20 @@ const MarketOption = styled.div`
   .left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
   }
 
   .dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: ${props => props.color || '#2962ff'};
     flex-shrink: 0;
   }
 
   .name {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
@@ -257,28 +236,22 @@ const MarketOption = styled.div`
     font-weight: 700;
     color: #ffffff;
     background: #ff4444;
-    padding: 1px 6px;
+    padding: 1px 4px;
     border-radius: 3px;
     flex-shrink: 0;
   }
 
   .check {
     color: #2962ff;
-    font-size: 16px;
+    font-size: 14px;
     opacity: ${props => props.active ? 1 : 0};
     flex-shrink: 0;
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px 12px;
-    .name { font-size: 12px; }
-    .dot { width: 8px; height: 8px; }
   }
 
   @media (max-width: 480px) {
     padding: 6px 10px;
     .name { font-size: 11px; }
-    .dot { width: 7px; height: 7px; }
+    .dot { width: 6px; height: 6px; }
   }
 `;
 
@@ -745,7 +718,7 @@ const ToggleStatus = styled.span`
 `;
 
 // ============================================
-// 7. DIGIT STATS
+// 7. DIGIT STATS - EXACT MATCH FROM CHARTPANEL
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -1313,6 +1286,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const maxPct = Math.max(...allPercentages);
   const minPct = Math.min(...allPercentages);
 
+  // Check if we're on phone view
+  const isPhone = window.innerWidth <= 768;
+
   // ===== RENDER INPUTS =====
   const renderInputs = (showAdvanced = true) => (
     <>
@@ -1428,11 +1404,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         <div className="left">
           <span className="market-dot" />
           <span className="market-name">{selectedMarket.display}</span>
-          {selectedMarket.isOneSec ? (
-            <span className="market-badge-1s">1s</span>
-          ) : (
-            <span className="market-badge">Index</span>
-          )}
+          <span className="market-badge">{selectedMarket.isOneSec ? '1s' : ''}</span>
         </div>
         <span className="arrow">▾</span>
       </MarketSelectorButton>
@@ -1543,8 +1515,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   return (
     <PanelContainer>
-      {/* 1. MARKET SELECTOR - PROFESSIONAL DESIGN */}
-      {renderMarketSelector()}
+      {/* 1. MARKET SELECTOR - ONLY ON PHONE */}
+      {isPhone && renderMarketSelector()}
 
       {/* 2. TRADE TYPE SELECTOR */}
       <TradeTypeWrapper>
@@ -1630,7 +1602,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
-      {tradeMode === 'manual' && renderDigitStats()}
+      {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
       {/* 7. DIGIT GRID */}
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
