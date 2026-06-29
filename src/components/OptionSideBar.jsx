@@ -50,12 +50,14 @@ const SidebarContainer = styled.div`
     top: 0;
     height: 100vh;
     transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+    padding-top: 60px; /* Space for top bar */
   }
 
   @media (max-width: 480px) {
     width: 100%;
     top: 0;
     height: 100vh;
+    padding-top: 56px; /* Slightly smaller top bar on very small phones */
   }
 `;
 
@@ -63,7 +65,9 @@ const SidebarContainer = styled.div`
 const SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 24px 16px;
+  overflow-x: hidden;
+  padding: 16px 16px 8px 16px;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -79,11 +83,11 @@ const SidebarContent = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 16px 16px 12px 16px;
+    padding: 12px 16px 8px 16px;
   }
 
   @media (max-width: 480px) {
-    padding: 12px 14px 8px 14px;
+    padding: 8px 14px 6px 14px;
   }
 `;
 
@@ -107,7 +111,7 @@ const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 4px 20px 4px;
+  padding: 0 4px 16px 4px;
   border-bottom: 1px solid rgba(56, 189, 248, 0.06);
   margin-bottom: 16px;
   animation: ${slideIn} 0.4s ease;
@@ -125,6 +129,7 @@ const SidebarHeader = styled.div`
     font-weight: 700;
     color: white;
     box-shadow: 0 4px 20px rgba(56, 189, 248, 0.15);
+    flex-shrink: 0;
   }
 
   .user-info {
@@ -148,13 +153,13 @@ const SidebarHeader = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 0 4px 16px 4px;
+    padding: 0 4px 12px 4px;
     margin-bottom: 12px;
     
     .avatar {
-      width: 38px;
-      height: 38px;
-      font-size: 16px;
+      width: 36px;
+      height: 36px;
+      font-size: 15px;
     }
     .user-name {
       font-size: 13px;
@@ -165,14 +170,15 @@ const SidebarHeader = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 0 4px 12px 4px;
+    padding: 0 4px 10px 4px;
     margin-bottom: 10px;
     gap: 10px;
     
     .avatar {
-      width: 34px;
-      height: 34px;
-      font-size: 14px;
+      width: 32px;
+      height: 32px;
+      font-size: 13px;
+      border-radius: 10px;
     }
     .user-name {
       font-size: 12px;
@@ -189,11 +195,11 @@ const NavSection = styled.div`
   animation: ${slideIn} 0.5s ease;
 
   @media (max-width: 768px) {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   @media (max-width: 480px) {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 `;
 
@@ -206,10 +212,16 @@ const SectionLabel = styled.div`
   padding: 0 4px;
   margin-bottom: 6px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 9px;
     letter-spacing: 1px;
     margin-bottom: 4px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 8px;
+    letter-spacing: 0.8px;
+    margin-bottom: 3px;
   }
 `;
 
@@ -302,6 +314,7 @@ const NavItem = styled.div`
   @media (max-width: 768px) {
     padding: 8px 12px;
     gap: 12px;
+    border-radius: 8px;
     
     .nav-icon {
       font-size: 16px;
@@ -311,7 +324,7 @@ const NavItem = styled.div`
       font-size: 12px;
     }
     .badge {
-      font-size: 9px;
+      font-size: 8px;
       padding: 1px 8px;
     }
     .arrow {
@@ -320,9 +333,10 @@ const NavItem = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 7px 10px;
+    padding: 6px 10px;
     gap: 10px;
-    border-radius: 8px;
+    border-radius: 6px;
+    margin-bottom: 1px;
     
     .nav-icon {
       font-size: 14px;
@@ -332,7 +346,7 @@ const NavItem = styled.div`
       font-size: 11px;
     }
     .badge {
-      font-size: 8px;
+      font-size: 7px;
       padding: 1px 6px;
     }
     .arrow {
@@ -355,17 +369,18 @@ const RatingSection = styled.div`
     font-weight: 500;
     margin-bottom: 8px;
     letter-spacing: 0.3px;
+    text-align: center;
   }
 
   .stars {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     margin-bottom: 8px;
     justify-content: center;
   }
 
   .star {
-    font-size: 22px;
+    font-size: 24px;
     cursor: pointer;
     transition: all 0.2s ease;
     color: #334155;
@@ -400,7 +415,8 @@ const RatingSection = styled.div`
       margin-bottom: 6px;
     }
     .star {
-      font-size: 18px;
+      font-size: 20px;
+      gap: 6px;
     }
     .rating-text {
       font-size: 10px;
@@ -415,7 +431,7 @@ const RatingSection = styled.div`
       margin-bottom: 4px;
     }
     .star {
-      font-size: 16px;
+      font-size: 18px;
       gap: 4px;
     }
     .rating-text {
@@ -427,7 +443,7 @@ const RatingSection = styled.div`
 // ===== FOOTER - STICKY AT BOTTOM =====
 const SidebarFooter = styled.div`
   flex-shrink: 0;
-  padding: 14px 16px 20px 16px;
+  padding: 12px 16px 20px 16px;
   border-top: 1px solid rgba(56, 189, 248, 0.06);
   background: rgba(3, 7, 18, 0.98);
   backdrop-filter: blur(10px);
@@ -474,7 +490,7 @@ const SidebarFooter = styled.div`
     padding: 8px 12px 14px 12px;
     
     .footer-item {
-      padding: 7px 10px;
+      padding: 6px 10px;
       font-size: 11px;
       gap: 8px;
       border-radius: 6px;
@@ -483,6 +499,43 @@ const SidebarFooter = styled.div`
         font-size: 13px;
       }
     }
+  }
+`;
+
+// ===== CLOSE BUTTON FOR MOBILE =====
+const CloseButton = styled.button`
+  display: none;
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+  }
+
+  @media (max-width: 768px) {
+    display: ${props => props.isOpen ? 'flex' : 'none'};
+  }
+
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    top: 10px;
+    right: 12px;
   }
 `;
 
@@ -535,6 +588,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       <Overlay isOpen={isOpen} onClick={onClose} />
       
       <SidebarContainer isOpen={isOpen}>
+        {/* Close button for mobile */}
+        <CloseButton isOpen={isOpen} onClick={onClose}>
+          ✕
+        </CloseButton>
+
         <SidebarContent>
           <SidebarHeader>
             <div className="avatar">VT</div>
