@@ -9,6 +9,16 @@ const pulseRing = keyframes`
   100% { transform: scale(2.5); opacity: 0; }
 `;
 
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const float = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+`;
+
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -57,6 +67,7 @@ const Brand = styled.div`
 
   .icon {
     font-size: 1.6rem;
+    animation: ${float} 3s ease-in-out infinite;
   }
 
   .brand-text {
@@ -78,7 +89,6 @@ const Brand = styled.div`
     letter-spacing: 0.5px;
   }
 
-  /* ===== LIVE DOT ===== */
   .live-dot {
     width: 8px;
     height: 8px;
@@ -202,6 +212,26 @@ const AccountBadge = styled.div`
     font-size: 14px;
     font-weight: 600;
     color: #f1f5f9;
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .currency-toggle {
+    font-size: 10px;
+    color: #94a3b8;
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-left: 2px;
+
+    &:hover {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+    }
   }
 
   .chevron {
@@ -226,6 +256,10 @@ const AccountBadge = styled.div`
     .chevron {
       font-size: 10px;
     }
+    .currency-toggle {
+      font-size: 9px;
+      padding: 1px 4px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -237,6 +271,10 @@ const AccountBadge = styled.div`
       font-size: 14px;
     }
     gap: 4px;
+    .currency-toggle {
+      font-size: 8px;
+      padding: 1px 3px;
+    }
   }
 `;
 
@@ -245,7 +283,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 220px;
+  min-width: 260px;
   background: rgba(8, 18, 38, 0.95);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(56, 189, 248, 0.2);
@@ -260,7 +298,7 @@ const DropdownMenu = styled.div`
   overflow: hidden;
 
   @media (max-width: 480px) {
-    min-width: 180px;
+    min-width: 220px;
     right: -10px;
   }
 `;
@@ -310,6 +348,60 @@ const DropdownItem = styled.div`
   @media (max-width: 480px) {
     padding: 8px 12px;
     font-size: 12px;
+  }
+`;
+
+const CurrencyToggle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-top: 1px solid rgba(56, 189, 248, 0.1);
+  margin-top: 4px;
+  background: rgba(56, 189, 248, 0.03);
+
+  .label {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .toggle-group {
+    display: flex;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2px;
+    flex: 1;
+  }
+
+  .toggle-option {
+    flex: 1;
+    padding: 4px 8px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #cbd5e1;
+    }
+
+    &.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 `;
 
@@ -372,17 +464,37 @@ const LogoutButton = styled(ActionButton)`
 const TopPanel = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [accountType, setAccountType] = useState('real');
+  const [showBalanceInKsh, setShowBalanceInKsh] = useState(false);
   const dropdownRef = useRef(null);
 
   const accountData = {
     code: 'CR123456',
-    real: { balance: 7110.00, currency: 'USD', flag: '🇺🇸' },
-    demo: { balance: 10000.00, currency: 'USD', flag: '🎯' }
+    real: { balance: 7110.00, currency: 'USD', flag: '🇺🇸', kshBalance: 7110.00 * 150.50 },
+    demo: { balance: 10000.00, currency: 'USD', flag: '🎯', kshBalance: 10000.00 * 150.50 }
   };
 
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
+  const handleCurrencyToggle = (showKsh) => {
+    setShowBalanceInKsh(showKsh);
+  };
+
+  const formatCurrency = (amount, currency) => {
+    if (showBalanceInKsh) {
+      const kshAmount = amount * 150.50;
+      return `KSh ${kshAmount.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return `${currency === 'USD' ? '$' : 'USD'} ${amount.toFixed(2)}`;
+  };
+
+  const getDisplayBalance = () => {
+    if (showBalanceInKsh) {
+      return `KSh ${currentAccount.kshBalance.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return `$${currentAccount.balance.toFixed(2)}`;
+  };
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -411,17 +523,53 @@ const TopPanel = () => {
         <div ref={dropdownRef} style={{ position: 'relative' }}>
           <AccountBadge onClick={toggleDropdown}>
             <span className="flag">{currentAccount.flag}</span>
-            <span className="balance">${currentAccount.balance.toFixed(2)}</span>
+            <span className="balance">{getDisplayBalance()}</span>
+            <span className="currency-toggle">
+              {showBalanceInKsh ? 'KSh' : '$'}
+            </span>
             <span className={`chevron ${isDropdownOpen ? 'open' : ''}`}>▾</span>
           </AccountBadge>
 
           <DropdownMenu isOpen={isDropdownOpen}>
-            <DropdownItem onClick={() => setAccountType('real')}>
+            <DropdownItem 
+              onClick={() => setAccountType('real')}
+              className={accountType === 'real' ? 'active' : ''}
+            >
               🇺🇸 Real Account
+              <span className="balance-small">
+                {formatCurrency(currentAccount.balance, currentAccount.currency)}
+              </span>
+              <span className="check">✓</span>
             </DropdownItem>
-            <DropdownItem onClick={() => setAccountType('demo')}>
+
+            <DropdownItem 
+              onClick={() => setAccountType('demo')}
+              className={accountType === 'demo' ? 'active' : ''}
+            >
               🎯 Demo Account
+              <span className="balance-small">
+                {formatCurrency(currentAccount.balance, currentAccount.currency)}
+              </span>
+              <span className="check">✓</span>
             </DropdownItem>
+
+            <CurrencyToggle>
+              <span className="label">💱 Show balance in:</span>
+              <div className="toggle-group">
+                <button 
+                  className={`toggle-option ${!showBalanceInKsh ? 'active' : ''}`}
+                  onClick={() => handleCurrencyToggle(false)}
+                >
+                  💵 USD
+                </button>
+                <button 
+                  className={`toggle-option ${showBalanceInKsh ? 'active' : ''}`}
+                  onClick={() => handleCurrencyToggle(true)}
+                >
+                  🇰🇪 KSh
+                </button>
+              </div>
+            </CurrencyToggle>
           </DropdownMenu>
         </div>
 
