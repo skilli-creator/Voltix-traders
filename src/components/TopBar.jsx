@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // ============================================
-// KEYFRAMES
+// KEYFRAMES FOR LIVE DOT
 // ============================================
 const pulseRing = keyframes`
   0% { transform: scale(1); opacity: 0.8; }
@@ -15,13 +15,10 @@ const float = keyframes`
   50% { transform: translateY(-2px); }
 `;
 
-const breatheGlow = keyframes`
-  0%, 100% { 
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
-  }
-  50% { 
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
-  }
+const sidebarIconRotate = keyframes`
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+  100% { transform: rotate(0deg); }
 `;
 
 // ============================================
@@ -68,196 +65,116 @@ const LeftSection = styled.div`
   gap: 16px;
 `;
 
-// ===== PROFESSIONAL SIDEBAR TOGGLE =====
+// ===== CREATIVE SIDEBAR TOGGLE ICON =====
 const SidebarToggle = styled.button`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  border-radius: 10px;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: rgba(56, 189, 248, 0.05);
+  border: 1px solid rgba(56, 189, 248, 0.1);
+  border-radius: 8px;
   cursor: pointer;
-  position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
   padding: 0;
 
-  /* Subtle background circle */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 10px;
-    background: rgba(56, 189, 248, 0.04);
-    border: 1px solid rgba(56, 189, 248, 0.06);
-    transition: all 0.3s ease;
-  }
-
   &:hover {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.3);
     transform: scale(1.05);
-
-    &::before {
-      background: rgba(56, 189, 248, 0.08);
-      border-color: rgba(56, 189, 248, 0.15);
-      box-shadow: 0 0 30px rgba(56, 189, 248, 0.05);
-    }
-
-    .toggle-icon {
-      transform: scale(0.9);
-    }
-
-    .toggle-ring {
-      opacity: 1;
-      transform: scale(1);
-    }
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
   }
 
   &:active {
     transform: scale(0.92);
   }
 
-  .toggle-ring {
-    position: absolute;
-    inset: -4px;
-    border-radius: 14px;
-    border: 1.5px solid rgba(56, 189, 248, 0.1);
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    pointer-events: none;
-  }
-
-  .toggle-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    width: 24px;
-    height: 24px;
-    position: relative;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    z-index: 1;
-  }
-
   .line {
     display: block;
+    width: 18px;
     height: 2px;
+    background: linear-gradient(90deg, #94a3b8, #38bdf8);
     border-radius: 2px;
-    background: #94a3b8;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transform-origin: center;
-    position: absolute;
-    left: 0;
+    position: relative;
 
     &:nth-child(1) {
-      width: 20px;
-      top: 2px;
-      background: ${props => props.isOpen ? '#38bdf8' : '#94a3b8'};
-      transform: ${props => props.isOpen ? 'rotate(45deg) translate(2px, 6px)' : 'rotate(0)'};
-      width: ${props => props.isOpen ? '22px' : '20px'};
+      width: ${props => props.isOpen ? '20px' : '18px'};
+      transform: ${props => props.isOpen ? 'rotate(45deg) translate(3px, 3px)' : 'rotate(0)'};
+      background: ${props => props.isOpen ? 'linear-gradient(90deg, #38bdf8, #818cf8)' : 'linear-gradient(90deg, #94a3b8, #38bdf8)'};
     }
 
     &:nth-child(2) {
       width: ${props => props.isOpen ? '0px' : '14px'};
-      top: 10px;
       opacity: ${props => props.isOpen ? '0' : '1'};
       transform: ${props => props.isOpen ? 'scaleX(0)' : 'scaleX(1)'};
-      left: ${props => props.isOpen ? '50%' : '0'};
+      transform-origin: center;
     }
 
     &:nth-child(3) {
-      width: ${props => props.isOpen ? '22px' : '10px'};
-      bottom: 2px;
-      background: ${props => props.isOpen ? '#818cf8' : '#94a3b8'};
-      transform: ${props => props.isOpen ? 'rotate(-45deg) translate(2px, -6px)' : 'rotate(0)'};
+      width: ${props => props.isOpen ? '20px' : '10px'};
+      transform: ${props => props.isOpen ? 'rotate(-45deg) translate(3px, -3px)' : 'rotate(0)'};
+      background: ${props => props.isOpen ? 'linear-gradient(90deg, #38bdf8, #818cf8)' : 'linear-gradient(90deg, #94a3b8, #38bdf8)'};
     }
   }
 
-  .toggle-label {
+  .toggle-tooltip {
     position: absolute;
-    bottom: -28px;
+    bottom: -30px;
     left: 50%;
     transform: translateX(-50%) scale(0.8);
     background: rgba(8, 18, 38, 0.95);
     backdrop-filter: blur(8px);
-    color: #64748b;
-    font-size: 9px;
-    font-weight: 500;
-    padding: 2px 10px;
+    color: #94a3b8;
+    font-size: 10px;
+    padding: 3px 8px;
     border-radius: 4px;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease;
-    border: 1px solid rgba(56, 189, 248, 0.08);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    border: 1px solid rgba(56, 189, 248, 0.1);
   }
 
-  &:hover .toggle-label {
+  &:hover .toggle-tooltip {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) scale(1);
   }
 
   @media (max-width: 768px) {
-    width: 36px;
-    height: 36px;
-    .toggle-icon {
-      width: 20px;
-      height: 20px;
-      gap: 4px;
-    }
+    width: 32px;
+    height: 32px;
+    gap: 4px;
     .line {
+      width: 16px;
       height: 1.5px;
       &:nth-child(1) {
-        width: 16px;
-        top: 2px;
-        transform: ${props => props.isOpen ? 'rotate(45deg) translate(2px, 4px)' : 'rotate(0)'};
         width: ${props => props.isOpen ? '18px' : '16px'};
-      }
-      &:nth-child(2) {
-        width: ${props => props.isOpen ? '0px' : '12px'};
-        top: 8px;
       }
       &:nth-child(3) {
         width: ${props => props.isOpen ? '18px' : '8px'};
-        bottom: 2px;
-        transform: ${props => props.isOpen ? 'rotate(-45deg) translate(2px, -4px)' : 'rotate(0)'};
       }
     }
   }
 
   @media (max-width: 480px) {
-    width: 32px;
-    height: 32px;
-    .toggle-icon {
-      width: 18px;
-      height: 18px;
-      gap: 3px;
-    }
+    width: 28px;
+    height: 28px;
+    gap: 3px;
     .line {
+      width: 14px;
       height: 1.5px;
       &:nth-child(1) {
-        width: 14px;
-        top: 1px;
-        transform: ${props => props.isOpen ? 'rotate(45deg) translate(2px, 3px)' : 'rotate(0)'};
         width: ${props => props.isOpen ? '16px' : '14px'};
-      }
-      &:nth-child(2) {
-        width: ${props => props.isOpen ? '0px' : '10px'};
-        top: 7px;
       }
       &:nth-child(3) {
         width: ${props => props.isOpen ? '16px' : '6px'};
-        bottom: 1px;
-        transform: ${props => props.isOpen ? 'rotate(-45deg) translate(2px, -3px)' : 'rotate(0)'};
       }
-    }
-    .toggle-label {
-      display: none;
     }
   }
 `;
@@ -922,6 +839,13 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
+  // Exchange rates (1 USD = X)
+  const exchangeRates = {
+    USD: 1,
+    KSh: 150.50,
+    EUR: 0.92
+  };
+
   const accountData = {
     code: 'CR123456',
     real: { 
@@ -1038,16 +962,13 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
         <SidebarToggle 
           isOpen={isSidebarOpen} 
           onClick={handleSidebarToggle}
-          aria-label="Toggle navigation menu"
+          aria-label="Toggle sidebar"
         >
-          <span className="toggle-ring"></span>
-          <span className="toggle-icon">
-            <span className="line"></span>
-            <span className="line"></span>
-            <span className="line"></span>
-          </span>
-          <span className="toggle-label">
-            {isSidebarOpen ? 'Close' : 'Menu'}
+          <span className="line"></span>
+          <span className="line"></span>
+          <span className="line"></span>
+          <span className="toggle-tooltip">
+            {isSidebarOpen ? 'Close Menu' : 'Open Menu'}
           </span>
         </SidebarToggle>
 
