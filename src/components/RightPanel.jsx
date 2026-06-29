@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
-// ALL VOLATILITY MARKETS (Deriv Official) - COPIED FROM CHARTPANEL
+// ALL VOLATILITY MARKETS (Deriv Official)
 // ============================================
 const VOLATILITY_MARKETS = [
   { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true },
@@ -89,7 +89,7 @@ const PanelContainer = styled.div`
 `;
 
 // ============================================
-// 1. MARKET SELECTOR (NEW - SYNCED WITH CHARTPANEL)
+// 1. MARKET SELECTOR - ONLY ON PHONE
 // ============================================
 
 const MarketSelectorWrapper = styled.div`
@@ -142,6 +142,14 @@ const MarketSelectorButton = styled.div`
     text-overflow: ellipsis;
   }
 
+  .market-symbol {
+    font-size: 10px;
+    color: #64748b;
+    font-weight: 400;
+    font-family: monospace;
+    flex-shrink: 0;
+  }
+
   .market-badge {
     font-size: 8px;
     padding: 1px 6px;
@@ -162,6 +170,7 @@ const MarketSelectorButton = styled.div`
   @media (max-width: 480px) {
     padding: 6px 10px;
     .market-name { font-size: 12px; }
+    .market-symbol { font-size: 9px; }
     .market-dot { width: 6px; height: 6px; }
   }
 `;
@@ -231,6 +240,14 @@ const MarketOption = styled.div`
     text-overflow: ellipsis;
   }
 
+  .symbol {
+    font-size: 10px;
+    color: #64748b;
+    font-family: monospace;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+
   .badge-1s {
     font-size: 7px;
     font-weight: 700;
@@ -251,6 +268,7 @@ const MarketOption = styled.div`
   @media (max-width: 480px) {
     padding: 6px 10px;
     .name { font-size: 11px; }
+    .symbol { font-size: 9px; }
     .dot { width: 6px; height: 6px; }
   }
 `;
@@ -718,7 +736,7 @@ const ToggleStatus = styled.span`
 `;
 
 // ============================================
-// 7. DIGIT STATS - EXACT MATCH FROM CHARTPANEL
+// 7. DIGIT STATS
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -1404,6 +1422,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         <div className="left">
           <span className="market-dot" />
           <span className="market-name">{selectedMarket.display}</span>
+          <span className="market-symbol">{selectedMarket.symbol}</span>
           <span className="market-badge">{selectedMarket.isOneSec ? '1s' : ''}</span>
         </div>
         <span className="arrow">▾</span>
@@ -1420,6 +1439,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             <div className="left">
               <span className="dot" />
               <span className="name">{market.display}</span>
+              <span className="symbol">{market.symbol}</span>
               {market.isOneSec && <span className="badge-1s">1s</span>}
             </div>
             <span className="check">✓</span>
