@@ -2,19 +2,19 @@ import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
-// ALL VOLATILITY MARKETS (Deriv Official)
+// ALL VOLATILITY MARKETS (Deriv Official) WITH ICONS
 // ============================================
 const VOLATILITY_MARKETS = [
-  { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true },
-  { symbol: 'R_10_1S', name: 'Volatility 10 (1s) Index', display: '10 (1s)', color: '#2962ff', isOneSec: true },
-  { symbol: 'R_25_1S', name: 'Volatility 25 (1s) Index', display: '25 (1s)', color: '#3b82f6', isOneSec: true },
-  { symbol: 'R_50_1S', name: 'Volatility 50 (1s) Index', display: '50 (1s)', color: '#6366f1', isOneSec: true },
-  { symbol: 'R_75_1S', name: 'Volatility 75 (1s) Index', display: '75 (1s)', color: '#8b5cf6', isOneSec: true },
-  { symbol: 'R_10', name: 'Volatility 10 Index', display: '10', color: '#10b981', isOneSec: false },
-  { symbol: 'R_25', name: 'Volatility 25 Index', display: '25', color: '#059669', isOneSec: false },
-  { symbol: 'R_50', name: 'Volatility 50 Index', display: '50', color: '#047857', isOneSec: false },
-  { symbol: 'R_75', name: 'Volatility 75 Index', display: '75', color: '#065f46', isOneSec: false },
-  { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false },
+  { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true, icon: '⚡' },
+  { symbol: 'R_10_1S', name: 'Volatility 10 (1s) Index', display: '10 (1s)', color: '#2962ff', isOneSec: true, icon: '📈' },
+  { symbol: 'R_25_1S', name: 'Volatility 25 (1s) Index', display: '25 (1s)', color: '#3b82f6', isOneSec: true, icon: '📊' },
+  { symbol: 'R_50_1S', name: 'Volatility 50 (1s) Index', display: '50 (1s)', color: '#6366f1', isOneSec: true, icon: '🔥' },
+  { symbol: 'R_75_1S', name: 'Volatility 75 (1s) Index', display: '75 (1s)', color: '#8b5cf6', isOneSec: true, icon: '💎' },
+  { symbol: 'R_10', name: 'Volatility 10 Index', display: '10', color: '#10b981', isOneSec: false, icon: '📉' },
+  { symbol: 'R_25', name: 'Volatility 25 Index', display: '25', color: '#059669', isOneSec: false, icon: '📊' },
+  { symbol: 'R_50', name: 'Volatility 50 Index', display: '50', color: '#047857', isOneSec: false, icon: '🚀' },
+  { symbol: 'R_75', name: 'Volatility 75 Index', display: '75', color: '#065f46', isOneSec: false, icon: '🏆' },
+  { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false, icon: '⭐' },
 ];
 
 // ============================================
@@ -34,6 +34,11 @@ const slideDown = keyframes`
 const pulseGlow = keyframes`
   0%, 100% { box-shadow: 0 0 20px rgba(41, 98, 255, 0.15); }
   50% { box-shadow: 0 0 40px rgba(41, 98, 255, 0.3); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 `;
 
 // ============================================
@@ -64,14 +69,12 @@ const PanelContainer = styled.div`
     border-radius: 4px;
   }
 
-  /* Tablet */
   @media (max-width: 1024px) and (min-width: 769px) {
     width: 220px;
     min-width: 220px;
     padding: 10px 10px 6px 10px;
   }
 
-  /* Phone */
   @media (max-width: 768px) {
     width: 100%;
     min-width: unset;
@@ -121,9 +124,14 @@ const MarketSelectorButton = styled.div`
   .left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     min-width: 0;
     flex: 1;
+  }
+
+  .market-icon {
+    font-size: 16px;
+    flex-shrink: 0;
   }
 
   .market-dot {
@@ -150,13 +158,6 @@ const MarketSelectorButton = styled.div`
     text-overflow: ellipsis;
   }
 
-  .market-symbol {
-    font-size: 9px;
-    color: #64748b;
-    font-weight: 400;
-    font-family: monospace;
-  }
-
   .arrow {
     font-size: 10px;
     color: #5a6070;
@@ -169,7 +170,7 @@ const MarketSelectorButton = styled.div`
   @media (max-width: 480px) {
     padding: 6px 10px;
     .market-name { font-size: 11px; }
-    .market-symbol { font-size: 8px; }
+    .market-icon { font-size: 14px; }
     .market-dot { width: 6px; height: 6px; }
   }
 `;
@@ -224,6 +225,11 @@ const MarketOption = styled.div`
     flex: 1;
   }
 
+  .option-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
   .dot {
     width: 8px;
     height: 8px;
@@ -247,12 +253,6 @@ const MarketOption = styled.div`
     text-overflow: ellipsis;
   }
 
-  .option-symbol {
-    font-size: 9px;
-    color: #64748b;
-    font-family: monospace;
-  }
-
   .check {
     color: #2962ff;
     font-size: 14px;
@@ -264,7 +264,7 @@ const MarketOption = styled.div`
   @media (max-width: 480px) {
     padding: 8px 10px;
     .option-name { font-size: 11px; }
-    .option-symbol { font-size: 8px; }
+    .option-icon { font-size: 12px; }
     .dot { width: 6px; height: 6px; }
   }
 `;
@@ -364,78 +364,154 @@ const DropdownOption = styled.div`
 `;
 
 // ============================================
-// 3. TRADE MODE TOGGLE
+// 3. TRADE MODE TOGGLE - PREMIUM DESIGN
 // ============================================
 
 const TradeModeWrapper = styled.div`
-  display: flex; flex-direction: column; gap: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   animation: ${fadeIn} 0.4s ease;
 
   @media (max-width: 768px) {
-    gap: 2px;
+    gap: 3px;
   }
 
   @media (max-width: 480px) {
-    gap: 1px;
+    gap: 2px;
   }
 `;
 
 const TradeModeLabel = styled.div`
-  display: flex; align-items: center; justify-content: space-between;
-  font-size: 9px; text-transform: uppercase; color: #5a6070;
-  letter-spacing: 0.8px; font-weight: 600;
-  .hint { font-size: 8px; color: #3a4055; text-transform: none; letter-spacing: 0; }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 8px;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+
+  .mode-indicator {
+    font-size: 7px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(41, 98, 255, 0.1);
+    color: #2962ff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
   @media (max-width: 768px) {
-    font-size: 8px;
-    .hint { font-size: 7px; }
+    font-size: 7px;
+    .mode-indicator { font-size: 6px; padding: 1px 6px; }
   }
 
   @media (max-width: 480px) {
-    font-size: 7px;
-    .hint { font-size: 6px; }
+    font-size: 6px;
+    .mode-indicator { font-size: 5px; padding: 1px 4px; }
   }
 `;
 
 const TradeModeButtons = styled.div`
-  display: flex; gap: 3px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 6px; padding: 3px;
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  padding: 4px;
   border: 1px solid rgba(255, 255, 255, 0.04);
+  position: relative;
 
   @media (max-width: 768px) {
-    padding: 2px;
-    gap: 2px;
+    padding: 3px;
+    gap: 3px;
+    border-radius: 8px;
   }
 
   @media (max-width: 480px) {
-    padding: 1px;
+    padding: 2px;
     gap: 2px;
+    border-radius: 6px;
   }
 `;
 
 const TradeModeButton = styled.button`
-  flex: 1; padding: 6px 0; border: none; border-radius: 5px;
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
   background: ${props => props.active ? 'linear-gradient(135deg, #2962ff, #1a4fcf)' : 'transparent'};
   color: ${props => props.active ? '#ffffff' : '#8a93a6'};
-  font-size: 11px; font-weight: 600; cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  letter-spacing: 0.3px;
 
-  ${props => props.active && `box-shadow: 0 4px 12px rgba(41, 98, 255, 0.3);`}
-  &:hover { color: ${props => props.active ? '#ffffff' : '#d1d4dc'}; }
-  .mode-icon { margin-right: 4px; }
+  ${props => props.active && `
+    box-shadow: 0 4px 16px rgba(41, 98, 255, 0.35);
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      pointer-events: none;
+    }
+  `}
+
+  &:hover {
+    color: ${props => props.active ? '#ffffff' : '#d1d4dc'};
+    background: ${props => props.active ? 'linear-gradient(135deg, #2962ff, #1a4fcf)' : 'rgba(255,255,255,0.04)'};
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  .mode-icon {
+    font-size: 13px;
+  }
+
+  .mode-label {
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .mode-shortcut {
+    font-size: 7px;
+    opacity: 0.4;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 6px;
+    border-radius: 4px;
+    display: ${props => props.active ? 'inline-block' : 'none'};
+  }
 
   @media (max-width: 768px) {
-    padding: 4px 0;
+    padding: 6px 8px;
     font-size: 10px;
-    .mode-icon { margin-right: 3px; font-size: 9px; }
+    border-radius: 6px;
+    .mode-icon { font-size: 11px; }
+    .mode-label { font-size: 10px; }
+    .mode-shortcut { font-size: 6px; padding: 0px 4px; }
   }
 
   @media (max-width: 480px) {
-    padding: 3px 0;
+    padding: 4px 6px;
     font-size: 9px;
-    .mode-icon { margin-right: 2px; font-size: 8px; }
+    border-radius: 4px;
+    gap: 4px;
+    .mode-icon { font-size: 10px; }
+    .mode-label { font-size: 9px; }
+    .mode-shortcut { display: none; }
   }
 `;
 
@@ -747,7 +823,6 @@ const DigitStatsContainer = styled.div`
   box-shadow: none;
   gap: 2px;
 
-  /* Only show on phone */
   @media (min-width: 769px) {
     display: none;
   }
@@ -1182,7 +1257,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
-  // Use external market if provided, otherwise use local
   const selectedMarket = externalMarket || localSelectedMarket;
 
   // === DIGIT STATS STATE ===
@@ -1300,7 +1374,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const maxPct = Math.max(...allPercentages);
   const minPct = Math.min(...allPercentages);
 
-  // Check if we're on phone view
   const isPhone = window.innerWidth <= 768;
 
   // ===== RENDER MARKET SELECTOR =====
@@ -1312,10 +1385,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         color={selectedMarket.color}
       >
         <div className="left">
+          <span className="market-icon">{selectedMarket.icon}</span>
           <span className="market-dot" />
           <div className="market-info">
             <span className="market-name">{selectedMarket.name}</span>
-            <span className="market-symbol">{selectedMarket.symbol}</span>
           </div>
         </div>
         <span className="arrow">▾</span>
@@ -1330,10 +1403,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             onClick={() => handleMarketSelect(market)}
           >
             <div className="left">
+              <span className="option-icon">{market.icon}</span>
               <span className="dot" />
               <div className="option-info">
                 <span className="option-name">{market.name}</span>
-                <span className="option-symbol">{market.symbol}</span>
               </div>
             </div>
             <span className="check">✓</span>
@@ -1562,21 +1635,38 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </Dropdown>
       </TradeTypeWrapper>
 
-      {/* 3. TRADE MODE */}
+      {/* 3. TRADE MODE - PREMIUM DESIGN */}
       <TradeModeWrapper>
         <TradeModeLabel>
-          <span>Trade Mode</span>
-          <span className="hint">{tradeMode === 'auto' ? 'Auto' : tradeMode === 'manual' ? 'Manual' : 'Bot'}</span>
+          <span>Execution Mode</span>
+          <span className="mode-indicator">
+            {tradeMode === 'auto' ? '⚡ Auto' : tradeMode === 'manual' ? '👆 Manual' : '🤖 Bots'}
+          </span>
         </TradeModeLabel>
         <TradeModeButtons>
-          <TradeModeButton active={tradeMode === 'auto'} onClick={() => setTradeMode('auto')}>
-            <span className="mode-icon">⚡</span> Auto
+          <TradeModeButton 
+            active={tradeMode === 'auto'} 
+            onClick={() => setTradeMode('auto')}
+          >
+            <span className="mode-icon">⚡</span>
+            <span className="mode-label">Auto</span>
+            <span className="mode-shortcut">AI</span>
           </TradeModeButton>
-          <TradeModeButton active={tradeMode === 'manual'} onClick={() => setTradeMode('manual')}>
-            <span className="mode-icon">👆</span> Manual
+          <TradeModeButton 
+            active={tradeMode === 'manual'} 
+            onClick={() => setTradeMode('manual')}
+          >
+            <span className="mode-icon">👆</span>
+            <span className="mode-label">Manual</span>
+            <span className="mode-shortcut">Tap</span>
           </TradeModeButton>
-          <TradeModeButton active={tradeMode === 'use-bots'} onClick={() => setTradeMode('use-bots')}>
-            <span className="mode-icon">🤖</span> Bots
+          <TradeModeButton 
+            active={tradeMode === 'use-bots'} 
+            onClick={() => setTradeMode('use-bots')}
+          >
+            <span className="mode-icon">🤖</span>
+            <span className="mode-label">Bots</span>
+            <span className="mode-shortcut">AI+</span>
           </TradeModeButton>
         </TradeModeButtons>
       </TradeModeWrapper>
