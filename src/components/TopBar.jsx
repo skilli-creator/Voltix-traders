@@ -764,64 +764,59 @@ const TopPanel = () => {
     }
   };
 
+  const formatNumber = (number) => {
+    // Format number with commas and 2 decimal places
+    return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   const getFormattedBalance = () => {
     let amount = currentAccount.balance;
     let symbol = '$';
-    let locale = 'en-US';
 
     switch(selectedCurrency) {
       case 'USD':
         amount = currentAccount.balance;
         symbol = '$';
-        locale = 'en-US';
         break;
       case 'KSh':
         amount = currentAccount.kshBalance;
         symbol = 'KSh';
-        locale = 'en-KE';
         break;
       case 'EUR':
         amount = currentAccount.eurBalance;
         symbol = '€';
-        locale = 'de-DE';
         break;
       default:
         amount = currentAccount.balance;
         symbol = '$';
-        locale = 'en-US';
     }
 
-    return `${symbol} ${amount.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${symbol} ${formatNumber(amount)}`;
   };
 
   const getDropdownBalance = () => {
     let amount = currentAccount.balance;
     let symbol = '$';
-    let locale = 'en-US';
 
     switch(selectedCurrency) {
       case 'USD':
         amount = currentAccount.balance;
         symbol = '$';
-        locale = 'en-US';
         break;
       case 'KSh':
         amount = currentAccount.kshBalance;
         symbol = 'KSh';
-        locale = 'en-KE';
         break;
       case 'EUR':
         amount = currentAccount.eurBalance;
         symbol = '€';
-        locale = 'de-DE';
         break;
       default:
         amount = currentAccount.balance;
         symbol = '$';
-        locale = 'en-US';
     }
 
-    return `${symbol} ${amount.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${symbol} ${formatNumber(amount)}`;
   };
 
   const handleExit = () => {
