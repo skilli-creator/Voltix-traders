@@ -1513,6 +1513,63 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </MarketSelectorWrapper>
   );
 
+  // ===== RENDER BULK TRADING TOGGLE =====
+  const renderBulkTradingToggle = () => (
+    <InputGroup>
+      <InputLabel>
+        <span>Bulk Trading</span>
+        <span className="suffix">{bulkTrading ? `${bulkCount} trades` : 'Off'}</span>
+      </InputLabel>
+      <ToggleWrapper>
+        <ToggleLabel>Bulk</ToggleLabel>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <ToggleTrack active={bulkTrading} onClick={toggleBulkTrading}>
+            <div className="thumb" />
+          </ToggleTrack>
+          <ToggleStatus active={bulkTrading}>
+            {bulkTrading ? 'ON' : 'OFF'}
+          </ToggleStatus>
+          {bulkTrading && renderDropdownSelect(
+            bulkOptions,
+            bulkCount,
+            setBulkCount,
+            isBulkDropdownOpen,
+            setIsBulkDropdownOpen
+          )}
+        </div>
+      </ToggleWrapper>
+    </InputGroup>
+  );
+
+  // ===== RENDER MARTINGALE TOGGLE =====
+  const renderMartingaleToggle = () => (
+    <InputGroup>
+      <InputLabel>
+        <span>Martingale</span>
+        <span className="suffix">{martingale ? `${martingaleMultiplier}x` : 'Off'}</span>
+      </InputLabel>
+      <ToggleWrapper>
+        <ToggleLabel>Multiplier</ToggleLabel>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <ToggleTrack active={martingale} onClick={toggleMartingale}>
+            <div className="thumb" />
+          </ToggleTrack>
+          <ToggleStatus active={martingale}>
+            {martingale ? 'ON' : 'OFF'}
+          </ToggleStatus>
+          {martingale && renderDropdownSelect(
+            martingaleOptions,
+            martingaleMultiplier,
+            setMartingaleMultiplier,
+            isMartingaleDropdownOpen,
+            setIsMartingaleDropdownOpen,
+            (val) => `${val}x`
+          )}
+        </div>
+      </ToggleWrapper>
+    </InputGroup>
+  );
+
   // ===== RENDER INPUTS =====
   const renderInputs = (showAdvanced = true) => (
     <>
@@ -1573,58 +1630,11 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               </InputRow>
             </InputGroup>
 
-            {/* BULK TRADING TOGGLE */}
-            <InputGroup>
-              <InputLabel>
-                <span>Bulk Trading</span>
-                <span className="suffix">{bulkTrading ? `${bulkCount} trades` : 'Off'}</span>
-              </InputLabel>
-              <ToggleWrapper>
-                <ToggleLabel>Bulk</ToggleLabel>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ToggleTrack active={bulkTrading} onClick={toggleBulkTrading}>
-                    <div className="thumb" />
-                  </ToggleTrack>
-                  <ToggleStatus active={bulkTrading}>
-                    {bulkTrading ? 'ON' : 'OFF'}
-                  </ToggleStatus>
-                  {bulkTrading && renderDropdownSelect(
-                    bulkOptions,
-                    bulkCount,
-                    setBulkCount,
-                    isBulkDropdownOpen,
-                    setIsBulkDropdownOpen
-                  )}
-                </div>
-              </ToggleWrapper>
-            </InputGroup>
+            {/* BULK TRADING - Available in all modes */}
+            {renderBulkTradingToggle()}
 
-            {/* MARTINGALE TOGGLE */}
-            <InputGroup>
-              <InputLabel>
-                <span>Martingale</span>
-                <span className="suffix">{martingale ? `${martingaleMultiplier}x` : 'Off'}</span>
-              </InputLabel>
-              <ToggleWrapper>
-                <ToggleLabel>Multiplier</ToggleLabel>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ToggleTrack active={martingale} onClick={toggleMartingale}>
-                    <div className="thumb" />
-                  </ToggleTrack>
-                  <ToggleStatus active={martingale}>
-                    {martingale ? 'ON' : 'OFF'}
-                  </ToggleStatus>
-                  {martingale && renderDropdownSelect(
-                    martingaleOptions,
-                    martingaleMultiplier,
-                    setMartingaleMultiplier,
-                    isMartingaleDropdownOpen,
-                    setIsMartingaleDropdownOpen,
-                    (val) => `${val}x`
-                  )}
-                </div>
-              </ToggleWrapper>
-            </InputGroup>
+            {/* MARTINGALE */}
+            {renderMartingaleToggle()}
           </>
         )}
       </InputGrid>
@@ -1836,7 +1846,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS */}
+      {/* 5. INPUTS - Bulk Trading available in ALL modes */}
       {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
