@@ -20,8 +20,8 @@ const shimmer = keyframes`
 `;
 
 const glowPulse = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.4); }
+  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.25); }
 `;
 
 // ============================================
@@ -410,245 +410,293 @@ const CurrencyToggle = styled.div`
   }
 `;
 
-// ===== PREMIUM FUNDS BUTTON =====
-const PremiumFundsButton = styled.a`
+// ===== PROFESSIONAL FUNDS BUTTON =====
+const ProfessionalFundsButton = styled.a`
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 22px;
-  border-radius: 40px;
+  gap: 12px;
+  padding: 8px 24px 8px 20px;
+  border-radius: 8px;
   border: none;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   position: relative;
+  background: linear-gradient(135deg, #1a2a4a, #0d1b2a);
+  color: #e8edf5;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  letter-spacing: 0.3px;
   overflow: hidden;
-  background: linear-gradient(135deg, #38bdf8, #818cf8, #38bdf8);
-  background-size: 200% 200%;
-  animation: ${shimmer} 3s ease-in-out infinite;
-  color: white;
-  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-  animation: ${glowPulse} 2s ease-in-out infinite;
 
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 40px;
-    padding: 2px;
-    background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
   }
 
   &:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 30px rgba(56, 189, 248, 0.5);
-    animation: ${shimmer} 2s ease-in-out infinite, ${glowPulse} 1.5s ease-in-out infinite;
+    transform: translateY(-1px);
+    border-color: rgba(56, 189, 248, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+
+    &::before {
+      opacity: 1;
+    }
+
+    &::after {
+      transform: scaleX(1);
+    }
+
+    .funds-icon {
+      transform: scale(1.05);
+    }
+
+    .arrow-right {
+      transform: translateX(4px);
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  .funds-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: rgba(56, 189, 248, 0.08);
+    font-size: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 6px;
+      border: 1px solid rgba(56, 189, 248, 0.1);
+    }
+  }
+
+  .funds-content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+
+  .funds-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f1f5f9;
+    letter-spacing: 0.5px;
+  }
+
+  .funds-subtitle {
+    font-size: 10px;
+    color: #94a3b8;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+  }
+
+  .arrow-right {
+    margin-left: auto;
+    font-size: 14px;
+    color: #94a3b8;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 16px 6px 14px;
+    gap: 8px;
+    .funds-icon {
+      width: 26px;
+      height: 26px;
+      font-size: 13px;
+    }
+    .funds-title {
+      font-size: 11px;
+    }
+    .funds-subtitle {
+      font-size: 9px;
+    }
+    .arrow-right {
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 5px 12px 5px 10px;
+    gap: 6px;
+    .funds-icon {
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+    }
+    .funds-title {
+      font-size: 10px;
+    }
+    .funds-subtitle {
+      display: none;
+    }
+    .arrow-right {
+      font-size: 10px;
+    }
+  }
+`;
+
+// ===== PREMIUM EXIT BUTTON =====
+const PremiumExitButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(148, 163, 184, 0.03);
+  color: #94a3b8;
+  position: relative;
+  letter-spacing: 0.3px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.03);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    transform: translateX(-2px);
+
+    &::before {
+      opacity: 1;
+    }
+
+    &::after {
+      opacity: 1;
+    }
+
+    .exit-icon-container {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .exit-arrow-icon {
+      transform: translateX(4px);
+      color: #ef4444;
+    }
   }
 
   &:active {
     transform: scale(0.97);
   }
 
-  .icon-wrapper {
+  .exit-icon-container {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 28px;
     height: 28px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(4px);
+    border-radius: 6px;
+    border: 1px solid rgba(148, 163, 184, 0.08);
+    background: rgba(148, 163, 184, 0.03);
+    transition: all 0.3s ease;
+  }
+
+  .exit-icon {
     font-size: 14px;
     transition: all 0.3s ease;
   }
 
-  .button-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
+  .exit-text {
+    font-weight: 500;
+    transition: all 0.3s ease;
   }
 
-  .main-text {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  .sub-text {
-    font-size: 9px;
-    opacity: 0.8;
-    font-weight: 400;
-    letter-spacing: 0.3px;
-  }
-
-  .sparkle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: white;
-    opacity: 0;
-    animation: sparkleFloat 3s ease-in-out infinite;
-  }
-
-  .sparkle:nth-child(1) {
-    top: 10%;
-    left: 15%;
-    animation-delay: 0s;
-  }
-
-  .sparkle:nth-child(2) {
-    top: 20%;
-    right: 20%;
-    animation-delay: 1s;
-  }
-
-  .sparkle:nth-child(3) {
-    bottom: 25%;
-    left: 25%;
-    animation-delay: 2s;
-  }
-
-  @keyframes sparkleFloat {
-    0%, 100% { transform: translateY(0) scale(0); opacity: 0; }
-    50% { transform: translateY(-10px) scale(1); opacity: 0.8; }
-  }
-
-  @media (max-width: 768px) {
-    padding: 6px 16px;
-    gap: 6px;
-    .icon-wrapper {
-      width: 22px;
-      height: 22px;
-      font-size: 11px;
-    }
-    .main-text {
-      font-size: 11px;
-    }
-    .sub-text {
-      font-size: 8px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 5px 12px;
-    .icon-wrapper {
-      width: 18px;
-      height: 18px;
-      font-size: 9px;
-    }
-    .main-text {
-      font-size: 10px;
-    }
-    .sub-text {
-      display: none;
-    }
-  }
-`;
-
-// ===== CREATIVE EXIT ARROW LOGOUT =====
-const LogoutButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: 40px;
-  border: 1px solid rgba(239, 68, 68, 0.15);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: rgba(239, 68, 68, 0.05);
-  color: #ef4444;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  &:hover {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.3);
-    transform: translateX(3px);
-    box-shadow: -4px 0 20px rgba(239, 68, 68, 0.1);
-
-    &::before {
-      opacity: 1;
-    }
-
-    .exit-icon {
-      transform: translateX(4px) rotate(-45deg);
-    }
-
-    .exit-text {
-      letter-spacing: 1px;
-    }
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  .exit-icon {
+  .exit-arrow-icon {
+    font-size: 14px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #64748b;
+    margin-left: 2px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .exit-text {
-    transition: all 0.3s ease;
-    font-weight: 600;
-  }
-
-  .exit-arrow {
-    display: inline-block;
-    transform: rotate(180deg);
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    font-size: 16px;
-  }
-
-  &:hover .exit-arrow {
-    transform: rotate(180deg) translateX(-4px);
   }
 
   @media (max-width: 768px) {
     padding: 6px 14px;
+    gap: 8px;
     font-size: 11px;
-    gap: 6px;
-    .exit-icon {
-      font-size: 15px;
+    .exit-icon-container {
+      width: 24px;
+      height: 24px;
     }
-    .exit-arrow {
-      font-size: 13px;
+    .exit-icon {
+      font-size: 12px;
+    }
+    .exit-arrow-icon {
+      font-size: 12px;
     }
   }
 
   @media (max-width: 480px) {
     padding: 5px 10px;
+    gap: 6px;
     font-size: 10px;
-    gap: 4px;
-    .exit-icon {
-      font-size: 12px;
+    .exit-icon-container {
+      width: 20px;
+      height: 20px;
     }
-    .exit-arrow {
-      font-size: 11px;
+    .exit-icon {
+      font-size: 10px;
     }
     .exit-text {
       display: none;
+    }
+    .exit-arrow-icon {
+      font-size: 10px;
     }
   }
 `;
@@ -784,26 +832,26 @@ const TopPanel = () => {
           </DropdownMenu>
         </div>
 
-        <PremiumFundsButton 
+        <ProfessionalFundsButton 
           href="https://app.rubicash.com/account/dashboard"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <span className="sparkle"></span>
-          <span className="sparkle"></span>
-          <span className="sparkle"></span>
-          <span className="icon-wrapper">💳</span>
-          <span className="button-text">
-            <span className="main-text">Funds</span>
-            <span className="sub-text">Secure Payments</span>
+          <span className="funds-icon">💰</span>
+          <span className="funds-content">
+            <span className="funds-title">Funds</span>
+            <span className="funds-subtitle">Secure transactions</span>
           </span>
-        </PremiumFundsButton>
+          <span className="arrow-right">→</span>
+        </ProfessionalFundsButton>
 
-        <LogoutButton>
-          <span className="exit-icon">🚪</span>
+        <PremiumExitButton>
+          <span className="exit-icon-container">
+            <span className="exit-icon">⏻</span>
+          </span>
           <span className="exit-text">Exit</span>
-          <span className="exit-arrow">➜</span>
-        </LogoutButton>
+          <span className="exit-arrow-icon">→</span>
+        </PremiumExitButton>
       </RightSection>
     </TopBar>
   );
