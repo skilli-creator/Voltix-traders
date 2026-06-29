@@ -2,19 +2,19 @@ import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
-// ALL VOLATILITY MARKETS (Deriv Official) WITH ICONS
+// ALL VOLATILITY MARKETS (Deriv Official)
 // ============================================
 const VOLATILITY_MARKETS = [
-  { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true, icon: '⚡' },
-  { symbol: 'R_10_1S', name: 'Volatility 10 (1s) Index', display: '10 (1s)', color: '#2962ff', isOneSec: true, icon: '📈' },
-  { symbol: 'R_25_1S', name: 'Volatility 25 (1s) Index', display: '25 (1s)', color: '#3b82f6', isOneSec: true, icon: '📊' },
-  { symbol: 'R_50_1S', name: 'Volatility 50 (1s) Index', display: '50 (1s)', color: '#6366f1', isOneSec: true, icon: '🔥' },
-  { symbol: 'R_75_1S', name: 'Volatility 75 (1s) Index', display: '75 (1s)', color: '#8b5cf6', isOneSec: true, icon: '💎' },
-  { symbol: 'R_10', name: 'Volatility 10 Index', display: '10', color: '#10b981', isOneSec: false, icon: '📉' },
-  { symbol: 'R_25', name: 'Volatility 25 Index', display: '25', color: '#059669', isOneSec: false, icon: '📊' },
-  { symbol: 'R_50', name: 'Volatility 50 Index', display: '50', color: '#047857', isOneSec: false, icon: '🚀' },
-  { symbol: 'R_75', name: 'Volatility 75 Index', display: '75', color: '#065f46', isOneSec: false, icon: '🏆' },
-  { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false, icon: '⭐' },
+  { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true },
+  { symbol: 'R_10_1S', name: 'Volatility 10 (1s) Index', display: '10 (1s)', color: '#2962ff', isOneSec: true },
+  { symbol: 'R_25_1S', name: 'Volatility 25 (1s) Index', display: '25 (1s)', color: '#3b82f6', isOneSec: true },
+  { symbol: 'R_50_1S', name: 'Volatility 50 (1s) Index', display: '50 (1s)', color: '#6366f1', isOneSec: true },
+  { symbol: 'R_75_1S', name: 'Volatility 75 (1s) Index', display: '75 (1s)', color: '#8b5cf6', isOneSec: true },
+  { symbol: 'R_10', name: 'Volatility 10 Index', display: '10', color: '#10b981', isOneSec: false },
+  { symbol: 'R_25', name: 'Volatility 25 Index', display: '25', color: '#059669', isOneSec: false },
+  { symbol: 'R_50', name: 'Volatility 50 Index', display: '50', color: '#047857', isOneSec: false },
+  { symbol: 'R_75', name: 'Volatility 75 Index', display: '75', color: '#065f46', isOneSec: false },
+  { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false },
 ];
 
 // ============================================
@@ -34,11 +34,6 @@ const slideDown = keyframes`
 const pulseGlow = keyframes`
   0%, 100% { box-shadow: 0 0 20px rgba(41, 98, 255, 0.15); }
   50% { box-shadow: 0 0 40px rgba(41, 98, 255, 0.3); }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
 `;
 
 // ============================================
@@ -129,24 +124,12 @@ const MarketSelectorButton = styled.div`
     flex: 1;
   }
 
-  .market-icon {
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
   .market-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: ${props => props.color || '#2962ff'};
     flex-shrink: 0;
-  }
-
-  .market-info {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1;
   }
 
   .market-name {
@@ -156,6 +139,7 @@ const MarketSelectorButton = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
   }
 
   .arrow {
@@ -170,7 +154,6 @@ const MarketSelectorButton = styled.div`
   @media (max-width: 480px) {
     padding: 6px 10px;
     .market-name { font-size: 11px; }
-    .market-icon { font-size: 14px; }
     .market-dot { width: 6px; height: 6px; }
   }
 `;
@@ -225,11 +208,6 @@ const MarketOption = styled.div`
     flex: 1;
   }
 
-  .option-icon {
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
   .dot {
     width: 8px;
     height: 8px;
@@ -238,19 +216,13 @@ const MarketOption = styled.div`
     flex-shrink: 0;
   }
 
-  .option-info {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1;
-  }
-
   .option-name {
     font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
   }
 
   .check {
@@ -264,7 +236,6 @@ const MarketOption = styled.div`
   @media (max-width: 480px) {
     padding: 8px 10px;
     .option-name { font-size: 11px; }
-    .option-icon { font-size: 12px; }
     .dot { width: 6px; height: 6px; }
   }
 `;
@@ -1385,11 +1356,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         color={selectedMarket.color}
       >
         <div className="left">
-          <span className="market-icon">{selectedMarket.icon}</span>
           <span className="market-dot" />
-          <div className="market-info">
-            <span className="market-name">{selectedMarket.name}</span>
-          </div>
+          <span className="market-name">{selectedMarket.name}</span>
         </div>
         <span className="arrow">▾</span>
       </MarketSelectorButton>
@@ -1403,11 +1371,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             onClick={() => handleMarketSelect(market)}
           >
             <div className="left">
-              <span className="option-icon">{market.icon}</span>
               <span className="dot" />
-              <div className="option-info">
-                <span className="option-name">{market.name}</span>
-              </div>
+              <span className="option-name">{market.name}</span>
             </div>
             <span className="check">✓</span>
           </MarketOption>
