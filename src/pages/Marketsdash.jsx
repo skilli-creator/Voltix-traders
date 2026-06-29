@@ -1185,7 +1185,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/index');
+    navigate('/i');
   };
 
   const handleCloseNotification = () => {
