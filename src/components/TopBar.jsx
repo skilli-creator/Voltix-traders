@@ -400,8 +400,46 @@ const CurrencyToggle = styled.div`
   }
 `;
 
-// ===== ACTION BUTTONS =====
-const ActionButton = styled.button`
+// ===== UNIFIED ACTION BUTTON =====
+const UnifiedActionButton = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 20px;
+  border-radius: 30px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  color: white;
+  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(56, 189, 248, 0.3);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @media (max-width: 768px) {
+    padding: 5px 14px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 10px;
+    font-size: 10px;
+    gap: 4px;
+  }
+`;
+
+const LogoutButton = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -412,12 +450,11 @@ const ActionButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: rgba(255, 255, 255, 0.06);
-  color: #cbd5e1;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: #f1f5f9;
+    background: rgba(239, 68, 68, 0.2);
     transform: translateY(-1px);
   }
 
@@ -437,21 +474,6 @@ const ActionButton = styled.button`
   }
 `;
 
-const WithdrawButton = styled(ActionButton)`
-  background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
-`;
-
-const DepositButton = styled(ActionButton)`
-  background: rgba(34, 197, 94, 0.1);
-  color: #22c55e;
-`;
-
-const LogoutButton = styled(ActionButton)`
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-`;
-
 // ============================================
 // MAIN COMPONENT
 // ============================================
@@ -467,7 +489,7 @@ const TopPanel = () => {
     real: { 
       balance: 7110.00, 
       currency: 'USD', 
-      flag: '🇰🇪', // Changed from 🇺🇸 to 🇰🇪
+      flag: showBalanceInKsh ? '🇰🇪' : '🇺🇸', // Dynamic flag based on currency
       kshBalance: 7110.00 * 150.50 
     },
     demo: { 
@@ -501,6 +523,15 @@ const TopPanel = () => {
     return `$${currentAccount.balance.toFixed(2)}`;
   };
 
+  const getCurrentFlag = () => {
+    if (accountType === 'demo') return '🎯';
+    return showBalanceInKsh ? '🇰🇪' : '🇺🇸';
+  };
+
+  const handleRubicashRedirect = () => {
+    window.open('https://app.rubicash.com/account/dashboard', '_blank');
+  };
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -527,7 +558,7 @@ const TopPanel = () => {
 
         <div ref={dropdownRef} style={{ position: 'relative' }}>
           <AccountBadge onClick={toggleDropdown}>
-            <span className="flag">{currentAccount.flag}</span>
+            <span className="flag">{getCurrentFlag()}</span>
             <span className="balance">{getDisplayBalance()}</span>
             <span className="currency-toggle">
               {showBalanceInKsh ? 'KSh' : '$'}
@@ -540,7 +571,7 @@ const TopPanel = () => {
               onClick={() => setAccountType('real')}
               className={accountType === 'real' ? 'active' : ''}
             >
-              🇰🇪 Real Account
+              {showBalanceInKsh ? '🇰🇪' : '🇺🇸'} Real Account
               <span className="balance-small">
                 {formatCurrency(currentAccount.balance, currentAccount.currency)}
               </span>
@@ -578,8 +609,14 @@ const TopPanel = () => {
           </DropdownMenu>
         </div>
 
-        <WithdrawButton>💰 Withdraw</WithdrawButton>
-        <DepositButton>📥 Deposit</DepositButton>
+        <UnifiedActionButton 
+          href="https://app.rubicash.com/account/dashboard"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          💳 Funds
+        </UnifiedActionButton>
+
         <LogoutButton>🚪 Logout</LogoutButton>
       </RightSection>
     </TopBar>
