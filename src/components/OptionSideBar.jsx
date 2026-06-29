@@ -50,14 +50,7 @@ const SidebarContainer = styled.div`
     top: 0;
     height: 100vh;
     transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
-    padding-top: 60px; /* Space for top bar */
-  }
-
-  @media (max-width: 480px) {
-    width: 100%;
-    top: 0;
-    height: 100vh;
-    padding-top: 56px; /* Slightly smaller top bar on very small phones */
+    padding-top: 0;
   }
 `;
 
@@ -67,7 +60,8 @@ const SidebarContent = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   padding: 16px 16px 8px 16px;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  padding-top: 16px;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -84,10 +78,12 @@ const SidebarContent = styled.div`
 
   @media (max-width: 768px) {
     padding: 12px 16px 8px 16px;
+    padding-top: 70px; /* Space for mobile close button and top bar */
   }
 
   @media (max-width: 480px) {
-    padding: 8px 14px 6px 14px;
+    padding: 10px 14px 6px 14px;
+    padding-top: 65px;
   }
 `;
 
@@ -240,15 +236,6 @@ const NavItem = styled.div`
   &:hover {
     background: rgba(56, 189, 248, 0.06);
     color: #f1f5f9;
-
-    .nav-icon {
-      transform: scale(1.05);
-    }
-
-    .arrow {
-      opacity: 1;
-      transform: translateX(0);
-    }
   }
 
   &.active {
@@ -303,14 +290,6 @@ const NavItem = styled.div`
     flex-shrink: 0;
   }
 
-  .arrow {
-    opacity: 0;
-    transform: translateX(-8px);
-    transition: all 0.3s ease;
-    font-size: 12px;
-    color: #64748b;
-  }
-
   @media (max-width: 768px) {
     padding: 8px 12px;
     gap: 12px;
@@ -326,9 +305,6 @@ const NavItem = styled.div`
     .badge {
       font-size: 8px;
       padding: 1px 8px;
-    }
-    .arrow {
-      font-size: 10px;
     }
   }
 
@@ -348,9 +324,6 @@ const NavItem = styled.div`
     .badge {
       font-size: 7px;
       padding: 1px 6px;
-    }
-    .arrow {
-      font-size: 9px;
     }
   }
 `;
@@ -473,7 +446,7 @@ const SidebarFooter = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 10px 14px 16px 14px;
+    padding: 8px 14px 14px 14px;
     
     .footer-item {
       padding: 8px 10px;
@@ -487,7 +460,7 @@ const SidebarFooter = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 8px 12px 14px 12px;
+    padding: 6px 12px 12px 12px;
     
     .footer-item {
       padding: 6px 10px;
@@ -509,8 +482,8 @@ const CloseButton = styled.button`
   top: 12px;
   right: 16px;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #94a3b8;
   width: 36px;
   height: 36px;
@@ -520,21 +493,24 @@ const CloseButton = styled.button`
   transition: all 0.2s ease;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(10px);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
     color: #f1f5f9;
   }
 
   @media (max-width: 768px) {
     display: ${props => props.isOpen ? 'flex' : 'none'};
+    top: 14px;
+    right: 16px;
   }
 
   @media (max-width: 480px) {
     width: 32px;
     height: 32px;
-    font-size: 18px;
-    top: 10px;
+    font-size: 16px;
+    top: 12px;
     right: 12px;
   }
 `;
@@ -613,7 +589,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="nav-icon">📚</span>
               <span className="nav-label">Voltix Traders Academy</span>
               <span className="badge">NEW</span>
-              <span className="arrow">→</span>
             </NavItem>
 
             <NavItem 
@@ -644,7 +619,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             >
               <span className="nav-icon">👤</span>
               <span className="nav-label">Deriv Account Information</span>
-              <span className="arrow">→</span>
             </NavItem>
 
             <NavItem 
@@ -692,7 +666,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </NavSection>
         </SidebarContent>
 
-        {/* FOOTER - Sticky at bottom with Settings & Help & Support */}
+        {/* FOOTER */}
         <SidebarFooter>
           <div className="footer-item" onClick={handleSettingsNavigation}>
             <span className="footer-icon">⚙️</span>
