@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled, { keyframes } from 'react'; // Fixed import
-import { useNavigate } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components';
 
 // ============================================
 // KEYFRAMES FOR LIVE DOT
@@ -13,6 +12,16 @@ const pulseRing = keyframes`
 const float = keyframes`
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2px); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const glowPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.25); }
 `;
 
 // ============================================
@@ -701,7 +710,6 @@ const TopPanel = () => {
   const [accountType, setAccountType] = useState('real');
   const [showBalanceInKsh, setShowBalanceInKsh] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   const accountData = {
     code: 'CR123456',
@@ -745,10 +753,6 @@ const TopPanel = () => {
   const getCurrentFlag = () => {
     if (accountType === 'demo') return '🎯';
     return showBalanceInKsh ? '🇰🇪' : '🇺🇸';
-  };
-
-  const handleExit = () => {
-    navigate('/');
   };
 
   useEffect(() => {
@@ -841,7 +845,7 @@ const TopPanel = () => {
           <span className="arrow-right">→</span>
         </ProfessionalFundsButton>
 
-        <PremiumExitButton onClick={handleExit}>
+        <PremiumExitButton>
           <span className="exit-icon-container">
             <span className="exit-icon">⏻</span>
           </span>
