@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import TopBar from '../components/TopBar';
-import OptionsSidebar from '../components/OptionsSidebar';
+import OptionSideBar from '../components/OptionSideBar';  // ← Correct import
 import LeftPanel from '../components/LeftPanel';
 import ChartPanel from '../components/ChartPanel';
 import RightPanel from '../components/RightPanel';
@@ -184,8 +184,8 @@ const Derivdash = () => {
         onSidebarToggle={toggleSidebar} 
       />
 
-      {/* Sidebar Component */}
-      <OptionsSidebar 
+      {/* Sidebar Component - Using correct import name */}
+      <OptionSideBar 
         isOpen={isSidebarOpen} 
         onClose={closeSidebar} 
       />
