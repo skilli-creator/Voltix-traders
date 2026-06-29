@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // ============================================
-// KEYFRAMES FOR LIVE DOT
+// KEYFRAMES
 // ============================================
 const pulseRing = keyframes`
   0% { transform: scale(1); opacity: 0.8; }
@@ -13,6 +13,15 @@ const pulseRing = keyframes`
 const float = keyframes`
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2px); }
+`;
+
+const breatheGlow = keyframes`
+  0%, 100% { 
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
+  }
+  50% { 
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.15);
+  }
 `;
 
 // ============================================
@@ -52,7 +61,208 @@ const TopBar = styled.div`
   }
 `;
 
-// ===== LEFT SIDE - BRAND WITH LIVE DOT =====
+// ===== LEFT SIDE - SIDEBAR TOGGLE + BRAND =====
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+// ===== PROFESSIONAL SIDEBAR TOGGLE =====
+const SidebarToggle = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+
+  /* Subtle background circle */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: rgba(56, 189, 248, 0.04);
+    border: 1px solid rgba(56, 189, 248, 0.06);
+    transition: all 0.3s ease;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+
+    &::before {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.15);
+      box-shadow: 0 0 30px rgba(56, 189, 248, 0.05);
+    }
+
+    .toggle-icon {
+      transform: scale(0.9);
+    }
+
+    .toggle-ring {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  .toggle-ring {
+    position: absolute;
+    inset: -4px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(56, 189, 248, 0.1);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+  }
+
+  .toggle-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
+  }
+
+  .line {
+    display: block;
+    height: 2px;
+    border-radius: 2px;
+    background: #94a3b8;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+    position: absolute;
+    left: 0;
+
+    &:nth-child(1) {
+      width: 20px;
+      top: 2px;
+      background: ${props => props.isOpen ? '#38bdf8' : '#94a3b8'};
+      transform: ${props => props.isOpen ? 'rotate(45deg) translate(2px, 6px)' : 'rotate(0)'};
+      width: ${props => props.isOpen ? '22px' : '20px'};
+    }
+
+    &:nth-child(2) {
+      width: ${props => props.isOpen ? '0px' : '14px'};
+      top: 10px;
+      opacity: ${props => props.isOpen ? '0' : '1'};
+      transform: ${props => props.isOpen ? 'scaleX(0)' : 'scaleX(1)'};
+      left: ${props => props.isOpen ? '50%' : '0'};
+    }
+
+    &:nth-child(3) {
+      width: ${props => props.isOpen ? '22px' : '10px'};
+      bottom: 2px;
+      background: ${props => props.isOpen ? '#818cf8' : '#94a3b8'};
+      transform: ${props => props.isOpen ? 'rotate(-45deg) translate(2px, -6px)' : 'rotate(0)'};
+    }
+  }
+
+  .toggle-label {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    background: rgba(8, 18, 38, 0.95);
+    backdrop-filter: blur(8px);
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 500;
+    padding: 2px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(56, 189, 248, 0.08);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  &:hover .toggle-label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    .toggle-icon {
+      width: 20px;
+      height: 20px;
+      gap: 4px;
+    }
+    .line {
+      height: 1.5px;
+      &:nth-child(1) {
+        width: 16px;
+        top: 2px;
+        transform: ${props => props.isOpen ? 'rotate(45deg) translate(2px, 4px)' : 'rotate(0)'};
+        width: ${props => props.isOpen ? '18px' : '16px'};
+      }
+      &:nth-child(2) {
+        width: ${props => props.isOpen ? '0px' : '12px'};
+        top: 8px;
+      }
+      &:nth-child(3) {
+        width: ${props => props.isOpen ? '18px' : '8px'};
+        bottom: 2px;
+        transform: ${props => props.isOpen ? 'rotate(-45deg) translate(2px, -4px)' : 'rotate(0)'};
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+    .toggle-icon {
+      width: 18px;
+      height: 18px;
+      gap: 3px;
+    }
+    .line {
+      height: 1.5px;
+      &:nth-child(1) {
+        width: 14px;
+        top: 1px;
+        transform: ${props => props.isOpen ? 'rotate(45deg) translate(2px, 3px)' : 'rotate(0)'};
+        width: ${props => props.isOpen ? '16px' : '14px'};
+      }
+      &:nth-child(2) {
+        width: ${props => props.isOpen ? '0px' : '10px'};
+        top: 7px;
+      }
+      &:nth-child(3) {
+        width: ${props => props.isOpen ? '16px' : '6px'};
+        bottom: 1px;
+        transform: ${props => props.isOpen ? 'rotate(-45deg) translate(2px, -3px)' : 'rotate(0)'};
+      }
+    }
+    .toggle-label {
+      display: none;
+    }
+  }
+`;
+
+// ===== BRAND =====
 const Brand = styled.div`
   display: flex;
   align-items: center;
@@ -705,19 +915,12 @@ const PremiumExitButton = styled.button`
 // MAIN COMPONENT
 // ============================================
 
-const TopPanel = () => {
+const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [accountType, setAccountType] = useState('real');
-  const [selectedCurrency, setSelectedCurrency] = useState('USD'); // 'USD', 'KSh', or 'EUR'
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-
-  // Exchange rates (1 USD = X)
-  const exchangeRates = {
-    USD: 1,
-    KSh: 150.50,
-    EUR: 0.92
-  };
 
   const accountData = {
     code: 'CR123456',
@@ -745,15 +948,6 @@ const TopPanel = () => {
     setSelectedCurrency(currency);
   };
 
-  const getCurrencySymbol = (currency) => {
-    switch(currency) {
-      case 'USD': return '$';
-      case 'KSh': return 'KSh';
-      case 'EUR': return '€';
-      default: return '$';
-    }
-  };
-
   const getCurrencyFlag = () => {
     if (accountType === 'demo') return '🎯';
     switch(selectedCurrency) {
@@ -765,7 +959,6 @@ const TopPanel = () => {
   };
 
   const formatNumber = (number) => {
-    // Format number with commas and 2 decimal places
     return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
@@ -823,6 +1016,12 @@ const TopPanel = () => {
     navigate('/');
   };
 
+  const handleSidebarToggle = () => {
+    if (onSidebarToggle) {
+      onSidebarToggle();
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -835,14 +1034,32 @@ const TopPanel = () => {
 
   return (
     <TopBar>
-      <Brand>
-        <span className="icon">🔷</span>
-        <span className="brand-text">
-          <span className="voltix">Voltix Traders.</span>
-          <span className="deriv">deriv</span>
-        </span>
-        <span className="live-dot" />
-      </Brand>
+      <LeftSection>
+        <SidebarToggle 
+          isOpen={isSidebarOpen} 
+          onClick={handleSidebarToggle}
+          aria-label="Toggle navigation menu"
+        >
+          <span className="toggle-ring"></span>
+          <span className="toggle-icon">
+            <span className="line"></span>
+            <span className="line"></span>
+            <span className="line"></span>
+          </span>
+          <span className="toggle-label">
+            {isSidebarOpen ? 'Close' : 'Menu'}
+          </span>
+        </SidebarToggle>
+
+        <Brand>
+          <span className="icon">🔷</span>
+          <span className="brand-text">
+            <span className="voltix">Voltix Traders.</span>
+            <span className="deriv">deriv</span>
+          </span>
+          <span className="live-dot" />
+        </Brand>
+      </LeftSection>
 
       <RightSection>
         <AccountCode>{accountData.code}</AccountCode>
