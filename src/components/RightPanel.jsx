@@ -271,7 +271,6 @@ const TradeTypeButton = styled.div`
   }
 
   .left { display: flex; align-items: center; gap: 10px; }
-  .icon { font-size: 16px; color: #2962ff; }
   .label { font-size: 14px; font-weight: 500; color: #d1d4dc; letter-spacing: 0.2px; }
   .arrow {
     font-size: 12px; color: #5a6070;
@@ -287,14 +286,12 @@ const TradeTypeButton = styled.div`
   @media (max-width: 768px) {
     padding: 6px 10px;
     .label { font-size: 12px; }
-    .icon { font-size: 14px; }
     .badge { font-size: 6px; padding: 1px 4px; }
   }
 
   @media (max-width: 480px) {
     padding: 4px 8px;
     .label { font-size: 11px; }
-    .icon { font-size: 12px; }
     gap: 3px;
   }
 `;
@@ -517,7 +514,6 @@ const BotCard = styled.div`
     animation: ${pulseGlow} 2s ease-in-out infinite;
   `}
 
-  .bot-icon { font-size: 18px; display: block; margin-bottom: 1px; }
   .bot-name { font-size: 10px; font-weight: 600; color: #d1d4dc; }
   .bot-type { font-size: 7px; text-transform: uppercase; color: #5a6070; margin-top: 1px; letter-spacing: 0.3px; }
   .bot-badge {
@@ -528,7 +524,6 @@ const BotCard = styled.div`
 
   @media (max-width: 768px) {
     padding: 6px 4px;
-    .bot-icon { font-size: 16px; }
     .bot-name { font-size: 9px; }
     .bot-type { font-size: 6px; }
     .bot-badge { font-size: 5px; padding: 1px 3px; }
@@ -536,7 +531,6 @@ const BotCard = styled.div`
 
   @media (max-width: 480px) {
     padding: 4px 3px;
-    .bot-icon { font-size: 14px; }
     .bot-name { font-size: 8px; }
     .bot-type { font-size: 5px; }
     .bot-badge { font-size: 4px; padding: 1px 2px; }
@@ -567,7 +561,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 5. INPUT FIELDS
+// 5. INPUT FIELDS WITH BULK TRADING & MARTINGALE
 // ============================================
 
 const InputGrid = styled.div`
@@ -667,11 +661,32 @@ const StyledInput = styled.input`
   }
 `;
 
-// ============================================
-// 6. MARTINGALE
-// ============================================
+// ===== TOGGLE COMPONENTS =====
+const ToggleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(26, 31, 46, 0.8);
+  border-radius: 5px;
+  padding: 4px 8px;
+  height: 28px;
+  gap: 6px;
 
-const MartingaleLabel = styled.div`
+  @media (max-width: 768px) {
+    padding: 3px 6px;
+    height: 24px;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2px 4px;
+    height: 20px;
+    border-radius: 3px;
+  }
+`;
+
+const ToggleLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -680,6 +695,7 @@ const MartingaleLabel = styled.div`
   color: #8a93a6;
   letter-spacing: 0.6px;
   font-weight: 700;
+  white-space: nowrap;
 
   @media (max-width: 768px) {
     font-size: 7px;
@@ -689,31 +705,6 @@ const MartingaleLabel = styled.div`
   @media (max-width: 480px) {
     font-size: 6px;
     gap: 2px;
-  }
-`;
-
-const MartingaleToggle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(26, 31, 46, 0.8);
-  border-radius: 5px;
-  height: 28px;
-
-  @media (max-width: 768px) {
-    padding: 3px 6px;
-    height: 24px;
-    gap: 4px;
-    border-radius: 4px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 2px 4px;
-    height: 20px;
-    gap: 3px;
-    border-radius: 3px;
   }
 `;
 
@@ -772,8 +763,116 @@ const ToggleStatus = styled.span`
   }
 `;
 
+// ===== DROPDOWN SELECT =====
+const DropdownSelect = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const DropdownSelectButton = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f1f5f9;
+  height: 24px;
+  min-width: 40px;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(41, 98, 255, 0.3);
+  }
+
+  .dropdown-arrow {
+    font-size: 8px;
+    color: #5a6070;
+    transition: transform 0.2s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    height: 20px;
+    padding: 2px 6px 2px 8px;
+    min-width: 32px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 9px;
+    height: 18px;
+    padding: 1px 4px 1px 6px;
+    min-width: 28px;
+  }
+`;
+
+const DropdownSelectMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: rgba(21, 26, 38, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  animation: ${slideDown} 0.15s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  max-height: 150px;
+  overflow-y: auto;
+  min-width: 50px;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  @media (max-width: 480px) {
+    max-height: 120px;
+    min-width: 40px;
+  }
+`;
+
+const DropdownSelectItem = styled.div`
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
+  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  transition: all 0.15s ease;
+  text-align: center;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+`;
+
 // ============================================
-// 7. DIGIT STATS
+// 6. DIGIT STATS
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -875,7 +974,7 @@ const DigitItem = styled.div`
 `;
 
 // ============================================
-// 8. DIGIT GRID
+// 7. DIGIT GRID
 // ============================================
 
 const DigitGridWrapper = styled.div`
@@ -937,7 +1036,7 @@ const DigitButton = styled.button`
 `;
 
 // ============================================
-// 9. EVEN/ODD BUTTONS
+// 8. EVEN/ODD BUTTONS
 // ============================================
 
 const EvenOddButtons = styled.div`
@@ -989,7 +1088,7 @@ const EvenOddButton = styled.button`
 `;
 
 // ============================================
-// 10. TRADE BUTTONS
+// 9. TRADE BUTTONS
 // ============================================
 
 const TradeButtonsWrapper = styled.div`
@@ -1041,7 +1140,7 @@ const TradeButton = styled.button`
 `;
 
 // ============================================
-// 11. RUN BUTTON
+// 10. RUN BUTTON
 // ============================================
 
 const RunButton = styled.button`
@@ -1085,7 +1184,7 @@ const RunButton = styled.button`
 `;
 
 // ============================================
-// 12. SESSION INFO (Bottom)
+// 11. SESSION INFO (Bottom)
 // ============================================
 
 const SessionInfo = styled.div`
@@ -1208,9 +1307,16 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [selectedDigit, setSelectedDigit] = useState(null);
   const [selectedBot, setSelectedBot] = useState(null);
   const [martingale, setMartingale] = useState(false);
+  const [martingaleMultiplier, setMartingaleMultiplier] = useState(1.5);
+  const [bulkTrading, setBulkTrading] = useState(false);
+  const [bulkCount, setBulkCount] = useState(2);
   const [stake, setStake] = useState('');
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
+
+  // Dropdown states
+  const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
+  const [isMartingaleDropdownOpen, setIsMartingaleDropdownOpen] = useState(false);
 
   // === MARKET SELECTOR STATE ===
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
@@ -1235,6 +1341,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const filteredBots = useMemo(() => {
     return BOTS.filter(bot => bot.type === getCurrentTrade().label);
   }, [tradeType]);
+
+  // Bulk count options (2-20)
+  const bulkOptions = Array.from({ length: 19 }, (_, i) => i + 2);
+
+  // Martingale multiplier options
+  const martingaleOptions = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
 
   // === DIGIT STATS LOGIC ===
   useEffect(() => {
@@ -1307,13 +1419,18 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const handlePlaceTrade = (direction, digit) => {
     console.log(`Trade placed: ${direction} ${digit} on ${tradeType}`);
+    console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
+    console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
   };
 
   const handleRunAuto = () => {
     console.log('Auto trading started');
+    console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
+    console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
+  const toggleBulkTrading = () => setBulkTrading(!bulkTrading);
 
   // === MARKET SELECTOR HANDLERS ===
   const handleMarketSelect = (market) => {
@@ -1334,6 +1451,33 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const minPct = Math.min(...allPercentages);
 
   const isPhone = window.innerWidth <= 768;
+
+  // ===== RENDER DROPDOWN SELECT =====
+  const renderDropdownSelect = (options, value, onChange, isOpen, setIsOpen, formatValue = null) => (
+    <DropdownSelect>
+      <DropdownSelectButton 
+        isOpen={isOpen} 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {formatValue ? formatValue(value) : value}
+        <span className="dropdown-arrow">▾</span>
+      </DropdownSelectButton>
+      <DropdownSelectMenu isOpen={isOpen}>
+        {options.map((option) => (
+          <DropdownSelectItem
+            key={option}
+            active={option === value}
+            onClick={() => {
+              onChange(option);
+              setIsOpen(false);
+            }}
+          >
+            {formatValue ? formatValue(option) : option}
+          </DropdownSelectItem>
+        ))}
+      </DropdownSelectMenu>
+    </DropdownSelect>
+  );
 
   // ===== RENDER MARKET SELECTOR =====
   const renderMarketSelector = () => (
@@ -1429,18 +1573,57 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               </InputRow>
             </InputGroup>
 
+            {/* BULK TRADING TOGGLE */}
             <InputGroup>
-              <MartingaleLabel>
+              <InputLabel>
+                <span>Bulk Trading</span>
+                <span className="suffix">{bulkTrading ? `${bulkCount} trades` : 'Off'}</span>
+              </InputLabel>
+              <ToggleWrapper>
+                <ToggleLabel>Bulk</ToggleLabel>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ToggleTrack active={bulkTrading} onClick={toggleBulkTrading}>
+                    <div className="thumb" />
+                  </ToggleTrack>
+                  <ToggleStatus active={bulkTrading}>
+                    {bulkTrading ? 'ON' : 'OFF'}
+                  </ToggleStatus>
+                  {bulkTrading && renderDropdownSelect(
+                    bulkOptions,
+                    bulkCount,
+                    setBulkCount,
+                    isBulkDropdownOpen,
+                    setIsBulkDropdownOpen
+                  )}
+                </div>
+              </ToggleWrapper>
+            </InputGroup>
+
+            {/* MARTINGALE TOGGLE */}
+            <InputGroup>
+              <InputLabel>
                 <span>Martingale</span>
-              </MartingaleLabel>
-              <MartingaleToggle>
-                <ToggleTrack active={martingale} onClick={toggleMartingale}>
-                  <div className="thumb" />
-                </ToggleTrack>
-                <ToggleStatus active={martingale}>
-                  {martingale ? 'ON' : 'OFF'}
-                </ToggleStatus>
-              </MartingaleToggle>
+                <span className="suffix">{martingale ? `${martingaleMultiplier}x` : 'Off'}</span>
+              </InputLabel>
+              <ToggleWrapper>
+                <ToggleLabel>Multiplier</ToggleLabel>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ToggleTrack active={martingale} onClick={toggleMartingale}>
+                    <div className="thumb" />
+                  </ToggleTrack>
+                  <ToggleStatus active={martingale}>
+                    {martingale ? 'ON' : 'OFF'}
+                  </ToggleStatus>
+                  {martingale && renderDropdownSelect(
+                    martingaleOptions,
+                    martingaleMultiplier,
+                    setMartingaleMultiplier,
+                    isMartingaleDropdownOpen,
+                    setIsMartingaleDropdownOpen,
+                    (val) => `${val}x`
+                  )}
+                </div>
+              </ToggleWrapper>
             </InputGroup>
           </>
         )}
