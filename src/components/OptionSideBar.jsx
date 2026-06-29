@@ -41,6 +41,21 @@ const SidebarContainer = styled.div`
   transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 99;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    top: 0;
+    height: 100vh;
+    transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+  }
+`;
+
+// ===== SCROLLABLE CONTENT =====
+const SidebarContent = styled.div`
+  flex: 1;
   overflow-y: auto;
   padding: 24px 16px;
 
@@ -58,11 +73,7 @@ const SidebarContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 100%;
-    top: 0;
-    height: 100vh;
     padding: 20px 16px;
-    transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
   }
 `;
 
@@ -90,6 +101,7 @@ const SidebarHeader = styled.div`
   border-bottom: 1px solid rgba(56, 189, 248, 0.06);
   margin-bottom: 20px;
   animation: ${slideIn} 0.4s ease;
+  flex-shrink: 0;
 
   .avatar {
     width: 44px;
@@ -226,38 +238,6 @@ const NavItem = styled.div`
   }
 `;
 
-const SubItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 8px 14px 8px 44px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #94a3b8;
-  font-size: 12px;
-  margin-left: 8px;
-
-  &:hover {
-    background: rgba(56, 189, 248, 0.04);
-    color: #f1f5f9;
-  }
-
-  &.active {
-    color: #38bdf8;
-    background: rgba(56, 189, 248, 0.06);
-  }
-
-  .sub-dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0.4;
-    flex-shrink: 0;
-  }
-`;
-
 // ===== RATING SECTION =====
 const RatingSection = styled.div`
   margin-top: 20px;
@@ -310,26 +290,27 @@ const RatingSection = styled.div`
   }
 `;
 
-// ===== FOOTER =====
+// ===== FOOTER - STICKY AT BOTTOM =====
 const SidebarFooter = styled.div`
-  margin-top: auto;
-  padding-top: 20px;
+  flex-shrink: 0;
+  padding: 16px 16px 20px 16px;
   border-top: 1px solid rgba(56, 189, 248, 0.06);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  background: rgba(3, 7, 18, 0.98);
+  backdrop-filter: blur(10px);
   animation: ${fadeIn} 0.7s ease;
+  margin-top: auto;
 
   .footer-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     color: #64748b;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
 
     &:hover {
       background: rgba(255, 255, 255, 0.03);
@@ -337,8 +318,12 @@ const SidebarFooter = styled.div`
     }
 
     .footer-icon {
-      font-size: 14px;
+      font-size: 16px;
     }
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 16px 16px 16px;
   }
 `;
 
@@ -363,16 +348,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleSubItemClick = (item) => {
-    setActiveItem(item);
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
-  };
-
   const handleRating = (value) => {
     setRating(value);
-    // You can add API call here to save rating
     console.log(`User rated: ${value} stars`);
   };
 
@@ -387,7 +364,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return texts[value] || 'Rate your experience';
   };
 
-  // Handle both Settings and Help & Support to navigate to same page
   const handleSettingsNavigation = () => {
     navigate('/settings');
     if (window.innerWidth <= 768) {
@@ -400,104 +376,106 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       <Overlay isOpen={isOpen} onClick={onClose} />
       
       <SidebarContainer isOpen={isOpen}>
-        <SidebarHeader>
-          <div className="avatar">VT</div>
-          <div className="user-info">
-            <div className="user-name">John Trader</div>
-            <div className="user-email">john@voltixtraders.com</div>
-          </div>
-        </SidebarHeader>
-
-        {/* MAIN NAVIGATION */}
-        <NavSection>
-          <SectionLabel>Learning</SectionLabel>
-          
-          <NavItem 
-            active={activeItem === 'academy'}
-            onClick={() => handleNavClick('academy', '/academy')}
-          >
-            <span className="nav-icon">📚</span>
-            <span className="nav-label">Voltix Traders Academy</span>
-            <span className="badge">NEW</span>
-            <span className="arrow">→</span>
-          </NavItem>
-
-          <NavItem 
-            active={activeItem === 'lessons'}
-            onClick={() => handleNavClick('lessons', '/lessons')}
-            style={{ paddingLeft: '44px' }}
-          >
-            <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-            <span className="nav-label" style={{ fontSize: '12px' }}>Deriv Trading Lessons</span>
-          </NavItem>
-
-          <NavItem 
-            active={activeItem === 'advanced'}
-            onClick={() => handleNavClick('advanced', '/advanced-lessons')}
-            style={{ paddingLeft: '44px' }}
-          >
-            <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-            <span className="nav-label" style={{ fontSize: '12px' }}>Advanced Strategies</span>
-          </NavItem>
-        </NavSection>
-
-        <NavSection>
-          <SectionLabel>Account</SectionLabel>
-          
-          <NavItem 
-            active={activeItem === 'account-info'}
-            onClick={() => handleNavClick('account-info', '/account-info')}
-          >
-            <span className="nav-icon">👤</span>
-            <span className="nav-label">Deriv Account Information</span>
-            <span className="arrow">→</span>
-          </NavItem>
-
-          <NavItem 
-            active={activeItem === 'linked-accounts'}
-            onClick={() => handleNavClick('linked-accounts', '/linked-accounts')}
-            style={{ paddingLeft: '44px' }}
-          >
-            <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-            <span className="nav-label" style={{ fontSize: '12px' }}>Connected Accounts</span>
-          </NavItem>
-
-          <NavItem 
-            active={activeItem === 'security'}
-            onClick={() => handleNavClick('security', '/security')}
-            style={{ paddingLeft: '44px' }}
-          >
-            <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-            <span className="nav-label" style={{ fontSize: '12px' }}>Security Settings</span>
-          </NavItem>
-        </NavSection>
-
-        {/* RATING SECTION */}
-        <NavSection>
-          <SectionLabel>Feedback</SectionLabel>
-          
-          <RatingSection>
-            <div className="rating-label">⭐ Rate your trading experience</div>
-            <div className="stars">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <span
-                  key={star}
-                  className={`star ${star <= (hoverRating || rating) ? 'active' : ''}`}
-                  onClick={() => handleRating(star)}
-                  onMouseEnter={() => setHoverRating(star)}
-                  onMouseLeave={() => setHoverRating(0)}
-                >
-                  ★
-                </span>
-              ))}
+        <SidebarContent>
+          <SidebarHeader>
+            <div className="avatar">VT</div>
+            <div className="user-info">
+              <div className="user-name">John Trader</div>
+              <div className="user-email">john@voltixtraders.com</div>
             </div>
-            <div className="rating-text">
-              {rating > 0 ? getRatingText(rating) : 'Tap a star to rate'}
-            </div>
-          </RatingSection>
-        </NavSection>
+          </SidebarHeader>
 
-        {/* FOOTER - Settings and Help & Support both go to /settings */}
+          {/* MAIN NAVIGATION */}
+          <NavSection>
+            <SectionLabel>Learning</SectionLabel>
+            
+            <NavItem 
+              active={activeItem === 'academy'}
+              onClick={() => handleNavClick('academy', '/academy')}
+            >
+              <span className="nav-icon">📚</span>
+              <span className="nav-label">Voltix Traders Academy</span>
+              <span className="badge">NEW</span>
+              <span className="arrow">→</span>
+            </NavItem>
+
+            <NavItem 
+              active={activeItem === 'lessons'}
+              onClick={() => handleNavClick('lessons', '/lessons')}
+              style={{ paddingLeft: '44px' }}
+            >
+              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
+              <span className="nav-label" style={{ fontSize: '12px' }}>Deriv Trading Lessons</span>
+            </NavItem>
+
+            <NavItem 
+              active={activeItem === 'advanced'}
+              onClick={() => handleNavClick('advanced', '/advanced-lessons')}
+              style={{ paddingLeft: '44px' }}
+            >
+              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
+              <span className="nav-label" style={{ fontSize: '12px' }}>Advanced Strategies</span>
+            </NavItem>
+          </NavSection>
+
+          <NavSection>
+            <SectionLabel>Account</SectionLabel>
+            
+            <NavItem 
+              active={activeItem === 'account-info'}
+              onClick={() => handleNavClick('account-info', '/account-info')}
+            >
+              <span className="nav-icon">👤</span>
+              <span className="nav-label">Deriv Account Information</span>
+              <span className="arrow">→</span>
+            </NavItem>
+
+            <NavItem 
+              active={activeItem === 'linked-accounts'}
+              onClick={() => handleNavClick('linked-accounts', '/linked-accounts')}
+              style={{ paddingLeft: '44px' }}
+            >
+              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
+              <span className="nav-label" style={{ fontSize: '12px' }}>Connected Accounts</span>
+            </NavItem>
+
+            <NavItem 
+              active={activeItem === 'security'}
+              onClick={() => handleNavClick('security', '/security')}
+              style={{ paddingLeft: '44px' }}
+            >
+              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
+              <span className="nav-label" style={{ fontSize: '12px' }}>Security Settings</span>
+            </NavItem>
+          </NavSection>
+
+          {/* RATING SECTION */}
+          <NavSection>
+            <SectionLabel>Feedback</SectionLabel>
+            
+            <RatingSection>
+              <div className="rating-label">⭐ Rate your trading experience</div>
+              <div className="stars">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span
+                    key={star}
+                    className={`star ${star <= (hoverRating || rating) ? 'active' : ''}`}
+                    onClick={() => handleRating(star)}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <div className="rating-text">
+                {rating > 0 ? getRatingText(rating) : 'Tap a star to rate'}
+              </div>
+            </RatingSection>
+          </NavSection>
+        </SidebarContent>
+
+        {/* FOOTER - Sticky at bottom with Settings & Help & Support */}
         <SidebarFooter>
           <div className="footer-item" onClick={handleSettingsNavigation}>
             <span className="footer-icon">⚙️</span>
@@ -507,7 +485,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <span className="footer-icon">❓</span>
             Help & Support
           </div>
-          {/* Sign Out removed as requested */}
         </SidebarFooter>
       </SidebarContainer>
     </>
