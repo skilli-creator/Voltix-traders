@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
@@ -20,7 +20,6 @@ const VOLATILITY_MARKETS = [
 // ============================================
 // ANIMATIONS
 // ============================================
-
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -39,7 +38,6 @@ const pulseGlow = keyframes`
 // ============================================
 // STYLED COMPONENTS
 // ============================================
-
 const PanelContainer = styled.div`
   width: 290px;
   min-width: 290px;
@@ -91,7 +89,6 @@ const PanelContainer = styled.div`
 // ============================================
 // 1. MARKET SELECTOR - ONLY ON PHONE
 // ============================================
-
 const MarketSelectorWrapper = styled.div`
   position: relative;
   animation: ${fadeIn} 0.3s ease;
@@ -123,6 +120,7 @@ const MarketSelectorButton = styled.div`
     align-items: center;
     gap: 8px;
     min-width: 0;
+    flex: 1;
   }
 
   .market-dot {
@@ -131,6 +129,14 @@ const MarketSelectorButton = styled.div`
     border-radius: 50%;
     background: ${props => props.color || '#2962ff'};
     flex-shrink: 0;
+  }
+
+  .market-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
   }
 
   .market-name {
@@ -145,8 +151,11 @@ const MarketSelectorButton = styled.div`
   .market-symbol {
     font-size: 10px;
     color: #64748b;
-    font-weight: 400;
+    font-weight: 500;
     font-family: monospace;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 1px 4px;
+    border-radius: 3px;
     flex-shrink: 0;
   }
 
@@ -165,6 +174,7 @@ const MarketSelectorButton = styled.div`
     transition: transform 0.3s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
+    margin-left: 4px;
   }
 
   @media (max-width: 480px) {
@@ -189,7 +199,7 @@ const MarketDropdown = styled.div`
   animation: ${slideDown} 0.2s ease;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(20px);
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -222,6 +232,7 @@ const MarketOption = styled.div`
     align-items: center;
     gap: 8px;
     min-width: 0;
+    flex: 1;
   }
 
   .dot {
@@ -230,6 +241,14 @@ const MarketOption = styled.div`
     border-radius: 50%;
     background: ${props => props.color || '#2962ff'};
     flex-shrink: 0;
+  }
+
+  .meta-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
   }
 
   .name {
@@ -245,7 +264,16 @@ const MarketOption = styled.div`
     color: #64748b;
     font-family: monospace;
     flex-shrink: 0;
-    margin-left: 4px;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0px 4px;
+    border-radius: 3px;
+  }
+
+  .right-decor {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
   }
 
   .badge-1s {
@@ -255,14 +283,12 @@ const MarketOption = styled.div`
     background: #ff4444;
     padding: 1px 4px;
     border-radius: 3px;
-    flex-shrink: 0;
   }
 
   .check {
     color: #2962ff;
-    font-size: 14px;
+    font-size: 12px;
     opacity: ${props => props.active ? 1 : 0};
-    flex-shrink: 0;
   }
 
   @media (max-width: 480px) {
@@ -276,7 +302,6 @@ const MarketOption = styled.div`
 // ============================================
 // 2. TRADE TYPE SELECTOR
 // ============================================
-
 const TradeTypeWrapper = styled.div`
   position: relative;
   animation: ${fadeIn} 0.3s ease;
@@ -370,7 +395,6 @@ const DropdownOption = styled.div`
 // ============================================
 // 3. TRADE MODE TOGGLE
 // ============================================
-
 const TradeModeWrapper = styled.div`
   display: flex; flex-direction: column; gap: 3px;
   animation: ${fadeIn} 0.4s ease;
@@ -446,7 +470,6 @@ const TradeModeButton = styled.button`
 // ============================================
 // 4. BOT SELECTION
 // ============================================
-
 const BotGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -532,7 +555,6 @@ const BotHeader = styled.div`
 // ============================================
 // 5. INPUT FIELDS
 // ============================================
-
 const InputGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -633,7 +655,6 @@ const StyledInput = styled.input`
 // ============================================
 // 6. MARTINGALE
 // ============================================
-
 const MartingaleLabel = styled.div`
   display: flex;
   align-items: center;
@@ -738,7 +759,6 @@ const ToggleStatus = styled.span`
 // ============================================
 // 7. DIGIT STATS
 // ============================================
-
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -841,7 +861,6 @@ const DigitItem = styled.div`
 // ============================================
 // 8. DIGIT GRID
 // ============================================
-
 const DigitGridWrapper = styled.div`
   animation: ${fadeIn} 0.4s ease;
 
@@ -903,7 +922,6 @@ const DigitButton = styled.button`
 // ============================================
 // 9. EVEN/ODD BUTTONS
 // ============================================
-
 const EvenOddButtons = styled.div`
   display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
   animation: ${fadeIn} 0.5s ease;
@@ -955,7 +973,6 @@ const EvenOddButton = styled.button`
 // ============================================
 // 10. TRADE BUTTONS
 // ============================================
-
 const TradeButtonsWrapper = styled.div`
   display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
   animation: ${fadeIn} 0.5s ease;
@@ -1007,7 +1024,6 @@ const TradeButton = styled.button`
 // ============================================
 // 11. RUN BUTTON
 // ============================================
-
 const RunButton = styled.button`
   width: 100%; padding: 10px 0; border: none; border-radius: 8px;
   background: linear-gradient(135deg, #2962ff, #1a4fcf);
@@ -1051,7 +1067,6 @@ const RunButton = styled.button`
 // ============================================
 // 12. SESSION INFO (Bottom)
 // ============================================
-
 const SessionInfo = styled.div`
   padding-top: 10px;
   border-top: 1px solid rgba(26, 31, 46, 0.6);
@@ -1121,56 +1136,18 @@ const SessionInfo = styled.div`
 // ============================================
 // BOT DATA
 // ============================================
-
 const BOTS = [
-  {
-    id: 'sniper',
-    name: 'Voltix Sniper',
-    type: 'Matches/Differs',
-    icon: '🎯',
-    badge: 'Precision',
-  },
-  {
-    id: 'hunter',
-    name: 'Digit Hunter',
-    type: 'Matches/Differs',
-    icon: '🔍',
-    badge: 'Hunter',
-  },
-  {
-    id: 'overload',
-    name: 'Overload X',
-    type: 'Over/Under',
-    icon: '⚡',
-    badge: 'Power',
-  },
-  {
-    id: 'reversal',
-    name: 'Reversal King',
-    type: 'Over/Under',
-    icon: '👑',
-    badge: 'King',
-  },
-  {
-    id: 'martingale',
-    name: 'Martingale Beast',
-    type: 'Even/Odd',
-    icon: '🦁',
-    badge: 'Beast',
-  },
-  {
-    id: 'echo',
-    name: 'Echo Trader',
-    type: 'Even/Odd',
-    icon: '🔄',
-    badge: 'Echo',
-  },
+  { id: 'sniper', name: 'Voltix Sniper', type: 'Matches/Differs', icon: '🎯', badge: 'Precision' },
+  { id: 'hunter', name: 'Digit Hunter', type: 'Matches/Differs', icon: '🔍', badge: 'Hunter' },
+  { id: 'overload', name: 'Overload X', type: 'Over/Under', icon: '⚡', badge: 'Power' },
+  { id: 'reversal', name: 'Reversal King', type: 'Over/Under', icon: '👑', badge: 'King' },
+  { id: 'martingale', name: 'Martingale Beast', type: 'Even/Odd', icon: '🦁', badge: 'Beast' },
+  { id: 'echo', name: 'Echo Trader', type: 'Even/Odd', icon: '🔄', badge: 'Echo' },
 ];
 
 // ============================================
 // MAIN COMPONENT
 // ============================================
-
 const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [tradeType, setTradeType] = useState('overunder');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -1182,12 +1159,24 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
 
+  // Dropdown reference for closing layout on outside clicks
+  const dropdownRef = useRef(null);
+
   // === MARKET SELECTOR STATE ===
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
-  // Use external market if provided, otherwise use local
+  // Sync state between parent context and local component hook fallback
   const selectedMarket = externalMarket || localSelectedMarket;
+
+  const handleMarketSelect = (market) => {
+    if (onMarketChange) {
+      onMarketChange(market);
+    } else {
+      setLocalSelectedMarket(market);
+    }
+    setIsMarketDropdownOpen(false);
+  };
 
   // === DIGIT STATS STATE ===
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
@@ -1207,336 +1196,102 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     return BOTS.filter(bot => bot.type === getCurrentTrade().label);
   }, [tradeType]);
 
+  // Handle outside layout clicks to gracefully clear state layers
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+        setIsMarketDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // === DIGIT STATS LOGIC ===
   useEffect(() => {
     const interval = setInterval(() => {
-      const delta = (Math.random() - 0.5) * 2;
-      const newPrice = parseFloat((price + delta).toFixed(2));
-      setPrice(newPrice);
-      
-      const priceStr = newPrice.toFixed(2);
-      const currentLastDigit = parseInt(priceStr.slice(-1));
-      if (!isNaN(currentLastDigit)) {
-        setLastDigit(currentLastDigit);
-      }
-      
-      setMovementDirection(delta >= 0 ? 'up' : 'down');
-      
-      setDigitStats(prev => {
-        return prev.map(stat => {
-          let newPct = stat.pct + (Math.random() - 0.5) * 2;
-          newPct = Math.max(5, Math.min(20, newPct));
-          return {
-            ...stat,
-            pct: parseFloat(newPct.toFixed(1))
-          };
-        });
+      setPrice(prevPrice => {
+        const delta = (Math.random() - 0.5) * 4;
+        const newPrice = parseFloat((prevPrice + delta).toFixed(2));
+        setMovementDirection(newPrice >= prevPrice ? 'up' : 'down');
+        
+        const priceString = newPrice.toFixed(2);
+        const lastDigitChar = parseInt(priceString.charAt(priceString.length - 3), 10);
+        if (!isNaN(lastDigitChar)) {
+          setLastDigit(lastDigitChar);
+        }
+        return newPrice;
       });
-    }, 3000);
-    
+
+      setDigitStats(prevStats => {
+        const newStats = prevStats.map(stat => {
+          const shift = (Math.random() - 0.5) * 3;
+          let newPct = parseFloat((stat.pct + shift).toFixed(1));
+          if (newPct < 2) newPct = 2;
+          if (newPct > 25) newPct = 25;
+          return { ...stat, pct: newPct };
+        });
+
+        const total = newStats.reduce((acc, curr) => acc + curr.pct, 0);
+        return newStats.map(stat => ({
+          ...stat,
+          pct: parseFloat(((stat.pct / total) * 100).toFixed(1))
+        }));
+      });
+
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, [price]);
+  }, []);
 
-  const handleStakeChange = (e) => {
-    const val = parseFloat(e.target.value);
-    setStake(val < 0 || isNaN(val) ? '' : e.target.value);
-  };
-
-  const handleTargetProfitChange = (e) => {
-    const val = parseFloat(e.target.value);
-    setTargetProfit(val < 0 || isNaN(val) ? '' : e.target.value);
-  };
-
-  const handleStopLossChange = (e) => {
-    const val = parseFloat(e.target.value);
-    setStopLoss(val < 0 || isNaN(val) ? '' : e.target.value);
-  };
-
-  const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-  const payoutOver = 13.57;
-  const payoutOverPct = 35.71;
-  const payoutUnder = 47.50;
-  const payoutUnderPct = 375.00;
-  const payoutEven = 0.20;
-  const payoutOdd = 0.20;
-
-  const handleTradeTypeSelect = (id) => {
-    setTradeType(id);
-    setIsDropdownOpen(false);
-    setSelectedDigit(null);
-    setSelectedBot(null);
-  };
-
-  const handleDigitSelect = (digit) => {
-    setSelectedDigit(selectedDigit === digit ? null : digit);
-  };
-
-  const handleBotSelect = (botId) => {
-    setSelectedBot(selectedBot === botId ? null : botId);
-  };
-
-  const handlePlaceTrade = (direction, digit) => {
-    console.log(`Trade placed: ${direction} ${digit} on ${tradeType}`);
-  };
-
-  const handleRunAuto = () => {
-    console.log('Auto trading started');
-  };
-
-  const toggleMartingale = () => setMartingale(!martingale);
-
-  // === MARKET SELECTOR HANDLERS ===
-  const handleMarketSelect = (market) => {
-    setLocalSelectedMarket(market);
-    setIsMarketDropdownOpen(false);
-    if (onMarketChange) {
-      onMarketChange(market);
-    }
-  };
-
-  const toggleMarketDropdown = () => {
-    setIsMarketDropdownOpen(!isMarketDropdownOpen);
-  };
-
-  // === CALCULATE DIGIT STATS ===
-  const allPercentages = digitStats.map(s => s.pct);
-  const maxPct = Math.max(...allPercentages);
-  const minPct = Math.min(...allPercentages);
-
-  // Check if we're on phone view
-  const isPhone = window.innerWidth <= 768;
-
-  // ===== RENDER INPUTS =====
-  const renderInputs = (showAdvanced = true) => (
-    <>
-      <InputGrid>
-        <InputGroup>
-          <InputLabel>
-            <span>Stake</span>
-            <span className="suffix">Min: $0.50</span>
-          </InputLabel>
-          <InputRow>
-            <span className="prefix">$</span>
-            <StyledInput
-              type="number"
-              value={stake}
-              onChange={handleStakeChange}
-              step="0.50"
-              min="0"
-              placeholder="10"
-            />
-          </InputRow>
-        </InputGroup>
-
-        {showAdvanced && (
-          <>
-            <InputGroup>
-              <InputLabel>
-                <span>Target Profit</span>
-                <span className="optional">Opt.</span>
-              </InputLabel>
-              <InputRow>
-                <span className="prefix">$</span>
-                <StyledInput
-                  type="number"
-                  value={targetProfit}
-                  onChange={handleTargetProfitChange}
-                  step="10"
-                  min="0"
-                  placeholder="200"
-                />
-              </InputRow>
-            </InputGroup>
-
-            <InputGroup>
-              <InputLabel>
-                <span>Stop Loss</span>
-                <span className="optional">Opt.</span>
-              </InputLabel>
-              <InputRow>
-                <span className="prefix">$</span>
-                <StyledInput
-                  type="number"
-                  value={stopLoss}
-                  onChange={handleStopLossChange}
-                  step="10"
-                  min="0"
-                  placeholder="999"
-                />
-              </InputRow>
-            </InputGroup>
-
-            <InputGroup>
-              <MartingaleLabel>
-                <span className="icon">🔄</span>
-                <span>Martingale</span>
-              </MartingaleLabel>
-              <MartingaleToggle>
-                <ToggleTrack active={martingale} onClick={toggleMartingale}>
-                  <div className="thumb" />
-                </ToggleTrack>
-                <ToggleStatus active={martingale}>
-                  {martingale ? 'ON' : 'OFF'}
-                </ToggleStatus>
-              </MartingaleToggle>
-            </InputGroup>
-          </>
-        )}
-      </InputGrid>
-    </>
-  );
-
-  // ===== RENDER DIGIT STATS =====
-  const renderDigitStats = () => (
-    <DigitStatsContainer>
-      {digitStats.map((stat) => {
-        const isLastDigit = stat.digit === lastDigit;
-        return (
-          <DigitItem
-            key={stat.digit}
-            isLastDigit={isLastDigit}
-            isMax={stat.pct === maxPct}
-            isMin={stat.pct === minPct}
-            direction={movementDirection}
-          >
-            <div className="circle-badge">
-              <span className="digit-num">{stat.digit}</span>
-              <span className="pct-text">{stat.pct}%</span>
-            </div>
-            <span className="active-arrow">▲</span>
-          </DigitItem>
-        );
-      })}
-    </DigitStatsContainer>
-  );
-
-  // ===== RENDER MARKET SELECTOR =====
-  const renderMarketSelector = () => (
-    <MarketSelectorWrapper>
-      <MarketSelectorButton 
-        isOpen={isMarketDropdownOpen}
-        onClick={toggleMarketDropdown}
-        color={selectedMarket.color}
-      >
-        <div className="left">
-          <span className="market-dot" />
-          <span className="market-name">{selectedMarket.display}</span>
-          <span className="market-symbol">{selectedMarket.symbol}</span>
-          <span className="market-badge">{selectedMarket.isOneSec ? '1s' : ''}</span>
-        </div>
-        <span className="arrow">▾</span>
-      </MarketSelectorButton>
-      
-      <MarketDropdown isOpen={isMarketDropdownOpen}>
-        {VOLATILITY_MARKETS.map((market) => (
-          <MarketOption
-            key={market.symbol}
-            active={selectedMarket.symbol === market.symbol}
-            color={market.color}
-            onClick={() => handleMarketSelect(market)}
-          >
-            <div className="left">
-              <span className="dot" />
-              <span className="name">{market.display}</span>
-              <span className="symbol">{market.symbol}</span>
-              {market.isOneSec && <span className="badge-1s">1s</span>}
-            </div>
-            <span className="check">✓</span>
-          </MarketOption>
-        ))}
-      </MarketDropdown>
-    </MarketSelectorWrapper>
-  );
-
-  // ===== RENDER DIGIT GRID =====
-  const renderDigitGrid = () => (
-    <DigitGridWrapper>
-      <DigitGridLabel>Select a digit</DigitGridLabel>
-      <DigitGrid>
-        {digits.map((digit) => (
-          <DigitButton
-            key={digit}
-            selected={selectedDigit === digit}
-            onClick={() => handleDigitSelect(digit)}
-          >
-            {digit}
-          </DigitButton>
-        ))}
-      </DigitGrid>
-    </DigitGridWrapper>
-  );
-
-  // ===== RENDER RUN BUTTON =====
-  const renderRunButton = (disabled = false) => (
-    <RunButton onClick={handleRunAuto} disabled={disabled}>
-      <span className="run-icon">▶</span> Run {tradeMode === 'use-bots' ? 'Bot' : 'Auto'}
-    </RunButton>
-  );
-
-  // ===== RENDER EVEN/ODD BUTTONS =====
-  const renderEvenOddButtons = () => (
-    <EvenOddButtons>
-      <EvenOddButton variant="even" onClick={() => handlePlaceTrade('Even', '')}>
-        <span className="label">Even</span>
-        <span className="payout">Payout ${payoutEven.toFixed(2)}</span>
-        <span className="sub">${stake || 0} stake</span>
-      </EvenOddButton>
-      <EvenOddButton variant="odd" onClick={() => handlePlaceTrade('Odd', '')}>
-        <span className="label">Odd</span>
-        <span className="payout">Payout ${payoutOdd.toFixed(2)}</span>
-        <span className="sub">${stake || 0} stake</span>
-      </EvenOddButton>
-    </EvenOddButtons>
-  );
-
-  // ===== RENDER TRADE BUTTONS =====
-  const renderTradeButtons = () => {
-    if (selectedDigit === null) return null;
-
-    const digit = selectedDigit;
-
-    if (tradeType === 'overunder') {
-      return (
-        <TradeButtonsWrapper>
-          <TradeButton variant="primary" onClick={() => handlePlaceTrade('Over', digit)}>
-            <span className="label">📈 Over {digit}</span>
-            <span className="payout">${payoutOver.toFixed(2)} ({payoutOverPct}%)</span>
-            <span className="sub">${stake || 0} stake</span>
-          </TradeButton>
-          <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Under', digit)}>
-            <span className="label">📉 Under {digit}</span>
-            <span className="payout">${payoutUnder.toFixed(2)} ({payoutUnderPct}%)</span>
-            <span className="sub">${stake || 0} stake</span>
-          </TradeButton>
-        </TradeButtonsWrapper>
-      );
-    }
-
-    if (tradeType === 'matches') {
-      return (
-        <TradeButtonsWrapper>
-          <TradeButton variant="primary" onClick={() => handlePlaceTrade('Matches', digit)}>
-            <span className="label">🎯 Matches {digit}</span>
-            <span className="payout">Payout $0.00</span>
-            <span className="sub">${stake || 0} stake</span>
-          </TradeButton>
-          <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Differs', digit)}>
-            <span className="label">🎯 Differs {digit}</span>
-            <span className="payout">Payout $0.00</span>
-            <span className="sub">${stake || 0} stake</span>
-          </TradeButton>
-        </TradeButtonsWrapper>
-      );
-    }
-
-    return null;
-  };
+  // Compute boundaries for analytical highlighting
+  const maxPct = useMemo(() => Math.max(...digitStats.map(s => s.pct)), [digitStats]);
+  const minPct = useMemo(() => Math.min(...digitStats.map(s => s.pct)), [digitStats]);
 
   return (
-    <PanelContainer>
-      {/* 1. MARKET SELECTOR - ONLY ON PHONE */}
-      {isPhone && renderMarketSelector()}
+    <PanelContainer ref={dropdownRef}>
+      {/* 1. MARKET SELECTOR (Visible on Mobile Devices Only) */}
+      <MarketSelectorWrapper>
+        <MarketSelectorButton 
+          isOpen={isMarketDropdownOpen} 
+          color={selectedMarket.color}
+          onClick={() => setIsMarketDropdownOpen(!isMarketDropdownOpen)}
+        >
+          <div className="left">
+            <div className="market-dot" />
+            <div className="market-meta">
+              <span className="market-name">{selectedMarket.name}</span>
+              <span className="market-symbol">{selectedMarket.symbol}</span>
+            </div>
+          </div>
+          {selectedMarket.isOneSec && <span className="market-badge">1s</span>}
+          <div className="arrow">▼</div>
+        </MarketSelectorButton>
+
+        <MarketDropdown isOpen={isMarketDropdownOpen}>
+          {VOLATILITY_MARKETS.map((market) => (
+            <MarketOption
+              key={market.symbol}
+              active={selectedMarket.symbol === market.symbol}
+              color={market.color}
+              onClick={() => handleMarketSelect(market)}
+            >
+              <div className="left">
+                <div className="dot" />
+                <div className="meta-content">
+                  <span className="name">{market.name}</span>
+                  <span className="symbol">{market.symbol}</span>
+                </div>
+              </div>
+              <div className="right-decor">
+                {market.isOneSec && <span className="badge-1s">1s</span>}
+                <span className="check">✓</span>
+              </div>
+            </MarketOption>
+          ))}
+        </MarketDropdown>
+      </MarketSelectorWrapper>
 
       {/* 2. TRADE TYPE SELECTOR */}
       <TradeTypeWrapper>
@@ -1545,110 +1300,187 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             <span className="icon">{getCurrentTrade().icon}</span>
             <span className="label">{getCurrentTrade().label}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <span className="badge">Active</span>
-            <span className="arrow">▾</span>
+            <div className="arrow">▼</div>
           </div>
         </TradeTypeButton>
         <Dropdown isOpen={isDropdownOpen}>
-          {tradeTypes.map((type) => (
-            <DropdownOption
-              key={type.id}
-              active={tradeType === type.id}
-              onClick={() => handleTradeTypeSelect(type.id)}
+          {tradeTypes.map((t) => (
+            <DropdownOption 
+              key={t.id} 
+              active={tradeType === t.id} 
+              onClick={() => { setTradeType(t.id); setIsDropdownOpen(false); setSelectedBot(null); }}
             >
-              <span>{type.icon} {type.label}</span>
+              <span>{t.icon} &nbsp; {t.label}</span>
               <span className="check">✓</span>
             </DropdownOption>
           ))}
         </Dropdown>
       </TradeTypeWrapper>
 
-      {/* 3. TRADE MODE */}
+      {/* 3. TRADE MODE TOGGLE */}
       <TradeModeWrapper>
         <TradeModeLabel>
-          <span>Trade Mode</span>
-          <span className="hint">{tradeMode === 'auto' ? 'Auto' : tradeMode === 'manual' ? 'Manual' : 'Bot'}</span>
+          <span>Execution Mode</span>
+          <span className="hint">{tradeMode === 'auto' ? 'Automated Logic' : 'Manual Entry'}</span>
         </TradeModeLabel>
         <TradeModeButtons>
           <TradeModeButton active={tradeMode === 'auto'} onClick={() => setTradeMode('auto')}>
-            <span className="mode-icon">⚡</span> Auto
+            <span className="mode-icon">🤖</span>Auto Bot
           </TradeModeButton>
           <TradeModeButton active={tradeMode === 'manual'} onClick={() => setTradeMode('manual')}>
-            <span className="mode-icon">👆</span> Manual
-          </TradeModeButton>
-          <TradeModeButton active={tradeMode === 'use-bots'} onClick={() => setTradeMode('use-bots')}>
-            <span className="mode-icon">🤖</span> Bots
+            <span className="mode-icon">👤</span>Manual
           </TradeModeButton>
         </TradeModeButtons>
       </TradeModeWrapper>
 
-      {/* 4. BOT SELECTION */}
-      {tradeMode === 'use-bots' && (
+      {/* 4. BOT GRID SELECTION OR MANUAL SETTINGS */}
+      {tradeMode === 'auto' ? (
         <>
           <BotHeader>
-            <div className="title">🤖 Select Your Bot</div>
-            <div className="subtitle">
-              <span className="highlight">print maziwa</span> — choose your weapon
-            </div>
+            <div className="title">Select Smart Execution Profile</div>
+            <div className="subtitle">Compatible with <span className="highlight">{getCurrentTrade().label}</span></div>
           </BotHeader>
           <BotGrid>
-            {filteredBots.map((bot) => (
-              <BotCard
-                key={bot.id}
-                selected={selectedBot === bot.id}
-                onClick={() => handleBotSelect(bot.id)}
+            {filteredBots.map(bot => (
+              <BotCard 
+                key={bot.id} 
+                selected={selectedBot === bot.id} 
+                onClick={() => setSelectedBot(bot.id)}
               >
                 <span className="bot-icon">{bot.icon}</span>
                 <div className="bot-name">{bot.name}</div>
                 <div className="bot-type">{bot.type}</div>
-                <span className="bot-badge">{bot.badge}</span>
+                <div className="bot-badge">{bot.badge}</div>
               </BotCard>
             ))}
           </BotGrid>
-          {selectedBot && (
-            <div style={{
-              fontSize: '10px', color: '#5a6070', textAlign: 'center',
-              padding: '2px 0', animation: `${fadeIn} 0.3s ease`,
-              borderTop: '1px solid rgba(26, 31, 46, 0.6)', marginTop: '3px', paddingTop: '4px'
-            }}>
-              ✅ {filteredBots.find(b => b.id === selectedBot)?.name} ready
-            </div>
-          )}
         </>
-      )}
-
-      {/* 5. INPUTS */}
-      {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
-
-      {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
-      {tradeMode === 'manual' && isPhone && renderDigitStats()}
-
-      {/* 7. DIGIT GRID */}
-      {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
-
-      {/* 8. TRADE BUTTONS */}
-      {tradeMode === 'manual' ? (
-        tradeType === 'evenodd' ? renderEvenOddButtons() : renderTradeButtons()
-      ) : tradeMode === 'use-bots' ? (
-        renderRunButton(!selectedBot)
       ) : (
-        renderRunButton(false)
+        tradeType !== 'evenodd' && (
+          <DigitGridWrapper>
+            <DigitGridLabel>Predict Target Digit</DigitGridLabel>
+            <DigitGrid>
+              {Array(10).fill(0).map((_, i) => (
+                <DigitButton 
+                  key={i} 
+                  selected={selectedDigit === i} 
+                  onClick={() => setSelectedDigit(i)}
+                >
+                  {i}
+                </DigitButton>
+              ))}
+            </DigitGrid>
+          </DigitGridWrapper>
+        )
       )}
 
-      {/* 9. SESSION INFO (Bottom) */}
-      <SessionInfo>
-        <div className="left">
-          <div className="label">Last Session</div>
-          <div className="trades">
-            <span className="wins">0W</span> / <span className="losses">5L</span> (5 trades)
+      {/* 5. RISK PARAMETERS AND ACCOUNT STAKE INPUTS */}
+      <InputGrid>
+        <InputGroup>
+          <InputLabel>Stake Amount <span className="suffix">USD</span></InputLabel>
+          <InputRow>
+            <div className="prefix">$</div>
+            <StyledInput type="number" placeholder="10.00" value={stake} onChange={(e) => setStake(e.target.value)} />
+          </InputRow>
+        </InputGroup>
+        <InputGroup>
+          <InputLabel>Martingale <span className="optional">Multiplier</span></InputLabel>
+          <MartingaleToggle>
+            <ToggleTrack active={martingale} onClick={() => setMartingale(!martingale)}>
+              <div className="thumb" />
+            </ToggleTrack>
+            <ToggleStatus active={martingale}>{martingale ? 'ON' : 'OFF'}</ToggleStatus>
+          </MartingaleToggle>
+        </InputGroup>
+        <InputGroup>
+          <InputLabel>Take Profit <span className="suffix">USD</span></InputLabel>
+          <InputRow>
+            <div className="prefix">$</div>
+            <StyledInput type="number" placeholder="50.00" value={targetProfit} onChange={(e) => setTargetProfit(e.target.value)} />
+          </InputRow>
+        </InputGroup>
+        <InputGroup>
+          <InputLabel>Stop Loss <span className="suffix">USD</span></InputLabel>
+          <InputRow>
+            <div className="prefix">$</div>
+            <StyledInput type="number" placeholder="30.00" value={stopLoss} onChange={(e) => setStopLoss(e.target.value)} />
+          </InputRow>
+        </InputGroup>
+      </InputGrid>
+
+      {/* 6. REAL-TIME TICK DIGIT STATS BAR */}
+      <DigitStatsContainer>
+        {digitStats.map((stat) => (
+          <DigitItem 
+            key={stat.digit} 
+            isLastDigit={lastDigit === stat.digit} 
+            direction={movementDirection}
+            isMax={stat.pct === maxPct}
+            isMin={stat.pct === minPct}
+          >
+            <div className="circle-badge">
+              <span className="digit-num">{stat.digit}</span>
+              <span className="pct-text">{stat.pct}%</span>
+            </div>
+            <div className="active-arrow">▲</div>
+          </DigitItem>
+        ))}
+      </DigitStatsContainer>
+
+      {/* 7. DYNAMIC EXECUTION CONTROL TRIGGERS */}
+      <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        {tradeMode === 'manual' ? (
+          tradeType === 'evenodd' ? (
+            <EvenOddButtons>
+              <EvenOddButton variant="even">
+                <span className="label">PURCHASE EVEN</span>
+                <span className="payout">Payout: 195.2%</span>
+                <span className="sub">Predicts Digit 0,2,4,6,8</span>
+              </EvenOddButton>
+              <EvenOddButton variant="odd">
+                <span className="label">PURCHASE ODD</span>
+                <span className="payout">Payout: 195.2%</span>
+                <span className="sub">Predicts Digit 1,3,5,7,9</span>
+              </EvenOddButton>
+            </EvenOddButtons>
+          ) : (
+            <TradeButtonsWrapper>
+              <TradeButton variant="primary" disabled={selectedDigit === null}>
+                <span className="label">PURCHASE OVER</span>
+                <span className="payout">Win if higher</span>
+                <span className="sub">Target: {selectedDigit ?? '-'}</span>
+              </TradeButton>
+              <TradeButton variant="secondary" disabled={selectedDigit === null}>
+                <span className="label">PURCHASE UNDER</span>
+                <span className="payout">Win if lower</span>
+                <span className="sub">Target: {selectedDigit ?? '-'}</span>
+              </TradeButton>
+            </TradeButtonsWrapper>
+          )
+        ) : (
+          <RunButton disabled={!selectedBot}>
+            <span className="run-icon">▶</span>{selectedBot ? `Run ${BOTS.find(b => b.id === selectedBot)?.name}` : 'Select a Bot Profile'}
+          </RunButton>
+        )}
+
+        {/* 8. ACTIVE SESSION DATA TRACKER */}
+        <SessionInfo>
+          <div className="left">
+            <div className="label">Session Statistics</div>
+            <div className="trades">
+              Trades: <b>14</b> &nbsp;|&nbsp; <span className="wins">W: 9</span> &nbsp;|&nbsp; <span className="losses">L: 5</span>
+            </div>
           </div>
-        </div>
-        <div style={{ textAlign: 'right' }}>
-          <div className="pl-label">Session P/L</div>
-          <div className="pl">-$310.00</div>
-        </div>
-      </SessionInfo>
+          <div>
+            <div className="pl-label">Net Profit/Loss</div>
+            <div className="pl" style={{ color: '#22c55e', background: 'rgba(34, 197, 94, 0.1)', borderColor: 'rgba(34, 197, 94, 0.15)' }}>
+              +$42.80
+            </div>
+          </div>
+        </SessionInfo>
+      </div>
     </PanelContainer>
   );
 };
