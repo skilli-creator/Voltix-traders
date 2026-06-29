@@ -1,8 +1,9 @@
-// src/pages/Derivdash.jsx (Swipeable Version)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar)
 
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import TopBar from '../components/TopBar';
+import OptionsSidebar from '../components/OptionsSidebar';
 import LeftPanel from '../components/LeftPanel';
 import ChartPanel from '../components/ChartPanel';
 import RightPanel from '../components/RightPanel';
@@ -13,6 +14,19 @@ const DashboardContainer = styled.div`
   height: 100vh;
   background: #0a0f1f;
   overflow: hidden;
+  position: relative;
+`;
+
+const MainContent = styled.div`
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: ${props => props.isSidebarOpen && props.isDesktop ? '280px' : '0'};
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
 `;
 
 const DesktopLayout = styled.div`
@@ -120,16 +134,30 @@ const panels = [
 ];
 
 const Derivdash = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
   React.useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      setIsDesktop(!mobile);
+    };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].screenX;
@@ -150,50 +178,63 @@ const Derivdash = () => {
 
   return (
     <DashboardContainer>
-      <TopBar />
+      {/* Top Bar with Sidebar Toggle */}
+      <TopBar 
+        isSidebarOpen={isSidebarOpen} 
+        onSidebarToggle={toggleSidebar} 
+      />
 
-      <DesktopLayout>
-        <LeftPanel />
-        <ChartPanel />
-        <RightPanel />
-      </DesktopLayout>
+      {/* Sidebar Component */}
+      <OptionsSidebar 
+        isOpen={isSidebarOpen} 
+        onClose={closeSidebar} 
+      />
 
-      <MobileLayout>
-        <PanelsContainer
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          {panels.map((panel, index) => {
-            const Component = panel.component;
-            return (
-              <PanelWrapper
+      {/* Main Content - Pushes right when sidebar is open on desktop */}
+      <MainContent isSidebarOpen={isSidebarOpen} isDesktop={isDesktop}>
+        <DesktopLayout>
+          <LeftPanel />
+          <ChartPanel />
+          <RightPanel />
+        </DesktopLayout>
+
+        <MobileLayout>
+          <PanelsContainer
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {panels.map((panel, index) => {
+              const Component = panel.component;
+              return (
+                <PanelWrapper
+                  key={panel.id}
+                  index={activeIndex}
+                  style={{
+                    transform: `translateX(-${activeIndex * 100}%)`
+                  }}
+                >
+                  <PanelContent>
+                    <Component />
+                  </PanelContent>
+                </PanelWrapper>
+              );
+            })}
+          </PanelsContainer>
+
+          <MobileTabs>
+            {panels.map((panel, index) => (
+              <TabButton
                 key={panel.id}
-                index={activeIndex}
-                style={{
-                  transform: `translateX(-${activeIndex * 100}%)`
-                }}
+                active={activeIndex === index}
+                onClick={() => setActiveIndex(index)}
               >
-                <PanelContent>
-                  <Component />
-                </PanelContent>
-              </PanelWrapper>
-            );
-          })}
-        </PanelsContainer>
-
-        <MobileTabs>
-          {panels.map((panel, index) => (
-            <TabButton
-              key={panel.id}
-              active={activeIndex === index}
-              onClick={() => setActiveIndex(index)}
-            >
-              <span className="icon">{panel.icon}</span>
-              <span className="label">{panel.label}</span>
-            </TabButton>
-          ))}
-        </MobileTabs>
-      </MobileLayout>
+                <span className="icon">{panel.icon}</span>
+                <span className="label">{panel.label}</span>
+              </TabButton>
+            ))}
+          </MobileTabs>
+        </MobileLayout>
+      </MainContent>
     </DashboardContainer>
   );
 };
