@@ -1071,7 +1071,7 @@ const Dashboard = () => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
     if (!token) {
-      navigate('/login');
+      navigate('/Index');
       return;
     }
 
@@ -1185,7 +1185,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/login');
+    navigate('/Index');
   };
 
   const handleCloseNotification = () => {
