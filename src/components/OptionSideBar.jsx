@@ -346,7 +346,7 @@ const SidebarFooter = styled.div`
 // MAIN COMPONENT
 // ============================================
 
-const OptionsSidebar = ({ isOpen, onClose }) => {
+const OptionSideBar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState('academy');
   const [rating, setRating] = useState(0);
@@ -385,6 +385,14 @@ const OptionsSidebar = ({ isOpen, onClose }) => {
       5: 'Excellent 🚀'
     };
     return texts[value] || 'Rate your experience';
+  };
+
+  // Handle both Settings and Help & Support to navigate to same page
+  const handleSettingsNavigation = () => {
+    navigate('/settings');
+    if (window.innerWidth <= 768) {
+      onClose();
+    }
   };
 
   return (
@@ -489,24 +497,21 @@ const OptionsSidebar = ({ isOpen, onClose }) => {
           </RatingSection>
         </NavSection>
 
-        {/* FOOTER */}
+        {/* FOOTER - Settings and Help & Support both go to /settings */}
         <SidebarFooter>
-          <div className="footer-item" onClick={() => navigate('/settings')}>
+          <div className="footer-item" onClick={handleSettingsNavigation}>
             <span className="footer-icon">⚙️</span>
             Settings
           </div>
-          <div className="footer-item" onClick={() => navigate('/help')}>
+          <div className="footer-item" onClick={handleSettingsNavigation}>
             <span className="footer-icon">❓</span>
             Help & Support
           </div>
-          <div className="footer-item" style={{ color: '#ef4444' }}>
-            <span className="footer-icon">🚪</span>
-            Sign Out
-          </div>
+          {/* Sign Out removed as requested */}
         </SidebarFooter>
       </SidebarContainer>
     </>
   );
 };
 
-export default OptionsSidebar;
+export default OptionSideBar;
