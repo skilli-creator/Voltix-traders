@@ -14,6 +14,16 @@ const float = keyframes`
   50% { transform: translateY(-2px); }
 `;
 
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const glowPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.4); }
+`;
+
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -400,77 +410,246 @@ const CurrencyToggle = styled.div`
   }
 `;
 
-// ===== UNIFIED ACTION BUTTON =====
-const UnifiedActionButton = styled.a`
+// ===== PREMIUM FUNDS BUTTON =====
+const PremiumFundsButton = styled.a`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 20px;
-  border-radius: 30px;
+  gap: 10px;
+  padding: 8px 22px;
+  border-radius: 40px;
   border: none;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
-  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #38bdf8, #818cf8, #38bdf8);
+  background-size: 200% 200%;
+  animation: ${shimmer} 3s ease-in-out infinite;
   color: white;
-  box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+  animation: ${glowPulse} 2s ease-in-out infinite;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 40px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(56, 189, 248, 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 30px rgba(56, 189, 248, 0.5);
+    animation: ${shimmer} 2s ease-in-out infinite, ${glowPulse} 1.5s ease-in-out infinite;
   }
 
   &:active {
     transform: scale(0.97);
   }
 
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    font-size: 14px;
+    transition: all 0.3s ease;
+  }
+
+  .button-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .main-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .sub-text {
+    font-size: 9px;
+    opacity: 0.8;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: white;
+    opacity: 0;
+    animation: sparkleFloat 3s ease-in-out infinite;
+  }
+
+  .sparkle:nth-child(1) {
+    top: 10%;
+    left: 15%;
+    animation-delay: 0s;
+  }
+
+  .sparkle:nth-child(2) {
+    top: 20%;
+    right: 20%;
+    animation-delay: 1s;
+  }
+
+  .sparkle:nth-child(3) {
+    bottom: 25%;
+    left: 25%;
+    animation-delay: 2s;
+  }
+
+  @keyframes sparkleFloat {
+    0%, 100% { transform: translateY(0) scale(0); opacity: 0; }
+    50% { transform: translateY(-10px) scale(1); opacity: 0.8; }
+  }
+
   @media (max-width: 768px) {
-    padding: 5px 14px;
-    font-size: 11px;
+    padding: 6px 16px;
     gap: 6px;
+    .icon-wrapper {
+      width: 22px;
+      height: 22px;
+      font-size: 11px;
+    }
+    .main-text {
+      font-size: 11px;
+    }
+    .sub-text {
+      font-size: 8px;
+    }
   }
 
   @media (max-width: 480px) {
-    padding: 4px 10px;
-    font-size: 10px;
-    gap: 4px;
+    padding: 5px 12px;
+    .icon-wrapper {
+      width: 18px;
+      height: 18px;
+      font-size: 9px;
+    }
+    .main-text {
+      font-size: 10px;
+    }
+    .sub-text {
+      display: none;
+    }
   }
 `;
 
+// ===== CREATIVE EXIT ARROW LOGOUT =====
 const LogoutButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 16px;
-  border-radius: 30px;
-  border: none;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 40px;
+  border: 1px solid rgba(239, 68, 68, 0.15);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background: rgba(239, 68, 68, 0.1);
+  transition: all 0.3s ease;
+  background: rgba(239, 68, 68, 0.05);
   color: #ef4444;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   &:hover {
-    background: rgba(239, 68, 68, 0.2);
-    transform: translateY(-1px);
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.3);
+    transform: translateX(3px);
+    box-shadow: -4px 0 20px rgba(239, 68, 68, 0.1);
+
+    &::before {
+      opacity: 1;
+    }
+
+    .exit-icon {
+      transform: translateX(4px) rotate(-45deg);
+    }
+
+    .exit-text {
+      letter-spacing: 1px;
+    }
   }
 
   &:active {
-    transform: scale(0.97);
+    transform: scale(0.95);
+  }
+
+  .exit-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .exit-text {
+    transition: all 0.3s ease;
+    font-weight: 600;
+  }
+
+  .exit-arrow {
+    display: inline-block;
+    transform: rotate(180deg);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-size: 16px;
+  }
+
+  &:hover .exit-arrow {
+    transform: rotate(180deg) translateX(-4px);
   }
 
   @media (max-width: 768px) {
-    padding: 5px 12px;
+    padding: 6px 14px;
     font-size: 11px;
+    gap: 6px;
+    .exit-icon {
+      font-size: 15px;
+    }
+    .exit-arrow {
+      font-size: 13px;
+    }
   }
 
   @media (max-width: 480px) {
-    padding: 4px 8px;
+    padding: 5px 10px;
     font-size: 10px;
     gap: 4px;
+    .exit-icon {
+      font-size: 12px;
+    }
+    .exit-arrow {
+      font-size: 11px;
+    }
+    .exit-text {
+      display: none;
+    }
   }
 `;
 
@@ -489,7 +668,7 @@ const TopPanel = () => {
     real: { 
       balance: 7110.00, 
       currency: 'USD', 
-      flag: showBalanceInKsh ? '🇰🇪' : '🇺🇸', // Dynamic flag based on currency
+      flag: showBalanceInKsh ? '🇰🇪' : '🇺🇸',
       kshBalance: 7110.00 * 150.50 
     },
     demo: { 
@@ -526,10 +705,6 @@ const TopPanel = () => {
   const getCurrentFlag = () => {
     if (accountType === 'demo') return '🎯';
     return showBalanceInKsh ? '🇰🇪' : '🇺🇸';
-  };
-
-  const handleRubicashRedirect = () => {
-    window.open('https://app.rubicash.com/account/dashboard', '_blank');
   };
 
   useEffect(() => {
@@ -609,15 +784,26 @@ const TopPanel = () => {
           </DropdownMenu>
         </div>
 
-        <UnifiedActionButton 
+        <PremiumFundsButton 
           href="https://app.rubicash.com/account/dashboard"
           target="_blank"
           rel="noopener noreferrer"
         >
-          💳 Funds
-        </UnifiedActionButton>
+          <span className="sparkle"></span>
+          <span className="sparkle"></span>
+          <span className="sparkle"></span>
+          <span className="icon-wrapper">💳</span>
+          <span className="button-text">
+            <span className="main-text">Funds</span>
+            <span className="sub-text">Secure Payments</span>
+          </span>
+        </PremiumFundsButton>
 
-        <LogoutButton>🚪 Logout</LogoutButton>
+        <LogoutButton>
+          <span className="exit-icon">🚪</span>
+          <span className="exit-text">Exit</span>
+          <span className="exit-arrow">➜</span>
+        </LogoutButton>
       </RightSection>
     </TopBar>
   );
