@@ -279,7 +279,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 260px;
+  min-width: 280px;
   background: rgba(8, 18, 38, 0.95);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(56, 189, 248, 0.2);
@@ -294,7 +294,7 @@ const DropdownMenu = styled.div`
   overflow: hidden;
 
   @media (max-width: 480px) {
-    min-width: 220px;
+    min-width: 240px;
     right: -10px;
   }
 `;
@@ -349,9 +349,9 @@ const DropdownItem = styled.div`
 
 const CurrencyToggle = styled.div`
   display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
   border-top: 1px solid rgba(56, 189, 248, 0.1);
   margin-top: 4px;
   background: rgba(56, 189, 248, 0.03);
@@ -368,13 +368,13 @@ const CurrencyToggle = styled.div`
     gap: 4px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
-    padding: 2px;
-    flex: 1;
+    padding: 3px;
+    width: 100%;
   }
 
   .toggle-option {
     flex: 1;
-    padding: 4px 8px;
+    padding: 6px 8px;
     border-radius: 16px;
     border: none;
     background: transparent;
@@ -383,6 +383,7 @@ const CurrencyToggle = styled.div`
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    text-align: center;
 
     &:hover {
       color: #cbd5e1;
@@ -397,6 +398,14 @@ const CurrencyToggle = styled.div`
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+    .toggle-option {
+      font-size: 10px;
+      padding: 4px 6px;
     }
   }
 `;
@@ -699,23 +708,32 @@ const PremiumExitButton = styled.button`
 const TopPanel = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [accountType, setAccountType] = useState('real');
-  const [showBalanceInKsh, setShowBalanceInKsh] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD'); // 'USD', 'KSh', or 'EUR'
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  // Exchange rates (1 USD = X)
+  const exchangeRates = {
+    USD: 1,
+    KSh: 150.50,
+    EUR: 0.92
+  };
 
   const accountData = {
     code: 'CR123456',
     real: { 
       balance: 7110.00, 
-      currency: 'USD', 
-      flag: showBalanceInKsh ? '🇰🇪' : '🇺🇸',
-      kshBalance: 7110.00 * 150.50 
+      currency: 'USD',
+      flag: '🇺🇸',
+      kshBalance: 7110.00 * 150.50,
+      eurBalance: 7110.00 * 0.92
     },
     demo: { 
       balance: 10000.00, 
-      currency: 'USD', 
-      flag: '🎯', 
-      kshBalance: 10000.00 * 150.50 
+      currency: 'USD',
+      flag: '🎯',
+      kshBalance: 10000.00 * 150.50,
+      eurBalance: 10000.00 * 0.92
     }
   };
 
@@ -723,28 +741,87 @@ const TopPanel = () => {
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-  const handleCurrencyToggle = (showKsh) => {
-    setShowBalanceInKsh(showKsh);
+  const handleCurrencyChange = (currency) => {
+    setSelectedCurrency(currency);
   };
 
-  const formatCurrency = (amount, currency) => {
-    if (showBalanceInKsh) {
-      const kshAmount = amount * 150.50;
-      return `KSh ${kshAmount.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const getCurrencySymbol = (currency) => {
+    switch(currency) {
+      case 'USD': return '$';
+      case 'KSh': return 'KSh';
+      case 'EUR': return '€';
+      default: return '$';
     }
-    return `${currency === 'USD' ? '$' : 'USD'} ${amount.toFixed(2)}`;
   };
 
-  const getDisplayBalance = () => {
-    if (showBalanceInKsh) {
-      return `KSh ${currentAccount.kshBalance.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-    return `$${currentAccount.balance.toFixed(2)}`;
-  };
-
-  const getCurrentFlag = () => {
+  const getCurrencyFlag = () => {
     if (accountType === 'demo') return '🎯';
-    return showBalanceInKsh ? '🇰🇪' : '🇺🇸';
+    switch(selectedCurrency) {
+      case 'USD': return '🇺🇸';
+      case 'KSh': return '🇰🇪';
+      case 'EUR': return '🇪🇺';
+      default: return '🇺🇸';
+    }
+  };
+
+  const getFormattedBalance = () => {
+    let amount = currentAccount.balance;
+    let symbol = '$';
+    let locale = 'en-US';
+
+    switch(selectedCurrency) {
+      case 'USD':
+        amount = currentAccount.balance;
+        symbol = '$';
+        locale = 'en-US';
+        break;
+      case 'KSh':
+        amount = currentAccount.kshBalance;
+        symbol = 'KSh';
+        locale = 'en-KE';
+        break;
+      case 'EUR':
+        amount = currentAccount.eurBalance;
+        symbol = '€';
+        locale = 'de-DE';
+        break;
+      default:
+        amount = currentAccount.balance;
+        symbol = '$';
+        locale = 'en-US';
+    }
+
+    return `${symbol} ${amount.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const getDropdownBalance = () => {
+    let amount = currentAccount.balance;
+    let symbol = '$';
+    let locale = 'en-US';
+
+    switch(selectedCurrency) {
+      case 'USD':
+        amount = currentAccount.balance;
+        symbol = '$';
+        locale = 'en-US';
+        break;
+      case 'KSh':
+        amount = currentAccount.kshBalance;
+        symbol = 'KSh';
+        locale = 'en-KE';
+        break;
+      case 'EUR':
+        amount = currentAccount.eurBalance;
+        symbol = '€';
+        locale = 'de-DE';
+        break;
+      default:
+        amount = currentAccount.balance;
+        symbol = '$';
+        locale = 'en-US';
+    }
+
+    return `${symbol} ${amount.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const handleExit = () => {
@@ -777,10 +854,10 @@ const TopPanel = () => {
 
         <div ref={dropdownRef} style={{ position: 'relative' }}>
           <AccountBadge onClick={toggleDropdown}>
-            <span className="flag">{getCurrentFlag()}</span>
-            <span className="balance">{getDisplayBalance()}</span>
+            <span className="flag">{getCurrencyFlag()}</span>
+            <span className="balance">{getFormattedBalance()}</span>
             <span className="currency-toggle">
-              {showBalanceInKsh ? 'KSh' : '$'}
+              {selectedCurrency}
             </span>
             <span className={`chevron ${isDropdownOpen ? 'open' : ''}`}>▾</span>
           </AccountBadge>
@@ -790,9 +867,9 @@ const TopPanel = () => {
               onClick={() => setAccountType('real')}
               className={accountType === 'real' ? 'active' : ''}
             >
-              {showBalanceInKsh ? '🇰🇪' : '🇺🇸'} Real Account
+              {getCurrencyFlag()} Real Account
               <span className="balance-small">
-                {formatCurrency(currentAccount.balance, currentAccount.currency)}
+                {getDropdownBalance()}
               </span>
               <span className="check">✓</span>
             </DropdownItem>
@@ -803,7 +880,7 @@ const TopPanel = () => {
             >
               🎯 Demo Account
               <span className="balance-small">
-                {formatCurrency(currentAccount.balance, currentAccount.currency)}
+                {getDropdownBalance()}
               </span>
               <span className="check">✓</span>
             </DropdownItem>
@@ -812,14 +889,20 @@ const TopPanel = () => {
               <span className="label">💱 Show balance in:</span>
               <div className="toggle-group">
                 <button 
-                  className={`toggle-option ${!showBalanceInKsh ? 'active' : ''}`}
-                  onClick={() => handleCurrencyToggle(false)}
+                  className={`toggle-option ${selectedCurrency === 'USD' ? 'active' : ''}`}
+                  onClick={() => handleCurrencyChange('USD')}
                 >
-                  💵 USD
+                  🇺🇸 USD
                 </button>
                 <button 
-                  className={`toggle-option ${showBalanceInKsh ? 'active' : ''}`}
-                  onClick={() => handleCurrencyToggle(true)}
+                  className={`toggle-option ${selectedCurrency === 'EUR' ? 'active' : ''}`}
+                  onClick={() => handleCurrencyChange('EUR')}
+                >
+                  🇪🇺 EUR
+                </button>
+                <button 
+                  className={`toggle-option ${selectedCurrency === 'KSh' ? 'active' : ''}`}
+                  onClick={() => handleCurrencyChange('KSh')}
                 >
                   🇰🇪 KSh
                 </button>
