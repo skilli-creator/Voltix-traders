@@ -1570,99 +1570,74 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </InputGroup>
   );
 
-  // ===== RENDER BASIC INPUTS (Stake only) =====
-  const renderBasicInputs = () => (
-    <InputGrid>
-      <InputGroup>
-        <InputLabel>
-          <span>Stake</span>
-          <span className="suffix">Min: $0.50</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={stake}
-            onChange={handleStakeChange}
-            step="0.50"
-            min="0"
-            placeholder="10"
-          />
-        </InputRow>
-      </InputGroup>
-    </InputGrid>
-  );
-
-  // ===== RENDER ADVANCED INPUTS =====
-  const renderAdvancedInputs = () => (
-    <InputGrid>
-      <InputGroup>
-        <InputLabel>
-          <span>Stake</span>
-          <span className="suffix">Min: $0.50</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={stake}
-            onChange={handleStakeChange}
-            step="0.50"
-            min="0"
-            placeholder="10"
-          />
-        </InputRow>
-      </InputGroup>
-
-      <InputGroup>
-        <InputLabel>
-          <span>Target Profit</span>
-          <span className="optional">Opt.</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={targetProfit}
-            onChange={handleTargetProfitChange}
-            step="10"
-            min="0"
-            placeholder="200"
-          />
-        </InputRow>
-      </InputGroup>
-
-      <InputGroup>
-        <InputLabel>
-          <span>Stop Loss</span>
-          <span className="optional">Opt.</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={stopLoss}
-            onChange={handleStopLossChange}
-            step="10"
-            min="0"
-            placeholder="999"
-          />
-        </InputRow>
-      </InputGroup>
-    </InputGrid>
-  );
-
   // ===== RENDER INPUTS =====
-  const renderInputs = () => (
+  const renderInputs = (showAdvanced = true) => (
     <>
-      {/* Stake - Always visible */}
-      {tradeMode === 'manual' ? renderBasicInputs() : renderAdvancedInputs()}
-      
-      {/* Bulk Trading - Available in ALL modes */}
-      {renderBulkTradingToggle()}
+      <InputGrid>
+        <InputGroup>
+          <InputLabel>
+            <span>Stake</span>
+            <span className="suffix">Min: $0.50</span>
+          </InputLabel>
+          <InputRow>
+            <span className="prefix">$</span>
+            <StyledInput
+              type="number"
+              value={stake}
+              onChange={handleStakeChange}
+              step="0.50"
+              min="0"
+              placeholder="10"
+            />
+          </InputRow>
+        </InputGroup>
 
-      {/* Martingale - Available in ALL modes */}
-      {renderMartingaleToggle()}
+        {showAdvanced && (
+          <>
+            <InputGroup>
+              <InputLabel>
+                <span>Target Profit</span>
+                <span className="optional">Opt.</span>
+              </InputLabel>
+              <InputRow>
+                <span className="prefix">$</span>
+                <StyledInput
+                  type="number"
+                  value={targetProfit}
+                  onChange={handleTargetProfitChange}
+                  step="10"
+                  min="0"
+                  placeholder="200"
+                />
+              </InputRow>
+            </InputGroup>
+
+            <InputGroup>
+              <InputLabel>
+                <span>Stop Loss</span>
+                <span className="optional">Opt.</span>
+              </InputLabel>
+              <InputRow>
+                <span className="prefix">$</span>
+                <StyledInput
+                  type="number"
+                  value={stopLoss}
+                  onChange={handleStopLossChange}
+                  step="10"
+                  min="0"
+                  placeholder="999"
+                />
+              </InputRow>
+            </InputGroup>
+
+            {/* BULK TRADING - Available in all modes */}
+            {renderBulkTradingToggle()}
+
+            {/* MARTINGALE */}
+            {renderMartingaleToggle()}
+          </>
+        )}
+      </InputGrid>
     </>
   );
 
@@ -1872,7 +1847,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       )}
 
       {/* 5. INPUTS - Bulk Trading available in ALL modes */}
-      {renderInputs()}
+      {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
