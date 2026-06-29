@@ -446,10 +446,6 @@ const TradeModeButton = styled.button`
     transform: scale(0.97);
   }
 
-  .mode-icon {
-    font-size: 13px;
-  }
-
   .mode-label {
     font-size: 11px;
     font-weight: 600;
@@ -470,7 +466,6 @@ const TradeModeButton = styled.button`
     padding: 6px 8px;
     font-size: 10px;
     border-radius: 6px;
-    .mode-icon { font-size: 11px; }
     .mode-label { font-size: 10px; }
     .mode-shortcut { font-size: 6px; padding: 0px 4px; }
   }
@@ -480,7 +475,6 @@ const TradeModeButton = styled.button`
     font-size: 9px;
     border-radius: 4px;
     gap: 4px;
-    .mode-icon { font-size: 10px; }
     .mode-label { font-size: 9px; }
     .mode-shortcut { display: none; }
   }
@@ -1161,7 +1155,7 @@ const SessionInfo = styled.div`
 `;
 
 // ============================================
-// BOT DATA
+// BOT DATA - NO EMOJIS
 // ============================================
 
 const BOTS = [
@@ -1169,42 +1163,36 @@ const BOTS = [
     id: 'sniper',
     name: 'Voltix Sniper',
     type: 'Matches/Differs',
-    icon: '🎯',
     badge: 'Precision',
   },
   {
     id: 'hunter',
     name: 'Digit Hunter',
     type: 'Matches/Differs',
-    icon: '🔍',
     badge: 'Hunter',
   },
   {
     id: 'overload',
     name: 'Overload X',
     type: 'Over/Under',
-    icon: '⚡',
     badge: 'Power',
   },
   {
     id: 'reversal',
     name: 'Reversal King',
     type: 'Over/Under',
-    icon: '👑',
     badge: 'King',
   },
   {
     id: 'martingale',
     name: 'Martingale Beast',
     type: 'Even/Odd',
-    icon: '🦁',
     badge: 'Beast',
   },
   {
     id: 'echo',
     name: 'Echo Trader',
     type: 'Even/Odd',
-    icon: '🔄',
     badge: 'Echo',
   },
 ];
@@ -1237,9 +1225,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [price, setPrice] = useState(8459.65);
 
   const tradeTypes = [
-    { id: 'overunder', label: 'Over/Under', icon: '📈' },
-    { id: 'evenodd', label: 'Even/Odd', icon: '🔢' },
-    { id: 'matches', label: 'Matches/Differs', icon: '🎯' },
+    { id: 'overunder', label: 'Over/Under' },
+    { id: 'evenodd', label: 'Even/Odd' },
+    { id: 'matches', label: 'Matches/Differs' },
   ];
 
   const getCurrentTrade = () => tradeTypes.find(t => t.id === tradeType) || tradeTypes[0];
@@ -1443,7 +1431,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
             <InputGroup>
               <MartingaleLabel>
-                <span className="icon">🔄</span>
                 <span>Martingale</span>
               </MartingaleLabel>
               <MartingaleToggle>
@@ -1536,12 +1523,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       return (
         <TradeButtonsWrapper>
           <TradeButton variant="primary" onClick={() => handlePlaceTrade('Over', digit)}>
-            <span className="label">📈 Over {digit}</span>
+            <span className="label">Over {digit}</span>
             <span className="payout">${payoutOver.toFixed(2)} ({payoutOverPct}%)</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
           <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Under', digit)}>
-            <span className="label">📉 Under {digit}</span>
+            <span className="label">Under {digit}</span>
             <span className="payout">${payoutUnder.toFixed(2)} ({payoutUnderPct}%)</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
@@ -1553,12 +1540,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       return (
         <TradeButtonsWrapper>
           <TradeButton variant="primary" onClick={() => handlePlaceTrade('Matches', digit)}>
-            <span className="label">🎯 Matches {digit}</span>
+            <span className="label">Matches {digit}</span>
             <span className="payout">Payout $0.00</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
           <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Differs', digit)}>
-            <span className="label">🎯 Differs {digit}</span>
+            <span className="label">Differs {digit}</span>
             <span className="payout">Payout $0.00</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
@@ -1578,7 +1565,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       <TradeTypeWrapper>
         <TradeTypeButton isOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
           <div className="left">
-            <span className="icon">{getCurrentTrade().icon}</span>
             <span className="label">{getCurrentTrade().label}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -1593,7 +1579,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               active={tradeType === type.id}
               onClick={() => handleTradeTypeSelect(type.id)}
             >
-              <span>{type.icon} {type.label}</span>
+              <span>{type.label}</span>
               <span className="check">✓</span>
             </DropdownOption>
           ))}
@@ -1605,7 +1591,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         <TradeModeLabel>
           <span>Execution Mode</span>
           <span className="mode-indicator">
-            {tradeMode === 'auto' ? '⚡ Auto' : tradeMode === 'manual' ? '👆 Manual' : '🤖 Bots'}
+            {tradeMode === 'auto' ? 'Auto' : tradeMode === 'manual' ? 'Manual' : 'Bots'}
           </span>
         </TradeModeLabel>
         <TradeModeButtons>
@@ -1613,7 +1599,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             active={tradeMode === 'auto'} 
             onClick={() => setTradeMode('auto')}
           >
-            <span className="mode-icon">⚡</span>
             <span className="mode-label">Auto</span>
             <span className="mode-shortcut">AI</span>
           </TradeModeButton>
@@ -1621,7 +1606,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             active={tradeMode === 'manual'} 
             onClick={() => setTradeMode('manual')}
           >
-            <span className="mode-icon">👆</span>
             <span className="mode-label">Manual</span>
             <span className="mode-shortcut">Tap</span>
           </TradeModeButton>
@@ -1629,7 +1613,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             active={tradeMode === 'use-bots'} 
             onClick={() => setTradeMode('use-bots')}
           >
-            <span className="mode-icon">🤖</span>
             <span className="mode-label">Bots</span>
             <span className="mode-shortcut">AI+</span>
           </TradeModeButton>
@@ -1640,7 +1623,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       {tradeMode === 'use-bots' && (
         <>
           <BotHeader>
-            <div className="title">🤖 Select Your Bot</div>
+            <div className="title">Select Your Bot</div>
             <div className="subtitle">
               <span className="highlight">print maziwa</span> — choose your weapon
             </div>
@@ -1652,7 +1635,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
                 selected={selectedBot === bot.id}
                 onClick={() => handleBotSelect(bot.id)}
               >
-                <span className="bot-icon">{bot.icon}</span>
                 <div className="bot-name">{bot.name}</div>
                 <div className="bot-type">{bot.type}</div>
                 <span className="bot-badge">{bot.badge}</span>
@@ -1665,7 +1647,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               padding: '2px 0', animation: `${fadeIn} 0.3s ease`,
               borderTop: '1px solid rgba(26, 31, 46, 0.6)', marginTop: '3px', paddingTop: '4px'
             }}>
-              ✅ {filteredBots.find(b => b.id === selectedBot)?.name} ready
+              {filteredBots.find(b => b.id === selectedBot)?.name} ready
             </div>
           )}
         </>
