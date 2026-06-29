@@ -1071,7 +1071,7 @@ const Dashboard = () => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
 
     if (!token) {
-      navigate('/index');
+      navigate('/');
       return;
     }
 
