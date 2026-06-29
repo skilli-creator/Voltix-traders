@@ -9,11 +9,6 @@ const pulseRing = keyframes`
   100% { transform: scale(2.5); opacity: 0; }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
-
 const float = keyframes`
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2px); }
@@ -469,8 +464,18 @@ const TopPanel = () => {
 
   const accountData = {
     code: 'CR123456',
-    real: { balance: 7110.00, currency: 'USD', flag: '🇺🇸', kshBalance: 7110.00 * 150.50 },
-    demo: { balance: 10000.00, currency: 'USD', flag: '🎯', kshBalance: 10000.00 * 150.50 }
+    real: { 
+      balance: 7110.00, 
+      currency: 'USD', 
+      flag: '🇰🇪', // Changed from 🇺🇸 to 🇰🇪
+      kshBalance: 7110.00 * 150.50 
+    },
+    demo: { 
+      balance: 10000.00, 
+      currency: 'USD', 
+      flag: '🎯', 
+      kshBalance: 10000.00 * 150.50 
+    }
   };
 
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
@@ -535,7 +540,7 @@ const TopPanel = () => {
               onClick={() => setAccountType('real')}
               className={accountType === 'real' ? 'active' : ''}
             >
-              🇺🇸 Real Account
+              🇰🇪 Real Account
               <span className="balance-small">
                 {formatCurrency(currentAccount.balance, currentAccount.currency)}
               </span>
