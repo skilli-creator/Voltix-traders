@@ -1637,6 +1637,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [stopLoss, setStopLoss] = useState('');
   const [duration, setDuration] = useState(5);
 
+  // Duration dropdown state
+  const [isDurationDropdownOpen, setIsDurationDropdownOpen] = useState(false);
+
   // AI Analysis state
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [aiMarket, setAiMarket] = useState(VOLATILITY_MARKETS[0].symbol);
@@ -1926,9 +1929,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               durationOptions,
               duration,
               setDuration,
-              false,
-              () => {},
-              (val) => `${val}`
+              isDurationDropdownOpen,
+              setIsDurationDropdownOpen
             )}
           </div>
         </ToggleWrapper>
