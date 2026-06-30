@@ -624,7 +624,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setSubmitStatus('Sending feedback...');
 
     try {
-      // Send feedback to backend email endpoint
       const response = await fetch('/api/feedback', {
         method: 'POST',
         headers: {
@@ -633,8 +632,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         body: JSON.stringify({
           rating: rating,
           feedback: feedbackText.trim(),
-          user: 'John Trader', // This would come from user context
-          email: 'john@voltixtraders.com' // This would come from user context
+          user: 'John Trader',
+          email: 'john@voltixtraders.com'
         }),
       });
 
@@ -712,13 +711,22 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </NavSection>
 
           <NavSection>
-            <SectionLabel>Tools</SectionLabel>
+            <SectionLabel>Trading</SectionLabel>
             
+            <NavItem 
+              active={activeItem === 'copy-trading'}
+              onClick={() => handleNavClick('copy-trading', '/copy-trading')}
+            >
+              <span className="nav-icon">🔄</span>
+              <span className="nav-label">Copy Trading</span>
+              <span className="badge">BETA</span>
+            </NavItem>
+
             <NavItem 
               active={activeItem === 'risk-calculator'}
               onClick={() => handleNavClick('risk-calculator', '/risk-calculator')}
             >
-              <span className="nav-icon">📊</span>
+              <span className="nav-icon">🧮</span>
               <span className="nav-label">Risk Calculator</span>
             </NavItem>
           </NavSection>
