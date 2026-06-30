@@ -1175,8 +1175,8 @@ const Dashboard = () => {
 
     setTimeout(() => {
       const routes = {
-        deriv: '/derivhome',
-        forex: '/derivdash'
+        deriv: '/derivdash',
+        forex: '/forexhome'
       };
       navigate(routes[market]);
     }, 150);
