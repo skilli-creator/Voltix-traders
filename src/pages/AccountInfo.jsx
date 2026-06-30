@@ -10,39 +10,14 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const slideIn = keyframes`
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-`;
-
-const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.05); }
-  50% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.15); }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
-
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
+const breathe = keyframes`
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
 `;
 
 const countUp = keyframes`
   from { opacity: 0; transform: scale(0.5); }
   to { opacity: 1; transform: scale(1); }
-`;
-
-const rotateGlow = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const breathe = keyframes`
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
 `;
 
 // ============================================
@@ -151,7 +126,7 @@ const HeroSection = styled.div`
 
 // ===== ACCOUNT SUMMARY CARD =====
 const AccountSummaryCard = styled.div`
-  max-width: 900px;
+  max-width: 600px;
   margin: 0 auto 24px;
   width: 100%;
   background: linear-gradient(135deg, rgba(41, 98, 255, 0.04), rgba(129, 140, 248, 0.02));
@@ -170,17 +145,6 @@ const AccountSummaryCard = styled.div`
     width: 300px;
     height: 300px;
     background: radial-gradient(circle, rgba(56, 189, 248, 0.03), transparent 70%);
-    border-radius: 50%;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -30%;
-    left: -10%;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(129, 140, 248, 0.02), transparent 70%);
     border-radius: 50%;
   }
 
@@ -207,15 +171,15 @@ const AccountSummaryCard = styled.div`
       font-size: 12px;
       padding: 4px 12px;
       border-radius: 20px;
-      background: rgba(34, 197, 94, 0.08);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.1);
+      background: ${props => props.status === 'Active' ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)'};
+      color: ${props => props.status === 'Active' ? '#22c55e' : '#ef4444'};
+      border: 1px solid ${props => props.status === 'Active' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'};
 
       .dot {
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: #22c55e;
+        background: ${props => props.status === 'Active' ? '#22c55e' : '#ef4444'};
         animation: ${breathe} 2s ease-in-out infinite;
       }
     }
@@ -241,16 +205,16 @@ const AccountSummaryCard = styled.div`
       animation: ${countUp} 0.6s ease;
     }
 
-    .balance-change {
-      font-size: 13px;
-      color: #22c55e;
+    .balance-currency {
+      font-size: 16px;
+      color: #64748b;
       font-weight: 500;
     }
   }
 
   .account-meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 12px;
     margin-top: 16px;
     padding-top: 16px;
@@ -291,16 +255,20 @@ const AccountSummaryCard = styled.div`
 // ===== INFO GRID =====
 const InfoGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
-  max-width: 900px;
+  max-width: 600px;
   margin: 0 auto 24px;
   width: 100%;
   animation: ${fadeIn} 0.8s ease;
 
   @media (max-width: 600px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
+  }
+
+  @media (max-width: 400px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -308,10 +276,9 @@ const InfoCard = styled.div`
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 16px;
-  padding: 20px 22px;
+  padding: 18px 16px;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  text-align: center;
 
   &:hover {
     border-color: rgba(56, 189, 248, 0.06);
@@ -319,182 +286,30 @@ const InfoCard = styled.div`
     transform: translateY(-2px);
   }
 
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-
-    .card-icon {
-      font-size: 18px;
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(56, 189, 248, 0.04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #f1f5f9;
-      flex: 1;
-    }
-
-    .card-badge {
-      font-size: 9px;
-      padding: 2px 10px;
-      border-radius: 20px;
-      background: rgba(56, 189, 248, 0.06);
-      color: #38bdf8;
-      font-weight: 600;
-    }
+  .card-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
   }
 
-  .card-content {
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      .label {
-        font-size: 12px;
-        color: #94a3b8;
-      }
-
-      .value {
-        font-size: 13px;
-        font-weight: 500;
-        color: #f1f5f9;
-        font-family: 'Courier New', monospace;
-
-        &.highlight {
-          color: #38bdf8;
-        }
-
-        &.success {
-          color: #22c55e;
-        }
-
-        &.warning {
-          color: #fbbf24;
-        }
-
-        &.danger {
-          color: #ef4444;
-        }
-      }
-    }
-  }
-
-  .card-progress {
-    margin-top: 12px;
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: #64748b;
-      margin-bottom: 4px;
-    }
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 4px;
-      overflow: hidden;
-      .fill {
-        height: 100%;
-        border-radius: 4px;
-        background: linear-gradient(90deg, #38bdf8, #818cf8);
-        width: 0%;
-      }
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 16px 14px;
-    .card-header .card-title { font-size: 12px; }
-    .card-content .info-row .label { font-size: 11px; }
-    .card-content .info-row .value { font-size: 12px; }
-  }
-`;
-
-// ===== FULL WIDTH CARD =====
-const FullWidthCard = styled.div`
-  max-width: 900px;
-  margin: 0 auto 24px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
-  padding: 24px 28px;
-  animation: ${fadeIn} 0.9s ease;
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 600;
+  .card-value {
+    font-size: 20px;
+    font-weight: 700;
     color: #f1f5f9;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    .icon { font-size: 18px; }
+    font-family: 'Courier New', monospace;
   }
 
-  .activity-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-
-    .activity-item {
-      background: rgba(255, 255, 255, 0.02);
-      padding: 12px 14px;
-      border-radius: 10px;
-      text-align: center;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.04);
-      }
-
-      .number {
-        font-size: 20px;
-        font-weight: 700;
-        color: #f1f5f9;
-      }
-
-      .label {
-        font-size: 10px;
-        color: #64748b;
-        margin-top: 2px;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-      }
-
-      &.total { border-bottom: 2px solid #38bdf8; }
-      &.won { border-bottom: 2px solid #22c55e; }
-      &.lost { border-bottom: 2px solid #ef4444; }
-    }
-  }
-
-  @media (max-width: 600px) {
-    padding: 18px 16px;
-    .activity-grid { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .activity-item .number { font-size: 16px; }
+  .card-label {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
 
   @media (max-width: 480px) {
     padding: 14px 12px;
+    .card-value { font-size: 17px; }
+    .card-icon { font-size: 24px; }
   }
 `;
 
@@ -546,59 +361,18 @@ const AccountInfo = () => {
           balance: 7110.00,
           currency: 'USD',
           equity: 7345.50,
-          freeMargin: 6745.50,
           margin: 600.00,
           leverage: '1:500',
-          status: 'Active'
+          status: 'Active',
+          loginStatus: 'online'
         },
         profile: {
           name: 'John Trader',
-          email: 'john@voltixtraders.com',
-          country: 'Kenya',
-          phone: '+254 712 345 678',
-          verified: true,
-          kycLevel: 'Level 2',
-          joined: '2024-01-15'
-        },
-        trading: {
-          totalTrades: 342,
-          won: 189,
-          lost: 153,
-          winRate: 55.26,
-          profit: 1420.50,
-          loss: -890.30,
-          netProfit: 530.20,
-          bestTrade: 45.60,
-          worstTrade: -28.30,
-          averageWin: 7.52,
-          averageLoss: -5.82
-        },
-        connectedAccounts: [
-          { platform: 'Deriv', status: 'Connected', lastSync: '2024-06-30 14:30' },
-          { platform: 'MetaTrader 5', status: 'Connected', lastSync: '2024-06-30 13:45' },
-          { platform: 'Deriv X', status: 'Pending', lastSync: '2024-06-29 09:00' }
-        ],
-        security: {
-          twoFactorAuth: true,
-          lastLogin: '2024-06-30 14:25',
-          ip: '192.168.1.100',
-          device: 'Chrome / Windows',
-          loginHistory: [
-            { date: '2024-06-30 14:25', device: 'Chrome / Windows', location: 'Nairobi, Kenya' },
-            { date: '2024-06-29 10:15', device: 'Firefox / Windows', location: 'Nairobi, Kenya' },
-            { date: '2024-06-28 20:30', device: 'Safari / iOS', location: 'Mombasa, Kenya' }
-          ]
-        },
-        recentTrades: [
-          { id: 1, market: 'Volatility 100', type: 'Over', stake: 10, result: 'Win', profit: 9.20, time: '14:25' },
-          { id: 2, market: 'Volatility 50', type: 'Under', stake: 5, result: 'Loss', profit: -5.00, time: '14:18' },
-          { id: 3, market: 'Volatility 25', type: 'Even', stake: 8, result: 'Win', profit: 7.20, time: '14:10' },
-          { id: 4, market: 'Volatility 10', type: 'Over', stake: 12, result: 'Win', profit: 10.80, time: '14:02' },
-          { id: 5, market: 'Volatility 100', type: 'Matches', stake: 3, result: 'Loss', profit: -3.00, time: '13:55' }
-        ]
+          email: 'john@voltixtraders.com'
+        }
       });
       setLoading(false);
-    }, 1500);
+    }, 1200);
   }, []);
 
   const handleGoBack = () => {
@@ -606,13 +380,7 @@ const AccountInfo = () => {
   };
 
   const formatCurrency = (value) => {
-    return `$${value.toFixed(2)}`;
-  };
-
-  const formatDate = (dateStr) => {
-    if (!dateStr) return 'N/A';
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return `${value.toFixed(2)}`;
   };
 
   if (loading) {
@@ -646,7 +414,7 @@ const AccountInfo = () => {
     );
   }
 
-  const { account, profile, trading, connectedAccounts, security, recentTrades } = accountData;
+  const { account, profile } = accountData;
 
   return (
     <PageWrapper>
@@ -660,12 +428,12 @@ const AccountInfo = () => {
           Your <span className="gradient">Deriv Account</span>
         </h1>
         <p className="subtitle">
-          Complete overview of your trading account, performance metrics, and security settings.
+          View your account details, balance, and trading information.
         </p>
       </HeroSection>
 
       {/* ACCOUNT SUMMARY */}
-      <AccountSummaryCard>
+      <AccountSummaryCard status={account.status}>
         <div className="account-header">
           <span className="account-label">Account Summary</span>
           <span className="account-status">
@@ -675,8 +443,10 @@ const AccountInfo = () => {
         </div>
         <div className="account-balance">
           <div className="balance-label">Total Balance</div>
-          <div className="balance-value">{formatCurrency(account.balance)}</div>
-          <div className="balance-change">+{formatCurrency(trading.netProfit)} this month</div>
+          <div className="balance-value">
+            {account.currency} {formatCurrency(account.balance)}
+          </div>
+          <div className="balance-currency">Equity: {account.currency} {formatCurrency(account.equity)}</div>
         </div>
         <div className="account-meta">
           <div className="meta-item">
@@ -695,255 +465,39 @@ const AccountInfo = () => {
             <div className="meta-label">Currency</div>
             <div className="meta-value">{account.currency}</div>
           </div>
+          <div className="meta-item">
+            <div className="meta-label">Margin Used</div>
+            <div className="meta-value">{account.currency} {formatCurrency(account.margin)}</div>
+          </div>
+          <div className="meta-item">
+            <div className="meta-label">Login Status</div>
+            <div className="meta-value" style={{ color: account.loginStatus === 'online' ? '#22c55e' : '#ef4444' }}>
+              {account.loginStatus === 'online' ? '🟢 Online' : '🔴 Offline'}
+            </div>
+          </div>
         </div>
       </AccountSummaryCard>
 
-      {/* INFO GRID */}
+      {/* QUICK INFO CARDS */}
       <InfoGrid>
-        {/* Profile Card */}
         <InfoCard>
-          <div className="card-header">
-            <span className="card-icon">👤</span>
-            <span className="card-title">Profile Information</span>
-            <span className="card-badge">{profile.kycLevel}</span>
-          </div>
-          <div className="card-content">
-            <div className="info-row">
-              <span className="label">Name</span>
-              <span className="value">{profile.name}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Email</span>
-              <span className="value">{profile.email}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Country</span>
-              <span className="value">{profile.country}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Phone</span>
-              <span className="value">{profile.phone}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Verified</span>
-              <span className="value success">{profile.verified ? '✅ Yes' : '❌ No'}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Joined</span>
-              <span className="value">{formatDate(profile.joined)}</span>
-            </div>
-          </div>
+          <div className="card-icon">👤</div>
+          <div className="card-value">{profile.name}</div>
+          <div className="card-label">Account Holder</div>
         </InfoCard>
 
-        {/* Trading Stats Card */}
         <InfoCard>
-          <div className="card-header">
-            <span className="card-icon">📊</span>
-            <span className="card-title">Trading Statistics</span>
-            <span className="card-badge">Lifetime</span>
-          </div>
-          <div className="card-content">
-            <div className="info-row">
-              <span className="label">Total Trades</span>
-              <span className="value">{trading.totalTrades}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Won</span>
-              <span className="value success">{trading.won}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Lost</span>
-              <span className="value danger">{trading.lost}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Win Rate</span>
-              <span className="value highlight">{trading.winRate}%</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Net Profit</span>
-              <span className="value success">{formatCurrency(trading.netProfit)}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Best Trade</span>
-              <span className="value success">{formatCurrency(trading.bestTrade)}</span>
-            </div>
-          </div>
-          <div className="card-progress">
-            <div className="progress-label">
-              <span>Win Rate Target: 60%</span>
-              <span>{trading.winRate}%</span>
-            </div>
-            <div className="progress-bar">
-              <div className="fill" style={{ width: `${Math.min((trading.winRate / 60) * 100, 100)}%` }} />
-            </div>
-          </div>
+          <div className="card-icon">📧</div>
+          <div className="card-value" style={{ fontSize: '14px' }}>{profile.email}</div>
+          <div className="card-label">Email Address</div>
         </InfoCard>
 
-        {/* Connected Accounts Card */}
         <InfoCard>
-          <div className="card-header">
-            <span className="card-icon">🔗</span>
-            <span className="card-title">Connected Accounts</span>
-            <span className="card-badge">{connectedAccounts.length}</span>
-          </div>
-          <div className="card-content">
-            {connectedAccounts.map((conn, index) => (
-              <div className="info-row" key={index}>
-                <span className="label">{conn.platform}</span>
-                <span className={`value ${conn.status === 'Connected' ? 'success' : 'warning'}`}>
-                  {conn.status}
-                </span>
-              </div>
-            ))}
-          </div>
-        </InfoCard>
-
-        {/* Security Card */}
-        <InfoCard>
-          <div className="card-header">
-            <span className="card-icon">🔒</span>
-            <span className="card-title">Security</span>
-            <span className="card-badge">Active</span>
-          </div>
-          <div className="card-content">
-            <div className="info-row">
-              <span className="label">2FA Enabled</span>
-              <span className={`value ${security.twoFactorAuth ? 'success' : 'warning'}`}>
-                {security.twoFactorAuth ? '✅ Yes' : '❌ No'}
-              </span>
-            </div>
-            <div className="info-row">
-              <span className="label">Last Login</span>
-              <span className="value">{security.lastLogin}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">IP Address</span>
-              <span className="value" style={{ fontSize: '11px' }}>{security.ip}</span>
-            </div>
-            <div className="info-row">
-              <span className="label">Device</span>
-              <span className="value" style={{ fontSize: '11px' }}>{security.device}</span>
-            </div>
-          </div>
+          <div className="card-icon">💰</div>
+          <div className="card-value">{account.currency} {formatCurrency(account.balance)}</div>
+          <div className="card-label">Available Balance</div>
         </InfoCard>
       </InfoGrid>
-
-      {/* RECENT TRADES */}
-      <FullWidthCard>
-        <div className="card-title">
-          <span className="icon">📈</span>
-          Recent Trades
-        </div>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            fontSize: '13px',
-          }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <th style={{ padding: '10px 8px', textAlign: 'left', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Time</th>
-                <th style={{ padding: '10px 8px', textAlign: 'left', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Market</th>
-                <th style={{ padding: '10px 8px', textAlign: 'left', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Type</th>
-                <th style={{ padding: '10px 8px', textAlign: 'right', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Stake</th>
-                <th style={{ padding: '10px 8px', textAlign: 'right', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Result</th>
-                <th style={{ padding: '10px 8px', textAlign: 'right', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Profit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentTrades.map((trade) => (
-                <tr key={trade.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                  <td style={{ padding: '8px', color: '#94a3b8', fontSize: '12px' }}>{trade.time}</td>
-                  <td style={{ padding: '8px', color: '#f1f5f9', fontWeight: 500 }}>{trade.market}</td>
-                  <td style={{ padding: '8px', color: '#94a3b8' }}>{trade.type}</td>
-                  <td style={{ padding: '8px', textAlign: 'right', color: '#f1f5f9' }}>{formatCurrency(trade.stake)}</td>
-                  <td style={{ padding: '8px', textAlign: 'right' }}>
-                    <span style={{
-                      padding: '2px 10px',
-                      borderRadius: '12px',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      background: trade.result === 'Win' ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
-                      color: trade.result === 'Win' ? '#22c55e' : '#ef4444'
-                    }}>
-                      {trade.result}
-                    </span>
-                  </td>
-                  <td style={{ padding: '8px', textAlign: 'right', color: trade.profit > 0 ? '#22c55e' : '#ef4444', fontWeight: 600 }}>
-                    {formatCurrency(trade.profit)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </FullWidthCard>
-
-      {/* LOGIN HISTORY */}
-      <FullWidthCard>
-        <div className="card-title">
-          <span className="icon">🕐</span>
-          Login History
-        </div>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            fontSize: '13px',
-          }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <th style={{ padding: '10px 8px', textAlign: 'left', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Date & Time</th>
-                <th style={{ padding: '10px 8px', textAlign: 'left', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Device</th>
-                <th style={{ padding: '10px 8px', textAlign: 'left', color: '#64748b', fontWeight: 500, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.3px' }}>Location</th>
-              </tr>
-            </thead>
-            <tbody>
-              {security.loginHistory.map((login, index) => (
-                <tr key={index} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                  <td style={{ padding: '8px', color: '#94a3b8', fontSize: '12px' }}>{login.date}</td>
-                  <td style={{ padding: '8px', color: '#f1f5f9' }}>{login.device}</td>
-                  <td style={{ padding: '8px', color: '#94a3b8' }}>{login.location}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </FullWidthCard>
-
-      {/* ACTIVITY SUMMARY */}
-      <FullWidthCard>
-        <div className="card-title">
-          <span className="icon">📊</span>
-          Trading Activity Summary
-        </div>
-        <div className="activity-grid">
-          <div className="activity-item total">
-            <div className="number">{trading.totalTrades}</div>
-            <div className="label">Total Trades</div>
-          </div>
-          <div className="activity-item won">
-            <div className="number">{trading.won}</div>
-            <div className="label">Won</div>
-          </div>
-          <div className="activity-item lost">
-            <div className="number">{trading.lost}</div>
-            <div className="label">Lost</div>
-          </div>
-          <div className="activity-item total">
-            <div className="number">{trading.winRate}%</div>
-            <div className="label">Win Rate</div>
-          </div>
-          <div className="activity-item won">
-            <div className="number">{formatCurrency(trading.netProfit)}</div>
-            <div className="label">Net Profit</div>
-          </div>
-          <div className="activity-item lost">
-            <div className="number">{formatCurrency(trading.averageWin)}</div>
-            <div className="label">Avg Win</div>
-          </div>
-        </div>
-      </FullWidthCard>
 
       {/* FOOTER */}
       <div style={{
@@ -953,7 +507,7 @@ const AccountInfo = () => {
         textAlign: 'center',
         fontSize: '11px',
         color: '#4a4f5e',
-        maxWidth: '900px',
+        maxWidth: '600px',
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '100%'
