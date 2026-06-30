@@ -25,11 +25,6 @@ const shimmer = keyframes`
   100% { background-position: 200% center; }
 `;
 
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
-`;
-
 const breathe = keyframes`
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.6; }
@@ -143,7 +138,126 @@ const HeroSection = styled.div`
   }
 `;
 
-// ===== CONNECT TRADER SECTION =====
+// ===== MASTER TRADER CARD =====
+const MasterTraderCard = styled.div`
+  max-width: 700px;
+  margin: 0 auto 20px;
+  width: 100%;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.04), rgba(129, 140, 248, 0.02));
+  border: 1px solid rgba(56, 189, 248, 0.06);
+  border-radius: 16px;
+  padding: 20px 24px;
+  animation: ${fadeIn} 0.7s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.03), transparent 70%);
+    border-radius: 50%;
+  }
+
+  .master-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+
+    .master-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22c55e, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .master-info {
+      flex: 1;
+
+      .master-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #f1f5f9;
+      }
+
+      .master-title {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 1px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .live-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #22c55e;
+          display: inline-block;
+          animation: ${breathe} 2s ease-in-out infinite;
+        }
+      }
+    }
+
+    .master-badge {
+      font-size: 10px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      background: rgba(34, 197, 94, 0.08);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.1);
+      font-weight: 600;
+    }
+  }
+
+  .master-stats {
+    display: flex;
+    gap: 24px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.02);
+    position: relative;
+    z-index: 1;
+
+    .stat {
+      .stat-value {
+        font-size: 18px;
+        font-weight: 700;
+        color: #f1f5f9;
+        font-family: 'Courier New', monospace;
+      }
+      .stat-label {
+        font-size: 10px;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-top: 1px;
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px 18px;
+    .master-avatar { width: 44px; height: 44px; font-size: 18px; }
+    .master-name { font-size: 16px; }
+    .master-stats { gap: 16px; .stat .stat-value { font-size: 15px; } }
+  }
+`;
+
+// ===== CONNECT FRIEND SECTION =====
 const ConnectSection = styled.div`
   max-width: 700px;
   margin: 0 auto 24px;
@@ -234,28 +348,26 @@ const ConnectSection = styled.div`
       padding: 12px 24px;
       border: none;
       border-radius: 10px;
-      background: linear-gradient(135deg, #2962ff, #1a4fcf);
-      color: #ffffff;
+      background: linear-gradient(135deg, #4a4f5e, #2a2e3d);
+      color: #64748b;
       font-size: 13px;
       font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      cursor: not-allowed;
       white-space: nowrap;
       position: relative;
       overflow: hidden;
+      opacity: 0.6;
+      pointer-events: none;
 
-      &:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(41, 98, 255, 0.3);
-      }
-
-      &:active:not(:disabled) {
-        transform: scale(0.98);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+      .coming-soon-badge {
+        font-size: 9px;
+        text-transform: uppercase;
+        padding: 1px 8px;
+        border-radius: 10px;
+        background: rgba(56, 189, 248, 0.08);
+        color: #38bdf8;
+        font-weight: 600;
+        letter-spacing: 0.5px;
       }
 
       .btn-shimmer {
@@ -264,7 +376,7 @@ const ConnectSection = styled.div`
         left: -100%;
         width: 60%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
         animation: ${shimmer} 4s ease-in-out infinite;
       }
     }
@@ -324,8 +436,8 @@ const ConnectSection = styled.div`
   }
 `;
 
-// ===== TRADERS LIST =====
-const TradersGrid = styled.div`
+// ===== FOLLOWERS LIST =====
+const FollowersGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
@@ -343,11 +455,11 @@ const TradersGrid = styled.div`
   }
 `;
 
-const TraderCard = styled.div`
+const FollowerCard = styled.div`
   background: rgba(255, 255, 255, 0.015);
-  border: 1px solid ${props => props.connected ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
+  border: 1px solid ${props => props.active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
   border-radius: 16px;
-  padding: 20px 18px;
+  padding: 18px 16px;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -358,43 +470,43 @@ const TraderCard = styled.div`
     transform: translateY(-2px);
   }
 
-  ${props => props.connected && `
+  ${props => props.active && `
     border-color: rgba(34, 197, 94, 0.15);
     background: rgba(34, 197, 94, 0.02);
   `}
 
-  .trader-header {
+  .follower-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
+    gap: 10px;
+    margin-bottom: 8px;
 
-    .avatar {
-      width: 44px;
-      height: 44px;
+    .follower-avatar {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      background: linear-gradient(135deg, #818cf8, #38bdf8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 700;
       color: white;
       flex-shrink: 0;
     }
 
-    .trader-info {
+    .follower-info {
       flex: 1;
       min-width: 0;
 
-      .trader-name {
-        font-size: 14px;
+      .follower-name {
+        font-size: 13px;
         font-weight: 600;
         color: #f1f5f9;
       }
 
-      .trader-token {
-        font-size: 11px;
+      .follower-token {
+        font-size: 10px;
         color: #64748b;
         font-family: 'Courier New', monospace;
         margin-top: 1px;
@@ -403,13 +515,13 @@ const TraderCard = styled.div`
     }
 
     .status-badge {
-      font-size: 9px;
+      font-size: 8px;
       padding: 2px 10px;
       border-radius: 20px;
       font-weight: 600;
       flex-shrink: 0;
 
-      &.connected {
+      &.active {
         background: rgba(34, 197, 94, 0.08);
         color: #22c55e;
         border: 1px solid rgba(34, 197, 94, 0.1);
@@ -421,7 +533,7 @@ const TraderCard = styled.div`
         border: 1px solid rgba(251, 191, 36, 0.1);
       }
 
-      &.disconnected {
+      &.inactive {
         background: rgba(239, 68, 68, 0.08);
         color: #ef4444;
         border: 1px solid rgba(239, 68, 68, 0.1);
@@ -429,31 +541,27 @@ const TraderCard = styled.div`
     }
   }
 
-  .trader-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    margin: 12px 0;
-    padding: 10px 0;
+  .follower-details {
+    display: flex;
+    gap: 12px;
+    margin: 8px 0 10px;
+    padding: 8px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.02);
     border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 
-    .stat {
+    .detail {
+      flex: 1;
       text-align: center;
 
-      .stat-value {
-        font-size: 15px;
+      .detail-value {
+        font-size: 13px;
         font-weight: 700;
         color: #f1f5f9;
         font-family: 'Courier New', monospace;
-
-        &.win { color: #22c55e; }
-        &.loss { color: #ef4444; }
-        &.rate { color: #38bdf8; }
       }
 
-      .stat-label {
-        font-size: 8px;
+      .detail-label {
+        font-size: 7px;
         color: #64748b;
         text-transform: uppercase;
         letter-spacing: 0.3px;
@@ -462,35 +570,19 @@ const TraderCard = styled.div`
     }
   }
 
-  .trader-actions {
+  .follower-actions {
     display: flex;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 6px;
 
     .action-btn {
       flex: 1;
-      padding: 8px 0;
+      padding: 6px 0;
       border: none;
-      border-radius: 8px;
-      font-size: 12px;
+      border-radius: 6px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-
-      &.copy {
-        background: linear-gradient(135deg, #2962ff, #1a4fcf);
-        color: white;
-
-        &:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 20px rgba(41, 98, 255, 0.3);
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-      }
 
       &.remove {
         background: rgba(239, 68, 68, 0.08);
@@ -513,30 +605,21 @@ const TraderCard = styled.div`
         }
       }
 
-      &.copying {
+      &.activate {
         background: rgba(34, 197, 94, 0.08);
         color: #22c55e;
-        cursor: not-allowed;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
+        border: 1px solid rgba(34, 197, 94, 0.1);
 
-        .spinner {
-          width: 14px;
-          height: 14px;
-          border: 2px solid rgba(34, 197, 94, 0.1);
-          border-top-color: #22c55e;
-          border-radius: 50%;
-          animation: ${spin} 0.8s linear infinite;
+        &:hover {
+          background: rgba(34, 197, 94, 0.15);
         }
       }
     }
   }
 
   @media (max-width: 480px) {
-    padding: 16px 14px;
-    .trader-stats { grid-template-columns: 1fr 1fr 1fr; }
+    padding: 14px 12px;
+    .follower-details { gap: 8px; }
   }
 `;
 
@@ -576,66 +659,63 @@ const CopyTrading = () => {
   const [tokenInput, setTokenInput] = useState('');
   const [connecting, setConnecting] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState(null);
-  const [traders, setTraders] = useState([
+  const [followers, setFollowers] = useState([
     {
       id: 1,
-      name: 'Elite Trader',
+      name: 'Sarah Williams',
       token: '0x7a3f...9b2e',
-      status: 'connected',
-      wins: 156,
-      losses: 89,
-      winRate: 63.7,
-      avatar: 'ET'
+      status: 'active',
+      copiedTrades: 156,
+      profit: 2340.50,
+      avatar: 'SW'
     },
     {
       id: 2,
-      name: 'Crypto King',
+      name: 'Michael Chen',
       token: '0x9d4c...1f8a',
       status: 'pending',
-      wins: 234,
-      losses: 145,
-      winRate: 61.7,
-      avatar: 'CK'
+      copiedTrades: 89,
+      profit: 1245.30,
+      avatar: 'MC'
     },
     {
       id: 3,
-      name: 'Volatility Pro',
+      name: 'Jessica Patel',
       token: '0x2b8f...7e3c',
-      status: 'connected',
-      wins: 89,
-      losses: 52,
-      winRate: 63.1,
-      avatar: 'VP'
+      status: 'active',
+      copiedTrades: 312,
+      profit: 4567.80,
+      avatar: 'JP'
     },
     {
       id: 4,
-      name: 'Deriv Master',
+      name: 'David Kim',
       token: '0x5c9e...4a1d',
-      status: 'disconnected',
-      wins: 312,
-      losses: 198,
-      winRate: 61.2,
-      avatar: 'DM'
+      status: 'inactive',
+      copiedTrades: 45,
+      profit: 678.20,
+      avatar: 'DK'
     },
     {
       id: 5,
-      name: 'Scalper Elite',
+      name: 'Emma Rodriguez',
       token: '0x8f2a...6b7c',
-      status: 'connected',
-      wins: 445,
-      losses: 267,
-      winRate: 62.5,
-      avatar: 'SE'
+      status: 'active',
+      copiedTrades: 234,
+      profit: 3456.90,
+      avatar: 'ER'
     }
   ]);
 
-  const [copyingStates, setCopyingStates] = useState({});
+  const [totalCopiedTrades] = useState(836);
+  const [totalProfit] = useState(12288.70);
+  const [activeFollowers] = useState(3);
 
   const handleConnect = () => {
     if (!tokenInput.trim()) {
       setConnectionStatus({
         type: 'error',
-        message: 'Please enter a valid trader token'
+        message: 'Please enter a valid API token'
       });
       return;
     }
@@ -643,69 +723,57 @@ const CopyTrading = () => {
     setConnecting(true);
     setConnectionStatus({
       type: 'info',
-      message: 'Verifying trader token...'
+      message: 'Verifying API token...'
     });
 
-    // Simulate API call
     setTimeout(() => {
-      // Check if token already exists
-      const exists = traders.some(t => t.token === tokenInput.trim());
+      const exists = followers.some(f => f.token === tokenInput.trim());
       
       if (exists) {
         setConnectionStatus({
           type: 'error',
-          message: 'This trader is already in your list'
+          message: 'This follower is already in your list'
         });
         setConnecting(false);
         return;
       }
 
-      // Simulate finding a trader
-      const foundTrader = {
+      const newFollower = {
         id: Date.now(),
         name: `Trader ${tokenInput.trim().slice(0, 6)}`,
         token: tokenInput.trim(),
         status: 'pending',
-        wins: Math.floor(Math.random() * 200) + 50,
-        losses: Math.floor(Math.random() * 150) + 30,
-        winRate: (Math.random() * 20 + 50).toFixed(1),
+        copiedTrades: 0,
+        profit: 0,
         avatar: tokenInput.trim().slice(0, 2).toUpperCase()
       };
 
-      setTraders(prev => [foundTrader, ...prev]);
+      setFollowers(prev => [newFollower, ...prev]);
       setConnectionStatus({
         type: 'success',
-        message: `Successfully connected to ${foundTrader.name}!`
+        message: `Successfully added ${newFollower.name}! They will copy your trades once activated.`
       });
       setTokenInput('');
       setConnecting(false);
 
-      // Clear status after 5 seconds
       setTimeout(() => {
         setConnectionStatus(null);
       }, 5000);
     }, 1500);
   };
 
-  const handleCopyTrade = (traderId) => {
-    setCopyingStates(prev => ({ ...prev, [traderId]: true }));
-
-    // Simulate copy trading
-    setTimeout(() => {
-      setCopyingStates(prev => ({ ...prev, [traderId]: false }));
-      // Update trader status to connected
-      setTraders(prev => prev.map(t => 
-        t.id === traderId ? { ...t, status: 'connected' } : t
-      ));
-    }, 2000);
+  const handleRemoveFollower = (followerId) => {
+    setFollowers(prev => prev.filter(f => f.id !== followerId));
   };
 
-  const handleRemoveTrader = (traderId) => {
-    setTraders(prev => prev.filter(t => t.id !== traderId));
+  const handleActivateFollower = (followerId) => {
+    setFollowers(prev => prev.map(f => 
+      f.id === followerId ? { ...f, status: 'active' } : f
+    ));
   };
 
-  const handleViewTrader = (traderId) => {
-    console.log('View trader details:', traderId);
+  const handleViewFollower = (followerId) => {
+    console.log('View follower details:', followerId);
   };
 
   const handleGoBack = () => {
@@ -714,11 +782,11 @@ const CopyTrading = () => {
 
   const getStatusBadge = (status) => {
     const badges = {
-      connected: { label: 'Connected', className: 'connected' },
+      active: { label: 'Active', className: 'active' },
       pending: { label: 'Pending', className: 'pending' },
-      disconnected: { label: 'Disconnected', className: 'disconnected' }
+      inactive: { label: 'Inactive', className: 'inactive' }
     };
-    return badges[status] || badges.disconnected;
+    return badges[status] || badges.inactive;
   };
 
   return (
@@ -733,15 +801,44 @@ const CopyTrading = () => {
           Copy <span className="gradient">Trading</span>
         </h1>
         <p className="subtitle">
-          Connect with successful traders and automatically copy their trades using their unique token.
+          Master trader dashboard. Manage your followers and share your trades with them.
         </p>
       </HeroSection>
 
-      {/* CONNECT SECTION */}
+      {/* MASTER TRADER CARD */}
+      <MasterTraderCard>
+        <div className="master-header">
+          <div className="master-avatar">VT</div>
+          <div className="master-info">
+            <div className="master-name">John Trader</div>
+            <div className="master-title">
+              <span className="live-dot" />
+              Master Trader • Live Copy Trading
+            </div>
+          </div>
+          <span className="master-badge">🟢 Active</span>
+        </div>
+        <div className="master-stats">
+          <div className="stat">
+            <div className="stat-value">{activeFollowers}</div>
+            <div className="stat-label">Active Followers</div>
+          </div>
+          <div className="stat">
+            <div className="stat-value">{totalCopiedTrades}</div>
+            <div className="stat-label">Total Copied Trades</div>
+          </div>
+          <div className="stat">
+            <div className="stat-value" style={{ color: '#22c55e' }}>${totalProfit.toFixed(2)}</div>
+            <div className="stat-label">Total Follower Profit</div>
+          </div>
+        </div>
+      </MasterTraderCard>
+
+      {/* CONNECT FRIEND SECTION */}
       <ConnectSection>
-        <div className="section-title">🔗 Connect a Trader</div>
+        <div className="section-title">🔗 Add a Follower</div>
         <div className="section-subtitle">
-          Enter a trader's unique token to start copying their trades automatically
+          Enter your friend's API token to let them copy your trades
         </div>
 
         <div className="input-group">
@@ -749,7 +846,7 @@ const CopyTrading = () => {
             <span className="input-icon">🔑</span>
             <input
               type="text"
-              placeholder="Enter trader token (e.g., 0x7a3f...9b2e)"
+              placeholder="Enter friend's API token (e.g., 0x7a3f...9b2e)"
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value)}
               onKeyDown={(e) => {
@@ -760,11 +857,10 @@ const CopyTrading = () => {
           </div>
           <button 
             className="connect-btn" 
-            onClick={handleConnect}
-            disabled={connecting || !tokenInput.trim()}
+            disabled
           >
             <span className="btn-shimmer" />
-            {connecting ? 'Connecting...' : 'Connect'}
+            <span className="coming-soon-badge">Coming Soon</span>
           </button>
         </div>
 
@@ -776,106 +872,81 @@ const CopyTrading = () => {
         )}
       </ConnectSection>
 
-      {/* TRADERS LIST */}
-      <TradersGrid>
-        {traders.length === 0 ? (
+      {/* FOLLOWERS LIST */}
+      <FollowersGrid>
+        {followers.length === 0 ? (
           <EmptyState>
             <div className="empty-icon">📭</div>
-            <div className="empty-title">No Traders Connected</div>
+            <div className="empty-title">No Followers Yet</div>
             <div className="empty-sub">
-              Connect with your first trader using their token above to start copy trading.
+              Add your first follower using their API token above.
             </div>
           </EmptyState>
         ) : (
-          traders.map((trader) => {
-            const status = getStatusBadge(trader.status);
-            const isCopying = copyingStates[trader.id];
+          followers.map((follower) => {
+            const status = getStatusBadge(follower.status);
             
             return (
-              <TraderCard key={trader.id} connected={trader.status === 'connected'}>
-                <div className="trader-header">
-                  <div className="avatar">{trader.avatar}</div>
-                  <div className="trader-info">
-                    <div className="trader-name">{trader.name}</div>
-                    <div className="trader-token">{trader.token}</div>
+              <FollowerCard key={follower.id} active={follower.status === 'active'}>
+                <div className="follower-header">
+                  <div className="follower-avatar">{follower.avatar}</div>
+                  <div className="follower-info">
+                    <div className="follower-name">{follower.name}</div>
+                    <div className="follower-token">{follower.token}</div>
                   </div>
                   <span className={`status-badge ${status.className}`}>
                     {status.label}
                   </span>
                 </div>
 
-                <div className="trader-stats">
-                  <div className="stat">
-                    <div className="stat-value win">{trader.wins}</div>
-                    <div className="stat-label">Wins</div>
+                <div className="follower-details">
+                  <div className="detail">
+                    <div className="detail-value">{follower.copiedTrades}</div>
+                    <div className="detail-label">Trades</div>
                   </div>
-                  <div className="stat">
-                    <div className="stat-value loss">{trader.losses}</div>
-                    <div className="stat-label">Losses</div>
-                  </div>
-                  <div className="stat">
-                    <div className="stat-value rate">{trader.winRate}%</div>
-                    <div className="stat-label">Win Rate</div>
+                  <div className="detail">
+                    <div className="detail-value" style={{ color: follower.profit > 0 ? '#22c55e' : '#ef4444' }}>
+                      ${follower.profit.toFixed(2)}
+                    </div>
+                    <div className="detail-label">Profit</div>
                   </div>
                 </div>
 
-                <div className="trader-actions">
-                  {trader.status === 'connected' ? (
+                <div className="follower-actions">
+                  {follower.status === 'pending' ? (
                     <>
-                      <button className="action-btn view" onClick={() => handleViewTrader(trader.id)}>
-                        👁️ View
+                      <button className="action-btn activate" onClick={() => handleActivateFollower(follower.id)}>
+                        ✅ Activate
                       </button>
-                      <button className="action-btn remove" onClick={() => handleRemoveTrader(trader.id)}>
+                      <button className="action-btn remove" onClick={() => handleRemoveFollower(follower.id)}>
                         Remove
                       </button>
                     </>
-                  ) : trader.status === 'pending' ? (
+                  ) : follower.status === 'active' ? (
                     <>
-                      <button 
-                        className="action-btn copy" 
-                        onClick={() => handleCopyTrade(trader.id)}
-                        disabled={isCopying}
-                      >
-                        {isCopying ? (
-                          <>
-                            <span className="spinner" />
-                            Copying...
-                          </>
-                        ) : (
-                          '📋 Copy Trade'
-                        )}
+                      <button className="action-btn view" onClick={() => handleViewFollower(follower.id)}>
+                        👁️ View
                       </button>
-                      <button className="action-btn remove" onClick={() => handleRemoveTrader(trader.id)}>
+                      <button className="action-btn remove" onClick={() => handleRemoveFollower(follower.id)}>
                         Remove
                       </button>
                     </>
                   ) : (
                     <>
-                      <button 
-                        className="action-btn copy" 
-                        onClick={() => handleCopyTrade(trader.id)}
-                        disabled={isCopying}
-                      >
-                        {isCopying ? (
-                          <>
-                            <span className="spinner" />
-                            Copying...
-                          </>
-                        ) : (
-                          '🔄 Reconnect'
-                        )}
+                      <button className="action-btn activate" onClick={() => handleActivateFollower(follower.id)}>
+                        🔄 Reactivate
                       </button>
-                      <button className="action-btn remove" onClick={() => handleRemoveTrader(trader.id)}>
+                      <button className="action-btn remove" onClick={() => handleRemoveFollower(follower.id)}>
                         Remove
                       </button>
                     </>
                   )}
                 </div>
-              </TraderCard>
+              </FollowerCard>
             );
           })
         )}
-      </TradersGrid>
+      </FollowersGrid>
 
       {/* FOOTER */}
       <div style={{
@@ -892,7 +963,7 @@ const CopyTrading = () => {
       }}>
         Voltix Traders • Copy Trading
         <span style={{ display: 'block', marginTop: '2px', color: '#3a4055' }}>
-          🔄 Copy successful traders and grow your portfolio
+          🔄 Share your trades with followers and grow together
         </span>
       </div>
     </PageWrapper>
