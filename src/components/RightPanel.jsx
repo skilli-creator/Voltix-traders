@@ -86,7 +86,7 @@ const PanelContainer = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 4px 2px 4px;
+    padding: 3px 3px 2px 3px;
     gap: 2px;
   }
 `;
