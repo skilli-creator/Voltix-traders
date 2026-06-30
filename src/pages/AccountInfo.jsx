@@ -171,15 +171,15 @@ const AccountSummaryCard = styled.div`
       font-size: 12px;
       padding: 4px 12px;
       border-radius: 20px;
-      background: ${props => props.status === 'Active' ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)'};
-      color: ${props => props.status === 'Active' ? '#22c55e' : '#ef4444'};
-      border: 1px solid ${props => props.status === 'Active' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'};
+      background: ${props => props.status === 'Active' || props.status === 'Online' ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)'};
+      color: ${props => props.status === 'Active' || props.status === 'Online' ? '#22c55e' : '#ef4444'};
+      border: 1px solid ${props => props.status === 'Active' || props.status === 'Online' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'};
 
       .dot {
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: ${props => props.status === 'Active' ? '#22c55e' : '#ef4444'};
+        background: ${props => props.status === 'Active' || props.status === 'Online' ? '#22c55e' : '#ef4444'};
         animation: ${breathe} 2s ease-in-out infinite;
       }
     }
@@ -349,30 +349,45 @@ const AccountInfo = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [accountData, setAccountData] = useState(null);
+  const [error, setError] = useState(null);
 
-  // Simulated API data - In production, fetch from actual API
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setAccountData({
-        account: {
-          id: 'CR123456',
-          type: 'Real',
-          balance: 7110.00,
-          currency: 'USD',
-          equity: 7345.50,
-          margin: 600.00,
-          leverage: '1:500',
-          status: 'Active',
-          loginStatus: 'online'
-        },
-        profile: {
-          name: 'John Trader',
-          email: 'john@voltixtraders.com'
+    const fetchAccountInfo = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          setError('Please login first to view your account information');
+          setLoading(false);
+          return;
         }
-      });
-      setLoading(false);
-    }, 1200);
+
+        const response = await fetch(`${API_BASE_URL}/deriv/account`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setAccountData(data);
+        } else {
+          setError(data.error || 'Failed to fetch account information');
+        }
+      } catch (err) {
+        console.error('Error fetching account:', err);
+        setError('Network error. Please check your connection.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAccountInfo();
   }, []);
 
   const handleGoBack = () => {
@@ -380,7 +395,8 @@ const AccountInfo = () => {
   };
 
   const formatCurrency = (value) => {
-    return `${value.toFixed(2)}`;
+    if (value === undefined || value === null) return '0.00';
+    return parseFloat(value).toFixed(2);
   };
 
   if (loading) {
@@ -391,8 +407,37 @@ const AccountInfo = () => {
         </BackButton>
         <LoadingSpinner>
           <div className="spinner" />
-          <div className="text">Fetching account information...</div>
+          <div className="text">Fetching your Deriv account information...</div>
         </LoadingSpinner>
+      </PageWrapper>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageWrapper>
+        <BackButton onClick={handleGoBack}>
+          <span className="arrow">←</span> Back
+        </BackButton>
+        <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+          <div style={{ fontSize: '48px', marginBottom: '12px' }}>⚠️</div>
+          <div style={{ fontSize: '18px', fontWeight: 600, color: '#f1f5f9' }}>Something Went Wrong</div>
+          <div style={{ fontSize: '14px', color: '#94a3b8', marginTop: '8px' }}>{error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              marginTop: '16px',
+              padding: '8px 24px',
+              background: 'rgba(56, 189, 248, 0.1)',
+              border: '1px solid rgba(56, 189, 248, 0.2)',
+              borderRadius: '8px',
+              color: '#38bdf8',
+              cursor: 'pointer'
+            }}
+          >
+            Try Again
+          </button>
+        </div>
       </PageWrapper>
     );
   }
@@ -404,17 +449,19 @@ const AccountInfo = () => {
           <span className="arrow">←</span> Back
         </BackButton>
         <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-          <div style={{ fontSize: '48px', marginBottom: '12px' }}>😕</div>
+          <div style={{ fontSize: '48px', marginBottom: '12px' }}>📭</div>
           <div style={{ fontSize: '18px', fontWeight: 600, color: '#f1f5f9' }}>No Account Data</div>
           <div style={{ fontSize: '14px', color: '#94a3b8', marginTop: '8px' }}>
-            Could not fetch account information. Please try again later.
+            No account information found. Please ensure you're logged in.
           </div>
         </div>
       </PageWrapper>
     );
   }
 
-  const { account, profile } = accountData;
+  // Extract data from API response
+  const account = accountData.account || accountData;
+  const profile = accountData.profile || accountData.user || {};
 
   return (
     <PageWrapper>
@@ -423,56 +470,58 @@ const AccountInfo = () => {
       </BackButton>
 
       <HeroSection>
-        <div className="badge">🔐 Account Overview</div>
+        <div className="badge">🔐 Deriv Account</div>
         <h1 className="title">
           Your <span className="gradient">Deriv Account</span>
         </h1>
         <p className="subtitle">
-          View your account details, balance, and trading information.
+          View your Deriv account details, balance, and trading information.
         </p>
       </HeroSection>
 
       {/* ACCOUNT SUMMARY */}
-      <AccountSummaryCard status={account.status}>
+      <AccountSummaryCard status={account.status || account.is_active ? 'Active' : 'Inactive'}>
         <div className="account-header">
           <span className="account-label">Account Summary</span>
           <span className="account-status">
             <span className="dot" />
-            {account.status}
+            {account.status || (account.is_active ? 'Active' : 'Inactive')}
           </span>
         </div>
         <div className="account-balance">
           <div className="balance-label">Total Balance</div>
           <div className="balance-value">
-            {account.currency} {formatCurrency(account.balance)}
+            {account.currency || 'USD'} {formatCurrency(account.balance || account.balance || 0)}
           </div>
-          <div className="balance-currency">Equity: {account.currency} {formatCurrency(account.equity)}</div>
+          <div className="balance-currency">
+            Equity: {account.currency || 'USD'} {formatCurrency(account.equity || account.balance || 0)}
+          </div>
         </div>
         <div className="account-meta">
           <div className="meta-item">
             <div className="meta-label">Account ID</div>
-            <div className="meta-value">{account.id}</div>
+            <div className="meta-value">{account.account_id || account.id || 'N/A'}</div>
           </div>
           <div className="meta-item">
             <div className="meta-label">Account Type</div>
-            <div className="meta-value">{account.type}</div>
+            <div className="meta-value">{account.account_type || account.type || account.is_demo ? 'Demo' : 'Real'}</div>
           </div>
           <div className="meta-item">
             <div className="meta-label">Leverage</div>
-            <div className="meta-value">{account.leverage}</div>
+            <div className="meta-value">{account.leverage || '1:500'}</div>
           </div>
           <div className="meta-item">
             <div className="meta-label">Currency</div>
-            <div className="meta-value">{account.currency}</div>
+            <div className="meta-value">{account.currency || 'USD'}</div>
           </div>
           <div className="meta-item">
             <div className="meta-label">Margin Used</div>
-            <div className="meta-value">{account.currency} {formatCurrency(account.margin)}</div>
+            <div className="meta-value">{account.currency || 'USD'} {formatCurrency(account.margin_used || account.margin || 0)}</div>
           </div>
           <div className="meta-item">
             <div className="meta-label">Login Status</div>
-            <div className="meta-value" style={{ color: account.loginStatus === 'online' ? '#22c55e' : '#ef4444' }}>
-              {account.loginStatus === 'online' ? '🟢 Online' : '🔴 Offline'}
+            <div className="meta-value" style={{ color: account.is_online !== false ? '#22c55e' : '#ef4444' }}>
+              {account.is_online !== false ? '🟢 Online' : '🔴 Offline'}
             </div>
           </div>
         </div>
@@ -482,19 +531,19 @@ const AccountInfo = () => {
       <InfoGrid>
         <InfoCard>
           <div className="card-icon">👤</div>
-          <div className="card-value">{profile.name}</div>
+          <div className="card-value">{profile.full_name || profile.name || 'Trader'}</div>
           <div className="card-label">Account Holder</div>
         </InfoCard>
 
         <InfoCard>
           <div className="card-icon">📧</div>
-          <div className="card-value" style={{ fontSize: '14px' }}>{profile.email}</div>
+          <div className="card-value" style={{ fontSize: '14px' }}>{profile.email || 'N/A'}</div>
           <div className="card-label">Email Address</div>
         </InfoCard>
 
         <InfoCard>
           <div className="card-icon">💰</div>
-          <div className="card-value">{account.currency} {formatCurrency(account.balance)}</div>
+          <div className="card-value">{account.currency || 'USD'} {formatCurrency(account.balance || 0)}</div>
           <div className="card-label">Available Balance</div>
         </InfoCard>
       </InfoGrid>
@@ -512,7 +561,7 @@ const AccountInfo = () => {
         marginRight: 'auto',
         width: '100%'
       }}>
-        Voltix Traders • Account Information
+        Voltix Traders • Deriv Account Information
         <span style={{ display: 'block', marginTop: '2px', color: '#3a4055' }}>
           🔐 Your data is secure and encrypted
         </span>
