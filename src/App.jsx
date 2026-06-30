@@ -18,6 +18,7 @@ import Binancehome from './pages/Binancehome';
 import Forexhome from './pages/Forexhome';
 import Settings from './pages/Settings';
 import RiskCalculator from './components/RiskCalculator';
+import Academy from './pages/Academy';
 
 
 // In your routes:
@@ -34,6 +35,7 @@ const App = () => {
       <Route path="/forgotpass" element={<Forgotpass />} />
       <Route path="/verifyresetcode" element={<Verifyresetcode />} />
       <Route path="/resetpass" element={<Resetpass />} />
+      <Route path="/academy" element={<Academy />} />
 
 
       {/* Dashboard Pages */}
