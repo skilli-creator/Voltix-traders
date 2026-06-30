@@ -706,7 +706,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               onClick={() => handleNavClick('account-info', '/account-info')}
             >
               <span className="nav-icon">👤</span>
-              <span className="nav-label">Your Deriv Account Information</span>
+              <span className="nav-label">Deriv Account Information</span>
             </NavItem>
           </NavSection>
 

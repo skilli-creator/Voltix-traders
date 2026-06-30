@@ -17,9 +17,12 @@ import Derivdash from './pages/Derivdash';
 import Binancehome from './pages/Binancehome';
 import Forexhome from './pages/Forexhome';
 import Settings from './pages/Settings';
+
+// Import Components
 import RiskCalculator from './components/RiskCalculator';
 import Academy from './pages/Academy';
-import AccountInfo from './pages/AccountInfo';  // ✅ CORRECTED: './pages/AccountInfo'
+import AccountInfo from './pages/AccountInfo';
+import CopyTrading from './pages/CopyTrading';
 
 const App = () => {
   return (
@@ -40,8 +43,11 @@ const App = () => {
       <Route path="/binancehome" element={<Binancehome />} />
       <Route path="/forexhome" element={<Forexhome />} />
       <Route path="/settings" element={<Settings />} />
+      
+      {/* Trading Tools */}
       <Route path="/risk-calculator" element={<RiskCalculator />} />
-      <Route path="/account-info" element={<AccountInfo />} />  {/* ✅ ROUTE ADDED */}
+      <Route path="/account-info" element={<AccountInfo />} />
+      <Route path="/copy-trading" element={<CopyTrading />} />
 
       {/* Deriv Trading Dashboard */}
       <Route path="/derivdash" element={<Derivdash />} />
