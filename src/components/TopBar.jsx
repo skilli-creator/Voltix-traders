@@ -15,12 +15,6 @@ const float = keyframes`
   50% { transform: translateY(-2px); }
 `;
 
-const sidebarIconRotate = keyframes`
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(90deg); }
-  100% { transform: rotate(0deg); }
-`;
-
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -36,25 +30,26 @@ const TopBar = styled.div`
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 64px;
+  min-height: 64px;
   flex-shrink: 0;
 
   @media (max-width: 1024px) {
     padding: 10px 20px;
     flex-wrap: wrap;
-    height: auto;
+    min-height: auto;
     gap: 8px;
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
     padding: 10px 16px;
-    height: auto;
+    min-height: auto;
     gap: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 8px 12px;
+    padding: 8px 10px;
+    gap: 4px;
   }
 `;
 
@@ -63,9 +58,16 @@ const LeftSection = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    gap: 10px;
+    width: 100%;
+    justify-content: flex-start;
+  }
 `;
 
-// ===== CREATIVE SIDEBAR TOGGLE ICON =====
+// ===== SIDEBAR TOGGLE ICON =====
 const SidebarToggle = styled.button`
   display: flex;
   flex-direction: column;
@@ -81,6 +83,7 @@ const SidebarToggle = styled.button`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   padding: 0;
+  flex-shrink: 0;
 
   &:hover {
     background: rgba(56, 189, 248, 0.12);
@@ -266,9 +269,9 @@ const RightSection = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 
   @media (max-width: 1024px) {
-    flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
   }
@@ -276,12 +279,12 @@ const RightSection = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
 
   @media (max-width: 480px) {
-    gap: 6px;
+    gap: 4px;
+    justify-content: center;
   }
 `;
 
@@ -675,21 +678,21 @@ const ProfessionalFundsButton = styled.a`
   }
 
   @media (max-width: 480px) {
-    padding: 5px 12px 5px 10px;
-    gap: 6px;
+    padding: 4px 10px 4px 8px;
+    gap: 5px;
     .funds-icon {
-      width: 22px;
-      height: 22px;
-      font-size: 11px;
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
     }
     .funds-title {
-      font-size: 10px;
+      font-size: 9px;
     }
     .funds-subtitle {
       display: none;
     }
     .arrow-right {
-      font-size: 10px;
+      font-size: 9px;
     }
   }
 `;
@@ -710,6 +713,7 @@ const PremiumExitButton = styled.button`
   color: #94a3b8;
   position: relative;
   letter-spacing: 0.3px;
+  flex-shrink: 0;
 
   &::before {
     content: '';
@@ -771,6 +775,7 @@ const PremiumExitButton = styled.button`
     border: 1px solid rgba(148, 163, 184, 0.08);
     background: rgba(148, 163, 184, 0.03);
     transition: all 0.3s ease;
+    flex-shrink: 0;
   }
 
   .exit-icon {
@@ -781,6 +786,7 @@ const PremiumExitButton = styled.button`
   .exit-text {
     font-weight: 500;
     transition: all 0.3s ease;
+    white-space: nowrap;
   }
 
   .exit-arrow-icon {
@@ -793,37 +799,38 @@ const PremiumExitButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    padding: 6px 14px;
-    gap: 8px;
+    padding: 5px 12px;
+    gap: 6px;
     font-size: 11px;
     .exit-icon-container {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
     }
     .exit-icon {
-      font-size: 12px;
+      font-size: 11px;
     }
     .exit-arrow-icon {
-      font-size: 12px;
+      font-size: 11px;
     }
   }
 
   @media (max-width: 480px) {
-    padding: 5px 10px;
-    gap: 6px;
-    font-size: 10px;
+    padding: 4px 8px;
+    gap: 4px;
+    font-size: 9px;
     .exit-icon-container {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
     }
     .exit-icon {
-      font-size: 10px;
+      font-size: 9px;
     }
     .exit-text {
-      display: none;
+      font-size: 8px;
     }
     .exit-arrow-icon {
-      font-size: 10px;
+      font-size: 9px;
     }
   }
 `;
@@ -838,13 +845,6 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-
-  // Exchange rates (1 USD = X)
-  const exchangeRates = {
-    USD: 1,
-    KSh: 150.50,
-    EUR: 0.92
-  };
 
   const accountData = {
     code: 'CR123456',
@@ -973,7 +973,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
         </SidebarToggle>
 
         <Brand>
-          <span className="icon">🔷</span>
+          <span className="icon">◆</span>
           <span className="brand-text">
             <span className="voltix">Voltix Traders.</span>
             <span className="deriv">deriv</span>
