@@ -566,7 +566,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 5. INPUT FIELDS - SINGLE COLUMN ON PHONE
+// 5. INPUT FIELDS - SAME 2-COLUMN ON ALL DEVICES
 // ============================================
 
 const InputGrid = styled.div`
@@ -576,13 +576,11 @@ const InputGrid = styled.div`
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr 1fr;
     gap: 4px;
   }
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    gap: 4px;
+    gap: 3px;
   }
 `;
 
@@ -592,7 +590,7 @@ const InputGroup = styled.div`
   gap: 2px;
 
   @media (max-width: 480px) {
-    gap: 2px;
+    gap: 1px;
   }
 `;
 
@@ -631,9 +629,9 @@ const InputLabel = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 7px;
-    .suffix { font-size: 6px; }
-    .optional { font-size: 5px; padding: 0 3px; }
+    font-size: 6px;
+    .suffix { font-size: 5px; }
+    .optional { font-size: 4px; padding: 0 2px; }
   }
 `;
 
@@ -667,8 +665,8 @@ const InputRow = styled.div`
   }
 
   @media (max-width: 480px) {
-    border-radius: 4px;
-    .prefix { padding: 3px 4px; font-size: 10px; }
+    border-radius: 3px;
+    .prefix { padding: 2px 3px; font-size: 9px; }
   }
 `;
 
@@ -704,9 +702,9 @@ const StyledInput = styled.input`
   }
 
   @media (max-width: 480px) {
-    padding: 3px 4px;
-    font-size: 11px;
-    &::placeholder { font-size: 10px; }
+    padding: 2px 3px;
+    font-size: 10px;
+    &::placeholder { font-size: 9px; }
   }
 `;
 
@@ -730,9 +728,9 @@ const ToggleWrapper = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 3px 6px;
-    height: 28px;
-    border-radius: 4px;
+    padding: 2px 3px;
+    height: 20px;
+    border-radius: 3px;
   }
 `;
 
@@ -753,8 +751,8 @@ const ToggleLabel = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 7px;
-    gap: 3px;
+    font-size: 5px;
+    gap: 1px;
   }
 `;
 
@@ -794,12 +792,13 @@ const ToggleTrack = styled.div`
   }
 
   @media (max-width: 480px) {
-    width: 28px;
-    height: 16px;
+    width: 20px;
+    height: 12px;
+    border-radius: 6px;
     .thumb {
-      width: 12px;
-      height: 12px;
-      left: ${props => props.active ? '14px' : '2px'};
+      width: 8px;
+      height: 8px;
+      left: ${props => props.active ? '10px' : '2px'};
       top: 2px;
     }
   }
@@ -817,8 +816,8 @@ const ToggleStatus = styled.span`
   }
 
   @media (max-width: 480px) {
-    font-size: 7px;
-    min-width: 18px;
+    font-size: 5px;
+    min-width: 12px;
   }
 `;
 
@@ -866,10 +865,10 @@ const DropdownSelectButton = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    height: 22px;
-    padding: 2px 6px 2px 8px;
-    min-width: 32px;
+    font-size: 8px;
+    height: 16px;
+    padding: 1px 3px 1px 4px;
+    min-width: 24px;
   }
 `;
 
@@ -899,8 +898,8 @@ const DropdownSelectMenu = styled.div`
   }
 
   @media (max-width: 480px) {
-    max-height: 150px;
-    min-width: 50px;
+    max-height: 120px;
+    min-width: 36px;
   }
 `;
 
@@ -925,13 +924,13 @@ const DropdownSelectItem = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    padding: 5px 10px;
+    font-size: 8px;
+    padding: 3px 6px;
   }
 `;
 
 // ============================================
-// 6. AI ANALYSIS - FLOATING BUTTON (All Devices)
+// 6. AI ANALYSIS - FLOATING BUTTON (Manual Mode Only - All Devices)
 // ============================================
 
 const AIFloatingButton = styled.button`
@@ -1237,8 +1236,8 @@ const DigitGridLabel = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 8px;
-    margin-bottom: 2px;
+    font-size: 7px;
+    margin-bottom: 1px;
   }
 `;
 
@@ -1246,7 +1245,7 @@ const DigitGrid = styled.div`
   display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px;
 
   @media (max-width: 480px) {
-    gap: 3px;
+    gap: 2px;
   }
 `;
 
@@ -1269,8 +1268,8 @@ const DigitButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 5px 0;
-    font-size: 12px;
+    padding: 3px 0;
+    font-size: 11px;
   }
 `;
 
@@ -1318,10 +1317,11 @@ const EvenOddButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 8px 0;
-    .label { font-size: 12px; }
-    .payout { font-size: 9px; }
-    .sub { font-size: 8px; }
+    padding: 6px 0;
+    border-radius: 5px;
+    .label { font-size: 11px; }
+    .payout { font-size: 8px; }
+    .sub { font-size: 7px; }
   }
 `;
 
@@ -1369,10 +1369,11 @@ const TradeButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 8px 0;
-    .label { font-size: 12px; }
-    .payout { font-size: 9px; }
-    .sub { font-size: 8px; }
+    padding: 6px 0;
+    border-radius: 5px;
+    .label { font-size: 11px; }
+    .payout { font-size: 8px; }
+    .sub { font-size: 7px; }
   }
 `;
 
@@ -1413,9 +1414,10 @@ const RunButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 8px 0;
-    font-size: 12px;
-    .run-icon { margin-right: 4px; }
+    padding: 6px 0;
+    font-size: 11px;
+    border-radius: 5px;
+    .run-icon { margin-right: 3px; font-size: 10px; }
   }
 `;
 
@@ -1481,11 +1483,11 @@ const SessionInfo = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding-top: 6px;
-    .label { font-size: 7px; }
-    .trades { font-size: 10px; }
-    .pl { font-size: 14px; padding: 2px 8px; }
-    .pl-label { font-size: 7px; }
+    padding-top: 4px;
+    .label { font-size: 6px; }
+    .trades { font-size: 9px; }
+    .pl { font-size: 12px; padding: 2px 6px; }
+    .pl-label { font-size: 6px; }
   }
 `;
 
@@ -2142,7 +2144,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT */}
+      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT (SAME ON ALL DEVICES) */}
       {renderInputs()}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
