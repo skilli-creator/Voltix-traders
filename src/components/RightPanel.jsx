@@ -36,6 +36,16 @@ const pulseGlow = keyframes`
   50% { box-shadow: 0 0 40px rgba(41, 98, 255, 0.3); }
 `;
 
+const floatPulse = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -570,8 +580,14 @@ const InputGrid = styled.div`
   gap: 6px;
   animation: ${fadeIn} 0.5s ease;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 1fr;
     gap: 4px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
   }
 `;
 
@@ -921,7 +937,195 @@ const DropdownSelectItem = styled.div`
 `;
 
 // ============================================
-// 6. DIGIT STATS
+// 6. AI ANALYSIS FLOATING BUTTON (Manual Mode)
+// ============================================
+
+const AIFloatingButton = styled.button`
+  position: fixed;
+  bottom: 90px;
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #2962ff, #818cf8);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 24px rgba(41, 98, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  animation: ${floatPulse} 3s ease-in-out infinite;
+
+  &:hover {
+    transform: scale(1.1) translateY(-4px);
+    box-shadow: 0 8px 40px rgba(41, 98, 255, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .ai-label {
+    font-size: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+    margin-top: 1px;
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    width: 48px;
+    height: 48px;
+    bottom: 80px;
+    right: 12px;
+    font-size: 12px;
+    
+    .ai-label {
+      font-size: 5px;
+    }
+  }
+`;
+
+const AIAnalysisPanel = styled.div`
+  position: fixed;
+  bottom: 160px;
+  right: 16px;
+  width: 280px;
+  max-height: 400px;
+  background: rgba(8, 18, 38, 0.95);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(56, 189, 248, 0.1);
+  border-radius: 16px;
+  padding: 16px 18px;
+  z-index: 51;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  animation: ${fadeIn} 0.3s ease;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.2);
+    border-radius: 4px;
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    width: 240px;
+    right: 10px;
+    bottom: 140px;
+    max-height: 320px;
+    padding: 12px 14px;
+  }
+`;
+
+const AIAnalysisHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.06);
+
+  .title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #f1f5f9;
+    }
+  }
+`;
+
+const AIAnalysisContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .analysis-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    border-left: 2px solid ${props => props.color || '#2962ff'};
+
+    .label {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .value {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    .value.up { color: #22c55e; }
+    .value.down { color: #ef4444; }
+    .value.neutral { color: #fbbf24; }
+  }
+
+  .ai-suggestion {
+    padding: 10px 12px;
+    background: rgba(56, 189, 248, 0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(56, 189, 248, 0.06);
+    margin-top: 4px;
+
+    .suggestion-title {
+      font-size: 8px;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .suggestion-text {
+      font-size: 11px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
+    .suggestion-confidence {
+      font-size: 8px;
+      color: #22c55e;
+      margin-top: 4px;
+    }
+  }
+`;
+
+// ============================================
+// 7. DIGIT STATS
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -1023,7 +1227,7 @@ const DigitItem = styled.div`
 `;
 
 // ============================================
-// 7. DIGIT GRID
+// 8. DIGIT GRID
 // ============================================
 
 const DigitGridWrapper = styled.div`
@@ -1085,7 +1289,7 @@ const DigitButton = styled.button`
 `;
 
 // ============================================
-// 8. EVEN/ODD BUTTONS
+// 9. EVEN/ODD BUTTONS
 // ============================================
 
 const EvenOddButtons = styled.div`
@@ -1137,7 +1341,7 @@ const EvenOddButton = styled.button`
 `;
 
 // ============================================
-// 9. TRADE BUTTONS
+// 10. TRADE BUTTONS
 // ============================================
 
 const TradeButtonsWrapper = styled.div`
@@ -1189,7 +1393,7 @@ const TradeButton = styled.button`
 `;
 
 // ============================================
-// 10. RUN BUTTON
+// 11. RUN BUTTON
 // ============================================
 
 const RunButton = styled.button`
@@ -1233,7 +1437,7 @@ const RunButton = styled.button`
 `;
 
 // ============================================
-// 11. SESSION INFO (Bottom)
+// 12. SESSION INFO (Bottom)
 // ============================================
 
 const SessionInfo = styled.div`
@@ -1363,6 +1567,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
 
+  // AI Analysis state
+  const [isAIOpen, setIsAIOpen] = useState(false);
+
   // Dropdown states
   const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
   const [isMartingaleDropdownOpen, setIsMartingaleDropdownOpen] = useState(false);
@@ -1484,6 +1691,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const toggleMartingale = () => setMartingale(!martingale);
   const toggleBulkTrading = () => setBulkTrading(!bulkTrading);
+  const toggleAI = () => setIsAIOpen(!isAIOpen);
 
   // === MARKET SELECTOR HANDLERS ===
   const handleMarketSelect = (market) => {
@@ -1806,6 +2014,54 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     return null;
   };
 
+  // ===== RENDER AI FLOATING BUTTON (Manual Mode Only) =====
+  const renderAIFloatingButton = () => {
+    if (tradeMode !== 'manual') return null;
+    
+    return (
+      <>
+        <AIFloatingButton onClick={toggleAI}>
+          <span>AI</span>
+          <span className="ai-label">Analyze</span>
+        </AIFloatingButton>
+        
+        <AIAnalysisPanel isOpen={isAIOpen}>
+          <AIAnalysisHeader>
+            <div className="title">
+              <span>✨</span> AI Market Analysis
+            </div>
+            <button className="close-btn" onClick={toggleAI}>✕</button>
+          </AIAnalysisHeader>
+          <AIAnalysisContent>
+            <div className="analysis-item" color="#2962ff">
+              <span className="label">Market Sentiment</span>
+              <span className="value neutral">Neutral</span>
+            </div>
+            <div className="analysis-item" color="#22c55e">
+              <span className="label">Volatility Level</span>
+              <span className="value up">High</span>
+            </div>
+            <div className="analysis-item" color="#fbbf24">
+              <span className="label">Confidence Score</span>
+              <span className="value">78%</span>
+            </div>
+            <div className="analysis-item" color="#ef4444">
+              <span className="label">Risk Level</span>
+              <span className="value down">Medium</span>
+            </div>
+            <div className="ai-suggestion">
+              <div className="suggestion-title">AI Suggestion</div>
+              <div className="suggestion-text">
+                Based on current market conditions, consider a <strong>Over 5</strong> trade with $10 stake.
+              </div>
+              <div className="suggestion-confidence">Confidence: 82%</div>
+            </div>
+          </AIAnalysisContent>
+        </AIAnalysisPanel>
+      </>
+    );
+  };
+
   return (
     <PanelContainer>
       {/* 1. MARKET SELECTOR - ONLY ON PHONE */}
@@ -1934,6 +2190,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           <div className="pl">-$310.00</div>
         </div>
       </SessionInfo>
+
+      {/* 10. AI FLOATING BUTTON - MANUAL MODE ONLY */}
+      {renderAIFloatingButton()}
     </PanelContainer>
   );
 };
