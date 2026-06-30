@@ -19,11 +19,7 @@ import Forexhome from './pages/Forexhome';
 import Settings from './pages/Settings';
 import RiskCalculator from './components/RiskCalculator';
 import Academy from './pages/Academy';
-import AccountInfo from '../pages/AccountInfo';
-
-
-// In your routes:
-
+import AccountInfo from './pages/AccountInfo';  // ✅ CORRECTED: './pages/AccountInfo'
 
 const App = () => {
   return (
@@ -38,7 +34,6 @@ const App = () => {
       <Route path="/resetpass" element={<Resetpass />} />
       <Route path="/academy" element={<Academy />} />
 
-
       {/* Dashboard Pages */}
       <Route path="/marketsdash" element={<Marketsdash />} />
       <Route path="/derivhome" element={<Derivhome />} />
@@ -46,7 +41,7 @@ const App = () => {
       <Route path="/forexhome" element={<Forexhome />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/risk-calculator" element={<RiskCalculator />} />
-      <Route path="/account-info" element={<AccountInfo />} />
+      <Route path="/account-info" element={<AccountInfo />} />  {/* ✅ ROUTE ADDED */}
 
       {/* Deriv Trading Dashboard */}
       <Route path="/derivdash" element={<Derivdash />} />
