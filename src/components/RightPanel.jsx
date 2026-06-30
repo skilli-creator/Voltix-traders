@@ -41,6 +41,11 @@ const floatPulse = keyframes`
   50% { transform: translateY(-4px); }
 `;
 
+const scanPulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+`;
+
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -938,7 +943,7 @@ const DropdownSelectItem = styled.div`
 `;
 
 // ============================================
-// 6. AI ANALYSIS - FLOATING BUTTON (Manual Mode Only - All Devices)
+// 6. AI ANALYSIS - UPDATED WITH SCANNER
 // ============================================
 
 const AIFloatingButton = styled.button`
@@ -998,7 +1003,7 @@ const AIAnalysisPanel = styled.div`
   bottom: 160px;
   right: 16px;
   width: 280px;
-  max-height: 400px;
+  max-height: 450px;
   background: rgba(8, 18, 38, 0.95);
   backdrop-filter: blur(24px);
   border: 1px solid rgba(56, 189, 248, 0.1);
@@ -1019,11 +1024,11 @@ const AIAnalysisPanel = styled.div`
   }
 
   @media (max-width: 480px) {
-    width: 200px;
+    width: 220px;
     right: 8px;
     bottom: 130px;
-    max-height: 280px;
-    padding: 10px 12px;
+    max-height: 380px;
+    padding: 12px 14px;
   }
 `;
 
@@ -1065,76 +1070,157 @@ const AIAnalysisHeader = styled.div`
   }
 `;
 
-const AIAnalysisContent = styled.div`
+// AI Scanner Inputs
+const AIScannerInputs = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 10px;
+`;
 
-  .analysis-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 5px 8px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 6px;
-    border-left: 2px solid ${props => props.color || '#2962ff'};
+const AISelectWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 
-    .label {
-      font-size: 10px;
-      color: #94a3b8;
-    }
+  .label {
+    font-size: 9px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+`;
 
-    .value {
-      font-size: 11px;
-      font-weight: 600;
-      color: #f1f5f9;
-    }
+const AISelect = styled.select`
+  width: 100%;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  color: #f1f5f9;
+  font-size: 12px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
 
-    .value.up { color: #22c55e; }
-    .value.down { color: #ef4444; }
-    .value.neutral { color: #fbbf24; }
+  &:focus {
+    border-color: rgba(41, 98, 255, 0.4);
+    box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.05);
   }
 
-  .ai-suggestion {
-    padding: 8px 10px;
-    background: rgba(56, 189, 248, 0.04);
-    border-radius: 8px;
-    border: 1px solid rgba(56, 189, 248, 0.06);
-    margin-top: 4px;
-
-    .suggestion-title {
-      font-size: 8px;
-      text-transform: uppercase;
-      color: #64748b;
-      letter-spacing: 0.5px;
-      margin-bottom: 3px;
-    }
-
-    .suggestion-text {
-      font-size: 10px;
-      color: #cbd5e1;
-      line-height: 1.5;
-    }
-
-    .suggestion-confidence {
-      font-size: 8px;
-      color: #22c55e;
-      margin-top: 3px;
-    }
+  option {
+    background: #0a0e17;
+    color: #f1f5f9;
   }
 
   @media (max-width: 480px) {
-    gap: 5px;
-    .analysis-item {
-      padding: 3px 6px;
-      .label { font-size: 8px; }
-      .value { font-size: 9px; }
-    }
-    .ai-suggestion {
-      padding: 6px 8px;
-      .suggestion-text { font-size: 9px; }
-      .suggestion-confidence { font-size: 7px; }
-    }
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+`;
+
+const AIScanButton = styled.button`
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #2962ff, #1a4fcf);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: ${props => props.scanning ? 'not-allowed' : 'pointer'};
+  transition: all 0.3s ease;
+  opacity: ${props => props.scanning ? 0.6 : 1};
+  margin-top: 4px;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(41, 98, 255, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .scan-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .scan-spinner {
+    animation: ${scanPulse} 1s ease-in-out infinite;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    padding: 6px 0;
+  }
+`;
+
+const AIResultsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(56, 189, 248, 0.06);
+`;
+
+const AIResultItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  border-left: 2px solid ${props => props.color || '#2962ff'};
+
+  .label {
+    font-size: 10px;
+    color: #94a3b8;
+  }
+
+  .value {
+    font-size: 11px;
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+
+  .value.up { color: #22c55e; }
+  .value.down { color: #ef4444; }
+  .value.neutral { color: #fbbf24; }
+`;
+
+const AISuggestionBox = styled.div`
+  padding: 8px 10px;
+  background: rgba(56, 189, 248, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.06);
+  margin-top: 4px;
+
+  .suggestion-title {
+    font-size: 8px;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+
+  .suggestion-text {
+    font-size: 10px;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+
+  .suggestion-confidence {
+    font-size: 8px;
+    color: #22c55e;
+    margin-top: 3px;
   }
 `;
 
@@ -1583,6 +1669,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // AI Analysis state
   const [isAIOpen, setIsAIOpen] = useState(false);
+  const [aiMarket, setAiMarket] = useState(VOLATILITY_MARKETS[0].symbol);
+  const [aiTradeType, setAiTradeType] = useState('overunder');
+  const [isScanning, setIsScanning] = useState(false);
+  const [aiResults, setAiResults] = useState(null);
 
   // Dropdown states
   const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
@@ -1705,7 +1795,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const toggleMartingale = () => setMartingale(!martingale);
   const toggleBulkTrading = () => setBulkTrading(!bulkTrading);
-  const toggleAI = () => setIsAIOpen(!isAIOpen);
+  const toggleAI = () => {
+    setIsAIOpen(!isAIOpen);
+    if (!isAIOpen) {
+      setAiResults(null);
+    }
+  };
 
   // === MARKET SELECTOR HANDLERS ===
   const handleMarketSelect = (market) => {
@@ -1718,6 +1813,39 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const toggleMarketDropdown = () => {
     setIsMarketDropdownOpen(!isMarketDropdownOpen);
+  };
+
+  // === AI SCAN HANDLER ===
+  const handleAIScan = () => {
+    setIsScanning(true);
+    setAiResults(null);
+    
+    // Simulate AI scan
+    setTimeout(() => {
+      // Random results based on selected market and trade type
+      const randomSentiment = ['Bullish', 'Bearish', 'Neutral'][Math.floor(Math.random() * 3)];
+      const randomVolatility = ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)];
+      const randomConfidence = Math.floor(Math.random() * 30) + 60;
+      const randomRisk = ['Low', 'Medium', 'High'][Math.floor(Math.random() * 3)];
+      const randomDirection = ['Over', 'Under'][Math.floor(Math.random() * 2)];
+      const randomDigit = Math.floor(Math.random() * 9) + 1;
+      const randomConfidenceSuggestion = Math.floor(Math.random() * 20) + 70;
+      
+      const selectedMarketName = VOLATILITY_MARKETS.find(m => m.symbol === aiMarket)?.display || aiMarket;
+      const tradeTypeLabel = tradeTypes.find(t => t.id === aiTradeType)?.label || aiTradeType;
+      
+      setAiResults({
+        sentiment: randomSentiment,
+        volatility: randomVolatility,
+        confidence: randomConfidence,
+        risk: randomRisk,
+        suggestion: `${randomDirection} ${randomDigit} on ${selectedMarketName} (${tradeTypeLabel})`,
+        confidenceSuggestion: randomConfidenceSuggestion,
+        market: selectedMarketName,
+        tradeType: tradeTypeLabel,
+      });
+      setIsScanning(false);
+    }, 2000);
   };
 
   // === CALCULATE DIGIT STATS ===
@@ -2042,35 +2170,94 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         <AIAnalysisPanel isOpen={isAIOpen}>
           <AIAnalysisHeader>
             <div className="title">
-              <span>✨</span> AI Market Analysis
+              <span>AI</span> Market Scanner
             </div>
             <button className="close-btn" onClick={toggleAI}>✕</button>
           </AIAnalysisHeader>
-          <AIAnalysisContent>
-            <div className="analysis-item" color="#2962ff">
-              <span className="label">Market Sentiment</span>
-              <span className="value neutral">Neutral</span>
-            </div>
-            <div className="analysis-item" color="#22c55e">
-              <span className="label">Volatility Level</span>
-              <span className="value up">High</span>
-            </div>
-            <div className="analysis-item" color="#fbbf24">
-              <span className="label">Confidence Score</span>
-              <span className="value">78%</span>
-            </div>
-            <div className="analysis-item" color="#ef4444">
-              <span className="label">Risk Level</span>
-              <span className="value down">Medium</span>
-            </div>
-            <div className="ai-suggestion">
-              <div className="suggestion-title">AI Suggestion</div>
-              <div className="suggestion-text">
-                Based on current market conditions, consider a <strong>Over 5</strong> trade with $10 stake.
-              </div>
-              <div className="suggestion-confidence">Confidence: 82%</div>
-            </div>
-          </AIAnalysisContent>
+          
+          {/* AI Scanner Inputs */}
+          <AIScannerInputs>
+            <AISelectWrapper>
+              <span className="label">Select Market</span>
+              <AISelect 
+                value={aiMarket} 
+                onChange={(e) => setAiMarket(e.target.value)}
+                disabled={isScanning}
+              >
+                {VOLATILITY_MARKETS.map((market) => (
+                  <option key={market.symbol} value={market.symbol}>
+                    {market.display} - {market.name}
+                  </option>
+                ))}
+              </AISelect>
+            </AISelectWrapper>
+            
+            <AISelectWrapper>
+              <span className="label">Trade Type</span>
+              <AISelect 
+                value={aiTradeType} 
+                onChange={(e) => setAiTradeType(e.target.value)}
+                disabled={isScanning}
+              >
+                {tradeTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.label}
+                  </option>
+                ))}
+              </AISelect>
+            </AISelectWrapper>
+            
+            <AIScanButton 
+              onClick={handleAIScan} 
+              scanning={isScanning}
+              disabled={isScanning}
+            >
+              <span className="scan-text">
+                {isScanning ? (
+                  <>
+                    <span className="scan-spinner">●</span> Scanning...
+                  </>
+                ) : (
+                  'Scan Market'
+                )}
+              </span>
+            </AIScanButton>
+          </AIScannerInputs>
+          
+          {/* AI Results */}
+          {aiResults && (
+            <AIResultsContainer>
+              <AIResultItem color="#2962ff">
+                <span className="label">Market Sentiment</span>
+                <span className={`value ${aiResults.sentiment === 'Bullish' ? 'up' : aiResults.sentiment === 'Bearish' ? 'down' : 'neutral'}`}>
+                  {aiResults.sentiment}
+                </span>
+              </AIResultItem>
+              <AIResultItem color="#22c55e">
+                <span className="label">Volatility Level</span>
+                <span className={`value ${aiResults.volatility === 'High' ? 'up' : 'neutral'}`}>
+                  {aiResults.volatility}
+                </span>
+              </AIResultItem>
+              <AIResultItem color="#fbbf24">
+                <span className="label">Confidence Score</span>
+                <span className="value">{aiResults.confidence}%</span>
+              </AIResultItem>
+              <AIResultItem color="#ef4444">
+                <span className="label">Risk Level</span>
+                <span className={`value ${aiResults.risk === 'High' ? 'down' : aiResults.risk === 'Medium' ? 'neutral' : 'up'}`}>
+                  {aiResults.risk}
+                </span>
+              </AIResultItem>
+              <AISuggestionBox>
+                <div className="suggestion-title">AI Suggestion</div>
+                <div className="suggestion-text">
+                  Based on current market conditions, consider a <strong>{aiResults.suggestion}</strong>
+                </div>
+                <div className="suggestion-confidence">Confidence: {aiResults.confidenceSuggestion}%</div>
+              </AISuggestionBox>
+            </AIResultsContainer>
+          )}
         </AIAnalysisPanel>
       </>
     );
