@@ -78,7 +78,7 @@ const SidebarContent = styled.div`
 
   @media (max-width: 768px) {
     padding: 12px 16px 8px 16px;
-    padding-top: 70px; /* Space for mobile close button and top bar */
+    padding-top: 70px;
   }
 
   @media (max-width: 480px) {
@@ -328,27 +328,26 @@ const NavItem = styled.div`
   }
 `;
 
-// ===== RATING SECTION =====
-const RatingSection = styled.div`
+// ===== FEEDBACK SECTION =====
+const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 12px;
   background: rgba(56, 189, 248, 0.03);
   border: 1px solid rgba(56, 189, 248, 0.06);
   animation: ${fadeIn} 0.6s ease;
 
-  .rating-label {
+  .feedback-label {
     font-size: 11px;
     color: #94a3b8;
     font-weight: 500;
     margin-bottom: 8px;
     letter-spacing: 0.3px;
-    text-align: center;
   }
 
   .stars {
     display: flex;
     gap: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     justify-content: center;
   }
 
@@ -373,17 +372,69 @@ const RatingSection = styled.div`
     }
   }
 
-  .rating-text {
+  .feedback-textarea {
+    width: 100%;
+    min-height: 70px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    color: #f1f5f9;
+    font-size: 12px;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+    transition: all 0.2s ease;
+    margin-bottom: 10px;
+
+    &::placeholder {
+      color: #4a4f5e;
+    }
+
+    &:focus {
+      border-color: rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.05);
+    }
+  }
+
+  .feedback-submit {
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2962ff, #1a4fcf);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(41, 98, 255, 0.3);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .feedback-status {
+    margin-top: 8px;
     font-size: 11px;
-    color: #64748b;
     text-align: center;
-    letter-spacing: 0.2px;
+    color: #22c55e;
   }
 
   @media (max-width: 768px) {
     padding: 12px;
     
-    .rating-label {
+    .feedback-label {
       font-size: 10px;
       margin-bottom: 6px;
     }
@@ -391,15 +442,20 @@ const RatingSection = styled.div`
       font-size: 20px;
       gap: 6px;
     }
-    .rating-text {
-      font-size: 10px;
+    .feedback-textarea {
+      min-height: 60px;
+      font-size: 11px;
+    }
+    .feedback-submit {
+      font-size: 11px;
+      padding: 7px 0;
     }
   }
 
   @media (max-width: 480px) {
     padding: 10px;
     
-    .rating-label {
+    .feedback-label {
       font-size: 9px;
       margin-bottom: 4px;
     }
@@ -407,8 +463,14 @@ const RatingSection = styled.div`
       font-size: 18px;
       gap: 4px;
     }
-    .rating-text {
-      font-size: 9px;
+    .feedback-textarea {
+      min-height: 50px;
+      font-size: 10px;
+      padding: 8px 10px;
+    }
+    .feedback-submit {
+      font-size: 10px;
+      padding: 6px 0;
     }
   }
 `;
@@ -524,32 +586,18 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [activeItem, setActiveItem] = useState('academy');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState('');
 
   const handleNavClick = (item, path) => {
     setActiveItem(item);
     if (path) {
       navigate(path);
     }
-    // Close on mobile
     if (window.innerWidth <= 768) {
       onClose();
     }
-  };
-
-  const handleRating = (value) => {
-    setRating(value);
-    console.log(`User rated: ${value} stars`);
-  };
-
-  const getRatingText = (value) => {
-    const texts = {
-      1: 'Needs Improvement 😔',
-      2: 'Fair 🤔',
-      3: 'Good 🙂',
-      4: 'Great 😊',
-      5: 'Excellent 🚀'
-    };
-    return texts[value] || 'Rate your experience';
   };
 
   const handleSettingsNavigation = () => {
@@ -559,12 +607,71 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleSubmitFeedback = async () => {
+    if (rating === 0) {
+      setSubmitStatus('Please select a rating');
+      setTimeout(() => setSubmitStatus(''), 3000);
+      return;
+    }
+
+    if (!feedbackText.trim()) {
+      setSubmitStatus('Please write your feedback');
+      setTimeout(() => setSubmitStatus(''), 3000);
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('Sending feedback...');
+
+    try {
+      // Send feedback to backend email endpoint
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rating: rating,
+          feedback: feedbackText.trim(),
+          user: 'John Trader', // This would come from user context
+          email: 'john@voltixtraders.com' // This would come from user context
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('Thank you for your feedback!');
+        setRating(0);
+        setFeedbackText('');
+        setTimeout(() => setSubmitStatus(''), 5000);
+      } else {
+        setSubmitStatus('Failed to send. Please try again.');
+        setTimeout(() => setSubmitStatus(''), 3000);
+      }
+    } catch (error) {
+      console.error('Feedback submission error:', error);
+      setSubmitStatus('Connection error. Please try again.');
+      setTimeout(() => setSubmitStatus(''), 3000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const getRatingText = (value) => {
+    const texts = {
+      1: 'Needs Improvement',
+      2: 'Fair',
+      3: 'Good',
+      4: 'Great',
+      5: 'Excellent'
+    };
+    return texts[value] || '';
+  };
+
   return (
     <>
       <Overlay isOpen={isOpen} onClick={onClose} />
       
       <SidebarContainer isOpen={isOpen}>
-        {/* Close button for mobile */}
         <CloseButton isOpen={isOpen} onClick={onClose}>
           ✕
         </CloseButton>
@@ -578,7 +685,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
-          {/* MAIN NAVIGATION */}
+          {/* MAIN NAVIGATION - Only Major Options */}
           <NavSection>
             <SectionLabel>Learning</SectionLabel>
             
@@ -590,24 +697,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="nav-label">Voltix Traders Academy</span>
               <span className="badge">NEW</span>
             </NavItem>
-
-            <NavItem 
-              active={activeItem === 'lessons'}
-              onClick={() => handleNavClick('lessons', '/lessons')}
-              style={{ paddingLeft: '44px' }}
-            >
-              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-              <span className="nav-label" style={{ fontSize: '12px' }}>Deriv Trading Lessons</span>
-            </NavItem>
-
-            <NavItem 
-              active={activeItem === 'advanced'}
-              onClick={() => handleNavClick('advanced', '/advanced-lessons')}
-              style={{ paddingLeft: '44px' }}
-            >
-              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-              <span className="nav-label" style={{ fontSize: '12px' }}>Advanced Strategies</span>
-            </NavItem>
           </NavSection>
 
           <NavSection>
@@ -618,40 +707,34 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               onClick={() => handleNavClick('account-info', '/account-info')}
             >
               <span className="nav-icon">👤</span>
-              <span className="nav-label">Deriv Account Information</span>
-            </NavItem>
-
-            <NavItem 
-              active={activeItem === 'linked-accounts'}
-              onClick={() => handleNavClick('linked-accounts', '/linked-accounts')}
-              style={{ paddingLeft: '44px' }}
-            >
-              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-              <span className="nav-label" style={{ fontSize: '12px' }}>Connected Accounts</span>
-            </NavItem>
-
-            <NavItem 
-              active={activeItem === 'security'}
-              onClick={() => handleNavClick('security', '/security')}
-              style={{ paddingLeft: '44px' }}
-            >
-              <span className="nav-icon" style={{ fontSize: '14px' }}>▸</span>
-              <span className="nav-label" style={{ fontSize: '12px' }}>Security Settings</span>
+              <span className="nav-label">Your Deriv Account Information</span>
             </NavItem>
           </NavSection>
 
-          {/* RATING SECTION */}
+          <NavSection>
+            <SectionLabel>Tools</SectionLabel>
+            
+            <NavItem 
+              active={activeItem === 'risk-calculator'}
+              onClick={() => handleNavClick('risk-calculator', '/risk-calculator')}
+            >
+              <span className="nav-icon">📊</span>
+              <span className="nav-label">Risk Calculator</span>
+            </NavItem>
+          </NavSection>
+
+          {/* FEEDBACK SECTION */}
           <NavSection>
             <SectionLabel>Feedback</SectionLabel>
             
-            <RatingSection>
-              <div className="rating-label">⭐ Rate your trading experience</div>
+            <FeedbackSection>
+              <div className="feedback-label">Rate your experience</div>
               <div className="stars">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
                     className={`star ${star <= (hoverRating || rating) ? 'active' : ''}`}
-                    onClick={() => handleRating(star)}
+                    onClick={() => setRating(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
                   >
@@ -659,10 +742,34 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   </span>
                 ))}
               </div>
-              <div className="rating-text">
-                {rating > 0 ? getRatingText(rating) : 'Tap a star to rate'}
-              </div>
-            </RatingSection>
+              {rating > 0 && (
+                <div style={{ 
+                  textAlign: 'center', 
+                  fontSize: '11px', 
+                  color: '#94a3b8', 
+                  marginBottom: '8px' 
+                }}>
+                  {getRatingText(rating)}
+                </div>
+              )}
+              <textarea
+                className="feedback-textarea"
+                placeholder="Share your thoughts, suggestions, or issues..."
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+                disabled={isSubmitting}
+              />
+              <button 
+                className="feedback-submit" 
+                onClick={handleSubmitFeedback}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Sending...' : 'Submit Feedback'}
+              </button>
+              {submitStatus && (
+                <div className="feedback-status">{submitStatus}</div>
+              )}
+            </FeedbackSection>
           </NavSection>
         </SidebarContent>
 
