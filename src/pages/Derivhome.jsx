@@ -970,13 +970,13 @@ const DerivTrading = () => {
     setIsLoading(true);
     setShowPopup(true);
     setPopupProgress(10);
-    setPopupMessage('Initiating secure connection...');
+    setPopupMessage('🔐 Initiating secure connection...');
 
     try {
       const authToken = localStorage.getItem('token');
 
       setPopupProgress(30);
-      setPopupMessage('Authenticating with Deriv...');
+      setPopupMessage('🔄 Authenticating with Deriv...');
       await new Promise(resolve => setTimeout(resolve, 600));
 
       const response = await fetch(
@@ -997,7 +997,7 @@ const DerivTrading = () => {
 
       if (response.ok && data.auth_url) {
         setPopupProgress(70);
-        setPopupMessage('Redirecting to Deriv login...');
+        setPopupMessage('🚀 Redirecting to Deriv login...');
         await new Promise(resolve => setTimeout(resolve, 500));
 
         setPopupProgress(100);
@@ -1006,7 +1006,7 @@ const DerivTrading = () => {
         }, 400);
       } else {
         setPopupProgress(100);
-        setPopupMessage('Connection failed');
+        setPopupMessage('❌ Connection failed');
         showCustomMessage(
           `Connection failed: ${data.error || 'Unknown error'}`,
           'error'
@@ -1017,7 +1017,7 @@ const DerivTrading = () => {
     } catch (error) {
       console.error('OAuth error:', error);
       setPopupProgress(100);
-      setPopupMessage('Connection error');
+      setPopupMessage('❌ Connection error');
       showCustomMessage(
         'Cannot connect to server. Please check your connection.',
         'error'
@@ -1047,7 +1047,7 @@ const DerivTrading = () => {
 
       <Topbar>
         <Logo>
-          <span className="logo-icon">◆</span>
+          <span className="logo-icon">🔷</span>
           <span className="logo-text">Voltix Traders</span>
           <span className="live-dot" />
         </Logo>
@@ -1071,7 +1071,7 @@ const DerivTrading = () => {
 
         <ConnectPanel>
           <SectionTitle>
-            <span className="icon">🔒</span> Connect Your Deriv Account
+            <span className="icon">🔐</span> Connect Your Deriv Account
           </SectionTitle>
           <SectionSubtitle>
             Securely connect your Deriv account via OAuth 2.0
@@ -1089,13 +1089,13 @@ const DerivTrading = () => {
                   <span className="spinner">⟳</span> Connecting...
                 </>
               ) : (
-                'Connect with Deriv OAuth'
+                '🔵 Connect with Deriv OAuth'
               )}
             </span>
           </OAuthButton>
 
           <AccountSignup>
-            New to Deriv trading?{' '}
+            🚀 New to Deriv trading?{' '}
             <a href="https://deriv.com/" target="_blank" rel="noopener noreferrer">
               Open a free Deriv account →
             </a>
@@ -1103,9 +1103,9 @@ const DerivTrading = () => {
 
           <MessageArea show={showMessage} type={messageType}>
             <span className="msg-icon">
-              {messageType === 'success' ? '✓' : 
-               messageType === 'error' ? '✗' : 
-               'i'}
+              {messageType === 'success' ? '✅' : 
+               messageType === 'error' ? '❌' : 
+               'ℹ️'}
             </span>
             {message}
           </MessageArea>
@@ -1113,7 +1113,7 @@ const DerivTrading = () => {
 
         <Cards>
           <Card>
-            <span className="card-icon">⚙</span>
+            <span className="card-icon">⚙️</span>
             <h3 className="card-title">All Trades Engine</h3>
             <p className="card-desc">Executes all types of trades with smart order flow and risk-aware logic.</p>
             <span className="card-number">01</span>
@@ -1142,10 +1142,10 @@ const DerivTrading = () => {
       {showPopup && (
         <Overlay onClick={closePopup}>
           <PopupCard onClick={(e) => e.stopPropagation()}>
-            {popupMessage.includes('failed') || popupMessage.includes('error') ? (
-              <PopupIcon>⚠</PopupIcon>
-            ) : popupMessage.includes('Redirecting') ? (
-              <PopupIcon>▶</PopupIcon>
+            {popupMessage.includes('❌') ? (
+              <PopupIcon>⚠️</PopupIcon>
+            ) : popupMessage.includes('🚀') ? (
+              <PopupIcon>🚀</PopupIcon>
             ) : (
               <PopupSpinner>
                 <div className="ring" />
@@ -1155,20 +1155,20 @@ const DerivTrading = () => {
             )}
 
             <PopupTitle>
-              {popupMessage.includes('failed') || popupMessage.includes('error') ? 'Oops!' : 'Connecting...'}
+              {popupMessage.includes('❌') ? 'Oops!' : 'Connecting...'}
             </PopupTitle>
 
             <PopupSubtitle>{popupMessage}</PopupSubtitle>
 
-            {!popupMessage.includes('failed') && !popupMessage.includes('error') && !popupMessage.includes('Redirecting') && (
-              <PopupHint>Hang tight — we're redirecting you securely...</PopupHint>
+            {!popupMessage.includes('❌') && !popupMessage.includes('🚀') && (
+              <PopupHint>⏳ Hang tight — we're redirecting you securely...</PopupHint>
             )}
 
             <PopupProgress progress={popupProgress}>
               <div className="bar" />
             </PopupProgress>
 
-            {(popupMessage.includes('failed') || popupMessage.includes('error')) && (
+            {popupMessage.includes('❌') && (
               <PopupCloseButton onClick={closePopup}>Close</PopupCloseButton>
             )}
           </PopupCard>
