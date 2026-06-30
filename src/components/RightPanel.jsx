@@ -87,7 +87,7 @@ const PanelContainer = styled.div`
 
   @media (max-width: 480px) {
     padding: 4px 4px 2px 4px;
-    gap: 3px;
+    gap: 2px;
   }
 `;
 
@@ -157,9 +157,10 @@ const MarketSelectorButton = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 10px;
-    .market-name { font-size: 11px; }
-    .market-dot { width: 6px; height: 6px; }
+    padding: 4px 8px;
+    .market-name { font-size: 10px; }
+    .market-dot { width: 5px; height: 5px; }
+    .arrow { font-size: 8px; }
   }
 `;
 
@@ -239,9 +240,10 @@ const MarketOption = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 8px 10px;
-    .option-name { font-size: 11px; }
-    .dot { width: 6px; height: 6px; }
+    padding: 6px 8px;
+    .option-name { font-size: 10px; }
+    .dot { width: 5px; height: 5px; }
+    .check { font-size: 11px; }
   }
 `;
 
@@ -295,9 +297,11 @@ const TradeTypeButton = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 8px;
-    .label { font-size: 11px; }
-    gap: 3px;
+    padding: 3px 6px;
+    .label { font-size: 10px; }
+    gap: 2px;
+    .arrow { font-size: 9px; }
+    .badge { font-size: 5px; padding: 1px 3px; }
   }
 `;
 
@@ -311,7 +315,7 @@ const Dropdown = styled.div`
   backdrop-filter: blur(20px);
 
   @media (max-width: 480px) {
-    border-radius: 6px;
+    border-radius: 4px;
   }
 `;
 
@@ -331,8 +335,9 @@ const DropdownOption = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 8px;
-    font-size: 11px;
+    padding: 4px 6px;
+    font-size: 10px;
+    .check { font-size: 11px; }
   }
 `;
 
@@ -473,11 +478,11 @@ const TradeModeButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 6px;
-    font-size: 9px;
+    padding: 4px 4px;
+    font-size: 8px;
     border-radius: 4px;
-    gap: 4px;
-    .mode-label { font-size: 9px; }
+    gap: 3px;
+    .mode-label { font-size: 8px; }
     .mode-shortcut { display: none; }
   }
 `;
@@ -493,7 +498,7 @@ const BotGrid = styled.div`
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 480px) {
-    gap: 3px;
+    gap: 2px;
   }
 `;
 
@@ -535,8 +540,8 @@ const BotCard = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 3px;
-    .bot-name { font-size: 8px; }
+    padding: 3px 2px;
+    .bot-name { font-size: 7px; }
     .bot-type { font-size: 5px; }
     .bot-badge { font-size: 4px; padding: 1px 2px; }
   }
@@ -560,13 +565,13 @@ const BotHeader = styled.div`
   }
 
   @media (max-width: 480px) {
-    .title { font-size: 9px; }
+    .title { font-size: 8px; }
     .subtitle { font-size: 7px; }
   }
 `;
 
 // ============================================
-// 5. INPUT FIELDS - SAME 2-COLUMN ON ALL DEVICES
+// 5. INPUT FIELDS - REDUCED SIZE ON PHONE
 // ============================================
 
 const InputGrid = styled.div`
@@ -580,7 +585,7 @@ const InputGrid = styled.div`
   }
 
   @media (max-width: 480px) {
-    gap: 3px;
+    gap: 2px;
   }
 `;
 
@@ -630,6 +635,7 @@ const InputLabel = styled.div`
 
   @media (max-width: 480px) {
     font-size: 6px;
+    letter-spacing: 0.4px;
     .suffix { font-size: 5px; }
     .optional { font-size: 4px; padding: 0 2px; }
   }
@@ -666,7 +672,7 @@ const InputRow = styled.div`
 
   @media (max-width: 480px) {
     border-radius: 3px;
-    .prefix { padding: 2px 3px; font-size: 9px; }
+    .prefix { padding: 2px 3px; font-size: 8px; }
   }
 `;
 
@@ -703,8 +709,8 @@ const StyledInput = styled.input`
 
   @media (max-width: 480px) {
     padding: 2px 3px;
-    font-size: 10px;
-    &::placeholder { font-size: 9px; }
+    font-size: 9px;
+    &::placeholder { font-size: 8px; }
   }
 `;
 
@@ -731,6 +737,7 @@ const ToggleWrapper = styled.div`
     padding: 2px 3px;
     height: 20px;
     border-radius: 3px;
+    gap: 2px;
   }
 `;
 
@@ -869,6 +876,7 @@ const DropdownSelectButton = styled.div`
     height: 16px;
     padding: 1px 3px 1px 4px;
     min-width: 24px;
+    gap: 2px;
   }
 `;
 
@@ -973,11 +981,11 @@ const AIFloatingButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    width: 48px;
-    height: 48px;
-    bottom: 80px;
-    right: 12px;
-    font-size: 12px;
+    width: 44px;
+    height: 44px;
+    bottom: 76px;
+    right: 10px;
+    font-size: 11px;
     
     .ai-label {
       font-size: 5px;
@@ -1011,11 +1019,11 @@ const AIAnalysisPanel = styled.div`
   }
 
   @media (max-width: 480px) {
-    width: 240px;
-    right: 10px;
-    bottom: 140px;
-    max-height: 320px;
-    padding: 12px 14px;
+    width: 200px;
+    right: 8px;
+    bottom: 130px;
+    max-height: 280px;
+    padding: 10px 12px;
   }
 `;
 
@@ -1048,18 +1056,25 @@ const AIAnalysisHeader = styled.div`
       color: #f1f5f9;
     }
   }
+
+  @media (max-width: 480px) {
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    .title { font-size: 10px; }
+    .close-btn { font-size: 13px; }
+  }
 `;
 
 const AIAnalysisContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 
   .analysis-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 8px;
+    padding: 5px 8px;
     background: rgba(255, 255, 255, 0.02);
     border-radius: 6px;
     border-left: 2px solid ${props => props.color || '#2962ff'};
@@ -1081,7 +1096,7 @@ const AIAnalysisContent = styled.div`
   }
 
   .ai-suggestion {
-    padding: 10px 12px;
+    padding: 8px 10px;
     background: rgba(56, 189, 248, 0.04);
     border-radius: 8px;
     border: 1px solid rgba(56, 189, 248, 0.06);
@@ -1092,11 +1107,11 @@ const AIAnalysisContent = styled.div`
       text-transform: uppercase;
       color: #64748b;
       letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .suggestion-text {
-      font-size: 11px;
+      font-size: 10px;
       color: #cbd5e1;
       line-height: 1.5;
     }
@@ -1104,7 +1119,21 @@ const AIAnalysisContent = styled.div`
     .suggestion-confidence {
       font-size: 8px;
       color: #22c55e;
-      margin-top: 4px;
+      margin-top: 3px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    gap: 5px;
+    .analysis-item {
+      padding: 3px 6px;
+      .label { font-size: 8px; }
+      .value { font-size: 9px; }
+    }
+    .ai-suggestion {
+      padding: 6px 8px;
+      .suggestion-text { font-size: 9px; }
+      .suggestion-confidence { font-size: 7px; }
     }
   }
 `;
@@ -1162,8 +1191,8 @@ const DigitItem = styled.div`
     transition: all 0.15s ease;
 
     @media (max-width: 480px) {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-width: 1.5px;
     }
   }
@@ -1175,7 +1204,7 @@ const DigitItem = styled.div`
     line-height: 1;
 
     @media (max-width: 480px) {
-      font-size: 9px;
+      font-size: 8px;
     }
   }
 
@@ -1192,7 +1221,7 @@ const DigitItem = styled.div`
     margin-top: 1px;
 
     @media (max-width: 480px) {
-      font-size: 6px;
+      font-size: 5px;
     }
   }
 
@@ -1205,7 +1234,7 @@ const DigitItem = styled.div`
     line-height: 1;
 
     @media (max-width: 480px) {
-      font-size: 6px;
+      font-size: 5px;
       bottom: -1px;
     }
   }
@@ -1269,7 +1298,7 @@ const DigitButton = styled.button`
 
   @media (max-width: 480px) {
     padding: 3px 0;
-    font-size: 11px;
+    font-size: 10px;
   }
 `;
 
@@ -1282,7 +1311,7 @@ const EvenOddButtons = styled.div`
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 480px) {
-    gap: 4px;
+    gap: 3px;
   }
 `;
 
@@ -1317,11 +1346,11 @@ const EvenOddButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 0;
-    border-radius: 5px;
-    .label { font-size: 11px; }
+    padding: 5px 0;
+    .label { font-size: 10px; }
     .payout { font-size: 8px; }
     .sub { font-size: 7px; }
+    border-radius: 4px;
   }
 `;
 
@@ -1334,7 +1363,7 @@ const TradeButtonsWrapper = styled.div`
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 480px) {
-    gap: 4px;
+    gap: 3px;
   }
 `;
 
@@ -1369,11 +1398,11 @@ const TradeButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 0;
-    border-radius: 5px;
-    .label { font-size: 11px; }
+    padding: 5px 0;
+    .label { font-size: 10px; }
     .payout { font-size: 8px; }
     .sub { font-size: 7px; }
+    border-radius: 4px;
   }
 `;
 
@@ -1414,10 +1443,10 @@ const RunButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 0;
-    font-size: 11px;
-    border-radius: 5px;
-    .run-icon { margin-right: 3px; font-size: 10px; }
+    padding: 5px 0;
+    font-size: 10px;
+    border-radius: 4px;
+    .run-icon { margin-right: 3px; font-size: 9px; }
   }
 `;
 
@@ -1485,7 +1514,7 @@ const SessionInfo = styled.div`
   @media (max-width: 480px) {
     padding-top: 4px;
     .label { font-size: 6px; }
-    .trades { font-size: 9px; }
+    .trades { font-size: 8px; }
     .pl { font-size: 12px; padding: 2px 6px; }
     .pl-label { font-size: 6px; }
   }
