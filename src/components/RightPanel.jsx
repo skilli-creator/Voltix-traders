@@ -1661,11 +1661,23 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [movementDirection, setMovementDirection] = useState('down');
   const [price, setPrice] = useState(8459.65);
 
-  const tradeTypes = [
-    { id: 'overunder', label: 'Over/Under' },
-    { id: 'evenodd', label: 'Even/Odd' },
-    { id: 'matches', label: 'Matches/Differs' },
-  ];
+  // Define trade types - includes Random only for Auto mode
+  const getTradeTypes = () => {
+    const baseTypes = [
+      { id: 'overunder', label: 'Over/Under' },
+      { id: 'evenodd', label: 'Even/Odd' },
+      { id: 'matches', label: 'Matches/Differs' },
+    ];
+    
+    // Add Random only in Auto mode
+    if (tradeMode === 'auto') {
+      return [...baseTypes, { id: 'random', label: 'Random' }];
+    }
+    
+    return baseTypes;
+  };
+
+  const tradeTypes = getTradeTypes();
 
   const getCurrentTrade = () => tradeTypes.find(t => t.id === tradeType) || tradeTypes[0];
 
@@ -1741,6 +1753,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     setIsDropdownOpen(false);
     setSelectedDigit(null);
     setSelectedBot(null);
+    
+    // If Random is selected, auto-select a random digit
+    if (id === 'random') {
+      const randomDigit = Math.floor(Math.random() * 10);
+      setSelectedDigit(randomDigit);
+    }
   };
 
   const handleDigitSelect = (digit) => {
@@ -1752,7 +1770,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   };
 
   const handlePlaceTrade = (direction, digit) => {
-    console.log(`Trade placed: ${direction} ${digit} on ${tradeType}`);
+    // If trade type is Random, use the random digit
+    const tradeDigit = tradeType === 'random' ? selectedDigit : digit;
+    console.log(`Trade placed: ${direction} ${tradeDigit} on ${tradeType}`);
     console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
     console.log(`Duration: ${duration} ticks`);
     if (tradeMode !== 'manual') {
@@ -2088,16 +2108,16 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
     const digit = selectedDigit;
 
-    if (tradeType === 'overunder') {
+    if (tradeType === 'overunder' || tradeType === 'random') {
       return (
         <TradeButtonsWrapper>
           <TradeButton variant="primary" onClick={() => handlePlaceTrade('Over', digit)}>
-            <span className="label">Over {digit}</span>
+            <span className="label">{tradeType === 'random' ? '🎲 Over' : 'Over'} {digit}</span>
             <span className="payout">${payoutOver.toFixed(2)} ({payoutOverPct}%)</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
           <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Under', digit)}>
-            <span className="label">Under {digit}</span>
+            <span className="label">{tradeType === 'random' ? '🎲 Under' : 'Under'} {digit}</span>
             <span className="payout">${payoutUnder.toFixed(2)} ({payoutUnderPct}%)</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
@@ -2109,12 +2129,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       return (
         <TradeButtonsWrapper>
           <TradeButton variant="primary" onClick={() => handlePlaceTrade('Matches', digit)}>
-            <span className="label">Matches {digit}</span>
+            <span className="label">🎯 Matches {digit}</span>
             <span className="payout">Payout $0.00</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
           <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Differs', digit)}>
-            <span className="label">Differs {digit}</span>
+            <span className="label">🎯 Differs {digit}</span>
             <span className="payout">Payout $0.00</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
