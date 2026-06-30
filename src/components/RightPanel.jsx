@@ -585,7 +585,8 @@ const InputGroup = styled.div`
 
 const InputLabel = styled.div`
   display: flex; align-items: center; justify-content: space-between;
-  font-size: 8px; text-transform: uppercase;
+  font-size: 8px;
+  text-transform: uppercase;
   color: #8a93a6;
   letter-spacing: 0.6px;
   font-weight: 700;
@@ -1420,13 +1421,17 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const handlePlaceTrade = (direction, digit) => {
     console.log(`Trade placed: ${direction} ${digit} on ${tradeType}`);
     console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
-    console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    if (tradeMode !== 'manual') {
+      console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    }
   };
 
   const handleRunAuto = () => {
     console.log('Auto trading started');
     console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
-    console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    if (tradeMode !== 'manual') {
+      console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    }
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -1542,102 +1547,132 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   );
 
   // ===== RENDER MARTINGALE TOGGLE =====
-  const renderMartingaleToggle = () => (
-    <InputGroup>
-      <InputLabel>
-        <span>Martingale</span>
-        <span className="suffix">{martingale ? `${martingaleMultiplier}x` : 'Off'}</span>
-      </InputLabel>
-      <ToggleWrapper>
-        <ToggleLabel>Multiplier</ToggleLabel>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <ToggleTrack active={martingale} onClick={toggleMartingale}>
-            <div className="thumb" />
-          </ToggleTrack>
-          <ToggleStatus active={martingale}>
-            {martingale ? 'ON' : 'OFF'}
-          </ToggleStatus>
-          {martingale && renderDropdownSelect(
-            martingaleOptions,
-            martingaleMultiplier,
-            setMartingaleMultiplier,
-            isMartingaleDropdownOpen,
-            setIsMartingaleDropdownOpen,
-            (val) => `${val}x`
-          )}
-        </div>
-      </ToggleWrapper>
-    </InputGroup>
+  const renderMartingaleToggle = () => {
+    // Only show Martingale in Auto or Bots mode
+    if (tradeMode === 'manual') return null;
+    
+    return (
+      <InputGroup>
+        <InputLabel>
+          <span>Martingale</span>
+          <span className="suffix">{martingale ? `${martingaleMultiplier}x` : 'Off'}</span>
+        </InputLabel>
+        <ToggleWrapper>
+          <ToggleLabel>Multiplier</ToggleLabel>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <ToggleTrack active={martingale} onClick={toggleMartingale}>
+              <div className="thumb" />
+            </ToggleTrack>
+            <ToggleStatus active={martingale}>
+              {martingale ? 'ON' : 'OFF'}
+            </ToggleStatus>
+            {martingale && renderDropdownSelect(
+              martingaleOptions,
+              martingaleMultiplier,
+              setMartingaleMultiplier,
+              isMartingaleDropdownOpen,
+              setIsMartingaleDropdownOpen,
+              (val) => `${val}x`
+            )}
+          </div>
+        </ToggleWrapper>
+      </InputGroup>
+    );
+  };
+
+  // ===== RENDER BASIC INPUTS (Stake only - for Manual mode) =====
+  const renderBasicInputs = () => (
+    <InputGrid>
+      <InputGroup>
+        <InputLabel>
+          <span>Stake</span>
+          <span className="suffix">Min: $0.50</span>
+        </InputLabel>
+        <InputRow>
+          <span className="prefix">$</span>
+          <StyledInput
+            type="number"
+            value={stake}
+            onChange={handleStakeChange}
+            step="0.50"
+            min="0"
+            placeholder="10"
+          />
+        </InputRow>
+      </InputGroup>
+    </InputGrid>
+  );
+
+  // ===== RENDER ADVANCED INPUTS (for Auto & Bots) =====
+  const renderAdvancedInputs = () => (
+    <InputGrid>
+      <InputGroup>
+        <InputLabel>
+          <span>Stake</span>
+          <span className="suffix">Min: $0.50</span>
+        </InputLabel>
+        <InputRow>
+          <span className="prefix">$</span>
+          <StyledInput
+            type="number"
+            value={stake}
+            onChange={handleStakeChange}
+            step="0.50"
+            min="0"
+            placeholder="10"
+          />
+        </InputRow>
+      </InputGroup>
+
+      <InputGroup>
+        <InputLabel>
+          <span>Target Profit</span>
+          <span className="optional">Opt.</span>
+        </InputLabel>
+        <InputRow>
+          <span className="prefix">$</span>
+          <StyledInput
+            type="number"
+            value={targetProfit}
+            onChange={handleTargetProfitChange}
+            step="10"
+            min="0"
+            placeholder="200"
+          />
+        </InputRow>
+      </InputGroup>
+
+      <InputGroup>
+        <InputLabel>
+          <span>Stop Loss</span>
+          <span className="optional">Opt.</span>
+        </InputLabel>
+        <InputRow>
+          <span className="prefix">$</span>
+          <StyledInput
+            type="number"
+            value={stopLoss}
+            onChange={handleStopLossChange}
+            step="10"
+            min="0"
+            placeholder="999"
+          />
+        </InputRow>
+      </InputGroup>
+    </InputGrid>
   );
 
   // ===== RENDER INPUTS =====
-  const renderInputs = (showAdvanced = true) => (
+  const renderInputs = () => (
     <>
-      <InputGrid>
-        <InputGroup>
-          <InputLabel>
-            <span>Stake</span>
-            <span className="suffix">Min: $0.50</span>
-          </InputLabel>
-          <InputRow>
-            <span className="prefix">$</span>
-            <StyledInput
-              type="number"
-              value={stake}
-              onChange={handleStakeChange}
-              step="0.50"
-              min="0"
-              placeholder="10"
-            />
-          </InputRow>
-        </InputGroup>
+      {/* Stake - Always visible */}
+      {tradeMode === 'manual' ? renderBasicInputs() : renderAdvancedInputs()}
+      
+      {/* Bulk Trading - Available in ALL modes */}
+      {renderBulkTradingToggle()}
 
-        {showAdvanced && (
-          <>
-            <InputGroup>
-              <InputLabel>
-                <span>Target Profit</span>
-                <span className="optional">Opt.</span>
-              </InputLabel>
-              <InputRow>
-                <span className="prefix">$</span>
-                <StyledInput
-                  type="number"
-                  value={targetProfit}
-                  onChange={handleTargetProfitChange}
-                  step="10"
-                  min="0"
-                  placeholder="200"
-                />
-              </InputRow>
-            </InputGroup>
-
-            <InputGroup>
-              <InputLabel>
-                <span>Stop Loss</span>
-                <span className="optional">Opt.</span>
-              </InputLabel>
-              <InputRow>
-                <span className="prefix">$</span>
-                <StyledInput
-                  type="number"
-                  value={stopLoss}
-                  onChange={handleStopLossChange}
-                  step="10"
-                  min="0"
-                  placeholder="999"
-                />
-              </InputRow>
-            </InputGroup>
-
-            {/* BULK TRADING - Available in all modes */}
-            {renderBulkTradingToggle()}
-
-            {/* MARTINGALE */}
-            {renderMartingaleToggle()}
-          </>
-        )}
-      </InputGrid>
+      {/* Martingale - Only in Auto & Bots modes */}
+      {renderMartingaleToggle()}
     </>
   );
 
@@ -1847,7 +1882,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       )}
 
       {/* 5. INPUTS - Bulk Trading available in ALL modes */}
-      {tradeMode === 'manual' ? renderInputs(false) : renderInputs(true)}
+      {renderInputs()}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
