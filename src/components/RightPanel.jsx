@@ -86,7 +86,7 @@ const PanelContainer = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 4px 2px 4px;
+    padding: 3px 3px 2px 3px;
     gap: 2px;
   }
 `;
@@ -594,10 +594,6 @@ const InputGroup = styled.div`
   flex-direction: column;
   gap: 2px;
 
-  @media (max-width: 768px) {
-    gap: 2px;
-  }
-
   @media (max-width: 480px) {
     gap: 1px;
   }
@@ -654,7 +650,6 @@ const InputRow = styled.div`
   border-radius: 5px;
   transition: all 0.2s ease;
   overflow: hidden;
-  width: 100%;
 
   &:focus-within { 
     border-color: rgba(41, 98, 255, 0.6); 
@@ -677,10 +672,7 @@ const InputRow = styled.div`
 
   @media (max-width: 480px) {
     border-radius: 3px;
-    .prefix { 
-      padding: 2px 4px; 
-      font-size: 9px; 
-    }
+    .prefix { padding: 2px 3px; font-size: 8px; }
   }
 `;
 
@@ -695,7 +687,6 @@ const StyledInput = styled.input`
   outline: none;
   width: 100%;
   min-width: 0;
-  max-width: 100%;
 
   &[type="number"]::-webkit-inner-spin-button,
   &[type="number"]::-webkit-outer-spin-button {
@@ -717,7 +708,7 @@ const StyledInput = styled.input`
   }
 
   @media (max-width: 480px) {
-    padding: 2px 4px;
+    padding: 2px 3px;
     font-size: 9px;
     &::placeholder { font-size: 8px; }
   }
@@ -744,7 +735,7 @@ const ToggleWrapper = styled.div`
 
   @media (max-width: 480px) {
     padding: 2px 3px;
-    height: 22px;
+    height: 20px;
     border-radius: 3px;
     gap: 2px;
   }
@@ -833,7 +824,7 @@ const ToggleStatus = styled.span`
 
   @media (max-width: 480px) {
     font-size: 5px;
-    min-width: 10px;
+    min-width: 12px;
   }
 `;
 
@@ -884,8 +875,8 @@ const DropdownSelectButton = styled.div`
     font-size: 8px;
     height: 16px;
     padding: 1px 3px 1px 4px;
-    min-width: 20px;
-    gap: 1px;
+    min-width: 24px;
+    gap: 2px;
   }
 `;
 
