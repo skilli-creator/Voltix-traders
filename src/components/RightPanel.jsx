@@ -561,7 +561,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 5. INPUT FIELDS WITH BULK TRADING & MARTINGALE
+// 5. INPUT FIELDS - COMPACT 2-COLUMN LAYOUT
 // ============================================
 
 const InputGrid = styled.div`
@@ -576,7 +576,9 @@ const InputGrid = styled.div`
 `;
 
 const InputGroup = styled.div`
-  display: flex; flex-direction: column; gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 
   @media (max-width: 480px) {
     gap: 1px;
@@ -584,17 +586,29 @@ const InputGroup = styled.div`
 `;
 
 const InputLabel = styled.div`
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 8px;
   text-transform: uppercase;
   color: #8a93a6;
   letter-spacing: 0.6px;
   font-weight: 700;
 
-  .suffix { font-size: 7px; color: #4a4f5e; text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .suffix { 
+    font-size: 7px; 
+    color: #4a4f5e; 
+    text-transform: none; 
+    letter-spacing: 0; 
+    font-weight: 400; 
+  }
   .optional {
-    font-size: 6px; color: #4a4f5e; text-transform: none;
-    background: rgba(255,255,255,0.04); padding: 0 5px; border-radius: 3px;
+    font-size: 6px; 
+    color: #4a4f5e; 
+    text-transform: none;
+    background: rgba(255,255,255,0.04); 
+    padding: 0 5px; 
+    border-radius: 3px;
     border: 1px solid rgba(255,255,255,0.04);
     font-weight: 400;
   }
@@ -613,16 +627,26 @@ const InputLabel = styled.div`
 `;
 
 const InputRow = styled.div`
-  display: flex; align-items: center; gap: 0;
+  display: flex;
+  align-items: center;
+  gap: 0;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(26, 31, 46, 0.8);
   border-radius: 5px;
-  transition: all 0.2s ease; overflow: hidden;
+  transition: all 0.2s ease;
+  overflow: hidden;
 
-  &:focus-within { border-color: rgba(41, 98, 255, 0.6); box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.08); }
+  &:focus-within { 
+    border-color: rgba(41, 98, 255, 0.6); 
+    box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.08); 
+  }
+  
   .prefix {
-    padding: 4px 6px; font-size: 11px; font-weight: 600;
-    color: #5a6070; background: rgba(255, 255, 255, 0.02);
+    padding: 4px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #5a6070;
+    background: rgba(255, 255, 255, 0.02);
     border-right: 1px solid rgba(26, 31, 46, 0.8);
   }
 
@@ -638,16 +662,29 @@ const InputRow = styled.div`
 `;
 
 const StyledInput = styled.input`
-  flex: 1; padding: 4px 6px; background: transparent;
-  border: none; color: #d1d4dc; font-size: 12px; font-weight: 500;
-  outline: none; width: 100%; min-width: 0;
+  flex: 1;
+  padding: 4px 6px;
+  background: transparent;
+  border: none;
+  color: #d1d4dc;
+  font-size: 12px;
+  font-weight: 500;
+  outline: none;
+  width: 100%;
+  min-width: 0;
 
   &[type="number"]::-webkit-inner-spin-button,
   &[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none; margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
   }
   &[type="number"] { -moz-appearance: textfield; }
-  &::placeholder { color: #3a4055; font-weight: 400; font-size: 11px; }
+  
+  &::placeholder {
+    color: #3a4055;
+    font-weight: 400;
+    font-size: 11px;
+  }
 
   @media (max-width: 768px) {
     padding: 3px 4px;
@@ -662,7 +699,7 @@ const StyledInput = styled.input`
   }
 `;
 
-// ===== TOGGLE COMPONENTS =====
+// ===== TOGGLE COMPONENTS (Compact) =====
 const ToggleWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -670,18 +707,19 @@ const ToggleWrapper = styled.div`
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(26, 31, 46, 0.8);
   border-radius: 5px;
-  padding: 4px 8px;
+  padding: 3px 6px;
   height: 28px;
-  gap: 6px;
+  gap: 4px;
+  width: 100%;
 
   @media (max-width: 768px) {
-    padding: 3px 6px;
+    padding: 2px 4px;
     height: 24px;
     border-radius: 4px;
   }
 
   @media (max-width: 480px) {
-    padding: 2px 4px;
+    padding: 2px 3px;
     height: 20px;
     border-radius: 3px;
   }
@@ -690,81 +728,91 @@ const ToggleWrapper = styled.div`
 const ToggleLabel = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 8px;
+  gap: 3px;
+  font-size: 7px;
   text-transform: uppercase;
   color: #8a93a6;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   font-weight: 700;
   white-space: nowrap;
 
   @media (max-width: 768px) {
-    font-size: 7px;
-    gap: 3px;
+    font-size: 6px;
+    gap: 2px;
   }
 
   @media (max-width: 480px) {
-    font-size: 6px;
-    gap: 2px;
+    font-size: 5px;
+    gap: 1px;
   }
 `;
 
 const ToggleTrack = styled.div`
-  width: 32px;
-  height: 18px;
+  width: 28px;
+  height: 16px;
   background: ${props => props.active ? 'linear-gradient(135deg, #2962ff, #1a4fcf)' : '#2a2e3d'};
-  border-radius: 9px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   flex-shrink: 0;
 
   &:hover { box-shadow: 0 0 12px rgba(41, 98, 255, 0.15); }
+  
   .thumb {
-    width: 14px; height: 14px; background: #ffffff;
-    border-radius: 50%; position: absolute; top: 2px;
-    left: ${props => props.active ? '16px' : '2px'};
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: ${props => props.active ? '14px' : '2px'};
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   @media (max-width: 768px) {
-    width: 26px;
-    height: 15px;
+    width: 24px;
+    height: 14px;
     .thumb {
-      width: 11px; height: 11px;
-      left: ${props => props.active ? '13px' : '2px'};
+      width: 10px;
+      height: 10px;
+      left: ${props => props.active ? '12px' : '2px'};
       top: 2px;
     }
   }
 
   @media (max-width: 480px) {
-    width: 22px;
+    width: 20px;
     height: 12px;
     border-radius: 6px;
     .thumb {
-      width: 8px; height: 8px;
-      left: ${props => props.active ? '12px' : '2px'};
+      width: 8px;
+      height: 8px;
+      left: ${props => props.active ? '10px' : '2px'};
       top: 2px;
     }
   }
 `;
 
 const ToggleStatus = styled.span`
-  font-size: 8px;
+  font-size: 7px;
   color: ${props => props.active ? '#22c55e' : '#4a4f5e'};
   font-weight: 600;
+  min-width: 18px;
 
   @media (max-width: 768px) {
-    font-size: 7px;
+    font-size: 6px;
+    min-width: 14px;
   }
 
   @media (max-width: 480px) {
-    font-size: 6px;
+    font-size: 5px;
+    min-width: 12px;
   }
 `;
 
-// ===== DROPDOWN SELECT =====
+// ===== DROPDOWN SELECT (Compact) =====
 const DropdownSelect = styled.div`
   position: relative;
   display: flex;
@@ -774,18 +822,18 @@ const DropdownSelect = styled.div`
 const DropdownSelectButton = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px 2px 10px;
+  gap: 3px;
+  padding: 2px 6px 2px 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   color: #f1f5f9;
-  height: 24px;
-  min-width: 40px;
+  height: 22px;
+  min-width: 32px;
   justify-content: center;
 
   &:hover {
@@ -794,24 +842,24 @@ const DropdownSelectButton = styled.div`
   }
 
   .dropdown-arrow {
-    font-size: 8px;
+    font-size: 7px;
     color: #5a6070;
     transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   }
 
   @media (max-width: 768px) {
-    font-size: 10px;
-    height: 20px;
-    padding: 2px 6px 2px 8px;
-    min-width: 32px;
-  }
-
-  @media (max-width: 480px) {
     font-size: 9px;
     height: 18px;
     padding: 1px 4px 1px 6px;
     min-width: 28px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 8px;
+    height: 16px;
+    padding: 1px 3px 1px 4px;
+    min-width: 24px;
   }
 `;
 
@@ -830,7 +878,7 @@ const DropdownSelectMenu = styled.div`
   backdrop-filter: blur(20px);
   max-height: 150px;
   overflow-y: auto;
-  min-width: 50px;
+  min-width: 44px;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -842,14 +890,14 @@ const DropdownSelectMenu = styled.div`
 
   @media (max-width: 480px) {
     max-height: 120px;
-    min-width: 40px;
+    min-width: 36px;
   }
 `;
 
 const DropdownSelectItem = styled.div`
-  padding: 6px 12px;
+  padding: 5px 10px;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   color: ${props => props.active ? '#ffffff' : '#94a3b8'};
   background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
@@ -862,13 +910,13 @@ const DropdownSelectItem = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 10px;
-    padding: 5px 10px;
+    font-size: 9px;
+    padding: 4px 8px;
   }
 
   @media (max-width: 480px) {
-    font-size: 9px;
-    padding: 4px 8px;
+    font-size: 8px;
+    padding: 3px 6px;
   }
 `;
 
@@ -1518,37 +1566,33 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </MarketSelectorWrapper>
   );
 
-  // ===== RENDER BULK TRADING TOGGLE =====
+  // ===== RENDER COMPACT TOGGLES =====
   const renderBulkTradingToggle = () => (
     <InputGroup>
       <InputLabel>
         <span>Bulk Trading</span>
-        <span className="suffix">{bulkTrading ? `${bulkCount} trades` : 'Off'}</span>
+        <span className="suffix">{bulkTrading ? `${bulkCount}t` : 'Off'}</span>
       </InputLabel>
       <ToggleWrapper>
         <ToggleLabel>Bulk</ToggleLabel>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <ToggleTrack active={bulkTrading} onClick={toggleBulkTrading}>
-            <div className="thumb" />
-          </ToggleTrack>
-          <ToggleStatus active={bulkTrading}>
-            {bulkTrading ? 'ON' : 'OFF'}
-          </ToggleStatus>
-          {bulkTrading && renderDropdownSelect(
-            bulkOptions,
-            bulkCount,
-            setBulkCount,
-            isBulkDropdownOpen,
-            setIsBulkDropdownOpen
-          )}
-        </div>
+        <ToggleTrack active={bulkTrading} onClick={toggleBulkTrading}>
+          <div className="thumb" />
+        </ToggleTrack>
+        <ToggleStatus active={bulkTrading}>
+          {bulkTrading ? 'ON' : 'OFF'}
+        </ToggleStatus>
+        {bulkTrading && renderDropdownSelect(
+          bulkOptions,
+          bulkCount,
+          setBulkCount,
+          isBulkDropdownOpen,
+          setIsBulkDropdownOpen
+        )}
       </ToggleWrapper>
     </InputGroup>
   );
 
-  // ===== RENDER MARTINGALE TOGGLE =====
   const renderMartingaleToggle = () => {
-    // Only show Martingale in Auto or Bots mode
     if (tradeMode === 'manual') return null;
     
     return (
@@ -1558,123 +1602,101 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           <span className="suffix">{martingale ? `${martingaleMultiplier}x` : 'Off'}</span>
         </InputLabel>
         <ToggleWrapper>
-          <ToggleLabel>Multiplier</ToggleLabel>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <ToggleTrack active={martingale} onClick={toggleMartingale}>
-              <div className="thumb" />
-            </ToggleTrack>
-            <ToggleStatus active={martingale}>
-              {martingale ? 'ON' : 'OFF'}
-            </ToggleStatus>
-            {martingale && renderDropdownSelect(
-              martingaleOptions,
-              martingaleMultiplier,
-              setMartingaleMultiplier,
-              isMartingaleDropdownOpen,
-              setIsMartingaleDropdownOpen,
-              (val) => `${val}x`
-            )}
-          </div>
+          <ToggleLabel>Mult.</ToggleLabel>
+          <ToggleTrack active={martingale} onClick={toggleMartingale}>
+            <div className="thumb" />
+          </ToggleTrack>
+          <ToggleStatus active={martingale}>
+            {martingale ? 'ON' : 'OFF'}
+          </ToggleStatus>
+          {martingale && renderDropdownSelect(
+            martingaleOptions,
+            martingaleMultiplier,
+            setMartingaleMultiplier,
+            isMartingaleDropdownOpen,
+            setIsMartingaleDropdownOpen,
+            (val) => `${val}x`
+          )}
         </ToggleWrapper>
       </InputGroup>
     );
   };
 
-  // ===== RENDER BASIC INPUTS (Stake only - for Manual mode) =====
-  const renderBasicInputs = () => (
-    <InputGrid>
-      <InputGroup>
-        <InputLabel>
-          <span>Stake</span>
-          <span className="suffix">Min: $0.50</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={stake}
-            onChange={handleStakeChange}
-            step="0.50"
-            min="0"
-            placeholder="10"
-          />
-        </InputRow>
-      </InputGroup>
-    </InputGrid>
-  );
+  // ===== RENDER INPUTS - COMPACT 2-COLUMN =====
+  const renderInputs = () => {
+    const isManual = tradeMode === 'manual';
+    
+    return (
+      <InputGrid>
+        {/* Stake - Always first */}
+        <InputGroup>
+          <InputLabel>
+            <span>Stake</span>
+            <span className="suffix">Min: $0.50</span>
+          </InputLabel>
+          <InputRow>
+            <span className="prefix">$</span>
+            <StyledInput
+              type="number"
+              value={stake}
+              onChange={handleStakeChange}
+              step="0.50"
+              min="0"
+              placeholder="10"
+            />
+          </InputRow>
+        </InputGroup>
 
-  // ===== RENDER ADVANCED INPUTS (for Auto & Bots) =====
-  const renderAdvancedInputs = () => (
-    <InputGrid>
-      <InputGroup>
-        <InputLabel>
-          <span>Stake</span>
-          <span className="suffix">Min: $0.50</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={stake}
-            onChange={handleStakeChange}
-            step="0.50"
-            min="0"
-            placeholder="10"
-          />
-        </InputRow>
-      </InputGroup>
+        {/* Bulk Trading - Always visible */}
+        {renderBulkTradingToggle()}
 
-      <InputGroup>
-        <InputLabel>
-          <span>Target Profit</span>
-          <span className="optional">Opt.</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={targetProfit}
-            onChange={handleTargetProfitChange}
-            step="10"
-            min="0"
-            placeholder="200"
-          />
-        </InputRow>
-      </InputGroup>
+        {/* Target Profit - Auto & Bots only */}
+        {!isManual && (
+          <InputGroup>
+            <InputLabel>
+              <span>Target Profit</span>
+              <span className="optional">Opt.</span>
+            </InputLabel>
+            <InputRow>
+              <span className="prefix">$</span>
+              <StyledInput
+                type="number"
+                value={targetProfit}
+                onChange={handleTargetProfitChange}
+                step="10"
+                min="0"
+                placeholder="200"
+              />
+            </InputRow>
+          </InputGroup>
+        )}
 
-      <InputGroup>
-        <InputLabel>
-          <span>Stop Loss</span>
-          <span className="optional">Opt.</span>
-        </InputLabel>
-        <InputRow>
-          <span className="prefix">$</span>
-          <StyledInput
-            type="number"
-            value={stopLoss}
-            onChange={handleStopLossChange}
-            step="10"
-            min="0"
-            placeholder="999"
-          />
-        </InputRow>
-      </InputGroup>
-    </InputGrid>
-  );
+        {/* Stop Loss - Auto & Bots only */}
+        {!isManual && (
+          <InputGroup>
+            <InputLabel>
+              <span>Stop Loss</span>
+              <span className="optional">Opt.</span>
+            </InputLabel>
+            <InputRow>
+              <span className="prefix">$</span>
+              <StyledInput
+                type="number"
+                value={stopLoss}
+                onChange={handleStopLossChange}
+                step="10"
+                min="0"
+                placeholder="999"
+              />
+            </InputRow>
+          </InputGroup>
+        )}
 
-  // ===== RENDER INPUTS =====
-  const renderInputs = () => (
-    <>
-      {/* Stake - Always visible */}
-      {tradeMode === 'manual' ? renderBasicInputs() : renderAdvancedInputs()}
-      
-      {/* Bulk Trading - Available in ALL modes */}
-      {renderBulkTradingToggle()}
-
-      {/* Martingale - Only in Auto & Bots modes */}
-      {renderMartingaleToggle()}
-    </>
-  );
+        {/* Martingale - Auto & Bots only */}
+        {renderMartingaleToggle()}
+      </InputGrid>
+    );
+  };
 
   // ===== RENDER DIGIT STATS =====
   const renderDigitStats = () => (
@@ -1881,7 +1903,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS - Bulk Trading available in ALL modes */}
+      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT */}
       {renderInputs()}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
