@@ -41,11 +41,6 @@ const floatPulse = keyframes`
   50% { transform: translateY(-4px); }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
-
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -571,7 +566,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 5. INPUT FIELDS - COMPACT 2-COLUMN LAYOUT
+// 5. INPUT FIELDS - SINGLE COLUMN ON PHONE
 // ============================================
 
 const InputGrid = styled.div`
@@ -586,8 +581,8 @@ const InputGrid = styled.div`
   }
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 3px;
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 `;
 
@@ -597,7 +592,7 @@ const InputGroup = styled.div`
   gap: 2px;
 
   @media (max-width: 480px) {
-    gap: 1px;
+    gap: 2px;
   }
 `;
 
@@ -636,9 +631,9 @@ const InputLabel = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 6px;
-    .suffix { font-size: 5px; }
-    .optional { font-size: 4px; padding: 0 2px; }
+    font-size: 7px;
+    .suffix { font-size: 6px; }
+    .optional { font-size: 5px; padding: 0 3px; }
   }
 `;
 
@@ -672,8 +667,8 @@ const InputRow = styled.div`
   }
 
   @media (max-width: 480px) {
-    border-radius: 3px;
-    .prefix { padding: 2px 3px; font-size: 9px; }
+    border-radius: 4px;
+    .prefix { padding: 3px 4px; font-size: 10px; }
   }
 `;
 
@@ -709,9 +704,9 @@ const StyledInput = styled.input`
   }
 
   @media (max-width: 480px) {
-    padding: 2px 3px;
-    font-size: 10px;
-    &::placeholder { font-size: 9px; }
+    padding: 3px 4px;
+    font-size: 11px;
+    &::placeholder { font-size: 10px; }
   }
 `;
 
@@ -735,9 +730,9 @@ const ToggleWrapper = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 2px 3px;
-    height: 20px;
-    border-radius: 3px;
+    padding: 3px 6px;
+    height: 28px;
+    border-radius: 4px;
   }
 `;
 
@@ -758,8 +753,8 @@ const ToggleLabel = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 5px;
-    gap: 1px;
+    font-size: 7px;
+    gap: 3px;
   }
 `;
 
@@ -799,13 +794,12 @@ const ToggleTrack = styled.div`
   }
 
   @media (max-width: 480px) {
-    width: 20px;
-    height: 12px;
-    border-radius: 6px;
+    width: 28px;
+    height: 16px;
     .thumb {
-      width: 8px;
-      height: 8px;
-      left: ${props => props.active ? '10px' : '2px'};
+      width: 12px;
+      height: 12px;
+      left: ${props => props.active ? '14px' : '2px'};
       top: 2px;
     }
   }
@@ -823,8 +817,8 @@ const ToggleStatus = styled.span`
   }
 
   @media (max-width: 480px) {
-    font-size: 5px;
-    min-width: 12px;
+    font-size: 7px;
+    min-width: 18px;
   }
 `;
 
@@ -872,10 +866,10 @@ const DropdownSelectButton = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 8px;
-    height: 16px;
-    padding: 1px 3px 1px 4px;
-    min-width: 24px;
+    font-size: 10px;
+    height: 22px;
+    padding: 2px 6px 2px 8px;
+    min-width: 32px;
   }
 `;
 
@@ -905,8 +899,8 @@ const DropdownSelectMenu = styled.div`
   }
 
   @media (max-width: 480px) {
-    max-height: 120px;
-    min-width: 36px;
+    max-height: 150px;
+    min-width: 50px;
   }
 `;
 
@@ -931,13 +925,13 @@ const DropdownSelectItem = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 8px;
-    padding: 3px 6px;
+    font-size: 10px;
+    padding: 5px 10px;
   }
 `;
 
 // ============================================
-// 6. AI ANALYSIS FLOATING BUTTON (Manual Mode)
+// 6. AI ANALYSIS - FLOATING BUTTON (All Devices)
 // ============================================
 
 const AIFloatingButton = styled.button`
@@ -979,10 +973,6 @@ const AIFloatingButton = styled.button`
     margin-top: 1px;
   }
 
-  @media (min-width: 769px) {
-    display: none;
-  }
-
   @media (max-width: 480px) {
     width: 48px;
     height: 48px;
@@ -1019,10 +1009,6 @@ const AIAnalysisPanel = styled.div`
   &::-webkit-scrollbar-thumb {
     background: rgba(56, 189, 248, 0.2);
     border-radius: 4px;
-  }
-
-  @media (min-width: 769px) {
-    display: none;
   }
 
   @media (max-width: 480px) {
@@ -1251,8 +1237,8 @@ const DigitGridLabel = styled.div`
   }
 
   @media (max-width: 480px) {
-    font-size: 7px;
-    margin-bottom: 1px;
+    font-size: 8px;
+    margin-bottom: 2px;
   }
 `;
 
@@ -1260,7 +1246,7 @@ const DigitGrid = styled.div`
   display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px;
 
   @media (max-width: 480px) {
-    gap: 2px;
+    gap: 3px;
   }
 `;
 
@@ -1283,8 +1269,8 @@ const DigitButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 3px 0;
-    font-size: 11px;
+    padding: 5px 0;
+    font-size: 12px;
   }
 `;
 
@@ -1332,11 +1318,10 @@ const EvenOddButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 0;
-    border-radius: 5px;
-    .label { font-size: 11px; }
-    .payout { font-size: 8px; }
-    .sub { font-size: 7px; }
+    padding: 8px 0;
+    .label { font-size: 12px; }
+    .payout { font-size: 9px; }
+    .sub { font-size: 8px; }
   }
 `;
 
@@ -1384,11 +1369,10 @@ const TradeButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 0;
-    border-radius: 5px;
-    .label { font-size: 11px; }
-    .payout { font-size: 8px; }
-    .sub { font-size: 7px; }
+    padding: 8px 0;
+    .label { font-size: 12px; }
+    .payout { font-size: 9px; }
+    .sub { font-size: 8px; }
   }
 `;
 
@@ -1429,10 +1413,9 @@ const RunButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 6px 0;
-    font-size: 11px;
-    border-radius: 5px;
-    .run-icon { margin-right: 3px; font-size: 10px; }
+    padding: 8px 0;
+    font-size: 12px;
+    .run-icon { margin-right: 4px; }
   }
 `;
 
@@ -1498,11 +1481,11 @@ const SessionInfo = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding-top: 4px;
-    .label { font-size: 6px; }
-    .trades { font-size: 9px; }
-    .pl { font-size: 12px; padding: 2px 6px; }
-    .pl-label { font-size: 6px; }
+    padding-top: 6px;
+    .label { font-size: 7px; }
+    .trades { font-size: 10px; }
+    .pl { font-size: 14px; padding: 2px 8px; }
+    .pl-label { font-size: 7px; }
   }
 `;
 
@@ -2014,7 +1997,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     return null;
   };
 
-  // ===== RENDER AI FLOATING BUTTON (Manual Mode Only) =====
+  // ===== RENDER AI FLOATING BUTTON (Manual Mode Only - All Devices) =====
   const renderAIFloatingButton = () => {
     if (tradeMode !== 'manual') return null;
     
@@ -2191,7 +2174,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </div>
       </SessionInfo>
 
-      {/* 10. AI FLOATING BUTTON - MANUAL MODE ONLY */}
+      {/* 10. AI FLOATING BUTTON - MANUAL MODE ONLY (All Devices) */}
       {renderAIFloatingButton()}
     </PanelContainer>
   );
