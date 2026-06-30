@@ -19,6 +19,7 @@ import Forexhome from './pages/Forexhome';
 import Settings from './pages/Settings';
 import RiskCalculator from './components/RiskCalculator';
 import Academy from './pages/Academy';
+import AccountInfo from '../pages/AccountInfo';
 
 
 // In your routes:
@@ -45,6 +46,7 @@ const App = () => {
       <Route path="/forexhome" element={<Forexhome />} />
       <Route path="/settings" element={<Settings />} />
       <Route path="/risk-calculator" element={<RiskCalculator />} />
+      <Route path="/account-info" element={<AccountInfo />} />
 
       {/* Deriv Trading Dashboard */}
       <Route path="/derivdash" element={<Derivdash />} />
