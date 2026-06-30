@@ -41,11 +41,6 @@ const floatPulse = keyframes`
   50% { transform: translateY(-4px); }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
-
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -576,7 +571,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 5. INPUT FIELDS - REDUCED SIZE ON PHONE
+// 5. INPUT FIELDS
 // ============================================
 
 const InputGrid = styled.div`
@@ -1002,13 +997,13 @@ const AIAnalysisPanel = styled.div`
   position: fixed;
   bottom: 160px;
   right: 16px;
-  width: 300px;
-  max-height: 480px;
+  width: 280px;
+  max-height: 400px;
   background: rgba(8, 18, 38, 0.96);
   backdrop-filter: blur(24px);
   border: 1px solid rgba(56, 189, 248, 0.08);
   border-radius: 16px;
-  padding: 20px 22px;
+  padding: 18px 20px;
   z-index: 51;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
   animation: ${fadeIn} 0.3s ease;
@@ -1024,10 +1019,10 @@ const AIAnalysisPanel = styled.div`
   }
 
   @media (max-width: 480px) {
-    width: 240px;
+    width: 220px;
     right: 8px;
     bottom: 130px;
-    max-height: 400px;
+    max-height: 340px;
     padding: 14px 16px;
   }
 `;
@@ -1036,8 +1031,8 @@ const AIAnalysisHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(56, 189, 248, 0.06);
 
   .title {
@@ -1084,8 +1079,8 @@ const AIAnalysisHeader = styled.div`
   }
 
   @media (max-width: 480px) {
-    margin-bottom: 12px;
-    padding-bottom: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
     .title { font-size: 11px; }
     .title-icon { width: 24px; height: 24px; font-size: 10px; }
     .close-btn { width: 26px; height: 26px; font-size: 12px; }
@@ -1095,8 +1090,8 @@ const AIAnalysisHeader = styled.div`
 const AIScannerInputs = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 0;
 `;
 
 const AISelectWrapper = styled.div`
@@ -1195,71 +1190,6 @@ const AIScanButton = styled.button`
   @media (max-width: 480px) {
     font-size: 11px;
     padding: 8px 0;
-  }
-`;
-
-const AIResultsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(56, 189, 248, 0.06);
-`;
-
-const AIResultItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.015);
-  border-radius: 6px;
-  border-left: 2px solid ${props => props.color || '#2962ff'};
-
-  .label {
-    font-size: 10px;
-    color: #94a3b8;
-    font-weight: 500;
-  }
-
-  .value {
-    font-size: 11px;
-    font-weight: 600;
-    color: #f1f5f9;
-  }
-
-  .value.up { color: #22c55e; }
-  .value.down { color: #ef4444; }
-  .value.neutral { color: #fbbf24; }
-`;
-
-const AISuggestionBox = styled.div`
-  padding: 10px 12px;
-  background: rgba(56, 189, 248, 0.03);
-  border-radius: 8px;
-  border: 1px solid rgba(56, 189, 248, 0.04);
-  margin-top: 4px;
-
-  .suggestion-title {
-    font-size: 8px;
-    text-transform: uppercase;
-    color: #64748b;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
-
-  .suggestion-text {
-    font-size: 11px;
-    color: #cbd5e1;
-    line-height: 1.5;
-  }
-
-  .suggestion-confidence {
-    font-size: 8px;
-    color: #22c55e;
-    margin-top: 4px;
-    font-weight: 500;
   }
 `;
 
@@ -1705,12 +1635,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [stake, setStake] = useState('');
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
+  const [duration, setDuration] = useState(5);
 
   // AI Analysis state
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [aiMarket, setAiMarket] = useState(VOLATILITY_MARKETS[0].symbol);
   const [aiTradeType, setAiTradeType] = useState('overunder');
-  const [aiResults, setAiResults] = useState(null);
 
   // Dropdown states
   const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
@@ -1745,6 +1675,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // Martingale multiplier options
   const martingaleOptions = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+
+  // Duration options (1-10)
+  const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // === DIGIT STATS LOGIC ===
   useEffect(() => {
@@ -1818,6 +1751,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const handlePlaceTrade = (direction, digit) => {
     console.log(`Trade placed: ${direction} ${digit} on ${tradeType}`);
     console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
+    console.log(`Duration: ${duration} ticks`);
     if (tradeMode !== 'manual') {
       console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
     }
@@ -1826,6 +1760,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const handleRunAuto = () => {
     console.log('Auto trading started');
     console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
+    console.log(`Duration: ${duration} ticks`);
     if (tradeMode !== 'manual') {
       console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
     }
@@ -1974,6 +1909,33 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
+  // ===== RENDER DURATION DROPDOWN (Manual Mode Only) =====
+  const renderDurationDropdown = () => {
+    if (tradeMode !== 'manual') return null;
+    
+    return (
+      <InputGroup>
+        <InputLabel>
+          <span>Duration</span>
+          <span className="suffix">Ticks</span>
+        </InputLabel>
+        <ToggleWrapper>
+          <ToggleLabel>Ticks</ToggleLabel>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, justifyContent: 'flex-end' }}>
+            {renderDropdownSelect(
+              durationOptions,
+              duration,
+              setDuration,
+              false,
+              () => {},
+              (val) => `${val}`
+            )}
+          </div>
+        </ToggleWrapper>
+      </InputGroup>
+    );
+  };
+
   // ===== RENDER INPUTS - COMPACT 2-COLUMN =====
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
@@ -1998,6 +1960,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             />
           </InputRow>
         </InputGroup>
+
+        {/* Duration - Manual mode only */}
+        {renderDurationDropdown()}
 
         {/* Bulk Trading - Always visible */}
         {renderBulkTradingToggle()}
@@ -2178,7 +2143,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             <button className="close-btn" onClick={toggleAI}>✕</button>
           </AIAnalysisHeader>
           
-          {/* AI Scanner Inputs */}
           <AIScannerInputs>
             <AISelectWrapper>
               <span className="label">Select Market</span>
@@ -2215,33 +2179,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               </span>
             </AIScanButton>
           </AIScannerInputs>
-          
-          {/* AI Results - Static Preview */}
-          <AIResultsContainer>
-            <AIResultItem color="#2962ff">
-              <span className="label">Market Sentiment</span>
-              <span className="value neutral">Neutral</span>
-            </AIResultItem>
-            <AIResultItem color="#22c55e">
-              <span className="label">Volatility Level</span>
-              <span className="value up">High</span>
-            </AIResultItem>
-            <AIResultItem color="#fbbf24">
-              <span className="label">Confidence Score</span>
-              <span className="value">78%</span>
-            </AIResultItem>
-            <AIResultItem color="#ef4444">
-              <span className="label">Risk Level</span>
-              <span className="value down">Medium</span>
-            </AIResultItem>
-            <AISuggestionBox>
-              <div className="suggestion-title">AI Suggestion</div>
-              <div className="suggestion-text">
-                Based on current market conditions, consider a <strong>Over 5</strong> trade with $10 stake.
-              </div>
-              <div className="suggestion-confidence">Confidence: 82%</div>
-            </AISuggestionBox>
-          </AIResultsContainer>
         </AIAnalysisPanel>
       </>
     );
