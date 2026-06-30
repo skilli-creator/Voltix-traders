@@ -34,6 +34,14 @@ const pulseRing = keyframes`
   0%   { transform: scale(1); opacity: 0.6; }
   100% { transform: scale(2.4); opacity: 0; }
 `;
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+const float = keyframes`
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+`;
 
 const BG = styled.div`
   position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
@@ -63,7 +71,7 @@ const Topbar = styled.div`
 const Brand = styled(Link)`
   display:flex;align-items:center;gap:9px;font-family:'Syne',sans-serif;
   font-size:1.1rem;font-weight:800;text-decoration:none;
-  .logo{font-size:1.3rem;}
+  .logo{font-size:1.3rem;animation:${float} 3s ease-in-out infinite;}
   .name{background:linear-gradient(135deg,#f1f5f9,#94a3b8);-webkit-background-clip:text;background-clip:text;color:transparent;}
   .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;position:relative;
     &::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:#22c55e;animation:${pulseRing} 2.2s ease-out infinite;}}
@@ -104,7 +112,7 @@ const PageHeader = styled.div`
   .back{display:flex;align-items:center;gap:6px;color:#64748b;text-decoration:none;
     font-size:11px;transition:all .3s ease;padding:5px 12px;border-radius:20px;
     background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.025);
-    &:hover{color:#e2e8f0;transform:translateX(-3px);background:rgba(255,255,255,.03);}
+    &:hover{color:#e2e8f0;transform:translateX(-3px);background:rgba(255,255,255,.03);box-shadow:0 4px 16px rgba(255,255,255,.02);}
   }
   h1{font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;
     display:flex;align-items:center;gap:10px;
@@ -123,8 +131,8 @@ const Card = styled.div`
   background:rgba(255,255,255,.018);backdrop-filter:blur(16px);
   border-radius:18px;padding:22px;
   border:1px solid rgba(255,255,255,.03);
-  transition:border-color .3s ease,background .3s ease;
-  &:hover{border-color:rgba(34,197,94,.06);background:rgba(255,255,255,.025);}
+  transition:border-color .3s ease,background .3s ease,transform .3s ease;
+  &:hover{border-color:rgba(34,197,94,.06);background:rgba(255,255,255,.025);transform:translateY(-2px);}
   .card-head{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;
     color:#e2e8f0;margin-bottom:18px;padding-bottom:12px;
     border-bottom:1px solid rgba(255,255,255,.03);
@@ -168,7 +176,7 @@ const Btn = styled.button`
     &:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(34,197,94,.22);}
   }
   &.secondary{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);color:#e2e8f0;
-    &:hover{background:rgba(255,255,255,.06);}
+    &:hover{background:rgba(255,255,255,.06);transform:translateY(-2px);}
   }
   &.danger{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.14);color:#ef4444;
     &:hover{background:rgba(239,68,68,.14);transform:translateY(-2px);box-shadow:0 8px 20px rgba(239,68,68,.1);}
@@ -176,8 +184,19 @@ const Btn = styled.button`
   &.whatsapp{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;
     &:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,211,102,.3);}
   }
-  &.admin{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);color:#a78bfa;
+  &.admin{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(99,102,241,.05));
+    border:1px solid rgba(139,92,246,.2);color:#a78bfa;
     &:hover{background:rgba(139,92,246,.18);transform:translateY(-2px);box-shadow:0 8px 20px rgba(139,92,246,.12);}
+  }
+  &.call{background:linear-gradient(135deg,#22c55e,#059669);color:#fff;
+    &:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(34,197,94,.25);}
+  }
+  &.premium{background:linear-gradient(135deg,#818cf8,#6366f1);color:#fff;
+    position:relative;overflow:hidden;
+    &::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
+      animation:${shimmer} 4s ease-in-out infinite;}
+    &:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,.25);}
   }
   &:disabled{opacity:.45;cursor:not-allowed;transform:none!important;}
   @media(max-width:768px){padding:6px 13px;font-size:9.5px;}
@@ -192,8 +211,16 @@ const DangerZone = styled.div`
 const SupportSection = styled.div`
   margin-top:20px;padding:16px 18px;border-radius:12px;
   background:rgba(139,92,246,.03);border:1px solid rgba(139,92,246,.08);
+  transition:all .3s ease;
+  &:hover{border-color:rgba(139,92,246,.15);background:rgba(139,92,246,.04);}
   .stitle{display:flex;align-items:center;gap:6px;color:#a78bfa;font-size:11px;font-weight:600;margin-bottom:3px;}
   .sdesc{font-size:10px;color:#64748b;margin-bottom:12px;}
+  .support-number{font-size:14px;font-weight:700;color:#f1f5f9;font-family:'Courier New',monospace;
+    display:flex;align-items:center;gap:8px;padding:8px 12px;
+    background:rgba(255,255,255,.015);border-radius:8px;
+    border:1px solid rgba(255,255,255,.03);
+    .icon{font-size:18px;}
+  }
 `;
 const ContactRow = styled.div`display:flex;gap:8px;flex-wrap:wrap;`;
 const Success = styled.div`
@@ -207,12 +234,26 @@ const AdminModal = styled.div`
   background:rgba(4,8,16,.85);backdrop-filter:blur(8px);animation:${fadeUp} .3s ease;
 `;
 const ModalBox = styled.div`
-  background:#0a1120;border:1px solid rgba(139,92,246,.18);border-radius:20px;
+  background:linear-gradient(160deg,rgba(10,17,32,.98),rgba(4,8,16,.98));
+  border:1px solid rgba(139,92,246,.18);border-radius:20px;
   padding:28px;width:100%;max-width:420px;margin:0 16px;position:relative;
+  box-shadow:0 24px 80px rgba(0,0,0,.6);
   h2{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;
     background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent;
     margin-bottom:6px;}
   p{font-size:11px;color:#64748b;margin-bottom:18px;}
+  .call-options{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  .call-option{display:flex;align-items:center;gap:12px;padding:12px 14px;
+    background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);
+    border-radius:10px;transition:all .3s ease;cursor:pointer;
+    &:hover{background:rgba(255,255,255,.025);border-color:rgba(34,197,94,.1);}
+    .emoji{font-size:20px;width:36px;text-align:center;}
+    .info{flex:1;
+      .label{font-size:13px;font-weight:600;color:#f1f5f9;}
+      .desc{font-size:10px;color:#64748b;}
+    }
+    .arrow{color:#64748b;font-size:16px;}
+  }
   textarea{width:100%;min-height:110px;background:rgba(255,255,255,.025);
     border:1px solid rgba(255,255,255,.06);border-radius:10px;color:#e2e8f0;
     font-size:12px;padding:10px 13px;resize:vertical;font-family:inherit;
@@ -222,6 +263,10 @@ const ModalBox = styled.div`
     color:#64748b;font-size:18px;cursor:pointer;transition:color .2s;
     &:hover{color:#e2e8f0;}}
 `;
+
+// ============================================
+// MAIN COMPONENT
+// ============================================
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -315,9 +360,14 @@ const Settings = () => {
 
   const handleSendAdmin = () => {
     if (!adminMessage.trim()) return;
-    // Wire this to your backend API
     setAdminSent(true);
     setTimeout(() => { setShowAdminModal(false); setAdminSent(false); setAdminMessage(''); }, 2000);
+  };
+
+  const handleCallAdmin = () => {
+    const phoneNumber = '0704182603';
+    // For mobile devices - opens phone dialer
+    window.location.href = `tel:${phoneNumber}`;
   };
 
   const openWhatsApp = () => {
@@ -339,7 +389,7 @@ const Settings = () => {
 
       <Topbar>
         <Brand to="/dashboard">
-          <span className="logo">🔷</span>
+          <span className="logo">◆</span>
           <span className="name">Voltix Traders</span>
           <span className="dot" />
         </Brand>
@@ -347,7 +397,7 @@ const Settings = () => {
           <Greeting>👋 <span className="hi">{greeting}</span></Greeting>
           <Avatar>{getInitials()}</Avatar>
           <LogoutBtn onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigate('/login'); }}>
-            🚪 Logout
+            ✕ Logout
           </LogoutBtn>
         </ProfileArea>
       </Topbar>
@@ -358,7 +408,7 @@ const Settings = () => {
           <h1>⚙️ <span className="grad">Account Settings</span></h1>
         </PageHeader>
 
-        {showSuccess && <Success>✅ Profile updated successfully!</Success>}
+        {showSuccess && <Success>✓ Profile updated successfully!</Success>}
 
         <Grid2>
           <Card>
@@ -421,7 +471,7 @@ const Settings = () => {
             <BtnRow>
               {isEditing ? (
                 <>
-                  <Btn className="primary" onClick={handleSave} disabled={!!dobError}>💾 Save</Btn>
+                  <Btn className="primary" onClick={handleSave} disabled={!!dobError}>✓ Save</Btn>
                   <Btn className="secondary" onClick={() => {
                     setIsEditing(false); setDobError('');
                     setFormData(p => ({ ...p, date_of_birth: user?.date_of_birth || '' }));
@@ -429,7 +479,7 @@ const Settings = () => {
                   }}>Cancel</Btn>
                 </>
               ) : (
-                <Btn className="primary" onClick={() => setIsEditing(true)}>✏️ Edit Profile</Btn>
+                <Btn className="primary" onClick={() => setIsEditing(true)}>✎ Edit Profile</Btn>
               )}
             </BtnRow>
           </Card>
@@ -452,21 +502,31 @@ const Settings = () => {
             </Field>
             <SupportSection>
               <div className="stitle">💬 Need Help?</div>
-              <div className="sdesc">Reach our support team via WhatsApp or message the admin directly.</div>
-              <ContactRow>
+              <div className="sdesc">Reach our support team via WhatsApp or call the admin directly.</div>
+              <div className="support-number">
+                <span className="icon">📞</span>
+                <span>0704 182 603</span>
+              </div>
+              <ContactRow style={{ marginTop: '8px' }}>
+                <Btn className="call" onClick={handleCallAdmin}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                  Call Admin
+                </Btn>
                 <Btn className="whatsapp" onClick={openWhatsApp}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="white">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                   </svg>
-                  WhatsApp Support
+                  WhatsApp
                 </Btn>
-                <Btn className="admin" onClick={() => setShowAdminModal(true)}>📨 Talk to Admin</Btn>
+                <Btn className="admin" onClick={() => setShowAdminModal(true)}>✉ Message</Btn>
               </ContactRow>
             </SupportSection>
             <DangerZone>
               <div className="dtitle">⚠️ Danger Zone</div>
               <div className="ddesc">Permanently delete your account and all data. Cannot be undone.</div>
-              <Btn className="danger" onClick={handleDelete}>🗑️ Delete Account</Btn>
+              <Btn className="danger" onClick={handleDelete}>🗑 Delete Account</Btn>
             </DangerZone>
           </Card>
         </Grid2>
@@ -476,15 +536,57 @@ const Settings = () => {
         <AdminModal onClick={(e) => { if (e.target === e.currentTarget) setShowAdminModal(false); }}>
           <ModalBox>
             <button className="close" onClick={() => setShowAdminModal(false)}>×</button>
-            <h2>📨 Message Admin</h2>
-            <p>Describe your issue and our team will respond as soon as possible.</p>
+            <h2>📨 Contact Support</h2>
+            <p>Choose how you'd like to reach us:</p>
+            
+            <div className="call-options">
+              <div className="call-option" onClick={handleCallAdmin}>
+                <span className="emoji">📞</span>
+                <div className="info">
+                  <div className="label">Call Admin</div>
+                  <div className="desc">Speak directly with our support team</div>
+                </div>
+                <span className="arrow">→</span>
+              </div>
+              
+              <div className="call-option" onClick={openWhatsApp}>
+                <span className="emoji">💬</span>
+                <div className="info">
+                  <div className="label">WhatsApp</div>
+                  <div className="desc">Chat with us on WhatsApp</div>
+                </div>
+                <span className="arrow">→</span>
+              </div>
+            </div>
+
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px', 
+              padding: '10px 14px',
+              background: 'rgba(34,197,94,.03)',
+              border: '1px solid rgba(34,197,94,.06)',
+              borderRadius: '10px',
+              marginBottom: '12px'
+            }}>
+              <span style={{ fontSize: '18px' }}>📱</span>
+              <span style={{ fontSize: '13px', color: '#f1f5f9', fontFamily: 'Courier New, monospace' }}>
+                0704 182 603
+              </span>
+              <span style={{ fontSize: '9px', color: '#22c55e', marginLeft: 'auto' }}>Active</span>
+            </div>
+
+            <p style={{ fontSize: '10px', color: '#4a4f5e', marginBottom: '12px' }}>
+              Or send us a message and we'll get back to you via email
+            </p>
+
             {adminSent ? (
-              <Success>✅ Message sent! We'll get back to you shortly.</Success>
+              <Success>✓ Message sent! We'll get back to you shortly.</Success>
             ) : (
               <>
                 <textarea value={adminMessage} onChange={e => setAdminMessage(e.target.value)} placeholder="Type your message here…" />
                 <BtnRow style={{ marginTop: '12px' }}>
-                  <Btn className="admin" onClick={handleSendAdmin} disabled={!adminMessage.trim()}>📨 Send Message</Btn>
+                  <Btn className="premium" onClick={handleSendAdmin} disabled={!adminMessage.trim()}>✉ Send Message</Btn>
                   <Btn className="secondary" onClick={() => setShowAdminModal(false)}>Cancel</Btn>
                 </BtnRow>
               </>
