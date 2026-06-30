@@ -30,10 +30,6 @@ const breathe = keyframes`
   50% { opacity: 0.6; }
 `;
 
-const spin = keyframes`
-  to { transform: rotate(360deg); }
-`;
-
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -257,7 +253,7 @@ const MasterTraderCard = styled.div`
   }
 `;
 
-// ===== CONNECT FRIEND SECTION =====
+// ===== CONNECT CLIENT SECTION =====
 const ConnectSection = styled.div`
   max-width: 700px;
   margin: 0 auto 24px;
@@ -337,10 +333,6 @@ const ConnectSection = styled.div`
           border-color: rgba(56, 189, 248, 0.3);
           box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.05);
         }
-
-        &.loading {
-          opacity: 0.6;
-        }
       }
     }
 
@@ -348,26 +340,28 @@ const ConnectSection = styled.div`
       padding: 12px 24px;
       border: none;
       border-radius: 10px;
-      background: linear-gradient(135deg, #4a4f5e, #2a2e3d);
-      color: #64748b;
+      background: linear-gradient(135deg, #2962ff, #1a4fcf);
+      color: #ffffff;
       font-size: 13px;
       font-weight: 600;
-      cursor: not-allowed;
+      cursor: pointer;
+      transition: all 0.3s ease;
       white-space: nowrap;
       position: relative;
       overflow: hidden;
-      opacity: 0.6;
-      pointer-events: none;
 
-      .coming-soon-badge {
-        font-size: 9px;
-        text-transform: uppercase;
-        padding: 1px 8px;
-        border-radius: 10px;
-        background: rgba(56, 189, 248, 0.08);
-        color: #38bdf8;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(41, 98, 255, 0.3);
+      }
+
+      &:active:not(:disabled) {
+        transform: scale(0.98);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
 
       .btn-shimmer {
@@ -376,7 +370,7 @@ const ConnectSection = styled.div`
         left: -100%;
         width: 60%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
         animation: ${shimmer} 4s ease-in-out infinite;
       }
     }
@@ -436,8 +430,8 @@ const ConnectSection = styled.div`
   }
 `;
 
-// ===== FOLLOWERS LIST =====
-const FollowersGrid = styled.div`
+// ===== CLIENTS LIST =====
+const ClientsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 16px;
@@ -455,7 +449,7 @@ const FollowersGrid = styled.div`
   }
 `;
 
-const FollowerCard = styled.div`
+const ClientCard = styled.div`
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid ${props => props.active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
   border-radius: 16px;
@@ -475,13 +469,13 @@ const FollowerCard = styled.div`
     background: rgba(34, 197, 94, 0.02);
   `}
 
-  .follower-header {
+  .client-header {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 8px;
 
-    .follower-avatar {
+    .client-avatar {
       width: 36px;
       height: 36px;
       border-radius: 50%;
@@ -495,17 +489,17 @@ const FollowerCard = styled.div`
       flex-shrink: 0;
     }
 
-    .follower-info {
+    .client-info {
       flex: 1;
       min-width: 0;
 
-      .follower-name {
+      .client-name {
         font-size: 13px;
         font-weight: 600;
         color: #f1f5f9;
       }
 
-      .follower-token {
+      .client-token {
         font-size: 10px;
         color: #64748b;
         font-family: 'Courier New', monospace;
@@ -541,7 +535,7 @@ const FollowerCard = styled.div`
     }
   }
 
-  .follower-details {
+  .client-details {
     display: flex;
     gap: 12px;
     margin: 8px 0 10px;
@@ -570,7 +564,7 @@ const FollowerCard = styled.div`
     }
   }
 
-  .follower-actions {
+  .client-actions {
     display: flex;
     gap: 6px;
 
@@ -619,7 +613,49 @@ const FollowerCard = styled.div`
 
   @media (max-width: 480px) {
     padding: 14px 12px;
-    .follower-details { gap: 8px; }
+    .client-details { gap: 8px; }
+  }
+`;
+
+// ===== ADD CLIENT BUTTON =====
+const AddClientButton = styled.button`
+  padding: 16px 0;
+  border: 2px dashed rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  background: transparent;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+
+  &:hover {
+    border-color: rgba(56, 189, 248, 0.2);
+    background: rgba(255, 255, 255, 0.01);
+    color: #f1f5f9;
+  }
+
+  .icon {
+    font-size: 28px;
+  }
+
+  .text {
+    font-size: 13px;
+  }
+
+  .sub-text {
+    font-size: 11px;
+    color: #4a4f5e;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 0;
+    .icon { font-size: 24px; }
   }
 `;
 
@@ -657,59 +693,15 @@ const EmptyState = styled.div`
 const CopyTrading = () => {
   const navigate = useNavigate();
   const [tokenInput, setTokenInput] = useState('');
+  const [clientNameInput, setClientNameInput] = useState('');
   const [connecting, setConnecting] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState(null);
-  const [followers, setFollowers] = useState([
-    {
-      id: 1,
-      name: 'Sarah Williams',
-      token: '0x7a3f...9b2e',
-      status: 'active',
-      copiedTrades: 156,
-      profit: 2340.50,
-      avatar: 'SW'
-    },
-    {
-      id: 2,
-      name: 'Michael Chen',
-      token: '0x9d4c...1f8a',
-      status: 'pending',
-      copiedTrades: 89,
-      profit: 1245.30,
-      avatar: 'MC'
-    },
-    {
-      id: 3,
-      name: 'Jessica Patel',
-      token: '0x2b8f...7e3c',
-      status: 'active',
-      copiedTrades: 312,
-      profit: 4567.80,
-      avatar: 'JP'
-    },
-    {
-      id: 4,
-      name: 'David Kim',
-      token: '0x5c9e...4a1d',
-      status: 'inactive',
-      copiedTrades: 45,
-      profit: 678.20,
-      avatar: 'DK'
-    },
-    {
-      id: 5,
-      name: 'Emma Rodriguez',
-      token: '0x8f2a...6b7c',
-      status: 'active',
-      copiedTrades: 234,
-      profit: 3456.90,
-      avatar: 'ER'
-    }
-  ]);
+  const [clients, setClients] = useState([]);
+  const [showAddClient, setShowAddClient] = useState(false);
 
-  const [totalCopiedTrades] = useState(836);
-  const [totalProfit] = useState(12288.70);
-  const [activeFollowers] = useState(3);
+  const [totalCopiedTrades] = useState(0);
+  const [totalProfit] = useState(0);
+  const [activeClients] = useState(0);
 
   const handleConnect = () => {
     if (!tokenInput.trim()) {
@@ -720,40 +712,50 @@ const CopyTrading = () => {
       return;
     }
 
+    if (!clientNameInput.trim()) {
+      setConnectionStatus({
+        type: 'error',
+        message: 'Please enter the client\'s name'
+      });
+      return;
+    }
+
     setConnecting(true);
     setConnectionStatus({
       type: 'info',
-      message: 'Verifying API token...'
+      message: 'Adding client...'
     });
 
     setTimeout(() => {
-      const exists = followers.some(f => f.token === tokenInput.trim());
+      const exists = clients.some(c => c.token === tokenInput.trim());
       
       if (exists) {
         setConnectionStatus({
           type: 'error',
-          message: 'This follower is already in your list'
+          message: 'This client is already in your list'
         });
         setConnecting(false);
         return;
       }
 
-      const newFollower = {
+      const newClient = {
         id: Date.now(),
-        name: `Trader ${tokenInput.trim().slice(0, 6)}`,
+        name: clientNameInput.trim(),
         token: tokenInput.trim(),
         status: 'pending',
         copiedTrades: 0,
         profit: 0,
-        avatar: tokenInput.trim().slice(0, 2).toUpperCase()
+        avatar: clientNameInput.trim().slice(0, 2).toUpperCase()
       };
 
-      setFollowers(prev => [newFollower, ...prev]);
+      setClients(prev => [newClient, ...prev]);
       setConnectionStatus({
         type: 'success',
-        message: `Successfully added ${newFollower.name}! They will copy your trades once activated.`
+        message: `Successfully added ${newClient.name}! They will copy your trades once activated.`
       });
       setTokenInput('');
+      setClientNameInput('');
+      setShowAddClient(false);
       setConnecting(false);
 
       setTimeout(() => {
@@ -762,18 +764,18 @@ const CopyTrading = () => {
     }, 1500);
   };
 
-  const handleRemoveFollower = (followerId) => {
-    setFollowers(prev => prev.filter(f => f.id !== followerId));
+  const handleRemoveClient = (clientId) => {
+    setClients(prev => prev.filter(c => c.id !== clientId));
   };
 
-  const handleActivateFollower = (followerId) => {
-    setFollowers(prev => prev.map(f => 
-      f.id === followerId ? { ...f, status: 'active' } : f
+  const handleActivateClient = (clientId) => {
+    setClients(prev => prev.map(c => 
+      c.id === clientId ? { ...c, status: 'active' } : c
     ));
   };
 
-  const handleViewFollower = (followerId) => {
-    console.log('View follower details:', followerId);
+  const handleViewClient = (clientId) => {
+    console.log('View client details:', clientId);
   };
 
   const handleGoBack = () => {
@@ -820,133 +822,177 @@ const CopyTrading = () => {
         </div>
         <div className="master-stats">
           <div className="stat">
-            <div className="stat-value">{activeFollowers}</div>
+            <div className="stat-value">{clients.filter(c => c.status === 'active').length}</div>
             <div className="stat-label">Active Followers</div>
           </div>
           <div className="stat">
-            <div className="stat-value">{totalCopiedTrades}</div>
+            <div className="stat-value">{clients.reduce((sum, c) => sum + c.copiedTrades, 0)}</div>
             <div className="stat-label">Total Copied Trades</div>
           </div>
           <div className="stat">
-            <div className="stat-value" style={{ color: '#22c55e' }}>${totalProfit.toFixed(2)}</div>
+            <div className="stat-value" style={{ color: '#22c55e' }}>
+              ${clients.reduce((sum, c) => sum + c.profit, 0).toFixed(2)}
+            </div>
             <div className="stat-label">Total Follower Profit</div>
           </div>
         </div>
       </MasterTraderCard>
 
-      {/* CONNECT FRIEND SECTION */}
-      <ConnectSection>
-        <div className="section-title">🔗 Add a Follower</div>
-        <div className="section-subtitle">
-          Enter your friend's API token to let them copy your trades
-        </div>
-
-        <div className="input-group">
-          <div className="input-wrapper">
-            <span className="input-icon">🔑</span>
-            <input
-              type="text"
-              placeholder="Enter friend's API token (e.g., 0x7a3f...9b2e)"
-              value={tokenInput}
-              onChange={(e) => setTokenInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleConnect();
-              }}
-              className={connecting ? 'loading' : ''}
-            />
-          </div>
-          <button 
-            className="connect-btn" 
-            disabled
-          >
-            <span className="btn-shimmer" />
-            <span className="coming-soon-badge">Coming Soon</span>
-          </button>
-        </div>
-
-        {connectionStatus && (
-          <div className={`connection-status ${connectionStatus.type}`}>
-            <span className={`status-dot ${connectionStatus.type === 'success' ? 'green' : connectionStatus.type === 'error' ? 'red' : 'blue'}`} />
-            {connectionStatus.message}
-          </div>
-        )}
-      </ConnectSection>
-
-      {/* FOLLOWERS LIST */}
-      <FollowersGrid>
-        {followers.length === 0 ? (
+      {/* CLIENTS LIST */}
+      <ClientsGrid>
+        {clients.length === 0 ? (
           <EmptyState>
             <div className="empty-icon">📭</div>
             <div className="empty-title">No Followers Yet</div>
             <div className="empty-sub">
-              Add your first follower using their API token above.
+              Click the "Add Client" button below to start adding followers.
             </div>
           </EmptyState>
         ) : (
-          followers.map((follower) => {
-            const status = getStatusBadge(follower.status);
+          clients.map((client) => {
+            const status = getStatusBadge(client.status);
             
             return (
-              <FollowerCard key={follower.id} active={follower.status === 'active'}>
-                <div className="follower-header">
-                  <div className="follower-avatar">{follower.avatar}</div>
-                  <div className="follower-info">
-                    <div className="follower-name">{follower.name}</div>
-                    <div className="follower-token">{follower.token}</div>
+              <ClientCard key={client.id} active={client.status === 'active'}>
+                <div className="client-header">
+                  <div className="client-avatar">{client.avatar}</div>
+                  <div className="client-info">
+                    <div className="client-name">{client.name}</div>
+                    <div className="client-token">{client.token}</div>
                   </div>
                   <span className={`status-badge ${status.className}`}>
                     {status.label}
                   </span>
                 </div>
 
-                <div className="follower-details">
+                <div className="client-details">
                   <div className="detail">
-                    <div className="detail-value">{follower.copiedTrades}</div>
+                    <div className="detail-value">{client.copiedTrades}</div>
                     <div className="detail-label">Trades</div>
                   </div>
                   <div className="detail">
-                    <div className="detail-value" style={{ color: follower.profit > 0 ? '#22c55e' : '#ef4444' }}>
-                      ${follower.profit.toFixed(2)}
+                    <div className="detail-value" style={{ color: client.profit > 0 ? '#22c55e' : '#ef4444' }}>
+                      ${client.profit.toFixed(2)}
                     </div>
                     <div className="detail-label">Profit</div>
                   </div>
                 </div>
 
-                <div className="follower-actions">
-                  {follower.status === 'pending' ? (
+                <div className="client-actions">
+                  {client.status === 'pending' ? (
                     <>
-                      <button className="action-btn activate" onClick={() => handleActivateFollower(follower.id)}>
+                      <button className="action-btn activate" onClick={() => handleActivateClient(client.id)}>
                         ✅ Activate
                       </button>
-                      <button className="action-btn remove" onClick={() => handleRemoveFollower(follower.id)}>
+                      <button className="action-btn remove" onClick={() => handleRemoveClient(client.id)}>
                         Remove
                       </button>
                     </>
-                  ) : follower.status === 'active' ? (
+                  ) : client.status === 'active' ? (
                     <>
-                      <button className="action-btn view" onClick={() => handleViewFollower(follower.id)}>
+                      <button className="action-btn view" onClick={() => handleViewClient(client.id)}>
                         👁️ View
                       </button>
-                      <button className="action-btn remove" onClick={() => handleRemoveFollower(follower.id)}>
+                      <button className="action-btn remove" onClick={() => handleRemoveClient(client.id)}>
                         Remove
                       </button>
                     </>
                   ) : (
                     <>
-                      <button className="action-btn activate" onClick={() => handleActivateFollower(follower.id)}>
+                      <button className="action-btn activate" onClick={() => handleActivateClient(client.id)}>
                         🔄 Reactivate
                       </button>
-                      <button className="action-btn remove" onClick={() => handleRemoveFollower(follower.id)}>
+                      <button className="action-btn remove" onClick={() => handleRemoveClient(client.id)}>
                         Remove
                       </button>
                     </>
                   )}
                 </div>
-              </FollowerCard>
+              </ClientCard>
             );
           })
         )}
-      </FollowersGrid>
+
+        {/* ADD CLIENT BUTTON */}
+        {!showAddClient ? (
+          <div style={{ gridColumn: '1 / -1' }}>
+            <AddClientButton onClick={() => setShowAddClient(true)}>
+              <span className="icon">➕</span>
+              <span className="text">Add Client</span>
+              <span className="sub-text">Enter their API token to start copy trading</span>
+            </AddClientButton>
+          </div>
+        ) : (
+          <div style={{ gridColumn: '1 / -1' }}>
+            <ConnectSection style={{ marginBottom: 0 }}>
+              <div className="section-title">👤 Add New Client</div>
+              <div className="section-subtitle">
+                Enter your client's name and API token to add them
+              </div>
+
+              <div className="input-group" style={{ flexDirection: 'column', gap: '10px' }}>
+                <div className="input-wrapper" style={{ width: '100%' }}>
+                  <span className="input-icon">👤</span>
+                  <input
+                    type="text"
+                    placeholder="Enter client's name (e.g., John Smith)"
+                    value={clientNameInput}
+                    onChange={(e) => setClientNameInput(e.target.value)}
+                    className={connecting ? 'loading' : ''}
+                  />
+                </div>
+                <div className="input-wrapper" style={{ width: '100%' }}>
+                  <span className="input-icon">🔑</span>
+                  <input
+                    type="text"
+                    placeholder="Enter client's API token (e.g., 0x7a3f...9b2e)"
+                    value={tokenInput}
+                    onChange={(e) => setTokenInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleConnect();
+                    }}
+                    className={connecting ? 'loading' : ''}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                  <button 
+                    className="connect-btn" 
+                    onClick={handleConnect}
+                    disabled={connecting || !tokenInput.trim() || !clientNameInput.trim()}
+                    style={{ flex: 1 }}
+                  >
+                    <span className="btn-shimmer" />
+                    {connecting ? 'Adding...' : 'Add Client'}
+                  </button>
+                  <button 
+                    className="connect-btn" 
+                    onClick={() => {
+                      setShowAddClient(false);
+                      setTokenInput('');
+                      setClientNameInput('');
+                      setConnectionStatus(null);
+                    }}
+                    style={{ 
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      color: '#ef4444',
+                      flex: '0.5'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+
+              {connectionStatus && (
+                <div className={`connection-status ${connectionStatus.type}`}>
+                  <span className={`status-dot ${connectionStatus.type === 'success' ? 'green' : connectionStatus.type === 'error' ? 'red' : 'blue'}`} />
+                  {connectionStatus.message}
+                </div>
+              )}
+            </ConnectSection>
+          </div>
+        )}
+      </ClientsGrid>
 
       {/* FOOTER */}
       <div style={{
