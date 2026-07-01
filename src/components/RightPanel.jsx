@@ -320,11 +320,15 @@ const Dropdown = styled.div`
 `;
 
 const DropdownOption = styled.div`
-  padding: 10px 14px; cursor: pointer;
-  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   color: ${props => props.active ? '#ffffff' : '#8a93a6'};
   background: ${props => props.active ? 'rgba(41, 98, 255, 0.12)' : 'transparent'};
-  font-size: 13px; transition: all 0.15s ease;
+  font-size: 13px;
+  transition: all 0.15s ease;
 
   &:hover { background: rgba(255, 255, 255, 0.04); color: #ffffff; }
   .check { color: #2962ff; font-size: 14px; opacity: ${props => props.active ? 1 : 0}; }
@@ -1371,14 +1375,20 @@ const EvenOddButtons = styled.div`
 `;
 
 const EvenOddButton = styled.button`
-  padding: 10px 0; border: none; border-radius: 8px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
   background: ${props => props.variant === 'even'
     ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05))'
     : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05))'};
   border: 1px solid ${props => props.variant === 'even' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
   color: ${props => props.variant === 'even' ? '#22c55e' : '#ef4444'};
-  cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
 
   &:hover {
     transform: translateY(-2px);
@@ -2078,22 +2088,26 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   );
 
   // ===== RENDER DIGIT GRID =====
-  const renderDigitGrid = () => (
-    <DigitGridWrapper>
-      <DigitGridLabel>Select a digit</DigitGridLabel>
-      <DigitGrid>
-        {digits.map((digit) => (
-          <DigitButton
-            key={digit}
-            selected={selectedDigit === digit}
-            onClick={() => handleDigitSelect(digit)}
-          >
-            {digit}
-          </DigitButton>
-        ))}
-      </DigitGrid>
-    </DigitGridWrapper>
-  );
+  const renderDigitGrid = () => {
+    if (tradeType === 'random' || tradeType === 'evenodd') return null;
+    
+    return (
+      <DigitGridWrapper>
+        <DigitGridLabel>Select a digit</DigitGridLabel>
+        <DigitGrid>
+          {digits.map((digit) => (
+            <DigitButton
+              key={digit}
+              selected={selectedDigit === digit}
+              onClick={() => handleDigitSelect(digit)}
+            >
+              {digit}
+            </DigitButton>
+          ))}
+        </DigitGrid>
+      </DigitGridWrapper>
+    );
+  };
 
   // ===== RENDER RUN BUTTON =====
   const renderRunButton = (disabled = false) => (
@@ -2103,28 +2117,33 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   );
 
   // ===== RENDER EVEN/ODD BUTTONS =====
-  const renderEvenOddButtons = () => (
-    <EvenOddButtons>
-      <EvenOddButton variant="even" onClick={() => handlePlaceTrade('Even', '')}>
-        <span className="label">Even</span>
-        <span className="payout">Payout ${payoutEven.toFixed(2)}</span>
-        <span className="sub">${stake || 0} stake</span>
-      </EvenOddButton>
-      <EvenOddButton variant="odd" onClick={() => handlePlaceTrade('Odd', '')}>
-        <span className="label">Odd</span>
-        <span className="payout">Payout ${payoutOdd.toFixed(2)}</span>
-        <span className="sub">${stake || 0} stake</span>
-      </EvenOddButton>
-    </EvenOddButtons>
-  );
+  const renderEvenOddButtons = () => {
+    if (tradeType !== 'evenodd') return null;
+    
+    return (
+      <EvenOddButtons>
+        <EvenOddButton variant="even" onClick={() => handlePlaceTrade('Even', '')}>
+          <span className="label">Even</span>
+          <span className="payout">Payout ${payoutEven.toFixed(2)}</span>
+          <span className="sub">${stake || 0} stake</span>
+        </EvenOddButton>
+        <EvenOddButton variant="odd" onClick={() => handlePlaceTrade('Odd', '')}>
+          <span className="label">Odd</span>
+          <span className="payout">Payout ${payoutOdd.toFixed(2)}</span>
+          <span className="sub">${stake || 0} stake</span>
+        </EvenOddButton>
+      </EvenOddButtons>
+    );
+  };
 
   // ===== RENDER TRADE BUTTONS =====
   const renderTradeButtons = () => {
+    if (tradeType === 'evenodd' || tradeType === 'random') return null;
     if (selectedDigit === null) return null;
 
     const digit = selectedDigit;
 
-    if (tradeType === 'overunder' || tradeType === 'random') {
+    if (tradeType === 'overunder') {
       return (
         <TradeButtonsWrapper>
           <TradeButton variant="primary" onClick={() => handlePlaceTrade('Over', digit)}>
@@ -2263,21 +2282,42 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         <TradeModeButtons>
           <TradeModeButton 
             active={tradeMode === 'auto'} 
-            onClick={() => setTradeMode('auto')}
+            onClick={() => {
+              setTradeMode('auto');
+              // Reset trade type if it was random and switching away
+              if (tradeType === 'random') {
+                setTradeType('overunder');
+                setSelectedDigit(null);
+              }
+            }}
           >
             <span className="mode-label">Auto</span>
             <span className="mode-shortcut">AI</span>
           </TradeModeButton>
           <TradeModeButton 
             active={tradeMode === 'manual'} 
-            onClick={() => setTradeMode('manual')}
+            onClick={() => {
+              setTradeMode('manual');
+              // Reset trade type if it was random
+              if (tradeType === 'random') {
+                setTradeType('overunder');
+                setSelectedDigit(null);
+              }
+            }}
           >
             <span className="mode-label">Manual</span>
             <span className="mode-shortcut">Tap</span>
           </TradeModeButton>
           <TradeModeButton 
             active={tradeMode === 'use-bots'} 
-            onClick={() => setTradeMode('use-bots')}
+            onClick={() => {
+              setTradeMode('use-bots');
+              // Reset trade type if it was random
+              if (tradeType === 'random') {
+                setTradeType('overunder');
+                setSelectedDigit(null);
+              }
+            }}
           >
             <span className="mode-label">Bots</span>
             <span className="mode-shortcut">AI+</span>
@@ -2328,16 +2368,20 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       {/* 7. DIGIT GRID */}
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
 
-      {/* 8. TRADE BUTTONS */}
-      {tradeMode === 'manual' ? (
-        tradeType === 'evenodd' ? renderEvenOddButtons() : renderTradeButtons()
-      ) : tradeMode === 'use-bots' ? (
-        renderRunButton(!selectedBot)
-      ) : (
-        renderRunButton(false)
-      )}
+      {/* 8. EVEN/ODD BUTTONS */}
+      {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
 
-      {/* 9. SESSION INFO (Bottom) */}
+      {/* 9. TRADE BUTTONS */}
+      {tradeMode === 'manual' && tradeType !== 'evenodd' && renderTradeButtons()}
+
+      {/* 10. RUN BUTTON - Auto & Bots modes */}
+      {tradeMode === 'use-bots' ? (
+        renderRunButton(!selectedBot)
+      ) : tradeMode === 'auto' ? (
+        renderRunButton(false)
+      ) : null}
+
+      {/* 11. SESSION INFO (Bottom) */}
       <SessionInfo>
         <div className="left">
           <div className="label">Last Session</div>
@@ -2351,7 +2395,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </div>
       </SessionInfo>
 
-      {/* 10. AI FLOATING BUTTON - MANUAL MODE ONLY (All Devices) */}
+      {/* 12. AI FLOATING BUTTON - MANUAL MODE ONLY (All Devices) */}
       {renderAIFloatingButton()}
     </PanelContainer>
   );
