@@ -1423,14 +1423,20 @@ const TradeButtonsWrapper = styled.div`
 `;
 
 const TradeButton = styled.button`
-  padding: 10px 0; border: none; border-radius: 8px;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
   background: ${props => props.variant === 'primary'
     ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05))'
     : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05))'};
   border: 1px solid ${props => props.variant === 'primary' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
   color: ${props => props.variant === 'primary' ? '#22c55e' : '#ef4444'};
-  cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
 
   &:hover {
     transform: translateY(-2px);
@@ -1466,20 +1472,30 @@ const TradeButton = styled.button`
 // ============================================
 
 const RunButton = styled.button`
-  width: 100%; padding: 10px 0; border: none; border-radius: 8px;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
   background: linear-gradient(135deg, #2962ff, #1a4fcf);
-  color: #ffffff; font-size: 13px; font-weight: 600;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 16px rgba(41, 98, 255, 0.3);
-  position: relative; overflow: hidden;
+  position: relative;
+  overflow: hidden;
   animation: ${fadeIn} 0.5s ease;
   opacity: ${props => props.disabled ? 0.5 : 1};
   flex-shrink: 0;
 
   &::before {
-    content: ''; position: absolute; top: 0; left: -100%;
-    width: 100%; height: 100%;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
     transition: left 0.6s ease;
   }
@@ -2112,12 +2128,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       return (
         <TradeButtonsWrapper>
           <TradeButton variant="primary" onClick={() => handlePlaceTrade('Over', digit)}>
-            <span className="label">{tradeType === 'random' ? '🎲 Over' : 'Over'} {digit}</span>
+            <span className="label">Over {digit}</span>
             <span className="payout">${payoutOver.toFixed(2)} ({payoutOverPct}%)</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
           <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Under', digit)}>
-            <span className="label">{tradeType === 'random' ? '🎲 Under' : 'Under'} {digit}</span>
+            <span className="label">Under {digit}</span>
             <span className="payout">${payoutUnder.toFixed(2)} ({payoutUnderPct}%)</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
@@ -2129,12 +2145,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       return (
         <TradeButtonsWrapper>
           <TradeButton variant="primary" onClick={() => handlePlaceTrade('Matches', digit)}>
-            <span className="label">🎯 Matches {digit}</span>
+            <span className="label">Matches {digit}</span>
             <span className="payout">Payout $0.00</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
           <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Differs', digit)}>
-            <span className="label">🎯 Differs {digit}</span>
+            <span className="label">Differs {digit}</span>
             <span className="payout">Payout $0.00</span>
             <span className="sub">${stake || 0} stake</span>
           </TradeButton>
@@ -2217,7 +2233,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           <div className="left">
             <span className="label">{getCurrentTrade().label}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', align-items: 'center', gap: '8px' }}>
             <span className="badge">Active</span>
             <span className="arrow">▾</span>
           </div>
