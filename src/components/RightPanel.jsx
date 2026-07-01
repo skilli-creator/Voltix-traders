@@ -2233,7 +2233,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           <div className="left">
             <span className="label">{getCurrentTrade().label}</span>
           </div>
-          <div style={{ display: 'flex', align-items: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span className="badge">Active</span>
             <span className="arrow">▾</span>
           </div>
