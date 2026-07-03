@@ -714,6 +714,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <SectionLabel>Trading</SectionLabel>
             
             <NavItem 
+              active={activeItem === 'switch-to-forex'}
+              onClick={() => handleNavClick('switch-to-forex', '/switch-to-forex')}
+            >
+              <span className="nav-icon">💱</span>
+              <span className="nav-label">Switch to Forex</span>
+              <span className="badge">HOT</span>
+            </NavItem>
+
+            <NavItem 
               active={activeItem === 'copy-trading'}
               onClick={() => handleNavClick('copy-trading', '/copy-trading')}
             >
