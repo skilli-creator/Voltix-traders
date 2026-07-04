@@ -605,15 +605,15 @@ const BotHeader = styled.div`
 const InputGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  gap: 8px;
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 768px) {
-    gap: 4px;
+    gap: 6px;
   }
 
   @media (max-width: 480px) {
-    gap: 2px;
+    gap: 4px;
   }
 `;
 
@@ -2008,7 +2008,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER INPUTS - COMPACT 2-COLUMN =====
+  // ===== RENDER INPUTS - COMPACT 2-COLUMN WITH SWAPPED POSITIONS =====
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
@@ -2039,6 +2039,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         {/* Bulk Trading - Always visible */}
         {renderBulkTradingToggle()}
 
+        {/* Martingale - Now in the position where Stop Loss was (Auto & Bots only) */}
+        {renderMartingaleToggle()}
+
         {/* Target Profit - Auto & Bots only */}
         {!isManual && (
           <InputGroup>
@@ -2060,7 +2063,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </InputGroup>
         )}
 
-        {/* Stop Loss - Auto & Bots only */}
+        {/* Stop Loss - Now moved down, where Martingale was (Auto & Bots only) */}
         {!isManual && (
           <InputGroup>
             <InputLabel>
@@ -2080,9 +2083,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             </InputRow>
           </InputGroup>
         )}
-
-        {/* Martingale - Auto & Bots only */}
-        {renderMartingaleToggle()}
       </InputGrid>
     );
   };
@@ -2386,7 +2386,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT (SAME ON ALL DEVICES) */}
+      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT WITH SWAPPED POSITIONS */}
       {renderInputs()}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
