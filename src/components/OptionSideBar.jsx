@@ -31,10 +31,10 @@ const fadeIn = keyframes`
 
 const SidebarContainer = styled.div`
   position: fixed;
-  top: 64px;
+  top: 0;
   left: 0;
   width: 280px;
-  height: calc(100vh - 64px);
+  height: 100vh;
   background: rgba(3, 7, 18, 0.95);
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(56, 189, 248, 0.08);
@@ -61,7 +61,7 @@ const SidebarContent = styled.div`
   overflow-x: hidden;
   padding: 16px 16px 8px 16px;
   -webkit-overflow-scrolling: touch;
-  padding-top: 16px;
+  padding-top: 80px;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -78,12 +78,12 @@ const SidebarContent = styled.div`
 
   @media (max-width: 768px) {
     padding: 12px 16px 8px 16px;
-    padding-top: 70px;
+    padding-top: 80px;
   }
 
   @media (max-width: 480px) {
     padding: 10px 14px 6px 14px;
-    padding-top: 65px;
+    padding-top: 72px;
   }
 `;
 
