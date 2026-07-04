@@ -92,13 +92,33 @@ const PanelContainer = styled.div`
 `;
 
 // ============================================
-// 1. MARKET SELECTOR - ONLY ON PHONE (Original - Unchanged for Laptop)
+// PHONE TWO-COLUMN WRAPPER
+// ============================================
+
+const PhoneTwoColumnWrapper = styled.div`
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 2px;
+  }
+
+  @media (min-width: 769px) {
+    display: block;
+  }
+`;
+
+// ============================================
+// 1. MARKET SELECTOR - ONLY ON PHONE
 // ============================================
 
 const MarketSelectorWrapper = styled.div`
   position: relative;
   animation: ${fadeIn} 0.3s ease;
-  margin-bottom: 4px;
 
   @media (min-width: 769px) {
     display: none;
@@ -248,7 +268,7 @@ const MarketOption = styled.div`
 `;
 
 // ============================================
-// 2. TRADE TYPE SELECTOR (Original - Unchanged for Laptop)
+// 2. TRADE TYPE SELECTOR
 // ============================================
 
 const TradeTypeWrapper = styled.div`
@@ -2243,33 +2263,36 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   return (
     <PanelContainer>
-      {/* 1. MARKET SELECTOR - ONLY ON PHONE (UNCHANGED FOR LAPTOP) */}
-      {isPhone && renderMarketSelector()}
+      {/* PHONE TWO-COLUMN WRAPPER - Market & Trade Type side by side on phone only */}
+      <PhoneTwoColumnWrapper>
+        {/* 1. MARKET SELECTOR - ONLY ON PHONE */}
+        {isPhone && renderMarketSelector()}
 
-      {/* 2. TRADE TYPE SELECTOR (UNCHANGED FOR LAPTOP) */}
-      <TradeTypeWrapper>
-        <TradeTypeButton isOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          <div className="left">
-            <span className="label">{getCurrentTrade().label}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="badge">Active</span>
-            <span className="arrow">▾</span>
-          </div>
-        </TradeTypeButton>
-        <Dropdown isOpen={isDropdownOpen}>
-          {tradeTypes.map((type) => (
-            <DropdownOption
-              key={type.id}
-              active={tradeType === type.id}
-              onClick={() => handleTradeTypeSelect(type.id)}
-            >
-              <span>{type.label}</span>
-              <span className="check">✓</span>
-            </DropdownOption>
-          ))}
-        </Dropdown>
-      </TradeTypeWrapper>
+        {/* 2. TRADE TYPE SELECTOR */}
+        <TradeTypeWrapper>
+          <TradeTypeButton isOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+            <div className="left">
+              <span className="label">{getCurrentTrade().label}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="badge">Active</span>
+              <span className="arrow">▾</span>
+            </div>
+          </TradeTypeButton>
+          <Dropdown isOpen={isDropdownOpen}>
+            {tradeTypes.map((type) => (
+              <DropdownOption
+                key={type.id}
+                active={tradeType === type.id}
+                onClick={() => handleTradeTypeSelect(type.id)}
+              >
+                <span>{type.label}</span>
+                <span className="check">✓</span>
+              </DropdownOption>
+            ))}
+          </Dropdown>
+        </TradeTypeWrapper>
+      </PhoneTwoColumnWrapper>
 
       {/* 3. TRADE MODE - PREMIUM DESIGN */}
       <TradeModeWrapper>
