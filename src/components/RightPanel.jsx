@@ -57,6 +57,7 @@ const PanelContainer = styled.div`
   overflow-y: auto;
   gap: 8px;
   position: relative;
+  box-sizing: border-box;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -79,14 +80,15 @@ const PanelContainer = styled.div`
     width: 100%;
     min-width: unset;
     height: 100%;
-    padding: 6px 20px 4px 20px;
+    padding: 6px 20px 4px 20px !important;
     border-left: none;
     background: #0a0e17;
     gap: 4px;
+    box-sizing: border-box;
   }
 
   @media (max-width: 480px) {
-    padding: 4px 16px 2px 16px;
+    padding: 4px 16px 2px 16px !important;
     gap: 2px;
   }
 `;
@@ -99,13 +101,14 @@ const PhoneTwoColumnWrapper = styled.div`
   @media (max-width: 768px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 14px !important;
     margin-bottom: 2px;
     width: 100%;
+    box-sizing: border-box;
   }
 
   @media (max-width: 480px) {
-    gap: 10px;
+    gap: 12px !important;
   }
 
   @media (min-width: 769px) {
