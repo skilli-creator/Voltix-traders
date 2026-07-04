@@ -74,6 +74,11 @@ const shimmerLine = keyframes`
   100% { transform: translateX(200%); }
 `;
 
+const floatPulse = keyframes`
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-8px) scale(1.02); }
+`;
+
 const shimmerWave = keyframes`
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
@@ -104,11 +109,6 @@ const shimmerBorder = keyframes`
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-`;
-
-const floatPulse = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
 `;
 
 // ============================================
@@ -522,13 +522,13 @@ const LogoutButton = styled.button`
 // MESSAGE COMPONENT
 // ============================================
 const MessageArea = styled.div`
-  margin-top: 14px;
-  font-size: 13px;
-  padding: 10px 16px;
-  border-radius: 16px;
+  margin-top: 12px;
+  font-size: 12px;
+  padding: 8px 14px;
+  border-radius: 12px;
   display: ${props => props.show ? 'flex' : 'none'};
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: ${props => {
     switch(props.type) {
       case 'success': return 'rgba(34, 197, 94, 0.04)';
@@ -555,20 +555,20 @@ const MessageArea = styled.div`
   }};
 
   .msg-icon {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   @media (max-width: 768px) {
-    font-size: 12px;
-    padding: 8px 12px;
-    border-radius: 12px;
-  }
-
-  @media (max-width: 480px) {
     font-size: 11px;
     padding: 6px 10px;
     border-radius: 10px;
-    gap: 6px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    gap: 4px;
   }
 `;
 
@@ -597,9 +597,9 @@ const PopupCard = styled.div`
   background: linear-gradient(160deg, rgba(8, 18, 38, 0.92), rgba(3, 8, 20, 0.92));
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
-  border-radius: 40px;
-  padding: 48px 40px 40px;
-  max-width: 420px;
+  border-radius: 32px;
+  padding: 36px 32px 32px;
+  max-width: 380px;
   width: 100%;
   border: 1px solid rgba(56, 189, 248, 0.04);
   box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
@@ -614,11 +614,11 @@ const PopupCard = styled.div`
     top: -2px;
     left: -2px;
     right: -2px;
-    height: 4px;
+    height: 3px;
     background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, #818cf8, #22c55e);
     background-size: 300% 100%;
     animation: ${shimmerBorder} 4s ease-in-out infinite;
-    border-radius: 40px 40px 0 0;
+    border-radius: 32px 32px 0 0;
     opacity: 0.3;
   }
 
@@ -626,7 +626,7 @@ const PopupCard = styled.div`
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 40px;
+    border-radius: 32px;
     padding: 1px;
     background: conic-gradient(
       from 0deg,
@@ -644,33 +644,33 @@ const PopupCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 36px 28px 32px;
-    border-radius: 32px;
-    max-width: 380px;
-    &::before { border-radius: 32px 32px 0 0; }
-    &::after { border-radius: 32px; }
+    padding: 28px 24px 24px;
+    border-radius: 28px;
+    max-width: 340px;
+    &::before { border-radius: 28px 28px 0 0; }
+    &::after { border-radius: 28px; }
   }
 
   @media (max-width: 480px) {
-    padding: 28px 18px 24px;
-    border-radius: 24px;
+    padding: 20px 16px 16px;
+    border-radius: 20px;
     max-width: 100%;
-    &::before { border-radius: 24px 24px 0 0; height: 3px; }
-    &::after { border-radius: 24px; }
+    &::before { border-radius: 20px 20px 0 0; height: 2px; }
+    &::after { border-radius: 20px; }
   }
 `;
 
 const PopupSpinner = styled.div`
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 20px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
   position: relative;
 
   .ring {
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 3px solid transparent;
+    border: 2.5px solid transparent;
     animation: ${spin} 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     box-shadow: inset 0 0 20px rgba(34, 197, 94, 0.02);
   }
@@ -680,29 +680,20 @@ const PopupSpinner = styled.div`
     filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.1));
   }
   .ring:nth-child(2) {
-    inset: 12px;
+    inset: 10px;
     border-top-color: #38bdf8;
     animation-duration: 2s;
     animation-direction: reverse;
     filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.1));
   }
   .ring:nth-child(3) {
-    inset: 24px;
+    inset: 20px;
     border-top-color: #818cf8;
     animation-duration: 2.8s;
     filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.1));
   }
 
   @media (max-width: 768px) {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 16px;
-    .ring { border-width: 2.5px; }
-    .ring:nth-child(2) { inset: 10px; }
-    .ring:nth-child(3) { inset: 20px; }
-  }
-
-  @media (max-width: 480px) {
     width: 52px;
     height: 52px;
     margin: 0 auto 12px;
@@ -710,75 +701,84 @@ const PopupSpinner = styled.div`
     .ring:nth-child(2) { inset: 8px; }
     .ring:nth-child(3) { inset: 16px; }
   }
+
+  @media (max-width: 480px) {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 10px;
+    .ring { border-width: 1.5px; }
+    .ring:nth-child(2) { inset: 6px; }
+    .ring:nth-child(3) { inset: 12px; }
+  }
 `;
 
 const PopupIcon = styled.div`
-  font-size: 44px;
-  margin-bottom: 14px;
+  font-size: 36px;
+  margin-bottom: 10px;
   animation: ${floatPulse} 2.5s ease-in-out infinite;
   filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.05));
 
   @media (max-width: 768px) {
-    font-size: 36px;
-    margin-bottom: 10px;
+    font-size: 28px;
+    margin-bottom: 8px;
   }
 
   @media (max-width: 480px) {
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: 22px;
+    margin-bottom: 6px;
   }
 `;
 
 const PopupTitle = styled.h2`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #f1f5f9;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   letter-spacing: -0.3px;
 
   @media (max-width: 768px) {
-    font-size: 20px;
+    font-size: 17px;
   }
 
   @media (max-width: 480px) {
-    font-size: 17px;
+    font-size: 15px;
   }
 `;
 
 const PopupSubtitle = styled.p`
   color: #94a3b8;
-  font-size: 14px;
-  line-height: 1.7;
+  font-size: 13px;
+  line-height: 1.6;
   margin-bottom: 4px;
 
   @media (max-width: 768px) {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   @media (max-width: 480px) {
-    font-size: 12px;
+    font-size: 11px;
   }
 `;
 
 const PopupHint = styled.p`
   color: #4b5563;
-  font-size: 12px;
-  margin-top: 12px;
+  font-size: 11px;
+  margin-top: 10px;
   animation: ${pulseGlow} 2.5s ease-in-out infinite;
 
   @media (max-width: 768px) {
-    font-size: 11px;
-    margin-top: 10px;
+    font-size: 10px;
+    margin-top: 8px;
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    margin-top: 8px;
+    font-size: 9px;
+    margin-top: 6px;
   }
 `;
 
 const PopupProgress = styled.div`
-  margin-top: 18px;
+  margin-top: 14px;
   height: 2px;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 4px;
@@ -795,24 +795,24 @@ const PopupProgress = styled.div`
   }
 
   @media (max-width: 768px) {
-    margin-top: 14px;
+    margin-top: 10px;
     height: 1.5px;
   }
 
   @media (max-width: 480px) {
-    margin-top: 12px;
+    margin-top: 8px;
     height: 1.5px;
   }
 `;
 
 const PopupCloseButton = styled.button`
-  margin-top: 20px;
-  padding: 6px 22px;
+  margin-top: 16px;
+  padding: 4px 18px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 30px;
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -823,69 +823,88 @@ const PopupCloseButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    font-size: 11px;
-    padding: 5px 18px;
-    margin-top: 16px;
+    font-size: 10px;
+    padding: 3px 14px;
+    margin-top: 12px;
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    padding: 4px 14px;
-    margin-top: 12px;
+    font-size: 9px;
+    padding: 2px 10px;
+    margin-top: 10px;
   }
 `;
 
 // ============================================
-// SMALL FLOATING CONNECT BUTTON
+// FLOATING CONNECT BUTTON
 // ============================================
 const ConnectButtonWrapper = styled.div`
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-60%);
   z-index: 1000;
   animation: ${floatPulse} 3s ease-in-out infinite;
+  cursor: pointer;
+  width: auto;
+  max-width: 80vw;
+  padding: 0 16px;
 
   @media (max-width: 768px) {
-    bottom: 20px;
-    right: 20px;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-62%);
+    max-width: 85vw;
+    padding: 0 12px;
+    animation-duration: 2.5s;
   }
 
   @media (max-width: 480px) {
     bottom: 16px;
-    right: 16px;
+    left: 50%;
+    transform: translateX(-64%);
+    max-width: 88vw;
+    padding: 0 8px;
+    animation-duration: 2s;
+  }
+
+  @media (max-width: 380px) {
+    left: 50%;
+    transform: translateX(-66%);
+    max-width: 90vw;
+    padding: 0 4px;
   }
 `;
 
 const ConnectButton = styled.button`
   position: relative;
-  padding: 12px 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 18px 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: #ffffff;
   background: ${props => props.disabled ? 'rgba(255, 255, 255, 0.05)' : 'linear-gradient(135deg, #22c55e, #16a34a)'};
   border: none;
-  border-radius: 50px;
+  border-radius: 60px;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${props => props.disabled ? 'none' : `
-    0 4px 24px rgba(34, 197, 94, 0.25),
-    0 0 40px rgba(34, 197, 94, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1)
+    0 10px 40px rgba(34, 197, 94, 0.3),
+    0 0 80px rgba(34, 197, 94, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15)
   `};
   overflow: hidden;
   letter-spacing: 0.3px;
+  width: 100%;
   opacity: ${props => props.disabled ? 0.5 : 1};
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  min-width: 0;
+  white-space: nowrap;
 
-  /* Premium gradient border glow */
   &::before {
     content: '';
     position: absolute;
-    inset: -2px;
-    border-radius: 52px;
-    padding: 2px;
+    inset: -3px;
+    border-radius: 63px;
+    padding: 3px;
     background: conic-gradient(
       from 0deg,
       #22c55e,
@@ -899,7 +918,7 @@ const ConnectButton = styled.button`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     animation: ${rotateGlow} 8s linear infinite;
-    opacity: ${props => props.disabled ? 0 : 0.5};
+    opacity: ${props => props.disabled ? 0 : 0.6};
     transition: opacity 0.3s ease;
   }
 
@@ -907,7 +926,6 @@ const ConnectButton = styled.button`
     opacity: ${props => props.disabled ? 0 : 1};
   }
 
-  /* Shimmer effect */
   &::after {
     content: '';
     position: absolute;
@@ -917,24 +935,24 @@ const ConnectButton = styled.button`
     height: 100%;
     background: linear-gradient(90deg, 
       transparent, 
-      rgba(255, 255, 255, 0.1), 
+      rgba(255, 255, 255, 0.15), 
       rgba(255, 255, 255, 0.05),
       transparent
     );
-    animation: ${shimmerWave} 4s ease-in-out infinite;
+    animation: ${shimmerWave} 3s ease-in-out infinite;
     pointer-events: none;
   }
 
   &:hover {
-    transform: ${props => props.disabled ? 'none' : 'translateY(-3px) scale(1.03)'};
+    transform: ${props => props.disabled ? 'none' : 'translateY(-4px) scale(1.02)'};
     box-shadow: ${props => props.disabled ? 'none' : `
-      0 8px 32px rgba(34, 197, 94, 0.4),
-      0 0 60px rgba(34, 197, 94, 0.1)
+      0 20px 60px rgba(34, 197, 94, 0.5),
+      0 0 100px rgba(34, 197, 94, 0.2)
     `};
   }
 
   &:active {
-    transform: ${props => props.disabled ? 'none' : 'scale(0.95)'};
+    transform: ${props => props.disabled ? 'none' : 'scale(0.97)'};
   }
 
   .button-content {
@@ -942,58 +960,146 @@ const ConnectButton = styled.button`
     z-index: 1;
     display: flex;
     align-items: center;
-    gap: 8px;
-  }
-
-  .button-icon {
-    font-size: 1rem;
-    display: inline-block;
-    flex-shrink: 0;
-    opacity: 0.9;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
   }
 
   .button-text {
     position: relative;
     z-index: 1;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 1.05rem;
   }
 
-  .spinner {
-    animation: ${spin} 1s linear infinite;
-    display: inline-block;
+  .button-arrow {
     font-size: 1rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+    flex-shrink: 0;
+    opacity: 0.8;
+  }
+
+  &:hover .button-arrow {
+    transform: ${props => props.disabled ? 'none' : 'translateX(6px)'};
   }
 
   .connect-badge {
     position: absolute;
-    top: -6px;
+    top: -10px;
     right: -6px;
     background: linear-gradient(135deg, #f59e0b, #ef4444);
     color: #fff;
-    font-size: 0.4rem;
+    font-size: 0.5rem;
     font-weight: 700;
-    padding: 2px 10px;
+    padding: 3px 12px;
     border-radius: 20px;
     animation: ${pulseGlow} 2s ease-in-out infinite;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     z-index: 2;
-    box-shadow: 0 2px 12px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  }
+
+  .spinner {
+    animation: ${spin} 1s linear infinite;
+    display: inline-block;
+    font-size: 1.2rem;
+  }
+
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(34, 197, 94, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: ${glowPulse} 2s ease-in-out infinite;
+  }
+
+  .particle:nth-child(1) {
+    top: 20%;
+    left: 8%;
+    animation-delay: 0s;
+  }
+
+  .particle:nth-child(2) {
+    bottom: 20%;
+    right: 8%;
+    animation-delay: 0.7s;
+  }
+
+  .particle:nth-child(3) {
+    top: 12%;
+    right: 25%;
+    animation-delay: 1.4s;
+  }
+
+  .particle:nth-child(4) {
+    bottom: 12%;
+    left: 25%;
+    animation-delay: 2.1s;
   }
 
   @media (max-width: 768px) {
-    padding: 10px 16px;
-    font-size: 0.75rem;
-    border-radius: 40px;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    border-radius: 50px;
 
-    .button-icon {
-      font-size: 0.85rem;
+    .button-text {
+      font-size: 0.9rem;
+    }
+
+    .button-arrow {
+      font-size: 0.9rem;
     }
 
     .connect-badge {
-      top: -5px;
+      top: -8px;
       right: -4px;
-      font-size: 0.35rem;
+      font-size: 0.45rem;
+      padding: 2px 10px;
+    }
+
+    .particle {
+      display: none;
+    }
+
+    &::before {
+      inset: -2px;
+      border-radius: 52px;
+      padding: 2px;
+    }
+
+    &:hover {
+      transform: translateY(-3px) scale(1.01);
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    border-radius: 40px;
+
+    .button-content {
+      gap: 6px;
+    }
+
+    .button-text {
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .button-arrow {
+      font-size: 0.75rem;
+    }
+
+    .connect-badge {
+      top: -6px;
+      right: -3px;
+      font-size: 0.4rem;
       padding: 2px 8px;
     }
 
@@ -1004,78 +1110,71 @@ const ConnectButton = styled.button`
     }
 
     &:hover {
-      transform: translateY(-2px) scale(1.02);
+      transform: translateY(-2px) scale(1.01);
     }
   }
 
-  @media (max-width: 480px) {
-    padding: 8px 12px;
-    font-size: 0.65rem;
-    border-radius: 32px;
+  @media (max-width: 380px) {
+    padding: 10px 10px;
+    font-size: 0.75rem;
+
+    .button-text {
+      font-size: 0.68rem;
+    }
+
+    .button-arrow {
+      font-size: 0.65rem;
+    }
 
     .button-content {
       gap: 4px;
     }
 
-    .button-icon {
-      font-size: 0.7rem;
-    }
-
     .connect-badge {
-      top: -4px;
-      right: -3px;
-      font-size: 0.3rem;
+      font-size: 0.35rem;
       padding: 1px 6px;
-    }
-
-    &::before {
-      inset: -1px;
-      border-radius: 34px;
-      padding: 1px;
-    }
-
-    &:hover {
-      transform: translateY(-1px) scale(1.01);
+      top: -5px;
+      right: -2px;
     }
   }
 `;
 
 // ============================================
-// CONNECT MODAL
+// CONNECT MODAL - REDUCED SIZE
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 2000;
   display: ${props => props.isOpen ? 'flex' : 'none'};
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   animation: ${floatIn} 0.3s ease;
 
   @media (max-width: 768px) {
-    padding: 16px;
+    padding: 12px;
   }
 
   @media (max-width: 480px) {
-    padding: 12px;
+    padding: 10px;
     align-items: flex-end;
   }
 `;
 
 const ModalContainer = styled.div`
   background: linear-gradient(160deg, rgba(10, 20, 40, 0.98), rgba(5, 10, 24, 0.98));
-  border-radius: 32px;
-  padding: 44px 48px;
-  max-width: 540px;
+  border-radius: 24px;
+  padding: 28px 32px;
+  max-width: 420px;
   width: 100%;
   border: 1px solid rgba(56, 189, 248, 0.06);
   box-shadow: 
-    0 40px 80px rgba(0, 0, 0, 0.7),
-    0 0 60px rgba(34, 197, 94, 0.03);
+    0 30px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(34, 197, 94, 0.02);
   position: relative;
   overflow: hidden;
   animation: ${modalSlideUp} 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1083,15 +1182,15 @@ const ModalContainer = styled.div`
   &::before {
     content: '';
     position: absolute;
-    inset: -2px;
-    border-radius: 34px;
-    padding: 2px;
+    inset: -1.5px;
+    border-radius: 26px;
+    padding: 1.5px;
     background: conic-gradient(
       from 0deg,
       transparent,
-      rgba(34, 197, 94, 0.2),
-      rgba(56, 189, 248, 0.2),
-      rgba(129, 140, 248, 0.2),
+      rgba(34, 197, 94, 0.15),
+      rgba(56, 189, 248, 0.15),
+      rgba(129, 140, 248, 0.15),
       transparent
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -1107,42 +1206,42 @@ const ModalContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 1.5px;
     background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, transparent);
     animation: ${shimmerLine} 2s linear infinite;
   }
 
   @media (max-width: 768px) {
-    padding: 32px 28px;
-    border-radius: 28px;
-    max-width: 440px;
-    &::before { border-radius: 30px; }
+    padding: 20px 20px;
+    border-radius: 20px;
+    max-width: 380px;
+    &::before { border-radius: 22px; }
     &::after { height: 1.5px; }
   }
 
   @media (max-width: 480px) {
-    padding: 24px 16px;
-    border-radius: 24px;
+    padding: 16px 14px;
+    border-radius: 16px;
     max-width: 100%;
     margin: 0;
-    border-radius: 24px 24px 0 0;
-    &::before { border-radius: 26px; }
-    &::after { height: 1.5px; }
+    border-radius: 16px 16px 0 0;
+    &::before { border-radius: 18px; }
+    &::after { height: 1px; }
   }
 `;
 
 const ModalClose = styled.button`
   position: absolute;
-  top: 16px;
-  right: 20px;
+  top: 12px;
+  right: 14px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   color: #94a3b8;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -1157,67 +1256,67 @@ const ModalClose = styled.button`
   }
 
   @media (max-width: 768px) {
-    top: 12px;
-    right: 16px;
-    width: 30px;
-    height: 30px;
-    font-size: 14px;
+    top: 10px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
   }
 
   @media (max-width: 480px) {
-    top: 10px;
-    right: 12px;
-    width: 28px;
-    height: 28px;
-    font-size: 12px;
+    top: 8px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
   }
 `;
 
 const ModalTitle = styled.h2`
-  font-size: 1.7rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   background: linear-gradient(135deg, #f1f5f9, #94a3b8);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 
   .title-icon {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #94a3b8;
   }
 
   @media (max-width: 768px) {
-    font-size: 1.4rem;
-    .title-icon { font-size: 1.2rem; }
+    font-size: 1.1rem;
+    .title-icon { font-size: 1rem; }
   }
 
   @media (max-width: 480px) {
-    font-size: 1.2rem;
-    .title-icon { font-size: 1rem; }
-    gap: 6px;
+    font-size: 1rem;
+    .title-icon { font-size: 0.9rem; }
+    gap: 4px;
   }
 `;
 
 const ModalSubtitle = styled.p`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #94a3b8;
-  margin-bottom: 30px;
-  line-height: 1.6;
-  padding-right: 20px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  padding-right: 10px;
 
   @media (max-width: 768px) {
-    font-size: 0.85rem;
-    margin-bottom: 20px;
-    padding-right: 10px;
+    font-size: 0.75rem;
+    margin-bottom: 16px;
+    padding-right: 5px;
   }
 
   @media (max-width: 480px) {
-    font-size: 0.8rem;
-    margin-bottom: 16px;
+    font-size: 0.7rem;
+    margin-bottom: 12px;
     padding-right: 0;
   }
 `;
@@ -1225,19 +1324,19 @@ const ModalSubtitle = styled.p`
 const OptionGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 `;
 
 const OptionCard = styled.button`
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 20px;
-  padding: 28px 20px;
+  border-radius: 16px;
+  padding: 18px 14px;
   text-align: center;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1251,7 +1350,7 @@ const OptionCard = styled.button`
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 2px;
     background: ${props => props.color || 'linear-gradient(90deg, #22c55e, #38bdf8)'};
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -1261,17 +1360,17 @@ const OptionCard = styled.button`
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 20px;
+    border-radius: 16px;
     background: radial-gradient(circle at center, ${props => props.glowColor || 'rgba(34, 197, 94, 0.05)'}, transparent 70%);
     opacity: 0;
     transition: opacity 0.4s ease;
   }
 
   &:hover {
-    transform: translateY(-6px) scale(1.02);
+    transform: translateY(-4px) scale(1.02);
     background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(56, 189, 248, 0.08);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    border-color: rgba(56, 189, 248, 0.06);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   }
 
   &:hover::before {
@@ -1292,30 +1391,30 @@ const OptionCard = styled.button`
   }
 
   .option-icon {
-    font-size: 2.8rem;
+    font-size: 2rem;
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
 
   .option-name {
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 
   .option-desc {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: #94a3b8;
-    line-height: 1.4;
+    line-height: 1.3;
   }
 
   .option-badge {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 0.5rem;
-    padding: 3px 12px;
-    border-radius: 12px;
+    top: 6px;
+    right: 6px;
+    font-size: 0.4rem;
+    padding: 2px 8px;
+    border-radius: 10px;
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.1);
     color: #4ade80;
@@ -1327,14 +1426,14 @@ const OptionCard = styled.button`
   .option-features {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 4px;
+    margin-top: 6px;
     flex-wrap: wrap;
 
     .feature-tag {
-      font-size: 0.55rem;
-      padding: 2px 10px;
-      border-radius: 10px;
+      font-size: 0.45rem;
+      padding: 1px 6px;
+      border-radius: 8px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.03);
       color: #94a3b8;
@@ -1344,10 +1443,10 @@ const OptionCard = styled.button`
   }
 
   .oauth-status {
-    margin-top: 12px;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.6rem;
+    margin-top: 8px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 0.5rem;
     background: rgba(34, 197, 94, 0.05);
     border: 1px solid rgba(34, 197, 94, 0.05);
     color: #4ade80;
@@ -1355,49 +1454,49 @@ const OptionCard = styled.button`
   }
 
   @media (max-width: 768px) {
-    padding: 22px 16px;
-    border-radius: 16px;
+    padding: 14px 12px;
+    border-radius: 12px;
 
-    .option-icon { font-size: 2.2rem; }
-    .option-name { font-size: 0.95rem; }
-    .option-desc { font-size: 0.7rem; }
-    .option-badge { font-size: 0.45rem; padding: 2px 10px; }
-    .feature-tag { font-size: 0.5rem; padding: 2px 8px; }
-    .oauth-status { font-size: 0.55rem; padding: 3px 10px; }
+    .option-icon { font-size: 1.6rem; }
+    .option-name { font-size: 0.8rem; }
+    .option-desc { font-size: 0.6rem; }
+    .option-badge { font-size: 0.35rem; padding: 2px 6px; top: 4px; right: 4px; }
+    .feature-tag { font-size: 0.4rem; padding: 1px 5px; }
+    .oauth-status { font-size: 0.45rem; padding: 2px 6px; margin-top: 6px; }
   }
 
   @media (max-width: 480px) {
-    padding: 18px 14px;
-    border-radius: 14px;
+    padding: 12px 10px;
+    border-radius: 10px;
 
-    .option-icon { font-size: 1.8rem; margin-bottom: 6px; }
-    .option-name { font-size: 0.9rem; }
-    .option-desc { font-size: 0.65rem; }
-    .option-badge { font-size: 0.4rem; padding: 2px 8px; top: 6px; right: 6px; }
-    .feature-tag { font-size: 0.45rem; padding: 1px 6px; }
-    .oauth-status { font-size: 0.5rem; padding: 2px 8px; margin-top: 8px; }
+    .option-icon { font-size: 1.4rem; margin-bottom: 4px; }
+    .option-name { font-size: 0.75rem; }
+    .option-desc { font-size: 0.55rem; }
+    .option-badge { font-size: 0.3rem; padding: 1px 6px; top: 4px; right: 4px; }
+    .feature-tag { font-size: 0.35rem; padding: 1px 4px; }
+    .oauth-status { font-size: 0.4rem; padding: 1px 6px; margin-top: 4px; }
   }
 `;
 
 const ModalFooter = styled.div`
-  margin-top: 28px;
-  padding-top: 20px;
+  margin-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.03);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: #4b5563;
 
   .security-badge {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     color: #38bdf8;
     font-weight: 500;
 
     .lock-icon {
-      font-size: 0.9rem;
+      font-size: 0.7rem;
       opacity: 0.8;
     }
   }
@@ -1410,6 +1509,7 @@ const ModalFooter = styled.div`
     align-items: center;
     gap: 4px;
     cursor: pointer;
+    font-size: 0.6rem;
 
     &:hover {
       color: #22c55e;
@@ -1418,19 +1518,19 @@ const ModalFooter = styled.div`
   }
 
   @media (max-width: 768px) {
-    margin-top: 20px;
-    padding-top: 16px;
-    font-size: 0.65rem;
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 0.55rem;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
 
   @media (max-width: 480px) {
-    margin-top: 16px;
-    padding-top: 12px;
-    font-size: 0.6rem;
+    margin-top: 10px;
+    padding-top: 8px;
+    font-size: 0.5rem;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     align-items: center;
     text-align: center;
   }
@@ -1842,30 +1942,34 @@ const Dashboard = () => {
         </HeroSection>
       </Container>
 
-      {/* SMALL FLOATING CONNECT BUTTON - BOTTOM RIGHT */}
+      {/* FLOATING CONNECT BUTTON */}
       <ConnectButtonWrapper>
         <ConnectButton 
           onClick={handleConnect}
           disabled={isLoading}
         >
+          <span className="particle" />
+          <span className="particle" />
+          <span className="particle" />
+          <span className="particle" />
           <span className="connect-badge">Live</span>
           <span className="button-content">
             {isLoading ? (
               <>
                 <span className="spinner">⟳</span>
-                <span className="button-text">Connecting</span>
+                <span className="button-text">Connecting...</span>
               </>
             ) : (
               <>
-                <span className="button-icon">◆</span>
-                <span className="button-text">Connect</span>
+                <span className="button-text">Connect Your Accounts</span>
+                <span className="button-arrow">→</span>
               </>
             )}
           </span>
         </ConnectButton>
       </ConnectButtonWrapper>
 
-      {/* CONNECT MODAL */}
+      {/* CONNECT MODAL - REDUCED SIZE */}
       <ModalOverlay isOpen={isModalOpen}>
         <ModalContainer>
           <ModalClose onClick={() => setIsModalOpen(false)}>✕</ModalClose>
@@ -1874,7 +1978,7 @@ const Dashboard = () => {
             Connect Platform
           </ModalTitle>
           <ModalSubtitle>
-            Select your preferred trading platform to sync your account and start executing trades instantly.
+            Select your preferred trading platform
           </ModalSubtitle>
 
           <OptionGrid>
@@ -1887,12 +1991,12 @@ const Dashboard = () => {
               <div className="option-content">
                 <span className="option-icon">📊</span>
                 <div className="option-name">Deriv</div>
-                <div className="option-desc">Synthetic indices • Options</div>
+                <div className="option-desc">Synthetic indices</div>
                 <div className="option-features">
                   <span className="feature-tag">High-Freq</span>
-                  <span className="feature-tag">AI Signals</span>
+                  <span className="feature-tag">AI</span>
                 </div>
-                <div className="oauth-status">OAuth 2.0 Secure</div>
+                <div className="oauth-status">OAuth 2.0</div>
               </div>
             </OptionCard>
 
@@ -1905,7 +2009,7 @@ const Dashboard = () => {
               <div className="option-content">
                 <span className="option-icon">💱</span>
                 <div className="option-name">Forex</div>
-                <div className="option-desc">Major • Minor • Exotic pairs</div>
+                <div className="option-desc">Major • Minor pairs</div>
                 <div className="option-features">
                   <span className="feature-tag">Leverage</span>
                   <span className="feature-tag">Spreads</span>
@@ -1926,7 +2030,7 @@ const Dashboard = () => {
           <ModalFooter>
             <span className="security-badge">
               <span className="lock-icon">🔒</span>
-              256-bit Encrypted Connection
+              256-bit Encrypted
             </span>
             <span 
               className="support-link" 
