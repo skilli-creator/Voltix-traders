@@ -362,6 +362,7 @@ const FloatingLabel = styled.label`
 
   .icon {
     font-size: 13px;
+    color: #4b5563;
   }
 
   @media (max-width: 480px) {
@@ -649,7 +650,7 @@ const ForgotPassword = () => {
       if (response.ok) {
         sessionStorage.setItem('resetEmail', emailTrimmed);
         
-        setMessage('✅ Reset code sent! Redirecting...');
+        setMessage('Reset code sent! Redirecting...');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
@@ -658,7 +659,7 @@ const ForgotPassword = () => {
           navigate('/verifyresetcode');
         }, 1500);
       } else {
-        setMessage(`❌ ${data.error || 'Failed to send reset code'}`);
+        setMessage(`${data.error || 'Failed to send reset code'}`);
         setMessageColor('#f87171');
         setIsError(true);
         setIsLoading(false);
@@ -702,7 +703,7 @@ const ForgotPassword = () => {
         <Form onSubmit={handleSubmit}>
           <InputGroup>
             <FloatingLabel>
-              <span className="icon">📧</span> Email Address
+              <span className="icon">◈</span> Email Address
             </FloatingLabel>
             <PremiumInputWrapper>
               <PremiumInput
@@ -720,14 +721,14 @@ const ForgotPassword = () => {
             <div className="btn-shimmer" />
             <div className="btn-glow" />
             <span className="btn-content">
-              {isLoading ? '⏳ Sending...' : 'Send Reset Code →'}
+              {isLoading ? 'Sending...' : 'Send Reset Code →'}
             </span>
           </PremiumButton>
         </Form>
 
         <PremiumMessage color={messageColor} isError={isError}>
           <span className="msg-icon">
-            {isError ? '❌' : messageColor === '#22c55e' ? '✅' : 'ℹ️'}
+            {isError ? '✗' : messageColor === '#22c55e' ? '✓' : 'i'}
           </span>
           {message || '\u00A0'}
         </PremiumMessage>
