@@ -922,54 +922,34 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
     return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
-  const getFormattedBalance = () => {
-    let amount = currentAccount.balance;
+  const getFormattedBalance = (account) => {
+    let amount = account.balance;
     let symbol = '$';
 
     switch(selectedCurrency) {
       case 'USD':
-        amount = currentAccount.balance;
+        amount = account.balance;
         symbol = '$';
         break;
       case 'KSh':
-        amount = currentAccount.kshBalance;
+        amount = account.kshBalance;
         symbol = 'KSh';
         break;
       case 'EUR':
-        amount = currentAccount.eurBalance;
+        amount = account.eurBalance;
         symbol = '€';
         break;
       default:
-        amount = currentAccount.balance;
+        amount = account.balance;
         symbol = '$';
     }
 
     return `${symbol} ${formatNumber(amount)}`;
   };
 
-  const getDropdownBalance = () => {
-    let amount = currentAccount.balance;
-    let symbol = '$';
-
-    switch(selectedCurrency) {
-      case 'USD':
-        amount = currentAccount.balance;
-        symbol = '$';
-        break;
-      case 'KSh':
-        amount = currentAccount.kshBalance;
-        symbol = 'KSh';
-        break;
-      case 'EUR':
-        amount = currentAccount.eurBalance;
-        symbol = '€';
-        break;
-      default:
-        amount = currentAccount.balance;
-        symbol = '$';
-    }
-
-    return `${symbol} ${formatNumber(amount)}`;
+  const handleAccountSwitch = (type) => {
+    setAccountType(type);
+    setIsDropdownOpen(false);
   };
 
   const handleExit = () => {
@@ -1022,7 +1002,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
         <DropdownContainer ref={dropdownRef}>
           <AccountBadge onClick={toggleDropdown}>
             <span className="flag">{getCurrencyFlag()}</span>
-            <span className="balance">{getFormattedBalance()}</span>
+            <span className="balance">{getFormattedBalance(currentAccount)}</span>
             <span className="currency-toggle">
               {selectedCurrency}
             </span>
@@ -1031,25 +1011,25 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
 
           <DropdownMenu isOpen={isDropdownOpen}>
             <DropdownItem 
-              onClick={() => setAccountType('real')}
+              onClick={() => handleAccountSwitch('real')}
               className={accountType === 'real' ? 'active' : ''}
             >
               <span className="flag">🇺🇸</span>
               <span className="label">Real Account</span>
               <span className="balance-small">
-                {getDropdownBalance()}
+                {getFormattedBalance(accountData.real)}
               </span>
               <span className="check">✓</span>
             </DropdownItem>
 
             <DropdownItem 
-              onClick={() => setAccountType('demo')}
+              onClick={() => handleAccountSwitch('demo')}
               className={accountType === 'demo' ? 'active' : ''}
             >
               <span className="flag">🎯</span>
               <span className="label">Demo Account</span>
               <span className="balance-small">
-                {getDropdownBalance()}
+                {getFormattedBalance(accountData.demo)}
               </span>
               <span className="check">✓</span>
             </DropdownItem>
