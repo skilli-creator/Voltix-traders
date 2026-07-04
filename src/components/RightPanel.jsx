@@ -2008,119 +2008,97 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER INPUTS - COMPACT 2-COLUMN LAYOUT =====
+  // ===== RENDER INPUTS - FIXED GRID POSITIONS =====
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
-    // Get fields based on mode
-    const fields = [];
-    
-    // 1. Stake - Always first
-    fields.push({
-      id: 'stake',
-      component: (
-        <InputGroup>
-          <InputLabel>
-            <span>Stake</span>
-            <span className="suffix">Min: $0.50</span>
-          </InputLabel>
-          <InputRow>
-            <span className="prefix">$</span>
-            <StyledInput
-              type="number"
-              value={stake}
-              onChange={handleStakeChange}
-              step="0.50"
-              min="0"
-              placeholder="10"
-            />
-          </InputRow>
-        </InputGroup>
-      )
-    });
-
-    // 2. Duration - Manual mode only (Row 1, Column 2)
-    if (isManual) {
-      fields.push({
-        id: 'duration',
-        component: renderDurationDropdown()
-      });
-    }
-
-    // 3. Bulk Trading - Always visible (Row 2, Column 1)
-    fields.push({
-      id: 'bulkTrading',
-      component: renderBulkTradingToggle()
-    });
-
-    // 4. Martingale - Auto & Bots only (Row 2, Column 2)
-    if (!isManual) {
-      fields.push({
-        id: 'martingale',
-        component: renderMartingaleToggle()
-      });
-    }
-
-    // 5. Target Profit - Auto & Bots only (Row 3, Column 1)
-    if (!isManual) {
-      fields.push({
-        id: 'targetProfit',
-        component: (
-          <InputGroup>
-            <InputLabel>
-              <span>Target Profit</span>
-              <span className="optional">Opt.</span>
-            </InputLabel>
-            <InputRow>
-              <span className="prefix">$</span>
-              <StyledInput
-                type="number"
-                value={targetProfit}
-                onChange={handleTargetProfitChange}
-                step="10"
-                min="0"
-                placeholder="200"
-              />
-            </InputRow>
-          </InputGroup>
-        )
-      });
-    }
-
-    // 6. Stop Loss - Auto & Bots only (Row 3, Column 2)
-    if (!isManual) {
-      fields.push({
-        id: 'stopLoss',
-        component: (
-          <InputGroup>
-            <InputLabel>
-              <span>Stop Loss</span>
-              <span className="optional">Opt.</span>
-            </InputLabel>
-            <InputRow>
-              <span className="prefix">$</span>
-              <StyledInput
-                type="number"
-                value={stopLoss}
-                onChange={handleStopLossChange}
-                step="10"
-                min="0"
-                placeholder="999"
-              />
-            </InputRow>
-          </InputGroup>
-        )
-      });
-    }
-
-    // Render fields in a 2-column grid
     return (
       <InputGrid>
-        {fields.map((field, index) => (
-          <React.Fragment key={field.id}>
-            {field.component}
-          </React.Fragment>
-        ))}
+        {/* Row 1, Column 1: STAKE - Always visible */}
+        <div style={{ gridColumn: '1 / 2', gridRow: '1 / 2' }}>
+          <InputGroup>
+            <InputLabel>
+              <span>Stake</span>
+              <span className="suffix">Min: $0.50</span>
+            </InputLabel>
+            <InputRow>
+              <span className="prefix">$</span>
+              <StyledInput
+                type="number"
+                value={stake}
+                onChange={handleStakeChange}
+                step="0.50"
+                min="0"
+                placeholder="10"
+              />
+            </InputRow>
+          </InputGroup>
+        </div>
+
+        {/* Row 1, Column 2: DURATION - Manual mode only */}
+        {isManual && (
+          <div style={{ gridColumn: '2 / 3', gridRow: '1 / 2' }}>
+            {renderDurationDropdown()}
+          </div>
+        )}
+
+        {/* Row 2, Column 1: BULK TRADING - Always visible */}
+        <div style={{ gridColumn: '1 / 2', gridRow: isManual ? '2 / 3' : '2 / 3' }}>
+          {renderBulkTradingToggle()}
+        </div>
+
+        {/* Row 2, Column 2: MARTINGALE - Auto & Bots only (Position 4) */}
+        {!isManual && (
+          <div style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}>
+            {renderMartingaleToggle()}
+          </div>
+        )}
+
+        {/* Row 3, Column 1: TARGET PROFIT - Auto & Bots only */}
+        {!isManual && (
+          <div style={{ gridColumn: '1 / 2', gridRow: '3 / 4' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>Target Profit</span>
+                <span className="optional">Opt.</span>
+              </InputLabel>
+              <InputRow>
+                <span className="prefix">$</span>
+                <StyledInput
+                  type="number"
+                  value={targetProfit}
+                  onChange={handleTargetProfitChange}
+                  step="10"
+                  min="0"
+                  placeholder="200"
+                />
+              </InputRow>
+            </InputGroup>
+          </div>
+        )}
+
+        {/* Row 3, Column 2: STOP LOSS - Auto & Bots only */}
+        {!isManual && (
+          <div style={{ gridColumn: '2 / 3', gridRow: '3 / 4' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>Stop Loss</span>
+                <span className="optional">Opt.</span>
+              </InputLabel>
+              <InputRow>
+                <span className="prefix">$</span>
+                <StyledInput
+                  type="number"
+                  value={stopLoss}
+                  onChange={handleStopLossChange}
+                  step="10"
+                  min="0"
+                  placeholder="999"
+                />
+              </InputRow>
+            </InputGroup>
+          </div>
+        )}
       </InputGrid>
     );
   };
@@ -2421,7 +2399,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT */}
+      {/* 5. INPUTS - FIXED GRID POSITIONS */}
       {renderInputs()}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
