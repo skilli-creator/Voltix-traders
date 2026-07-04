@@ -1896,7 +1896,7 @@ const Dashboard = () => {
 
       <Topbar>
         <Brand to="/dashboard">
-          <span className="logo-icon">◆</span>
+          <span className="logo-icon">🔷</span>
           <span className="logo-text">Voltix Traders</span>
           <span className="live-dot" />
         </Brand>
