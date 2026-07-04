@@ -31,10 +31,10 @@ const fadeIn = keyframes`
 
 const SidebarContainer = styled.div`
   position: fixed;
-  top: 64px;
+  top: 0;
   left: 0;
   width: 280px;
-  height: calc(100vh - 64px);
+  height: 100vh;
   background: rgba(3, 7, 18, 0.95);
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(56, 189, 248, 0.08);
@@ -44,12 +44,18 @@ const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-top: 64px;
 
   @media (max-width: 768px) {
     width: 100%;
     top: 0;
     height: 100vh;
     transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
+    padding-top: 80px;
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 74px;
   }
 `;
 
@@ -58,7 +64,7 @@ const SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 16px 16px 8px 16px;
+  padding: 0 16px 8px 16px;
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
@@ -75,13 +81,11 @@ const SidebarContent = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 12px 16px 8px 16px;
-    padding-top: 76px;
+    padding: 0 16px 8px 16px;
   }
 
   @media (max-width: 480px) {
-    padding: 10px 14px 6px 14px;
-    padding-top: 70px;
+    padding: 0 14px 6px 14px;
   }
 `;
 
@@ -105,7 +109,7 @@ const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 4px 16px 4px;
+  padding: 16px 4px 16px 4px;
   border-bottom: 1px solid rgba(56, 189, 248, 0.06);
   margin-bottom: 16px;
   animation: ${slideIn} 0.4s ease;
@@ -147,38 +151,38 @@ const SidebarHeader = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 0 4px 12px 4px;
+    padding: 16px 4px 14px 4px;
     margin-bottom: 12px;
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 17px;
+    }
+    .user-name {
+      font-size: 14px;
+    }
+    .user-email {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 4px 12px 4px;
+    margin-bottom: 10px;
+    gap: 10px;
     
     .avatar {
       width: 36px;
       height: 36px;
       font-size: 15px;
+      border-radius: 10px;
     }
     .user-name {
       font-size: 13px;
     }
     .user-email {
       font-size: 10px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 0 4px 10px 4px;
-    margin-bottom: 10px;
-    gap: 10px;
-    
-    .avatar {
-      width: 32px;
-      height: 32px;
-      font-size: 13px;
-      border-radius: 10px;
-    }
-    .user-name {
-      font-size: 12px;
-    }
-    .user-email {
-      font-size: 9px;
     }
   }
 `;
