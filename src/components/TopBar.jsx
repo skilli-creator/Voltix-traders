@@ -734,7 +734,7 @@ const ProfessionalFundsButton = styled.a`
   }
 `;
 
-// ===== PREMIUM EXIT BUTTON - FIXED FOR PHONE =====
+// ===== PREMIUM EXIT BUTTON - FIXED WITH SVG =====
 const PremiumExitButton = styled.button`
   display: flex;
   align-items: center;
@@ -816,12 +816,9 @@ const PremiumExitButton = styled.button`
   }
 
   .exit-icon {
-    font-size: 16px;
+    width: 16px;
+    height: 16px;
     transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
   }
 
   .exit-text {
@@ -848,7 +845,8 @@ const PremiumExitButton = styled.button`
       height: 24px;
     }
     .exit-icon {
-      font-size: 14px;
+      width: 14px;
+      height: 14px;
     }
     .exit-arrow-icon {
       font-size: 11px;
@@ -865,7 +863,8 @@ const PremiumExitButton = styled.button`
       border-radius: 4px;
     }
     .exit-icon {
-      font-size: 13px;
+      width: 13px;
+      height: 13px;
     }
     .exit-text {
       font-size: 9px;
@@ -884,7 +883,8 @@ const PremiumExitButton = styled.button`
       height: 20px;
     }
     .exit-icon {
-      font-size: 11px;
+      width: 11px;
+      height: 11px;
     }
     .exit-text {
       font-size: 8px;
@@ -894,6 +894,15 @@ const PremiumExitButton = styled.button`
     }
   }
 `;
+
+// ===== POWER OFF SVG ICON =====
+const PowerIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '100%', height: '100%' }}>
+    <path d="M12 2v8" />
+    <path d="M12 2v8" />
+    <path d="M4.93 10.93a8 8 0 1 0 14.14 0" />
+  </svg>
+);
 
 // ============================================
 // MAIN COMPONENT
@@ -1098,10 +1107,10 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
           </DropdownMenu>
         </DropdownContainer>
 
-        {/* EXIT BUTTON - Third */}
+        {/* EXIT BUTTON - Third with SVG Icon */}
         <PremiumExitButton onClick={handleExit}>
           <span className="exit-icon-container">
-            <span className="exit-icon">⏻</span>
+            <span className="exit-icon"><PowerIcon /></span>
           </span>
           <span className="exit-text">Exit</span>
           <span className="exit-arrow-icon">→</span>
