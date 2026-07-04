@@ -191,7 +191,7 @@ const Navbar = styled.nav`
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.06), transparent);
   }
 
   @media (max-width: 768px) {
@@ -212,10 +212,11 @@ const Logo = styled(Link)`
 
   .logo-icon {
     font-size: 1.8rem;
+    color: #38bdf8;
   }
 
   .logo-text {
-    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -480,156 +481,73 @@ const HeroButton = styled(Link)`
 `;
 
 // ============================================
-// PLATFORMS - Minimal & Premium
+// FEATURES - Minimal
 // ============================================
-const PlatformsSection = styled.section`
-  padding: 20px 0 60px;
+const FeaturesSection = styled.section`
+  padding: 40px 0 60px;
 
   @media (max-width: 768px) {
-    padding: 10px 0 40px;
+    padding: 20px 0 40px;
   }
 `;
 
-const PlatformGrid = styled.div`
+const FeaturesGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  max-width: 720px;
+  max-width: 900px;
   margin: 0 auto;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    max-width: 100%;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const PlatformCard = styled(Link)`
+const FeatureCard = styled.div`
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(12px);
-  border-radius: 28px;
-  padding: 36px 28px 28px;
+  padding: 24px 20px;
+  border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.03);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  text-decoration: none;
-  color: #f1f5f9;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: ${props => props.color || 'linear-gradient(90deg, #22c55e, #38bdf8)'};
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 28px;
-    padding: 1px;
-    background: conic-gradient(
-      from 0deg,
-      transparent,
-      rgba(56, 189, 248, 0.02),
-      transparent,
-      rgba(129, 140, 248, 0.02),
-      transparent
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: ${rotateGlow} 20s linear infinite;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
+  transition: all 0.4s ease;
+  text-align: center;
 
   &:hover {
-    transform: translateY(-8px);
-    border-color: rgba(34, 197, 94, 0.06);
+    transform: translateY(-4px);
+    border-color: rgba(56, 189, 248, 0.06);
     background: rgba(255, 255, 255, 0.04);
-    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.3);
   }
 
-  &:hover::before {
-    opacity: 1;
-  }
-
-  &:hover::after {
-    opacity: 1;
-  }
-
-  .platform-icon {
-    font-size: 3.2rem;
+  .feature-icon {
+    font-size: 2.4rem;
     display: block;
-    margin-bottom: 14px;
-    animation: ${cosmicFloat} 4s ease-in-out infinite;
+    margin-bottom: 10px;
   }
 
-  .platform-name {
-    font-size: 1.5rem;
-    font-weight: 700;
+  .feature-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f1f5f9;
     margin-bottom: 4px;
   }
 
-  .platform-desc {
-    font-size: 0.9rem;
+  .feature-desc {
+    font-size: 0.8rem;
     color: #94a3b8;
     line-height: 1.6;
   }
 
-  .platform-arrow {
-    position: absolute;
-    bottom: 20px;
-    right: 24px;
-    font-size: 1.4rem;
-    opacity: 0.2;
-    transition: all 0.4s ease;
-  }
-
-  &:hover .platform-arrow {
-    opacity: 1;
-    transform: translateX(8px);
-  }
-
-  .platform-badge {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    font-size: 0.55rem;
-    padding: 3px 14px;
-    border-radius: 20px;
-    background: rgba(34, 197, 94, 0.06);
-    border: 1px solid rgba(34, 197, 94, 0.06);
-    color: #4ade80;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-  }
-
   @media (max-width: 768px) {
-    padding: 24px 20px 20px;
-    border-radius: 20px;
-    .platform-icon { font-size: 2.4rem; margin-bottom: 10px; }
-    .platform-name { font-size: 1.2rem; }
-    .platform-desc { font-size: 0.8rem; }
-    .platform-arrow { bottom: 14px; right: 16px; font-size: 1.1rem; }
-    .platform-badge { font-size: 0.45rem; padding: 2px 10px; top: 10px; right: 12px; }
-  }
-
-  @media (max-width: 480px) {
-    padding: 18px 16px 16px;
-    .platform-icon { font-size: 2rem; }
-    .platform-name { font-size: 1rem; }
-    .platform-desc { font-size: 0.75rem; }
-    .platform-badge { font-size: 0.4rem; padding: 2px 8px; }
+    padding: 18px 16px;
+    .feature-icon { font-size: 1.8rem; }
+    .feature-name { font-size: 0.9rem; }
+    .feature-desc { font-size: 0.75rem; }
   }
 `;
 
@@ -648,7 +566,7 @@ const CTASection = styled.section`
     left: 25%;
     right: 25%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.06), transparent);
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.06), transparent);
   }
 
   @media (max-width: 768px) {
@@ -699,44 +617,76 @@ const CTASub = styled.p`
 `;
 
 // ============================================
-// FOOTER - Minimal
+// ORIGINAL FOOTER
 // ============================================
 const PremiumFooter = styled.footer`
   background: rgba(3, 7, 18, 0.9);
   backdrop-filter: blur(20px);
-  padding: 32px 32px 20px;
+  padding: 48px 32px 28px;
   border-top: 1px solid rgba(255, 255, 255, 0.02);
 
   @media (max-width: 768px) {
-    padding: 24px 16px 16px;
+    padding: 32px 16px 20px;
   }
 `;
 
-const FooterContent = styled.div`
+const FooterGrid = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 16px;
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
     text-align: center;
   }
 `;
 
-const FooterBrand = styled.div`
+const FooterCol = styled.div`
+  h4 {
+    color: #f1f5f9;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  p, a {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    line-height: 1.8;
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s ease;
+  }
+
+  a:hover {
+    color: #22c55e;
+    transform: translateX(4px);
+  }
+
   .footer-logo {
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 1.2rem;
     font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .footer-logo-icon {
+    font-size: 1.4rem;
+    color: #38bdf8;
   }
 
   .footer-logo-text {
-    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -761,44 +711,44 @@ const FooterBrand = styled.div`
 
   .footer-tagline {
     font-size: 0.8rem;
-    color: #4b5563;
+    color: #94a3b8;
     margin-top: 2px;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
+    h4 { font-size: 0.8rem; }
+    p, a { font-size: 0.7rem; }
     .footer-logo { justify-content: center; }
   }
 `;
 
-const FooterLinks = styled.div`
+const SocialIcons = styled.div`
   display: flex;
-  gap: 24px;
-  align-items: center;
+  gap: 14px;
+  margin-top: 12px;
 
-  a {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    text-decoration: none;
+  @media (max-width: 480px) {
+    justify-content: center;
+  }
+
+  span {
+    font-size: 18px;
+    cursor: pointer;
     transition: all 0.3s ease;
+    color: #94a3b8;
 
     &:hover {
       color: #22c55e;
+      transform: translateY(-3px);
     }
-  }
-
-  @media (max-width: 768px) {
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-    a { font-size: 0.7rem; }
   }
 `;
 
 const FooterBottom = styled.div`
   text-align: center;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.02);
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
   font-size: 0.7rem;
   color: #4b5563;
 
@@ -808,8 +758,8 @@ const FooterBottom = styled.div`
 
   @media (max-width: 768px) {
     font-size: 0.6rem;
-    margin-top: 12px;
-    padding-top: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
   }
 `;
 
@@ -887,34 +837,28 @@ const Index = () => {
           </Hero>
         </Container>
 
-        {/* ===== PLATFORMS ===== */}
-        <PlatformsSection>
+        {/* ===== FEATURES ===== */}
+        <FeaturesSection>
           <Container>
-            <PlatformGrid>
-              <PlatformCard 
-                color="linear-gradient(90deg, #a855f7, #7c3aed)"
-                to="/derivhome"
-              >
-                <span className="platform-badge">24/7</span>
-                <span className="platform-icon">📊</span>
-                <div className="platform-name">Deriv</div>
-                <div className="platform-desc">Synthetic indices & high-frequency trading</div>
-                <span className="platform-arrow">→</span>
-              </PlatformCard>
-
-              <PlatformCard 
-                color="linear-gradient(90deg, #2563eb, #1d4ed8)"
-                to="/derivdash"
-              >
-                <span className="platform-badge">24/5</span>
-                <span className="platform-icon">💱</span>
-                <div className="platform-name">Forex</div>
-                <div className="platform-desc">Major, minor & exotic currency pairs</div>
-                <span className="platform-arrow">→</span>
-              </PlatformCard>
-            </PlatformGrid>
+            <FeaturesGrid>
+              <FeatureCard>
+                <span className="feature-icon">🤖</span>
+                <div className="feature-name">AI-Powered</div>
+                <div className="feature-desc">Automated trading strategies</div>
+              </FeatureCard>
+              <FeatureCard>
+                <span className="feature-icon">📊</span>
+                <div className="feature-name">Real-Time Data</div>
+                <div className="feature-desc">Live market analytics</div>
+              </FeatureCard>
+              <FeatureCard>
+                <span className="feature-icon">🔐</span>
+                <div className="feature-name">Secure</div>
+                <div className="feature-desc">Bank-grade encryption</div>
+              </FeatureCard>
+            </FeaturesGrid>
           </Container>
-        </PlatformsSection>
+        </FeaturesSection>
 
         {/* ===== CTA ===== */}
         <CTASection>
@@ -932,24 +876,46 @@ const Index = () => {
           </Container>
         </CTASection>
 
-        {/* ===== FOOTER ===== */}
+        {/* ===== ORIGINAL FOOTER ===== */}
         <PremiumFooter>
-          <FooterContent>
-            <FooterBrand>
+          <FooterGrid>
+            <FooterCol>
               <div className="footer-logo">
-                <span>◆</span>
+                <span className="footer-logo-icon">◆</span>
                 <span className="footer-logo-text">Voltix Traders</span>
                 <span className="footer-dot" />
               </div>
-              <div className="footer-tagline">Multi-platform trading automation</div>
-            </FooterBrand>
-            <FooterLinks>
-              <Link to="/Login">Login</Link>
-              <Link to="/Register">Register</Link>
-            </FooterLinks>
-          </FooterContent>
+              <p className="footer-tagline">Next-gen multi-market execution engine</p>
+              <p>Smart order routing • AI predictive models • Risk management</p>
+              <SocialIcons>
+                <span>🐦</span>
+                <span>📘</span>
+                <span>💼</span>
+                <span>📸</span>
+              </SocialIcons>
+            </FooterCol>
+            <FooterCol>
+              <h4>📊 Market Hours</h4>
+              <p>Forex: 24/5 (Sun 22:00 - Fri 22:00 GMT)</p>
+              <p>Deriv: 24/7 synthetic indices</p>
+            </FooterCol>
+            <FooterCol>
+              <h4>📚 Resources</h4>
+              <a href="#">API Documentation</a>
+              <a href="#">Trading guides</a>
+              <a href="#">Risk disclosure</a>
+              <a href="#">Support center</a>
+            </FooterCol>
+            <FooterCol>
+              <h4>⚖️ Legal</h4>
+              <p>CFDs and forex trading involve high risk.</p>
+              <p>74-89% of retail traders lose money.</p>
+              <a href="#">Privacy policy</a>
+              <a href="#">Terms of service</a>
+            </FooterCol>
+          </FooterGrid>
           <FooterBottom>
-            <span>{timestamp}</span> • © 2026 Voltix Traders • Trade responsibly
+            <span>{timestamp}</span> • Trade responsibly • AI insights for educational purposes only
           </FooterBottom>
         </PremiumFooter>
       </div>
