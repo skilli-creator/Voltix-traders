@@ -395,41 +395,49 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER - ABOVE X-AXIS =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER - BOTTOM WITH LARGE SIZES =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: calc(100% - 40px);
-  max-width: 680px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  max-width: 720px;
+  padding: 8px 12px;
+  background: rgba(10, 14, 23, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
   position: absolute;
-  bottom: 65px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   gap: 8px;
   pointer-events: none;
-  z-index: 1;
+  z-index: 5;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 
   @media (max-width: 768px) {
-    width: calc(100% - 30px);
-    bottom: 58px;
+    width: calc(100% - 20px);
+    padding: 6px 10px;
+    bottom: 16px;
     gap: 6px;
+    border-radius: 12px;
   }
 
   @media (max-width: 480px) {
-    width: calc(100% - 20px);
-    bottom: 50px;
-    gap: 5px;
+    width: calc(100% - 12px);
+    padding: 4px 8px;
+    bottom: 12px;
+    gap: 4px;
+    border-radius: 10px;
   }
 
   @media (max-width: 380px) {
-    width: calc(100% - 16px);
-    bottom: 45px;
-    gap: 4px;
+    width: calc(100% - 8px);
+    padding: 3px 6px;
+    bottom: 10px;
+    gap: 3px;
+    border-radius: 8px;
   }
 `;
 
@@ -439,30 +447,33 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 4px;
   min-width: 0;
 
   .circle-badge {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: rgba(20, 28, 43, 0.95);
+    background: ${props => 
+      props.isLastDigit 
+        ? (props.direction === 'up' ? 'rgba(0, 230, 118, 0.12)' : 'rgba(255, 74, 74, 0.12)')
+        : 'rgba(255, 255, 255, 0.03)'
+    };
     border: 2px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
-        : 'rgba(255, 255, 255, 0.08)'
+        : 'rgba(255, 255, 255, 0.06)'
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 20px ${props.direction === 'up' ? 'rgba(0,230,118,0.3)' : 'rgba(255,74,74,0.3)'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
-      width: 38px;
-      height: 38px;
-      border-width: 1.5px;
+      width: 40px;
+      height: 40px;
+      border-width: 2px;
     }
 
     @media (max-width: 480px) {
@@ -472,20 +483,20 @@ const DigitItem = styled.div`
     }
 
     @media (max-width: 380px) {
-      width: 30px;
-      height: 30px;
-      border-width: 1px;
+      width: 28px;
+      height: 28px;
+      border-width: 1.5px;
     }
   }
 
   .digit-num {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 14px;
+      font-size: 15px;
     }
 
     @media (max-width: 480px) {
@@ -493,12 +504,12 @@ const DigitItem = styled.div`
     }
 
     @media (max-width: 380px) {
-      font-size: 12px;
+      font-size: 11px;
     }
   }
 
   .pct-text {
-    font-size: 8px;
+    font-size: 9px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -510,39 +521,44 @@ const DigitItem = styled.div`
     margin-top: 1px;
 
     @media (max-width: 768px) {
-      font-size: 7px;
+      font-size: 8px;
     }
 
     @media (max-width: 480px) {
-      font-size: 6px;
+      font-size: 7px;
     }
 
     @media (max-width: 380px) {
-      font-size: 5px;
+      font-size: 6px;
     }
   }
 
   .active-arrow {
     position: absolute;
-    bottom: -4px;
+    top: -6px;
+    right: -6px;
     font-size: 10px;
     color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
+    filter: drop-shadow(0 0 4px rgba(255, 152, 0, 0.3));
 
     @media (max-width: 768px) {
       font-size: 8px;
-      bottom: -3px;
+      top: -5px;
+      right: -5px;
     }
 
     @media (max-width: 480px) {
       font-size: 7px;
-      bottom: -3px;
+      top: -4px;
+      right: -4px;
     }
 
     @media (max-width: 380px) {
       font-size: 6px;
-      bottom: -2px;
+      top: -3px;
+      right: -3px;
     }
   }
 `;
@@ -669,7 +685,7 @@ const ChartPanel = () => {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const pad = { top: 25, bottom: 80, left: 15, right: 65 };
+    const pad = { top: 25, bottom: 90, left: 15, right: 65 };
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
 
