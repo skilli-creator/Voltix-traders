@@ -288,6 +288,12 @@ const RightSection = styled.div`
   }
 `;
 
+// ===== DROPDOWN CONTAINER =====
+const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
 // ===== ACCOUNT BADGE =====
 const AccountBadge = styled.div`
   display: flex;
@@ -299,7 +305,6 @@ const AccountBadge = styled.div`
   border-radius: 40px;
   cursor: pointer;
   transition: all 0.2s ease;
-  position: relative;
   user-select: none;
 
   &:hover {
@@ -382,12 +387,13 @@ const AccountBadge = styled.div`
   }
 `;
 
-// ===== DROPDOWN MENU =====
+// ===== DROPDOWN MENU - FIXED POSITIONING =====
 const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
   min-width: 280px;
+  max-width: 90vw;
   background: rgba(8, 18, 38, 0.95);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(56, 189, 248, 0.2);
@@ -402,8 +408,15 @@ const DropdownMenu = styled.div`
   overflow: hidden;
 
   @media (max-width: 480px) {
-    min-width: 240px;
+    min-width: 220px;
+    right: -5px;
+    max-width: 85vw;
+  }
+
+  @media (max-width: 380px) {
+    min-width: 180px;
     right: -10px;
+    max-width: 80vw;
   }
 `;
 
@@ -433,25 +446,48 @@ const DropdownItem = styled.div`
 
   .flag {
     font-size: 16px;
+    flex-shrink: 0;
   }
 
   .label {
     flex: 1;
+    white-space: nowrap;
   }
 
   .balance-small {
     font-size: 12px;
     color: #94a3b8;
+    white-space: nowrap;
   }
 
   .check {
     display: none;
     color: #38bdf8;
+    flex-shrink: 0;
   }
 
   @media (max-width: 480px) {
     padding: 8px 12px;
     font-size: 12px;
+    gap: 8px;
+    .flag {
+      font-size: 14px;
+    }
+    .balance-small {
+      font-size: 11px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 6px;
+    .flag {
+      font-size: 12px;
+    }
+    .balance-small {
+      font-size: 10px;
+    }
   }
 `;
 
@@ -496,6 +532,7 @@ const CurrencyToggle = styled.div`
     align-items: center;
     justify-content: center;
     gap: 4px;
+    white-space: nowrap;
 
     &:hover {
       color: #cbd5e1;
@@ -524,6 +561,17 @@ const CurrencyToggle = styled.div`
       padding: 4px 6px;
       .flag-small {
         font-size: 12px;
+      }
+    }
+  }
+
+  @media (max-width: 380px) {
+    padding: 6px 8px;
+    .toggle-option {
+      font-size: 9px;
+      padding: 3px 4px;
+      .flag-small {
+        font-size: 10px;
       }
     }
   }
@@ -971,7 +1019,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
       </LeftSection>
 
       <RightSection>
-        <div ref={dropdownRef} style={{ position: 'relative' }}>
+        <DropdownContainer ref={dropdownRef}>
           <AccountBadge onClick={toggleDropdown}>
             <span className="flag">{getCurrencyFlag()}</span>
             <span className="balance">{getFormattedBalance()}</span>
@@ -1030,7 +1078,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
               </div>
             </CurrencyToggle>
           </DropdownMenu>
-        </div>
+        </DropdownContainer>
 
         <ProfessionalFundsButton 
           href="https://app.rubicash.com/account/dashboard"
