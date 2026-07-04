@@ -76,7 +76,7 @@ const shimmerLine = keyframes`
 
 const floatPulse = keyframes`
   0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-10px) scale(1.03); }
+  50% { transform: translateY(-8px) scale(1.02); }
 `;
 
 const shimmerWave = keyframes`
@@ -836,25 +836,25 @@ const PopupCloseButton = styled.button`
 `;
 
 // ============================================
-// FLOATING CONNECT BUTTON - FIXED CUTOFF & NO EMOJIS
+// FLOATING CONNECT BUTTON - MOVED LEFT
 // ============================================
 const ConnectButtonWrapper = styled.div`
   position: fixed;
   bottom: 40px;
   left: 50%;
-  transform: translateX(-55%);
+  transform: translateX(-60%);
   z-index: 1000;
   animation: ${floatPulse} 3s ease-in-out infinite;
   cursor: pointer;
   width: auto;
-  max-width: 85vw;
+  max-width: 80vw;
   padding: 0 16px;
 
   @media (max-width: 768px) {
     bottom: 24px;
     left: 50%;
-    transform: translateX(-55%);
-    max-width: 88vw;
+    transform: translateX(-62%);
+    max-width: 85vw;
     padding: 0 12px;
     animation-duration: 2.5s;
   }
@@ -862,23 +862,23 @@ const ConnectButtonWrapper = styled.div`
   @media (max-width: 480px) {
     bottom: 16px;
     left: 50%;
-    transform: translateX(-56%);
-    max-width: 90vw;
+    transform: translateX(-64%);
+    max-width: 88vw;
     padding: 0 8px;
     animation-duration: 2s;
   }
 
   @media (max-width: 380px) {
     left: 50%;
-    transform: translateX(-58%);
-    max-width: 92vw;
+    transform: translateX(-66%);
+    max-width: 90vw;
     padding: 0 4px;
   }
 `;
 
 const ConnectButton = styled.button`
   position: relative;
-  padding: 18px 36px;
+  padding: 18px 32px;
   font-size: 1.1rem;
   font-weight: 700;
   color: #ffffff;
@@ -968,7 +968,7 @@ const ConnectButton = styled.button`
   }
 
   .button-icon {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     display: inline-block;
     flex-shrink: 0;
     opacity: 0.9;
@@ -980,11 +980,11 @@ const ConnectButton = styled.button`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
 
   .button-arrow {
-    font-size: 1.1rem;
+    font-size: 1rem;
     transition: transform 0.3s ease;
     display: inline-block;
     flex-shrink: 0;
@@ -1054,20 +1054,20 @@ const ConnectButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    padding: 14px 24px;
+    padding: 14px 20px;
     font-size: 0.95rem;
     border-radius: 50px;
 
     .button-icon {
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
 
     .button-text {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .button-arrow {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .connect-badge {
@@ -1093,7 +1093,7 @@ const ConnectButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 12px 16px;
+    padding: 12px 14px;
     font-size: 0.85rem;
     border-radius: 40px;
 
@@ -1102,16 +1102,16 @@ const ConnectButton = styled.button`
     }
 
     .button-icon {
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .button-text {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       white-space: nowrap;
     }
 
     .button-arrow {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     .connect-badge {
@@ -1133,19 +1133,19 @@ const ConnectButton = styled.button`
   }
 
   @media (max-width: 380px) {
-    padding: 10px 12px;
+    padding: 10px 10px;
     font-size: 0.75rem;
 
     .button-icon {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
 
     .button-text {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
     }
 
     .button-arrow {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
     }
 
     .button-content {
@@ -1162,7 +1162,7 @@ const ConnectButton = styled.button`
 `;
 
 // ============================================
-// CONNECT MODAL - No Emojis
+// CONNECT MODAL
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -1963,7 +1963,7 @@ const Dashboard = () => {
         </HeroSection>
       </Container>
 
-      {/* FLOATING CONNECT BUTTON - FIXED POSITION & NO EMOJIS */}
+      {/* FLOATING CONNECT BUTTON - MOVED FURTHER LEFT */}
       <ConnectButtonWrapper>
         <ConnectButton 
           onClick={handleConnect}
