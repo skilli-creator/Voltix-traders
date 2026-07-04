@@ -44,18 +44,12 @@ const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-top: 76px;
 
   @media (max-width: 768px) {
     width: 100%;
     top: 0;
     height: 100vh;
     transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
-    padding-top: 80px;
-  }
-
-  @media (max-width: 480px) {
-    padding-top: 74px;
   }
 `;
 
@@ -64,7 +58,7 @@ const SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 16px 8px 16px;
+  padding: 76px 16px 8px 16px;
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
@@ -81,11 +75,11 @@ const SidebarContent = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 0 16px 8px 16px;
+    padding: 80px 16px 8px 16px;
   }
 
   @media (max-width: 480px) {
-    padding: 0 14px 6px 14px;
+    padding: 74px 14px 6px 14px;
   }
 `;
 
@@ -109,7 +103,7 @@ const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 20px 4px 16px 4px;
+  padding: 12px 4px 16px 4px;
   border-bottom: 1px solid rgba(56, 189, 248, 0.06);
   margin-bottom: 16px;
   animation: ${slideIn} 0.4s ease;
@@ -151,7 +145,7 @@ const SidebarHeader = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 16px 4px 14px 4px;
+    padding: 10px 4px 12px 4px;
     margin-bottom: 12px;
     
     .avatar {
@@ -168,7 +162,7 @@ const SidebarHeader = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 14px 4px 12px 4px;
+    padding: 8px 4px 10px 4px;
     margin-bottom: 10px;
     gap: 10px;
     
@@ -485,7 +479,6 @@ const SidebarFooter = styled.div`
   background: rgba(3, 7, 18, 0.98);
   backdrop-filter: blur(10px);
   animation: ${fadeIn} 0.7s ease;
-  margin-top: auto;
 
   .footer-item {
     display: flex;
@@ -792,7 +785,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </NavSection>
         </SidebarContent>
 
-        {/* FOOTER */}
+        {/* FOOTER - Now always visible at bottom */}
         <SidebarFooter>
           <div className="footer-item" onClick={handleSettingsNavigation}>
             <span className="footer-icon">⚙️</span>
