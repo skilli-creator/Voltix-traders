@@ -387,7 +387,7 @@ const AccountBadge = styled.div`
   }
 `;
 
-// ===== DROPDOWN MENU - FIXED POSITIONING =====
+// ===== DROPDOWN MENU =====
 const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 8px);
@@ -734,7 +734,7 @@ const ProfessionalFundsButton = styled.a`
   }
 `;
 
-// ===== PREMIUM EXIT BUTTON =====
+// ===== PREMIUM EXIT BUTTON - FIXED FOR PHONE =====
 const PremiumExitButton = styled.button`
   display: flex;
   align-items: center;
@@ -816,8 +816,12 @@ const PremiumExitButton = styled.button`
   }
 
   .exit-icon {
-    font-size: 14px;
+    font-size: 16px;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
   }
 
   .exit-text {
@@ -836,15 +840,15 @@ const PremiumExitButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    padding: 5px 12px;
+    padding: 5px 14px;
     gap: 6px;
     font-size: 11px;
     .exit-icon-container {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
     }
     .exit-icon {
-      font-size: 11px;
+      font-size: 14px;
     }
     .exit-arrow-icon {
       font-size: 11px;
@@ -852,22 +856,41 @@ const PremiumExitButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 8px;
+    padding: 4px 10px;
     gap: 4px;
-    font-size: 9px;
+    font-size: 10px;
     .exit-icon-container {
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       border-radius: 4px;
     }
     .exit-icon {
+      font-size: 13px;
+    }
+    .exit-text {
       font-size: 9px;
+    }
+    .exit-arrow-icon {
+      font-size: 9px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    padding: 3px 8px;
+    gap: 3px;
+    font-size: 9px;
+    .exit-icon-container {
+      width: 20px;
+      height: 20px;
+    }
+    .exit-icon {
+      font-size: 11px;
     }
     .exit-text {
       font-size: 8px;
     }
     .exit-arrow-icon {
-      font-size: 9px;
+      font-size: 8px;
     }
   }
 `;
@@ -999,6 +1022,21 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
       </LeftSection>
 
       <RightSection>
+        {/* FUNDS BUTTON - First */}
+        <ProfessionalFundsButton 
+          href="https://app.rubicash.com/account/dashboard"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="funds-icon">💰</span>
+          <span className="funds-content">
+            <span className="funds-title">Funds</span>
+            <span className="funds-subtitle">Secure transactions</span>
+          </span>
+          <span className="arrow-right">→</span>
+        </ProfessionalFundsButton>
+
+        {/* ACCOUNT BALANCE - Second */}
         <DropdownContainer ref={dropdownRef}>
           <AccountBadge onClick={toggleDropdown}>
             <span className="flag">{getCurrencyFlag()}</span>
@@ -1060,19 +1098,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
           </DropdownMenu>
         </DropdownContainer>
 
-        <ProfessionalFundsButton 
-          href="https://app.rubicash.com/account/dashboard"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span className="funds-icon">💰</span>
-          <span className="funds-content">
-            <span className="funds-title">Funds</span>
-            <span className="funds-subtitle">Secure transactions</span>
-          </span>
-          <span className="arrow-right">→</span>
-        </ProfessionalFundsButton>
-
+        {/* EXIT BUTTON - Third */}
         <PremiumExitButton onClick={handleExit}>
           <span className="exit-icon-container">
             <span className="exit-icon">⏻</span>
