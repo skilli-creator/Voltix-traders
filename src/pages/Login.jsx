@@ -147,6 +147,7 @@ const FloatingFormContainer = styled.div`
   z-index: 2;
   animation: ${floatIn} 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 
+  /* Phone: floating card with shadow */
   @media (max-width: 768px) {
     max-width: 100%;
     padding: 0 8px;
@@ -166,6 +167,7 @@ const FormCard = styled.div`
   position: relative;
   overflow: hidden;
 
+  /* Animated gradient border */
   &::before {
     content: '';
     position: absolute;
@@ -189,6 +191,7 @@ const FormCard = styled.div`
     pointer-events: none;
   }
 
+  /* Top glow */
   &::after {
     content: '';
     position: absolute;
@@ -201,6 +204,7 @@ const FormCard = styled.div`
     border-radius: 0 0 4px 4px;
   }
 
+  /* Floating shimmer overlay */
   .shimmer-overlay {
     position: absolute;
     top: -50%;
@@ -359,15 +363,9 @@ const ToggleOption = styled.button`
     animation: ${props => props.active ? slideGlow : 'none'} 3s ease-in-out infinite;
   }
 
-  .toggle-icon {
-    margin-right: 6px;
-    font-size: 12px;
-  }
-
   @media (max-width: 480px) {
     padding: 6px 8px;
     font-size: 11px;
-    .toggle-icon { font-size: 10px; }
   }
 `;
 
@@ -400,7 +398,6 @@ const FloatingLabel = styled.label`
 
   .icon {
     font-size: 12px;
-    color: #4b5563;
   }
 
   @media (max-width: 480px) {
@@ -466,6 +463,20 @@ const PremiumInput = styled.input`
     padding: 9px 12px;
     font-size: 13px;
     &::placeholder { font-size: 12px; }
+  }
+`;
+
+// ============================================
+// SPLIT ROW - PHONE OPTIMIZED
+// ============================================
+const SplitRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 `;
 
@@ -653,10 +664,6 @@ const ResendButton = styled.button`
   justify-content: center;
   gap: 6px;
 
-  .btn-icon {
-    font-size: 12px;
-  }
-
   &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 8px 28px rgba(59, 130, 246, 0.2);
@@ -673,7 +680,6 @@ const ResendButton = styled.button`
     padding: 7px;
     font-size: 11px;
     border-radius: 20px;
-    .btn-icon { font-size: 10px; }
   }
 `;
 
@@ -791,7 +797,7 @@ const Login = () => {
           localStorage.setItem('tempUserId', resendUserId);
         }
         
-        setMessage('New code sent! Redirecting...');
+        setMessage('✅ New code sent! Redirecting...');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
@@ -801,7 +807,7 @@ const Login = () => {
           navigate('/verify');
         }, 1500);
       } else {
-        setMessage(`${data.error || 'Failed to resend'}`);
+        setMessage(`❌ ${data.error || 'Failed to resend'}`);
         setMessageColor('#f87171');
         setIsError(true);
         setIsLoading(false);
@@ -893,12 +899,12 @@ const Login = () => {
           setResendEmail(identifier);
           setResendUserId(data.user_id || null);
           setShowResendButton(true);
-          setMessage(errorMsg);
+          setMessage(`⚠️ ${errorMsg}`);
           setMessageColor('#fbbf24');
           setIsError(false);
           setIsLoading(false);
         } else {
-          setMessage(`${errorMsg || 'Login failed'}`);
+          setMessage(`❌ ${errorMsg || 'Login failed'}`);
           setMessageColor('#f87171');
           setIsError(true);
           setIsLoading(false);
@@ -946,14 +952,14 @@ const Login = () => {
               onClick={() => handleMethodToggle('email')}
             >
               <span className="toggle-shimmer" />
-              <span className="toggle-icon">◈</span> Email
+              📧 Email
             </ToggleOption>
             <ToggleOption 
               active={activeMethod === 'phone'} 
               onClick={() => handleMethodToggle('phone')}
             >
               <span className="toggle-shimmer" />
-              <span className="toggle-icon">◈</span> Phone
+              📱 Phone
             </ToggleOption>
           </ToggleWrapper>
 
@@ -961,7 +967,7 @@ const Login = () => {
             {activeMethod === 'email' ? (
               <InputGroup>
                 <FloatingLabel>
-                  <span className="icon">◈</span> Email Address
+                  <span className="icon">📧</span> Email Address
                 </FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
@@ -977,7 +983,7 @@ const Login = () => {
             ) : (
               <InputGroup>
                 <FloatingLabel>
-                  <span className="icon">◈</span> Phone Number
+                  <span className="icon">📞</span> Phone Number
                 </FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
@@ -994,7 +1000,7 @@ const Login = () => {
 
             <InputGroup>
               <FloatingLabel>
-                <span className="icon">◈</span> Password
+                <span className="icon">🔒</span> Password
               </FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
@@ -1020,7 +1026,7 @@ const Login = () => {
                     padding: '4px',
                   }}
                 >
-                  {showPassword ? '◈' : '◇'}
+                  {showPassword ? '🙈' : '👁️'}
                 </button>
               </PremiumInputWrapper>
             </InputGroup>
@@ -1043,21 +1049,21 @@ const Login = () => {
               <div className="btn-shimmer" />
               <div className="btn-glow" />
               <div className="btn-content">
-                {isLoading ? 'Signing In...' : 'Sign In'}
+                {isLoading ? '⏳ Signing In...' : '🚀 Sign In'}
               </div>
             </PremiumButton>
           </Form>
 
           <PremiumMessage color={messageColor} isError={isError}>
             <span className="msg-icon">
-              {isError ? '✗' : messageColor === '#22c55e' ? '✓' : messageColor === '#fbbf24' ? '!' : 'i'}
+              {isError ? '❌' : messageColor === '#22c55e' ? '✅' : messageColor === '#fbbf24' ? '⚠️' : 'ℹ️'}
             </span>
             {message || '\u00A0'}
           </PremiumMessage>
 
           {showResendButton && (
             <ResendButton onClick={handleResendVerification} disabled={isLoading}>
-              <span className="btn-icon">◈</span> Resend Verification Code
+              📧 Resend Verification Code
             </ResendButton>
           )}
 
