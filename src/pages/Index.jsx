@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
@@ -18,6 +18,8 @@ const GlobalStyle = createGlobalStyle`
     color: #f1f5f9;
     overflow-x: hidden;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   ::-webkit-scrollbar {
@@ -56,8 +58,8 @@ const pulseRing = keyframes`
 `;
 
 const breathe = keyframes`
-  0%, 100% { opacity: 0.1; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(1.05); }
+  0%, 100% { opacity: 0.08; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(1.05); }
 `;
 
 const slideGlow = keyframes`
@@ -66,8 +68,19 @@ const slideGlow = keyframes`
 `;
 
 const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.1); }
-  50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.2); }
+  0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.08); }
+  50% { box-shadow: 0 0 50px rgba(34, 197, 94, 0.2); }
+`;
+
+const rotateGlow = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const shimmerBorder = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 `;
 
 // ============================================
@@ -86,8 +99,8 @@ const BackgroundContainer = styled.div`
 const GradientOrb = styled.div`
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
-  animation: ${breathe} 8s ease-in-out infinite;
+  filter: blur(120px);
+  animation: ${breathe} 10s ease-in-out infinite;
 
   &:nth-child(1) {
     width: 600px;
@@ -118,9 +131,9 @@ const GradientOrb = styled.div`
   }
 
   @media (max-width: 768px) {
-    &:nth-child(1) { width: 300px; height: 300px; top: -120px; right: -80px; }
-    &:nth-child(2) { width: 250px; height: 250px; bottom: -80px; left: -60px; }
-    &:nth-child(3) { width: 180px; height: 180px; }
+    &:nth-child(1) { width: 300px; height: 300px; top: -120px; right: -80px; filter: blur(80px); }
+    &:nth-child(2) { width: 250px; height: 250px; bottom: -80px; left: -60px; filter: blur(80px); }
+    &:nth-child(3) { width: 180px; height: 180px; filter: blur(60px); }
   }
 `;
 
@@ -128,10 +141,15 @@ const GridOverlay = styled.div`
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(56, 189, 248, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56, 189, 248, 0.015) 1px, transparent 1px);
+    linear-gradient(rgba(56, 189, 248, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.012) 1px, transparent 1px);
   background-size: 50px 50px;
-  opacity: 0.5;
+  opacity: 0.4;
+
+  @media (max-width: 768px) {
+    background-size: 30px 30px;
+    opacity: 0.3;
+  }
 `;
 
 // ---- Container ----
@@ -152,7 +170,7 @@ const Navbar = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 0;
+  padding: 20px 0;
   position: relative;
 
   &::after {
@@ -162,13 +180,13 @@ const Navbar = styled.nav`
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.06), transparent);
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 12px;
-    padding: 12px 0;
+    gap: 14px;
+    padding: 14px 0;
   }
 `;
 
@@ -266,11 +284,30 @@ const NavLinks = styled.div`
     }
   }
 
+  .login-btn {
+    padding: 6px 18px;
+    border-radius: 30px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.08);
+    color: #4ade80;
+
+    &:hover {
+      background: #22c55e;
+      color: #0a0f1f;
+      border-color: #22c55e;
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+
   @media (max-width: 768px) {
     gap: 16px;
     flex-wrap: wrap;
     justify-content: center;
     a { font-size: 0.75rem; }
+    .login-btn { padding: 4px 14px; font-size: 0.7rem; }
   }
 `;
 
@@ -281,7 +318,7 @@ const Hero = styled.section`
   animation: ${fadeSlideUp} 0.8s ease;
 
   @media (max-width: 768px) {
-    padding: 50px 12px 40px;
+    padding: 40px 12px 30px;
   }
 `;
 
@@ -289,8 +326,8 @@ const HeroBadge = styled.div`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(34, 197, 94, 0.06);
-  border: 1px solid rgba(34, 197, 94, 0.1);
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.06);
   padding: 6px 18px 6px 12px;
   border-radius: 40px;
   font-size: 11px;
@@ -298,7 +335,7 @@ const HeroBadge = styled.div`
   color: #4ade80;
   margin-bottom: 24px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
 
   .live-dot {
     width: 6px;
@@ -309,13 +346,14 @@ const HeroBadge = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 10px;
+    font-size: 9px;
     padding: 4px 12px 4px 8px;
+    gap: 4px;
   }
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 62px;
+  font-size: 64px;
   font-weight: 800;
   line-height: 1.05;
   margin-bottom: 20px;
@@ -338,17 +376,25 @@ const HeroTitle = styled.h1`
     font-size: 32px;
     letter-spacing: -1px;
   }
+
+  @media (max-width: 480px) {
+    font-size: 26px;
+  }
 `;
 
 const HeroSubtitle = styled.p`
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: #94a3b8;
-  max-width: 600px;
+  max-width: 540px;
   margin: 0 auto 32px;
   line-height: 1.8;
 
   @media (max-width: 768px) {
     font-size: 0.95rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
   }
 `;
 
@@ -363,10 +409,10 @@ const Button = styled(Link)`
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 12px 28px;
+  padding: 14px 32px;
   border-radius: 40px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   cursor: pointer;
@@ -392,18 +438,18 @@ const Button = styled(Link)`
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 36px rgba(34, 197, 94, 0.25);
+      box-shadow: 0 12px 36px rgba(34, 197, 94, 0.3);
     }
   }
 
   &.secondary {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.06);
     color: #f1f5f9;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.1);
       transform: translateY(-2px);
     }
   }
@@ -413,51 +459,25 @@ const Button = styled(Link)`
   }
 
   @media (max-width: 768px) {
-    padding: 10px 20px;
+    padding: 12px 24px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 18px;
     font-size: 0.8rem;
   }
 `;
 
 // ============================================
-// PLATFORM SHOWCASE WITH PREMIUM IMAGES
+// PLATFORMS - Minimal
 // ============================================
 const PlatformsSection = styled.section`
-  padding: 60px 0;
+  padding: 40px 0 60px;
   position: relative;
 
   @media (max-width: 768px) {
-    padding: 40px 0;
-  }
-`;
-
-const SectionTitle = styled.h2`
-  text-align: center;
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
-
-  .gradient {
-    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.6rem;
-  }
-`;
-
-const SectionSub = styled.p`
-  text-align: center;
-  color: #94a3b8;
-  font-size: 0.95rem;
-  margin-bottom: 40px;
-
-  @media (max-width: 768px) {
-    font-size: 0.85rem;
-    margin-bottom: 28px;
+    padding: 20px 0 40px;
   }
 `;
 
@@ -465,7 +485,7 @@ const PlatformGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
 
   @media (max-width: 768px) {
@@ -474,14 +494,17 @@ const PlatformGrid = styled.div`
   }
 `;
 
-const PlatformCard = styled.div`
+const PlatformCard = styled(Link)`
   background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(12px);
   border-radius: 24px;
+  padding: 32px 28px;
   border: 1px solid rgba(255, 255, 255, 0.03);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  text-decoration: none;
+  color: #f1f5f9;
   position: relative;
+  overflow: hidden;
 
   &::before {
     content: '';
@@ -493,12 +516,34 @@ const PlatformCard = styled.div`
     background: ${props => props.color || 'linear-gradient(90deg, #22c55e, #38bdf8)'};
     opacity: 0;
     transition: opacity 0.4s ease;
-    z-index: 1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(56, 189, 248, 0.02),
+      transparent,
+      rgba(129, 140, 248, 0.02),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 20s linear infinite;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
   &:hover {
-    transform: translateY(-8px);
-    border-color: rgba(34, 197, 94, 0.08);
+    transform: translateY(-6px);
+    border-color: rgba(34, 197, 94, 0.06);
     background: rgba(255, 255, 255, 0.04);
     box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
   }
@@ -507,248 +552,72 @@ const PlatformCard = styled.div`
     opacity: 1;
   }
 
-  .platform-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: block;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  }
-
-  .platform-content {
-    padding: 24px 20px 20px;
-  }
-
-  .platform-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
+  &:hover::after {
+    opacity: 1;
   }
 
   .platform-icon {
-    font-size: 32px;
-  }
-
-  .platform-badge {
-    font-size: 0.6rem;
-    padding: 2px 10px;
-    border-radius: 20px;
-    background: rgba(34, 197, 94, 0.08);
-    border: 1px solid rgba(34, 197, 94, 0.1);
-    color: #4ade80;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-size: 2.8rem;
+    display: block;
+    margin-bottom: 12px;
   }
 
   .platform-name {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    color: #f1f5f9;
     margin-bottom: 4px;
   }
 
   .platform-desc {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #94a3b8;
-    line-height: 1.7;
-    margin-bottom: 14px;
+    line-height: 1.6;
   }
 
-  .platform-features {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+  .platform-arrow {
+    position: absolute;
+    bottom: 20px;
+    right: 24px;
+    font-size: 1.2rem;
+    opacity: 0.3;
+    transition: all 0.3s ease;
   }
 
-  .feature-tag {
-    font-size: 0.65rem;
-    padding: 3px 10px;
+  &:hover .platform-arrow {
+    opacity: 1;
+    transform: translateX(6px);
+  }
+
+  .platform-badge {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    font-size: 0.5rem;
+    padding: 3px 12px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    color: #94a3b8;
-  }
-
-  @media (max-width: 768px) {
-    .platform-image { height: 160px; }
-    .platform-content { padding: 16px 16px 14px; }
-    .platform-name { font-size: 1rem; }
-    .platform-desc { font-size: 0.8rem; }
-    .platform-icon { font-size: 26px; }
-  }
-`;
-
-// ============================================
-// FEATURES SECTION
-// ============================================
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const FeatureCard = styled.div`
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(12px);
-  padding: 28px 24px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  transition: all 0.4s ease;
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    transform: translateY(-4px);
-    border-color: rgba(34, 197, 94, 0.06);
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  .icon {
-    font-size: 28px;
-    margin-bottom: 12px;
-    display: block;
-  }
-
-  h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #f1f5f9;
-  }
-
-  p {
-    font-size: 0.8rem;
-    color: #94a3b8;
-    line-height: 1.7;
-  }
-
-  @media (max-width: 768px) {
-    padding: 20px 16px;
-  }
-`;
-
-// ============================================
-// HOW IT WORKS
-// ============================================
-const StepsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  max-width: 900px;
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-`;
-
-const StepCard = styled.div`
-  text-align: center;
-  padding: 24px;
-
-  .step-number {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
-    color: #0a0f1f;
-    margin: 0 auto 14px;
-  }
-
-  h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #f1f5f9;
-  }
-
-  p {
-    font-size: 0.85rem;
-    color: #94a3b8;
-    line-height: 1.7;
-  }
-
-  @media (max-width: 768px) {
-    padding: 16px;
-    .step-number { width: 40px; height: 40px; font-size: 15px; }
-    h3 { font-size: 1rem; }
-    p { font-size: 0.8rem; }
-  }
-`;
-
-// ============================================
-// STATS
-// ============================================
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  max-width: 800px;
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-`;
-
-const StatCard = styled.div`
-  text-align: center;
-  padding: 20px 16px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.02);
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(34, 197, 94, 0.06);
-    transform: translateY(-2px);
-  }
-
-  .number {
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .label {
-    font-size: 0.7rem;
-    color: #94a3b8;
-    margin-top: 4px;
+    background: rgba(34, 197, 94, 0.06);
+    border: 1px solid rgba(34, 197, 94, 0.06);
+    color: #4ade80;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   @media (max-width: 768px) {
-    padding: 16px 12px;
-    .number { font-size: 1.4rem; }
-    .label { font-size: 0.6rem; }
+    padding: 24px 20px;
+    .platform-icon { font-size: 2.2rem; }
+    .platform-name { font-size: 1.2rem; }
+    .platform-desc { font-size: 0.8rem; }
+    .platform-arrow { bottom: 14px; right: 18px; }
+    .platform-badge { font-size: 0.4rem; padding: 2px 10px; top: 10px; right: 12px; }
   }
 `;
 
 // ============================================
-// CTA
+// CTA - Minimal
 // ============================================
 const CTASection = styled.section`
-  padding: 80px 20px;
+  padding: 60px 20px 80px;
   text-align: center;
-  background: linear-gradient(180deg, transparent, rgba(34, 197, 94, 0.02), transparent);
   position: relative;
 
   &::before {
@@ -758,25 +627,56 @@ const CTASection = styled.section`
     left: 20%;
     right: 20%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.06), transparent);
   }
 
   @media (max-width: 768px) {
-    padding: 50px 16px;
+    padding: 40px 16px 50px;
+  }
+`;
+
+const CTATitle = styled.h2`
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+
+  .highlight {
+    color: #22c55e;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.6rem;
+  }
+`;
+
+const CTASub = styled.p`
+  color: #94a3b8;
+  max-width: 480px;
+  margin: 0 auto 28px;
+  font-size: 1.05rem;
+  line-height: 1.8;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
   }
 `;
 
 // ============================================
-// FOOTER
+// FOOTER - Minimal
 // ============================================
 const PremiumFooter = styled.footer`
   background: rgba(3, 7, 18, 0.9);
   backdrop-filter: blur(20px);
-  padding: 48px 32px 28px;
+  padding: 40px 32px 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.02);
 
   @media (max-width: 768px) {
-    padding: 32px 16px 20px;
+    padding: 28px 16px 18px;
   }
 `;
 
@@ -784,7 +684,7 @@ const FooterGrid = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;
 
   @media (max-width: 900px) {
@@ -802,9 +702,10 @@ const FooterGrid = styled.div`
 const FooterCol = styled.div`
   h4 {
     color: #f1f5f9;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
   }
 
   p, a {
@@ -827,7 +728,7 @@ const FooterCol = styled.div`
     gap: 8px;
     font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   .footer-logo-text {
@@ -852,6 +753,12 @@ const FooterCol = styled.div`
       background: #22c55e;
       animation: ${pulseRing} 2s ease-out infinite;
     }
+  }
+
+  .footer-tagline {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 2px;
   }
 
   @media (max-width: 480px) {
@@ -885,9 +792,9 @@ const SocialIcons = styled.div`
 
 const FooterBottom = styled.div`
   text-align: center;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
   font-size: 0.7rem;
   color: #4b5563;
 
@@ -897,20 +804,10 @@ const FooterBottom = styled.div`
 
   @media (max-width: 768px) {
     font-size: 0.6rem;
-    margin-top: 24px;
-    padding-top: 16px;
+    margin-top: 20px;
+    padding-top: 12px;
   }
 `;
-
-// ============================================
-// PREMIUM IMAGE URLS
-// ============================================
-const IMAGES = {
-  deriv: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop&crop=center',
-  forex: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center',
-  hero: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop&crop=center',
-  trading: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center',
-};
 
 // ============================================
 // MAIN COMPONENT
@@ -946,17 +843,13 @@ const Index = () => {
           <Container>
             <Navbar>
               <Logo to="/">
-                <span className="logo-icon">🔷</span>
+                <span className="logo-icon">◆</span>
                 <span className="logo-text">Voltix</span>
                 <span className="logo-traders">Traders</span>
                 <span className="live-dot" />
               </Logo>
               <NavLinks>
-                <a href="#platforms">Platforms</a>
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#stats">Stats</a>
-                <Link to="/login">Login</Link>
+                <Link to="/login" className="login-btn">Login</Link>
               </NavLinks>
             </Navbar>
           </Container>
@@ -967,201 +860,69 @@ const Index = () => {
           <Hero>
             <HeroBadge>
               <span className="live-dot" />
-              Multi-Platform Trading • 99.9% Uptime
+              Multi-Platform Trading
             </HeroBadge>
             <HeroTitle>
-              Trade <span className="gradient-text">Deriv</span> and <br />
-              <span className="gradient-text">Forex</span> All-in-One
+              Trade <span className="gradient-text">Smarter</span> Across
+              <br />
+              <span className="gradient-text">All Markets</span>
             </HeroTitle>
             <HeroSubtitle>
-              The ultimate trading automation platform. Deploy AI-powered strategies across
-              Deriv and Forex markets from a single premium dashboard.
+              Connect your accounts and deploy AI-powered strategies across Deriv and Forex markets.
             </HeroSubtitle>
             <HeroButtons>
               <Button to="/Register" className="primary">
                 <span className="btn-shimmer" />
-                🚀 Start Trading Free
+                Get Started Free
               </Button>
               <Button to="/Login" className="secondary">
-                🔐 Login
+                Sign In
               </Button>
             </HeroButtons>
           </Hero>
         </Container>
 
         {/* ===== PLATFORMS ===== */}
-        <PlatformsSection id="platforms">
+        <PlatformsSection>
           <Container>
-            <SectionTitle>
-              <span className="gradient">Supported Platforms</span>
-            </SectionTitle>
-            <SectionSub>Connect and trade on the world's leading financial markets</SectionSub>
             <PlatformGrid>
-              {/* Deriv */}
-              <PlatformCard color="linear-gradient(90deg, #a855f7, #7c3aed)">
-                <img
-                  src={IMAGES.deriv}
-                  alt="Deriv Trading Platform"
-                  className="platform-image"
-                  loading="lazy"
-                />
-                <div className="platform-content">
-                  <div className="platform-header">
-                    <span className="platform-icon">📊</span>
-                    <span className="platform-badge">Synthetic Indices</span>
-                  </div>
-                  <div className="platform-name">Deriv</div>
-                  <div className="platform-desc">
-                    Trade synthetic indices, forex, and cryptocurrencies with low spreads and
-                    high leverage on Deriv's award-winning platform.
-                  </div>
-                  <div className="platform-features">
-                    <span className="feature-tag">Synthetic Indices</span>
-                    <span className="feature-tag">Forex</span>
-                    <span className="feature-tag">Options</span>
-                    <span className="feature-tag">High Leverage</span>
-                  </div>
-                </div>
+              <PlatformCard 
+                color="linear-gradient(90deg, #a855f7, #7c3aed)"
+                to="/derivhome"
+              >
+                <span className="platform-badge">24/7</span>
+                <span className="platform-icon">📊</span>
+                <div className="platform-name">Deriv</div>
+                <div className="platform-desc">Synthetic indices, options & high-frequency trading</div>
+                <span className="platform-arrow">→</span>
               </PlatformCard>
 
-              {/* Forex */}
-              <PlatformCard color="linear-gradient(90deg, #2563eb, #1d4ed8)">
-                <img
-                  src={IMAGES.forex}
-                  alt="Forex Trading"
-                  className="platform-image"
-                  loading="lazy"
-                />
-                <div className="platform-content">
-                  <div className="platform-header">
-                    <span className="platform-icon">💱</span>
-                    <span className="platform-badge">Currency Trading</span>
-                  </div>
-                  <div className="platform-name">Forex</div>
-                  <div className="platform-desc">
-                    Trade major, minor, and exotic currency pairs with institutional-grade
-                    execution and real-time market analysis.
-                  </div>
-                  <div className="platform-features">
-                    <span className="feature-tag">Major Pairs</span>
-                    <span className="feature-tag">Exotic Pairs</span>
-                    <span className="feature-tag">Low Spreads</span>
-                    <span className="feature-tag">24/5 Trading</span>
-                  </div>
-                </div>
+              <PlatformCard 
+                color="linear-gradient(90deg, #2563eb, #1d4ed8)"
+                to="/derivdash"
+              >
+                <span className="platform-badge">24/5</span>
+                <span className="platform-icon">💱</span>
+                <div className="platform-name">Forex</div>
+                <div className="platform-desc">Major, minor & exotic currency pairs</div>
+                <span className="platform-arrow">→</span>
               </PlatformCard>
             </PlatformGrid>
           </Container>
         </PlatformsSection>
 
-        {/* ===== FEATURES ===== */}
-        <section id="features" style={{ padding: '60px 0' }}>
-          <Container>
-            <SectionTitle>
-              <span className="gradient">Powerful Features</span>
-            </SectionTitle>
-            <SectionSub>Everything you need to trade smarter and faster</SectionSub>
-            <FeaturesGrid>
-              <FeatureCard>
-                <span className="icon">🤖</span>
-                <h3>AI Trading Bots</h3>
-                <p>Deploy automated strategies with machine learning and advanced backtesting.</p>
-              </FeatureCard>
-              <FeatureCard>
-                <span className="icon">📊</span>
-                <h3>Multi-Market Data</h3>
-                <p>Real-time prices, charts, and order books from all connected exchanges.</p>
-              </FeatureCard>
-              <FeatureCard>
-                <span className="icon">🛡️</span>
-                <h3>Risk Management</h3>
-                <p>Advanced stop-loss, take-profit, and dynamic position sizing tools.</p>
-              </FeatureCard>
-              <FeatureCard>
-                <span className="icon">⚡</span>
-                <h3>Lightning Execution</h3>
-                <p>Ultra-low latency order execution with institutional-grade infrastructure.</p>
-              </FeatureCard>
-              <FeatureCard>
-                <span className="icon">📈</span>
-                <h3>Advanced Analytics</h3>
-                <p>Real-time portfolio tracking, performance metrics, and trade history.</p>
-              </FeatureCard>
-              <FeatureCard>
-                <span className="icon">🔐</span>
-                <h3>Bank-Grade Security</h3>
-                <p>256-bit encryption, MPC custody, and enterprise-level protection.</p>
-              </FeatureCard>
-            </FeaturesGrid>
-          </Container>
-        </section>
-
-        {/* ===== HOW IT WORKS ===== */}
-        <section id="how-it-works" style={{ padding: '60px 0', background: 'rgba(255,255,255,0.005)' }}>
-          <Container>
-            <SectionTitle>
-              <span className="gradient">How It Works</span>
-            </SectionTitle>
-            <SectionSub>Get started in three simple steps</SectionSub>
-            <StepsGrid>
-              <StepCard>
-                <div className="step-number">1</div>
-                <h3>Create Account</h3>
-                <p>Sign up and access your trading dashboard instantly. No credit card required.</p>
-              </StepCard>
-              <StepCard>
-                <div className="step-number">2</div>
-                <h3>Connect Exchange</h3>
-                <p>Link your Deriv or Forex accounts via secure API connection.</p>
-              </StepCard>
-              <StepCard>
-                <div className="step-number">3</div>
-                <h3>Start Trading</h3>
-                <p>Deploy AI bots, monitor markets, and grow your portfolio in real-time.</p>
-              </StepCard>
-            </StepsGrid>
-          </Container>
-        </section>
-
-        {/* ===== STATS ===== */}
-        <section id="stats" style={{ padding: '60px 0' }}>
-          <Container>
-            <SectionTitle>
-              <span className="gradient">Platform Growth</span>
-            </SectionTitle>
-            <StatsGrid>
-              <StatCard>
-                <div className="number">10K+</div>
-                <div className="label">Active Traders</div>
-              </StatCard>
-              <StatCard>
-                <div className="number">$2M+</div>
-                <div className="label">Trades Executed</div>
-              </StatCard>
-              <StatCard>
-                <div className="number">99.99%</div>
-                <div className="label">Uptime</div>
-              </StatCard>
-              <StatCard>
-                <div className="number">24/7</div>
-                <div className="label">Support</div>
-              </StatCard>
-            </StatsGrid>
-          </Container>
-        </section>
-
         {/* ===== CTA ===== */}
         <CTASection>
           <Container>
-            <h2 style={{ fontSize: '2.2rem', fontWeight: 700, marginBottom: '12px' }}>
-              Ready to <span style={{ color: '#22c55e' }}>Trade Smarter</span>?
-            </h2>
-            <p style={{ color: '#94a3b8', marginBottom: '28px', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
+            <CTATitle>
+              Ready to <span className="highlight">Trade Smarter</span>?
+            </CTATitle>
+            <CTASub>
               Join thousands of traders using Voltix to automate and grow across all markets.
-            </p>
+            </CTASub>
             <Button to="/Register" className="primary">
               <span className="btn-shimmer" />
-              Create Free Account →
+              Create Free Account
             </Button>
           </Container>
         </CTASection>
@@ -1171,11 +932,11 @@ const Index = () => {
           <FooterGrid>
             <FooterCol>
               <div className="footer-logo">
-                <span>🔷</span>
+                <span>◆</span>
                 <span className="footer-logo-text">Voltix Traders</span>
                 <span className="footer-dot" />
               </div>
-              <p>The ultimate multi-platform trading automation platform.</p>
+              <p className="footer-tagline">Multi-platform trading automation</p>
               <SocialIcons>
                 <span>🐦</span>
                 <span>📘</span>
@@ -1184,21 +945,15 @@ const Index = () => {
               </SocialIcons>
             </FooterCol>
             <FooterCol>
-              <h4>📊 Platforms</h4>
-              <a href="#">Deriv</a>
-              <a href="#">Forex</a>
+              <h4>Platforms</h4>
+              <Link to="/derivhome">Deriv</Link>
+              <Link to="/derivdash">Forex</Link>
             </FooterCol>
             <FooterCol>
-              <h4>📚 Resources</h4>
-              <a href="#">API Docs</a>
-              <a href="#">Trading Guides</a>
-              <a href="#">Support</a>
-            </FooterCol>
-            <FooterCol>
-              <h4>⚖️ Legal</h4>
-              <p>High risk trading. 74-89% of retail accounts lose money.</p>
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms</a>
+              <h4>Resources</h4>
+              <Link to="#">Documentation</Link>
+              <Link to="#">Support</Link>
+              <Link to="#">Privacy Policy</Link>
             </FooterCol>
           </FooterGrid>
           <FooterBottom>
