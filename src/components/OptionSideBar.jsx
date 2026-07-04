@@ -31,10 +31,10 @@ const fadeIn = keyframes`
 
 const SidebarContainer = styled.div`
   position: fixed;
-  top: 0;
+  top: 64px;
   left: 0;
   width: 280px;
-  height: 100vh;
+  height: calc(100vh - 64px);
   background: rgba(3, 7, 18, 0.95);
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(56, 189, 248, 0.08);
@@ -44,18 +44,12 @@ const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-top: 70px;
 
   @media (max-width: 768px) {
     width: 100%;
     top: 0;
     height: 100vh;
     transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
-    padding-top: 65px;
-  }
-
-  @media (max-width: 480px) {
-    padding-top: 60px;
   }
 `;
 
@@ -64,7 +58,7 @@ const SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 16px 8px 16px;
+  padding: 16px 16px 8px 16px;
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
@@ -81,11 +75,13 @@ const SidebarContent = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 0 16px 8px 16px;
+    padding: 12px 16px 8px 16px;
+    padding-top: 76px;
   }
 
   @media (max-width: 480px) {
-    padding: 0 14px 6px 14px;
+    padding: 10px 14px 6px 14px;
+    padding-top: 70px;
   }
 `;
 
