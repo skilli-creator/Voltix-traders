@@ -310,7 +310,6 @@ const FloatingLabel = styled.label`
 
   .icon {
     font-size: 9px;
-    color: #4b5563;
   }
 
   @media (max-width: 480px) {
@@ -535,7 +534,6 @@ const PremiumMessage = styled.div`
 
   .msg-icon {
     font-size: 10px;
-    color: ${props => props.color || '#94a3b8'};
   }
 
   @media (max-width: 480px) {
@@ -746,7 +744,7 @@ const Register = () => {
         localStorage.setItem('tempUserId', data.user_id);
         localStorage.setItem('userEmail', emailTrimmed);
         
-        setMessage('Account created! Check your email.');
+        setMessage('✅ Account created! Check your email.');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
@@ -755,7 +753,7 @@ const Register = () => {
           navigate('/verify');
         }, 2000);
       } else {
-        setMessage(`${data.error || 'Registration failed'}`);
+        setMessage(`❌ ${data.error || 'Registration failed'}`);
         setMessageColor('#f87171');
         setIsError(true);
         setIsLoading(false);
@@ -795,7 +793,7 @@ const Register = () => {
           <Form onSubmit={handleSubmit}>
             <SplitRow>
               <InputGroup>
-                <FloatingLabel><span className="icon">◈</span> First</FloatingLabel>
+                <FloatingLabel><span className="icon">📝</span> First</FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
                     type="text"
@@ -808,7 +806,7 @@ const Register = () => {
               </InputGroup>
 
               <InputGroup>
-                <FloatingLabel><span className="icon">◈</span> Last</FloatingLabel>
+                <FloatingLabel><span className="icon">📝</span> Last</FloatingLabel>
                 <PremiumInputWrapper>
                   <PremiumInput
                     type="text"
@@ -822,7 +820,7 @@ const Register = () => {
             </SplitRow>
 
             <InputGroup>
-              <FloatingLabel><span className="icon">◈</span> Phone</FloatingLabel>
+              <FloatingLabel><span className="icon">📞</span> Phone</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type="tel"
@@ -836,7 +834,7 @@ const Register = () => {
             </InputGroup>
 
             <InputGroup>
-              <FloatingLabel><span className="icon">◈</span> Email</FloatingLabel>
+              <FloatingLabel><span className="icon">📧</span> Email</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type="email"
@@ -849,7 +847,7 @@ const Register = () => {
             </InputGroup>
 
             <InputGroup>
-              <FloatingLabel><span className="icon">◈</span> Password</FloatingLabel>
+              <FloatingLabel><span className="icon">🔒</span> Password</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type={showPassword ? 'text' : 'password'}
@@ -862,7 +860,7 @@ const Register = () => {
                   type="button" 
                   onClick={() => togglePasswordVisibility('password')}
                 >
-                  {showPassword ? '◈' : '◇'}
+                  {showPassword ? '🙈' : '👁️'}
                 </TogglePasswordBtn>
               </PremiumInputWrapper>
               <StrengthContainer>
@@ -874,7 +872,7 @@ const Register = () => {
             </InputGroup>
 
             <InputGroup>
-              <FloatingLabel><span className="icon">◈</span> Confirm</FloatingLabel>
+              <FloatingLabel><span className="icon">✓</span> Confirm</FloatingLabel>
               <PremiumInputWrapper>
                 <PremiumInput
                   type={showConfirmPassword ? 'text' : 'password'}
@@ -887,7 +885,7 @@ const Register = () => {
                   type="button" 
                   onClick={() => togglePasswordVisibility('confirm')}
                 >
-                  {showConfirmPassword ? '◈' : '◇'}
+                  {showConfirmPassword ? '🙈' : '👁️'}
                 </TogglePasswordBtn>
               </PremiumInputWrapper>
             </InputGroup>
@@ -896,14 +894,14 @@ const Register = () => {
               <div className="btn-shimmer" />
               <div className="btn-glow" />
               <div className="btn-content">
-                {isLoading ? 'Creating...' : 'Register & Start Trading'}
+                {isLoading ? '⏳ Creating...' : '🚀 Register & Start Trading'}
               </div>
             </PremiumButton>
           </Form>
 
           <PremiumMessage color={messageColor} isError={isError}>
             <span className="msg-icon">
-              {isError ? '✗' : messageColor === '#22c55e' ? '✓' : messageColor === '#fbbf24' ? '!' : 'i'}
+              {isError ? '❌' : messageColor === '#22c55e' ? '✅' : messageColor === '#fbbf24' ? '⚠️' : 'ℹ️'}
             </span>
             {message || '\u00A0'}
           </PremiumMessage>
