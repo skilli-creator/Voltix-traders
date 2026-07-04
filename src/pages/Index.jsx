@@ -77,23 +77,6 @@ const rotateGlow = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const shimmerBorder = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-`;
-
-const cosmicFloat = keyframes`
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-6px) rotate(0.5deg); }
-  75% { transform: translateY(6px) rotate(-0.5deg); }
-`;
-
-const glowPulse = keyframes`
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.5); }
-`;
-
 // ============================================
 // STYLED COMPONENTS
 // ============================================
@@ -481,7 +464,7 @@ const HeroButton = styled(Link)`
 `;
 
 // ============================================
-// FEATURES - Minimal
+// FEATURES - No Emojis
 // ============================================
 const FeaturesSection = styled.section`
   padding: 40px 0 60px;
@@ -525,9 +508,12 @@ const FeatureCard = styled.div`
   }
 
   .feature-icon {
-    font-size: 2.4rem;
+    font-size: 2rem;
+    font-weight: 300;
     display: block;
     margin-bottom: 10px;
+    color: #38bdf8;
+    opacity: 0.6;
   }
 
   .feature-name {
@@ -545,7 +531,7 @@ const FeatureCard = styled.div`
 
   @media (max-width: 768px) {
     padding: 18px 16px;
-    .feature-icon { font-size: 1.8rem; }
+    .feature-icon { font-size: 1.6rem; }
     .feature-name { font-size: 0.9rem; }
     .feature-desc { font-size: 0.75rem; }
   }
@@ -617,7 +603,7 @@ const CTASub = styled.p`
 `;
 
 // ============================================
-// ORIGINAL FOOTER
+// ORIGINAL FOOTER - No Emojis
 // ============================================
 const PremiumFooter = styled.footer`
   background: rgba(3, 7, 18, 0.9);
@@ -655,6 +641,7 @@ const FooterCol = styled.div`
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 16px;
+    letter-spacing: 0.3px;
   }
 
   p, a {
@@ -773,7 +760,7 @@ const Index = () => {
   useEffect(() => {
     const updateTimestamp = () => {
       const now = new Date();
-      setTimestamp(`🕒 ${now.toUTCString().slice(5, 25)} UTC`);
+      setTimestamp(`${now.toUTCString().slice(5, 25)} UTC`);
     };
     updateTimestamp();
     const interval = setInterval(updateTimestamp, 1000);
@@ -837,22 +824,22 @@ const Index = () => {
           </Hero>
         </Container>
 
-        {/* ===== FEATURES ===== */}
+        {/* ===== FEATURES - No Emojis ===== */}
         <FeaturesSection>
           <Container>
             <FeaturesGrid>
               <FeatureCard>
-                <span className="feature-icon">🤖</span>
+                <span className="feature-icon">◇</span>
                 <div className="feature-name">AI-Powered</div>
                 <div className="feature-desc">Automated trading strategies</div>
               </FeatureCard>
               <FeatureCard>
-                <span className="feature-icon">📊</span>
+                <span className="feature-icon">◈</span>
                 <div className="feature-name">Real-Time Data</div>
                 <div className="feature-desc">Live market analytics</div>
               </FeatureCard>
               <FeatureCard>
-                <span className="feature-icon">🔐</span>
+                <span className="feature-icon">◆</span>
                 <div className="feature-name">Secure</div>
                 <div className="feature-desc">Bank-grade encryption</div>
               </FeatureCard>
@@ -876,7 +863,7 @@ const Index = () => {
           </Container>
         </CTASection>
 
-        {/* ===== ORIGINAL FOOTER ===== */}
+        {/* ===== ORIGINAL FOOTER - No Emojis ===== */}
         <PremiumFooter>
           <FooterGrid>
             <FooterCol>
@@ -888,26 +875,26 @@ const Index = () => {
               <p className="footer-tagline">Next-gen multi-market execution engine</p>
               <p>Smart order routing • AI predictive models • Risk management</p>
               <SocialIcons>
-                <span>🐦</span>
-                <span>📘</span>
-                <span>💼</span>
-                <span>📸</span>
+                <span>tw</span>
+                <span>fb</span>
+                <span>in</span>
+                <span>ig</span>
               </SocialIcons>
             </FooterCol>
             <FooterCol>
-              <h4>📊 Market Hours</h4>
+              <h4>Market Hours</h4>
               <p>Forex: 24/5 (Sun 22:00 - Fri 22:00 GMT)</p>
               <p>Deriv: 24/7 synthetic indices</p>
             </FooterCol>
             <FooterCol>
-              <h4>📚 Resources</h4>
+              <h4>Resources</h4>
               <a href="#">API Documentation</a>
               <a href="#">Trading guides</a>
               <a href="#">Risk disclosure</a>
               <a href="#">Support center</a>
             </FooterCol>
             <FooterCol>
-              <h4>⚖️ Legal</h4>
+              <h4>Legal</h4>
               <p>CFDs and forex trading involve high risk.</p>
               <p>74-89% of retail traders lose money.</p>
               <a href="#">Privacy policy</a>
