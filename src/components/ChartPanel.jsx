@@ -395,7 +395,7 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER - FIXED =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER - ABOVE X-AXIS =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -407,29 +407,29 @@ const DigitStatsContainer = styled.div`
   border: none;
   box-shadow: none;
   position: absolute;
-  bottom: 30px;
+  bottom: 55px;
   left: 50%;
   transform: translateX(-50%);
-  gap: 6px;
+  gap: 8px;
   pointer-events: none;
   z-index: 1;
 
   @media (max-width: 768px) {
     width: calc(100% - 30px);
-    bottom: 25px;
-    gap: 5px;
+    bottom: 48px;
+    gap: 6px;
   }
 
   @media (max-width: 480px) {
     width: calc(100% - 20px);
-    bottom: 20px;
-    gap: 4px;
+    bottom: 42px;
+    gap: 5px;
   }
 
   @media (max-width: 380px) {
     width: calc(100% - 16px);
-    bottom: 16px;
-    gap: 3px;
+    bottom: 38px;
+    gap: 4px;
   }
 `;
 
@@ -439,71 +439,66 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 12px;
+  padding-bottom: 4px;
   min-width: 0;
 
-  @media (max-width: 768px) {
-    padding-bottom: 10px;
-  }
-
-  @media (max-width: 480px) {
-    padding-bottom: 8px;
-  }
-
   .circle-badge {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background: rgba(20, 28, 43, 0.95);
-    border: 1.5px solid ${props => 
+    border: 2px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
         : 'rgba(255, 255, 255, 0.08)'
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
-      width: 30px;
-      height: 30px;
+      width: 34px;
+      height: 34px;
+      border-width: 1.5px;
     }
 
     @media (max-width: 480px) {
-      width: 26px;
-      height: 26px;
+      width: 30px;
+      height: 30px;
+      border-width: 1.5px;
     }
 
     @media (max-width: 380px) {
-      width: 22px;
-      height: 22px;
+      width: 26px;
+      height: 26px;
+      border-width: 1px;
     }
   }
 
   .digit-num {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 10px;
+      font-size: 12px;
     }
 
     @media (max-width: 480px) {
-      font-size: 9px;
+      font-size: 11px;
     }
 
     @media (max-width: 380px) {
-      font-size: 8px;
+      font-size: 10px;
     }
   }
 
   .pct-text {
-    font-size: 7px;
+    font-size: 8px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -515,39 +510,39 @@ const DigitItem = styled.div`
     margin-top: 1px;
 
     @media (max-width: 768px) {
-      font-size: 6px;
+      font-size: 7px;
     }
 
     @media (max-width: 480px) {
-      font-size: 5px;
+      font-size: 6px;
     }
 
     @media (max-width: 380px) {
-      font-size: 4px;
+      font-size: 5px;
     }
   }
 
   .active-arrow {
     position: absolute;
-    bottom: -1px;
-    font-size: 9px;
+    bottom: -4px;
+    font-size: 10px;
     color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 7px;
-      bottom: -1px;
+      font-size: 8px;
+      bottom: -3px;
     }
 
     @media (max-width: 480px) {
-      font-size: 6px;
-      bottom: -1px;
+      font-size: 7px;
+      bottom: -3px;
     }
 
     @media (max-width: 380px) {
-      font-size: 5px;
-      bottom: 0px;
+      font-size: 6px;
+      bottom: -2px;
     }
   }
 `;
@@ -674,7 +669,7 @@ const ChartPanel = () => {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const pad = { top: 25, bottom: 65, left: 15, right: 65 };
+    const pad = { top: 25, bottom: 70, left: 15, right: 65 };
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
 
