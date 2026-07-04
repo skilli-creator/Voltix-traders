@@ -599,7 +599,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 5. INPUT FIELDS
+// 5. INPUT FIELDS - FIXED GRID LAYOUT
 // ============================================
 
 const InputGrid = styled.div`
@@ -2008,13 +2008,14 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER INPUTS - FIXED GRID POSITIONS =====
+  // ===== RENDER INPUTS - FIXED GRID WITH EXPLICIT POSITIONS =====
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
     return (
       <InputGrid>
-        {/* Row 1, Column 1: STAKE - Always visible */}
+        {/* ROW 1: Stake (Left) + Duration (Right - Manual only) */}
+        {/* Stake - Row 1, Column 1 */}
         <div style={{ gridColumn: '1 / 2', gridRow: '1 / 2' }}>
           <InputGroup>
             <InputLabel>
@@ -2035,26 +2036,28 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </InputGroup>
         </div>
 
-        {/* Row 1, Column 2: DURATION - Manual mode only */}
+        {/* Duration - Row 1, Column 2 (Manual only) */}
         {isManual && (
           <div style={{ gridColumn: '2 / 3', gridRow: '1 / 2' }}>
             {renderDurationDropdown()}
           </div>
         )}
 
-        {/* Row 2, Column 1: BULK TRADING - Always visible */}
-        <div style={{ gridColumn: '1 / 2', gridRow: isManual ? '2 / 3' : '2 / 3' }}>
+        {/* ROW 2: Bulk Trading (Left) + Martingale (Right - Auto/Bots only) */}
+        {/* Bulk Trading - Row 2, Column 1 */}
+        <div style={{ gridColumn: '1 / 2', gridRow: '2 / 3' }}>
           {renderBulkTradingToggle()}
         </div>
 
-        {/* Row 2, Column 2: MARTINGALE - Auto & Bots only (Position 4) */}
+        {/* Martingale - Row 2, Column 2 (Auto/Bots only) */}
         {!isManual && (
           <div style={{ gridColumn: '2 / 3', gridRow: '2 / 3' }}>
             {renderMartingaleToggle()}
           </div>
         )}
 
-        {/* Row 3, Column 1: TARGET PROFIT - Auto & Bots only */}
+        {/* ROW 3: Target Profit (Left) + Stop Loss (Right - Auto/Bots only) */}
+        {/* Target Profit - Row 3, Column 1 (Auto/Bots only) */}
         {!isManual && (
           <div style={{ gridColumn: '1 / 2', gridRow: '3 / 4' }}>
             <InputGroup>
@@ -2077,7 +2080,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </div>
         )}
 
-        {/* Row 3, Column 2: STOP LOSS - Auto & Bots only */}
+        {/* Stop Loss - Row 3, Column 2 (Auto/Bots only) */}
         {!isManual && (
           <div style={{ gridColumn: '2 / 3', gridRow: '3 / 4' }}>
             <InputGroup>
@@ -2399,7 +2402,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS - FIXED GRID POSITIONS */}
+      {/* 5. INPUTS - FIXED GRID WITH EXPLICIT POSITIONS */}
       {renderInputs()}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
