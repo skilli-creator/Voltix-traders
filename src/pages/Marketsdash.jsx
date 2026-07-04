@@ -97,6 +97,23 @@ const glowPulse = keyframes`
   50% { opacity: 0.8; }
 `;
 
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const popIn = keyframes`
+  0% { opacity: 0; transform: scale(0.8) translateY(30px); }
+  70% { transform: scale(1.02) translateY(-5px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+`;
+
+const shimmerBorder = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+`;
+
 // ============================================
 // BACKGROUND
 // ============================================
@@ -331,6 +348,257 @@ const LogoutButton = styled.button`
 `;
 
 // ============================================
+// MESSAGE COMPONENT
+// ============================================
+const MessageArea = styled.div`
+  margin-top: 14px;
+  font-size: 13px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  display: ${props => props.show ? 'flex' : 'none'};
+  align-items: center;
+  gap: 10px;
+  background: ${props => {
+    switch(props.type) {
+      case 'success': return 'rgba(34, 197, 94, 0.04)';
+      case 'error': return 'rgba(239, 68, 68, 0.04)';
+      case 'info': return 'rgba(56, 189, 248, 0.04)';
+      default: return 'rgba(0, 0, 0, 0.15)';
+    }
+  }};
+  color: ${props => {
+    switch(props.type) {
+      case 'success': return '#4ade80';
+      case 'error': return '#f87171';
+      case 'info': return '#60a5fa';
+      default: return '#94a3b8';
+    }
+  }};
+  border: 1px solid ${props => {
+    switch(props.type) {
+      case 'success': return 'rgba(34, 197, 94, 0.06)';
+      case 'error': return 'rgba(239, 68, 68, 0.06)';
+      case 'info': return 'rgba(56, 189, 248, 0.06)';
+      default: return 'rgba(255, 255, 255, 0.015)';
+    }
+  }};
+
+  .msg-icon {
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+`;
+
+// ============================================
+// CINEMATIC POPUP
+// ============================================
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(16px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${floatIn} 0.4s ease;
+`;
+
+const PopupCard = styled.div`
+  background: linear-gradient(160deg, rgba(8, 18, 38, 0.92), rgba(3, 8, 20, 0.92));
+  backdrop-filter: blur(32px);
+  border-radius: 40px;
+  padding: 48px 40px 40px;
+  max-width: 420px;
+  width: 92%;
+  border: 1px solid rgba(56, 189, 248, 0.04);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: ${popIn} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, #818cf8, #22c55e);
+    background-size: 300% 100%;
+    animation: ${shimmerBorder} 4s ease-in-out infinite;
+    border-radius: 40px 40px 0 0;
+    opacity: 0.3;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 40px;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(56, 189, 248, 0.03),
+      transparent,
+      rgba(129, 140, 248, 0.03),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 25s linear infinite;
+    pointer-events: none;
+  }
+
+  @media (max-width: 480px) {
+    padding: 32px 20px 28px;
+    border-radius: 28px;
+    &::before { border-radius: 28px 28px 0 0; }
+    &::after { border-radius: 28px; }
+  }
+`;
+
+const PopupSpinner = styled.div`
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  position: relative;
+
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    animation: ${spin} 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    box-shadow: inset 0 0 20px rgba(34, 197, 94, 0.02);
+  }
+  .ring:nth-child(1) {
+    border-top-color: #22c55e;
+    animation-duration: 1.4s;
+    filter: drop-shadow(0 0 8px rgba(34, 197, 94, 0.1));
+  }
+  .ring:nth-child(2) {
+    inset: 12px;
+    border-top-color: #38bdf8;
+    animation-duration: 2s;
+    animation-direction: reverse;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.1));
+  }
+  .ring:nth-child(3) {
+    inset: 24px;
+    border-top-color: #818cf8;
+    animation-duration: 2.8s;
+    filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.1));
+  }
+
+  @media (max-width: 480px) {
+    width: 60px;
+    height: 60px;
+    .ring { border-width: 2px; }
+    .ring:nth-child(2) { inset: 8px; }
+    .ring:nth-child(3) { inset: 16px; }
+  }
+`;
+
+const PopupIcon = styled.div`
+  font-size: 44px;
+  margin-bottom: 14px;
+  animation: ${floatPulse} 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.05));
+
+  @media (max-width: 480px) {
+    font-size: 34px;
+  }
+`;
+
+const PopupTitle = styled.h2`
+  font-size: 24px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+
+  @media (max-width: 480px) {
+    font-size: 19px;
+  }
+`;
+
+const PopupSubtitle = styled.p`
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 4px;
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
+`;
+
+const PopupHint = styled.p`
+  color: #4b5563;
+  font-size: 12px;
+  margin-top: 12px;
+  animation: ${pulseGlow} 2.5s ease-in-out infinite;
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+  }
+`;
+
+const PopupProgress = styled.div`
+  margin-top: 18px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+
+  .bar {
+    height: 100%;
+    width: ${props => props.progress || '0%'};
+    background: linear-gradient(90deg, #22c55e, #38bdf8, #818cf8);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 14px;
+    height: 1.5px;
+  }
+`;
+
+const PopupCloseButton = styled.button`
+  margin-top: 20px;
+  padding: 6px 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 30px;
+  color: #94a3b8;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f1f5f9;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    padding: 4px 16px;
+  }
+`;
+
+// ============================================
 // FLOATING CONNECT BUTTON - SUPER PREMIUM
 // ============================================
 const ConnectButtonWrapper = styled.div`
@@ -355,19 +623,21 @@ const ConnectButton = styled.button`
   font-size: 1.15rem;
   font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: ${props => props.disabled ? 'rgba(255, 255, 255, 0.05)' : 'linear-gradient(135deg, #22c55e, #16a34a)'};
   border: none;
   border-radius: 60px;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
+  box-shadow: ${props => props.disabled ? 'none' : `
     0 10px 40px rgba(34, 197, 94, 0.3),
     0 0 80px rgba(34, 197, 94, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15)
+  `};
   overflow: hidden;
   letter-spacing: 0.5px;
   width: 100%;
   white-space: nowrap;
+  opacity: ${props => props.disabled ? 0.5 : 1};
 
   /* Premium gradient border glow */
   &::before {
@@ -389,12 +659,12 @@ const ConnectButton = styled.button`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     animation: ${rotateGlow} 8s linear infinite;
-    opacity: 0.6;
+    opacity: ${props => props.disabled ? 0 : 0.6};
     transition: opacity 0.3s ease;
   }
 
   &:hover::before {
-    opacity: 1;
+    opacity: ${props => props.disabled ? 0 : 1};
   }
 
   /* Shimmer effect */
@@ -416,14 +686,15 @@ const ConnectButton = styled.button`
 
   /* Inner glow on hover */
   &:hover {
-    transform: translateY(-6px) scale(1.03);
-    box-shadow: 
+    transform: ${props => props.disabled ? 'none' : 'translateY(-6px) scale(1.03)'};
+    box-shadow: ${props => props.disabled ? 'none' : `
       0 20px 60px rgba(34, 197, 94, 0.5),
-      0 0 100px rgba(34, 197, 94, 0.2);
+      0 0 100px rgba(34, 197, 94, 0.2)
+    `};
   }
 
   &:active {
-    transform: scale(0.96);
+    transform: ${props => props.disabled ? 'none' : 'scale(0.96)'};
   }
 
   .button-content {
@@ -454,7 +725,7 @@ const ConnectButton = styled.button`
   }
 
   &:hover .button-arrow {
-    transform: translateX(6px);
+    transform: ${props => props.disabled ? 'none' : 'translateX(6px)'};
   }
 
   .connect-badge {
@@ -472,6 +743,11 @@ const ConnectButton = styled.button`
     letter-spacing: 0.5px;
     z-index: 2;
     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  }
+
+  .spinner {
+    animation: ${spin} 1s linear infinite;
+    display: inline-block;
   }
 
   /* Floating particles */
@@ -532,7 +808,7 @@ const ConnectButton = styled.button`
 `;
 
 // ============================================
-// CONNECT MODAL - Super Premium
+// CONNECT MODAL - Super Premium with OAuth
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -774,6 +1050,17 @@ const OptionCard = styled.button`
     }
   }
 
+  .oauth-status {
+    margin-top: 12px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.6rem;
+    background: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.05);
+    color: #4ade80;
+    display: inline-block;
+  }
+
   @media (max-width: 480px) {
     padding: 22px 16px;
     .option-icon { font-size: 2.2rem; }
@@ -806,10 +1093,15 @@ const ModalFooter = styled.div`
   .support-link {
     color: #4b5563;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
 
     &:hover {
       color: #22c55e;
+      transform: translateX(4px);
     }
   }
 
@@ -951,6 +1243,15 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [greeting, setGreeting] = useState('Trader');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupProgress, setPopupProgress] = useState(0);
+
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -968,17 +1269,100 @@ const Dashboard = () => {
     setGreeting(fullName);
   }, [navigate]);
 
+  useEffect(() => {
+    if (showMessage) {
+      const timer = setTimeout(() => setShowMessage(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showMessage]);
+
+  useEffect(() => {
+    if (showPopup && !isLoading) {
+      const timer = setTimeout(() => setShowPopup(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showPopup, isLoading]);
+
+  const showCustomMessage = (msg, type) => {
+    setMessage(msg);
+    setMessageType(type);
+    setShowMessage(true);
+  };
+
   const handleConnect = () => {
     setIsModalOpen(true);
   };
 
-  const handleConnectAccount = (type) => {
-    const routes = {
-      deriv: '/derivhome',
-      forex: '/derivdash'
-    };
-    navigate(routes[type]);
+  const handleConnectAccount = async (type) => {
+    if (type === 'deriv') {
+      await handleDerivOAuth();
+    } else {
+      // Navigate to forex dashboard
+      navigate('/derivdash');
+      setIsModalOpen(false);
+    }
+  };
+
+  const handleDerivOAuth = async () => {
+    setIsLoading(true);
     setIsModalOpen(false);
+    setShowPopup(true);
+    setPopupProgress(10);
+    setPopupMessage('🔐 Initiating secure connection...');
+
+    try {
+      const authToken = localStorage.getItem('token');
+
+      setPopupProgress(30);
+      setPopupMessage('🔄 Authenticating with Deriv...');
+      await new Promise(resolve => setTimeout(resolve, 600));
+
+      const response = await fetch(
+        `${API_BASE_URL}/deriv/oauth/initiate`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            token: authToken
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.auth_url) {
+        setPopupProgress(70);
+        setPopupMessage('🚀 Redirecting to Deriv login...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        setPopupProgress(100);
+        setTimeout(() => {
+          window.location.href = data.auth_url;
+        }, 400);
+      } else {
+        setPopupProgress(100);
+        setPopupMessage('❌ Connection failed');
+        showCustomMessage(
+          `Connection failed: ${data.error || 'Unknown error'}`,
+          'error'
+        );
+        setIsLoading(false);
+        setTimeout(() => setShowPopup(false), 2000);
+      }
+    } catch (error) {
+      console.error('OAuth error:', error);
+      setPopupProgress(100);
+      setPopupMessage('❌ Connection error');
+      showCustomMessage(
+        'Cannot connect to server. Please check your connection.',
+        'error'
+      );
+      setIsLoading(false);
+      setTimeout(() => setShowPopup(false), 2500);
+    }
   };
 
   const handleLogout = () => {
@@ -995,6 +1379,17 @@ const Dashboard = () => {
       return user.email[0].toUpperCase();
     }
     return 'T';
+  };
+
+  const closePopup = () => {
+    if (!isLoading) {
+      setShowPopup(false);
+    }
+  };
+
+  const handleSupportClick = () => {
+    navigate('/settings');
+    setIsModalOpen(false);
   };
 
   return (
@@ -1058,16 +1453,28 @@ const Dashboard = () => {
 
       {/* SUPER PREMIUM FLOATING CONNECT BUTTON */}
       <ConnectButtonWrapper>
-        <ConnectButton onClick={handleConnect}>
+        <ConnectButton 
+          onClick={handleConnect}
+          disabled={isLoading}
+        >
           <span className="particle" />
           <span className="particle" />
           <span className="particle" />
           <span className="particle" />
           <span className="connect-badge">⚡ Live</span>
           <span className="button-content">
-            <span className="button-icon">🔗</span>
-            <span className="button-text">Connect Your Accounts</span>
-            <span className="button-arrow">→</span>
+            {isLoading ? (
+              <>
+                <span className="spinner">⟳</span>
+                <span className="button-text">Connecting...</span>
+              </>
+            ) : (
+              <>
+                <span className="button-icon">🔗</span>
+                <span className="button-text">Connect Your Accounts</span>
+                <span className="button-arrow">→</span>
+              </>
+            )}
           </span>
         </ConnectButton>
       </ConnectButtonWrapper>
@@ -1099,6 +1506,7 @@ const Dashboard = () => {
                   <span className="feature-tag">High-Freq</span>
                   <span className="feature-tag">AI Signals</span>
                 </div>
+                <div className="oauth-status">🔐 OAuth 2.0 Secure</div>
               </div>
             </OptionCard>
 
@@ -1120,15 +1528,66 @@ const Dashboard = () => {
             </OptionCard>
           </OptionGrid>
 
+          <MessageArea show={showMessage} type={messageType}>
+            <span className="msg-icon">
+              {messageType === 'success' ? '✅' : 
+               messageType === 'error' ? '❌' : 
+               'ℹ️'}
+            </span>
+            {message}
+          </MessageArea>
+
           <ModalFooter>
             <span className="security-badge">
               <span className="lock-icon">🔒</span>
               256-bit Encrypted Connection
             </span>
-            <a href="#" className="support-link">Need help? →</a>
+            <span 
+              className="support-link" 
+              onClick={handleSupportClick}
+            >
+              Need help? →
+            </span>
           </ModalFooter>
         </ModalContainer>
       </ModalOverlay>
+
+      {/* CINEMATIC POPUP */}
+      {showPopup && (
+        <Overlay onClick={closePopup}>
+          <PopupCard onClick={(e) => e.stopPropagation()}>
+            {popupMessage.includes('❌') ? (
+              <PopupIcon>⚠️</PopupIcon>
+            ) : popupMessage.includes('🚀') ? (
+              <PopupIcon>🚀</PopupIcon>
+            ) : (
+              <PopupSpinner>
+                <div className="ring" />
+                <div className="ring" />
+                <div className="ring" />
+              </PopupSpinner>
+            )}
+
+            <PopupTitle>
+              {popupMessage.includes('❌') ? 'Oops!' : 'Connecting...'}
+            </PopupTitle>
+
+            <PopupSubtitle>{popupMessage}</PopupSubtitle>
+
+            {!popupMessage.includes('❌') && !popupMessage.includes('🚀') && (
+              <PopupHint>⏳ Hang tight — we're redirecting you securely...</PopupHint>
+            )}
+
+            <PopupProgress progress={popupProgress}>
+              <div className="bar" />
+            </PopupProgress>
+
+            {popupMessage.includes('❌') && (
+              <PopupCloseButton onClick={closePopup}>Close</PopupCloseButton>
+            )}
+          </PopupCard>
+        </Overlay>
+      )}
     </>
   );
 };
