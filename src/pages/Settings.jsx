@@ -136,7 +136,7 @@ const Card = styled.div`
   .card-head{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;
     color:#e2e8f0;margin-bottom:18px;padding-bottom:12px;
     border-bottom:1px solid rgba(255,255,255,.03);
-    .icon{font-size:1rem;}
+    .icon{font-size:1rem;color:#4b5563;}
   }
 `;
 
@@ -219,7 +219,7 @@ const SupportSection = styled.div`
     display:flex;align-items:center;gap:8px;padding:8px 12px;
     background:rgba(255,255,255,.015);border-radius:8px;
     border:1px solid rgba(255,255,255,.03);
-    .icon{font-size:18px;}
+    .icon{font-size:18px;color:#4b5563;}
   }
 `;
 const ContactRow = styled.div`display:flex;gap:8px;flex-wrap:wrap;`;
@@ -247,7 +247,7 @@ const ModalBox = styled.div`
     background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.04);
     border-radius:10px;transition:all .3s ease;cursor:pointer;
     &:hover{background:rgba(255,255,255,.025);border-color:rgba(34,197,94,.1);}
-    .emoji{font-size:20px;width:36px;text-align:center;}
+    .icon{font-size:20px;width:36px;text-align:center;color:#4b5563;}
     .info{flex:1;
       .label{font-size:13px;font-weight:600;color:#f1f5f9;}
       .desc{font-size:10px;color:#64748b;}
@@ -366,7 +366,6 @@ const Settings = () => {
 
   const handleCallAdmin = () => {
     const phoneNumber = '0704182603';
-    // For mobile devices - opens phone dialer
     window.location.href = `tel:${phoneNumber}`;
   };
 
@@ -389,15 +388,15 @@ const Settings = () => {
 
       <Topbar>
         <Brand to="/dashboard">
-          <span className="logo">◆</span>
+          <span className="logo">🔷</span>
           <span className="name">Voltix Traders</span>
           <span className="dot" />
         </Brand>
         <ProfileArea>
-          <Greeting>👋 <span className="hi">{greeting}</span></Greeting>
+          <Greeting>Welcome, <span className="hi">{greeting}</span></Greeting>
           <Avatar>{getInitials()}</Avatar>
           <LogoutBtn onClick={() => { localStorage.removeItem('token'); localStorage.removeItem('user'); navigate('/login'); }}>
-            ✕ Logout
+            Logout
           </LogoutBtn>
         </ProfileArea>
       </Topbar>
@@ -405,14 +404,14 @@ const Settings = () => {
       <Container>
         <PageHeader>
           <Link to="/marketsdash" className="back">← Dashboard</Link>
-          <h1>⚙️ <span className="grad">Account Settings</span></h1>
+          <h1>⚙ <span className="grad">Account Settings</span></h1>
         </PageHeader>
 
         {showSuccess && <Success>✓ Profile updated successfully!</Success>}
 
         <Grid2>
           <Card>
-            <div className="card-head"><span className="icon">👤</span> Personal Information</div>
+            <div className="card-head"><span className="icon">◈</span> Personal Information</div>
             {[
               { label: 'First Name', name: 'first_name', type: 'text', placeholder: 'First name' },
               { label: 'Last Name', name: 'last_name', type: 'text', placeholder: 'Last name' },
@@ -436,7 +435,7 @@ const Settings = () => {
                 <>
                   <input type="date" name="date_of_birth" className={`inp${dobError ? ' err' : ''}`}
                     value={formData.date_of_birth} onChange={handleDobChange} max={getMaxDate()} />
-                  {dobError && <div className="err-msg">⚠️ {dobError}</div>}
+                  {dobError && <div className="err-msg">! {dobError}</div>}
                   {formData.date_of_birth && !dobError && calculatedAge !== null && (
                     <div style={{ fontSize: '10px', color: '#4ade80', marginTop: '4px' }}>
                       ✓ Age: <strong>{calculatedAge}</strong> yrs
@@ -447,7 +446,7 @@ const Settings = () => {
                 <div className="val">
                   <span>{formData.date_of_birth || 'Not set'}</span>
                   {formData.date_of_birth && calculatedAge !== null && (
-                    <span className="age-badge">🎂 {calculatedAge} yrs</span>
+                    <span className="age-badge">◇ {calculatedAge} yrs</span>
                   )}
                 </div>
               )}
@@ -485,7 +484,7 @@ const Settings = () => {
           </Card>
 
           <Card>
-            <div className="card-head"><span className="icon">🔒</span> Security & Privacy</div>
+            <div className="card-head"><span className="icon">◈</span> Security & Privacy</div>
             <Field>
               <label>Password</label>
               <div className="val" style={{ justifyContent: 'space-between' }}>
@@ -501,10 +500,10 @@ const Settings = () => {
               </div>
             </Field>
             <SupportSection>
-              <div className="stitle">💬 Need Help?</div>
+              <div className="stitle">◇ Need Help?</div>
               <div className="sdesc">Reach our support team via WhatsApp or call the admin directly.</div>
               <div className="support-number">
-                <span className="icon">📞</span>
+                <span className="icon">◈</span>
                 <span>0704 182 603</span>
               </div>
               <ContactRow style={{ marginTop: '8px' }}>
@@ -524,7 +523,7 @@ const Settings = () => {
               </ContactRow>
             </SupportSection>
             <DangerZone>
-              <div className="dtitle">⚠️ Danger Zone</div>
+              <div className="dtitle">! Danger Zone</div>
               <div className="ddesc">Permanently delete your account and all data. Cannot be undone.</div>
               <Btn className="danger" onClick={handleDelete}>🗑 Delete Account</Btn>
             </DangerZone>
@@ -536,12 +535,12 @@ const Settings = () => {
         <AdminModal onClick={(e) => { if (e.target === e.currentTarget) setShowAdminModal(false); }}>
           <ModalBox>
             <button className="close" onClick={() => setShowAdminModal(false)}>×</button>
-            <h2>📨 Contact Support</h2>
+            <h2>◈ Contact Support</h2>
             <p>Choose how you'd like to reach us:</p>
             
             <div className="call-options">
               <div className="call-option" onClick={handleCallAdmin}>
-                <span className="emoji">📞</span>
+                <span className="icon">◈</span>
                 <div className="info">
                   <div className="label">Call Admin</div>
                   <div className="desc">Speak directly with our support team</div>
@@ -550,7 +549,7 @@ const Settings = () => {
               </div>
               
               <div className="call-option" onClick={openWhatsApp}>
-                <span className="emoji">💬</span>
+                <span className="icon">◈</span>
                 <div className="info">
                   <div className="label">WhatsApp</div>
                   <div className="desc">Chat with us on WhatsApp</div>
@@ -569,7 +568,7 @@ const Settings = () => {
               borderRadius: '10px',
               marginBottom: '12px'
             }}>
-              <span style={{ fontSize: '18px' }}>📱</span>
+              <span style={{ fontSize: '18px', color: '#4b5563' }}>◈</span>
               <span style={{ fontSize: '13px', color: '#f1f5f9', fontFamily: 'Courier New, monospace' }}>
                 0704 182 603
               </span>
