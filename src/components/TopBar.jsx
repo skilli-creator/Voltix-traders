@@ -492,6 +492,10 @@ const CurrencyToggle = styled.div`
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
 
     &:hover {
       color: #cbd5e1;
@@ -507,6 +511,10 @@ const CurrencyToggle = styled.div`
       opacity: 0.5;
       cursor: not-allowed;
     }
+
+    .flag-small {
+      font-size: 14px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -514,12 +522,15 @@ const CurrencyToggle = styled.div`
     .toggle-option {
       font-size: 10px;
       padding: 4px 6px;
+      .flag-small {
+        font-size: 12px;
+      }
     }
   }
 `;
 
-// ===== FUNDS BUTTON =====
-const FundsButton = styled.a`
+// ===== PROFESSIONAL FUNDS BUTTON =====
+const ProfessionalFundsButton = styled.a`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -675,8 +686,8 @@ const FundsButton = styled.a`
   }
 `;
 
-// ===== EXIT BUTTON =====
-const ExitButton = styled.button`
+// ===== PREMIUM EXIT BUTTON =====
+const PremiumExitButton = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -828,14 +839,14 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
     real: { 
       balance: 7110.00, 
       currency: 'USD',
-      flag: 'US',
+      flag: '🇺🇸',
       kshBalance: 7110.00 * 150.50,
       eurBalance: 7110.00 * 0.92
     },
     demo: { 
       balance: 10000.00, 
       currency: 'USD',
-      flag: 'DM',
+      flag: '🎯',
       kshBalance: 10000.00 * 150.50,
       eurBalance: 10000.00 * 0.92
     }
@@ -850,12 +861,12 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
   };
 
   const getCurrencyFlag = () => {
-    if (accountType === 'demo') return 'DM';
+    if (accountType === 'demo') return '🎯';
     switch(selectedCurrency) {
-      case 'USD': return 'US';
-      case 'KSh': return 'KE';
-      case 'EUR': return 'EU';
-      default: return 'US';
+      case 'USD': return '🇺🇸';
+      case 'KSh': return '🇰🇪';
+      case 'EUR': return '🇪🇺';
+      default: return '🇺🇸';
     }
   };
 
@@ -975,7 +986,8 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
               onClick={() => setAccountType('real')}
               className={accountType === 'real' ? 'active' : ''}
             >
-              <span className="flag">◈</span> Real Account
+              <span className="flag">🇺🇸</span>
+              <span className="label">Real Account</span>
               <span className="balance-small">
                 {getDropdownBalance()}
               </span>
@@ -986,7 +998,8 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
               onClick={() => setAccountType('demo')}
               className={accountType === 'demo' ? 'active' : ''}
             >
-              <span className="flag">◇</span> Demo Account
+              <span className="flag">🎯</span>
+              <span className="label">Demo Account</span>
               <span className="balance-small">
                 {getDropdownBalance()}
               </span>
@@ -1000,45 +1013,45 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
                   className={`toggle-option ${selectedCurrency === 'USD' ? 'active' : ''}`}
                   onClick={() => handleCurrencyChange('USD')}
                 >
-                  USD
+                  <span className="flag-small">🇺🇸</span> USD
                 </button>
                 <button 
                   className={`toggle-option ${selectedCurrency === 'EUR' ? 'active' : ''}`}
                   onClick={() => handleCurrencyChange('EUR')}
                 >
-                  EUR
+                  <span className="flag-small">🇪🇺</span> EUR
                 </button>
                 <button 
                   className={`toggle-option ${selectedCurrency === 'KSh' ? 'active' : ''}`}
                   onClick={() => handleCurrencyChange('KSh')}
                 >
-                  KSh
+                  <span className="flag-small">🇰🇪</span> KSh
                 </button>
               </div>
             </CurrencyToggle>
           </DropdownMenu>
         </div>
 
-        <FundsButton 
+        <ProfessionalFundsButton 
           href="https://app.rubicash.com/account/dashboard"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <span className="funds-icon">◆</span>
+          <span className="funds-icon">💰</span>
           <span className="funds-content">
             <span className="funds-title">Funds</span>
             <span className="funds-subtitle">Secure transactions</span>
           </span>
           <span className="arrow-right">→</span>
-        </FundsButton>
+        </ProfessionalFundsButton>
 
-        <ExitButton onClick={handleExit}>
+        <PremiumExitButton onClick={handleExit}>
           <span className="exit-icon-container">
             <span className="exit-icon">⏻</span>
           </span>
           <span className="exit-text">Exit</span>
           <span className="exit-arrow-icon">→</span>
-        </ExitButton>
+        </PremiumExitButton>
       </RightSection>
     </TopBar>
   );
