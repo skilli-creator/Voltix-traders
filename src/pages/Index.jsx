@@ -603,7 +603,7 @@ const CTASub = styled.p`
 `;
 
 // ============================================
-// ORIGINAL FOOTER - No Emojis
+// ORIGINAL FOOTER - No Emojis, No Social Icons
 // ============================================
 const PremiumFooter = styled.footer`
   background: rgba(3, 7, 18, 0.9);
@@ -709,28 +709,6 @@ const FooterCol = styled.div`
   }
 `;
 
-const SocialIcons = styled.div`
-  display: flex;
-  gap: 14px;
-  margin-top: 12px;
-
-  @media (max-width: 480px) {
-    justify-content: center;
-  }
-
-  span {
-    font-size: 18px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #94a3b8;
-
-    &:hover {
-      color: #22c55e;
-      transform: translateY(-3px);
-    }
-  }
-`;
-
 const FooterBottom = styled.div`
   text-align: center;
   margin-top: 40px;
@@ -824,7 +802,7 @@ const Index = () => {
           </Hero>
         </Container>
 
-        {/* ===== FEATURES - No Emojis ===== */}
+        {/* ===== FEATURES ===== */}
         <FeaturesSection>
           <Container>
             <FeaturesGrid>
@@ -863,7 +841,7 @@ const Index = () => {
           </Container>
         </CTASection>
 
-        {/* ===== ORIGINAL FOOTER - No Emojis ===== */}
+        {/* ===== ORIGINAL FOOTER - No Emojis, No Social Icons ===== */}
         <PremiumFooter>
           <FooterGrid>
             <FooterCol>
@@ -874,12 +852,6 @@ const Index = () => {
               </div>
               <p className="footer-tagline">Next-gen multi-market execution engine</p>
               <p>Smart order routing • AI predictive models • Risk management</p>
-              <SocialIcons>
-                <span>tw</span>
-                <span>fb</span>
-                <span>in</span>
-                <span>ig</span>
-              </SocialIcons>
             </FooterCol>
             <FooterCol>
               <h4>Market Hours</h4>
