@@ -1297,7 +1297,6 @@ const Dashboard = () => {
     if (type === 'deriv') {
       await handleDerivOAuth();
     } else {
-      // Navigate to forex dashboard
       navigate('/derivdash');
       setIsModalOpen(false);
     }
@@ -1308,13 +1307,13 @@ const Dashboard = () => {
     setIsModalOpen(false);
     setShowPopup(true);
     setPopupProgress(10);
-    setPopupMessage('🔐 Initiating secure connection...');
+    setPopupMessage('Initiating secure connection...');
 
     try {
       const authToken = localStorage.getItem('token');
 
       setPopupProgress(30);
-      setPopupMessage('🔄 Authenticating with Deriv...');
+      setPopupMessage('Authenticating with Deriv...');
       await new Promise(resolve => setTimeout(resolve, 600));
 
       const response = await fetch(
@@ -1335,7 +1334,7 @@ const Dashboard = () => {
 
       if (response.ok && data.auth_url) {
         setPopupProgress(70);
-        setPopupMessage('🚀 Redirecting to Deriv login...');
+        setPopupMessage('Redirecting to Deriv login...');
         await new Promise(resolve => setTimeout(resolve, 500));
 
         setPopupProgress(100);
@@ -1344,7 +1343,7 @@ const Dashboard = () => {
         }, 400);
       } else {
         setPopupProgress(100);
-        setPopupMessage('❌ Connection failed');
+        setPopupMessage('Connection failed');
         showCustomMessage(
           `Connection failed: ${data.error || 'Unknown error'}`,
           'error'
@@ -1355,7 +1354,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error('OAuth error:', error);
       setPopupProgress(100);
-      setPopupMessage('❌ Connection error');
+      setPopupMessage('Connection error');
       showCustomMessage(
         'Cannot connect to server. Please check your connection.',
         'error'
@@ -1405,19 +1404,19 @@ const Dashboard = () => {
 
       <Topbar>
         <Brand to="/dashboard">
-          <span className="logo-icon">🔷</span>
+          <span className="logo-icon">◆</span>
           <span className="logo-text">Voltix Traders</span>
           <span className="live-dot" />
         </Brand>
         <ProfileArea>
           <Greeting>
-            👋 <span className="highlight">{greeting}</span>
+            Welcome, <span className="highlight">{greeting}</span>
           </Greeting>
           <ProfileAvatar to="/settings">
             {getInitials()}
-            <span className="settings-tooltip">⚙️ Account Settings</span>
+            <span className="settings-tooltip">⚙ Account Settings</span>
           </ProfileAvatar>
-          <LogoutButton onClick={handleLogout}>🚪 Logout</LogoutButton>
+          <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
         </ProfileArea>
       </Topbar>
 
@@ -1461,7 +1460,7 @@ const Dashboard = () => {
           <span className="particle" />
           <span className="particle" />
           <span className="particle" />
-          <span className="connect-badge">⚡ Live</span>
+          <span className="connect-badge">Live</span>
           <span className="button-content">
             {isLoading ? (
               <>
@@ -1484,7 +1483,7 @@ const Dashboard = () => {
         <ModalContainer>
           <ModalClose onClick={() => setIsModalOpen(false)}>✕</ModalClose>
           <ModalTitle>
-            <span className="title-icon">🚀</span>
+            <span className="title-icon">◆</span>
             Connect Platform
           </ModalTitle>
           <ModalSubtitle>
@@ -1530,9 +1529,9 @@ const Dashboard = () => {
 
           <MessageArea show={showMessage} type={messageType}>
             <span className="msg-icon">
-              {messageType === 'success' ? '✅' : 
-               messageType === 'error' ? '❌' : 
-               'ℹ️'}
+              {messageType === 'success' ? '✓' : 
+               messageType === 'error' ? '✗' : 
+               'ℹ'}
             </span>
             {message}
           </MessageArea>
@@ -1556,10 +1555,10 @@ const Dashboard = () => {
       {showPopup && (
         <Overlay onClick={closePopup}>
           <PopupCard onClick={(e) => e.stopPropagation()}>
-            {popupMessage.includes('❌') ? (
-              <PopupIcon>⚠️</PopupIcon>
-            ) : popupMessage.includes('🚀') ? (
-              <PopupIcon>🚀</PopupIcon>
+            {popupMessage.includes('failed') || popupMessage.includes('error') ? (
+              <PopupIcon>⚠</PopupIcon>
+            ) : popupMessage.includes('Redirecting') ? (
+              <PopupIcon>◆</PopupIcon>
             ) : (
               <PopupSpinner>
                 <div className="ring" />
@@ -1569,20 +1568,22 @@ const Dashboard = () => {
             )}
 
             <PopupTitle>
-              {popupMessage.includes('❌') ? 'Oops!' : 'Connecting...'}
+              {popupMessage.includes('failed') || popupMessage.includes('error') ? 'Error' : 'Connecting...'}
             </PopupTitle>
 
             <PopupSubtitle>{popupMessage}</PopupSubtitle>
 
-            {!popupMessage.includes('❌') && !popupMessage.includes('🚀') && (
-              <PopupHint>⏳ Hang tight — we're redirecting you securely...</PopupHint>
+            {!popupMessage.includes('failed') && 
+             !popupMessage.includes('error') && 
+             !popupMessage.includes('Redirecting') && (
+              <PopupHint>Please wait — redirecting securely...</PopupHint>
             )}
 
             <PopupProgress progress={popupProgress}>
               <div className="bar" />
             </PopupProgress>
 
-            {popupMessage.includes('❌') && (
+            {(popupMessage.includes('failed') || popupMessage.includes('error')) && (
               <PopupCloseButton onClick={closePopup}>Close</PopupCloseButton>
             )}
           </PopupCard>
