@@ -395,43 +395,41 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER - FIXED FOR PHONE =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER - FIXED =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: calc(100% - 20px);
+  width: calc(100% - 40px);
   max-width: 680px;
   padding: 0;
   background: transparent;
   border: none;
   box-shadow: none;
   position: absolute;
-  bottom: 40px;
+  bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  gap: 4px;
+  gap: 6px;
   pointer-events: none;
   z-index: 1;
 
   @media (max-width: 768px) {
-    width: calc(100% - 16px);
-    bottom: 32px;
-    gap: 3px;
-    max-width: 500px;
+    width: calc(100% - 30px);
+    bottom: 25px;
+    gap: 5px;
   }
 
   @media (max-width: 480px) {
-    width: calc(100% - 12px);
-    bottom: 24px;
-    gap: 2px;
-    max-width: 100%;
+    width: calc(100% - 20px);
+    bottom: 20px;
+    gap: 4px;
   }
 
   @media (max-width: 380px) {
-    width: calc(100% - 8px);
-    bottom: 18px;
-    gap: 1px;
+    width: calc(100% - 16px);
+    bottom: 16px;
+    gap: 3px;
   }
 `;
 
@@ -441,24 +439,20 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 10px;
+  padding-bottom: 12px;
   min-width: 0;
 
   @media (max-width: 768px) {
-    padding-bottom: 8px;
+    padding-bottom: 10px;
   }
 
   @media (max-width: 480px) {
-    padding-bottom: 6px;
-  }
-
-  @media (max-width: 380px) {
-    padding-bottom: 4px;
+    padding-bottom: 8px;
   }
 
   .circle-badge {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -474,26 +468,23 @@ const DigitItem = styled.div`
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
-      width: 28px;
-      height: 28px;
-      border-width: 1.5px;
+      width: 30px;
+      height: 30px;
     }
 
     @media (max-width: 480px) {
-      width: 22px;
-      height: 22px;
-      border-width: 1px;
+      width: 26px;
+      height: 26px;
     }
 
     @media (max-width: 380px) {
-      width: 18px;
-      height: 18px;
-      border-width: 1px;
+      width: 22px;
+      height: 22px;
     }
   }
 
   .digit-num {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
@@ -503,16 +494,16 @@ const DigitItem = styled.div`
     }
 
     @media (max-width: 480px) {
-      font-size: 8px;
+      font-size: 9px;
     }
 
     @media (max-width: 380px) {
-      font-size: 7px;
+      font-size: 8px;
     }
   }
 
   .pct-text {
-    font-size: 8px;
+    font-size: 7px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -521,44 +512,41 @@ const DigitItem = styled.div`
         : (props.isMin ? '#ff4a4a' : '#728096')
     };
     line-height: 1;
-    margin-top: 2px;
+    margin-top: 1px;
 
     @media (max-width: 768px) {
-      font-size: 7px;
-      margin-top: 1px;
+      font-size: 6px;
     }
 
     @media (max-width: 480px) {
-      font-size: 6px;
-      margin-top: 1px;
+      font-size: 5px;
     }
 
     @media (max-width: 380px) {
-      font-size: 5px;
-      margin-top: 0px;
+      font-size: 4px;
     }
   }
 
   .active-arrow {
     position: absolute;
-    bottom: -2px;
-    font-size: 8px;
+    bottom: -1px;
+    font-size: 9px;
     color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 6px;
+      font-size: 7px;
       bottom: -1px;
     }
 
     @media (max-width: 480px) {
-      font-size: 5px;
+      font-size: 6px;
       bottom: -1px;
     }
 
     @media (max-width: 380px) {
-      font-size: 4px;
+      font-size: 5px;
       bottom: 0px;
     }
   }
@@ -686,7 +674,7 @@ const ChartPanel = () => {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const pad = { top: 25, bottom: 35, left: 15, right: 65 };
+    const pad = { top: 25, bottom: 65, left: 15, right: 65 };
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
 
