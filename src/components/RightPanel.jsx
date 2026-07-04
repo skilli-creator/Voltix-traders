@@ -92,29 +92,43 @@ const PanelContainer = styled.div`
 `;
 
 // ============================================
-// 1. MARKET SELECTOR - ONLY ON PHONE
+// 1. MARKET & TRADE TYPE - TWO COLUMNS ON PHONE
 // ============================================
 
-const MarketSelectorWrapper = styled.div`
-  position: relative;
+const TopSelectorRow = styled.div`
+  display: flex;
+  gap: 8px;
   animation: ${fadeIn} 0.3s ease;
   margin-bottom: 4px;
 
-  @media (min-width: 769px) {
-    display: none;
+  @media (max-width: 768px) {
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 4px;
+    margin-bottom: 2px;
   }
 `;
 
-const MarketSelectorButton = styled.div`
+const SelectorWrapper = styled.div`
+  flex: 1;
+  position: relative;
+  min-width: 0;
+`;
+
+const SelectorButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: 8px 10px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid ${props => props.isOpen ? 'rgba(41, 98, 255, 0.6)' : 'rgba(255, 255, 255, 0.06)'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  height: 38px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -124,7 +138,7 @@ const MarketSelectorButton = styled.div`
   .left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
     flex: 1;
   }
@@ -137,8 +151,8 @@ const MarketSelectorButton = styled.div`
     flex-shrink: 0;
   }
 
-  .market-name {
-    font-size: 12px;
+  .selector-label {
+    font-size: 11px;
     font-weight: 600;
     color: #f1f5f9;
     white-space: nowrap;
@@ -153,18 +167,41 @@ const MarketSelectorButton = styled.div`
     transition: transform 0.3s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 6px;
+  }
+
+  .badge {
+    font-size: 6px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: rgba(41, 98, 255, 0.15);
+    color: #2962ff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 8px;
+    height: 32px;
+    .selector-label { font-size: 10px; }
+    .market-dot { width: 6px; height: 6px; }
+    .badge { font-size: 5px; padding: 1px 4px; }
   }
 
   @media (max-width: 480px) {
-    padding: 4px 8px;
-    .market-name { font-size: 10px; }
+    padding: 4px 6px;
+    height: 28px;
+    border-radius: 6px;
+    .selector-label { font-size: 9px; }
     .market-dot { width: 5px; height: 5px; }
     .arrow { font-size: 8px; }
+    .badge { font-size: 4px; padding: 1px 3px; }
   }
 `;
 
-const MarketDropdown = styled.div`
+const SelectorDropdown = styled.div`
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
@@ -178,7 +215,7 @@ const MarketDropdown = styled.div`
   animation: ${slideDown} 0.2s ease;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(20px);
-  max-height: 260px;
+  max-height: 200px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -188,10 +225,14 @@ const MarketDropdown = styled.div`
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
   }
+
+  @media (max-width: 480px) {
+    max-height: 160px;
+  }
 `;
 
-const MarketOption = styled.div`
-  padding: 10px 12px;
+const SelectorOption = styled.div`
+  padding: 8px 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -209,7 +250,7 @@ const MarketOption = styled.div`
   .left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
     flex: 1;
   }
@@ -222,7 +263,7 @@ const MarketOption = styled.div`
     flex-shrink: 0;
   }
 
-  .option-name {
+  .option-label {
     font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
@@ -239,109 +280,18 @@ const MarketOption = styled.div`
     margin-left: 8px;
   }
 
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    .option-label { font-size: 11px; }
+    .dot { width: 6px; height: 6px; }
+    .check { font-size: 12px; }
+  }
+
   @media (max-width: 480px) {
-    padding: 6px 8px;
-    .option-name { font-size: 10px; }
+    padding: 4px 8px;
+    .option-label { font-size: 10px; }
     .dot { width: 5px; height: 5px; }
-    .check { font-size: 11px; }
-  }
-`;
-
-// ============================================
-// 2. TRADE TYPE SELECTOR
-// ============================================
-
-const TradeTypeWrapper = styled.div`
-  position: relative;
-  animation: ${fadeIn} 0.3s ease;
-
-  @media (max-width: 768px) {
-    margin-bottom: 0;
-  }
-`;
-
-const TradeTypeButton = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-  border: 1px solid ${props => props.isOpen ? 'rgba(41, 98, 255, 0.6)' : 'rgba(26, 31, 46, 0.8)'};
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
-
-  &:hover {
-    border-color: rgba(41, 98, 255, 0.6);
-    background: rgba(41, 98, 255, 0.06);
-  }
-
-  .left { display: flex; align-items: center; gap: 10px; }
-  .label { font-size: 14px; font-weight: 500; color: #d1d4dc; letter-spacing: 0.2px; }
-  .arrow {
-    font-size: 12px; color: #5a6070;
-    transition: transform 0.3s ease;
-    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
-  }
-  .badge {
-    font-size: 7px; text-transform: uppercase; padding: 2px 6px;
-    border-radius: 8px; background: rgba(41, 98, 255, 0.15);
-    color: #2962ff; font-weight: 600; letter-spacing: 0.5px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 6px 10px;
-    .label { font-size: 12px; }
-    .badge { font-size: 6px; padding: 1px 4px; }
-  }
-
-  @media (max-width: 480px) {
-    padding: 3px 6px;
-    .label { font-size: 10px; }
-    gap: 2px;
-    .arrow { font-size: 9px; }
-    .badge { font-size: 5px; padding: 1px 3px; }
-  }
-`;
-
-const Dropdown = styled.div`
-  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: rgba(21, 26, 38, 0.98); border: 1px solid rgba(26, 31, 46, 0.8);
-  border-radius: 8px; overflow: hidden; z-index: 100;
-  display: ${props => props.isOpen ? 'block' : 'none'};
-  animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(20px);
-
-  @media (max-width: 480px) {
-    border-radius: 4px;
-  }
-`;
-
-const DropdownOption = styled.div`
-  padding: 10px 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: ${props => props.active ? '#ffffff' : '#8a93a6'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.12)' : 'transparent'};
-  font-size: 13px;
-  transition: all 0.15s ease;
-
-  &:hover { background: rgba(255, 255, 255, 0.04); color: #ffffff; }
-  .check { color: #2962ff; font-size: 14px; opacity: ${props => props.active ? 1 : 0}; }
-
-  @media (max-width: 768px) {
-    padding: 6px 10px;
-    font-size: 12px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 4px 6px;
-    font-size: 10px;
-    .check { font-size: 11px; }
+    .check { font-size: 10px; }
   }
 `;
 
@@ -1679,6 +1629,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
+  // === TRADE TYPE SELECTOR STATE ===
+  const [isTradeTypeDropdownOpen, setIsTradeTypeDropdownOpen] = useState(false);
+
   const selectedMarket = externalMarket || localSelectedMarket;
 
   // === DIGIT STATS STATE ===
@@ -1776,7 +1729,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const handleTradeTypeSelect = (id) => {
     setTradeType(id);
-    setIsDropdownOpen(false);
+    setIsTradeTypeDropdownOpen(false);
     setSelectedDigit(null);
     setSelectedBot(null);
     
@@ -1870,22 +1823,22 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // ===== RENDER MARKET SELECTOR =====
   const renderMarketSelector = () => (
-    <MarketSelectorWrapper>
-      <MarketSelectorButton 
+    <SelectorWrapper>
+      <SelectorButton 
         isOpen={isMarketDropdownOpen}
         onClick={toggleMarketDropdown}
         color={selectedMarket.color}
       >
         <div className="left">
           <span className="market-dot" />
-          <span className="market-name">{selectedMarket.name}</span>
+          <span className="selector-label">{selectedMarket.display}</span>
         </div>
         <span className="arrow">▾</span>
-      </MarketSelectorButton>
+      </SelectorButton>
       
-      <MarketDropdown isOpen={isMarketDropdownOpen}>
+      <SelectorDropdown isOpen={isMarketDropdownOpen}>
         {VOLATILITY_MARKETS.map((market) => (
-          <MarketOption
+          <SelectorOption
             key={market.symbol}
             active={selectedMarket.symbol === market.symbol}
             color={market.color}
@@ -1893,13 +1846,46 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           >
             <div className="left">
               <span className="dot" />
-              <span className="option-name">{market.name}</span>
+              <span className="option-label">{market.display}</span>
             </div>
             <span className="check">✓</span>
-          </MarketOption>
+          </SelectorOption>
         ))}
-      </MarketDropdown>
-    </MarketSelectorWrapper>
+      </SelectorDropdown>
+    </SelectorWrapper>
+  );
+
+  // ===== RENDER TRADE TYPE SELECTOR =====
+  const renderTradeTypeSelector = () => (
+    <SelectorWrapper>
+      <SelectorButton 
+        isOpen={isTradeTypeDropdownOpen}
+        onClick={() => setIsTradeTypeDropdownOpen(!isTradeTypeDropdownOpen)}
+      >
+        <div className="left">
+          <span className="selector-label">{getCurrentTrade().label}</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span className="badge">Active</span>
+          <span className="arrow">▾</span>
+        </div>
+      </SelectorButton>
+      
+      <SelectorDropdown isOpen={isTradeTypeDropdownOpen}>
+        {tradeTypes.map((type) => (
+          <SelectorOption
+            key={type.id}
+            active={tradeType === type.id}
+            onClick={() => handleTradeTypeSelect(type.id)}
+          >
+            <div className="left">
+              <span className="option-label">{type.label}</span>
+            </div>
+            <span className="check">✓</span>
+          </SelectorOption>
+        ))}
+      </SelectorDropdown>
+    </SelectorWrapper>
   );
 
   // ===== RENDER COMPACT TOGGLES =====
@@ -2243,35 +2229,13 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   return (
     <PanelContainer>
-      {/* 1. MARKET SELECTOR - ONLY ON PHONE */}
-      {isPhone && renderMarketSelector()}
+      {/* 1. MARKET & TRADE TYPE - TWO COLUMNS ON PHONE */}
+      <TopSelectorRow>
+        {renderMarketSelector()}
+        {renderTradeTypeSelector()}
+      </TopSelectorRow>
 
-      {/* 2. TRADE TYPE SELECTOR */}
-      <TradeTypeWrapper>
-        <TradeTypeButton isOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          <div className="left">
-            <span className="label">{getCurrentTrade().label}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="badge">Active</span>
-            <span className="arrow">▾</span>
-          </div>
-        </TradeTypeButton>
-        <Dropdown isOpen={isDropdownOpen}>
-          {tradeTypes.map((type) => (
-            <DropdownOption
-              key={type.id}
-              active={tradeType === type.id}
-              onClick={() => handleTradeTypeSelect(type.id)}
-            >
-              <span>{type.label}</span>
-              <span className="check">✓</span>
-            </DropdownOption>
-          ))}
-        </Dropdown>
-      </TradeTypeWrapper>
-
-      {/* 3. TRADE MODE - PREMIUM DESIGN */}
+      {/* 2. TRADE MODE - PREMIUM DESIGN */}
       <TradeModeWrapper>
         <TradeModeLabel>
           <span>Execution Mode</span>
@@ -2325,7 +2289,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </TradeModeButtons>
       </TradeModeWrapper>
 
-      {/* 4. BOT SELECTION */}
+      {/* 3. BOT SELECTION */}
       {tradeMode === 'use-bots' && (
         <>
           <BotHeader>
@@ -2359,29 +2323,29 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT (SAME ON ALL DEVICES) */}
+      {/* 4. INPUTS - COMPACT 2-COLUMN LAYOUT (SAME ON ALL DEVICES) */}
       {renderInputs()}
 
-      {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
+      {/* 5. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
-      {/* 7. DIGIT GRID */}
+      {/* 6. DIGIT GRID */}
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
 
-      {/* 8. EVEN/ODD BUTTONS */}
+      {/* 7. EVEN/ODD BUTTONS */}
       {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
 
-      {/* 9. TRADE BUTTONS */}
+      {/* 8. TRADE BUTTONS */}
       {tradeMode === 'manual' && tradeType !== 'evenodd' && renderTradeButtons()}
 
-      {/* 10. RUN BUTTON - Auto & Bots modes */}
+      {/* 9. RUN BUTTON - Auto & Bots modes */}
       {tradeMode === 'use-bots' ? (
         renderRunButton(!selectedBot)
       ) : tradeMode === 'auto' ? (
         renderRunButton(false)
       ) : null}
 
-      {/* 11. SESSION INFO (Bottom) */}
+      {/* 10. SESSION INFO (Bottom) */}
       <SessionInfo>
         <div className="left">
           <div className="label">Last Session</div>
@@ -2395,7 +2359,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </div>
       </SessionInfo>
 
-      {/* 12. AI FLOATING BUTTON - MANUAL MODE ONLY (All Devices) */}
+      {/* 11. AI FLOATING BUTTON - MANUAL MODE ONLY (All Devices) */}
       {renderAIFloatingButton()}
     </PanelContainer>
   );
