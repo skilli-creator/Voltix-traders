@@ -56,20 +56,24 @@ const PageWrapper = styled.div`
   @media (max-width: 768px) {
     padding: 12px;
   }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+  }
 `;
 
 const BackButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: none;
   border: none;
   color: #94a3b8;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  padding: 8px 0;
-  margin-bottom: 16px;
+  padding: 6px 0;
+  margin-bottom: 12px;
   transition: all 0.3s ease;
   align-self: flex-start;
 
@@ -79,37 +83,43 @@ const BackButton = styled.button`
   }
 
   .arrow {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    margin-bottom: 8px;
+    .arrow { font-size: 14px; }
   }
 `;
 
 // ===== HERO SECTION =====
 const HeroSection = styled.div`
   text-align: center;
-  padding: 20px 20px 30px;
+  padding: 16px 16px 20px;
   animation: ${fadeIn} 0.6s ease;
 
   .badge {
     display: inline-block;
-    padding: 4px 16px;
+    padding: 3px 12px;
     border-radius: 20px;
     background: rgba(56, 189, 248, 0.08);
     border: 1px solid rgba(56, 189, 248, 0.1);
     color: #38bdf8;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   .title {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 800;
     color: #f1f5f9;
     line-height: 1.1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 
     .gradient {
       background: linear-gradient(135deg, #22c55e, #38bdf8, #818cf8);
@@ -120,29 +130,36 @@ const HeroSection = styled.div`
   }
 
   .subtitle {
-    font-size: 14px;
+    font-size: 13px;
     color: #94a3b8;
     max-width: 500px;
     margin: 0 auto;
-    line-height: 1.7;
+    line-height: 1.6;
   }
 
   @media (max-width: 768px) {
-    padding: 16px 12px 20px;
-    .title { font-size: 24px; }
-    .subtitle { font-size: 13px; }
+    padding: 12px 12px 14px;
+    .title { font-size: 22px; }
+    .subtitle { font-size: 12px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 8px 10px;
+    .badge { font-size: 9px; padding: 2px 10px; }
+    .title { font-size: 18px; }
+    .subtitle { font-size: 11px; }
   }
 `;
 
 // ===== MASTER TRADER CARD =====
 const MasterTraderCard = styled.div`
   max-width: 700px;
-  margin: 0 auto 20px;
+  margin: 0 auto 16px;
   width: 100%;
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.04), rgba(129, 140, 248, 0.02));
   border: 1px solid rgba(56, 189, 248, 0.06);
-  border-radius: 16px;
-  padding: 20px 24px;
+  border-radius: 14px;
+  padding: 16px 20px;
   animation: ${fadeIn} 0.7s ease;
   position: relative;
   overflow: hidden;
@@ -161,19 +178,19 @@ const MasterTraderCard = styled.div`
   .master-header {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     position: relative;
     z-index: 1;
 
     .master-avatar {
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: linear-gradient(135deg, #22c55e, #38bdf8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
       color: white;
       flex-shrink: 0;
@@ -184,22 +201,22 @@ const MasterTraderCard = styled.div`
       flex: 1;
 
       .master-name {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         color: #f1f5f9;
       }
 
       .master-title {
-        font-size: 12px;
+        font-size: 11px;
         color: #64748b;
         margin-top: 1px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
 
         .live-dot {
-          width: 6px;
-          height: 6px;
+          width: 5px;
+          height: 5px;
           border-radius: 50%;
           background: #22c55e;
           display: inline-block;
@@ -209,8 +226,8 @@ const MasterTraderCard = styled.div`
     }
 
     .master-badge {
-      font-size: 10px;
-      padding: 4px 14px;
+      font-size: 9px;
+      padding: 3px 12px;
       border-radius: 20px;
       background: rgba(34, 197, 94, 0.08);
       color: #22c55e;
@@ -221,22 +238,22 @@ const MasterTraderCard = styled.div`
 
   .master-stats {
     display: flex;
-    gap: 24px;
-    margin-top: 12px;
-    padding-top: 12px;
+    gap: 20px;
+    margin-top: 10px;
+    padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.02);
     position: relative;
     z-index: 1;
 
     .stat {
       .stat-value {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         color: #f1f5f9;
         font-family: 'Courier New', monospace;
       }
       .stat-label {
-        font-size: 10px;
+        font-size: 9px;
         color: #64748b;
         text-transform: uppercase;
         letter-spacing: 0.3px;
@@ -246,22 +263,33 @@ const MasterTraderCard = styled.div`
   }
 
   @media (max-width: 600px) {
-    padding: 16px 18px;
-    .master-avatar { width: 44px; height: 44px; font-size: 18px; }
-    .master-name { font-size: 16px; }
-    .master-stats { gap: 16px; .stat .stat-value { font-size: 15px; } }
+    padding: 12px 14px;
+    .master-avatar { width: 38px; height: 38px; font-size: 15px; }
+    .master-name { font-size: 14px; }
+    .master-title { font-size: 10px; }
+    .master-stats { gap: 14px; .stat .stat-value { font-size: 14px; } }
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 12px;
+    border-radius: 12px;
+    .master-avatar { width: 32px; height: 32px; font-size: 12px; }
+    .master-name { font-size: 13px; }
+    .master-title { font-size: 9px; }
+    .master-stats { gap: 10px; .stat .stat-value { font-size: 12px; } .stat .stat-label { font-size: 8px; } }
+    .master-badge { font-size: 8px; padding: 2px 8px; }
   }
 `;
 
-// ===== CONNECT CLIENT SECTION =====
+// ===== CONNECT SECTION =====
 const ConnectSection = styled.div`
   max-width: 700px;
-  margin: 0 auto 24px;
+  margin: 0 auto 16px;
   width: 100%;
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
-  padding: 24px 28px;
+  border-radius: 14px;
+  padding: 18px 20px;
   animation: ${fadeIn} 0.7s ease;
   position: relative;
   overflow: hidden;
@@ -278,24 +306,24 @@ const ConnectSection = styled.div`
   }
 
   .section-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: #f1f5f9;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .section-subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: #94a3b8;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .input-group {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     position: relative;
     z-index: 1;
@@ -306,21 +334,21 @@ const ConnectSection = styled.div`
 
       .input-icon {
         position: absolute;
-        left: 12px;
+        left: 10px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 16px;
+        font-size: 14px;
         color: #64748b;
       }
 
       input {
         width: 100%;
-        padding: 12px 12px 12px 44px;
+        padding: 10px 10px 10px 38px;
         background: rgba(255, 255, 255, 0.02);
         border: 1px solid rgba(255, 255, 255, 0.04);
-        border-radius: 10px;
+        border-radius: 8px;
         color: #f1f5f9;
-        font-size: 14px;
+        font-size: 13px;
         outline: none;
         transition: all 0.2s ease;
         font-family: 'Courier New', monospace;
@@ -337,12 +365,12 @@ const ConnectSection = styled.div`
     }
 
     .connect-btn {
-      padding: 12px 24px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       background: linear-gradient(135deg, #2962ff, #1a4fcf);
       color: #ffffff;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -377,13 +405,13 @@ const ConnectSection = styled.div`
   }
 
   .connection-status {
-    margin-top: 12px;
-    padding: 10px 14px;
+    margin-top: 10px;
+    padding: 8px 12px;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     position: relative;
     z-index: 1;
 
@@ -406,8 +434,8 @@ const ConnectSection = styled.div`
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       flex-shrink: 0;
 
@@ -418,7 +446,7 @@ const ConnectSection = styled.div`
   }
 
   @media (max-width: 600px) {
-    padding: 18px 16px;
+    padding: 14px 14px;
     .input-group {
       flex-direction: column;
       .connect-btn { width: 100%; justify-content: center; }
@@ -426,7 +454,13 @@ const ConnectSection = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 14px 12px;
+    padding: 12px 10px;
+    border-radius: 12px;
+    .section-title { font-size: 13px; }
+    .section-subtitle { font-size: 10px; }
+    .input-group .input-wrapper input { font-size: 12px; padding: 8px 8px 8px 34px; }
+    .input-group .connect-btn { font-size: 11px; padding: 8px 16px; }
+    .connection-status { font-size: 11px; padding: 6px 10px; }
   }
 `;
 
@@ -434,26 +468,28 @@ const ConnectSection = styled.div`
 const ClientsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
   max-width: 900px;
-  margin: 0 auto 24px;
+  margin: 0 auto 16px;
   width: 100%;
   animation: ${fadeIn} 0.8s ease;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
+    gap: 8px;
   }
 `;
 
 const ClientCard = styled.div`
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid ${props => props.active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
-  border-radius: 16px;
-  padding: 18px 16px;
+  border-radius: 14px;
+  padding: 14px 14px;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -472,18 +508,18 @@ const ClientCard = styled.div`
   .client-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-bottom: 6px;
 
     .client-avatar {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: linear-gradient(135deg, #818cf8, #38bdf8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: white;
       flex-shrink: 0;
@@ -494,13 +530,13 @@ const ClientCard = styled.div`
       min-width: 0;
 
       .client-name {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
         color: #f1f5f9;
       }
 
       .client-token {
-        font-size: 10px;
+        font-size: 9px;
         color: #64748b;
         font-family: 'Courier New', monospace;
         margin-top: 1px;
@@ -509,8 +545,8 @@ const ClientCard = styled.div`
     }
 
     .status-badge {
-      font-size: 8px;
-      padding: 2px 10px;
+      font-size: 7px;
+      padding: 2px 8px;
       border-radius: 20px;
       font-weight: 600;
       flex-shrink: 0;
@@ -537,9 +573,9 @@ const ClientCard = styled.div`
 
   .client-details {
     display: flex;
-    gap: 12px;
-    margin: 8px 0 10px;
-    padding: 8px 0;
+    gap: 10px;
+    margin: 6px 0 8px;
+    padding: 6px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.02);
     border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 
@@ -548,14 +584,14 @@ const ClientCard = styled.div`
       text-align: center;
 
       .detail-value {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 700;
         color: #f1f5f9;
         font-family: 'Courier New', monospace;
       }
 
       .detail-label {
-        font-size: 7px;
+        font-size: 6px;
         color: #64748b;
         text-transform: uppercase;
         letter-spacing: 0.3px;
@@ -566,14 +602,14 @@ const ClientCard = styled.div`
 
   .client-actions {
     display: flex;
-    gap: 6px;
+    gap: 4px;
 
     .action-btn {
       flex: 1;
-      padding: 6px 0;
+      padding: 5px 0;
       border: none;
       border-radius: 6px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -612,26 +648,31 @@ const ClientCard = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 14px 12px;
-    .client-details { gap: 8px; }
+    padding: 10px 10px;
+    border-radius: 12px;
+    .client-avatar { width: 28px; height: 28px; font-size: 10px; }
+    .client-name { font-size: 11px; }
+    .client-token { font-size: 8px; }
+    .client-details .detail .detail-value { font-size: 11px; }
+    .client-actions .action-btn { font-size: 9px; padding: 4px 0; }
   }
 `;
 
 // ===== ADD CLIENT BUTTON =====
 const AddClientButton = styled.button`
-  padding: 16px 0;
+  padding: 14px 0;
   border: 2px dashed rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
+  border-radius: 14px;
   background: transparent;
   color: #64748b;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   width: 100%;
 
   &:hover {
@@ -641,48 +682,57 @@ const AddClientButton = styled.button`
   }
 
   .icon {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .text {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .sub-text {
-    font-size: 11px;
+    font-size: 10px;
     color: #4a4f5e;
   }
 
   @media (max-width: 480px) {
-    padding: 12px 0;
-    .icon { font-size: 24px; }
+    padding: 10px 0;
+    .icon { font-size: 20px; }
+    .text { font-size: 11px; }
+    .sub-text { font-size: 9px; }
   }
 `;
 
 // ===== EMPTY STATE =====
 const EmptyState = styled.div`
   text-align: center;
-  padding: 40px 20px;
+  padding: 30px 20px;
   border: 1px dashed rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
+  border-radius: 14px;
   grid-column: 1 / -1;
 
   .empty-icon {
-    font-size: 48px;
+    font-size: 40px;
     opacity: 0.3;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .empty-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: #f1f5f9;
   }
 
   .empty-sub {
-    font-size: 13px;
+    font-size: 12px;
     color: #64748b;
-    margin-top: 4px;
+    margin-top: 3px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 16px;
+    .empty-icon { font-size: 32px; }
+    .empty-title { font-size: 13px; }
+    .empty-sub { font-size: 11px; }
   }
 `;
 
@@ -798,7 +848,7 @@ const CopyTrading = () => {
       </BackButton>
 
       <HeroSection>
-        <div className="badge">🔄 Copy Trading</div>
+        <div className="badge">Copy Trading</div>
         <h1 className="title">
           Copy <span className="gradient">Trading</span>
         </h1>
@@ -818,7 +868,7 @@ const CopyTrading = () => {
               Master Trader • Live Copy Trading
             </div>
           </div>
-          <span className="master-badge">🟢 Active</span>
+          <span className="master-badge">Active</span>
         </div>
         <div className="master-stats">
           <div className="stat">
@@ -882,7 +932,7 @@ const CopyTrading = () => {
                   {client.status === 'pending' ? (
                     <>
                       <button className="action-btn activate" onClick={() => handleActivateClient(client.id)}>
-                        ✅ Activate
+                        Activate
                       </button>
                       <button className="action-btn remove" onClick={() => handleRemoveClient(client.id)}>
                         Remove
@@ -891,7 +941,7 @@ const CopyTrading = () => {
                   ) : client.status === 'active' ? (
                     <>
                       <button className="action-btn view" onClick={() => handleViewClient(client.id)}>
-                        👁️ View
+                        View
                       </button>
                       <button className="action-btn remove" onClick={() => handleRemoveClient(client.id)}>
                         Remove
@@ -900,7 +950,7 @@ const CopyTrading = () => {
                   ) : (
                     <>
                       <button className="action-btn activate" onClick={() => handleActivateClient(client.id)}>
-                        🔄 Reactivate
+                        Reactivate
                       </button>
                       <button className="action-btn remove" onClick={() => handleRemoveClient(client.id)}>
                         Remove
@@ -925,14 +975,14 @@ const CopyTrading = () => {
         ) : (
           <div style={{ gridColumn: '1 / -1' }}>
             <ConnectSection style={{ marginBottom: 0 }}>
-              <div className="section-title">👤 Add New Client</div>
+              <div className="section-title">Add New Client</div>
               <div className="section-subtitle">
                 Enter your client's name and API token to add them
               </div>
 
-              <div className="input-group" style={{ flexDirection: 'column', gap: '10px' }}>
+              <div className="input-group" style={{ flexDirection: 'column', gap: '8px' }}>
                 <div className="input-wrapper" style={{ width: '100%' }}>
-                  <span className="input-icon">👤</span>
+                  <span className="input-icon">◈</span>
                   <input
                     type="text"
                     placeholder="Enter client's name (e.g., John Smith)"
@@ -942,7 +992,7 @@ const CopyTrading = () => {
                   />
                 </div>
                 <div className="input-wrapper" style={{ width: '100%' }}>
-                  <span className="input-icon">🔑</span>
+                  <span className="input-icon">◈</span>
                   <input
                     type="text"
                     placeholder="Enter client's API token (e.g., 0x7a3f...9b2e)"
@@ -954,7 +1004,7 @@ const CopyTrading = () => {
                     className={connecting ? 'loading' : ''}
                   />
                 </div>
-                <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
                   <button 
                     className="connect-btn" 
                     onClick={handleConnect}
@@ -996,11 +1046,11 @@ const CopyTrading = () => {
 
       {/* FOOTER */}
       <div style={{
-        marginTop: '30px',
-        paddingTop: '20px',
+        marginTop: '24px',
+        paddingTop: '16px',
         borderTop: '1px solid rgba(255, 255, 255, 0.02)',
         textAlign: 'center',
-        fontSize: '11px',
+        fontSize: '10px',
         color: '#4a4f5e',
         maxWidth: '900px',
         marginLeft: 'auto',
@@ -1009,7 +1059,7 @@ const CopyTrading = () => {
       }}>
         Voltix Traders • Copy Trading
         <span style={{ display: 'block', marginTop: '2px', color: '#3a4055' }}>
-          🔄 Share your trades with followers and grow together
+          Share your trades with followers and grow together
         </span>
       </div>
     </PageWrapper>
