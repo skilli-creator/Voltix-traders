@@ -67,7 +67,7 @@ const LeftSection = styled.div`
   }
 `;
 
-// ===== SIDEBAR TOGGLE ICON =====
+// ===== SIDEBAR TOGGLE ICON - TOOLTIP REMOVED =====
 const SidebarToggle = styled.button`
   display: flex;
   flex-direction: column;
@@ -125,29 +125,7 @@ const SidebarToggle = styled.button`
     }
   }
 
-  .toggle-tooltip {
-    position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%) scale(0.8);
-    background: rgba(8, 18, 38, 0.95);
-    backdrop-filter: blur(8px);
-    color: #94a3b8;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
-    border: 1px solid rgba(56, 189, 248, 0.1);
-  }
-
-  &:hover .toggle-tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) scale(1);
-  }
+  // TOOLTIP COMPLETELY REMOVED - No .toggle-tooltip class
 
   @media (max-width: 768px) {
     width: 32px;
@@ -1015,9 +993,6 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
           <span className="line"></span>
           <span className="line"></span>
           <span className="line"></span>
-          <span className="toggle-tooltip">
-            {isSidebarOpen ? 'Close Menu' : 'Open Menu'}
-          </span>
         </SidebarToggle>
 
         <Brand>
