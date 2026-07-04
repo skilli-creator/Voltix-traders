@@ -73,7 +73,28 @@ const shimmerLine = keyframes`
 
 const floatPulse = keyframes`
   0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-8px) scale(1.02); }
+  50% { transform: translateY(-10px) scale(1.03); }
+`;
+
+const cosmicFloat = keyframes`
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(1deg); }
+  75% { transform: translateY(5px) rotate(-1deg); }
+`;
+
+const shimmerWave = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
+const modalSlideUp = keyframes`
+  0% { opacity: 0; transform: translateY(40px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+const glowPulse = keyframes`
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
 `;
 
 // ============================================
@@ -133,7 +154,7 @@ const GridOverlay = styled.div`
 `;
 
 // ============================================
-// TOPBAR - Minimal
+// TOPBAR - With Settings Avatar
 // ============================================
 const Topbar = styled.div`
   display: flex;
@@ -207,6 +228,89 @@ const Greeting = styled.span`
   }
 `;
 
+const ProfileAvatar = styled(Link)`
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  background: linear-gradient(135deg, #1a2332, #0a0f1f);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  text-transform: uppercase;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.05);
+  text-decoration: none;
+
+  &:hover {
+    border-color: #22c55e;
+    transform: scale(1.08) rotate(-3deg);
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.15);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    animation: ${pulseRing} 2s ease-out infinite;
+  }
+
+  .settings-tooltip {
+    position: absolute;
+    bottom: -36px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(5, 10, 24, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(34, 197, 94, 0.15);
+    color: #f1f5f9;
+    padding: 4px 14px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 6px solid rgba(34, 197, 94, 0.15);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 5px solid rgba(5, 10, 24, 0.95);
+    }
+  }
+
+  &:hover .settings-tooltip {
+    opacity: 1;
+    bottom: -40px;
+  }
+`;
+
 const LogoutButton = styled.button`
   background: rgba(239, 68, 68, 0.08);
   border: 1px solid rgba(239, 68, 68, 0.15);
@@ -227,7 +331,7 @@ const LogoutButton = styled.button`
 `;
 
 // ============================================
-// FLOATING CONNECT BUTTON - SUPER DESIGNED
+// FLOATING CONNECT BUTTON - SUPER PREMIUM
 // ============================================
 const ConnectButtonWrapper = styled.div`
   position: fixed;
@@ -235,7 +339,7 @@ const ConnectButtonWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  animation: ${floatPulse} 3s ease-in-out infinite;
+  animation: ${cosmicFloat} 4s ease-in-out infinite;
   cursor: pointer;
 
   @media (max-width: 768px) {
@@ -247,76 +351,95 @@ const ConnectButtonWrapper = styled.div`
 
 const ConnectButton = styled.button`
   position: relative;
-  padding: 18px 48px;
-  font-size: 1.1rem;
+  padding: 20px 52px;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #fff;
   background: linear-gradient(135deg, #22c55e, #16a34a);
   border: none;
   border-radius: 60px;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 10px 40px rgba(34, 197, 94, 0.25),
-    0 0 80px rgba(34, 197, 94, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 10px 40px rgba(34, 197, 94, 0.3),
+    0 0 80px rgba(34, 197, 94, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   overflow: hidden;
   letter-spacing: 0.5px;
   width: 100%;
   white-space: nowrap;
 
+  /* Premium gradient border glow */
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(255, 255, 255, 0.15), 
-      transparent
-    );
-    animation: ${slideGlow} 4s ease-in-out infinite;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: 62px;
-    padding: 2px;
+    inset: -3px;
+    border-radius: 63px;
+    padding: 3px;
     background: conic-gradient(
       from 0deg,
-      transparent,
-      rgba(34, 197, 94, 0.3),
-      transparent,
-      rgba(56, 189, 248, 0.3),
-      transparent
+      #22c55e,
+      #38bdf8,
+      #a855f7,
+      #22c55e,
+      #38bdf8,
+      #22c55e
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: ${rotateGlow} 6s linear infinite;
-    pointer-events: none;
+    animation: ${rotateGlow} 8s linear infinite;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
   }
 
+  &:hover::before {
+    opacity: 1;
+  }
+
+  /* Shimmer effect */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.2), 
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: ${shimmerWave} 3s ease-in-out infinite;
+  }
+
+  /* Inner glow on hover */
   &:hover {
-    transform: translateY(-4px) scale(1.02);
+    transform: translateY(-6px) scale(1.03);
     box-shadow: 
-      0 20px 60px rgba(34, 197, 94, 0.4),
-      0 0 100px rgba(34, 197, 94, 0.15);
+      0 20px 60px rgba(34, 197, 94, 0.5),
+      0 0 100px rgba(34, 197, 94, 0.2);
   }
 
   &:active {
     transform: scale(0.96);
   }
 
+  .button-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+
   .button-icon {
-    margin-right: 12px;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     display: inline-block;
     animation: ${floatPulse} 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
   }
 
   .button-text {
@@ -324,19 +447,66 @@ const ConnectButton = styled.button`
     z-index: 1;
   }
 
+  .button-arrow {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+
+  &:hover .button-arrow {
+    transform: translateX(6px);
+  }
+
   .connect-badge {
     position: absolute;
-    top: -10px;
-    right: -10px;
+    top: -12px;
+    right: -12px;
     background: linear-gradient(135deg, #f59e0b, #ef4444);
     color: #fff;
     font-size: 0.55rem;
     font-weight: 700;
-    padding: 4px 12px;
+    padding: 4px 14px;
     border-radius: 20px;
     animation: ${pulseGlow} 2s ease-in-out infinite;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    z-index: 2;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  }
+
+  /* Floating particles */
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(34, 197, 94, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: ${glowPulse} 2s ease-in-out infinite;
+  }
+
+  .particle:nth-child(1) {
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+  }
+
+  .particle:nth-child(2) {
+    bottom: 20%;
+    right: 10%;
+    animation-delay: 0.7s;
+  }
+
+  .particle:nth-child(3) {
+    top: 10%;
+    right: 30%;
+    animation-delay: 1.4s;
+  }
+
+  .particle:nth-child(4) {
+    bottom: 10%;
+    left: 30%;
+    animation-delay: 2.1s;
   }
 
   @media (max-width: 768px) {
@@ -345,7 +515,7 @@ const ConnectButton = styled.button`
     white-space: normal;
 
     .button-icon {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
     }
 
     .connect-badge {
@@ -354,17 +524,21 @@ const ConnectButton = styled.button`
       font-size: 0.45rem;
       padding: 3px 10px;
     }
+
+    .particle {
+      display: none;
+    }
   }
 `;
 
 // ============================================
-// CONNECT MODAL - Super designed
+// CONNECT MODAL - Super Premium
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(16px);
   z-index: 2000;
   display: ${props => props.isOpen ? 'flex' : 'none'};
   align-items: center;
@@ -374,17 +548,43 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  background: linear-gradient(145deg, rgba(10, 20, 40, 0.98), rgba(5, 10, 24, 0.98));
+  background: linear-gradient(160deg, rgba(10, 20, 40, 0.98), rgba(5, 10, 24, 0.98));
   border-radius: 32px;
-  padding: 40px 48px;
-  max-width: 520px;
+  padding: 44px 48px;
+  max-width: 540px;
   width: 100%;
-  border: 1px solid rgba(56, 189, 248, 0.08);
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.06);
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.7),
+    0 0 60px rgba(34, 197, 94, 0.03);
   position: relative;
   overflow: hidden;
+  animation: ${modalSlideUp} 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
+  /* Animated gradient border */
   &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 34px;
+    padding: 2px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(34, 197, 94, 0.2),
+      rgba(56, 189, 248, 0.2),
+      rgba(129, 140, 248, 0.2),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 10s linear infinite;
+    pointer-events: none;
+  }
+
+  /* Top glow line */
+  &::after {
     content: '';
     position: absolute;
     top: 0;
@@ -408,8 +608,8 @@ const ModalClose = styled.button`
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   color: #94a3b8;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 16px;
@@ -417,30 +617,39 @@ const ModalClose = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 
   &:hover {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.2);
     color: #ef4444;
-    transform: rotate(90deg);
+    transform: rotate(90deg) scale(1.1);
   }
 `;
 
 const ModalTitle = styled.h2`
-  font-size: 1.6rem;
+  font-size: 1.7rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   background: linear-gradient(135deg, #f1f5f9, #94a3b8);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .title-icon {
+    font-size: 1.4rem;
+  }
 `;
 
 const ModalSubtitle = styled.p`
   font-size: 0.9rem;
   color: #94a3b8;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
   line-height: 1.6;
+  padding-right: 20px;
 `;
 
 const OptionGrid = styled.div`
@@ -457,14 +666,15 @@ const OptionCard = styled.button`
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 20px;
-  padding: 24px 16px;
+  padding: 28px 20px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   color: #f1f5f9;
   position: relative;
   overflow: hidden;
 
+  /* Top gradient bar */
   &::before {
     content: '';
     position: absolute;
@@ -474,17 +684,32 @@ const OptionCard = styled.button`
     height: 3px;
     background: ${props => props.color || 'linear-gradient(90deg, #22c55e, #38bdf8)'};
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
+  }
+
+  /* Glow on hover */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: radial-gradient(circle at center, ${props => props.glowColor || 'rgba(34, 197, 94, 0.05)'}, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
   }
 
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px) scale(1.02);
     background: rgba(255, 255, 255, 0.04);
     border-color: rgba(56, 189, 248, 0.08);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
 
   &:hover::before {
+    opacity: 1;
+  }
+
+  &:hover::after {
     opacity: 1;
   }
 
@@ -492,118 +717,228 @@ const OptionCard = styled.button`
     transform: scale(0.97);
   }
 
+  .option-content {
+    position: relative;
+    z-index: 1;
+  }
+
   .option-icon {
-    font-size: 2.4rem;
+    font-size: 2.8rem;
     display: block;
     margin-bottom: 10px;
   }
 
   .option-name {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 600;
     margin-bottom: 4px;
   }
 
   .option-desc {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: #94a3b8;
+    line-height: 1.4;
   }
 
   .option-badge {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    right: 10px;
     font-size: 0.5rem;
-    padding: 2px 10px;
+    padding: 3px 12px;
     border-radius: 12px;
     background: rgba(34, 197, 94, 0.1);
     border: 1px solid rgba(34, 197, 94, 0.1);
     color: #4ade80;
     text-transform: uppercase;
     letter-spacing: 0.3px;
+    z-index: 1;
+  }
+
+  .option-features {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+
+    .feature-tag {
+      font-size: 0.55rem;
+      padding: 2px 10px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 22px 16px;
+    .option-icon { font-size: 2.2rem; }
+    .option-name { font-size: 0.95rem; }
   }
 `;
 
 const ModalFooter = styled.div`
-  margin-top: 24px;
-  text-align: center;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 0.7rem;
   color: #4b5563;
 
-  .highlight {
+  .security-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     color: #38bdf8;
+    font-weight: 500;
+
+    .lock-icon {
+      font-size: 0.9rem;
+    }
+  }
+
+  .support-link {
+    color: #4b5563;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #22c55e;
+    }
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
   }
 `;
 
 // ============================================
-// MAIN CONTENT - Minimal
+// MAIN CONTENT - Minimal & Elegant
 // ============================================
 const Container = styled.div`
   max-width: 1100px;
   margin: 0 auto;
-  padding: 40px 24px 100px;
+  padding: 60px 24px 100px;
   position: relative;
   z-index: 2;
   text-align: center;
 
   @media (max-width: 768px) {
-    padding: 24px 16px 80px;
+    padding: 32px 16px 80px;
   }
 `;
 
-const WelcomeText = styled.div`
+const HeroSection = styled.div`
   animation: ${floatIn} 0.7s ease;
-  margin-top: 40px;
+  margin-top: 20px;
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 30px;
+    background: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.08);
+    font-size: 0.7rem;
+    color: #4ade80;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+
+    .badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseGlow} 2s ease-in-out infinite;
+    }
+  }
 
   h1 {
-    font-size: 2.8rem;
+    font-size: 3.2rem;
     font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 12px;
+    line-height: 1.15;
+    margin-bottom: 16px;
 
     .highlight {
       background: linear-gradient(135deg, #22c55e, #38bdf8);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #22c55e, #38bdf8);
+        border-radius: 2px;
+        opacity: 0.3;
+      }
     }
   }
 
-  p {
-    font-size: 1.1rem;
+  .hero-sub {
+    font-size: 1.15rem;
     color: #94a3b8;
-    max-width: 500px;
+    max-width: 480px;
     margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 32px;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .stat-number {
+        font-size: 1.6rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #f1f5f9, #94a3b8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .stat-label {
+        font-size: 0.65rem;
+        color: #4b5563;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
   }
 
   @media (max-width: 768px) {
     h1 {
-      font-size: 2rem;
+      font-size: 2.2rem;
     }
-    p {
-      font-size: 0.95rem;
+    .hero-sub {
+      font-size: 1rem;
     }
-  }
-`;
-
-const StatusIndicator = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-  padding: 8px 20px;
-  border-radius: 30px;
-  background: rgba(34, 197, 94, 0.05);
-  border: 1px solid rgba(34, 197, 94, 0.08);
-  font-size: 0.75rem;
-  color: #4ade80;
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #22c55e;
-    animation: ${pulseGlow} 2s ease-in-out infinite;
+    .hero-stats {
+      gap: 24px;
+      flex-wrap: wrap;
+      .stat-item .stat-number { font-size: 1.2rem; }
+    }
   }
 `;
 
@@ -638,7 +973,6 @@ const Dashboard = () => {
   };
 
   const handleConnectAccount = (type) => {
-    // Navigate to respective dashboard
     const routes = {
       deriv: '/derivhome',
       forex: '/derivdash'
@@ -684,31 +1018,57 @@ const Dashboard = () => {
           <Greeting>
             👋 <span className="highlight">{greeting}</span>
           </Greeting>
+          <ProfileAvatar to="/settings">
+            {getInitials()}
+            <span className="settings-tooltip">⚙️ Account Settings</span>
+          </ProfileAvatar>
           <LogoutButton onClick={handleLogout}>🚪 Logout</LogoutButton>
         </ProfileArea>
       </Topbar>
 
       <Container>
-        <WelcomeText>
+        <HeroSection>
+          <div className="hero-badge">
+            <span className="badge-dot" />
+            System Online • Ready for Trading
+          </div>
           <h1>
-            Ready to Trade? <br />
-            <span className="highlight">Connect Your Account</span>
+            Welcome to the <br />
+            <span className="highlight">Future of Trading</span>
           </h1>
-          <p>Choose your preferred trading platform and start executing in seconds.</p>
-        </WelcomeText>
-
-        <StatusIndicator>
-          <span className="dot" />
-          System Ready • 24/7 Active
-        </StatusIndicator>
+          <p className="hero-sub">
+            Connect your trading account and access real-time markets with AI-powered insights.
+          </p>
+          <div className="hero-stats">
+            <div className="stat-item">
+              <span className="stat-number">24/7</span>
+              <span className="stat-label">Trading</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">∞</span>
+              <span className="stat-label">Markets</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-number">0</span>
+              <span className="stat-label">Commission</span>
+            </div>
+          </div>
+        </HeroSection>
       </Container>
 
-      {/* FLOATING CONNECT BUTTON - SUPER DESIGNED */}
+      {/* SUPER PREMIUM FLOATING CONNECT BUTTON */}
       <ConnectButtonWrapper>
         <ConnectButton onClick={handleConnect}>
-          <span className="button-icon">⚡</span>
-          <span className="button-text">Connect Your Accounts</span>
-          <span className="connect-badge">Live</span>
+          <span className="particle" />
+          <span className="particle" />
+          <span className="particle" />
+          <span className="particle" />
+          <span className="connect-badge">⚡ Live</span>
+          <span className="button-content">
+            <span className="button-icon">🔗</span>
+            <span className="button-text">Connect Your Accounts</span>
+            <span className="button-arrow">→</span>
+          </span>
         </ConnectButton>
       </ConnectButtonWrapper>
 
@@ -716,35 +1076,56 @@ const Dashboard = () => {
       <ModalOverlay isOpen={isModalOpen}>
         <ModalContainer>
           <ModalClose onClick={() => setIsModalOpen(false)}>✕</ModalClose>
-          <ModalTitle>Connect Platform</ModalTitle>
+          <ModalTitle>
+            <span className="title-icon">🚀</span>
+            Connect Platform
+          </ModalTitle>
           <ModalSubtitle>
-            Select your trading platform to sync your account and start trading.
+            Select your preferred trading platform to sync your account and start executing trades instantly.
           </ModalSubtitle>
 
           <OptionGrid>
             <OptionCard 
               color="linear-gradient(90deg, #a855f7, #7c3aed)"
+              glowColor="rgba(168, 85, 247, 0.08)"
               onClick={() => handleConnectAccount('deriv')}
             >
               <span className="option-badge">24/7</span>
-              <span className="option-icon">📊</span>
-              <div className="option-name">Deriv</div>
-              <div className="option-desc">Synthetic indices • Options</div>
+              <div className="option-content">
+                <span className="option-icon">📊</span>
+                <div className="option-name">Deriv</div>
+                <div className="option-desc">Synthetic indices • Options</div>
+                <div className="option-features">
+                  <span className="feature-tag">High-Freq</span>
+                  <span className="feature-tag">AI Signals</span>
+                </div>
+              </div>
             </OptionCard>
 
             <OptionCard 
               color="linear-gradient(90deg, #2563eb, #1d4ed8)"
+              glowColor="rgba(37, 99, 235, 0.08)"
               onClick={() => handleConnectAccount('forex')}
             >
               <span className="option-badge">24/5</span>
-              <span className="option-icon">💱</span>
-              <div className="option-name">Forex</div>
-              <div className="option-desc">Major • Minor • Exotic pairs</div>
+              <div className="option-content">
+                <span className="option-icon">💱</span>
+                <div className="option-name">Forex</div>
+                <div className="option-desc">Major • Minor • Exotic pairs</div>
+                <div className="option-features">
+                  <span className="feature-tag">Leverage</span>
+                  <span className="feature-tag">Spreads</span>
+                </div>
+              </div>
             </OptionCard>
           </OptionGrid>
 
           <ModalFooter>
-            Secure connection • <span className="highlight">256-bit encrypted</span>
+            <span className="security-badge">
+              <span className="lock-icon">🔒</span>
+              256-bit Encrypted Connection
+            </span>
+            <a href="#" className="support-link">Need help? →</a>
           </ModalFooter>
         </ModalContainer>
       </ModalOverlay>
