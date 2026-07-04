@@ -86,7 +86,7 @@ const PanelContainer = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 4px 12px 2px 12px;
+    padding: 4px 14px 2px 14px;
     gap: 2px;
   }
 `;
@@ -99,13 +99,14 @@ const PhoneTwoColumnWrapper = styled.div`
   @media (max-width: 768px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 2px;
     padding: 0 2px;
+    width: 100%;
   }
 
   @media (max-width: 480px) {
-    gap: 6px;
+    gap: 8px;
     padding: 0 1px;
   }
 
