@@ -1033,7 +1033,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
       <RightSection>
         {/* FUNDS BUTTON - First */}
         <ProfessionalFundsButton 
-          href="https://app.rubicash.com/account/dashboard"
+          href="https://app.swiftcashfx.com/#/account-home"
           target="_blank"
           rel="noopener noreferrer"
         >
