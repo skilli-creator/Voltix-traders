@@ -407,29 +407,29 @@ const DigitStatsContainer = styled.div`
   border: none;
   box-shadow: none;
   position: absolute;
-  bottom: 35px;
+  bottom: 55px;
   left: 50%;
   transform: translateX(-50%);
-  gap: 4px;
+  gap: 6px;
   pointer-events: none;
   z-index: 1;
 
   @media (max-width: 768px) {
     width: calc(100% - 16px);
-    bottom: 28px;
-    gap: 3px;
+    bottom: 48px;
+    gap: 5px;
   }
 
   @media (max-width: 480px) {
     width: calc(100% - 8px);
-    bottom: 20px;
-    gap: 2px;
+    bottom: 42px;
+    gap: 4px;
   }
 
   @media (max-width: 380px) {
     width: calc(100% - 4px);
-    bottom: 16px;
-    gap: 1px;
+    bottom: 38px;
+    gap: 3px;
   }
 `;
 
@@ -439,65 +439,61 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 8px;
+  padding-bottom: 2px;
   min-width: 0;
 
-  @media (max-width: 480px) {
-    padding-bottom: 4px;
-  }
-
   .circle-badge {
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background: rgba(20, 28, 43, 0.95);
-    border: 1.5px solid ${props => 
+    border: 2px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
         : 'rgba(255, 255, 255, 0.08)'
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.direction === 'up' ? 'rgba(0,230,118,0.5)' : 'rgba(255,74,74,0.5)'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
+      width: 34px;
+      height: 34px;
+      border-width: 2px;
+    }
+
+    @media (max-width: 480px) {
+      width: 32px;
+      height: 32px;
+      border-width: 2px;
+    }
+
+    @media (max-width: 380px) {
       width: 28px;
       height: 28px;
       border-width: 1.5px;
     }
-
-    @media (max-width: 480px) {
-      width: 22px;
-      height: 22px;
-      border-width: 1px;
-    }
-
-    @media (max-width: 380px) {
-      width: 18px;
-      height: 18px;
-      border-width: 1px;
-    }
   }
 
   .digit-num {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 10px;
+      font-size: 13px;
     }
 
     @media (max-width: 480px) {
-      font-size: 8px;
+      font-size: 12px;
     }
 
     @media (max-width: 380px) {
-      font-size: 7px;
+      font-size: 10px;
     }
   }
 
@@ -511,38 +507,37 @@ const DigitItem = styled.div`
         : (props.isMin ? '#ff4a4a' : '#728096')
     };
     line-height: 1;
-    margin-top: 1px;
+    margin-top: 0px;
 
     @media (max-width: 768px) {
       font-size: 7px;
     }
 
     @media (max-width: 480px) {
-      font-size: 6px;
-      margin-top: 0;
+      font-size: 7px;
     }
 
     @media (max-width: 380px) {
-      font-size: 5px;
+      font-size: 6px;
     }
   }
 
   .active-arrow {
     position: absolute;
-    bottom: -2px;
-    font-size: 8px;
+    bottom: -4px;
+    font-size: 10px;
     color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
 
     @media (max-width: 480px) {
-      font-size: 6px;
-      bottom: -1px;
+      font-size: 8px;
+      bottom: -3px;
     }
 
     @media (max-width: 380px) {
-      font-size: 5px;
-      bottom: -1px;
+      font-size: 7px;
+      bottom: -2px;
     }
   }
 `;
