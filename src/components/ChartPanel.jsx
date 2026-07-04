@@ -395,7 +395,7 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER - ABOVE X-AXIS =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER - 0.5CM ABOVE X-AXIS =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -407,7 +407,7 @@ const DigitStatsContainer = styled.div`
   border: none;
   box-shadow: none;
   position: absolute;
-  bottom: 55px;
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
   gap: 8px;
@@ -416,19 +416,19 @@ const DigitStatsContainer = styled.div`
 
   @media (max-width: 768px) {
     width: calc(100% - 30px);
-    bottom: 48px;
+    bottom: 35px;
     gap: 6px;
   }
 
   @media (max-width: 480px) {
     width: calc(100% - 20px);
-    bottom: 42px;
+    bottom: 30px;
     gap: 5px;
   }
 
   @media (max-width: 380px) {
     width: calc(100% - 16px);
-    bottom: 38px;
+    bottom: 28px;
     gap: 4px;
   }
 `;
@@ -439,12 +439,12 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 4px;
+  padding-bottom: 2px;
   min-width: 0;
 
   .circle-badge {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
@@ -460,45 +460,45 @@ const DigitItem = styled.div`
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       border-width: 1.5px;
     }
 
     @media (max-width: 480px) {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-width: 1.5px;
     }
 
     @media (max-width: 380px) {
-      width: 26px;
-      height: 26px;
+      width: 24px;
+      height: 24px;
       border-width: 1px;
     }
   }
 
   .digit-num {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 12px;
-    }
-
-    @media (max-width: 480px) {
       font-size: 11px;
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 480px) {
       font-size: 10px;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 9px;
     }
   }
 
   .pct-text {
-    font-size: 8px;
+    font-size: 7px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -510,38 +510,38 @@ const DigitItem = styled.div`
     margin-top: 1px;
 
     @media (max-width: 768px) {
-      font-size: 7px;
-    }
-
-    @media (max-width: 480px) {
       font-size: 6px;
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 480px) {
       font-size: 5px;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 4px;
     }
   }
 
   .active-arrow {
     position: absolute;
     bottom: -4px;
-    font-size: 10px;
+    font-size: 9px;
     color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 8px;
-      bottom: -3px;
-    }
-
-    @media (max-width: 480px) {
       font-size: 7px;
       bottom: -3px;
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 480px) {
       font-size: 6px;
+      bottom: -3px;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 5px;
       bottom: -2px;
     }
   }
@@ -669,7 +669,7 @@ const ChartPanel = () => {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const pad = { top: 25, bottom: 70, left: 15, right: 65 };
+    const pad = { top: 25, bottom: 55, left: 15, right: 65 };
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
 
