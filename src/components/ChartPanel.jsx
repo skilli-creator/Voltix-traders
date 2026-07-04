@@ -62,15 +62,13 @@ const Header = styled.div`
   z-index: 10;
 
   @media (max-width: 768px) {
-    padding: 10px 14px;
+    padding: 8px 12px;
     flex-wrap: wrap;
     gap: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 8px 10px;
-    flex-direction: column;
-    align-items: stretch;
+    padding: 6px 8px;
     gap: 4px;
   }
 `;
@@ -79,6 +77,12 @@ const SymbolInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 480px) {
+    gap: 2px;
+  }
 
   .symbol-row {
     display: flex;
@@ -120,7 +124,7 @@ const SymbolInfo = styled.div`
 
     @media (max-width: 480px) {
       font-size: 12px;
-      padding: 3px 8px;
+      padding: 2px 6px;
     }
 
     &:hover {
@@ -147,7 +151,7 @@ const SymbolInfo = styled.div`
     flex-wrap: wrap;
 
     @media (max-width: 480px) {
-      gap: 6px;
+      gap: 4px;
     }
   }
 
@@ -173,7 +177,7 @@ const SymbolInfo = styled.div`
 
     @media (max-width: 480px) {
       font-size: 10px;
-      padding: 1px 6px;
+      padding: 1px 4px;
     }
   }
 
@@ -201,10 +205,12 @@ const LiveIndicator = styled.div`
   border: 1px solid rgba(0, 230, 118, 0.15);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 
   @media (max-width: 480px) {
     font-size: 9px;
-    padding: 3px 8px;
+    padding: 2px 8px;
+    gap: 4px;
   }
 
   .dot {
@@ -282,7 +288,6 @@ const DropdownItem = styled.div`
 
   @media (max-width: 480px) {
     padding: 6px 10px;
-    font-size: 12px;
   }
 
   &:hover {
@@ -296,7 +301,7 @@ const DropdownItem = styled.div`
     gap: 12px;
 
     @media (max-width: 480px) {
-      gap: 8px;
+      gap: 6px;
     }
   }
 
@@ -306,6 +311,10 @@ const DropdownItem = styled.div`
     gap: 2px;
     height: 20px;
     opacity: 0.75;
+
+    @media (max-width: 480px) {
+      display: none;
+    }
 
     .candle {
       width: 3px;
@@ -322,10 +331,6 @@ const DropdownItem = styled.div`
     .c1 { height: 12px; background: #ef4444; &::before { height: 18px; top: -3px; } }
     .c2 { height: 15px; background: #22c55e; &::before { height: 20px; top: -2px; } }
     .c3 { height: 9px;  background: #ef4444; &::before { height: 14px; top: -2px; } }
-
-    @media (max-width: 480px) {
-      display: none;
-    }
   }
 
   .market-meta {
@@ -362,11 +367,6 @@ const DropdownItem = styled.div`
     padding: 1px 4px;
     border-radius: 3px;
     text-transform: uppercase;
-
-    @media (max-width: 480px) {
-      font-size: 6px;
-      padding: 0px 3px;
-    }
   }
 
   .star-fav {
@@ -374,7 +374,7 @@ const DropdownItem = styled.div`
     font-size: 14px;
 
     @media (max-width: 480px) {
-      font-size: 10px;
+      font-size: 11px;
     }
   }
 `;
@@ -395,49 +395,41 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER - BOTTOM WITH LARGE SIZES =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER - PHONE FIXED =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: calc(100% - 40px);
-  max-width: 720px;
-  padding: 8px 12px;
-  background: rgba(10, 14, 23, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
+  width: calc(100% - 20px);
+  max-width: 680px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   position: absolute;
-  bottom: 20px;
+  bottom: 35px;
   left: 50%;
   transform: translateX(-50%);
-  gap: 8px;
+  gap: 4px;
   pointer-events: none;
-  z-index: 5;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 1;
 
   @media (max-width: 768px) {
-    width: calc(100% - 20px);
-    padding: 6px 10px;
-    bottom: 16px;
-    gap: 6px;
-    border-radius: 12px;
+    width: calc(100% - 16px);
+    bottom: 28px;
+    gap: 3px;
   }
 
   @media (max-width: 480px) {
-    width: calc(100% - 12px);
-    padding: 4px 8px;
-    bottom: 12px;
-    gap: 4px;
-    border-radius: 10px;
+    width: calc(100% - 8px);
+    bottom: 20px;
+    gap: 2px;
   }
 
   @media (max-width: 380px) {
-    width: calc(100% - 8px);
-    padding: 3px 6px;
-    bottom: 10px;
-    gap: 3px;
-    border-radius: 8px;
+    width: calc(100% - 4px);
+    bottom: 16px;
+    gap: 1px;
   }
 `;
 
@@ -447,69 +439,70 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
+  padding-bottom: 8px;
   min-width: 0;
 
+  @media (max-width: 480px) {
+    padding-bottom: 4px;
+  }
+
   .circle-badge {
-    width: 48px;
-    height: 48px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => 
-      props.isLastDigit 
-        ? (props.direction === 'up' ? 'rgba(0, 230, 118, 0.12)' : 'rgba(255, 74, 74, 0.12)')
-        : 'rgba(255, 255, 255, 0.03)'
-    };
-    border: 2px solid ${props => 
+    background: rgba(20, 28, 43, 0.95);
+    border: 1.5px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
-        : 'rgba(255, 255, 255, 0.06)'
+        : 'rgba(255, 255, 255, 0.08)'
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 20px ${props.direction === 'up' ? 'rgba(0,230,118,0.3)' : 'rgba(255,74,74,0.3)'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
-      width: 40px;
-      height: 40px;
-      border-width: 2px;
-    }
-
-    @media (max-width: 480px) {
-      width: 34px;
-      height: 34px;
-      border-width: 1.5px;
-    }
-
-    @media (max-width: 380px) {
       width: 28px;
       height: 28px;
       border-width: 1.5px;
     }
+
+    @media (max-width: 480px) {
+      width: 22px;
+      height: 22px;
+      border-width: 1px;
+    }
+
+    @media (max-width: 380px) {
+      width: 18px;
+      height: 18px;
+      border-width: 1px;
+    }
   }
 
   .digit-num {
-    font-size: 18px;
+    font-size: 11px;
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
 
     @media (max-width: 768px) {
-      font-size: 15px;
+      font-size: 10px;
     }
 
     @media (max-width: 480px) {
-      font-size: 13px;
+      font-size: 8px;
     }
 
     @media (max-width: 380px) {
-      font-size: 11px;
+      font-size: 7px;
     }
   }
 
   .pct-text {
-    font-size: 9px;
+    font-size: 8px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -521,44 +514,35 @@ const DigitItem = styled.div`
     margin-top: 1px;
 
     @media (max-width: 768px) {
-      font-size: 8px;
-    }
-
-    @media (max-width: 480px) {
       font-size: 7px;
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 480px) {
       font-size: 6px;
+      margin-top: 0;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 5px;
     }
   }
 
   .active-arrow {
     position: absolute;
-    top: -6px;
-    right: -6px;
-    font-size: 10px;
+    bottom: -2px;
+    font-size: 8px;
     color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
-    filter: drop-shadow(0 0 4px rgba(255, 152, 0, 0.3));
-
-    @media (max-width: 768px) {
-      font-size: 8px;
-      top: -5px;
-      right: -5px;
-    }
 
     @media (max-width: 480px) {
-      font-size: 7px;
-      top: -4px;
-      right: -4px;
+      font-size: 6px;
+      bottom: -1px;
     }
 
     @media (max-width: 380px) {
-      font-size: 6px;
-      top: -3px;
-      right: -3px;
+      font-size: 5px;
+      bottom: -1px;
     }
   }
 `;
@@ -685,7 +669,7 @@ const ChartPanel = () => {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const pad = { top: 25, bottom: 90, left: 15, right: 65 };
+    const pad = { top: 25, bottom: 35, left: 15, right: 65 };
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
 
