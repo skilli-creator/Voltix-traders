@@ -1982,7 +1982,6 @@ const Dashboard = () => {
               </>
             ) : (
               <>
-                <span className="button-icon">⚡</span>
                 <span className="button-text">Connect Your Accounts</span>
                 <span className="button-arrow">→</span>
               </>
