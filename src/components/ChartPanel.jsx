@@ -46,9 +46,7 @@ const PanelContainer = styled.div`
   position: relative;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   animation: ${fadeIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  
-  /* CRITICAL FIX: Ensure the entire chart layout falls behind the application's top navbar dropdowns */
-  z-index: 1; 
+  z-index: 1;
 `;
 
 // ===== HEADER =====
@@ -62,6 +60,19 @@ const Header = styled.div`
   background: rgba(10, 14, 23, 0.75);
   backdrop-filter: blur(12px);
   z-index: 10;
+
+  @media (max-width: 768px) {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
 `;
 
 const SymbolInfo = styled.div`
@@ -73,6 +84,11 @@ const SymbolInfo = styled.div`
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-wrap: wrap;
+
+    @media (max-width: 480px) {
+      gap: 4px;
+    }
   }
 
   .symbol-label {
@@ -81,6 +97,10 @@ const SymbolInfo = styled.div`
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+
+    @media (max-width: 480px) {
+      font-size: 9px;
+    }
   }
 
   .market-selector {
@@ -98,6 +118,11 @@ const SymbolInfo = styled.div`
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.06);
 
+    @media (max-width: 480px) {
+      font-size: 12px;
+      padding: 3px 8px;
+    }
+
     &:hover {
       background: rgba(255, 255, 255, 0.09);
       border-color: rgba(255, 255, 255, 0.15);
@@ -108,6 +133,10 @@ const SymbolInfo = styled.div`
       color: #8a99ad;
       transition: transform 0.2s ease;
       transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+
+      @media (max-width: 480px) {
+        font-size: 9px;
+      }
     }
   }
 
@@ -115,6 +144,11 @@ const SymbolInfo = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
+
+    @media (max-width: 480px) {
+      gap: 6px;
+    }
   }
 
   .price {
@@ -123,6 +157,10 @@ const SymbolInfo = styled.div`
     color: #ffffff;
     letter-spacing: -0.5px;
     font-family: 'Courier New', Courier, monospace;
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+    }
   }
 
   .change {
@@ -132,12 +170,21 @@ const SymbolInfo = styled.div`
     border-radius: 4px;
     background: ${props => props.isNegative ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)'};
     color: ${props => props.isNegative ? '#ff4a4a' : '#00e676'};
+
+    @media (max-width: 480px) {
+      font-size: 10px;
+      padding: 1px 6px;
+    }
   }
 
   .change-time {
     font-size: 11px;
     color: #4e5d78;
     font-family: monospace;
+
+    @media (max-width: 480px) {
+      font-size: 9px;
+    }
   }
 `;
 
@@ -155,6 +202,11 @@ const LiveIndicator = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.5px;
 
+  @media (max-width: 480px) {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+
   .dot {
     width: 6px;
     height: 6px;
@@ -162,6 +214,11 @@ const LiveIndicator = styled.div`
     background: #00e676;
     animation: ${pulse} 1.5s ease-in-out infinite;
     box-shadow: 0 0 8px #00e676;
+
+    @media (max-width: 480px) {
+      width: 4px;
+      height: 4px;
+    }
   }
 `;
 
@@ -176,14 +233,17 @@ const DropdownMenu = styled.div`
   width: 280px;
   max-height: 340px;
   overflow-y: auto;
-  
-  /* CRITICAL FIX: Keeps internal dropdown menu clear over internal elements */
-  z-index: 9999; 
-  
+  z-index: 9999;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(25px);
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  @media (max-width: 480px) {
+    width: 220px;
+    max-height: 260px;
+    left: -10px;
+  }
 
   .dropdown-title {
     font-size: 11px;
@@ -193,6 +253,11 @@ const DropdownMenu = styled.div`
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+
+    @media (max-width: 480px) {
+      font-size: 9px;
+      padding: 6px 10px 4px 10px;
+    }
   }
 
   &::-webkit-scrollbar {
@@ -215,6 +280,11 @@ const DropdownItem = styled.div`
   transition: all 0.15s ease;
   border-bottom: 1px solid rgba(255, 255, 255, 0.02);
 
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
   &:hover {
     background: rgba(255, 255, 255, 0.07);
     color: #ffffff;
@@ -224,6 +294,10 @@ const DropdownItem = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+
+    @media (max-width: 480px) {
+      gap: 8px;
+    }
   }
 
   .candle-icon-mock {
@@ -248,6 +322,10 @@ const DropdownItem = styled.div`
     .c1 { height: 12px; background: #ef4444; &::before { height: 18px; top: -3px; } }
     .c2 { height: 15px; background: #22c55e; &::before { height: 20px; top: -2px; } }
     .c3 { height: 9px;  background: #ef4444; &::before { height: 14px; top: -2px; } }
+
+    @media (max-width: 480px) {
+      display: none;
+    }
   }
 
   .market-meta {
@@ -260,12 +338,20 @@ const DropdownItem = styled.div`
     font-size: 13px;
     font-weight: 600;
     color: #f1f5f9;
+
+    @media (max-width: 480px) {
+      font-size: 11px;
+    }
   }
 
   .system-symbol {
     font-size: 10px;
     color: #4e5d78;
     font-family: monospace;
+
+    @media (max-width: 480px) {
+      font-size: 8px;
+    }
   }
 
   .badge-1s {
@@ -276,11 +362,20 @@ const DropdownItem = styled.div`
     padding: 1px 4px;
     border-radius: 3px;
     text-transform: uppercase;
+
+    @media (max-width: 480px) {
+      font-size: 6px;
+      padding: 0px 3px;
+    }
   }
 
   .star-fav {
     color: ${props => props.active ? '#ffb300' : 'rgba(255, 255, 255, 0.2)'};
     font-size: 14px;
+
+    @media (max-width: 480px) {
+      font-size: 10px;
+    }
   }
 `;
 
@@ -300,26 +395,44 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER - FIXED FOR PHONE =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: calc(100% - 40px);
+  width: calc(100% - 20px);
   max-width: 680px;
   padding: 0;
   background: transparent;
   border: none;
   box-shadow: none;
   position: absolute;
-  bottom: 50px; 
+  bottom: 40px;
   left: 50%;
   transform: translateX(-50%);
-  gap: 6px;
+  gap: 4px;
   pointer-events: none;
+  z-index: 1;
 
-  /* CRITICAL FIX: Keep the lower digit items underneath layout stack limits */
-  z-index: 1; 
+  @media (max-width: 768px) {
+    width: calc(100% - 16px);
+    bottom: 32px;
+    gap: 3px;
+    max-width: 500px;
+  }
+
+  @media (max-width: 480px) {
+    width: calc(100% - 12px);
+    bottom: 24px;
+    gap: 2px;
+    max-width: 100%;
+  }
+
+  @media (max-width: 380px) {
+    width: calc(100% - 8px);
+    bottom: 18px;
+    gap: 1px;
+  }
 `;
 
 const DigitItem = styled.div`
@@ -328,7 +441,20 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 12px;
+  padding-bottom: 10px;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    padding-bottom: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding-bottom: 6px;
+  }
+
+  @media (max-width: 380px) {
+    padding-bottom: 4px;
+  }
 
   .circle-badge {
     width: 34px;
@@ -346,6 +472,24 @@ const DigitItem = styled.div`
     };
     box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
     transition: all 0.15s ease;
+
+    @media (max-width: 768px) {
+      width: 28px;
+      height: 28px;
+      border-width: 1.5px;
+    }
+
+    @media (max-width: 480px) {
+      width: 22px;
+      height: 22px;
+      border-width: 1px;
+    }
+
+    @media (max-width: 380px) {
+      width: 18px;
+      height: 18px;
+      border-width: 1px;
+    }
   }
 
   .digit-num {
@@ -353,6 +497,18 @@ const DigitItem = styled.div`
     font-weight: 700;
     color: #ffffff;
     line-height: 1;
+
+    @media (max-width: 768px) {
+      font-size: 10px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 8px;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 7px;
+    }
   }
 
   .pct-text {
@@ -366,15 +522,45 @@ const DigitItem = styled.div`
     };
     line-height: 1;
     margin-top: 2px;
+
+    @media (max-width: 768px) {
+      font-size: 7px;
+      margin-top: 1px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 6px;
+      margin-top: 1px;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 5px;
+      margin-top: 0px;
+    }
   }
 
   .active-arrow {
     position: absolute;
     bottom: -2px;
     font-size: 8px;
-    color: #ff9800; 
+    color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
+
+    @media (max-width: 768px) {
+      font-size: 6px;
+      bottom: -1px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 5px;
+      bottom: -1px;
+    }
+
+    @media (max-width: 380px) {
+      font-size: 4px;
+      bottom: 0px;
+    }
   }
 `;
 
