@@ -2008,13 +2008,17 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER INPUTS - COMPACT 2-COLUMN WITH SWAPPED POSITIONS =====
+  // ===== RENDER INPUTS - COMPACT 2-COLUMN LAYOUT =====
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
-    return (
-      <InputGrid>
-        {/* Stake - Always first */}
+    // Get fields based on mode
+    const fields = [];
+    
+    // 1. Stake - Always first
+    fields.push({
+      id: 'stake',
+      component: (
         <InputGroup>
           <InputLabel>
             <span>Stake</span>
@@ -2032,18 +2036,36 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             />
           </InputRow>
         </InputGroup>
+      )
+    });
 
-        {/* Duration - Manual mode only */}
-        {renderDurationDropdown()}
+    // 2. Duration - Manual mode only (Row 1, Column 2)
+    if (isManual) {
+      fields.push({
+        id: 'duration',
+        component: renderDurationDropdown()
+      });
+    }
 
-        {/* Bulk Trading - Always visible */}
-        {renderBulkTradingToggle()}
+    // 3. Bulk Trading - Always visible (Row 2, Column 1)
+    fields.push({
+      id: 'bulkTrading',
+      component: renderBulkTradingToggle()
+    });
 
-        {/* Martingale - Now in the position where Stop Loss was (Auto & Bots only) */}
-        {renderMartingaleToggle()}
+    // 4. Martingale - Auto & Bots only (Row 2, Column 2)
+    if (!isManual) {
+      fields.push({
+        id: 'martingale',
+        component: renderMartingaleToggle()
+      });
+    }
 
-        {/* Target Profit - Auto & Bots only */}
-        {!isManual && (
+    // 5. Target Profit - Auto & Bots only (Row 3, Column 1)
+    if (!isManual) {
+      fields.push({
+        id: 'targetProfit',
+        component: (
           <InputGroup>
             <InputLabel>
               <span>Target Profit</span>
@@ -2061,10 +2083,15 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               />
             </InputRow>
           </InputGroup>
-        )}
+        )
+      });
+    }
 
-        {/* Stop Loss - Now moved down, where Martingale was (Auto & Bots only) */}
-        {!isManual && (
+    // 6. Stop Loss - Auto & Bots only (Row 3, Column 2)
+    if (!isManual) {
+      fields.push({
+        id: 'stopLoss',
+        component: (
           <InputGroup>
             <InputLabel>
               <span>Stop Loss</span>
@@ -2082,7 +2109,18 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               />
             </InputRow>
           </InputGroup>
-        )}
+        )
+      });
+    }
+
+    // Render fields in a 2-column grid
+    return (
+      <InputGrid>
+        {fields.map((field, index) => (
+          <React.Fragment key={field.id}>
+            {field.component}
+          </React.Fragment>
+        ))}
       </InputGrid>
     );
   };
@@ -2311,7 +2349,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             active={tradeMode === 'auto'} 
             onClick={() => {
               setTradeMode('auto');
-              // Reset trade type if it was random and switching away
               if (tradeType === 'random') {
                 setTradeType('overunder');
                 setSelectedDigit(null);
@@ -2325,7 +2362,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             active={tradeMode === 'manual'} 
             onClick={() => {
               setTradeMode('manual');
-              // Reset trade type if it was random
               if (tradeType === 'random') {
                 setTradeType('overunder');
                 setSelectedDigit(null);
@@ -2339,7 +2375,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             active={tradeMode === 'use-bots'} 
             onClick={() => {
               setTradeMode('use-bots');
-              // Reset trade type if it was random
               if (tradeType === 'random') {
                 setTradeType('overunder');
                 setSelectedDigit(null);
@@ -2386,7 +2421,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </>
       )}
 
-      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT WITH SWAPPED POSITIONS */}
+      {/* 5. INPUTS - COMPACT 2-COLUMN LAYOUT */}
       {renderInputs()}
 
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
