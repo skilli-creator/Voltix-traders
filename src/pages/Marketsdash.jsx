@@ -79,12 +79,6 @@ const floatPulse = keyframes`
   50% { transform: translateY(-10px) scale(1.03); }
 `;
 
-const cosmicFloat = keyframes`
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-5px) rotate(1deg); }
-  75% { transform: translateY(5px) rotate(-1deg); }
-`;
-
 const shimmerWave = keyframes`
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
@@ -126,12 +120,6 @@ const BackgroundContainer = styled.div`
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
-
-  @media (max-width: 768px) {
-    .orb-mobile {
-      display: block;
-    }
-  }
 `;
 
 const GradientOrb = styled.div`
@@ -234,7 +222,7 @@ const GridOverlay = styled.div`
 `;
 
 // ============================================
-// TOPBAR - Enhanced Mobile
+// TOPBAR
 // ============================================
 const Topbar = styled.div`
   display: flex;
@@ -585,7 +573,7 @@ const MessageArea = styled.div`
 `;
 
 // ============================================
-// CINEMATIC POPUP - Mobile Optimized
+// CINEMATIC POPUP
 // ============================================
 const Overlay = styled.div`
   position: fixed;
@@ -848,46 +836,52 @@ const PopupCloseButton = styled.button`
 `;
 
 // ============================================
-// FLOATING CONNECT BUTTON - FIXED CUTOFF
+// FLOATING CONNECT BUTTON - FIXED CUTOFF & NO EMOJIS
 // ============================================
 const ConnectButtonWrapper = styled.div`
   position: fixed;
   bottom: 40px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-55%);
   z-index: 1000;
-  animation: ${cosmicFloat} 4s ease-in-out infinite;
+  animation: ${floatPulse} 3s ease-in-out infinite;
   cursor: pointer;
   width: auto;
-  max-width: 90vw;
-  padding: 0 20px;
+  max-width: 85vw;
+  padding: 0 16px;
 
   @media (max-width: 768px) {
     bottom: 24px;
-    max-width: 92vw;
-    padding: 0 16px;
-    animation-duration: 3s;
-  }
-
-  @media (max-width: 480px) {
-    bottom: 16px;
-    max-width: 94vw;
+    left: 50%;
+    transform: translateX(-55%);
+    max-width: 88vw;
     padding: 0 12px;
     animation-duration: 2.5s;
   }
 
-  @media (max-width: 380px) {
-    max-width: 96vw;
+  @media (max-width: 480px) {
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-56%);
+    max-width: 90vw;
     padding: 0 8px;
+    animation-duration: 2s;
+  }
+
+  @media (max-width: 380px) {
+    left: 50%;
+    transform: translateX(-58%);
+    max-width: 92vw;
+    padding: 0 4px;
   }
 `;
 
 const ConnectButton = styled.button`
   position: relative;
-  padding: 20px 40px;
-  font-size: 1.15rem;
+  padding: 18px 36px;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   background: ${props => props.disabled ? 'rgba(255, 255, 255, 0.05)' : 'linear-gradient(135deg, #22c55e, #16a34a)'};
   border: none;
   border-radius: 60px;
@@ -899,10 +893,11 @@ const ConnectButton = styled.button`
     inset 0 1px 0 rgba(255, 255, 255, 0.15)
   `};
   overflow: hidden;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   width: 100%;
   opacity: ${props => props.disabled ? 0.5 : 1};
   min-width: 0;
+  white-space: nowrap;
 
   /* Premium gradient border glow */
   &::before {
@@ -942,8 +937,8 @@ const ConnectButton = styled.button`
     height: 100%;
     background: linear-gradient(90deg, 
       transparent, 
-      rgba(255, 255, 255, 0.2), 
-      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.15), 
+      rgba(255, 255, 255, 0.05),
       transparent
     );
     animation: ${shimmerWave} 3s ease-in-out infinite;
@@ -951,7 +946,7 @@ const ConnectButton = styled.button`
   }
 
   &:hover {
-    transform: ${props => props.disabled ? 'none' : 'translateY(-6px) scale(1.03)'};
+    transform: ${props => props.disabled ? 'none' : 'translateY(-4px) scale(1.02)'};
     box-shadow: ${props => props.disabled ? 'none' : `
       0 20px 60px rgba(34, 197, 94, 0.5),
       0 0 100px rgba(34, 197, 94, 0.2)
@@ -959,7 +954,7 @@ const ConnectButton = styled.button`
   }
 
   &:active {
-    transform: ${props => props.disabled ? 'none' : 'scale(0.96)'};
+    transform: ${props => props.disabled ? 'none' : 'scale(0.97)'};
   }
 
   .button-content {
@@ -968,16 +963,15 @@ const ConnectButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
   }
 
   .button-icon {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     display: inline-block;
-    animation: ${floatPulse} 2s ease-in-out infinite;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
     flex-shrink: 0;
+    opacity: 0.9;
   }
 
   .button-text {
@@ -986,13 +980,15 @@ const ConnectButton = styled.button`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 1.1rem;
   }
 
   .button-arrow {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     transition: transform 0.3s ease;
     display: inline-block;
     flex-shrink: 0;
+    opacity: 0.8;
   }
 
   &:hover .button-arrow {
@@ -1001,13 +997,13 @@ const ConnectButton = styled.button`
 
   .connect-badge {
     position: absolute;
-    top: -12px;
-    right: -8px;
+    top: -10px;
+    right: -6px;
     background: linear-gradient(135deg, #f59e0b, #ef4444);
     color: #fff;
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     font-weight: 700;
-    padding: 4px 14px;
+    padding: 3px 12px;
     border-radius: 20px;
     animation: ${pulseGlow} 2s ease-in-out infinite;
     text-transform: uppercase;
@@ -1019,14 +1015,15 @@ const ConnectButton = styled.button`
   .spinner {
     animation: ${spin} 1s linear infinite;
     display: inline-block;
+    font-size: 1.2rem;
   }
 
   /* Floating particles - hidden on mobile */
   .particle {
     position: absolute;
-    width: 4px;
-    height: 4px;
-    background: rgba(34, 197, 94, 0.6);
+    width: 3px;
+    height: 3px;
+    background: rgba(34, 197, 94, 0.5);
     border-radius: 50%;
     pointer-events: none;
     animation: ${glowPulse} 2s ease-in-out infinite;
@@ -1034,35 +1031,35 @@ const ConnectButton = styled.button`
 
   .particle:nth-child(1) {
     top: 20%;
-    left: 10%;
+    left: 8%;
     animation-delay: 0s;
   }
 
   .particle:nth-child(2) {
     bottom: 20%;
-    right: 10%;
+    right: 8%;
     animation-delay: 0.7s;
   }
 
   .particle:nth-child(3) {
-    top: 10%;
-    right: 30%;
+    top: 12%;
+    right: 25%;
     animation-delay: 1.4s;
   }
 
   .particle:nth-child(4) {
-    bottom: 10%;
-    left: 30%;
+    bottom: 12%;
+    left: 25%;
     animation-delay: 2.1s;
   }
 
   @media (max-width: 768px) {
-    padding: 16px 28px;
-    font-size: 1rem;
+    padding: 14px 24px;
+    font-size: 0.95rem;
     border-radius: 50px;
 
     .button-icon {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .button-text {
@@ -1070,14 +1067,14 @@ const ConnectButton = styled.button`
     }
 
     .button-arrow {
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .connect-badge {
-      top: -10px;
-      right: -6px;
-      font-size: 0.5rem;
-      padding: 3px 12px;
+      top: -8px;
+      right: -4px;
+      font-size: 0.45rem;
+      padding: 2px 10px;
     }
 
     .particle {
@@ -1091,21 +1088,21 @@ const ConnectButton = styled.button`
     }
 
     &:hover {
-      transform: translateY(-3px) scale(1.02);
+      transform: translateY(-3px) scale(1.01);
     }
   }
 
   @media (max-width: 480px) {
-    padding: 14px 18px;
-    font-size: 0.9rem;
+    padding: 12px 16px;
+    font-size: 0.85rem;
     border-radius: 40px;
 
     .button-content {
-      gap: 8px;
+      gap: 6px;
     }
 
     .button-icon {
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .button-text {
@@ -1114,12 +1111,12 @@ const ConnectButton = styled.button`
     }
 
     .button-arrow {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .connect-badge {
-      top: -8px;
-      right: -4px;
+      top: -6px;
+      right: -3px;
       font-size: 0.4rem;
       padding: 2px 8px;
     }
@@ -1136,11 +1133,11 @@ const ConnectButton = styled.button`
   }
 
   @media (max-width: 380px) {
-    padding: 12px 14px;
-    font-size: 0.8rem;
+    padding: 10px 12px;
+    font-size: 0.75rem;
 
     .button-icon {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .button-text {
@@ -1148,17 +1145,24 @@ const ConnectButton = styled.button`
     }
 
     .button-arrow {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
     }
 
     .button-content {
-      gap: 6px;
+      gap: 4px;
+    }
+
+    .connect-badge {
+      font-size: 0.35rem;
+      padding: 1px 6px;
+      top: -5px;
+      right: -2px;
     }
   }
 `;
 
 // ============================================
-// CONNECT MODAL - Mobile Optimized
+// CONNECT MODAL - No Emojis
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -1304,6 +1308,7 @@ const ModalTitle = styled.h2`
 
   .title-icon {
     font-size: 1.4rem;
+    color: #94a3b8;
   }
 
   @media (max-width: 768px) {
@@ -1514,6 +1519,7 @@ const ModalFooter = styled.div`
 
     .lock-icon {
       font-size: 0.9rem;
+      opacity: 0.8;
     }
   }
 
@@ -1552,7 +1558,7 @@ const ModalFooter = styled.div`
 `;
 
 // ============================================
-// MAIN CONTENT - Mobile Optimized
+// MAIN CONTENT
 // ============================================
 const Container = styled.div`
   max-width: 1100px;
@@ -1921,7 +1927,7 @@ const Dashboard = () => {
           </Greeting>
           <ProfileAvatar to="/settings">
             {getInitials()}
-            <span className="settings-tooltip">⚙ Account Settings</span>
+            <span className="settings-tooltip">Account Settings</span>
           </ProfileAvatar>
           <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
         </ProfileArea>
@@ -1957,7 +1963,7 @@ const Dashboard = () => {
         </HeroSection>
       </Container>
 
-      {/* SUPER PREMIUM FLOATING CONNECT BUTTON - FIXED CUTOFF */}
+      {/* FLOATING CONNECT BUTTON - FIXED POSITION & NO EMOJIS */}
       <ConnectButtonWrapper>
         <ConnectButton 
           onClick={handleConnect}
@@ -1976,7 +1982,7 @@ const Dashboard = () => {
               </>
             ) : (
               <>
-                <span className="button-icon">🔗</span>
+                <span className="button-icon">⚡</span>
                 <span className="button-text">Connect Your Accounts</span>
                 <span className="button-arrow">→</span>
               </>
@@ -2012,7 +2018,7 @@ const Dashboard = () => {
                   <span className="feature-tag">High-Freq</span>
                   <span className="feature-tag">AI Signals</span>
                 </div>
-                <div className="oauth-status">🔐 OAuth 2.0 Secure</div>
+                <div className="oauth-status">OAuth 2.0 Secure</div>
               </div>
             </OptionCard>
 
