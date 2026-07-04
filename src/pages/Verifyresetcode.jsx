@@ -194,12 +194,12 @@ const GlowLine = styled.div`
 `;
 
 // ============================================
-// MAIN CONTAINER - UPDATED FROM LOGIN
+// MAIN CONTAINER
 // ============================================
 const Container = styled.div`
   width: 100%;
   max-width: 420px;
-  padding: 36px 28px 32px;
+  padding: 40px 32px 32px;
   background: rgba(8, 18, 38, 0.55);
   backdrop-filter: blur(32px);
   border-radius: 48px;
@@ -242,16 +242,6 @@ const Container = styled.div`
     border-radius: 0 0 4px 4px;
   }
 
-  .shimmer-overlay {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle at 30% 40%, rgba(56, 189, 248, 0.02), transparent 60%);
-    pointer-events: none;
-  }
-
   &.error-shake {
     animation: ${shake} 0.4s ease-in-out;
   }
@@ -281,10 +271,10 @@ const BrandSection = styled.div`
 const PremiumLogo = styled.div`
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 5px 18px 5px 12px;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.06), rgba(129, 140, 248, 0.02));
-  border: 1px solid rgba(56, 189, 248, 0.04);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(56, 189, 248, 0.02));
+  border: 1px solid rgba(34, 197, 94, 0.04);
   border-radius: 40px;
   margin-bottom: 14px;
 
@@ -334,12 +324,10 @@ const Title = styled.h1`
   margin-bottom: 4px;
 
   .gradient-text {
-    background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
-    background-size: 300% 300%;
+    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: ${shimmer} 6s ease-in-out infinite;
   }
 
   @media (max-width: 480px) {
@@ -580,6 +568,7 @@ const ResendLink = styled.div`
   .resend-icon {
     display: inline-block;
     transition: transform 0.3s ease;
+    margin-right: 4px;
   }
 
   a:hover .resend-icon {
@@ -864,8 +853,6 @@ const VerifyResetCode = () => {
       </BackgroundContainer>
 
       <Container ref={containerRef}>
-        <div className="shimmer-overlay" />
-
         <BrandSection>
           <PremiumLogo>
             <span className="logo-icon">🔷</span>
