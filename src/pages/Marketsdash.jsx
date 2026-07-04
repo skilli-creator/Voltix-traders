@@ -74,11 +74,6 @@ const shimmerLine = keyframes`
   100% { transform: translateX(200%); }
 `;
 
-const floatPulse = keyframes`
-  0%, 100% { transform: translateY(0px) scale(1); }
-  50% { transform: translateY(-8px) scale(1.02); }
-`;
-
 const shimmerWave = keyframes`
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
@@ -109,6 +104,11 @@ const shimmerBorder = keyframes`
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+`;
+
+const floatPulse = keyframes`
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 `;
 
 // ============================================
@@ -836,76 +836,56 @@ const PopupCloseButton = styled.button`
 `;
 
 // ============================================
-// FLOATING CONNECT BUTTON - MOVED LEFT
+// SMALL FLOATING CONNECT BUTTON
 // ============================================
 const ConnectButtonWrapper = styled.div`
   position: fixed;
-  bottom: 40px;
-  left: 50%;
-  transform: translateX(-60%);
+  bottom: 30px;
+  right: 30px;
   z-index: 1000;
   animation: ${floatPulse} 3s ease-in-out infinite;
-  cursor: pointer;
-  width: auto;
-  max-width: 80vw;
-  padding: 0 16px;
 
   @media (max-width: 768px) {
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-62%);
-    max-width: 85vw;
-    padding: 0 12px;
-    animation-duration: 2.5s;
+    bottom: 20px;
+    right: 20px;
   }
 
   @media (max-width: 480px) {
     bottom: 16px;
-    left: 50%;
-    transform: translateX(-64%);
-    max-width: 88vw;
-    padding: 0 8px;
-    animation-duration: 2s;
-  }
-
-  @media (max-width: 380px) {
-    left: 50%;
-    transform: translateX(-66%);
-    max-width: 90vw;
-    padding: 0 4px;
+    right: 16px;
   }
 `;
 
 const ConnectButton = styled.button`
   position: relative;
-  padding: 18px 32px;
-  font-size: 1.1rem;
-  font-weight: 700;
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: #ffffff;
   background: ${props => props.disabled ? 'rgba(255, 255, 255, 0.05)' : 'linear-gradient(135deg, #22c55e, #16a34a)'};
   border: none;
-  border-radius: 60px;
+  border-radius: 50px;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${props => props.disabled ? 'none' : `
-    0 10px 40px rgba(34, 197, 94, 0.3),
-    0 0 80px rgba(34, 197, 94, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15)
+    0 4px 24px rgba(34, 197, 94, 0.25),
+    0 0 40px rgba(34, 197, 94, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1)
   `};
   overflow: hidden;
   letter-spacing: 0.3px;
-  width: 100%;
   opacity: ${props => props.disabled ? 0.5 : 1};
-  min-width: 0;
-  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   /* Premium gradient border glow */
   &::before {
     content: '';
     position: absolute;
-    inset: -3px;
-    border-radius: 63px;
-    padding: 3px;
+    inset: -2px;
+    border-radius: 52px;
+    padding: 2px;
     background: conic-gradient(
       from 0deg,
       #22c55e,
@@ -919,7 +899,7 @@ const ConnectButton = styled.button`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     animation: ${rotateGlow} 8s linear infinite;
-    opacity: ${props => props.disabled ? 0 : 0.6};
+    opacity: ${props => props.disabled ? 0 : 0.5};
     transition: opacity 0.3s ease;
   }
 
@@ -937,24 +917,24 @@ const ConnectButton = styled.button`
     height: 100%;
     background: linear-gradient(90deg, 
       transparent, 
-      rgba(255, 255, 255, 0.15), 
+      rgba(255, 255, 255, 0.1), 
       rgba(255, 255, 255, 0.05),
       transparent
     );
-    animation: ${shimmerWave} 3s ease-in-out infinite;
+    animation: ${shimmerWave} 4s ease-in-out infinite;
     pointer-events: none;
   }
 
   &:hover {
-    transform: ${props => props.disabled ? 'none' : 'translateY(-4px) scale(1.02)'};
+    transform: ${props => props.disabled ? 'none' : 'translateY(-3px) scale(1.03)'};
     box-shadow: ${props => props.disabled ? 'none' : `
-      0 20px 60px rgba(34, 197, 94, 0.5),
-      0 0 100px rgba(34, 197, 94, 0.2)
+      0 8px 32px rgba(34, 197, 94, 0.4),
+      0 0 60px rgba(34, 197, 94, 0.1)
     `};
   }
 
   &:active {
-    transform: ${props => props.disabled ? 'none' : 'scale(0.97)'};
+    transform: ${props => props.disabled ? 'none' : 'scale(0.95)'};
   }
 
   .button-content {
@@ -962,13 +942,11 @@ const ConnectButton = styled.button`
     z-index: 1;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
+    gap: 8px;
   }
 
   .button-icon {
-    font-size: 1.2rem;
+    font-size: 1rem;
     display: inline-block;
     flex-shrink: 0;
     opacity: 0.9;
@@ -978,146 +956,44 @@ const ConnectButton = styled.button`
     position: relative;
     z-index: 1;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 1.05rem;
-  }
-
-  .button-arrow {
-    font-size: 1rem;
-    transition: transform 0.3s ease;
-    display: inline-block;
-    flex-shrink: 0;
-    opacity: 0.8;
-  }
-
-  &:hover .button-arrow {
-    transform: ${props => props.disabled ? 'none' : 'translateX(6px)'};
-  }
-
-  .connect-badge {
-    position: absolute;
-    top: -10px;
-    right: -6px;
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
-    color: #fff;
-    font-size: 0.5rem;
-    font-weight: 700;
-    padding: 3px 12px;
-    border-radius: 20px;
-    animation: ${pulseGlow} 2s ease-in-out infinite;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 2;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
   }
 
   .spinner {
     animation: ${spin} 1s linear infinite;
     display: inline-block;
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
-  /* Floating particles - hidden on mobile */
-  .particle {
+  .connect-badge {
     position: absolute;
-    width: 3px;
-    height: 3px;
-    background: rgba(34, 197, 94, 0.5);
-    border-radius: 50%;
-    pointer-events: none;
-    animation: ${glowPulse} 2s ease-in-out infinite;
-  }
-
-  .particle:nth-child(1) {
-    top: 20%;
-    left: 8%;
-    animation-delay: 0s;
-  }
-
-  .particle:nth-child(2) {
-    bottom: 20%;
-    right: 8%;
-    animation-delay: 0.7s;
-  }
-
-  .particle:nth-child(3) {
-    top: 12%;
-    right: 25%;
-    animation-delay: 1.4s;
-  }
-
-  .particle:nth-child(4) {
-    bottom: 12%;
-    left: 25%;
-    animation-delay: 2.1s;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff;
+    font-size: 0.4rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    animation: ${pulseGlow} 2s ease-in-out infinite;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    box-shadow: 0 2px 12px rgba(239, 68, 68, 0.3);
   }
 
   @media (max-width: 768px) {
-    padding: 14px 20px;
-    font-size: 0.95rem;
-    border-radius: 50px;
-
-    .button-icon {
-      font-size: 1rem;
-    }
-
-    .button-text {
-      font-size: 0.9rem;
-    }
-
-    .button-arrow {
-      font-size: 0.9rem;
-    }
-
-    .connect-badge {
-      top: -8px;
-      right: -4px;
-      font-size: 0.45rem;
-      padding: 2px 10px;
-    }
-
-    .particle {
-      display: none;
-    }
-
-    &::before {
-      inset: -2px;
-      border-radius: 52px;
-      padding: 2px;
-    }
-
-    &:hover {
-      transform: translateY(-3px) scale(1.01);
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 12px 14px;
-    font-size: 0.85rem;
+    padding: 10px 16px;
+    font-size: 0.75rem;
     border-radius: 40px;
 
-    .button-content {
-      gap: 6px;
-    }
-
     .button-icon {
-      font-size: 0.9rem;
-    }
-
-    .button-text {
-      font-size: 0.78rem;
-      white-space: nowrap;
-    }
-
-    .button-arrow {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
     }
 
     .connect-badge {
-      top: -6px;
-      right: -3px;
-      font-size: 0.4rem;
+      top: -5px;
+      right: -4px;
+      font-size: 0.35rem;
       padding: 2px 8px;
     }
 
@@ -1128,35 +1004,38 @@ const ConnectButton = styled.button`
     }
 
     &:hover {
-      transform: translateY(-2px) scale(1.01);
+      transform: translateY(-2px) scale(1.02);
     }
   }
 
-  @media (max-width: 380px) {
-    padding: 10px 10px;
-    font-size: 0.75rem;
-
-    .button-icon {
-      font-size: 0.75rem;
-    }
-
-    .button-text {
-      font-size: 0.68rem;
-    }
-
-    .button-arrow {
-      font-size: 0.65rem;
-    }
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+    font-size: 0.65rem;
+    border-radius: 32px;
 
     .button-content {
       gap: 4px;
     }
 
+    .button-icon {
+      font-size: 0.7rem;
+    }
+
     .connect-badge {
-      font-size: 0.35rem;
+      top: -4px;
+      right: -3px;
+      font-size: 0.3rem;
       padding: 1px 6px;
-      top: -5px;
-      right: -2px;
+    }
+
+    &::before {
+      inset: -1px;
+      border-radius: 34px;
+      padding: 1px;
+    }
+
+    &:hover {
+      transform: translateY(-1px) scale(1.01);
     }
   }
 `;
@@ -1963,27 +1842,23 @@ const Dashboard = () => {
         </HeroSection>
       </Container>
 
-      {/* FLOATING CONNECT BUTTON - MOVED FURTHER LEFT */}
+      {/* SMALL FLOATING CONNECT BUTTON - BOTTOM RIGHT */}
       <ConnectButtonWrapper>
         <ConnectButton 
           onClick={handleConnect}
           disabled={isLoading}
         >
-          <span className="particle" />
-          <span className="particle" />
-          <span className="particle" />
-          <span className="particle" />
           <span className="connect-badge">Live</span>
           <span className="button-content">
             {isLoading ? (
               <>
                 <span className="spinner">⟳</span>
-                <span className="button-text">Connecting...</span>
+                <span className="button-text">Connecting</span>
               </>
             ) : (
               <>
-                <span className="button-text">Connect Your Accounts</span>
-                <span className="button-arrow">→</span>
+                <span className="button-icon">◆</span>
+                <span className="button-text">Connect</span>
               </>
             )}
           </span>
