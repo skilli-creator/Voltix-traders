@@ -12,10 +12,8 @@ import Forgotpass from './pages/Forgotpass';
 import Verifyresetcode from './pages/Verifyresetcode';
 import Resetpass from './pages/Resetpass';
 import Marketsdash from './pages/Marketsdash';
-import Derivhome from './pages/Derivhome';
 import Derivdash from './pages/Derivdash';
 import Binancehome from './pages/Binancehome';
-import Forexhome from './pages/Forexhome';
 import Settings from './pages/Settings';
 
 // Import Components
@@ -39,9 +37,7 @@ const App = () => {
 
       {/* Dashboard Pages */}
       <Route path="/marketsdash" element={<Marketsdash />} />
-      <Route path="/derivhome" element={<Derivhome />} />
       <Route path="/binancehome" element={<Binancehome />} />
-      <Route path="/forexhome" element={<Forexhome />} />
       <Route path="/settings" element={<Settings />} />
       
       {/* Trading Tools */}
