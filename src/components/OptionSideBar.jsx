@@ -44,7 +44,7 @@ const SidebarContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-top: 64px;
+  padding-top: 76px;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -109,7 +109,7 @@ const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 4px 16px 4px;
+  padding: 20px 4px 16px 4px;
   border-bottom: 1px solid rgba(56, 189, 248, 0.06);
   margin-bottom: 16px;
   animation: ${slideIn} 0.4s ease;
