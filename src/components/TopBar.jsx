@@ -288,28 +288,6 @@ const RightSection = styled.div`
   }
 `;
 
-// ===== ACCOUNT CODE =====
-const AccountCode = styled.span`
-  font-size: 13px;
-  font-weight: 500;
-  color: #94a3b8;
-  font-family: 'Courier New', monospace;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  letter-spacing: 0.5px;
-
-  @media (max-width: 768px) {
-    font-size: 11px;
-    padding: 3px 6px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 10px;
-    padding: 2px 4px;
-  }
-`;
-
 // ===== ACCOUNT BADGE =====
 const AccountBadge = styled.div`
   display: flex;
@@ -540,8 +518,8 @@ const CurrencyToggle = styled.div`
   }
 `;
 
-// ===== PROFESSIONAL FUNDS BUTTON =====
-const ProfessionalFundsButton = styled.a`
+// ===== FUNDS BUTTON =====
+const FundsButton = styled.a`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -697,8 +675,8 @@ const ProfessionalFundsButton = styled.a`
   }
 `;
 
-// ===== PREMIUM EXIT BUTTON =====
-const PremiumExitButton = styled.button`
+// ===== EXIT BUTTON =====
+const ExitButton = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -847,18 +825,17 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
   const navigate = useNavigate();
 
   const accountData = {
-    code: 'CR123456',
     real: { 
       balance: 7110.00, 
       currency: 'USD',
-      flag: '🇺🇸',
+      flag: 'US',
       kshBalance: 7110.00 * 150.50,
       eurBalance: 7110.00 * 0.92
     },
     demo: { 
       balance: 10000.00, 
       currency: 'USD',
-      flag: '🎯',
+      flag: 'DM',
       kshBalance: 10000.00 * 150.50,
       eurBalance: 10000.00 * 0.92
     }
@@ -873,12 +850,12 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
   };
 
   const getCurrencyFlag = () => {
-    if (accountType === 'demo') return '🎯';
+    if (accountType === 'demo') return 'DM';
     switch(selectedCurrency) {
-      case 'USD': return '🇺🇸';
-      case 'KSh': return '🇰🇪';
-      case 'EUR': return '🇪🇺';
-      default: return '🇺🇸';
+      case 'USD': return 'US';
+      case 'KSh': return 'KE';
+      case 'EUR': return 'EU';
+      default: return 'US';
     }
   };
 
@@ -983,8 +960,6 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
       </LeftSection>
 
       <RightSection>
-        <AccountCode>{accountData.code}</AccountCode>
-
         <div ref={dropdownRef} style={{ position: 'relative' }}>
           <AccountBadge onClick={toggleDropdown}>
             <span className="flag">{getCurrencyFlag()}</span>
@@ -1000,7 +975,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
               onClick={() => setAccountType('real')}
               className={accountType === 'real' ? 'active' : ''}
             >
-              {getCurrencyFlag()} Real Account
+              <span className="flag">◈</span> Real Account
               <span className="balance-small">
                 {getDropdownBalance()}
               </span>
@@ -1011,7 +986,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
               onClick={() => setAccountType('demo')}
               className={accountType === 'demo' ? 'active' : ''}
             >
-              🎯 Demo Account
+              <span className="flag">◇</span> Demo Account
               <span className="balance-small">
                 {getDropdownBalance()}
               </span>
@@ -1019,51 +994,51 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
             </DropdownItem>
 
             <CurrencyToggle>
-              <span className="label">💱 Show balance in:</span>
+              <span className="label">Show balance in:</span>
               <div className="toggle-group">
                 <button 
                   className={`toggle-option ${selectedCurrency === 'USD' ? 'active' : ''}`}
                   onClick={() => handleCurrencyChange('USD')}
                 >
-                  🇺🇸 USD
+                  USD
                 </button>
                 <button 
                   className={`toggle-option ${selectedCurrency === 'EUR' ? 'active' : ''}`}
                   onClick={() => handleCurrencyChange('EUR')}
                 >
-                  🇪🇺 EUR
+                  EUR
                 </button>
                 <button 
                   className={`toggle-option ${selectedCurrency === 'KSh' ? 'active' : ''}`}
                   onClick={() => handleCurrencyChange('KSh')}
                 >
-                  🇰🇪 KSh
+                  KSh
                 </button>
               </div>
             </CurrencyToggle>
           </DropdownMenu>
         </div>
 
-        <ProfessionalFundsButton 
+        <FundsButton 
           href="https://app.rubicash.com/account/dashboard"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <span className="funds-icon">💰</span>
+          <span className="funds-icon">◆</span>
           <span className="funds-content">
             <span className="funds-title">Funds</span>
             <span className="funds-subtitle">Secure transactions</span>
           </span>
           <span className="arrow-right">→</span>
-        </ProfessionalFundsButton>
+        </FundsButton>
 
-        <PremiumExitButton onClick={handleExit}>
+        <ExitButton onClick={handleExit}>
           <span className="exit-icon-container">
             <span className="exit-icon">⏻</span>
           </span>
           <span className="exit-text">Exit</span>
           <span className="exit-arrow-icon">→</span>
-        </PremiumExitButton>
+        </ExitButton>
       </RightSection>
     </TopBar>
   );
