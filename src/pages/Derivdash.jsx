@@ -1,4 +1,4 @@
-// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fullscreen)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fullscreen for All Devices)
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
@@ -106,6 +106,11 @@ const MobileTabs = styled.div`
   padding: 4px 8px;
   gap: 4px;
   z-index: 10;
+
+  @media (max-width: 480px) {
+    padding: 3px 4px;
+    gap: 2px;
+  }
 `;
 
 const TabButton = styled.button`
@@ -150,16 +155,32 @@ const TabButton = styled.button`
       color: ${props => props.active ? '#2962ff' : '#c8d0dc'};
     }
   }
+
+  @media (max-width: 480px) {
+    padding: 6px 2px;
+    .label {
+      font-size: 7px;
+    }
+    .icon svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `;
 
-// ===== FULLSCREEN BUTTON =====
+// ===== FULLSCREEN BUTTON - Visible on ALL Devices =====
 const FullscreenButton = styled.button`
   position: fixed;
-  bottom: ${props => props.isFullscreen ? '16px' : '80px'};
-  right: 16px;
+  bottom: ${props => {
+    if (props.isMobile) {
+      return props.isFullscreen ? '16px' : '80px';
+    }
+    return '24px'; // Desktop position
+  }};
+  right: ${props => props.isMobile ? '16px' : '24px'};
   z-index: 50;
-  width: 44px;
-  height: 44px;
+  width: ${props => props.isMobile ? '44px' : '48px'};
+  height: ${props => props.isMobile ? '44px' : '48px'};
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(15, 19, 26, 0.85);
@@ -185,8 +206,8 @@ const FullscreenButton = styled.button`
   }
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: ${props => props.isMobile ? '20px' : '22px'};
+    height: ${props => props.isMobile ? '20px' : '22px'};
     stroke: currentColor;
     fill: none;
     stroke-width: 2;
@@ -194,16 +215,72 @@ const FullscreenButton = styled.button`
     stroke-linejoin: round;
   }
 
-  @media (min-width: 769px) {
-    display: none;
-  }
-
   @media (max-width: 480px) {
     width: 40px;
     height: 40px;
     bottom: ${props => props.isFullscreen ? '12px' : '72px'};
     right: 12px;
-    font-size: 16px;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  @media (min-width: 769px) {
+    /* Desktop specific styles */
+    width: 48px;
+    height: 48px;
+    bottom: 24px;
+    right: 24px;
+    
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 32px rgba(41, 98, 255, 0.2);
+    }
+  }
+`;
+
+// ===== FULLSCREEN TOOLTIP (Desktop only) =====
+const FullscreenTooltip = styled.span`
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(8, 18, 38, 0.95);
+  backdrop-filter: blur(12px);
+  color: #f1f5f9;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  font-weight: 500;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(8, 18, 38, 0.95);
+  }
+
+  ${FullscreenButton}:hover & {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-4px);
+  }
+
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
 
@@ -414,13 +491,17 @@ const Derivdash = () => {
         </MobileLayout>
       </MainContent>
 
-      {/* Fullscreen Toggle Button - Mobile Only */}
+      {/* Fullscreen Toggle Button - Visible on ALL Devices */}
       <FullscreenButton 
         onClick={toggleFullscreen}
         isFullscreen={isFullscreen}
+        isMobile={isMobile}
         aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
       >
         {isFullscreen ? <FullscreenExitIcon /> : <FullscreenEnterIcon />}
+        <FullscreenTooltip>
+          {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+        </FullscreenTooltip>
       </FullscreenButton>
     </DashboardContainer>
   );
