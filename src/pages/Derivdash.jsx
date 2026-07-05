@@ -1,6 +1,6 @@
-// src/pages/Derivdash.jsx (Swipeable Version with Sidebar)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fullscreen)
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import TopBar from '../components/TopBar';
 import OptionSideBar from '../components/OptionSideBar';
@@ -12,9 +12,21 @@ const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+  height: ${props => props.isFullscreen ? '100dvh' : '100vh'};
   background: #0a0f1f;
   overflow: hidden;
   position: relative;
+  width: 100%;
+  
+  /* Prevent scrolling on body when in fullscreen */
+  ${props => props.isFullscreen && `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+  `}
 `;
 
 const MainContent = styled.div`
@@ -140,6 +152,61 @@ const TabButton = styled.button`
   }
 `;
 
+// ===== FULLSCREEN BUTTON =====
+const FullscreenButton = styled.button`
+  position: fixed;
+  bottom: ${props => props.isFullscreen ? '16px' : '80px'};
+  right: 16px;
+  z-index: 50;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 19, 26, 0.85);
+  backdrop-filter: blur(16px);
+  color: #8a93a6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+  &:hover {
+    background: rgba(41, 98, 255, 0.15);
+    border-color: rgba(41, 98, 255, 0.2);
+    color: #2962ff;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+    bottom: ${props => props.isFullscreen ? '12px' : '72px'};
+    right: 12px;
+    font-size: 16px;
+  }
+`;
+
 // Professional SVG Icons
 const ChartIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -161,6 +228,25 @@ const PositionsIcon = () => (
   </svg>
 );
 
+// ===== FULLSCREEN SVG ICONS =====
+const FullscreenEnterIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="15 3 21 3 21 9" />
+    <polyline points="9 21 3 21 3 15" />
+    <line x1="21" y1="3" x2="14" y2="10" />
+    <line x1="3" y1="21" x2="10" y2="14" />
+  </svg>
+);
+
+const FullscreenExitIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="4 14 10 14 10 20" />
+    <polyline points="20 10 14 10 14 4" />
+    <line x1="10" y1="14" x2="3" y2="21" />
+    <line x1="14" y1="10" x2="21" y2="3" />
+  </svg>
+);
+
 const panels = [
   { id: 'chart', label: 'Chart', icon: <ChartIcon />, component: ChartPanel },
   { id: 'trade', label: 'Trade', icon: <TradeIcon />, component: RightPanel },
@@ -172,10 +258,12 @@ const Derivdash = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  const containerRef = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
@@ -183,6 +271,26 @@ const Derivdash = () => {
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Handle fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isFs = document.fullscreenElement !== null;
+      setIsFullscreen(isFs);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
   }, []);
 
   const toggleSidebar = () => {
@@ -210,8 +318,44 @@ const Derivdash = () => {
     }
   };
 
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        // Enter fullscreen
+        const element = document.documentElement;
+        if (element.requestFullscreen) {
+          await element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+          await element.webkitRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+          await element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          await element.msRequestFullscreen();
+        }
+        setIsFullscreen(true);
+      } else {
+        // Exit fullscreen
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          await document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          await document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          await document.msExitFullscreen();
+        }
+        setIsFullscreen(false);
+      }
+    } catch (error) {
+      console.error('Fullscreen error:', error);
+    }
+  };
+
   return (
-    <DashboardContainer>
+    <DashboardContainer 
+      ref={containerRef}
+      isFullscreen={isFullscreen}
+    >
       {/* Top Bar with Sidebar Toggle */}
       <TopBar 
         isSidebarOpen={isSidebarOpen} 
@@ -269,6 +413,15 @@ const Derivdash = () => {
           </MobileTabs>
         </MobileLayout>
       </MainContent>
+
+      {/* Fullscreen Toggle Button - Mobile Only */}
+      <FullscreenButton 
+        onClick={toggleFullscreen}
+        isFullscreen={isFullscreen}
+        aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+      >
+        {isFullscreen ? <FullscreenExitIcon /> : <FullscreenEnterIcon />}
+      </FullscreenButton>
     </DashboardContainer>
   );
 };
