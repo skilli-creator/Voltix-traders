@@ -1541,7 +1541,7 @@ const DigitItem = styled.div`
 `;
 
 // ============================================
-// 8. DIGIT GRID
+// 8. DIGIT GRID - WITH RESTRICTION (1-8 only for Over/Under in Manual mode)
 // ============================================
 
 const DigitGridWrapper = styled.div`
@@ -1580,16 +1580,40 @@ const DigitGrid = styled.div`
 
 const DigitButton = styled.button`
   padding: 6px 0;
-  border: 1px solid ${props => props.selected ? 'rgba(41, 98, 255, 0.6)' : 'rgba(26, 31, 46, 0.8)'};
+  border: 1px solid ${props => {
+    if (props.disabled) return 'rgba(255, 255, 255, 0.02)';
+    return props.selected ? 'rgba(41, 98, 255, 0.6)' : 'rgba(26, 31, 46, 0.8)';
+  }};
   border-radius: 5px;
-  background: ${props => props.selected ? 'rgba(41, 98, 255, 0.12)' : 'rgba(255, 255, 255, 0.02)'};
-  color: ${props => props.selected ? '#2962ff' : '#8a93a6'};
-  font-size: 13px; font-weight: 600; cursor: pointer;
+  background: ${props => {
+    if (props.disabled) return 'rgba(255, 255, 255, 0.01)';
+    return props.selected ? 'rgba(41, 98, 255, 0.12)' : 'rgba(255, 255, 255, 0.02)';
+  }};
+  color: ${props => {
+    if (props.disabled) return '#4a4f5e';
+    return props.selected ? '#2962ff' : '#8a93a6';
+  }};
+  font-size: 13px;
+  font-weight: 600;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: ${props => props.disabled ? 0.4 : 1};
 
-  &:hover { border-color: rgba(41, 98, 255, 0.5); color: #d1d4dc; transform: translateY(-1px); }
-  ${props => props.selected && `box-shadow: 0 0 16px rgba(41, 98, 255, 0.15);`}
-  &:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
+  &:hover {
+    border-color: ${props => props.disabled ? 'rgba(255, 255, 255, 0.02)' : 'rgba(41, 98, 255, 0.5)'};
+    color: ${props => props.disabled ? '#4a4f5e' : '#d1d4dc'};
+    transform: ${props => props.disabled ? 'none' : 'translateY(-1px)'};
+  }
+  
+  ${props => props.selected && !props.disabled && `
+    box-shadow: 0 0 16px rgba(41, 98, 255, 0.15);
+  `}
+  
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+  }
 
   @media (max-width: 768px) {
     padding: 5px 0;
@@ -2033,7 +2057,22 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   };
 
   const handleDigitSelect = (digit) => {
+    // In Manual mode with Over/Under, only allow digits 1-8
+    if (tradeMode === 'manual' && tradeType === 'overunder') {
+      if (digit === 0 || digit === 9) {
+        return; // Do nothing for 0 and 9
+      }
+    }
     setSelectedDigit(selectedDigit === digit ? null : digit);
+  };
+
+  // Check if a digit should be disabled
+  const isDigitDisabled = (digit) => {
+    // In Manual mode with Over/Under, disable 0 and 9
+    if (tradeMode === 'manual' && tradeType === 'overunder') {
+      return digit === 0 || digit === 9;
+    }
+    return false;
   };
 
   const handleBotSelect = (botId) => {
@@ -2465,23 +2504,31 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </DigitStatsContainer>
   );
 
-  // ===== RENDER DIGIT GRID =====
+  // ===== RENDER DIGIT GRID - WITH 1-8 RESTRICTION =====
   const renderDigitGrid = () => {
     if (tradeType === 'random' || tradeType === 'evenodd') return null;
     
     return (
       <DigitGridWrapper>
-        <DigitGridLabel>Select a digit</DigitGridLabel>
+        <DigitGridLabel>
+          {tradeMode === 'manual' && tradeType === 'overunder' 
+            ? 'Select a digit (1-8)' 
+            : 'Select a digit'}
+        </DigitGridLabel>
         <DigitGrid>
-          {digits.map((digit) => (
-            <DigitButton
-              key={digit}
-              selected={selectedDigit === digit}
-              onClick={() => handleDigitSelect(digit)}
-            >
-              {digit}
-            </DigitButton>
-          ))}
+          {digits.map((digit) => {
+            const disabled = isDigitDisabled(digit);
+            return (
+              <DigitButton
+                key={digit}
+                selected={selectedDigit === digit}
+                disabled={disabled}
+                onClick={() => handleDigitSelect(digit)}
+              >
+                {digit}
+              </DigitButton>
+            );
+          })}
         </DigitGrid>
       </DigitGridWrapper>
     );
@@ -2685,7 +2732,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       {/* 6. DIGIT STATS - ONLY ON PHONE IN MANUAL MODE */}
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
-      {/* 7. DIGIT GRID */}
+      {/* 7. DIGIT GRID - WITH 1-8 RESTRICTION */}
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
 
       {/* 8. EVEN/ODD BUTTONS */}
