@@ -370,7 +370,7 @@ const DropdownOption = styled.div`
 `;
 
 // ============================================
-// 3. TRADE MODE TOGGLE - PREMIUM DESIGN
+// 3. TRADE MODE TOGGLE - PREMIUM DESIGN (BLUE INDICATOR REMOVED)
 // ============================================
 
 const TradeModeWrapper = styled.div`
@@ -398,25 +398,12 @@ const TradeModeLabel = styled.div`
   letter-spacing: 0.8px;
   font-weight: 600;
 
-  .mode-indicator {
-    font-size: 7px;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: rgba(41, 98, 255, 0.1);
-    color: #2962ff;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
   @media (max-width: 768px) {
     font-size: 7px;
-    .mode-indicator { font-size: 6px; padding: 1px 6px; }
   }
 
   @media (max-width: 480px) {
     font-size: 6px;
-    .mode-indicator { font-size: 5px; padding: 1px 4px; }
   }
 `;
 
@@ -2307,13 +2294,11 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </TradeTypeWrapper>
       </PhoneTwoColumnWrapper>
 
-      {/* 3. TRADE MODE - PREMIUM DESIGN */}
+      {/* 3. TRADE MODE - PREMIUM DESIGN (BLUE INDICATOR REMOVED) */}
       <TradeModeWrapper>
         <TradeModeLabel>
           <span>Execution Mode</span>
-          <span className="mode-indicator">
-            {tradeMode === 'auto' ? 'Auto' : tradeMode === 'manual' ? 'Manual' : 'Bots'}
-          </span>
+          {/* REMOVED: <span className="mode-indicator">Auto/Manual/Bots</span> */}
         </TradeModeLabel>
         <TradeModeButtons>
           <TradeModeButton 
