@@ -953,7 +953,7 @@ const DropdownSelectItem = styled.div`
 `;
 
 // ============================================
-// 6. AI ANALYSIS - PREMIUM PROFESSIONAL DESIGN
+// 6. AI ANALYSIS - PREMIUM PROFESSIONAL DESIGN WITH REDESIGNED DROPDOWNS
 // ============================================
 
 const AIFloatingButton = styled.button`
@@ -1123,36 +1123,266 @@ const AISelectWrapper = styled.div`
   }
 `;
 
-const AISelect = styled.select`
+// ===== REDESIGNED AI DROPDOWN SELECTOR =====
+const AIDropdown = styled.div`
+  position: relative;
   width: 100%;
+`;
+
+const AIDropdownButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 8px;
-  color: #f1f5f9;
-  font-size: 12px;
-  font-weight: 500;
-  outline: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
+  transition: all 0.3s ease;
 
-  &:focus {
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
     border-color: rgba(41, 98, 255, 0.3);
-    box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.05);
   }
 
-  option {
-    background: #0a0e17;
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .ai-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.color || '#2962ff'};
+    flex-shrink: 0;
+  }
+
+  .ai-selected-text {
+    font-size: 12px;
+    font-weight: 500;
     color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+  }
+
+  .arrow {
+    font-size: 10px;
+    color: #5a6070;
+    transition: transform 0.3s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    flex-shrink: 0;
+    margin-left: 8px;
   }
 
   @media (max-width: 480px) {
-    font-size: 11px;
-    padding: 6px 10px;
+    padding: 6px 8px;
+    .ai-selected-text { font-size: 10px; }
+    .ai-dot { width: 6px; height: 6px; }
+  }
+`;
+
+const AIDropdownMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(21, 26, 38, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  animation: ${slideDown} 0.2s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  max-height: 200px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  @media (max-width: 480px) {
+    max-height: 160px;
+  }
+`;
+
+const AIDropdownItem = styled.div`
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
+  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .ai-item-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.color || '#2962ff'};
+    flex-shrink: 0;
+  }
+
+  .ai-item-name {
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+  }
+
+  .ai-check {
+    color: #2962ff;
+    font-size: 14px;
+    opacity: ${props => props.active ? 1 : 0};
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 8px;
+    .ai-item-name { font-size: 10px; }
+    .ai-item-dot { width: 6px; height: 6px; }
+    .ai-check { font-size: 11px; }
+  }
+`;
+
+// ===== AI Trade Type Dropdown =====
+const AITradeTypeDropdown = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const AITradeTypeButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(41, 98, 255, 0.3);
+  }
+
+  .ai-type-selected {
+    font-size: 12px;
+    font-weight: 500;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .arrow {
+    font-size: 10px;
+    color: #5a6070;
+    transition: transform 0.3s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 8px;
+    .ai-type-selected { font-size: 10px; }
+  }
+`;
+
+const AITradeTypeMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(21, 26, 38, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  animation: ${slideDown} 0.2s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  max-height: 150px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  @media (max-width: 480px) {
+    max-height: 120px;
+  }
+`;
+
+const AITradeTypeItem = styled.div`
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
+  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #ffffff;
+  }
+
+  .ai-type-name {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .ai-check {
+    color: #2962ff;
+    font-size: 14px;
+    opacity: ${props => props.active ? 1 : 0};
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 8px;
+    .ai-type-name { font-size: 10px; }
+    .ai-check { font-size: 11px; }
   }
 `;
 
@@ -1682,6 +1912,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [aiMarket, setAiMarket] = useState(VOLATILITY_MARKETS[0].symbol);
   const [aiTradeType, setAiTradeType] = useState('overunder');
 
+  // AI Dropdown states
+  const [isAIMarketDropdownOpen, setIsAIMarketDropdownOpen] = useState(false);
+  const [isAITradeTypeDropdownOpen, setIsAITradeTypeDropdownOpen] = useState(false);
+
   // Dropdown states
   const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
   const [isMartingaleDropdownOpen, setIsMartingaleDropdownOpen] = useState(false);
@@ -1843,6 +2077,34 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const toggleMarketDropdown = () => {
     setIsMarketDropdownOpen(!isMarketDropdownOpen);
+  };
+
+  // === AI MARKET SELECTOR HANDLERS ===
+  const handleAIMarketSelect = (market) => {
+    setAiMarket(market.symbol);
+    setIsAIMarketDropdownOpen(false);
+  };
+
+  const toggleAIMarketDropdown = () => {
+    setIsAIMarketDropdownOpen(!isAIMarketDropdownOpen);
+  };
+
+  const getSelectedAIMarket = () => {
+    return VOLATILITY_MARKETS.find(m => m.symbol === aiMarket) || VOLATILITY_MARKETS[0];
+  };
+
+  // === AI TRADE TYPE HANDLERS ===
+  const handleAITradeTypeSelect = (typeId) => {
+    setAiTradeType(typeId);
+    setIsAITradeTypeDropdownOpen(false);
+  };
+
+  const toggleAITradeTypeDropdown = () => {
+    setIsAITradeTypeDropdownOpen(!isAITradeTypeDropdownOpen);
+  };
+
+  const getSelectedAITradeType = () => {
+    return tradeTypes.find(t => t.id === aiTradeType) || tradeTypes[0];
   };
 
   // === CALCULATE DIGIT STATS ===
@@ -2083,6 +2345,102 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
+  // ===== RENDER AI MARKET SCANNER =====
+  const renderAIScanner = () => {
+    const selectedAIMarket = getSelectedAIMarket();
+    const selectedAITradeType = getSelectedAITradeType();
+
+    return (
+      <>
+        <AIFloatingButton onClick={toggleAI}>
+          <span>AI</span>
+          <span className="ai-label">Analyze</span>
+        </AIFloatingButton>
+        
+        <AIAnalysisPanel isOpen={isAIOpen}>
+          <AIAnalysisHeader>
+            <div className="title">
+              <span className="title-icon">AI</span>
+              Market Scanner
+            </div>
+            <button className="close-btn" onClick={toggleAI}>✕</button>
+          </AIAnalysisHeader>
+          
+          <AIScannerInputs>
+            {/* AI Market Select - Premium Dropdown */}
+            <AISelectWrapper>
+              <span className="label">Select Market</span>
+              <AIDropdown>
+                <AIDropdownButton 
+                  isOpen={isAIMarketDropdownOpen}
+                  onClick={toggleAIMarketDropdown}
+                  color={selectedAIMarket.color}
+                >
+                  <div className="left">
+                    <span className="ai-dot" />
+                    <span className="ai-selected-text">{selectedAIMarket.name}</span>
+                  </div>
+                  <span className="arrow">▾</span>
+                </AIDropdownButton>
+                
+                <AIDropdownMenu isOpen={isAIMarketDropdownOpen}>
+                  {VOLATILITY_MARKETS.map((market) => (
+                    <AIDropdownItem
+                      key={market.symbol}
+                      active={aiMarket === market.symbol}
+                      color={market.color}
+                      onClick={() => handleAIMarketSelect(market)}
+                    >
+                      <div className="left">
+                        <span className="ai-item-dot" />
+                        <span className="ai-item-name">{market.name}</span>
+                      </div>
+                      <span className="ai-check">✓</span>
+                    </AIDropdownItem>
+                  ))}
+                </AIDropdownMenu>
+              </AIDropdown>
+            </AISelectWrapper>
+            
+            {/* AI Trade Type - Premium Dropdown */}
+            <AISelectWrapper>
+              <span className="label">Trade Type</span>
+              <AITradeTypeDropdown>
+                <AITradeTypeButton 
+                  isOpen={isAITradeTypeDropdownOpen}
+                  onClick={toggleAITradeTypeDropdown}
+                >
+                  <span className="ai-type-selected">{selectedAITradeType.label}</span>
+                  <span className="arrow">▾</span>
+                </AITradeTypeButton>
+                
+                <AITradeTypeMenu isOpen={isAITradeTypeDropdownOpen}>
+                  {tradeTypes.map((type) => (
+                    <AITradeTypeItem
+                      key={type.id}
+                      active={aiTradeType === type.id}
+                      onClick={() => handleAITradeTypeSelect(type.id)}
+                    >
+                      <span className="ai-type-name">{type.label}</span>
+                      <span className="ai-check">✓</span>
+                    </AITradeTypeItem>
+                  ))}
+                </AITradeTypeMenu>
+              </AITradeTypeDropdown>
+            </AISelectWrapper>
+            
+            <AIScanButton disabled>
+              <span className="scan-text">
+                Scan Market
+                <span className="coming-soon-badge">Coming Soon</span>
+              </span>
+            </AIScanButton>
+          </AIScannerInputs>
+        </AIAnalysisPanel>
+      </>
+    );
+  };
+
   // ===== RENDER DIGIT STATS =====
   const renderDigitStats = () => (
     <DigitStatsContainer>
@@ -2203,62 +2561,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   // ===== RENDER AI FLOATING BUTTON (Manual Mode Only - All Devices) =====
   const renderAIFloatingButton = () => {
     if (tradeMode !== 'manual') return null;
-    
-    return (
-      <>
-        <AIFloatingButton onClick={toggleAI}>
-          <span>AI</span>
-          <span className="ai-label">Analyze</span>
-        </AIFloatingButton>
-        
-        <AIAnalysisPanel isOpen={isAIOpen}>
-          <AIAnalysisHeader>
-            <div className="title">
-              <span className="title-icon">AI</span>
-              Market Scanner
-            </div>
-            <button className="close-btn" onClick={toggleAI}>✕</button>
-          </AIAnalysisHeader>
-          
-          <AIScannerInputs>
-            <AISelectWrapper>
-              <span className="label">Select Market</span>
-              <AISelect 
-                value={aiMarket} 
-                onChange={(e) => setAiMarket(e.target.value)}
-              >
-                {VOLATILITY_MARKETS.map((market) => (
-                  <option key={market.symbol} value={market.symbol}>
-                    {market.name}
-                  </option>
-                ))}
-              </AISelect>
-            </AISelectWrapper>
-            
-            <AISelectWrapper>
-              <span className="label">Trade Type</span>
-              <AISelect 
-                value={aiTradeType} 
-                onChange={(e) => setAiTradeType(e.target.value)}
-              >
-                {tradeTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.label}
-                  </option>
-                ))}
-              </AISelect>
-            </AISelectWrapper>
-            
-            <AIScanButton disabled>
-              <span className="scan-text">
-                Scan Market
-                <span className="coming-soon-badge">Coming Soon</span>
-              </span>
-            </AIScanButton>
-          </AIScannerInputs>
-        </AIAnalysisPanel>
-      </>
-    );
+    return renderAIScanner();
   };
 
   return (
@@ -2298,7 +2601,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       <TradeModeWrapper>
         <TradeModeLabel>
           <span>Execution Mode</span>
-          {/* REMOVED: <span className="mode-indicator">Auto/Manual/Bots</span> */}
         </TradeModeLabel>
         <TradeModeButtons>
           <TradeModeButton 
