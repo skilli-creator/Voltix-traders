@@ -1964,7 +1964,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       { id: 'overunder', label: 'Over/Under' },
       { id: 'evenodd', label: 'Even/Odd' },
       { id: 'matches', label: 'Matches/Differs' },
-      { id: 'accumulator', label: 'Accumulator' }, // Added Accumulator
+      { id: 'accumulators', label: 'Accumulators' }, // Added Accumulator
     ];
     
     // Add Random only in Auto mode
@@ -1981,7 +1981,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const filteredBots = useMemo(() => {
     // For Accumulator, show specific bots or all bots
-    if (tradeType === 'accumulator') {
+    if (tradeType === 'accumulators') {
       return BOTS; // Show all bots for accumulator
     }
     return BOTS.filter(bot => bot.type === getCurrentTrade().label);
