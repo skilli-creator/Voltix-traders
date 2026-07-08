@@ -1956,12 +1956,15 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [movementDirection, setMovementDirection] = useState('down');
   const [price, setPrice] = useState(8459.65);
 
-  // Define trade types - includes Random only for Auto mode
+  // ============================================
+  // TRADE TYPES WITH ACCUMULATORS
+  // ============================================
   const getTradeTypes = () => {
     const baseTypes = [
       { id: 'overunder', label: 'Over/Under' },
       { id: 'evenodd', label: 'Even/Odd' },
       { id: 'matches', label: 'Matches/Differs' },
+      { id: 'accumulator', label: 'Accumulator' }, // Added Accumulator
     ];
     
     // Add Random only in Auto mode
@@ -1977,6 +1980,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const getCurrentTrade = () => tradeTypes.find(t => t.id === tradeType) || tradeTypes[0];
 
   const filteredBots = useMemo(() => {
+    // For Accumulator, show specific bots or all bots
+    if (tradeType === 'accumulator') {
+      return BOTS; // Show all bots for accumulator
+    }
     return BOTS.filter(bot => bot.type === getCurrentTrade().label);
   }, [tradeType]);
 
@@ -2042,6 +2049,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const payoutUnderPct = 375.00;
   const payoutEven = 0.20;
   const payoutOdd = 0.20;
+  const accumulatorPayout = 50.00;
+  const accumulatorPayoutPct = 500.00;
 
   const handleTradeTypeSelect = (id) => {
     setTradeType(id);
@@ -2506,7 +2515,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // ===== RENDER DIGIT GRID - WITH 1-8 RESTRICTION =====
   const renderDigitGrid = () => {
-    if (tradeType === 'random' || tradeType === 'evenodd') return null;
+    if (tradeType === 'random' || tradeType === 'evenodd' || tradeType === 'accumulator') return null;
     
     return (
       <DigitGridWrapper>
@@ -2531,6 +2540,26 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           })}
         </DigitGrid>
       </DigitGridWrapper>
+    );
+  };
+
+  // ===== RENDER ACCUMULATOR BUTTONS =====
+  const renderAccumulatorButtons = () => {
+    if (tradeType !== 'accumulator') return null;
+    
+    return (
+      <TradeButtonsWrapper>
+        <TradeButton variant="primary" onClick={() => handlePlaceTrade('Up', '')}>
+          <span className="label">Up</span>
+          <span className="payout">${accumulatorPayout.toFixed(2)} ({accumulatorPayoutPct}%)</span>
+          <span className="sub">${stake || 0} stake</span>
+        </TradeButton>
+        <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Down', '')}>
+          <span className="label">Down</span>
+          <span className="payout">${accumulatorPayout.toFixed(2)} ({accumulatorPayoutPct}%)</span>
+          <span className="sub">${stake || 0} stake</span>
+        </TradeButton>
+      </TradeButtonsWrapper>
     );
   };
 
@@ -2563,7 +2592,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // ===== RENDER TRADE BUTTONS =====
   const renderTradeButtons = () => {
-    if (tradeType === 'evenodd' || tradeType === 'random') return null;
+    if (tradeType === 'evenodd' || tradeType === 'random' || tradeType === 'accumulator') return null;
     if (selectedDigit === null) return null;
 
     const digit = selectedDigit;
@@ -2738,17 +2767,20 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       {/* 8. EVEN/ODD BUTTONS */}
       {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
 
-      {/* 9. TRADE BUTTONS */}
-      {tradeMode === 'manual' && tradeType !== 'evenodd' && renderTradeButtons()}
+      {/* 9. ACCUMULATOR BUTTONS */}
+      {tradeMode === 'manual' && renderAccumulatorButtons()}
 
-      {/* 10. RUN BUTTON - Auto & Bots modes */}
+      {/* 10. TRADE BUTTONS */}
+      {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulator' && renderTradeButtons()}
+
+      {/* 11. RUN BUTTON - Auto & Bots modes */}
       {tradeMode === 'use-bots' ? (
         renderRunButton(!selectedBot)
       ) : tradeMode === 'auto' ? (
         renderRunButton(false)
       ) : null}
 
-      {/* 11. SESSION INFO (Bottom) */}
+      {/* 12. SESSION INFO (Bottom) */}
       <SessionInfo>
         <div className="left">
           <div className="label">Last Session</div>
@@ -2762,7 +2794,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </div>
       </SessionInfo>
 
-      {/* 12. AI FLOATING BUTTON - MANUAL MODE ONLY (All Devices) */}
+      {/* 13. AI FLOATING BUTTON - MANUAL MODE ONLY (All Devices) */}
       {renderAIFloatingButton()}
     </PanelContainer>
   );
