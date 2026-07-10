@@ -993,8 +993,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
         </SidebarToggle>
 
         <Brand>
-          <span className="icon">🔷</span>
-          <span className="brand-text">
+           <span className="brand-text">
             <span className="voltix">Voltix Traders.</span>
             <span className="deriv">deriv</span>
           </span>
