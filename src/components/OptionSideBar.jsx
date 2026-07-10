@@ -1,3 +1,4 @@
+// src/components/OptionSideBar.jsx
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +27,7 @@ const fadeIn = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS
+// STYLED COMPONENTS - UPDATED WITH THEME
 // ============================================
 
 const SidebarContainer = styled.div`
@@ -35,9 +36,9 @@ const SidebarContainer = styled.div`
   left: 0;
   width: 280px;
   height: 100vh;
-  background: rgba(3, 7, 18, 0.95);
+  background: ${props => props.theme.colors.backgroundSecondary + 'f0'};
   backdrop-filter: blur(20px);
-  border-right: 1px solid rgba(56, 189, 248, 0.08);
+  border-right: 1px solid ${props => props.theme.colors.border};
   transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 99;
@@ -70,7 +71,7 @@ const SidebarContent = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.2);
+    background: ${props => props.theme.colors.scrollbar};
     border-radius: 2px;
   }
 
@@ -104,7 +105,7 @@ const SidebarHeader = styled.div`
   align-items: center;
   gap: 12px;
   padding: 12px 4px 16px 4px;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.06);
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   margin-bottom: 16px;
   animation: ${slideIn} 0.4s ease;
   flex-shrink: 0;
@@ -113,14 +114,14 @@ const SidebarHeader = styled.div`
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
     font-weight: 700;
-    color: white;
-    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.15);
+    color: ${props => props.theme.colors.text};
+    box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '25'};
     flex-shrink: 0;
   }
 
@@ -132,13 +133,13 @@ const SidebarHeader = styled.div`
   .user-name {
     font-size: 14px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: ${props => props.theme.colors.text};
     letter-spacing: 0.3px;
   }
 
   .user-email {
     font-size: 11px;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     margin-top: 2px;
     letter-spacing: 0.2px;
     word-break: break-all;
@@ -198,7 +199,7 @@ const NavSection = styled.div`
 const SectionLabel = styled.div`
   font-size: 10px;
   font-weight: 600;
-  color: #64748b;
+  color: ${props => props.theme.colors.textMuted};
   text-transform: uppercase;
   letter-spacing: 1.2px;
   padding: 0 4px;
@@ -227,16 +228,16 @@ const NavItem = styled.div`
   transition: all 0.2s ease;
   position: relative;
   margin-bottom: 2px;
-  color: ${props => props.active ? '#f1f5f9' : '#94a3b8'};
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
 
   &:hover {
-    background: rgba(56, 189, 248, 0.06);
-    color: #f1f5f9;
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.text};
   }
 
   &.active {
-    background: rgba(56, 189, 248, 0.08);
-    color: #f1f5f9;
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.text};
 
     &::before {
       content: '';
@@ -246,17 +247,17 @@ const NavItem = styled.div`
       transform: translateY(-50%);
       width: 3px;
       height: 24px;
-      background: linear-gradient(180deg, #38bdf8, #818cf8);
+      background: ${props => `linear-gradient(180deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
       border-radius: 0 3px 3px 0;
     }
 
     .nav-icon {
-      color: #38bdf8;
+      color: ${props => props.theme.colors.accent};
     }
 
     .badge {
-      background: rgba(56, 189, 248, 0.2);
-      color: #38bdf8;
+      background: ${props => props.theme.colors.accentActive};
+      color: ${props => props.theme.colors.accent};
     }
   }
 
@@ -280,8 +281,8 @@ const NavItem = styled.div`
     font-weight: 600;
     padding: 2px 10px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.04);
-    color: #94a3b8;
+    background: ${props => props.theme.colors.background + '60'};
+    color: ${props => props.theme.colors.textMuted};
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
@@ -328,13 +329,13 @@ const NavItem = styled.div`
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 12px;
-  background: rgba(56, 189, 248, 0.03);
-  border: 1px solid rgba(56, 189, 248, 0.06);
+  background: ${props => props.theme.colors.accentActive};
+  border: 1px solid ${props => props.theme.colors.border};
   animation: ${fadeIn} 0.6s ease;
 
   .feedback-label {
     font-size: 11px;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 500;
     margin-bottom: 8px;
     letter-spacing: 0.3px;
@@ -351,7 +352,7 @@ const FeedbackSection = styled.div`
     font-size: 24px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #334155;
+    color: ${props => props.theme.colors.border};
     line-height: 1;
 
     &:hover {
@@ -364,7 +365,7 @@ const FeedbackSection = styled.div`
     }
 
     &:hover ~ .star {
-      color: #334155;
+      color: ${props => props.theme.colors.border};
     }
   }
 
@@ -372,10 +373,10 @@ const FeedbackSection = styled.div`
     width: 100%;
     min-height: 70px;
     padding: 10px 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: ${props => props.theme.colors.background + '40'};
+    border: 1px solid ${props => props.theme.colors.border};
     border-radius: 8px;
-    color: #f1f5f9;
+    color: ${props => props.theme.colors.text};
     font-size: 12px;
     font-family: inherit;
     resize: vertical;
@@ -384,12 +385,12 @@ const FeedbackSection = styled.div`
     margin-bottom: 10px;
 
     &::placeholder {
-      color: #4a4f5e;
+      color: ${props => props.theme.colors.textMuted + '60'};
     }
 
     &:focus {
-      border-color: rgba(56, 189, 248, 0.3);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.05);
+      border-color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 0 3px ${props => props.theme.colors.accent + '15'};
     }
   }
 
@@ -398,8 +399,8 @@ const FeedbackSection = styled.div`
     padding: 8px 0;
     border: none;
     border-radius: 8px;
-    background: linear-gradient(135deg, #2962ff, #1a4fcf);
-    color: #ffffff;
+    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
+    color: ${props => props.theme.colors.text};
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
@@ -407,7 +408,7 @@ const FeedbackSection = styled.div`
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 4px 20px rgba(41, 98, 255, 0.3);
+      box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '50'};
     }
 
     &:active:not(:disabled) {
@@ -475,8 +476,8 @@ const FeedbackSection = styled.div`
 const SidebarFooter = styled.div`
   flex-shrink: 0;
   padding: 12px 16px 20px 16px;
-  border-top: 1px solid rgba(56, 189, 248, 0.06);
-  background: rgba(3, 7, 18, 0.98);
+  border-top: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary + 'f0'};
   backdrop-filter: blur(10px);
   animation: ${fadeIn} 0.7s ease;
 
@@ -488,13 +489,13 @@ const SidebarFooter = styled.div`
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #64748b;
+    color: ${props => props.theme.colors.textMuted};
     font-size: 13px;
     font-weight: 500;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.03);
-      color: #94a3b8;
+      background: ${props => props.theme.colors.accentActive};
+      color: ${props => props.theme.colors.text};
     }
 
     .footer-icon {
@@ -539,9 +540,9 @@ const CloseButton = styled.button`
   top: 12px;
   right: 16px;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #94a3b8;
+  background: ${props => props.theme.colors.background + '80'};
+  border: 1px solid ${props => props.theme.colors.border};
+  color: ${props => props.theme.colors.textMuted};
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -553,8 +554,8 @@ const CloseButton = styled.button`
   backdrop-filter: blur(10px);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: #f1f5f9;
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.text};
   }
 
   @media (max-width: 768px) {
@@ -573,7 +574,7 @@ const CloseButton = styled.button`
 `;
 
 // ============================================
-// MAIN COMPONENT
+// MAIN COMPONENT (UNCHANGED)
 // ============================================
 
 const OptionSideBar = ({ isOpen, onClose }) => {
