@@ -1,6 +1,6 @@
 // src/components/ChartPanel.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import styled, { keyframes, ThemeContext } from 'styled-components';
 
 // ============================================
 // ALL VOLATILITY MARKETS (Deriv Official)
@@ -567,6 +567,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 // ============================================
 const ChartPanel = () => {
   const canvasRef = useRef(null);
+  const theme = useContext(ThemeContext);
   const [selectedMarket, setSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [price, setPrice] = useState(8459.65);
@@ -644,7 +645,7 @@ const ChartPanel = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || ticks.length < 2) return;
+    if (!canvas || ticks.length < 2 || !theme) return;
 
     const rect = canvas.parentElement.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -662,9 +663,10 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // Get theme colors from the PanelContainer's theme
-    const theme = window.__theme || { colors: { background: '#0a0e17' } };
+    // Get theme colors from the ThemeContext
     const bgColor = theme.colors.background || '#0a0e17';
+    const textColor = theme.colors.text || '#ffffff';
+    const textMutedColor = theme.colors.textMuted || '#4e5d78';
     
     // Parse hex color to RGB for gradient
     const hexToRgb = (hex) => {
@@ -680,8 +682,8 @@ const ChartPanel = () => {
     
     // Create gradient background that matches the theme
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-    bgGrad.addColorStop(0, `rgb(${rgb.r + 2}, ${rgb.g + 2}, ${rgb.b + 4})`);
-    bgGrad.addColorStop(1, `rgb(${rgb.r - 2}, ${rgb.g - 2}, ${rgb.b - 4})`);
+    bgGrad.addColorStop(0, `rgb(${Math.min(rgb.r + 2, 255)}, ${Math.min(rgb.g + 2, 255)}, ${Math.min(rgb.b + 4, 255)})`);
+    bgGrad.addColorStop(1, `rgb(${Math.max(rgb.r - 2, 0)}, ${Math.max(rgb.g - 2, 0)}, ${Math.max(rgb.b - 4, 0)})`);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
@@ -701,7 +703,7 @@ const ChartPanel = () => {
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
     // Grid lines - use theme text muted color with low opacity
-    const gridColor = hexToRgb(theme.colors.textMuted || '#4e5d78');
+    const gridColor = hexToRgb(textMutedColor);
     ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.1)`;
     ctx.lineWidth = 1;
     
@@ -758,7 +760,7 @@ const ChartPanel = () => {
     ctx.fill();
 
     // Dashed line
-    const dashColor = hexToRgb(theme.colors.text || '#ffffff');
+    const dashColor = hexToRgb(textColor);
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.15)`;
     ctx.beginPath();
@@ -783,7 +785,7 @@ const ChartPanel = () => {
     ctx.fillText(currentPrice.toFixed(2), width - pad.right + 4 + badgeW / 2, currentY);
 
     // Y-axis labels - use theme text muted color
-    ctx.fillStyle = theme.colors.textMuted || '#4e5d78';
+    ctx.fillStyle = textMutedColor;
     ctx.font = '10px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
@@ -798,7 +800,7 @@ const ChartPanel = () => {
     // X-axis labels - use theme text muted color
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillStyle = theme.colors.textMuted || '#4e5d78';
+    ctx.fillStyle = textMutedColor;
     ctx.font = '10px monospace';
     
     const sampleTimes = ['08:00', '11:00', '14:00', '17:00', '20:00'];
@@ -807,7 +809,7 @@ const ChartPanel = () => {
       ctx.fillText(t, posX, height - pad.bottom + 6);
     });
 
-  }, [ticks, movementDirection]);
+  }, [ticks, movementDirection, theme]);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const selectMarket = (market) => {
