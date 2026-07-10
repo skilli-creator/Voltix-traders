@@ -10,6 +10,7 @@ import RightPanel from '../components/RightPanel';
 
 // ===== THEME DEFINITIONS =====
 const themes = {
+  // --- Dark Themes ---
   black: {
     name: 'Black',
     colors: {
@@ -29,6 +30,84 @@ const themes = {
       scrollbar: '#2a2e3d',
     }
   },
+  dark: {
+    name: 'Dark',
+    colors: {
+      background: '#0d1117',
+      backgroundSecondary: '#161b22',
+      backgroundTertiary: '#1c2333',
+      text: '#f0f6fc',
+      textSecondary: '#8b949e',
+      textMuted: '#484f58',
+      border: '#30363d',
+      accent: '#58a6ff',
+      accentHover: '#79c0ff',
+      accentActive: 'rgba(88, 166, 255, 0.15)',
+      card: '#161b22',
+      shadow: 'rgba(0, 0, 0, 0.4)',
+      tabActive: 'rgba(88, 166, 255, 0.15)',
+      scrollbar: '#21262d',
+    }
+  },
+  darkBlue: {
+    name: 'Dark Blue',
+    colors: {
+      background: '#0a1628',
+      backgroundSecondary: '#0f1f3a',
+      backgroundTertiary: '#162a4a',
+      text: '#e8edf5',
+      textSecondary: '#8899bb',
+      textMuted: '#4a5a7a',
+      border: '#1a2a4a',
+      accent: '#4dabf7',
+      accentHover: '#74c0fc',
+      accentActive: 'rgba(77, 171, 247, 0.15)',
+      card: '#0f1f3a',
+      shadow: 'rgba(0, 10, 30, 0.5)',
+      tabActive: 'rgba(77, 171, 247, 0.15)',
+      scrollbar: '#1a2a4a',
+    }
+  },
+  midnight: {
+    name: 'Midnight',
+    colors: {
+      background: '#0c0e1a',
+      backgroundSecondary: '#13152a',
+      backgroundTertiary: '#1a1d3a',
+      text: '#e8e8ff',
+      textSecondary: '#8a8ac0',
+      textMuted: '#4a4a7a',
+      border: '#1a1d3a',
+      accent: '#7c7cf8',
+      accentHover: '#9d9dfa',
+      accentActive: 'rgba(124, 124, 248, 0.15)',
+      card: '#13152a',
+      shadow: 'rgba(0, 0, 20, 0.5)',
+      tabActive: 'rgba(124, 124, 248, 0.15)',
+      scrollbar: '#1a1d3a',
+    }
+  },
+  darkGreen: {
+    name: 'Dark Green',
+    colors: {
+      background: '#0a1a0a',
+      backgroundSecondary: '#0f2a0f',
+      backgroundTertiary: '#1a3a1a',
+      text: '#e8f5e8',
+      textSecondary: '#8ab88a',
+      textMuted: '#4a7a4a',
+      border: '#1a3a1a',
+      accent: '#48bb78',
+      accentHover: '#68d391',
+      accentActive: 'rgba(72, 187, 120, 0.15)',
+      card: '#0f2a0f',
+      shadow: 'rgba(0, 20, 0, 0.4)',
+      tabActive: 'rgba(72, 187, 120, 0.15)',
+      scrollbar: '#1a3a1a',
+    }
+  },
+  
+  // --- Light Themes ---
   white: {
     name: 'White',
     colors: {
@@ -48,6 +127,27 @@ const themes = {
       scrollbar: '#c8ced4',
     }
   },
+  lightGray: {
+    name: 'Light Gray',
+    colors: {
+      background: '#e8ecf0',
+      backgroundSecondary: '#f5f7fa',
+      backgroundTertiary: '#ffffff',
+      text: '#1a1a2e',
+      textSecondary: '#4a4a5a',
+      textMuted: '#8a8a9a',
+      border: '#d0d5dd',
+      accent: '#4a6cf7',
+      accentHover: '#6b8af8',
+      accentActive: 'rgba(74, 108, 247, 0.1)',
+      card: '#ffffff',
+      shadow: 'rgba(0, 0, 0, 0.06)',
+      tabActive: 'rgba(74, 108, 247, 0.1)',
+      scrollbar: '#c8ced4',
+    }
+  },
+  
+  // --- Color Themes ---
   blue: {
     name: 'Blue',
     colors: {
@@ -65,6 +165,101 @@ const themes = {
       shadow: 'rgba(0, 20, 60, 0.4)',
       tabActive: 'rgba(79, 195, 247, 0.15)',
       scrollbar: '#1a4a7a',
+    }
+  },
+  ocean: {
+    name: 'Ocean',
+    colors: {
+      background: '#0a1a2e',
+      backgroundSecondary: '#0f2740',
+      backgroundTertiary: '#163552',
+      text: '#e8f4f8',
+      textSecondary: '#8ac4d8',
+      textMuted: '#4a7a8a',
+      border: '#1a3a52',
+      accent: '#4dd0e1',
+      accentHover: '#80deea',
+      accentActive: 'rgba(77, 208, 225, 0.15)',
+      card: '#0f2740',
+      shadow: 'rgba(0, 20, 40, 0.4)',
+      tabActive: 'rgba(77, 208, 225, 0.15)',
+      scrollbar: '#1a4a5a',
+    }
+  },
+  purple: {
+    name: 'Purple',
+    colors: {
+      background: '#1a0a2e',
+      backgroundSecondary: '#221040',
+      backgroundTertiary: '#2a1a52',
+      text: '#f0e8f8',
+      textSecondary: '#c8a8f0',
+      textMuted: '#7a5a9a',
+      border: '#2a1a4a',
+      accent: '#b388ff',
+      accentHover: '#ccb0ff',
+      accentActive: 'rgba(179, 136, 255, 0.15)',
+      card: '#221040',
+      shadow: 'rgba(20, 0, 40, 0.4)',
+      tabActive: 'rgba(179, 136, 255, 0.15)',
+      scrollbar: '#2a1a4a',
+    }
+  },
+  pink: {
+    name: 'Pink',
+    colors: {
+      background: '#2e0a1a',
+      backgroundSecondary: '#401028',
+      backgroundTertiary: '#521a35',
+      text: '#f8e8f0',
+      textSecondary: '#f0a8c8',
+      textMuted: '#9a5a7a',
+      border: '#4a1a30',
+      accent: '#ff80ab',
+      accentHover: '#ffa0c4',
+      accentActive: 'rgba(255, 128, 171, 0.15)',
+      card: '#401028',
+      shadow: 'rgba(40, 0, 20, 0.4)',
+      tabActive: 'rgba(255, 128, 171, 0.15)',
+      scrollbar: '#4a1a30',
+    }
+  },
+  red: {
+    name: 'Red',
+    colors: {
+      background: '#1a0a0a',
+      backgroundSecondary: '#2a1212',
+      backgroundTertiary: '#3a1a1a',
+      text: '#ffe8e8',
+      textSecondary: '#e88a8a',
+      textMuted: '#b85a5a',
+      border: '#4a1a1a',
+      accent: '#ff6b6b',
+      accentHover: '#ff8a8a',
+      accentActive: 'rgba(255, 107, 107, 0.15)',
+      card: '#2a1212',
+      shadow: 'rgba(30, 0, 0, 0.4)',
+      tabActive: 'rgba(255, 107, 107, 0.15)',
+      scrollbar: '#4a1a1a',
+    }
+  },
+  orange: {
+    name: 'Orange',
+    colors: {
+      background: '#1a0f0a',
+      backgroundSecondary: '#2a1810',
+      backgroundTertiary: '#3a2218',
+      text: '#f8f0e8',
+      textSecondary: '#f0c8a8',
+      textMuted: '#9a7a5a',
+      border: '#4a2a1a',
+      accent: '#ff8a50',
+      accentHover: '#ffa070',
+      accentActive: 'rgba(255, 138, 80, 0.15)',
+      card: '#2a1810',
+      shadow: 'rgba(30, 15, 0, 0.4)',
+      tabActive: 'rgba(255, 138, 80, 0.15)',
+      scrollbar: '#4a2a1a',
     }
   },
   yellow: {
@@ -86,23 +281,99 @@ const themes = {
       scrollbar: '#4a4a1a',
     }
   },
-  red: {
-    name: 'Red',
+  gold: {
+    name: 'Gold',
     colors: {
-      background: '#1a0a0a',
-      backgroundSecondary: '#2a1212',
-      backgroundTertiary: '#3a1a1a',
-      text: '#ffe8e8',
-      textSecondary: '#e88a8a',
-      textMuted: '#b85a5a',
-      border: '#4a1a1a',
-      accent: '#ff6b6b',
-      accentHover: '#ff8a8a',
-      accentActive: 'rgba(255, 107, 107, 0.15)',
-      card: '#2a1212',
-      shadow: 'rgba(30, 0, 0, 0.4)',
-      tabActive: 'rgba(255, 107, 107, 0.15)',
-      scrollbar: '#4a1a1a',
+      background: '#1a150a',
+      backgroundSecondary: '#2a2010',
+      backgroundTertiary: '#3a2a18',
+      text: '#f8f0e0',
+      textSecondary: '#f0d888',
+      textMuted: '#9a8a5a',
+      border: '#4a3a1a',
+      accent: '#ffd700',
+      accentHover: '#ffe44d',
+      accentActive: 'rgba(255, 215, 0, 0.15)',
+      card: '#2a2010',
+      shadow: 'rgba(30, 25, 0, 0.4)',
+      tabActive: 'rgba(255, 215, 0, 0.15)',
+      scrollbar: '#4a3a1a',
+    }
+  },
+  teal: {
+    name: 'Teal',
+    colors: {
+      background: '#0a1a1a',
+      backgroundSecondary: '#102a2a',
+      backgroundTertiary: '#1a3a3a',
+      text: '#e8f8f8',
+      textSecondary: '#8ad8d8',
+      textMuted: '#5a9a9a',
+      border: '#1a4a4a',
+      accent: '#4dd0b0',
+      accentHover: '#80dec8',
+      accentActive: 'rgba(77, 208, 176, 0.15)',
+      card: '#102a2a',
+      shadow: 'rgba(0, 30, 30, 0.4)',
+      tabActive: 'rgba(77, 208, 176, 0.15)',
+      scrollbar: '#1a4a4a',
+    }
+  },
+  violet: {
+    name: 'Violet',
+    colors: {
+      background: '#100a1a',
+      backgroundSecondary: '#1a102a',
+      backgroundTertiary: '#2a1a3a',
+      text: '#f0e8f8',
+      textSecondary: '#c8a8e8',
+      textMuted: '#7a5a9a',
+      border: '#2a1a4a',
+      accent: '#9b59b6',
+      accentHover: '#b07cc6',
+      accentActive: 'rgba(155, 89, 182, 0.15)',
+      card: '#1a102a',
+      shadow: 'rgba(20, 0, 30, 0.4)',
+      tabActive: 'rgba(155, 89, 182, 0.15)',
+      scrollbar: '#2a1a4a',
+    }
+  },
+  cosmic: {
+    name: 'Cosmic',
+    colors: {
+      background: '#0a0818',
+      backgroundSecondary: '#100c2a',
+      backgroundTertiary: '#18103a',
+      text: '#e8e0ff',
+      textSecondary: '#b8a0f0',
+      textMuted: '#6a5a9a',
+      border: '#1a1040',
+      accent: '#7c3aed',
+      accentHover: '#9d6df2',
+      accentActive: 'rgba(124, 58, 237, 0.15)',
+      card: '#100c2a',
+      shadow: 'rgba(10, 0, 30, 0.5)',
+      tabActive: 'rgba(124, 58, 237, 0.15)',
+      scrollbar: '#1a1040',
+    }
+  },
+  forest: {
+    name: 'Forest',
+    colors: {
+      background: '#0a120a',
+      backgroundSecondary: '#101e10',
+      backgroundTertiary: '#182a18',
+      text: '#e8f0e8',
+      textSecondary: '#90b890',
+      textMuted: '#5a7a5a',
+      border: '#1a2a1a',
+      accent: '#52b788',
+      accentHover: '#76c8a0',
+      accentActive: 'rgba(82, 183, 136, 0.15)',
+      card: '#101e10',
+      shadow: 'rgba(0, 20, 0, 0.4)',
+      tabActive: 'rgba(82, 183, 136, 0.15)',
+      scrollbar: '#1a2a1a',
     }
   }
 };
@@ -446,9 +717,22 @@ const ThemeDropdown = styled.div`
   display: ${props => props.isOpen ? 'flex' : 'none'};
   flex-direction: column;
   gap: 4px;
-  min-width: 140px;
+  min-width: 160px;
+  max-height: 400px;
+  overflow-y: auto;
   box-shadow: 0 8px 32px ${props => props.theme.colors.shadow};
   animation: slideUp 0.2s ease;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.colors.scrollbar};
+    border-radius: 4px;
+  }
 
   @keyframes slideUp {
     from {
@@ -462,8 +746,9 @@ const ThemeDropdown = styled.div`
   }
 
   @media (max-width: 480px) {
-    min-width: 120px;
+    min-width: 130px;
     right: -10px;
+    max-height: 300px;
   }
 `;
 
@@ -505,7 +790,7 @@ const ThemeOption = styled.button`
 
   @media (max-width: 480px) {
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: 11px;
     
     .color-dot {
       width: 14px;
@@ -573,12 +858,27 @@ const panels = [
   { id: 'positions', label: 'Positions', icon: <PositionsIcon />, component: LeftPanel },
 ];
 
+// Theme color map for dots
 const themeColorMap = {
   black: '#0a0f1f',
+  dark: '#0d1117',
+  darkBlue: '#0a1628',
+  midnight: '#0c0e1a',
+  darkGreen: '#0a1a0a',
   white: '#f0f2f5',
+  lightGray: '#e8ecf0',
   blue: '#0c1a3a',
+  ocean: '#0a1a2e',
+  purple: '#1a0a2e',
+  pink: '#2e0a1a',
+  red: '#1a0a0a',
+  orange: '#1a0f0a',
   yellow: '#1a1a0a',
-  red: '#1a0a0a'
+  gold: '#1a150a',
+  teal: '#0a1a1a',
+  violet: '#100a1a',
+  cosmic: '#0a0818',
+  forest: '#0a120a'
 };
 
 const Derivdash = () => {
@@ -587,7 +887,7 @@ const Derivdash = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState('black');
+  const [currentTheme, setCurrentTheme] = useState('dark');
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
