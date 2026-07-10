@@ -563,7 +563,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 }
 
 // ============================================
-// MAIN PANEL COMPONENT (UNCHANGED - ONLY STYLES UPDATED)
+// MAIN PANEL COMPONENT
 // ============================================
 const ChartPanel = () => {
   const canvasRef = useRef(null);
@@ -662,9 +662,26 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
+    // Get theme colors from the PanelContainer's theme
+    const theme = window.__theme || { colors: { background: '#0a0e17' } };
+    const bgColor = theme.colors.background || '#0a0e17';
+    
+    // Parse hex color to RGB for gradient
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : { r: 10, g: 14, b: 23 };
+    };
+
+    const rgb = hexToRgb(bgColor);
+    
+    // Create gradient background that matches the theme
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-    bgGrad.addColorStop(0, '#0a0f1d');
-    bgGrad.addColorStop(1, '#070a12');
+    bgGrad.addColorStop(0, `rgb(${rgb.r + 2}, ${rgb.g + 2}, ${rgb.b + 4})`);
+    bgGrad.addColorStop(1, `rgb(${rgb.r - 2}, ${rgb.g - 2}, ${rgb.b - 4})`);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
@@ -683,7 +700,9 @@ const ChartPanel = () => {
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+    // Grid lines - use theme text muted color with low opacity
+    const gridColor = hexToRgb(theme.colors.textMuted || '#4e5d78');
+    ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.1)`;
     ctx.lineWidth = 1;
     
     const gridRows = 5;
@@ -738,14 +757,17 @@ const ChartPanel = () => {
     ctx.arc(lastX, currentY, 4.5, 0, Math.PI * 2);
     ctx.fill();
 
+    // Dashed line
+    const dashColor = hexToRgb(theme.colors.text || '#ffffff');
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.15)`;
     ctx.beginPath();
     ctx.moveTo(lastX, currentY);
     ctx.lineTo(width - pad.right, currentY);
     ctx.stroke();
     ctx.setLineDash([]);
 
+    // Price badge
     const badgeW = 55;
     const badgeH = 20;
     ctx.fillStyle = lineColor;
@@ -753,13 +775,15 @@ const ChartPanel = () => {
     ctx.roundRect(width - pad.right + 4, currentY - badgeH / 2, badgeW, badgeH, 4);
     ctx.fill();
 
-    ctx.fillStyle = '#0a0e17';
+    // Badge text color - use theme background for contrast
+    ctx.fillStyle = bgColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPrice.toFixed(2), width - pad.right + 4 + badgeW / 2, currentY);
 
-    ctx.fillStyle = '#4e5d78';
+    // Y-axis labels - use theme text muted color
+    ctx.fillStyle = theme.colors.textMuted || '#4e5d78';
     ctx.font = '10px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
@@ -771,9 +795,10 @@ const ChartPanel = () => {
       ctx.fillText(targetP.toFixed(2), width - pad.right + 6, targetY);
     }
 
+    // X-axis labels - use theme text muted color
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillStyle = '#4e5d78';
+    ctx.fillStyle = theme.colors.textMuted || '#4e5d78';
     ctx.font = '10px monospace';
     
     const sampleTimes = ['08:00', '11:00', '14:00', '17:00', '20:00'];
