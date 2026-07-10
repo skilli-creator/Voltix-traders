@@ -25,7 +25,7 @@ const TopBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px 32px;
-  background: ${props => props.theme.colors.backgroundSecondary + 'dd'};
+  background: ${props => props.theme.colors.backgroundSecondary};
   backdrop-filter: blur(12px);
   border-bottom: 1px solid ${props => props.theme.colors.border};
   position: sticky;
@@ -993,7 +993,8 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
         </SidebarToggle>
 
         <Brand>
-           <span className="brand-text">
+          <span className="icon">🔷</span>
+          <span className="brand-text">
             <span className="voltix">Voltix Traders.</span>
             <span className="deriv">deriv</span>
           </span>
