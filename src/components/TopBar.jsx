@@ -1,3 +1,4 @@
+// src/components/TopBar.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +17,7 @@ const float = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS
+// STYLED COMPONENTS - UPDATED WITH THEME
 // ============================================
 
 const TopBar = styled.div`
@@ -24,14 +25,15 @@ const TopBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px 32px;
-  background: rgba(3, 7, 18, 0.85);
+  background: ${props => props.theme.colors.backgroundSecondary + 'dd'};
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   position: sticky;
   top: 0;
   z-index: 100;
   min-height: 64px;
   flex-shrink: 0;
+  transition: all 0.3s ease;
 
   @media (max-width: 1024px) {
     padding: 10px 20px;
@@ -67,7 +69,7 @@ const LeftSection = styled.div`
   }
 `;
 
-// ===== SIDEBAR TOGGLE ICON - TOOLTIP REMOVED =====
+// ===== SIDEBAR TOGGLE ICON =====
 const SidebarToggle = styled.button`
   display: flex;
   flex-direction: column;
@@ -76,8 +78,8 @@ const SidebarToggle = styled.button`
   gap: 5px;
   width: 36px;
   height: 36px;
-  background: rgba(56, 189, 248, 0.05);
-  border: 1px solid rgba(56, 189, 248, 0.1);
+  background: ${props => props.theme.colors.tabActive};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -86,10 +88,10 @@ const SidebarToggle = styled.button`
   flex-shrink: 0;
 
   &:hover {
-    background: rgba(56, 189, 248, 0.12);
-    border-color: rgba(56, 189, 248, 0.3);
+    background: ${props => props.theme.colors.accentActive};
+    border-color: ${props => props.theme.colors.accent};
     transform: scale(1.05);
-    box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
+    box-shadow: 0 0 30px ${props => props.theme.colors.accent + '20'};
   }
 
   &:active {
@@ -100,7 +102,10 @@ const SidebarToggle = styled.button`
     display: block;
     width: 18px;
     height: 2px;
-    background: linear-gradient(90deg, #94a3b8, #38bdf8);
+    background: ${props => props.isOpen ? 
+      `linear-gradient(90deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)` : 
+      `linear-gradient(90deg, ${props.theme.colors.textMuted}, ${props.theme.colors.textSecondary})`
+    };
     border-radius: 2px;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
@@ -108,7 +113,6 @@ const SidebarToggle = styled.button`
     &:nth-child(1) {
       width: ${props => props.isOpen ? '20px' : '18px'};
       transform: ${props => props.isOpen ? 'rotate(45deg) translate(3px, 3px)' : 'rotate(0)'};
-      background: ${props => props.isOpen ? 'linear-gradient(90deg, #38bdf8, #818cf8)' : 'linear-gradient(90deg, #94a3b8, #38bdf8)'};
     }
 
     &:nth-child(2) {
@@ -121,11 +125,8 @@ const SidebarToggle = styled.button`
     &:nth-child(3) {
       width: ${props => props.isOpen ? '20px' : '10px'};
       transform: ${props => props.isOpen ? 'rotate(-45deg) translate(3px, -3px)' : 'rotate(0)'};
-      background: ${props => props.isOpen ? 'linear-gradient(90deg, #38bdf8, #818cf8)' : 'linear-gradient(90deg, #94a3b8, #38bdf8)'};
     }
   }
-
-  // TOOLTIP COMPLETELY REMOVED - No .toggle-tooltip class
 
   @media (max-width: 768px) {
     width: 32px;
@@ -181,16 +182,17 @@ const Brand = styled.div`
   }
 
   .voltix {
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .deriv {
-    color: #ff444f;
+    color: ${props => props.theme.colors.accent};
     font-style: italic;
     font-weight: 700;
     letter-spacing: 0.5px;
+    -webkit-text-fill-color: ${props => props.theme.colors.accent};
   }
 
   .live-dot {
@@ -278,17 +280,17 @@ const AccountBadge = styled.div`
   align-items: center;
   gap: 8px;
   padding: 6px 16px 6px 12px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: ${props => props.theme.colors.backgroundSecondary + 'cc'};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 40px;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
 
   &:hover {
-    background: rgba(20, 30, 55, 0.9);
-    border-color: rgba(56, 189, 248, 0.5);
-    box-shadow: 0 0 20px rgba(56, 189, 248, 0.05);
+    background: ${props => props.theme.colors.backgroundTertiary};
+    border-color: ${props => props.theme.colors.accent};
+    box-shadow: 0 0 20px ${props => props.theme.colors.accent + '15'};
   }
 
   .flag {
@@ -298,17 +300,13 @@ const AccountBadge = styled.div`
   .balance {
     font-size: 14px;
     font-weight: 600;
-    color: #f1f5f9;
-    background: linear-gradient(135deg, #f1f5f9, #94a3b8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: ${props => props.theme.colors.text};
   }
 
   .currency-toggle {
     font-size: 10px;
-    color: #94a3b8;
-    background: rgba(56, 189, 248, 0.1);
+    color: ${props => props.theme.colors.textSecondary};
+    background: ${props => props.theme.colors.accentActive};
     padding: 2px 6px;
     border-radius: 12px;
     font-weight: 600;
@@ -316,14 +314,14 @@ const AccountBadge = styled.div`
     margin-left: 2px;
 
     &:hover {
-      background: rgba(56, 189, 248, 0.2);
-      color: #38bdf8;
+      background: ${props => props.theme.colors.accent + '30'};
+      color: ${props => props.theme.colors.accent};
     }
   }
 
   .chevron {
     font-size: 12px;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     transition: transform 0.2s ease;
     margin-left: 4px;
 
@@ -372,12 +370,12 @@ const DropdownMenu = styled.div`
   right: 0;
   min-width: 280px;
   max-width: 90vw;
-  background: rgba(8, 18, 38, 0.95);
+  background: ${props => props.theme.colors.backgroundSecondary + 'f0'};
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 12px;
   padding: 6px 0;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 40px ${props => props.theme.colors.shadow};
   opacity: ${props => props.isOpen ? 1 : 0};
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
   transform: ${props => props.isOpen ? 'translateY(0)' : 'translateY(-8px)'};
@@ -406,16 +404,16 @@ const DropdownItem = styled.div`
   cursor: pointer;
   transition: all 0.15s ease;
   font-size: 13px;
-  color: #cbd5e1;
+  color: ${props => props.theme.colors.textSecondary};
 
   &:hover {
-    background: rgba(56, 189, 248, 0.08);
-    color: #f1f5f9;
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.text};
   }
 
   &.active {
-    background: rgba(56, 189, 248, 0.12);
-    color: #38bdf8;
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.accent};
 
     .check {
       display: block;
@@ -434,13 +432,13 @@ const DropdownItem = styled.div`
 
   .balance-small {
     font-size: 12px;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     white-space: nowrap;
   }
 
   .check {
     display: none;
-    color: #38bdf8;
+    color: ${props => props.theme.colors.accent};
     flex-shrink: 0;
   }
 
@@ -474,13 +472,13 @@ const CurrencyToggle = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid rgba(56, 189, 248, 0.1);
+  border-top: 1px solid ${props => props.theme.colors.border};
   margin-top: 4px;
-  background: rgba(56, 189, 248, 0.03);
+  background: ${props => props.theme.colors.accentActive};
 
   .label {
     font-size: 11px;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 500;
     letter-spacing: 0.3px;
   }
@@ -488,7 +486,7 @@ const CurrencyToggle = styled.div`
   .toggle-group {
     display: flex;
     gap: 4px;
-    background: rgba(255, 255, 255, 0.05);
+    background: ${props => props.theme.colors.background + '40'};
     border-radius: 20px;
     padding: 3px;
     width: 100%;
@@ -500,7 +498,7 @@ const CurrencyToggle = styled.div`
     border-radius: 16px;
     border: none;
     background: transparent;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     font-size: 11px;
     font-weight: 600;
     cursor: pointer;
@@ -513,13 +511,13 @@ const CurrencyToggle = styled.div`
     white-space: nowrap;
 
     &:hover {
-      color: #cbd5e1;
+      color: ${props => props.theme.colors.textSecondary};
     }
 
     &.active {
-      background: rgba(56, 189, 248, 0.2);
-      color: #38bdf8;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+      background: ${props => props.theme.colors.accentActive};
+      color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 20px ${props => props.theme.colors.accent + '20'};
     }
 
     &:disabled {
@@ -569,9 +567,9 @@ const ProfessionalFundsButton = styled.a`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   position: relative;
-  background: linear-gradient(135deg, #1a2a4a, #0d1b2a);
-  color: #e8edf5;
-  border: 1px solid rgba(56, 189, 248, 0.15);
+  background: ${props => props.theme.colors.background + 'cc'};
+  color: ${props => props.theme.colors.text};
+  border: 1px solid ${props => props.theme.colors.border};
   letter-spacing: 0.3px;
   overflow: hidden;
 
@@ -579,7 +577,7 @@ const ProfessionalFundsButton = styled.a`
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), transparent);
+    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}15, transparent)`};
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -591,7 +589,7 @@ const ProfessionalFundsButton = styled.a`
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    background: ${props => `linear-gradient(90deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s ease;
@@ -599,8 +597,7 @@ const ProfessionalFundsButton = styled.a`
 
   &:hover {
     transform: translateY(-1px);
-    border-color: rgba(56, 189, 248, 0.3);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    border-color: ${props => props.theme.colors.accent};
 
     &::before {
       opacity: 1;
@@ -630,7 +627,7 @@ const ProfessionalFundsButton = styled.a`
     width: 32px;
     height: 32px;
     border-radius: 6px;
-    background: rgba(56, 189, 248, 0.08);
+    background: ${props => props.theme.colors.accentActive};
     font-size: 16px;
     transition: all 0.3s ease;
     position: relative;
@@ -640,7 +637,7 @@ const ProfessionalFundsButton = styled.a`
       position: absolute;
       inset: -1px;
       border-radius: 6px;
-      border: 1px solid rgba(56, 189, 248, 0.1);
+      border: 1px solid ${props => props.theme.colors.border};
     }
   }
 
@@ -653,13 +650,13 @@ const ProfessionalFundsButton = styled.a`
   .funds-title {
     font-size: 13px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: ${props => props.theme.colors.text};
     letter-spacing: 0.5px;
   }
 
   .funds-subtitle {
     font-size: 10px;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 400;
     letter-spacing: 0.2px;
   }
@@ -667,7 +664,7 @@ const ProfessionalFundsButton = styled.a`
   .arrow-right {
     margin-left: auto;
     font-size: 14px;
-    color: #94a3b8;
+    color: ${props => props.theme.colors.textMuted};
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -712,20 +709,20 @@ const ProfessionalFundsButton = styled.a`
   }
 `;
 
-// ===== PREMIUM EXIT BUTTON - FIXED WITH SVG =====
+// ===== PREMIUM EXIT BUTTON =====
 const PremiumExitButton = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px 20px;
   border-radius: 8px;
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  border: 1px solid ${props => props.theme.colors.border};
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(148, 163, 184, 0.03);
-  color: #94a3b8;
+  background: ${props => props.theme.colors.background + '40'};
+  color: ${props => props.theme.colors.textSecondary};
   position: relative;
   letter-spacing: 0.3px;
   flex-shrink: 0;
@@ -735,7 +732,7 @@ const PremiumExitButton = styled.button`
     position: absolute;
     inset: 0;
     border-radius: 8px;
-    background: rgba(239, 68, 68, 0.03);
+    background: ${props => props.theme.colors.accent + '08'};
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -747,14 +744,14 @@ const PremiumExitButton = styled.button`
     right: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(180deg, rgba(239, 68, 68, 0.3), transparent);
+    background: ${props => `linear-gradient(180deg, ${props.theme.colors.accent}50, transparent)`};
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
   &:hover {
-    border-color: rgba(239, 68, 68, 0.2);
-    color: #fca5a5;
+    border-color: ${props => props.theme.colors.accent};
+    color: ${props => props.theme.colors.text};
     transform: translateX(-2px);
 
     &::before {
@@ -766,13 +763,13 @@ const PremiumExitButton = styled.button`
     }
 
     .exit-icon-container {
-      background: rgba(239, 68, 68, 0.08);
-      border-color: rgba(239, 68, 68, 0.2);
+      background: ${props => props.theme.colors.accentActive};
+      border-color: ${props => props.theme.colors.accent};
     }
 
     .exit-arrow-icon {
       transform: translateX(4px);
-      color: #ef4444;
+      color: ${props => props.theme.colors.accent};
     }
   }
 
@@ -787,8 +784,8 @@ const PremiumExitButton = styled.button`
     width: 28px;
     height: 28px;
     border-radius: 6px;
-    border: 1px solid rgba(148, 163, 184, 0.08);
-    background: rgba(148, 163, 184, 0.03);
+    border: 1px solid ${props => props.theme.colors.border};
+    background: ${props => props.theme.colors.background + '40'};
     transition: all 0.3s ease;
     flex-shrink: 0;
   }
@@ -797,6 +794,7 @@ const PremiumExitButton = styled.button`
     width: 16px;
     height: 16px;
     transition: all 0.3s ease;
+    color: ${props => props.theme.colors.textMuted};
   }
 
   .exit-text {
@@ -808,7 +806,7 @@ const PremiumExitButton = styled.button`
   .exit-arrow-icon {
     font-size: 14px;
     transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    color: #64748b;
+    color: ${props => props.theme.colors.textMuted};
     margin-left: 2px;
     display: flex;
     align-items: center;
@@ -876,7 +874,6 @@ const PremiumExitButton = styled.button`
 // ===== POWER OFF SVG ICON =====
 const PowerIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '100%', height: '100%' }}>
-    <path d="M12 2v8" />
     <path d="M12 2v8" />
     <path d="M4.93 10.93a8 8 0 1 0 14.14 0" />
   </svg>
