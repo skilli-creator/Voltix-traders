@@ -2575,13 +2575,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     
     return (
       <TradeButtonsWrapper>
-        <TradeButton variant="primary" onClick={() => handlePlaceTrade('Up', '')}>
-          <span className="label">Up</span>
-          <span className="payout">${accumulatorPayout.toFixed(2)} ({accumulatorPayoutPct}%)</span>
-          <span className="sub">${stake || 0} stake</span>
-        </TradeButton>
-        <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Down', '')}>
-          <span className="label">Down</span>
+        <TradeButton variant="primary" onClick={() => handlePlaceTrade('Buy', '')}>
+          <span className="label">Buy</span>
           <span className="payout">${accumulatorPayout.toFixed(2)} ({accumulatorPayoutPct}%)</span>
           <span className="sub">${stake || 0} stake</span>
         </TradeButton>
