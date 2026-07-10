@@ -32,8 +32,8 @@ const slideDown = keyframes`
 `;
 
 const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px rgba(41, 98, 255, 0.15); }
-  50% { box-shadow: 0 0 40px rgba(41, 98, 255, 0.3); }
+  0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'}; }
+  50% { box-shadow: 0 0 40px ${props => props.theme?.colors?.accent + '40' || 'rgba(41, 98, 255, 0.3)'}; }
 `;
 
 const floatPulse = keyframes`
@@ -42,14 +42,14 @@ const floatPulse = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS
+// STYLED COMPONENTS - UPDATED WITH THEME
 // ============================================
 
 const PanelContainer = styled.div`
   width: 290px;
   min-width: 290px;
-  background: linear-gradient(180deg, #0b0e14 0%, #0f131a 100%);
-  border-left: 1px solid rgba(26, 31, 46, 0.8);
+  background: ${props => props.theme?.colors?.background || 'linear-gradient(180deg, #0b0e14 0%, #0f131a 100%)'};
+  border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
   padding: 14px 14px 10px 14px;
   display: flex;
   flex-direction: column;
@@ -58,6 +58,7 @@ const PanelContainer = styled.div`
   gap: 8px;
   position: relative;
   box-sizing: border-box;
+  transition: background 0.3s ease, border-color 0.3s ease;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -66,7 +67,7 @@ const PanelContainer = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #2a2e3d;
+    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
     border-radius: 4px;
   }
 
@@ -82,7 +83,7 @@ const PanelContainer = styled.div`
     height: 100%;
     padding: 6px 20px 4px 20px !important;
     border-left: none;
-    background: #0a0e17;
+    background: ${props => props.theme?.colors?.background || '#0a0e17'};
     gap: 4px;
     box-sizing: border-box;
   }
@@ -134,15 +135,15 @@ const MarketSelectorButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(41, 98, 255, 0.3);
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.06)'};
+    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
   }
 
   .left {
@@ -157,14 +158,14 @@ const MarketSelectorButton = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: ${props => props.color || '#2962ff'};
+    background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
   }
 
   .market-name {
     font-size: 12px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -173,7 +174,7 @@ const MarketSelectorButton = styled.div`
 
   .arrow {
     font-size: 10px;
-    color: #5a6070;
+    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.3s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
@@ -193,14 +194,14 @@ const MarketDropdown = styled.div`
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: rgba(21, 26, 38, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 8px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
   backdrop-filter: blur(20px);
   max-height: 260px;
   overflow-y: auto;
@@ -209,7 +210,7 @@ const MarketDropdown = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
     border-radius: 4px;
   }
 `;
@@ -220,14 +221,14 @@ const MarketOption = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid ${props => props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: #ffffff;
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   .left {
@@ -242,7 +243,7 @@ const MarketOption = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: ${props => props.color || '#2962ff'};
+    background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
   }
 
@@ -256,7 +257,7 @@ const MarketOption = styled.div`
   }
 
   .check {
-    color: #2962ff;
+    color: ${props => props.theme?.colors?.accent || '#2962ff'};
     font-size: 14px;
     opacity: ${props => props.active ? 1 : 0};
     flex-shrink: 0;
@@ -289,29 +290,29 @@ const TradeTypeButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-  border: 1px solid ${props => props.isOpen ? 'rgba(41, 98, 255, 0.6)' : 'rgba(26, 31, 46, 0.8)'};
+  background: ${props => props.theme?.colors?.background + '60' || 'linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01))'};
+  border: 1px solid ${props => props.isOpen ? (props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)') : (props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)')};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
 
   &:hover {
-    border-color: rgba(41, 98, 255, 0.6);
-    background: rgba(41, 98, 255, 0.06);
+    border-color: ${props => props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.06)'};
   }
 
   .left { display: flex; align-items: center; gap: 10px; }
-  .label { font-size: 14px; font-weight: 500; color: #d1d4dc; letter-spacing: 0.2px; }
+  .label { font-size: 14px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; letter-spacing: 0.2px; }
   .arrow {
-    font-size: 12px; color: #5a6070;
+    font-size: 12px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.3s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   }
   .badge {
     font-size: 7px; text-transform: uppercase; padding: 2px 6px;
-    border-radius: 8px; background: rgba(41, 98, 255, 0.15);
-    color: #2962ff; font-weight: 600; letter-spacing: 0.5px;
+    border-radius: 8px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.15)'};
+    color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-weight: 600; letter-spacing: 0.5px;
   }
 
   @media (max-width: 768px) {
@@ -331,11 +332,12 @@ const TradeTypeButton = styled.div`
 
 const Dropdown = styled.div`
   position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: rgba(21, 26, 38, 0.98); border: 1px solid rgba(26, 31, 46, 0.8);
+  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
   border-radius: 8px; overflow: hidden; z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
   backdrop-filter: blur(20px);
 
   @media (max-width: 480px) {
@@ -349,13 +351,13 @@ const DropdownOption = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? '#ffffff' : '#8a93a6'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.12)' : 'transparent'};
+  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#8a93a6'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.12)' : 'transparent'};
   font-size: 13px;
   transition: all 0.15s ease;
 
-  &:hover { background: rgba(255, 255, 255, 0.04); color: #ffffff; }
-  .check { color: #2962ff; font-size: 14px; opacity: ${props => props.active ? 1 : 0}; }
+  &:hover { background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'}; color: ${props => props.theme?.colors?.text || '#ffffff'}; }
+  .check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 14px; opacity: ${props => props.active ? 1 : 0}; }
 
   @media (max-width: 768px) {
     padding: 6px 10px;
@@ -370,7 +372,7 @@ const DropdownOption = styled.div`
 `;
 
 // ============================================
-// 3. TRADE MODE TOGGLE - PREMIUM DESIGN
+// 3. TRADE MODE TOGGLE - UPDATED WITH THEME
 // ============================================
 
 const TradeModeWrapper = styled.div`
@@ -394,7 +396,7 @@ const TradeModeLabel = styled.div`
   justify-content: space-between;
   font-size: 8px;
   text-transform: uppercase;
-  color: #64748b;
+  color: ${props => props.theme?.colors?.textMuted || '#64748b'};
   letter-spacing: 0.8px;
   font-weight: 600;
 
@@ -410,10 +412,10 @@ const TradeModeLabel = styled.div`
 const TradeModeButtons = styled.div`
   display: flex;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.02);
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 10px;
   padding: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   position: relative;
 
   @media (max-width: 768px) {
@@ -434,8 +436,8 @@ const TradeModeButton = styled.button`
   padding: 8px 12px;
   border: none;
   border-radius: 8px;
-  background: ${props => props.active ? 'linear-gradient(135deg, #2962ff, #1a4fcf)' : 'transparent'};
-  color: ${props => props.active ? '#ffffff' : '#8a93a6'};
+  background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : 'transparent'};
+  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#8a93a6'};
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
@@ -448,7 +450,7 @@ const TradeModeButton = styled.button`
   letter-spacing: 0.3px;
 
   ${props => props.active && `
-    box-shadow: 0 4px 16px rgba(41, 98, 255, 0.35);
+    box-shadow: 0 4px 16px ${props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.35)'};
     &::after {
       content: '';
       position: absolute;
@@ -460,8 +462,8 @@ const TradeModeButton = styled.button`
   `}
 
   &:hover {
-    color: ${props => props.active ? '#ffffff' : '#d1d4dc'};
-    background: ${props => props.active ? 'linear-gradient(135deg, #2962ff, #1a4fcf)' : 'rgba(255,255,255,0.04)'};
+    color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.text || '#d1d4dc'};
+    background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.04)'};
   }
 
   &:active {
@@ -503,7 +505,7 @@ const TradeModeButton = styled.button`
 `;
 
 // ============================================
-// 4. BOT SELECTION
+// 4. BOT SELECTION - UPDATED WITH THEME
 // ============================================
 
 const BotGrid = styled.div`
@@ -519,8 +521,8 @@ const BotGrid = styled.div`
 
 const BotCard = styled.div`
   padding: 8px 6px;
-  background: ${props => props.selected ? 'rgba(41, 98, 255, 0.12)' : 'rgba(255, 255, 255, 0.02)'};
-  border: 1px solid ${props => props.selected ? 'rgba(41, 98, 255, 0.5)' : 'rgba(26, 31, 46, 0.8)'};
+  background: ${props => props.selected ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.12)' : props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${props => props.selected ? props.theme?.colors?.accent + '80' || 'rgba(41, 98, 255, 0.5)' : props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -528,23 +530,23 @@ const BotCard = styled.div`
   backdrop-filter: blur(10px);
 
   &:hover {
-    border-color: rgba(41, 98, 255, 0.4);
+    border-color: ${props => props.theme?.colors?.accent + '60' || 'rgba(41, 98, 255, 0.4)'};
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.3)'};
   }
 
   ${props => props.selected && `
-    border-color: #2962ff;
-    box-shadow: 0 0 20px rgba(41, 98, 255, 0.15);
+    border-color: ${props.theme?.colors?.accent || '#2962ff'};
+    box-shadow: 0 0 20px ${props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'};
     animation: ${pulseGlow} 2s ease-in-out infinite;
   `}
 
-  .bot-name { font-size: 10px; font-weight: 600; color: #d1d4dc; }
-  .bot-type { font-size: 7px; text-transform: uppercase; color: #5a6070; margin-top: 1px; letter-spacing: 0.3px; }
+  .bot-name { font-size: 10px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
+  .bot-type { font-size: 7px; text-transform: uppercase; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px; letter-spacing: 0.3px; }
   .bot-badge {
     font-size: 6px; text-transform: uppercase; padding: 1px 5px;
-    border-radius: 4px; background: rgba(41, 98, 255, 0.15);
-    color: #2962ff; display: inline-block; margin-top: 1px;
+    border-radius: 4px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.15)'};
+    color: ${props => props.theme?.colors?.accent || '#2962ff'}; display: inline-block; margin-top: 1px;
   }
 
   @media (max-width: 768px) {
@@ -567,10 +569,10 @@ const BotHeader = styled.div`
   padding: 2px 0 4px 0;
   animation: ${fadeIn} 0.4s ease;
 
-  .title { font-size: 12px; font-weight: 500; color: #d1d4dc; }
+  .title { font-size: 12px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
   .subtitle {
-    font-size: 10px; color: #5a6070; margin-top: 1px;
-    .highlight { color: #2962ff; font-weight: 600; }
+    font-size: 10px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px;
+    .highlight { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-weight: 600; }
   }
 
   @media (max-width: 768px) {
@@ -586,7 +588,7 @@ const BotHeader = styled.div`
 `;
 
 // ============================================
-// 5. INPUT FIELDS
+// 5. INPUT FIELDS - UPDATED WITH THEME
 // ============================================
 
 const InputGrid = styled.div`
@@ -620,25 +622,25 @@ const InputLabel = styled.div`
   justify-content: space-between;
   font-size: 8px;
   text-transform: uppercase;
-  color: #8a93a6;
+  color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
   letter-spacing: 0.6px;
   font-weight: 700;
 
   .suffix { 
     font-size: 7px; 
-    color: #4a4f5e; 
+    color: ${props => props.theme?.colors?.textMuted + '80' || '#4a4f5e'}; 
     text-transform: none; 
     letter-spacing: 0; 
     font-weight: 400; 
   }
   .optional {
     font-size: 6px; 
-    color: #4a4f5e; 
+    color: ${props => props.theme?.colors?.textMuted + '80' || '#4a4f5e'}; 
     text-transform: none;
-    background: rgba(255,255,255,0.04); 
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.04)'}; 
     padding: 0 5px; 
     border-radius: 3px;
-    border: 1px solid rgba(255,255,255,0.04);
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     font-weight: 400;
   }
 
@@ -660,24 +662,24 @@ const InputRow = styled.div`
   display: flex;
   align-items: center;
   gap: 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(26, 31, 46, 0.8);
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
   border-radius: 5px;
   transition: all 0.2s ease;
   overflow: hidden;
 
   &:focus-within { 
-    border-color: rgba(41, 98, 255, 0.6); 
-    box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.08); 
+    border-color: ${props => props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)'}; 
+    box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '15' || 'rgba(41, 98, 255, 0.08)'}; 
   }
   
   .prefix {
     padding: 4px 6px;
     font-size: 11px;
     font-weight: 600;
-    color: #5a6070;
-    background: rgba(255, 255, 255, 0.02);
-    border-right: 1px solid rgba(26, 31, 46, 0.8);
+    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
+    border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
   }
 
   @media (max-width: 768px) {
@@ -696,7 +698,7 @@ const StyledInput = styled.input`
   padding: 4px 6px;
   background: transparent;
   border: none;
-  color: #d1d4dc;
+  color: ${props => props.theme?.colors?.text || '#d1d4dc'};
   font-size: 12px;
   font-weight: 500;
   outline: none;
@@ -711,7 +713,7 @@ const StyledInput = styled.input`
   &[type="number"] { -moz-appearance: textfield; }
   
   &::placeholder {
-    color: #3a4055;
+    color: ${props => props.theme?.colors?.textMuted + '60' || '#3a4055'};
     font-weight: 400;
     font-size: 11px;
   }
@@ -729,13 +731,13 @@ const StyledInput = styled.input`
   }
 `;
 
-// ===== TOGGLE COMPONENTS (Compact) =====
+// ===== TOGGLE COMPONENTS (Compact) - UPDATED WITH THEME =====
 const ToggleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(26, 31, 46, 0.8);
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
   border-radius: 5px;
   padding: 3px 6px;
   height: 28px;
@@ -762,7 +764,7 @@ const ToggleLabel = styled.div`
   gap: 3px;
   font-size: 7px;
   text-transform: uppercase;
-  color: #8a93a6;
+  color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
   letter-spacing: 0.5px;
   font-weight: 700;
   white-space: nowrap;
@@ -781,25 +783,25 @@ const ToggleLabel = styled.div`
 const ToggleTrack = styled.div`
   width: 28px;
   height: 16px;
-  background: ${props => props.active ? 'linear-gradient(135deg, #2962ff, #1a4fcf)' : '#2a2e3d'};
+  background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.scrollbar || '#2a2e3d'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   flex-shrink: 0;
 
-  &:hover { box-shadow: 0 0 12px rgba(41, 98, 255, 0.15); }
+  &:hover { box-shadow: 0 0 12px ${props => props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'}; }
   
   .thumb {
     width: 12px;
     height: 12px;
-    background: #ffffff;
+    background: ${props => props.theme?.colors?.text || '#ffffff'};
     border-radius: 50%;
     position: absolute;
     top: 2px;
     left: ${props => props.active ? '14px' : '2px'};
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.3)'};
   }
 
   @media (max-width: 768px) {
@@ -828,7 +830,7 @@ const ToggleTrack = styled.div`
 
 const ToggleStatus = styled.span`
   font-size: 7px;
-  color: ${props => props.active ? '#22c55e' : '#4a4f5e'};
+  color: ${props => props.active ? '#22c55e' : props.theme?.colors?.textMuted + '80' || '#4a4f5e'};
   font-weight: 600;
   min-width: 18px;
 
@@ -843,7 +845,7 @@ const ToggleStatus = styled.span`
   }
 `;
 
-// ===== DROPDOWN SELECT (Compact) =====
+// ===== DROPDOWN SELECT (Compact) - UPDATED WITH THEME =====
 const DropdownSelect = styled.div`
   position: relative;
   display: flex;
@@ -855,26 +857,26 @@ const DropdownSelectButton = styled.div`
   align-items: center;
   gap: 3px;
   padding: 2px 6px 2px 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 10px;
   font-weight: 600;
-  color: #f1f5f9;
+  color: ${props => props.theme?.colors?.text || '#f1f5f9'};
   height: 22px;
   min-width: 32px;
   justify-content: center;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(41, 98, 255, 0.3);
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.08)'};
+    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
   }
 
   .dropdown-arrow {
     font-size: 7px;
-    color: #5a6070;
+    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   }
@@ -899,14 +901,14 @@ const DropdownSelectMenu = styled.div`
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
-  background: rgba(21, 26, 38, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 6px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.15s ease;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 30px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
   backdrop-filter: blur(20px);
   max-height: 150px;
   overflow-y: auto;
@@ -916,7 +918,7 @@ const DropdownSelectMenu = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
     border-radius: 4px;
   }
 
@@ -931,14 +933,14 @@ const DropdownSelectItem = styled.div`
   cursor: pointer;
   font-size: 10px;
   font-weight: 500;
-  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
   transition: all 0.15s ease;
   text-align: center;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: #ffffff;
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   @media (max-width: 768px) {
@@ -953,7 +955,7 @@ const DropdownSelectItem = styled.div`
 `;
 
 // ============================================
-// 6. AI ANALYSIS - PREMIUM PROFESSIONAL DESIGN
+// 6. AI ANALYSIS - UPDATED WITH THEME & REPOSITIONED
 // ============================================
 
 // AI Button Container - Repositioned to avoid overlap with theme button
@@ -970,10 +972,10 @@ const AIButtonContainer = styled.div`
     bottom: 120px;
     right: 10px;
   }
-  
-  @media (min-width: 769px) and (max-width: 1200px) {
-    bottom: 110px;
-    right: 20px;
+
+  @media (min-width: 769px) {
+    bottom: 100px;
+    right: 24px;
   }
 `;
 
@@ -982,12 +984,12 @@ const AIFloatingButton = styled.button`
   height: ${props => props.isMobile ? '44px' : '48px'};
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #2962ff, #818cf8);
-  color: white;
+  background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
+  color: ${props => props.theme?.colors?.text || 'white'};
   font-size: ${props => props.isMobile ? '11px' : '14px'};
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 24px rgba(41, 98, 255, 0.3);
+  box-shadow: 0 4px 24px ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
@@ -997,7 +999,7 @@ const AIFloatingButton = styled.button`
 
   &:hover {
     transform: scale(1.1) translateY(-4px);
-    box-shadow: 0 8px 40px rgba(41, 98, 255, 0.4);
+    box-shadow: 0 8px 40px ${props => props.theme?.colors?.accent + '60' || 'rgba(41, 98, 255, 0.4)'};
   }
 
   &:active {
@@ -1019,13 +1021,13 @@ const AIAnalysisPanel = styled.div`
   right: ${props => props.isMobile ? '8px' : '24px'};
   width: ${props => props.isMobile ? '220px' : '280px'};
   max-height: ${props => props.isMobile ? '340px' : '400px'};
-  background: rgba(8, 18, 38, 0.96);
+  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(8, 18, 38, 0.96)'};
   backdrop-filter: blur(24px);
-  border: 1px solid rgba(56, 189, 248, 0.08);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.08)'};
   border-radius: 16px;
   padding: ${props => props.isMobile ? '14px 16px' : '18px 20px'};
   z-index: 51;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 24px 80px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
   animation: ${fadeIn} 0.3s ease;
   display: ${props => props.isOpen ? 'block' : 'none'};
   overflow-y: auto;
@@ -1034,21 +1036,8 @@ const AIAnalysisPanel = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.2);
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(56, 189, 248, 0.2)'};
     border-radius: 4px;
-  }
-
-  @media (max-width: 480px) {
-    width: 220px;
-    right: 8px;
-    bottom: 130px;
-    max-height: 340px;
-    padding: 14px 16px;
-  }
-  
-  @media (min-width: 769px) and (max-width: 1200px) {
-    bottom: 170px;
-    right: 20px;
   }
 `;
 
@@ -1058,12 +1047,12 @@ const AIAnalysisHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 14px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.06);
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.06)'};
 
   .title {
     font-size: ${props => props.isMobile ? '11px' : '13px'};
     font-weight: 700;
-    color: #f1f5f9;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1074,19 +1063,19 @@ const AIAnalysisHeader = styled.div`
     width: ${props => props.isMobile ? '24px' : '28px'};
     height: ${props => props.isMobile ? '24px' : '28px'};
     border-radius: 8px;
-    background: linear-gradient(135deg, #2962ff, #818cf8);
+    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: ${props => props.isMobile ? '10px' : '12px'};
     font-weight: 700;
-    color: white;
+    color: ${props => props.theme?.colors?.text || 'white'};
   }
 
   .close-btn {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    color: #64748b;
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     width: ${props => props.isMobile ? '26px' : '30px'};
     height: ${props => props.isMobile ? '26px' : '30px'};
     border-radius: 50%;
@@ -1098,17 +1087,9 @@ const AIAnalysisHeader = styled.div`
     justify-content: center;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #f1f5f9;
+      background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.08)'};
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     }
-  }
-
-  @media (max-width: 480px) {
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    .title { font-size: 11px; }
-    .title-icon { width: 24px; height: 24px; font-size: 10px; }
-    .close-btn { width: 26px; height: 26px; font-size: 12px; }
   }
 `;
 
@@ -1127,13 +1108,13 @@ const AISelectWrapper = styled.div`
   .label {
     font-size: 9px;
     text-transform: uppercase;
-    color: #94a3b8;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
     font-weight: 600;
     letter-spacing: 0.6px;
   }
 `;
 
-// ===== REDESIGNED AI DROPDOWN SELECTOR =====
+// ===== REDESIGNED AI DROPDOWN SELECTOR - UPDATED WITH THEME =====
 const AIDropdown = styled.div`
   position: relative;
   width: 100%;
@@ -1144,15 +1125,15 @@ const AIDropdownButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(41, 98, 255, 0.3);
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.06)'};
+    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
   }
 
   .left {
@@ -1167,14 +1148,14 @@ const AIDropdownButton = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: ${props => props.color || '#2962ff'};
+    background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
   }
 
   .ai-selected-text {
     font-size: 12px;
     font-weight: 500;
-    color: #f1f5f9;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1183,7 +1164,7 @@ const AIDropdownButton = styled.div`
 
   .arrow {
     font-size: 10px;
-    color: #5a6070;
+    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.3s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
@@ -1202,14 +1183,14 @@ const AIDropdownMenu = styled.div`
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: rgba(21, 26, 38, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 8px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
   backdrop-filter: blur(20px);
   max-height: 200px;
   overflow-y: auto;
@@ -1218,7 +1199,7 @@ const AIDropdownMenu = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
     border-radius: 4px;
   }
 
@@ -1233,14 +1214,14 @@ const AIDropdownItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid ${props => props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: #ffffff;
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   .left {
@@ -1255,7 +1236,7 @@ const AIDropdownItem = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: ${props => props.color || '#2962ff'};
+    background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
   }
 
@@ -1269,7 +1250,7 @@ const AIDropdownItem = styled.div`
   }
 
   .ai-check {
-    color: #2962ff;
+    color: ${props => props.theme?.colors?.accent || '#2962ff'};
     font-size: 14px;
     opacity: ${props => props.active ? 1 : 0};
     flex-shrink: 0;
@@ -1284,7 +1265,7 @@ const AIDropdownItem = styled.div`
   }
 `;
 
-// ===== AI Trade Type Dropdown =====
+// ===== AI Trade Type Dropdown - UPDATED WITH THEME =====
 const AITradeTypeDropdown = styled.div`
   position: relative;
   width: 100%;
@@ -1295,21 +1276,21 @@ const AITradeTypeButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(41, 98, 255, 0.3);
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.06)'};
+    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
   }
 
   .ai-type-selected {
     font-size: 12px;
     font-weight: 500;
-    color: #f1f5f9;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1317,7 +1298,7 @@ const AITradeTypeButton = styled.div`
 
   .arrow {
     font-size: 10px;
-    color: #5a6070;
+    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.3s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
@@ -1335,14 +1316,14 @@ const AITradeTypeMenu = styled.div`
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: rgba(21, 26, 38, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 8px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
   backdrop-filter: blur(20px);
   max-height: 150px;
   overflow-y: auto;
@@ -1351,7 +1332,7 @@ const AITradeTypeMenu = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
     border-radius: 4px;
   }
 
@@ -1366,14 +1347,14 @@ const AITradeTypeItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? '#ffffff' : '#94a3b8'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid ${props => props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)'};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: #ffffff;
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   .ai-type-name {
@@ -1382,7 +1363,7 @@ const AITradeTypeItem = styled.div`
   }
 
   .ai-check {
-    color: #2962ff;
+    color: ${props => props.theme?.colors?.accent || '#2962ff'};
     font-size: 14px;
     opacity: ${props => props.active ? 1 : 0};
     flex-shrink: 0;
@@ -1401,9 +1382,9 @@ const AIScanButton = styled.button`
   padding: 10px 0;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #1a2a4a, #0d1b2a);
-  border: 1px solid rgba(56, 189, 248, 0.08);
-  color: #64748b;
+  background: ${props => props.theme?.colors?.background + 'cc' || 'linear-gradient(135deg, #1a2a4a, #0d1b2a)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.08)'};
+  color: ${props => props.theme?.colors?.textMuted || '#64748b'};
   font-size: 12px;
   font-weight: 500;
   cursor: not-allowed;
@@ -1421,7 +1402,7 @@ const AIScanButton = styled.button`
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.1), transparent);
+    background: ${props => `linear-gradient(90deg, transparent, ${props.theme?.colors?.accent + '20' || 'rgba(56, 189, 248, 0.1)'}, transparent)`};
   }
 
   .scan-text {
@@ -1436,8 +1417,8 @@ const AIScanButton = styled.button`
     text-transform: uppercase;
     padding: 1px 8px;
     border-radius: 10px;
-    background: rgba(56, 189, 248, 0.08);
-    color: #38bdf8;
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.08)'};
+    color: ${props => props.theme?.colors?.accent || '#38bdf8'};
     font-weight: 600;
     letter-spacing: 0.5px;
   }
@@ -1449,7 +1430,7 @@ const AIScanButton = styled.button`
 `;
 
 // ============================================
-// 7. DIGIT STATS
+// 7. DIGIT STATS - UPDATED WITH THEME
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -1491,11 +1472,11 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: rgba(20, 28, 43, 0.95);
+    background: ${props => props.theme?.colors?.background + 'f0' || 'rgba(20, 28, 43, 0.95)'};
     border: 1.5px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
-        : 'rgba(255, 255, 255, 0.08)'
+        : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'
     };
     box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
     transition: all 0.15s ease;
@@ -1510,7 +1491,7 @@ const DigitItem = styled.div`
   .digit-num {
     font-size: 10px;
     font-weight: 700;
-    color: #ffffff;
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
     line-height: 1;
 
     @media (max-width: 480px) {
@@ -1525,7 +1506,7 @@ const DigitItem = styled.div`
     color: ${props => 
       props.isMax 
         ? '#00e676' 
-        : (props.isMin ? '#ff4a4a' : '#728096')
+        : (props.isMin ? '#ff4a4a' : props.theme?.colors?.textMuted || '#728096')
     };
     line-height: 1;
     margin-top: 1px;
@@ -1551,7 +1532,7 @@ const DigitItem = styled.div`
 `;
 
 // ============================================
-// 8. DIGIT GRID - WITH RESTRICTION (1-8 only for Over/Under in Manual mode)
+// 8. DIGIT GRID - UPDATED WITH THEME
 // ============================================
 
 const DigitGridWrapper = styled.div`
@@ -1564,7 +1545,7 @@ const DigitGridWrapper = styled.div`
 
 const DigitGridLabel = styled.div`
   font-size: 9px; text-transform: uppercase;
-  color: #8a93a6;
+  color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
   letter-spacing: 0.6px;
   font-weight: 600;
   margin-bottom: 3px;
@@ -1591,17 +1572,17 @@ const DigitGrid = styled.div`
 const DigitButton = styled.button`
   padding: 6px 0;
   border: 1px solid ${props => {
-    if (props.disabled) return 'rgba(255, 255, 255, 0.02)';
-    return props.selected ? 'rgba(41, 98, 255, 0.6)' : 'rgba(26, 31, 46, 0.8)';
+    if (props.disabled) return props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)';
+    return props.selected ? props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)' : props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)';
   }};
   border-radius: 5px;
   background: ${props => {
-    if (props.disabled) return 'rgba(255, 255, 255, 0.01)';
-    return props.selected ? 'rgba(41, 98, 255, 0.12)' : 'rgba(255, 255, 255, 0.02)';
+    if (props.disabled) return props.theme?.colors?.background + '20' || 'rgba(255, 255, 255, 0.01)';
+    return props.selected ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.12)' : props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)';
   }};
   color: ${props => {
-    if (props.disabled) return '#4a4f5e';
-    return props.selected ? '#2962ff' : '#8a93a6';
+    if (props.disabled) return props.theme?.colors?.textMuted + '60' || '#4a4f5e';
+    return props.selected ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.textMuted || '#8a93a6';
   }};
   font-size: 13px;
   font-weight: 600;
@@ -1610,13 +1591,13 @@ const DigitButton = styled.button`
   opacity: ${props => props.disabled ? 0.4 : 1};
 
   &:hover {
-    border-color: ${props => props.disabled ? 'rgba(255, 255, 255, 0.02)' : 'rgba(41, 98, 255, 0.5)'};
-    color: ${props => props.disabled ? '#4a4f5e' : '#d1d4dc'};
+    border-color: ${props => props.disabled ? props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)' : props.theme?.colors?.accent + '80' || 'rgba(41, 98, 255, 0.5)'};
+    color: ${props => props.disabled ? props.theme?.colors?.textMuted + '60' || '#4a4f5e' : props.theme?.colors?.text || '#d1d4dc'};
     transform: ${props => props.disabled ? 'none' : 'translateY(-1px)'};
   }
   
   ${props => props.selected && !props.disabled && `
-    box-shadow: 0 0 16px rgba(41, 98, 255, 0.15);
+    box-shadow: 0 0 16px ${props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'};
   `}
   
   &:disabled {
@@ -1637,7 +1618,7 @@ const DigitButton = styled.button`
 `;
 
 // ============================================
-// 9. EVEN/ODD BUTTONS
+// 9. EVEN/ODD BUTTONS - UPDATED WITH THEME
 // ============================================
 
 const EvenOddButtons = styled.div`
@@ -1695,7 +1676,7 @@ const EvenOddButton = styled.button`
 `;
 
 // ============================================
-// 10. TRADE BUTTONS
+// 10. TRADE BUTTONS - UPDATED WITH THEME
 // ============================================
 
 const TradeButtonsWrapper = styled.div`
@@ -1753,7 +1734,7 @@ const TradeButton = styled.button`
 `;
 
 // ============================================
-// 11. RUN BUTTON
+// 11. RUN BUTTON - UPDATED WITH THEME
 // ============================================
 
 const RunButton = styled.button`
@@ -1761,13 +1742,13 @@ const RunButton = styled.button`
   padding: 10px 0;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #2962ff, #1a4fcf);
-  color: #ffffff;
+  background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+  color: ${props => props.theme?.colors?.text || '#ffffff'};
   font-size: 13px;
   font-weight: 600;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(41, 98, 255, 0.3);
+  box-shadow: 0 4px 16px ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
   position: relative;
   overflow: hidden;
   animation: ${fadeIn} 0.5s ease;
@@ -1786,7 +1767,7 @@ const RunButton = styled.button`
   }
   &:hover {
     transform: ${props => props.disabled ? 'none' : 'translateY(-2px)'};
-    box-shadow: ${props => props.disabled ? '0 4px 16px rgba(41, 98, 255, 0.3)' : '0 8px 28px rgba(41, 98, 255, 0.4)'};
+    box-shadow: ${props => props.disabled ? `0 4px 16px ${props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'}` : `0 8px 28px ${props.theme?.colors?.accent + '60' || 'rgba(41, 98, 255, 0.4)'}`};
   }
   &:hover::before { left: ${props => props.disabled ? '-100%' : '100%'}; }
   &:active { transform: ${props => props.disabled ? 'none' : 'scale(0.98)'}; }
@@ -1807,12 +1788,12 @@ const RunButton = styled.button`
 `;
 
 // ============================================
-// 12. SESSION INFO (Bottom)
+// 12. SESSION INFO (Bottom) - UPDATED WITH THEME
 // ============================================
 
 const SessionInfo = styled.div`
   padding-top: 10px;
-  border-top: 1px solid rgba(26, 31, 46, 0.6);
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.6)'};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1827,14 +1808,14 @@ const SessionInfo = styled.div`
   .label {
     font-size: 8px;
     text-transform: uppercase;
-    color: #5a6070;
+    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     letter-spacing: 0.5px;
     font-weight: 600;
   }
 
   .trades {
     font-size: 11px;
-    color: #8a93a6;
+    color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
     font-weight: 500;
   }
 
@@ -1854,7 +1835,7 @@ const SessionInfo = styled.div`
   .pl-label {
     font-size: 8px;
     text-transform: uppercase;
-    color: #5a6070;
+    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     letter-spacing: 0.5px;
     text-align: right;
   }
@@ -1877,7 +1858,7 @@ const SessionInfo = styled.div`
 `;
 
 // ============================================
-// BOT DATA - NO EMOJIS
+// BOT DATA - NO EMOJIS (UNCHANGED)
 // ============================================
 
 const BOTS = [
@@ -1937,11 +1918,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [targetProfit, setTargetProfit] = useState('');
   const [stopLoss, setStopLoss] = useState('');
   const [duration, setDuration] = useState(5);
-  const [growthRate, setGrowthRate] = useState(2); // NEW: For Accumulators
+  const [growthRate, setGrowthRate] = useState(1);
 
   // Duration dropdown state
   const [isDurationDropdownOpen, setIsDurationDropdownOpen] = useState(false);
-  const [isGrowthRateDropdownOpen, setIsGrowthRateDropdownOpen] = useState(false); // NEW
 
   // AI Analysis state
   const [isAIOpen, setIsAIOpen] = useState(false);
@@ -1955,6 +1935,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   // Dropdown states
   const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
   const [isMartingaleDropdownOpen, setIsMartingaleDropdownOpen] = useState(false);
+  const [isGrowthRateDropdownOpen, setIsGrowthRateDropdownOpen] = useState(false);
 
   // === MARKET SELECTOR STATE ===
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
@@ -1999,8 +1980,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const bulkOptions = Array.from({ length: 19 }, (_, i) => i + 2);
   const martingaleOptions = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
-  const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Ticks options
-  const growthRateOptions = [1, 2, 3, 4, 5]; // NEW: Growth rate options for Accumulators
+  const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const growthRateOptions = [1, 2, 3, 4, 5];
 
   // === DIGIT STATS LOGIC ===
   useEffect(() => {
@@ -2095,11 +2076,11 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     console.log(`Trade placed: ${direction} ${tradeDigit} on ${tradeType}`);
     console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
     console.log(`Duration: ${duration} ticks`);
-    if (tradeType === 'accumulators') {
-      console.log(`Growth Rate: ${growthRate}%`);
-    }
     if (tradeMode !== 'manual') {
       console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    }
+    if (tradeType === 'accumulators') {
+      console.log(`Growth Rate: ${growthRate}%`);
     }
   };
 
@@ -2107,11 +2088,11 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     console.log('Auto trading started');
     console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
     console.log(`Duration: ${duration} ticks`);
-    if (tradeType === 'accumulators') {
-      console.log(`Growth Rate: ${growthRate}%`);
-    }
     if (tradeMode !== 'manual') {
       console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    }
+    if (tradeType === 'accumulators') {
+      console.log(`Growth Rate: ${growthRate}%`);
     }
   };
 
@@ -2282,7 +2263,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER DURATION DROPDOWN (Manual Mode Only - All trade types except Accumulators) =====
+  // ===== RENDER DURATION DROPDOWN (Manual Mode Only - All Trade Types Except Accumulators) =====
   const renderDurationDropdown = () => {
     if (tradeMode !== 'manual') return null;
     if (tradeType === 'accumulators') return null;
@@ -2309,7 +2290,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER GROWTH RATE DROPDOWN (Manual Mode Only - Accumulators only) =====
+  // ===== RENDER GROWTH RATE DROPDOWN (Manual Mode - Accumulators Only) =====
   const renderGrowthRateDropdown = () => {
     if (tradeMode !== 'manual') return null;
     if (tradeType !== 'accumulators') return null;
@@ -2337,7 +2318,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER INPUTS - EXACT LAYOUT =====
+  // ===== RENDER INPUTS - EXACT LAYOUT WITH NEW FIELDS =====
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
@@ -2366,6 +2347,20 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         <div style={{ gridColumn: '2', gridRow: '1' }}>
           {renderBulkTradingToggle()}
         </div>
+
+        {/* Duration Field - Manual Mode Only (All Trade Types Except Accumulators) */}
+        {isManual && tradeType !== 'accumulators' && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
+            {renderDurationDropdown()}
+          </div>
+        )}
+
+        {/* Growth Rate Field - Manual Mode Only (Accumulators Only) */}
+        {isManual && tradeType === 'accumulators' && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
+            {renderGrowthRateDropdown()}
+          </div>
+        )}
 
         {!isManual && (
           <div style={{ gridColumn: '1', gridRow: '2' }}>
@@ -2420,7 +2415,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER AI MARKET SCANNER =====
+  // ===== RENDER AI MARKET SCANNER - REPOSITIONED =====
   const renderAIScanner = () => {
     const selectedAIMarket = getSelectedAIMarket();
     const selectedAITradeType = getSelectedAITradeType();
@@ -2545,7 +2540,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // ===== RENDER DIGIT GRID - WITH 1-8 RESTRICTION =====
   const renderDigitGrid = () => {
-    if (tradeType === 'random' || tradeType === 'evenodd' || tradeType === 'accumulators') return null;
+    if (tradeType === 'random' || tradeType === 'evenodd' || tradeType === 'accumulator') return null;
     
     return (
       <DigitGridWrapper>
@@ -2622,7 +2617,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // ===== RENDER TRADE BUTTONS =====
   const renderTradeButtons = () => {
-    if (tradeType === 'evenodd' || tradeType === 'random' || tradeType === 'accumulators') return null;
+    if (tradeType === 'evenodd' || tradeType === 'random' || tradeType === 'accumulator') return null;
     if (selectedDigit === null) return null;
 
     const digit = selectedDigit;
@@ -2782,12 +2777,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
       {renderInputs()}
 
-      {/* DURATION - Manual Mode, all trade types except Accumulators */}
-      {renderDurationDropdown()}
-
-      {/* GROWTH RATE - Manual Mode, Accumulators only */}
-      {renderGrowthRateDropdown()}
-
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
@@ -2796,7 +2785,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
       {tradeMode === 'manual' && renderAccumulatorButtons()}
 
-      {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulators' && renderTradeButtons()}
+      {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulator' && renderTradeButtons()}
 
       {tradeMode === 'use-bots' ? (
         renderRunButton(!selectedBot)
