@@ -959,9 +959,10 @@ const DropdownSelectItem = styled.div`
 // ============================================
 
 // AI Button Container - Repositioned to avoid overlap with theme button
+// AI Button Container - Repositioned to avoid overlap with theme button
 const AIButtonContainer = styled.div`
   position: fixed;
-  bottom: ${props => props.isMobile ? '140px' : '100px'};
+  bottom: ${props => props.isMobile ? '140px' : '140px'};
   right: ${props => props.isMobile ? '12px' : '24px'};
   z-index: 50;
   display: flex;
@@ -974,7 +975,7 @@ const AIButtonContainer = styled.div`
   }
 
   @media (min-width: 769px) {
-    bottom: 100px;
+    bottom: 140px;
     right: 24px;
   }
 `;
