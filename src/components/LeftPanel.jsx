@@ -1,3 +1,4 @@
+// src/components/LeftPanel.jsx
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
@@ -10,14 +11,15 @@ const PanelContainer = styled.div`
   width: 260px;
   min-width: 260px;
   height: calc(100vh - 48px);
-  background: #0d1117;
-  border-right: 1px solid #1e2a3a;
+  background: ${props => props.theme.colors.background};
+  border-right: 1px solid ${props => props.theme.colors.border};
   display: flex;
   flex-direction: column;
   padding: 10px 8px;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 50;
+  transition: background 0.3s ease, border-color 0.3s ease;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -26,7 +28,7 @@ const PanelContainer = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(56, 189, 248, 0.2);
+    background: ${props => props.theme.colors.scrollbar};
     border-radius: 10px;
   }
 
@@ -42,7 +44,7 @@ const PanelContainer = styled.div`
     height: 100%;
     padding: 6px 8px;
     border-right: none;
-    background: #0a0e17;
+    background: ${props => props.theme.colors.background};
   }
 
   @media (max-width: 480px) {
@@ -71,15 +73,15 @@ const NavItem = styled.div`
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
-  color: ${props => props.active ? '#d1d4dc' : '#787b86'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.06)' : 'transparent'};
-  border: ${props => props.active ? '1px solid rgba(41, 98, 255, 0.08)' : 'none'};
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
+  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
+  border: ${props => props.active ? `1px solid ${props.theme.colors.accent + '15'}` : 'none'};
   white-space: nowrap;
   font-size: 11px;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: #d1d4dc;
+    background: ${props => props.theme.colors.background + '60'};
+    color: ${props => props.theme.colors.text};
   }
 
   .label {
@@ -92,8 +94,8 @@ const NavItem = styled.div`
     font-weight: 500;
     padding: 0 3px;
     border-radius: 3px;
-    background: ${props => props.active ? 'rgba(41, 98, 255, 0.2)' : 'rgba(255,255,255,0.06)'};
-    color: ${props => props.active ? '#2962ff' : '#787b86'};
+    background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.background + '60'};
+    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted};
     &::before { content: '('; }
     &::after { content: ')'; }
   }
@@ -113,8 +115,9 @@ const NavItem = styled.div`
 
 const Divider = styled.div`
   height: 1px;
-  background: #1e2a3a;
+  background: ${props => props.theme.colors.border};
   margin: 4px 0;
+  transition: background 0.3s ease;
 
   @media (max-width: 768px) {
     margin: 2px 0;
@@ -127,12 +130,24 @@ const NoPositions = styled.div`
   align-items: center;
   justify-content: center;
   padding: 12px 4px;
-  color: #787b86;
+  color: ${props => props.theme.colors.textMuted};
   text-align: center;
 
-  .icon { font-size: 18px; margin-bottom: 2px; color: #2a2d3e; }
-  .title { font-size: 10px; font-weight: 500; color: #d1d4dc; margin-bottom: 1px; }
-  .subtitle { font-size: 8px; color: #787b86; }
+  .icon { 
+    font-size: 18px; 
+    margin-bottom: 2px; 
+    color: ${props => props.theme.colors.textMuted + '50'}; 
+  }
+  .title { 
+    font-size: 10px; 
+    font-weight: 500; 
+    color: ${props => props.theme.colors.text}; 
+    margin-bottom: 1px; 
+  }
+  .subtitle { 
+    font-size: 8px; 
+    color: ${props => props.theme.colors.textMuted}; 
+  }
 
   @media (max-width: 768px) {
     padding: 4px 2px;
@@ -155,7 +170,8 @@ const BottomContent = styled.div`
   flex-direction: column;
   gap: 2px;
   padding-top: 4px;
-  border-top: 1px solid #1e2a3a;
+  border-top: 1px solid ${props => props.theme.colors.border};
+  transition: border-color 0.3s ease;
 
   @media (max-width: 768px) {
     gap: 1px;
@@ -171,7 +187,7 @@ const SessionLabel = styled.div`
   font-size: 7px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  color: #787b86;
+  color: ${props => props.theme.colors.textMuted};
 
   @media (max-width: 768px) {
     font-size: 6px;
@@ -186,7 +202,7 @@ const SessionPL = styled.div`
   .currency {
     font-size: 8px;
     font-weight: 400;
-    color: #787b86;
+    color: ${props => props.theme.colors.textMuted};
     margin-left: 1px;
   }
 
@@ -203,7 +219,7 @@ const SessionPL = styled.div`
 
 const TradesSummary = styled.div`
   font-size: 8px;
-  color: #787b86;
+  color: ${props => props.theme.colors.textMuted};
   padding: 0 2px;
 
   .wins { color: #00b894; }
@@ -234,7 +250,7 @@ const StatusFooter = styled.div`
 
   .status-text {
     font-size: 8px;
-    color: #787b86;
+    color: ${props => props.theme.colors.textMuted};
 
     @media (max-width: 768px) {
       font-size: 7px;
