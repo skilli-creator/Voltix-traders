@@ -22,45 +22,40 @@ const VOLATILITY_MARKETS = [
 // ============================================
 
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 `;
 
 const slideDown = keyframes`
-  from { opacity: 0; transform: translateY(-10px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'}; }
-  50% { box-shadow: 0 0 40px ${props => props.theme?.colors?.accent + '40' || 'rgba(41, 98, 255, 0.3)'}; }
+  0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '20' || 'rgba(41, 98, 255, 0.1)'}; }
+  50% { box-shadow: 0 0 30px ${props => props.theme?.colors?.accent + '35' || 'rgba(41, 98, 255, 0.2)'}; }
 `;
 
 const floatPulse = keyframes`
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  50% { transform: translateY(-3px); }
 `;
 
 // ============================================
-// STYLED COMPONENTS - UPDATED WITH THEME
+// STYLED COMPONENTS
 // ============================================
 
 const PanelContainer = styled.div`
   width: 290px;
   min-width: 290px;
-  background: ${props => props.theme?.colors?.background || 'linear-gradient(180deg, #0b0e14 0%, #0f131a 100%)'};
-  border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
-  padding: 14px 14px 10px 14px;
+  background: ${props => props.theme?.colors?.background || '#0b0e14'};
+  border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  padding: 16px 14px 12px 14px;
   display: flex;
   flex-direction: column;
   height: calc(100vh - 56px);
   overflow-y: auto;
-  gap: 8px;
+  gap: 6px;
   position: relative;
   box-sizing: border-box;
   transition: background 0.3s ease, border-color 0.3s ease;
@@ -72,30 +67,29 @@ const PanelContainer = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
     border-radius: 4px;
   }
 
   @media (max-width: 1024px) and (min-width: 769px) {
     width: 220px;
     min-width: 220px;
-    padding: 10px 10px 6px 10px;
+    padding: 12px 10px 8px 10px;
   }
 
   @media (max-width: 768px) {
     width: 100%;
     min-width: unset;
     height: 100%;
-    padding: 6px 20px 4px 20px !important;
+    padding: 8px 16px 6px 16px !important;
     border-left: none;
     background: ${props => props.theme?.colors?.background || '#0a0e17'};
     gap: 4px;
-    box-sizing: border-box;
   }
 
   @media (max-width: 480px) {
-    padding: 4px 16px 2px 16px !important;
-    gap: 2px;
+    padding: 6px 12px 4px 12px !important;
+    gap: 3px;
   }
 `;
 
@@ -107,14 +101,14 @@ const PhoneTwoColumnWrapper = styled.div`
   @media (max-width: 768px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px !important;
+    gap: 10px !important;
     margin-bottom: 2px;
     width: 100%;
     box-sizing: border-box;
   }
 
   @media (max-width: 480px) {
-    gap: 12px !important;
+    gap: 8px !important;
   }
 
   @media (min-width: 769px) {
@@ -140,28 +134,28 @@ const MarketSelectorButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.06)'};
-    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
   }
 
   .left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
     flex: 1;
   }
 
   .market-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
@@ -169,28 +163,26 @@ const MarketSelectorButton = styled.div`
 
   .market-name {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: left;
   }
 
   .arrow {
-    font-size: 10px;
+    font-size: 9px;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 4px 8px;
-    .market-name { font-size: 10px; }
+    padding: 6px 10px;
+    .market-name { font-size: 11px; }
     .market-dot { width: 5px; height: 5px; }
-    .arrow { font-size: 8px; }
   }
 `;
 
@@ -199,15 +191,14 @@ const MarketDropdown = styled.div`
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
-  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   max-height: 260px;
   overflow-y: auto;
 
@@ -215,38 +206,38 @@ const MarketDropdown = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
     border-radius: 4px;
   }
 `;
 
 const MarketOption = styled.div`
-  padding: 10px 12px;
+  padding: 8px 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   .left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
     flex: 1;
   }
 
   .dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
@@ -258,22 +249,20 @@ const MarketOption = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: left;
   }
 
   .check {
     color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    font-size: 14px;
+    font-size: 13px;
     opacity: ${props => props.active ? 1 : 0};
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 6px 8px;
-    .option-name { font-size: 10px; }
+    padding: 6px 10px;
+    .option-name { font-size: 11px; }
     .dot { width: 5px; height: 5px; }
-    .check { font-size: 11px; }
   }
 `;
 
@@ -294,100 +283,99 @@ const TradeTypeButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  background: ${props => props.theme?.colors?.background + '60' || 'linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01))'};
-  border: 1px solid ${props => props.isOpen ? (props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)') : (props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)')};
+  padding: 8px 12px;
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.isOpen ? props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${props => props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)'};
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.06)'};
+    border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
   }
 
-  .left { display: flex; align-items: center; gap: 10px; }
-  .label { font-size: 14px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; letter-spacing: 0.2px; }
+  .left { display: flex; align-items: center; gap: 8px; }
+  .label { font-size: 13px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
   .arrow {
-    font-size: 12px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    transition: transform 0.3s ease;
+    font-size: 10px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
+    transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   }
   .badge {
-    font-size: 7px; text-transform: uppercase; padding: 2px 6px;
-    border-radius: 8px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.15)'};
-    color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-weight: 600; letter-spacing: 0.5px;
+    font-size: 7px; text-transform: uppercase; padding: 1px 8px;
+    border-radius: 10px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.1)'};
+    color: ${props => props.theme?.colors?.accent || '#2962ff'};
+    font-weight: 600;
   }
 
   @media (max-width: 768px) {
     padding: 6px 10px;
     .label { font-size: 12px; }
-    .badge { font-size: 6px; padding: 1px 4px; }
+    .badge { font-size: 6px; padding: 1px 6px; }
   }
 
   @media (max-width: 480px) {
-    padding: 3px 6px;
-    .label { font-size: 10px; }
-    gap: 2px;
+    padding: 5px 8px;
+    .label { font-size: 11px; }
     .arrow { font-size: 9px; }
-    .badge { font-size: 5px; padding: 1px 3px; }
+    .badge { font-size: 5px; padding: 1px 5px; }
   }
 `;
 
 const Dropdown = styled.div`
   position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px; overflow: hidden; z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
-  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
+  backdrop-filter: blur(10px);
 
   @media (max-width: 480px) {
-    border-radius: 4px;
+    border-radius: 6px;
   }
 `;
 
 const DropdownOption = styled.div`
-  padding: 10px 14px;
+  padding: 8px 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#8a93a6'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.12)' : 'transparent'};
-  font-size: 13px;
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  font-size: 12px;
   transition: all 0.15s ease;
 
-  &:hover { background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'}; color: ${props => props.theme?.colors?.text || '#ffffff'}; }
-  .check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 14px; opacity: ${props => props.active ? 1 : 0}; }
+  &:hover { background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'}; color: ${props => props.theme?.colors?.text || '#ffffff'}; }
+  .check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 13px; opacity: ${props => props.active ? 1 : 0}; }
 
   @media (max-width: 768px) {
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   @media (max-width: 480px) {
-    padding: 4px 6px;
+    padding: 5px 8px;
     font-size: 10px;
     .check { font-size: 11px; }
   }
 `;
 
 // ============================================
-// 3. TRADE MODE TOGGLE - UPDATED WITH THEME
+// 3. TRADE MODE TOGGLE
 // ============================================
 
 const TradeModeWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   animation: ${fadeIn} 0.4s ease;
 
   @media (max-width: 768px) {
-    gap: 3px;
+    gap: 2px;
   }
 
   @media (max-width: 480px) {
@@ -402,7 +390,7 @@ const TradeModeLabel = styled.div`
   font-size: 8px;
   text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   font-weight: 600;
 
   @media (max-width: 768px) {
@@ -416,59 +404,49 @@ const TradeModeLabel = styled.div`
 
 const TradeModeButtons = styled.div`
   display: flex;
-  gap: 4px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 10px;
-  padding: 4px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-  position: relative;
+  gap: 3px;
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border-radius: 8px;
+  padding: 3px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
 
   @media (max-width: 768px) {
-    padding: 3px;
-    gap: 3px;
-    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
+    border-radius: 6px;
   }
 
   @media (max-width: 480px) {
     padding: 2px;
     gap: 2px;
-    border-radius: 6px;
+    border-radius: 5px;
   }
 `;
 
 const TradeModeButton = styled.button`
   flex: 1;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : 'transparent'};
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#8a93a6'};
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   letter-spacing: 0.3px;
 
   ${props => props.active && `
-    box-shadow: 0 4px 16px ${props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.35)'};
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 8px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-      pointer-events: none;
-    }
+    box-shadow: 0 2px 12px ${props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.2)'};
   `}
 
   &:hover {
     color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.text || '#d1d4dc'};
-    background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
   }
 
   &:active {
@@ -476,41 +454,41 @@ const TradeModeButton = styled.button`
   }
 
   .mode-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
   }
 
   .mode-shortcut {
-    font-size: 7px;
+    font-size: 6px;
     opacity: 0.4;
     font-weight: 400;
     letter-spacing: 0.5px;
-    background: rgba(255,255,255,0.06);
-    padding: 1px 6px;
+    background: rgba(255,255,255,0.05);
+    padding: 1px 5px;
     border-radius: 4px;
     display: ${props => props.active ? 'inline-block' : 'none'};
   }
 
   @media (max-width: 768px) {
-    padding: 6px 8px;
-    font-size: 10px;
-    border-radius: 6px;
-    .mode-label { font-size: 10px; }
-    .mode-shortcut { font-size: 6px; padding: 0px 4px; }
+    padding: 5px 8px;
+    font-size: 9px;
+    border-radius: 5px;
+    .mode-label { font-size: 9px; }
+    .mode-shortcut { font-size: 5px; padding: 0px 4px; }
   }
 
   @media (max-width: 480px) {
-    padding: 4px 4px;
+    padding: 4px 6px;
     font-size: 8px;
     border-radius: 4px;
-    gap: 3px;
+    gap: 2px;
     .mode-label { font-size: 8px; }
     .mode-shortcut { display: none; }
   }
 `;
 
 // ============================================
-// 4. BOT SELECTION - UPDATED WITH THEME
+// 4. BOT SELECTION
 // ============================================
 
 const BotGrid = styled.div`
@@ -520,63 +498,61 @@ const BotGrid = styled.div`
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 480px) {
-    gap: 2px;
+    gap: 3px;
   }
 `;
 
 const BotCard = styled.div`
-  padding: 8px 6px;
-  background: ${props => props.selected ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.12)' : props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
-  border: 1px solid ${props => props.selected ? props.theme?.colors?.accent + '80' || 'rgba(41, 98, 255, 0.5)' : props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
+  padding: 6px 4px;
+  background: ${props => props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.selected ? props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   text-align: center;
-  backdrop-filter: blur(10px);
 
   &:hover {
-    border-color: ${props => props.theme?.colors?.accent + '60' || 'rgba(41, 98, 255, 0.4)'};
+    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.3)'};
   }
 
   ${props => props.selected && `
     border-color: ${props.theme?.colors?.accent || '#2962ff'};
-    box-shadow: 0 0 20px ${props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'};
+    box-shadow: 0 0 20px ${props.theme?.colors?.accent + '15' || 'rgba(41,98,255,0.08)'};
     animation: ${pulseGlow} 2s ease-in-out infinite;
   `}
 
-  .bot-name { font-size: 10px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
-  .bot-type { font-size: 7px; text-transform: uppercase; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px; letter-spacing: 0.3px; }
+  .bot-name { font-size: 9px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
+  .bot-type { font-size: 6px; text-transform: uppercase; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px; letter-spacing: 0.3px; }
   .bot-badge {
-    font-size: 6px; text-transform: uppercase; padding: 1px 5px;
-    border-radius: 4px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.15)'};
+    font-size: 5px; text-transform: uppercase; padding: 1px 6px;
+    border-radius: 4px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.08)'};
     color: ${props => props.theme?.colors?.accent || '#2962ff'}; display: inline-block; margin-top: 1px;
   }
 
   @media (max-width: 768px) {
-    padding: 6px 4px;
-    .bot-name { font-size: 9px; }
-    .bot-type { font-size: 6px; }
-    .bot-badge { font-size: 5px; padding: 1px 3px; }
+    padding: 5px 3px;
+    .bot-name { font-size: 8px; }
+    .bot-type { font-size: 5px; }
+    .bot-badge { font-size: 4px; padding: 1px 4px; }
   }
 
   @media (max-width: 480px) {
-    padding: 3px 2px;
+    padding: 4px 2px;
     .bot-name { font-size: 7px; }
     .bot-type { font-size: 5px; }
-    .bot-badge { font-size: 4px; padding: 1px 2px; }
+    .bot-badge { font-size: 4px; padding: 1px 3px; }
   }
 `;
 
 const BotHeader = styled.div`
   text-align: center;
-  padding: 2px 0 4px 0;
+  padding: 2px 0 3px 0;
   animation: ${fadeIn} 0.4s ease;
 
-  .title { font-size: 12px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
+  .title { font-size: 11px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
   .subtitle {
-    font-size: 10px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px;
+    font-size: 9px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px;
     .highlight { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-weight: 600; }
   }
 
@@ -587,27 +563,27 @@ const BotHeader = styled.div`
   }
 
   @media (max-width: 480px) {
-    .title { font-size: 8px; }
+    .title { font-size: 9px; }
     .subtitle { font-size: 7px; }
   }
 `;
 
 // ============================================
-// 5. INPUT FIELDS - UPDATED WITH THEME
+// 5. INPUT FIELDS
 // ============================================
 
 const InputGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 6px;
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 768px) {
-    gap: 6px;
+    gap: 4px;
   }
 
   @media (max-width: 480px) {
-    gap: 4px;
+    gap: 3px;
   }
 `;
 
@@ -625,33 +601,33 @@ const InputLabel = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 8px;
+  font-size: 7px;
   text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
-  letter-spacing: 0.6px;
-  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 
   .suffix { 
-    font-size: 7px; 
-    color: ${props => props.theme?.colors?.textMuted + '80' || '#4a4f5e'}; 
+    font-size: 6px; 
+    color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'}; 
     text-transform: none; 
     letter-spacing: 0; 
     font-weight: 400; 
   }
   .optional {
-    font-size: 6px; 
-    color: ${props => props.theme?.colors?.textMuted + '80' || '#4a4f5e'}; 
+    font-size: 5px; 
+    color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'}; 
     text-transform: none;
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.04)'}; 
-    padding: 0 5px; 
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'}; 
+    padding: 0 4px; 
     border-radius: 3px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     font-weight: 400;
   }
 
   @media (max-width: 768px) {
-    font-size: 7px;
-    .suffix { font-size: 6px; }
+    font-size: 6px;
+    .suffix { font-size: 5px; }
     .optional { font-size: 5px; padding: 0 3px; }
   }
 
@@ -667,29 +643,29 @@ const InputRow = styled.div`
   display: flex;
   align-items: center;
   gap: 0;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 5px;
   transition: all 0.2s ease;
   overflow: hidden;
 
   &:focus-within { 
-    border-color: ${props => props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)'}; 
-    box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '15' || 'rgba(41, 98, 255, 0.08)'}; 
+    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.25)'}; 
+    box-shadow: 0 0 0 2px ${props => props.theme?.colors?.accent + '10' || 'rgba(41,98,255,0.05)'}; 
   }
   
   .prefix {
-    padding: 4px 6px;
-    font-size: 11px;
+    padding: 3px 6px;
+    font-size: 10px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
-    border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+    border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   }
 
   @media (max-width: 768px) {
     border-radius: 4px;
-    .prefix { padding: 3px 4px; font-size: 10px; }
+    .prefix { padding: 2px 4px; font-size: 9px; }
   }
 
   @media (max-width: 480px) {
@@ -700,11 +676,11 @@ const InputRow = styled.div`
 
 const StyledInput = styled.input`
   flex: 1;
-  padding: 4px 6px;
+  padding: 3px 6px;
   background: transparent;
   border: none;
   color: ${props => props.theme?.colors?.text || '#d1d4dc'};
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   outline: none;
   width: 100%;
@@ -718,15 +694,15 @@ const StyledInput = styled.input`
   &[type="number"] { -moz-appearance: textfield; }
   
   &::placeholder {
-    color: ${props => props.theme?.colors?.textMuted + '60' || '#3a4055'};
+    color: ${props => props.theme?.colors?.textMuted + '40' || '#3a4055'};
     font-weight: 400;
-    font-size: 11px;
+    font-size: 10px;
   }
 
   @media (max-width: 768px) {
-    padding: 3px 4px;
-    font-size: 11px;
-    &::placeholder { font-size: 10px; }
+    padding: 2px 4px;
+    font-size: 10px;
+    &::placeholder { font-size: 9px; }
   }
 
   @media (max-width: 480px) {
@@ -736,27 +712,27 @@ const StyledInput = styled.input`
   }
 `;
 
-// ===== TOGGLE COMPONENTS (Compact) - UPDATED WITH THEME =====
+// ===== TOGGLE COMPONENTS =====
 const ToggleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)'};
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 5px;
-  padding: 3px 6px;
-  height: 28px;
-  gap: 4px;
+  padding: 2px 5px;
+  height: 26px;
+  gap: 3px;
   width: 100%;
 
   @media (max-width: 768px) {
     padding: 2px 4px;
-    height: 24px;
+    height: 22px;
     border-radius: 4px;
   }
 
   @media (max-width: 480px) {
-    padding: 2px 3px;
+    padding: 1px 3px;
     height: 20px;
     border-radius: 3px;
     gap: 2px;
@@ -766,17 +742,17 @@ const ToggleWrapper = styled.div`
 const ToggleLabel = styled.div`
   display: flex;
   align-items: center;
-  gap: 3px;
-  font-size: 7px;
+  gap: 2px;
+  font-size: 6px;
   text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
-  letter-spacing: 0.5px;
-  font-weight: 700;
+  letter-spacing: 0.4px;
+  font-weight: 600;
   white-space: nowrap;
 
   @media (max-width: 768px) {
-    font-size: 6px;
-    gap: 2px;
+    font-size: 5px;
+    gap: 1px;
   }
 
   @media (max-width: 480px) {
@@ -786,44 +762,32 @@ const ToggleLabel = styled.div`
 `;
 
 const ToggleTrack = styled.div`
-  width: 28px;
-  height: 16px;
+  width: 24px;
+  height: 14px;
   background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.scrollbar || '#2a2e3d'};
-  border-radius: 8px;
+  border-radius: 7px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   position: relative;
   flex-shrink: 0;
 
-  &:hover { box-shadow: 0 0 12px ${props => props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'}; }
+  &:hover { box-shadow: 0 0 12px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.1)'}; }
   
   .thumb {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     background: ${props => props.theme?.colors?.text || '#ffffff'};
     border-radius: 50%;
     position: absolute;
     top: 2px;
-    left: ${props => props.active ? '14px' : '2px'};
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 3px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.3)'};
+    left: ${props => props.active ? '12px' : '2px'};
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
 
   @media (max-width: 768px) {
-    width: 24px;
-    height: 14px;
-    .thumb {
-      width: 10px;
-      height: 10px;
-      left: ${props => props.active ? '12px' : '2px'};
-      top: 2px;
-    }
-  }
-
-  @media (max-width: 480px) {
     width: 20px;
     height: 12px;
-    border-radius: 6px;
     .thumb {
       width: 8px;
       height: 8px;
@@ -831,26 +795,38 @@ const ToggleTrack = styled.div`
       top: 2px;
     }
   }
+
+  @media (max-width: 480px) {
+    width: 18px;
+    height: 10px;
+    border-radius: 5px;
+    .thumb {
+      width: 6px;
+      height: 6px;
+      left: ${props => props.active ? '10px' : '2px'};
+      top: 2px;
+    }
+  }
 `;
 
 const ToggleStatus = styled.span`
-  font-size: 7px;
-  color: ${props => props.active ? '#22c55e' : props.theme?.colors?.textMuted + '80' || '#4a4f5e'};
+  font-size: 6px;
+  color: ${props => props.active ? '#22c55e' : props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
   font-weight: 600;
-  min-width: 18px;
+  min-width: 16px;
 
   @media (max-width: 768px) {
-    font-size: 6px;
-    min-width: 14px;
+    font-size: 5px;
+    min-width: 12px;
   }
 
   @media (max-width: 480px) {
     font-size: 5px;
-    min-width: 12px;
+    min-width: 10px;
   }
 `;
 
-// ===== DROPDOWN SELECT (Compact) - UPDATED WITH THEME =====
+// ===== DROPDOWN SELECT =====
 const DropdownSelect = styled.div`
   position: relative;
   display: flex;
@@ -860,107 +836,106 @@ const DropdownSelect = styled.div`
 const DropdownSelectButton = styled.div`
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 2px 6px 2px 8px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  gap: 2px;
+  padding: 1px 5px 1px 6px;
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-  height: 22px;
-  min-width: 32px;
+  height: 20px;
+  min-width: 28px;
   justify-content: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.08)'};
-    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
   .dropdown-arrow {
-    font-size: 7px;
+    font-size: 6px;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   }
 
   @media (max-width: 768px) {
-    font-size: 9px;
-    height: 18px;
-    padding: 1px 4px 1px 6px;
-    min-width: 28px;
+    font-size: 8px;
+    height: 16px;
+    padding: 1px 4px 1px 5px;
+    min-width: 24px;
   }
 
   @media (max-width: 480px) {
-    font-size: 8px;
-    height: 16px;
+    font-size: 7px;
+    height: 14px;
     padding: 1px 3px 1px 4px;
-    min-width: 24px;
-    gap: 2px;
+    min-width: 20px;
+    gap: 1px;
   }
 `;
 
 const DropdownSelectMenu = styled.div`
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 3px);
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.15s ease;
-  box-shadow: 0 8px 30px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
-  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   max-height: 150px;
   overflow-y: auto;
-  min-width: 44px;
+  min-width: 40px;
 
   &::-webkit-scrollbar {
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
     border-radius: 4px;
   }
 
   @media (max-width: 480px) {
     max-height: 120px;
-    min-width: 36px;
+    min-width: 32px;
   }
 `;
 
 const DropdownSelectItem = styled.div`
-  padding: 5px 10px;
+  padding: 4px 8px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
   text-align: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   @media (max-width: 768px) {
-    font-size: 9px;
-    padding: 4px 8px;
+    font-size: 8px;
+    padding: 3px 6px;
   }
 
   @media (max-width: 480px) {
-    font-size: 8px;
-    padding: 3px 6px;
+    font-size: 7px;
+    padding: 3px 5px;
   }
 `;
 
 // ============================================
-// 6. AI ANALYSIS - UPDATED WITH THEME & REPOSITIONED
+// 6. AI ANALYSIS
 // ============================================
 
 const AIButtonContainer = styled.div`
@@ -993,8 +968,8 @@ const AIFloatingButton = styled.button`
   font-size: ${props => props.isMobile ? '11px' : '14px'};
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 24px ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 20px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.2)'};
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1002,8 +977,8 @@ const AIFloatingButton = styled.button`
   animation: ${floatPulse} 3s ease-in-out infinite;
 
   &:hover {
-    transform: scale(1.1) translateY(-4px);
-    box-shadow: 0 8px 40px ${props => props.theme?.colors?.accent + '60' || 'rgba(41, 98, 255, 0.4)'};
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 4px 30px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.3)'};
   }
 
   &:active {
@@ -1025,13 +1000,13 @@ const AIAnalysisPanel = styled.div`
   right: ${props => props.isMobile ? '8px' : '24px'};
   width: ${props => props.isMobile ? '220px' : '280px'};
   max-height: ${props => props.isMobile ? '340px' : '400px'};
-  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(8, 18, 38, 0.96)'};
-  backdrop-filter: blur(24px);
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.08)'};
-  border-radius: 16px;
-  padding: ${props => props.isMobile ? '14px 16px' : '18px 20px'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.96)'};
+  backdrop-filter: blur(20px);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 12px;
+  padding: ${props => props.isMobile ? '14px 16px' : '16px 20px'};
   z-index: 51;
-  box-shadow: 0 24px 80px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
+  box-shadow: 0 12px 48px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   animation: ${fadeIn} 0.3s ease;
   display: ${props => props.isOpen ? 'block' : 'none'};
   overflow-y: auto;
@@ -1040,8 +1015,16 @@ const AIAnalysisPanel = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(56, 189, 248, 0.2)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
     border-radius: 4px;
+  }
+
+  @media (max-width: 480px) {
+    width: 200px;
+    right: 8px;
+    bottom: 130px;
+    max-height: 300px;
+    padding: 12px 14px;
   }
 `;
 
@@ -1049,24 +1032,23 @@ const AIAnalysisHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.06)'};
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
 
   .title {
     font-size: ${props => props.isMobile ? '11px' : '13px'};
-    font-weight: 700;
+    font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     display: flex;
     align-items: center;
     gap: 8px;
-    letter-spacing: 0.3px;
   }
 
   .title-icon {
     width: ${props => props.isMobile ? '24px' : '28px'};
     height: ${props => props.isMobile ? '24px' : '28px'};
-    border-radius: 8px;
+    border-radius: 6px;
     background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
     display: flex;
     align-items: center;
@@ -1077,13 +1059,13 @@ const AIAnalysisHeader = styled.div`
   }
 
   .close-btn {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    width: ${props => props.isMobile ? '26px' : '30px'};
-    height: ${props => props.isMobile ? '26px' : '30px'};
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    font-size: ${props => props.isMobile ? '12px' : '14px'};
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -1091,34 +1073,42 @@ const AIAnalysisHeader = styled.div`
     justify-content: center;
 
     &:hover {
-      background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.08)'};
+      background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
       color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     }
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    .title { font-size: 10px; }
+    .title-icon { width: 20px; height: 20px; font-size: 9px; }
+    .close-btn { width: 22px; height: 22px; font-size: 10px; }
   }
 `;
 
 const AIScannerInputs = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 0;
 `;
 
 const AISelectWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 
   .label {
-    font-size: 9px;
+    font-size: 8px;
     text-transform: uppercase;
     color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
     font-weight: 600;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
   }
 `;
 
-// ===== REDESIGNED AI DROPDOWN SELECTOR - UPDATED WITH THEME =====
+// ===== AI DROPDOWN SELECTOR =====
 const AIDropdown = styled.div`
   position: relative;
   width: 100%;
@@ -1128,148 +1118,145 @@ const AIDropdownButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  border-radius: 8px;
+  padding: 6px 10px;
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.06)'};
-    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
   .left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
     flex: 1;
   }
 
   .ai-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
   }
 
   .ai-selected-text {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: left;
   }
 
   .arrow {
-    font-size: 10px;
+    font-size: 8px;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 6px 8px;
+    padding: 5px 8px;
     .ai-selected-text { font-size: 10px; }
-    .ai-dot { width: 6px; height: 6px; }
+    .ai-dot { width: 5px; height: 5px; }
   }
 `;
 
 const AIDropdownMenu = styled.div`
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 3px);
   left: 0;
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  border-radius: 8px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 6px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
-  backdrop-filter: blur(20px);
-  max-height: 200px;
+  box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
+  max-height: 180px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
     border-radius: 4px;
   }
 
   @media (max-width: 480px) {
-    max-height: 160px;
+    max-height: 140px;
   }
 `;
 
 const AIDropdownItem = styled.div`
-  padding: 8px 12px;
+  padding: 6px 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   .left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
     flex: 1;
   }
 
   .ai-item-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'};
     flex-shrink: 0;
   }
 
   .ai-item-name {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: left;
   }
 
   .ai-check {
     color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    font-size: 14px;
+    font-size: 12px;
     opacity: ${props => props.active ? 1 : 0};
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 6px 8px;
+    padding: 5px 8px;
     .ai-item-name { font-size: 10px; }
-    .ai-item-dot { width: 6px; height: 6px; }
-    .ai-check { font-size: 11px; }
+    .ai-item-dot { width: 5px; height: 5px; }
+    .ai-check { font-size: 10px; }
   }
 `;
 
-// ===== AI Trade Type Dropdown - UPDATED WITH THEME =====
+// ===== AI Trade Type Dropdown =====
 const AITradeTypeDropdown = styled.div`
   position: relative;
   width: 100%;
@@ -1279,20 +1266,20 @@ const AITradeTypeButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  border-radius: 8px;
+  padding: 6px 10px;
+  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.06)'};
-    border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
+    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
   .ai-type-selected {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
@@ -1301,34 +1288,33 @@ const AITradeTypeButton = styled.div`
   }
 
   .arrow {
-    font-size: 10px;
+    font-size: 8px;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 6px 8px;
+    padding: 5px 8px;
     .ai-type-selected { font-size: 10px; }
   }
 `;
 
 const AITradeTypeMenu = styled.div`
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 3px);
   left: 0;
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary + 'f0' || 'rgba(21, 26, 38, 0.98)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  border-radius: 8px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 6px;
   overflow: hidden;
   z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
-  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   max-height: 150px;
   overflow-y: auto;
 
@@ -1336,7 +1322,7 @@ const AITradeTypeMenu = styled.div`
     width: 3px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
     border-radius: 4px;
   }
 
@@ -1346,95 +1332,85 @@ const AITradeTypeMenu = styled.div`
 `;
 
 const AITradeTypeItem = styled.div`
-  padding: 8px 12px;
+  padding: 6px 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.08)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.04)'};
+    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   .ai-type-name {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
   }
 
   .ai-check {
     color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    font-size: 14px;
+    font-size: 12px;
     opacity: ${props => props.active ? 1 : 0};
     flex-shrink: 0;
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media (max-width: 480px) {
-    padding: 6px 8px;
+    padding: 5px 8px;
     .ai-type-name { font-size: 10px; }
-    .ai-check { font-size: 11px; }
+    .ai-check { font-size: 10px; }
   }
 `;
 
 const AIScanButton = styled.button`
   width: 100%;
-  padding: 10px 0;
+  padding: 8px 0;
   border: none;
-  border-radius: 8px;
-  background: ${props => props.theme?.colors?.background + 'cc' || 'linear-gradient(135deg, #1a2a4a, #0d1b2a)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.08)'};
+  border-radius: 6px;
+  background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.03)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   cursor: not-allowed;
   transition: all 0.3s ease;
-  opacity: 0.6;
-  margin-top: 4px;
+  opacity: 0.5;
+  margin-top: 2px;
   letter-spacing: 0.3px;
   position: relative;
   overflow: hidden;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: ${props => `linear-gradient(90deg, transparent, ${props.theme?.colors?.accent + '20' || 'rgba(56, 189, 248, 0.1)'}, transparent)`};
-  }
 
   .scan-text {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .coming-soon-badge {
-    font-size: 7px;
+    font-size: 6px;
     text-transform: uppercase;
-    padding: 1px 8px;
-    border-radius: 10px;
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.08)'};
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
     color: ${props => props.theme?.colors?.accent || '#38bdf8'};
     font-weight: 600;
-    letter-spacing: 0.5px;
   }
 
   @media (max-width: 480px) {
-    font-size: 11px;
-    padding: 8px 0;
+    font-size: 10px;
+    padding: 6px 0;
+    .coming-soon-badge { font-size: 5px; padding: 1px 5px; }
   }
 `;
 
 // ============================================
-// 7. DIGIT STATS - UPDATED WITH THEME
+// 7. DIGIT STATS
 // ============================================
 
 const DigitStatsContainer = styled.div`
@@ -1442,11 +1418,7 @@ const DigitStatsContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 680px;
-  padding: 4px 2px;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  padding: 3px 1px;
   gap: 2px;
 
   @media (min-width: 769px) {
@@ -1465,46 +1437,46 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 6px;
+  padding-bottom: 4px;
   min-width: 0;
 
   .circle-badge {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => props.theme?.colors?.background + 'f0' || 'rgba(20, 28, 43, 0.95)'};
+    background: ${props => props.theme?.colors?.background + 'f0' || 'rgba(20,28,43,0.95)'};
     border: 1.5px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
-        : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'
+        : props.theme?.colors?.border || 'rgba(255,255,255,0.06)'
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.4)' : 'rgba(255,74,74,0.4)'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.3)' : 'rgba(255,74,74,0.3)'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 480px) {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border-width: 1.5px;
     }
   }
 
   .digit-num {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#ffffff'};
     line-height: 1;
 
     @media (max-width: 480px) {
-      font-size: 8px;
+      font-size: 7px;
     }
   }
 
   .pct-text {
-    font-size: 7px;
+    font-size: 6px;
     font-family: monospace;
     font-weight: 500;
     color: ${props => 
@@ -1513,7 +1485,7 @@ const DigitItem = styled.div`
         : (props.isMin ? '#ff4a4a' : props.theme?.colors?.textMuted || '#728096')
     };
     line-height: 1;
-    margin-top: 1px;
+    margin-top: 0px;
 
     @media (max-width: 480px) {
       font-size: 5px;
@@ -1523,7 +1495,7 @@ const DigitItem = styled.div`
   .active-arrow {
     position: absolute;
     bottom: -2px;
-    font-size: 7px;
+    font-size: 6px;
     color: #ff9800; 
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
@@ -1536,7 +1508,7 @@ const DigitItem = styled.div`
 `;
 
 // ============================================
-// 8. DIGIT GRID - UPDATED WITH THEME
+// 8. DIGIT GRID
 // ============================================
 
 const DigitGridWrapper = styled.div`
@@ -1548,19 +1520,19 @@ const DigitGridWrapper = styled.div`
 `;
 
 const DigitGridLabel = styled.div`
-  font-size: 9px; text-transform: uppercase;
+  font-size: 8px; text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
   font-weight: 600;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 
   @media (max-width: 768px) {
-    font-size: 8px;
-    margin-bottom: 2px;
+    font-size: 7px;
+    margin-bottom: 1px;
   }
 
   @media (max-width: 480px) {
-    font-size: 7px;
+    font-size: 6px;
     margin-bottom: 1px;
   }
 `;
@@ -1574,34 +1546,34 @@ const DigitGrid = styled.div`
 `;
 
 const DigitButton = styled.button`
-  padding: 6px 0;
+  padding: 5px 0;
   border: 1px solid ${props => {
-    if (props.disabled) return props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)';
-    return props.selected ? props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.6)' : props.theme?.colors?.border || 'rgba(26, 31, 46, 0.8)';
+    if (props.disabled) return props.theme?.colors?.border + '40' || 'rgba(255,255,255,0.02)';
+    return props.selected ? props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)';
   }};
-  border-radius: 5px;
+  border-radius: 4px;
   background: ${props => {
-    if (props.disabled) return props.theme?.colors?.background + '20' || 'rgba(255, 255, 255, 0.01)';
-    return props.selected ? props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.12)' : props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)';
+    if (props.disabled) return props.theme?.colors?.background + '20' || 'rgba(255,255,255,0.01)';
+    return props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)';
   }};
   color: ${props => {
-    if (props.disabled) return props.theme?.colors?.textMuted + '60' || '#4a4f5e';
+    if (props.disabled) return props.theme?.colors?.textMuted + '40' || '#4a4f5e';
     return props.selected ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.textMuted || '#8a93a6';
   }};
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: ${props => props.disabled ? 0.4 : 1};
+  transition: all 0.2s ease;
+  opacity: ${props => props.disabled ? 0.3 : 1};
 
   &:hover {
-    border-color: ${props => props.disabled ? props.theme?.colors?.border + '40' || 'rgba(255, 255, 255, 0.02)' : props.theme?.colors?.accent + '80' || 'rgba(41, 98, 255, 0.5)'};
-    color: ${props => props.disabled ? props.theme?.colors?.textMuted + '60' || '#4a4f5e' : props.theme?.colors?.text || '#d1d4dc'};
+    border-color: ${props => props.disabled ? props.theme?.colors?.border + '40' || 'rgba(255,255,255,0.02)' : props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
+    color: ${props => props.disabled ? props.theme?.colors?.textMuted + '40' || '#4a4f5e' : props.theme?.colors?.text || '#d1d4dc'};
     transform: ${props => props.disabled ? 'none' : 'translateY(-1px)'};
   }
   
   ${props => props.selected && !props.disabled && `
-    box-shadow: 0 0 16px ${props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'};
+    box-shadow: 0 0 12px ${props.theme?.colors?.accent + '15' || 'rgba(41,98,255,0.08)'};
   `}
   
   &:disabled {
@@ -1611,8 +1583,8 @@ const DigitButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    padding: 5px 0;
-    font-size: 12px;
+    padding: 4px 0;
+    font-size: 11px;
   }
 
   @media (max-width: 480px) {
@@ -1622,11 +1594,11 @@ const DigitButton = styled.button`
 `;
 
 // ============================================
-// 9. EVEN/ODD BUTTONS - UPDATED WITH THEME
+// 9. EVEN/ODD BUTTONS
 // ============================================
 
 const EvenOddButtons = styled.div`
-  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 480px) {
@@ -1635,56 +1607,56 @@ const EvenOddButtons = styled.div`
 `;
 
 const EvenOddButton = styled.button`
-  padding: 10px 0;
+  padding: 8px 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: ${props => props.variant === 'even'
-    ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05))'
-    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05))'};
-  border: 1px solid ${props => props.variant === 'even' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+    ? 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02))'
+    : 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02))'};
+  border: 1px solid ${props => props.variant === 'even' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'};
   color: ${props => props.variant === 'even' ? '#22c55e' : '#ef4444'};
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1px;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: ${props => props.variant === 'even'
-      ? '0 8px 24px rgba(34, 197, 94, 0.2)'
-      : '0 8px 24px rgba(239, 68, 68, 0.2)'};
+      ? '0 4px 16px rgba(34,197,94,0.1)'
+      : '0 4px 16px rgba(239,68,68,0.1)'};
   }
   &:active { transform: scale(0.97); }
   &:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-  .label { font-size: 13px; font-weight: 600; }
-  .payout { font-size: 10px; font-weight: 400; opacity: 0.7; }
-  .sub { font-size: 9px; opacity: 0.5; font-weight: 400; }
+  .label { font-size: 12px; font-weight: 600; }
+  .payout { font-size: 9px; font-weight: 400; opacity: 0.7; }
+  .sub { font-size: 8px; opacity: 0.5; font-weight: 400; }
 
   @media (max-width: 768px) {
-    padding: 8px 0;
-    .label { font-size: 12px; }
-    .payout { font-size: 9px; }
-    .sub { font-size: 8px; }
+    padding: 6px 0;
+    .label { font-size: 11px; }
+    .payout { font-size: 8px; }
+    .sub { font-size: 7px; }
   }
 
   @media (max-width: 480px) {
-    padding: 5px 0;
+    padding: 4px 0;
     .label { font-size: 10px; }
-    .payout { font-size: 8px; }
-    .sub { font-size: 7px; }
+    .payout { font-size: 7px; }
+    .sub { font-size: 6px; }
     border-radius: 4px;
   }
 `;
 
 // ============================================
-// 10. TRADE BUTTONS - UPDATED WITH THEME
+// 10. TRADE BUTTONS
 // ============================================
 
 const TradeButtonsWrapper = styled.div`
-  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 480px) {
@@ -1693,111 +1665,100 @@ const TradeButtonsWrapper = styled.div`
 `;
 
 const TradeButton = styled.button`
-  padding: 10px 0;
+  padding: 8px 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: ${props => props.variant === 'primary'
-    ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05))'
-    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05))'};
-  border: 1px solid ${props => props.variant === 'primary' ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'};
+    ? 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02))'
+    : 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02))'};
+  border: 1px solid ${props => props.variant === 'primary' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'};
   color: ${props => props.variant === 'primary' ? '#22c55e' : '#ef4444'};
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1px;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: ${props => props.variant === 'primary'
-      ? '0 8px 24px rgba(34, 197, 94, 0.2)'
-      : '0 8px 24px rgba(239, 68, 68, 0.2)'};
+      ? '0 4px 16px rgba(34,197,94,0.1)'
+      : '0 4px 16px rgba(239,68,68,0.1)'};
   }
   &:active { transform: scale(0.97); }
   &:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-  .label { font-size: 13px; font-weight: 600; }
-  .payout { font-size: 10px; font-weight: 400; opacity: 0.7; }
-  .sub { font-size: 9px; opacity: 0.5; font-weight: 400; }
+  .label { font-size: 12px; font-weight: 600; }
+  .payout { font-size: 9px; font-weight: 400; opacity: 0.7; }
+  .sub { font-size: 8px; opacity: 0.5; font-weight: 400; }
 
   @media (max-width: 768px) {
-    padding: 8px 0;
-    .label { font-size: 12px; }
-    .payout { font-size: 9px; }
-    .sub { font-size: 8px; }
+    padding: 6px 0;
+    .label { font-size: 11px; }
+    .payout { font-size: 8px; }
+    .sub { font-size: 7px; }
   }
 
   @media (max-width: 480px) {
-    padding: 5px 0;
+    padding: 4px 0;
     .label { font-size: 10px; }
-    .payout { font-size: 8px; }
-    .sub { font-size: 7px; }
+    .payout { font-size: 7px; }
+    .sub { font-size: 6px; }
     border-radius: 4px;
   }
 `;
 
 // ============================================
-// 11. RUN BUTTON - UPDATED WITH THEME
+// 11. RUN BUTTON
 // ============================================
 
 const RunButton = styled.button`
   width: 100%;
-  padding: 10px 0;
+  padding: 8px 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
   color: ${props => props.theme?.colors?.text || '#ffffff'};
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 12px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.2)'};
   position: relative;
   overflow: hidden;
   animation: ${fadeIn} 0.5s ease;
   opacity: ${props => props.disabled ? 0.5 : 1};
   flex-shrink: 0;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.6s ease;
-  }
   &:hover {
-    transform: ${props => props.disabled ? 'none' : 'translateY(-2px)'};
-    box-shadow: ${props => props.disabled ? `0 4px 16px ${props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'}` : `0 8px 28px ${props.theme?.colors?.accent + '60' || 'rgba(41, 98, 255, 0.4)'}`};
+    transform: ${props => props.disabled ? 'none' : 'translateY(-1px)'};
+    box-shadow: ${props => props.disabled ? '0 2px 12px rgba(41,98,255,0.2)' : '0 4px 20px rgba(41,98,255,0.3)'};
   }
-  &:hover::before { left: ${props => props.disabled ? '-100%' : '100%'}; }
   &:active { transform: ${props => props.disabled ? 'none' : 'scale(0.98)'}; }
-  .run-icon { margin-right: 6px; }
+  .run-icon { margin-right: 4px; }
 
   @media (max-width: 768px) {
-    padding: 8px 0;
-    font-size: 12px;
-    .run-icon { margin-right: 4px; }
+    padding: 6px 0;
+    font-size: 11px;
+    .run-icon { margin-right: 3px; }
   }
 
   @media (max-width: 480px) {
     padding: 5px 0;
     font-size: 10px;
     border-radius: 4px;
-    .run-icon { margin-right: 3px; font-size: 9px; }
+    .run-icon { margin-right: 2px; font-size: 8px; }
   }
 `;
 
 // ============================================
-// 12. SESSION INFO (Bottom) - UPDATED WITH THEME
+// 12. SESSION INFO (Bottom)
 // ============================================
 
 const SessionInfo = styled.div`
-  padding-top: 10px;
-  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(26, 31, 46, 0.6)'};
+  padding-top: 8px;
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1810,15 +1771,15 @@ const SessionInfo = styled.div`
   }
 
   .label {
-    font-size: 8px;
+    font-size: 7px;
     text-transform: uppercase;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     font-weight: 600;
   }
 
   .trades {
-    font-size: 11px;
+    font-size: 10px;
     color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
     font-weight: 500;
   }
@@ -1827,36 +1788,36 @@ const SessionInfo = styled.div`
   .losses { color: #ef4444; }
 
   .pl {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: #ef4444;
-    padding: 3px 10px;
-    border-radius: 5px;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.15);
+    padding: 2px 10px;
+    border-radius: 4px;
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.08);
   }
 
   .pl-label {
-    font-size: 8px;
+    font-size: 7px;
     text-transform: uppercase;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     text-align: right;
   }
 
   @media (max-width: 768px) {
     padding-top: 6px;
-    .label { font-size: 7px; }
-    .trades { font-size: 10px; }
-    .pl { font-size: 14px; padding: 2px 8px; }
-    .pl-label { font-size: 7px; }
+    .label { font-size: 6px; }
+    .trades { font-size: 9px; }
+    .pl { font-size: 12px; padding: 2px 8px; }
+    .pl-label { font-size: 6px; }
   }
 
   @media (max-width: 480px) {
     padding-top: 4px;
     .label { font-size: 6px; }
     .trades { font-size: 8px; }
-    .pl { font-size: 12px; padding: 2px 6px; }
+    .pl { font-size: 11px; padding: 1px 6px; }
     .pl-label { font-size: 6px; }
   }
 `;
@@ -1870,215 +1831,122 @@ const SingleTradeButtonWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 4px 0;
+  padding: 2px 0;
   animation: ${fadeIn} 0.5s ease;
 `;
 
 const SingleTradeButton = styled.button`
   width: 100%;
-  max-width: 220px;
-  padding: 16px 20px;
+  padding: 12px 0;
   border: none;
-  border-radius: 14px;
+  border-radius: 8px;
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
   color: ${props => props.theme?.colors?.text || '#ffffff'};
+  font-size: 13px;
+  font-weight: 600;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 25px ${props => props.theme?.colors?.accent + '40' || 'rgba(41, 98, 255, 0.3)'};
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 16px ${props => props.theme?.colors?.accent + '25' || 'rgba(41,98,255,0.15)'};
   position: relative;
   overflow: hidden;
-  letter-spacing: 0.3px;
   opacity: ${props => props.disabled ? 0.5 : 1};
-  transform: ${props => props.disabled ? 'none' : 'scale(1)'};
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    animation: ${shimmer} 4s ease-in-out infinite;
-  }
+  letter-spacing: 0.3px;
 
   &:hover:not(:disabled) {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 40px ${props => props.theme?.colors?.accent + '55' || 'rgba(41, 98, 255, 0.4)'};
-  }
-
-  &:hover:not(:disabled)::before {
-    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px ${props => props.theme?.colors?.accent + '35' || 'rgba(41,98,255,0.2)'};
   }
 
   &:active:not(:disabled) {
-    transform: scale(0.97);
+    transform: scale(0.98);
   }
 
   .buy-content {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 14px;
     position: relative;
     z-index: 1;
   }
 
-  .buy-top {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-
   .buy-icon {
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    transition: all 0.3s ease;
-  }
-
-  .buy-text-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    font-size: 16px;
+    opacity: 0.9;
   }
 
   .buy-text {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    font-weight: 600;
     text-transform: uppercase;
-  }
-
-  .buy-sub {
-    font-size: 10px;
-    font-weight: 400;
-    opacity: 0.75;
-    text-transform: none;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
   }
 
   .buy-divider {
-    width: 60px;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 2px 0;
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.15);
   }
 
-  .buy-bottom {
+  .buy-payout {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-size: 12px;
+    gap: 6px;
+    font-size: 11px;
     font-weight: 400;
     opacity: 0.9;
   }
 
   .payout-amount {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .payout-pct {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 10px;
+    background: rgba(255,255,255,0.1);
+    padding: 1px 8px;
+    border-radius: 8px;
+    font-size: 9px;
     font-weight: 600;
   }
 
   .stake-info {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 400;
-    opacity: 0.6;
+    opacity: 0.5;
+    margin-left: 2px;
   }
 
   @media (max-width: 768px) {
-    max-width: 200px;
-    padding: 14px 16px;
-    border-radius: 12px;
+    padding: 10px 0;
+    border-radius: 6px;
+    font-size: 12px;
 
-    .buy-icon {
-      width: 32px;
-      height: 32px;
-      font-size: 17px;
-    }
-    .buy-text {
-      font-size: 14px;
-    }
-    .buy-sub {
-      font-size: 9px;
-    }
-    .payout-amount {
-      font-size: 13px;
-    }
-    .buy-bottom {
-      font-size: 11px;
-    }
-    .buy-divider {
-      width: 40px;
-    }
+    .buy-icon { font-size: 14px; }
+    .buy-text { font-size: 12px; }
+    .buy-payout { font-size: 10px; }
+    .payout-amount { font-size: 11px; }
+    .buy-divider { height: 18px; }
   }
 
   @media (max-width: 480px) {
-    max-width: 180px;
-    padding: 12px 14px;
-    border-radius: 10px;
+    padding: 8px 0;
+    border-radius: 5px;
+    font-size: 11px;
 
-    .buy-icon {
-      width: 28px;
-      height: 28px;
-      font-size: 14px;
-    }
-    .buy-text {
-      font-size: 13px;
-    }
-    .buy-sub {
-      font-size: 8px;
-    }
-    .payout-amount {
-      font-size: 12px;
-    }
-    .buy-bottom {
-      font-size: 10px;
-      gap: 8px;
-    }
-    .payout-pct {
-      font-size: 9px;
-      padding: 1px 8px;
-    }
-    .stake-info {
-      font-size: 9px;
-    }
-    .buy-divider {
-      width: 30px;
-    }
+    .buy-content { gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .buy-icon { font-size: 12px; }
+    .buy-text { font-size: 11px; }
+    .buy-payout { font-size: 9px; gap: 4px; }
+    .payout-amount { font-size: 10px; }
+    .payout-pct { font-size: 8px; padding: 1px 5px; }
+    .buy-divider { height: 14px; }
+    .stake-info { font-size: 8px; }
   }
 `;
 
 // ============================================
-// BOT DATA - NO EMOJIS (UNCHANGED)
+// BOT DATA
 // ============================================
 
 const BOTS = [
@@ -2140,38 +2008,29 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [duration, setDuration] = useState(5);
   const [growthRate, setGrowthRate] = useState(1);
 
-  // Duration dropdown state
   const [isDurationDropdownOpen, setIsDurationDropdownOpen] = useState(false);
 
-  // AI Analysis state
   const [isAIOpen, setIsAIOpen] = useState(false);
   const [aiMarket, setAiMarket] = useState(VOLATILITY_MARKETS[0].symbol);
   const [aiTradeType, setAiTradeType] = useState('overunder');
 
-  // AI Dropdown states
   const [isAIMarketDropdownOpen, setIsAIMarketDropdownOpen] = useState(false);
   const [isAITradeTypeDropdownOpen, setIsAITradeTypeDropdownOpen] = useState(false);
 
-  // Dropdown states
   const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
   const [isMartingaleDropdownOpen, setIsMartingaleDropdownOpen] = useState(false);
   const [isGrowthRateDropdownOpen, setIsGrowthRateDropdownOpen] = useState(false);
 
-  // === MARKET SELECTOR STATE ===
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
   const selectedMarket = externalMarket || localSelectedMarket;
 
-  // === DIGIT STATS STATE ===
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
   const [lastDigit, setLastDigit] = useState(5);
   const [movementDirection, setMovementDirection] = useState('down');
   const [price, setPrice] = useState(8459.65);
 
-  // ============================================
-  // TRADE TYPES WITH ACCUMULATORS
-  // ============================================
   const getTradeTypes = () => {
     const baseTypes = [
       { id: 'overunder', label: 'Over/Under' },
@@ -2203,7 +2062,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const growthRateOptions = [1, 2, 3, 4, 5];
 
-  // === DIGIT STATS LOGIC ===
   useEffect(() => {
     const interval = setInterval(() => {
       const delta = (Math.random() - 0.5) * 2;
@@ -2366,7 +2224,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const isPhone = window.innerWidth <= 768;
 
-  // ===== RENDER DROPDOWN SELECT =====
   const renderDropdownSelect = (options, value, onChange, isOpen, setIsOpen, formatValue = null) => (
     <DropdownSelect>
       <DropdownSelectButton 
@@ -2393,7 +2250,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </DropdownSelect>
   );
 
-  // ===== RENDER MARKET SELECTOR =====
   const renderMarketSelector = () => (
     <MarketSelectorWrapper>
       <MarketSelectorButton 
@@ -2427,7 +2283,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </MarketSelectorWrapper>
   );
 
-  // ===== RENDER COMPACT TOGGLES =====
   const renderBulkTradingToggle = () => (
     <InputGroup>
       <InputLabel>
@@ -2483,7 +2338,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER DURATION DROPDOWN (Manual Mode Only - All Trade Types Except Accumulators) =====
   const renderDurationDropdown = () => {
     if (tradeMode !== 'manual') return null;
     if (tradeType === 'accumulators') return null;
@@ -2496,7 +2350,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </InputLabel>
         <ToggleWrapper>
           <ToggleLabel>Ticks</ToggleLabel>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
             {renderDropdownSelect(
               durationOptions,
               duration,
@@ -2510,7 +2364,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER GROWTH RATE DROPDOWN (Manual Mode - Accumulators Only) =====
   const renderGrowthRateDropdown = () => {
     if (tradeMode !== 'manual') return null;
     if (tradeType !== 'accumulators') return null;
@@ -2523,7 +2376,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </InputLabel>
         <ToggleWrapper>
           <ToggleLabel>Rate</ToggleLabel>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1, justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
             {renderDropdownSelect(
               growthRateOptions,
               growthRate,
@@ -2538,7 +2391,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER INPUTS - EXACT LAYOUT WITH NEW FIELDS =====
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
@@ -2568,14 +2420,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           {renderBulkTradingToggle()}
         </div>
 
-        {/* Duration Field - Manual Mode Only (All Trade Types Except Accumulators) */}
         {isManual && tradeType !== 'accumulators' && (
           <div style={{ gridColumn: '1', gridRow: '2' }}>
             {renderDurationDropdown()}
           </div>
         )}
 
-        {/* Growth Rate Field - Manual Mode Only (Accumulators Only) */}
         {isManual && tradeType === 'accumulators' && (
           <div style={{ gridColumn: '1', gridRow: '2' }}>
             {renderGrowthRateDropdown()}
@@ -2635,7 +2485,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER AI MARKET SCANNER - REPOSITIONED =====
   const renderAIScanner = () => {
     const selectedAIMarket = getSelectedAIMarket();
     const selectedAITradeType = getSelectedAITradeType();
@@ -2734,7 +2583,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER DIGIT STATS =====
   const renderDigitStats = () => (
     <DigitStatsContainer>
       {digitStats.map((stat) => {
@@ -2758,7 +2606,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </DigitStatsContainer>
   );
 
-  // ===== RENDER DIGIT GRID - WITH 1-8 RESTRICTION =====
   const renderDigitGrid = () => {
     if (tradeType === 'random' || tradeType === 'evenodd' || tradeType === 'accumulator') return null;
     
@@ -2788,7 +2635,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER ACCUMULATOR BUTTONS - PREMIUM BUY BUTTON =====
   const renderAccumulatorButtons = () => {
     if (tradeType !== 'accumulators') return null;
     
@@ -2801,34 +2647,27 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           disabled={isDisabled}
         >
           <div className="buy-content">
-            <div className="buy-top">
-              <span className="buy-icon">📈</span>
-              <div className="buy-text-group">
-                <span className="buy-text">Buy</span>
-                <span className="buy-sub">Accumulator</span>
-              </div>
-            </div>
-            <div className="buy-divider" />
-            <div className="buy-bottom">
+            <span className="buy-icon">📈</span>
+            <span className="buy-text">Buy</span>
+            <span className="buy-divider" />
+            <span className="buy-payout">
               <span>Payout</span>
               <span className="payout-amount">${accumulatorPayout.toFixed(2)}</span>
               <span className="payout-pct">{accumulatorPayoutPct}%</span>
-            </div>
-            <div className="stake-info">${stake || 0} stake</div>
+            </span>
+            <span className="stake-info">${stake || 0}</span>
           </div>
         </SingleTradeButton>
       </SingleTradeButtonWrapper>
     );
   };
 
-  // ===== RENDER RUN BUTTON =====
   const renderRunButton = (disabled = false) => (
     <RunButton onClick={handleRunAuto} disabled={disabled}>
       <span className="run-icon">▶</span> Run {tradeMode === 'use-bots' ? 'Bot' : 'Auto'}
     </RunButton>
   );
 
-  // ===== RENDER EVEN/ODD BUTTONS =====
   const renderEvenOddButtons = () => {
     if (tradeType !== 'evenodd') return null;
     
@@ -2848,7 +2687,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER TRADE BUTTONS =====
   const renderTradeButtons = () => {
     if (tradeType === 'evenodd' || tradeType === 'random' || tradeType === 'accumulator') return null;
     if (selectedDigit === null) return null;
@@ -2892,7 +2730,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     return null;
   };
 
-  // ===== RENDER AI FLOATING BUTTON (Manual Mode Only - All Devices) =====
   const renderAIFloatingButton = () => {
     if (tradeMode !== 'manual') return null;
     return renderAIScanner();
@@ -2908,7 +2745,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             <div className="left">
               <span className="label">{getCurrentTrade().label}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span className="badge">Active</span>
               <span className="arrow">▾</span>
             </div>
@@ -2998,9 +2835,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </BotGrid>
           {selectedBot && (
             <div style={{
-              fontSize: '10px', color: '#5a6070', textAlign: 'center',
+              fontSize: '9px', color: '#5a6070', textAlign: 'center',
               padding: '2px 0', animation: `${fadeIn} 0.3s ease`,
-              borderTop: '1px solid rgba(26, 31, 46, 0.6)', marginTop: '3px', paddingTop: '4px'
+              borderTop: '1px solid rgba(255,255,255,0.04)', marginTop: '2px', paddingTop: '3px'
             }}>
               {filteredBots.find(b => b.id === selectedBot)?.name} ready
             </div>
