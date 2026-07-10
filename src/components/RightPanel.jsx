@@ -2545,7 +2545,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // ===== RENDER ACCUMULATOR BUTTONS =====
   const renderAccumulatorButtons = () => {
-    if (tradeType !== 'accumulator') return null;
+    if (tradeType !== 'accumulators') return null;
     
     return (
       <TradeButtonsWrapper>
