@@ -539,17 +539,32 @@ const TabButton = styled.button`
   }
 `;
 
+// ===== FLOATING BUTTONS CONTAINER - IMPROVED POSITIONING =====
+const FloatingButtonsContainer = styled.div`
+  position: fixed;
+  bottom: ${props => props.isMobile ? '80px' : '24px'};
+  right: ${props => props.isMobile ? '12px' : '24px'};
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+
+  @media (max-width: 480px) {
+    bottom: 72px;
+    right: 10px;
+    gap: 8px;
+  }
+
+  @media (min-width: 769px) {
+    bottom: 24px;
+    right: 24px;
+    gap: 12px;
+  }
+`;
+
 // ===== FULLSCREEN BUTTON =====
 const FullscreenButton = styled.button`
-  position: fixed;
-  bottom: ${props => {
-    if (props.isMobile) {
-      return props.isFullscreen ? '16px' : '80px';
-    }
-    return '24px';
-  }};
-  right: ${props => props.isMobile ? '16px' : '24px'};
-  z-index: 50;
   width: ${props => props.isMobile ? '44px' : '48px'};
   height: ${props => props.isMobile ? '44px' : '48px'};
   border-radius: 50%;
@@ -564,6 +579,7 @@ const FullscreenButton = styled.button`
   justify-content: center;
   font-size: 18px;
   box-shadow: 0 4px 20px ${props => props.theme.colors.shadow};
+  position: relative;
 
   &:hover {
     background: ${props => props.theme.colors.tabActive};
@@ -577,8 +593,8 @@ const FullscreenButton = styled.button`
   }
 
   svg {
-    width: ${props => props.isMobile ? '20px' : '22px'};
-    height: ${props => props.isMobile ? '20px' : '22px'};
+    width: ${props => props.isMobile ? '18px' : '22px'};
+    height: ${props => props.isMobile ? '18px' : '22px'};
     stroke: currentColor;
     fill: none;
     stroke-width: 2;
@@ -589,20 +605,16 @@ const FullscreenButton = styled.button`
   @media (max-width: 480px) {
     width: 40px;
     height: 40px;
-    bottom: ${props => props.isFullscreen ? '12px' : '72px'};
-    right: 12px;
     
     svg {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
     }
   }
 
   @media (min-width: 769px) {
     width: 48px;
     height: 48px;
-    bottom: 24px;
-    right: 24px;
     
     &:hover {
       transform: scale(1.08);
@@ -611,65 +623,7 @@ const FullscreenButton = styled.button`
   }
 `;
 
-const FullscreenTooltip = styled.span`
-  position: absolute;
-  bottom: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: ${props => props.theme.colors.backgroundSecondary}ee;
-  backdrop-filter: blur(12px);
-  color: ${props => props.theme.colors.text};
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  white-space: nowrap;
-  letter-spacing: 0.3px;
-  border: 1px solid ${props => props.theme.colors.border};
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  pointer-events: none;
-  font-weight: 500;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid ${props => props.theme.colors.backgroundSecondary}ee;
-  }
-
-  ${FullscreenButton}:hover & {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(-4px);
-  }
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
 // ===== THEME SWITCH BUTTON =====
-const ThemeSwitchContainer = styled.div`
-  position: fixed;
-  bottom: ${props => {
-    if (props.isMobile) {
-      return props.isFullscreen ? '72px' : '136px';
-    }
-    return '80px';
-  }};
-  right: ${props => props.isMobile ? '16px' : '24px'};
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-`;
-
 const ThemeToggleButton = styled.button`
   width: ${props => props.isMobile ? '44px' : '48px'};
   height: ${props => props.isMobile ? '44px' : '48px'};
@@ -705,9 +659,52 @@ const ThemeToggleButton = styled.button`
   }
 `;
 
+// ===== TOOLTIP =====
+const Tooltip = styled.span`
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: ${props => props.theme.colors.backgroundSecondary}ee;
+  backdrop-filter: blur(12px);
+  color: ${props => props.theme.colors.text};
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  border: 1px solid ${props => props.theme.colors.border};
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  font-weight: 500;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid ${props => props.theme.colors.backgroundSecondary}ee;
+  }
+
+  ${props => props.show && `
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(-4px);
+  `}
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
 const ThemeDropdown = styled.div`
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 12px);
   right: 0;
   background: ${props => props.theme.colors.backgroundSecondary}ee;
   backdrop-filter: blur(16px);
@@ -718,7 +715,7 @@ const ThemeDropdown = styled.div`
   flex-direction: column;
   gap: 4px;
   min-width: 160px;
-  max-height: 400px;
+  max-height: 360px;
   overflow-y: auto;
   box-shadow: 0 8px 32px ${props => props.theme.colors.shadow};
   animation: slideUp 0.2s ease;
@@ -747,8 +744,8 @@ const ThemeDropdown = styled.div`
 
   @media (max-width: 480px) {
     min-width: 130px;
-    right: -10px;
-    max-height: 300px;
+    right: -5px;
+    max-height: 280px;
   }
 `;
 
@@ -889,6 +886,7 @@ const Derivdash = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState('dark');
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const containerRef = useRef(null);
@@ -1060,52 +1058,55 @@ const Derivdash = () => {
           </MobileLayout>
         </MainContent>
 
-        {/* Theme Switch */}
-        <ThemeSwitchContainer 
-          isMobile={isMobile} 
-          isFullscreen={isFullscreen}
-          ref={themeDropdownRef}
-        >
-          <ThemeToggleButton
-            onClick={toggleThemeDropdown}
+        {/* Floating Buttons - Improved Positioning */}
+        <FloatingButtonsContainer isMobile={isMobile}>
+          {/* Theme Switch Button */}
+          <div ref={themeDropdownRef} style={{ position: 'relative' }}>
+            <ThemeToggleButton
+              onClick={toggleThemeDropdown}
+              isMobile={isMobile}
+              aria-label="Toggle Theme"
+              onMouseEnter={() => setHoveredButton('theme')}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
+              <ThemeIcon />
+              <Tooltip show={hoveredButton === 'theme' && !isMobile}>
+                Change Theme
+              </Tooltip>
+            </ThemeToggleButton>
+
+            <ThemeDropdown isOpen={isThemeDropdownOpen}>
+              {Object.entries(themes).map(([key, theme]) => (
+                <ThemeOption
+                  key={key}
+                  active={currentTheme === key}
+                  onClick={() => changeTheme(key)}
+                >
+                  <span 
+                    className="color-dot" 
+                    style={{ background: themeColorMap[key] }}
+                  />
+                  {theme.name}
+                </ThemeOption>
+              ))}
+            </ThemeDropdown>
+          </div>
+
+          {/* Fullscreen Button */}
+          <FullscreenButton 
+            onClick={toggleFullscreen}
+            isFullscreen={isFullscreen}
             isMobile={isMobile}
-            aria-label="Toggle Theme"
+            aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            onMouseEnter={() => setHoveredButton('fullscreen')}
+            onMouseLeave={() => setHoveredButton(null)}
           >
-            <ThemeIcon />
-            <FullscreenTooltip>
-              Change Theme
-            </FullscreenTooltip>
-          </ThemeToggleButton>
-
-          <ThemeDropdown isOpen={isThemeDropdownOpen}>
-            {Object.entries(themes).map(([key, theme]) => (
-              <ThemeOption
-                key={key}
-                active={currentTheme === key}
-                onClick={() => changeTheme(key)}
-              >
-                <span 
-                  className="color-dot" 
-                  style={{ background: themeColorMap[key] }}
-                />
-                {theme.name}
-              </ThemeOption>
-            ))}
-          </ThemeDropdown>
-        </ThemeSwitchContainer>
-
-        {/* Fullscreen Toggle Button */}
-        <FullscreenButton 
-          onClick={toggleFullscreen}
-          isFullscreen={isFullscreen}
-          isMobile={isMobile}
-          aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-        >
-          {isFullscreen ? <FullscreenExitIcon /> : <FullscreenEnterIcon />}
-          <FullscreenTooltip>
-            {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-          </FullscreenTooltip>
-        </FullscreenButton>
+            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenEnterIcon />}
+            <Tooltip show={hoveredButton === 'fullscreen' && !isMobile}>
+              {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            </Tooltip>
+          </FullscreenButton>
+        </FloatingButtonsContainer>
       </DashboardContainer>
     </ThemeProvider>
   );
