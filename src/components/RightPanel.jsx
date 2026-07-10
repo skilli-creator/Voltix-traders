@@ -41,6 +41,11 @@ const floatPulse = keyframes`
   50% { transform: translateY(-4px); }
 `;
 
+const shimmer = keyframes`
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+`;
+
 // ============================================
 // STYLED COMPONENTS - UPDATED WITH THEME
 // ============================================
@@ -958,8 +963,6 @@ const DropdownSelectItem = styled.div`
 // 6. AI ANALYSIS - UPDATED WITH THEME & REPOSITIONED
 // ============================================
 
-// AI Button Container - Repositioned to avoid overlap with theme button
-// AI Button Container - Repositioned to avoid overlap with theme button
 const AIButtonContainer = styled.div`
   position: fixed;
   bottom: ${props => props.isMobile ? '140px' : '140px'};
@@ -1859,6 +1862,222 @@ const SessionInfo = styled.div`
 `;
 
 // ============================================
+// 13. SINGLE BUY BUTTON - PREMIUM STYLE FOR ACCUMULATORS
+// ============================================
+
+const SingleTradeButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0;
+  animation: ${fadeIn} 0.5s ease;
+`;
+
+const SingleTradeButton = styled.button`
+  width: 100%;
+  max-width: 220px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 14px;
+  background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+  color: ${props => props.theme?.colors?.text || '#ffffff'};
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 25px ${props => props.theme?.colors?.accent + '40' || 'rgba(41, 98, 255, 0.3)'};
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+  opacity: ${props => props.disabled ? 0.5 : 1};
+  transform: ${props => props.disabled ? 'none' : 'scale(1)'};
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: ${shimmer} 4s ease-in-out infinite;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 40px ${props => props.theme?.colors?.accent + '55' || 'rgba(41, 98, 255, 0.4)'};
+  }
+
+  &:hover:not(:disabled)::before {
+    opacity: 1;
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .buy-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .buy-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .buy-icon {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    transition: all 0.3s ease;
+  }
+
+  .buy-text-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .buy-text {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .buy-sub {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.75;
+    text-transform: none;
+    letter-spacing: 0.3px;
+  }
+
+  .buy-divider {
+    width: 60px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 2px 0;
+  }
+
+  .buy-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 12px;
+    font-weight: 400;
+    opacity: 0.9;
+  }
+
+  .payout-amount {
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .payout-pct {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .stake-info {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 200px;
+    padding: 14px 16px;
+    border-radius: 12px;
+
+    .buy-icon {
+      width: 32px;
+      height: 32px;
+      font-size: 17px;
+    }
+    .buy-text {
+      font-size: 14px;
+    }
+    .buy-sub {
+      font-size: 9px;
+    }
+    .payout-amount {
+      font-size: 13px;
+    }
+    .buy-bottom {
+      font-size: 11px;
+    }
+    .buy-divider {
+      width: 40px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    max-width: 180px;
+    padding: 12px 14px;
+    border-radius: 10px;
+
+    .buy-icon {
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+    }
+    .buy-text {
+      font-size: 13px;
+    }
+    .buy-sub {
+      font-size: 8px;
+    }
+    .payout-amount {
+      font-size: 12px;
+    }
+    .buy-bottom {
+      font-size: 10px;
+      gap: 8px;
+    }
+    .payout-pct {
+      font-size: 9px;
+      padding: 1px 8px;
+    }
+    .stake-info {
+      font-size: 9px;
+    }
+    .buy-divider {
+      width: 30px;
+    }
+  }
+`;
+
+// ============================================
 // BOT DATA - NO EMOJIS (UNCHANGED)
 // ============================================
 
@@ -2569,18 +2788,36 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER ACCUMULATOR BUTTONS =====
+  // ===== RENDER ACCUMULATOR BUTTONS - PREMIUM BUY BUTTON =====
   const renderAccumulatorButtons = () => {
     if (tradeType !== 'accumulators') return null;
     
+    const isDisabled = !stake || parseFloat(stake) <= 0;
+    
     return (
-      <TradeButtonsWrapper>
-        <TradeButton variant="primary" onClick={() => handlePlaceTrade('Buy', '')}>
-          <span className="label">Buy</span>
-          <span className="payout">${accumulatorPayout.toFixed(2)} ({accumulatorPayoutPct}%)</span>
-          <span className="sub">${stake || 0} stake</span>
-        </TradeButton>
-      </TradeButtonsWrapper>
+      <SingleTradeButtonWrapper>
+        <SingleTradeButton 
+          onClick={() => handlePlaceTrade('Buy', '')}
+          disabled={isDisabled}
+        >
+          <div className="buy-content">
+            <div className="buy-top">
+              <span className="buy-icon">📈</span>
+              <div className="buy-text-group">
+                <span className="buy-text">Buy</span>
+                <span className="buy-sub">Accumulator</span>
+              </div>
+            </div>
+            <div className="buy-divider" />
+            <div className="buy-bottom">
+              <span>Payout</span>
+              <span className="payout-amount">${accumulatorPayout.toFixed(2)}</span>
+              <span className="payout-pct">{accumulatorPayoutPct}%</span>
+            </div>
+            <div className="stake-info">${stake || 0} stake</div>
+          </div>
+        </SingleTradeButton>
+      </SingleTradeButtonWrapper>
     );
   };
 
