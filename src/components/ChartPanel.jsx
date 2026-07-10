@@ -1,3 +1,4 @@
+// src/components/ChartPanel.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 
@@ -33,11 +34,11 @@ const slideDown = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS
+// STYLED COMPONENTS - UPDATED WITH THEME
 // ============================================
 const PanelContainer = styled.div`
   flex: 1;
-  background: #0a0e17;
+  background: ${props => props.theme.colors.background};
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -47,6 +48,7 @@ const PanelContainer = styled.div`
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   animation: ${fadeIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1;
+  transition: background 0.3s ease;
 `;
 
 // ===== HEADER =====
@@ -56,10 +58,11 @@ const Header = styled.div`
   align-items: center;
   flex-shrink: 0;
   padding: 12px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(10, 14, 23, 0.75);
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.background + 'cc'};
   backdrop-filter: blur(12px);
   z-index: 10;
+  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
     padding: 8px 12px;
@@ -97,7 +100,7 @@ const SymbolInfo = styled.div`
 
   .symbol-label {
     font-size: 11px;
-    color: #4e5d78;
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -112,15 +115,15 @@ const SymbolInfo = styled.div`
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    color: #ffffff;
+    color: ${props => props.theme.colors.text};
     font-size: 15px;
     font-weight: 700;
     padding: 4px 10px;
     border-radius: 6px;
     transition: all 0.2s ease;
     position: relative;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: ${props => props.theme.colors.background + '60'};
+    border: 1px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
       font-size: 12px;
@@ -128,13 +131,13 @@ const SymbolInfo = styled.div`
     }
 
     &:hover {
-      background: rgba(255, 255, 255, 0.09);
-      border-color: rgba(255, 255, 255, 0.15);
+      background: ${props => props.theme.colors.background + '80'};
+      border-color: ${props => props.theme.colors.accent + '50'};
     }
 
     .dropdown-arrow {
       font-size: 11px;
-      color: #8a99ad;
+      color: ${props => props.theme.colors.textMuted};
       transition: transform 0.2s ease;
       transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
 
@@ -158,7 +161,7 @@ const SymbolInfo = styled.div`
   .price {
     font-size: 24px;
     font-weight: 700;
-    color: #ffffff;
+    color: ${props => props.theme.colors.text};
     letter-spacing: -0.5px;
     font-family: 'Courier New', Courier, monospace;
 
@@ -183,7 +186,7 @@ const SymbolInfo = styled.div`
 
   .change-time {
     font-size: 11px;
-    color: #4e5d78;
+    color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
 
     @media (max-width: 480px) {
@@ -233,14 +236,14 @@ const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  background: #111622;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   width: 280px;
   max-height: 340px;
   overflow-y: auto;
   z-index: 9999;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 20px 50px ${props => props.theme.colors.shadow};
   backdrop-filter: blur(25px);
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -254,11 +257,11 @@ const DropdownMenu = styled.div`
   .dropdown-title {
     font-size: 11px;
     font-weight: 600;
-    color: #4e5d78;
+    color: ${props => props.theme.colors.textMuted};
     padding: 10px 14px 6px 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
       font-size: 9px;
@@ -270,7 +273,7 @@ const DropdownMenu = styled.div`
     width: 4px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: ${props => props.theme.colors.scrollbar};
     border-radius: 4px;
   }
 `;
@@ -281,18 +284,18 @@ const DropdownItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? '#ffffff' : '#9ca3af'};
-  background: ${props => props.active ? 'rgba(255, 255, 255, 0.04)' : 'transparent'};
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
+  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid ${props => props.theme.colors.border + '40'};
 
   @media (max-width: 480px) {
     padding: 6px 10px;
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.07);
-    color: #ffffff;
+    background: ${props => props.theme.colors.background + '40'};
+    color: ${props => props.theme.colors.text};
   }
 
   .left-container {
@@ -318,7 +321,7 @@ const DropdownItem = styled.div`
 
     .candle {
       width: 3px;
-      background: #4e5d78;
+      background: ${props => props.theme.colors.textMuted};
       position: relative;
       &::before {
         content: '';
@@ -342,7 +345,7 @@ const DropdownItem = styled.div`
   .display-name {
     font-size: 13px;
     font-weight: 600;
-    color: #f1f5f9;
+    color: ${props => props.theme.colors.text};
 
     @media (max-width: 480px) {
       font-size: 11px;
@@ -351,7 +354,7 @@ const DropdownItem = styled.div`
 
   .system-symbol {
     font-size: 10px;
-    color: #4e5d78;
+    color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
 
     @media (max-width: 480px) {
@@ -370,7 +373,7 @@ const DropdownItem = styled.div`
   }
 
   .star-fav {
-    color: ${props => props.active ? '#ffb300' : 'rgba(255, 255, 255, 0.2)'};
+    color: ${props => props.active ? '#ffb300' : props.theme.colors.textMuted + '40'};
     font-size: 14px;
 
     @media (max-width: 480px) {
@@ -384,9 +387,10 @@ const ChartWrapper = styled.div`
   flex: 1;
   position: relative;
   min-height: 0;
-  background: #0a0e17;
+  background: ${props => props.theme.colors.background};
   overflow: hidden;
   z-index: 2;
+  transition: background 0.3s ease;
 `;
 
 const ChartCanvas = styled.canvas`
@@ -395,7 +399,7 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER - PHONE FIXED =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -450,11 +454,11 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: rgba(20, 28, 43, 0.95);
+    background: ${props => props.theme.colors.background + 'f0'};
     border: 2px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
-        : 'rgba(255, 255, 255, 0.08)'
+        : props.theme.colors.border
     };
     box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.direction === 'up' ? 'rgba(0,230,118,0.5)' : 'rgba(255,74,74,0.5)'}` : 'none'};
     transition: all 0.15s ease;
@@ -481,7 +485,7 @@ const DigitItem = styled.div`
   .digit-num {
     font-size: 14px;
     font-weight: 700;
-    color: #ffffff;
+    color: ${props => props.theme.colors.text};
     line-height: 1;
 
     @media (max-width: 768px) {
@@ -504,7 +508,7 @@ const DigitItem = styled.div`
     color: ${props => 
       props.isMax 
         ? '#00e676' 
-        : (props.isMin ? '#ff4a4a' : '#728096')
+        : (props.isMin ? '#ff4a4a' : props.theme.colors.textMuted)
     };
     line-height: 1;
     margin-top: 0px;
@@ -559,7 +563,7 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 }
 
 // ============================================
-// MAIN PANEL COMPONENT
+// MAIN PANEL COMPONENT (UNCHANGED - ONLY STYLES UPDATED)
 // ============================================
 const ChartPanel = () => {
   const canvasRef = useRef(null);
