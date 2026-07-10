@@ -10,7 +10,6 @@ import RightPanel from '../components/RightPanel';
 
 // ===== THEME DEFINITIONS =====
 const themes = {
-  // --- Dark Themes ---
   black: {
     name: 'Black',
     colors: {
@@ -106,8 +105,6 @@ const themes = {
       scrollbar: '#1a3a1a',
     }
   },
-  
-  // --- Light Themes ---
   white: {
     name: 'White',
     colors: {
@@ -146,8 +143,6 @@ const themes = {
       scrollbar: '#c8ced4',
     }
   },
-  
-  // --- Color Themes ---
   blue: {
     name: 'Blue',
     colors: {
@@ -539,7 +534,7 @@ const TabButton = styled.button`
   }
 `;
 
-// ===== FLOATING BUTTONS CONTAINER - IMPROVED POSITIONING =====
+// ===== FLOATING BUTTONS CONTAINER =====
 const FloatingButtonsContainer = styled.div`
   position: fixed;
   bottom: ${props => props.isMobile ? '80px' : '24px'};
@@ -609,16 +604,6 @@ const FullscreenButton = styled.button`
     svg {
       width: 16px;
       height: 16px;
-    }
-  }
-
-  @media (min-width: 769px) {
-    width: 48px;
-    height: 48px;
-    
-    &:hover {
-      transform: scale(1.08);
-      box-shadow: 0 8px 32px ${props => props.theme.colors.accent}33;
     }
   }
 `;
@@ -702,6 +687,7 @@ const Tooltip = styled.span`
   }
 `;
 
+// ===== THEME DROPDOWN =====
 const ThemeDropdown = styled.div`
   position: absolute;
   bottom: calc(100% + 12px);
@@ -749,6 +735,7 @@ const ThemeDropdown = styled.div`
   }
 `;
 
+// ===== THEME OPTION =====
 const ThemeOption = styled.button`
   padding: 8px 12px;
   border: none;
@@ -878,6 +865,9 @@ const themeColorMap = {
   forest: '#0a120a'
 };
 
+// ============================================
+// MAIN COMPONENT
+// ============================================
 const Derivdash = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -1058,9 +1048,8 @@ const Derivdash = () => {
           </MobileLayout>
         </MainContent>
 
-        {/* Floating Buttons - Improved Positioning */}
+        {/* Floating Buttons */}
         <FloatingButtonsContainer isMobile={isMobile}>
-          {/* Theme Switch Button */}
           <div ref={themeDropdownRef} style={{ position: 'relative' }}>
             <ThemeToggleButton
               onClick={toggleThemeDropdown}
@@ -1092,7 +1081,6 @@ const Derivdash = () => {
             </ThemeDropdown>
           </div>
 
-          {/* Fullscreen Button */}
           <FullscreenButton 
             onClick={toggleFullscreen}
             isFullscreen={isFullscreen}
