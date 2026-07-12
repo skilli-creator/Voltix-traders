@@ -36,15 +36,15 @@ const SidebarContainer = styled.div`
   left: 0;
   width: 280px;
   height: 100vh;
-  background: ${props => props.theme.colors.backgroundSecondary + 'f0'};
-  backdrop-filter: blur(20px);
-  border-right: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border-right: 2px solid ${props => props.theme.colors.border};
   transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 99;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     width: 100%;
@@ -61,6 +61,7 @@ const SidebarContent = styled.div`
   overflow-x: hidden;
   padding: 76px 16px 8px 16px;
   -webkit-overflow-scrolling: touch;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -87,8 +88,7 @@ const SidebarContent = styled.div`
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: ${props => props.theme.colors.shadow};
   z-index: 98;
   opacity: ${props => props.isOpen ? 1 : 0};
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
@@ -105,10 +105,11 @@ const SidebarHeader = styled.div`
   align-items: center;
   gap: 12px;
   padding: 12px 4px 16px 4px;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  border-bottom: 2px solid ${props => props.theme.colors.border};
   margin-bottom: 16px;
   animation: ${slideIn} 0.4s ease;
   flex-shrink: 0;
+  font-weight: 700;
 
   .avatar {
     width: 44px;
@@ -121,7 +122,7 @@ const SidebarHeader = styled.div`
     font-size: 20px;
     font-weight: 700;
     color: ${props => props.theme.colors.text};
-    box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '25'};
+    box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '40'};
     flex-shrink: 0;
   }
 
@@ -132,7 +133,7 @@ const SidebarHeader = styled.div`
 
   .user-name {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme.colors.text};
     letter-spacing: 0.3px;
   }
@@ -143,6 +144,7 @@ const SidebarHeader = styled.div`
     margin-top: 2px;
     letter-spacing: 0.2px;
     word-break: break-all;
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -186,6 +188,7 @@ const SidebarHeader = styled.div`
 const NavSection = styled.div`
   margin-bottom: 20px;
   animation: ${slideIn} 0.5s ease;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     margin-bottom: 14px;
@@ -198,7 +201,7 @@ const NavSection = styled.div`
 
 const SectionLabel = styled.div`
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   color: ${props => props.theme.colors.textMuted};
   text-transform: uppercase;
   letter-spacing: 1.2px;
@@ -228,11 +231,13 @@ const NavItem = styled.div`
   transition: all 0.2s ease;
   position: relative;
   margin-bottom: 2px;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
+  font-weight: 700;
 
   &:hover {
     background: ${props => props.theme.colors.accentActive};
     color: ${props => props.theme.colors.text};
+    border-color: ${props => props.theme.colors.accent};
   }
 
   &.active {
@@ -272,16 +277,16 @@ const NavItem = styled.div`
   .nav-label {
     flex: 1;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 0.2px;
   }
 
   .badge {
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     padding: 2px 10px;
     border-radius: 20px;
-    background: ${props => props.theme.colors.background + '60'};
+    background: ${props => props.theme.colors.backgroundSecondary};
     color: ${props => props.theme.colors.textMuted};
     transition: all 0.2s ease;
     flex-shrink: 0;
@@ -330,13 +335,14 @@ const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 12px;
   background: ${props => props.theme.colors.accentActive};
-  border: 1px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme.colors.border};
   animation: ${fadeIn} 0.6s ease;
+  font-weight: 700;
 
   .feedback-label {
     font-size: 11px;
     color: ${props => props.theme.colors.textMuted};
-    font-weight: 500;
+    font-weight: 700;
     margin-bottom: 8px;
     letter-spacing: 0.3px;
   }
@@ -373,12 +379,13 @@ const FeedbackSection = styled.div`
     width: 100%;
     min-height: 70px;
     padding: 10px 12px;
-    background: ${props => props.theme.colors.background + '40'};
-    border: 1px solid ${props => props.theme.colors.border};
+    background: ${props => props.theme.colors.background};
+    border: 2px solid ${props => props.theme.colors.border};
     border-radius: 8px;
     color: ${props => props.theme.colors.text};
     font-size: 12px;
     font-family: inherit;
+    font-weight: 700;
     resize: vertical;
     outline: none;
     transition: all 0.2s ease;
@@ -390,25 +397,26 @@ const FeedbackSection = styled.div`
 
     &:focus {
       border-color: ${props => props.theme.colors.accent};
-      box-shadow: 0 0 0 3px ${props => props.theme.colors.accent + '15'};
+      box-shadow: 0 0 0 3px ${props => props.theme.colors.accent + '30'};
     }
   }
 
   .feedback-submit {
     width: 100%;
     padding: 8px 0;
-    border: none;
+    border: 2px solid ${props => props.theme.colors.accent};
     border-radius: 8px;
-    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
+    background: ${props => props.theme.colors.accentActive};
     color: ${props => props.theme.colors.text};
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
       box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '50'};
+      border-color: ${props => props.theme.colors.accent};
     }
 
     &:active:not(:disabled) {
@@ -425,7 +433,8 @@ const FeedbackSection = styled.div`
     margin-top: 8px;
     font-size: 11px;
     text-align: center;
-    color: #22c55e;
+    color: ${props => props.theme.colors.success};
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -476,10 +485,10 @@ const FeedbackSection = styled.div`
 const SidebarFooter = styled.div`
   flex-shrink: 0;
   padding: 12px 16px 20px 16px;
-  border-top: 1px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.backgroundSecondary + 'f0'};
-  backdrop-filter: blur(10px);
+  border-top: 2px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
   animation: ${fadeIn} 0.7s ease;
+  font-weight: 700;
 
   .footer-item {
     display: flex;
@@ -489,9 +498,9 @@ const SidebarFooter = styled.div`
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: ${props => props.theme.colors.textMuted};
+    color: ${props => props.theme.colors.textSecondary};
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 700;
 
     &:hover {
       background: ${props => props.theme.colors.accentActive};
@@ -540,8 +549,8 @@ const CloseButton = styled.button`
   top: 12px;
   right: 16px;
   z-index: 100;
-  background: ${props => props.theme.colors.background + '80'};
-  border: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border: 2px solid ${props => props.theme.colors.border};
   color: ${props => props.theme.colors.textMuted};
   width: 36px;
   height: 36px;
@@ -551,11 +560,12 @@ const CloseButton = styled.button`
   transition: all 0.2s ease;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(10px);
+  font-weight: 700;
 
   &:hover {
     background: ${props => props.theme.colors.accentActive};
     color: ${props => props.theme.colors.text};
+    border-color: ${props => props.theme.colors.accent};
   }
 
   @media (max-width: 768px) {
@@ -760,7 +770,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   textAlign: 'center', 
                   fontSize: '11px', 
                   color: '#94a3b8', 
-                  marginBottom: '8px' 
+                  marginBottom: '8px',
+                  fontWeight: '700'
                 }}>
                   {getRatingText(rating)}
                 </div>
