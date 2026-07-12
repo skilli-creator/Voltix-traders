@@ -12,7 +12,7 @@ const PanelContainer = styled.div`
   min-width: 260px;
   height: calc(100vh - 48px);
   background: ${props => props.theme.colors.background};
-  border-right: 1px solid ${props => props.theme.colors.border};
+  border-right: 2px solid ${props => props.theme.colors.border};
   display: flex;
   flex-direction: column;
   padding: 10px 8px;
@@ -20,6 +20,7 @@ const PanelContainer = styled.div`
   overflow-x: hidden;
   z-index: 50;
   transition: background 0.3s ease, border-color 0.3s ease;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -58,6 +59,7 @@ const NavList = styled.div`
   gap: 2px;
   padding: 0 2px;
   width: 100%;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     gap: 4px;
@@ -75,26 +77,27 @@ const NavItem = styled.div`
   transition: all 0.15s ease;
   color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
   background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
-  border: ${props => props.active ? `1px solid ${props.theme.colors.accent + '15'}` : 'none'};
+  border: ${props => props.active ? `2px solid ${props.theme.colors.accent}` : '2px solid transparent'};
   white-space: nowrap;
   font-size: 11px;
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme.colors.background + '60'};
+    background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.text};
   }
 
   .label {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 700;
   }
 
   .badge {
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 700;
     padding: 0 3px;
     border-radius: 3px;
-    background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.background + '60'};
+    background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.background};
     color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted};
     &::before { content: '('; }
     &::after { content: ')'; }
@@ -114,7 +117,7 @@ const NavItem = styled.div`
 `;
 
 const Divider = styled.div`
-  height: 1px;
+  height: 2px;
   background: ${props => props.theme.colors.border};
   margin: 4px 0;
   transition: background 0.3s ease;
@@ -132,6 +135,7 @@ const NoPositions = styled.div`
   padding: 12px 4px;
   color: ${props => props.theme.colors.textMuted};
   text-align: center;
+  font-weight: 700;
 
   .icon { 
     font-size: 18px; 
@@ -140,12 +144,13 @@ const NoPositions = styled.div`
   }
   .title { 
     font-size: 10px; 
-    font-weight: 500; 
+    font-weight: 700; 
     color: ${props => props.theme.colors.text}; 
     margin-bottom: 1px; 
   }
   .subtitle { 
     font-size: 8px; 
+    font-weight: 700;
     color: ${props => props.theme.colors.textMuted}; 
   }
 
@@ -170,8 +175,9 @@ const BottomContent = styled.div`
   flex-direction: column;
   gap: 2px;
   padding-top: 4px;
-  border-top: 1px solid ${props => props.theme.colors.border};
+  border-top: 2px solid ${props => props.theme.colors.border};
   transition: border-color 0.3s ease;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     gap: 1px;
@@ -181,6 +187,7 @@ const BottomContent = styled.div`
 
 const SessionSection = styled.div`
   padding: 0 2px;
+  font-weight: 700;
 `;
 
 const SessionLabel = styled.div`
@@ -188,6 +195,7 @@ const SessionLabel = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.3px;
   color: ${props => props.theme.colors.textMuted};
+  font-weight: 700;
 
   @media (max-width: 768px) {
     font-size: 6px;
@@ -201,7 +209,7 @@ const SessionPL = styled.div`
 
   .currency {
     font-size: 8px;
-    font-weight: 400;
+    font-weight: 700;
     color: ${props => props.theme.colors.textMuted};
     margin-left: 1px;
   }
@@ -221,6 +229,7 @@ const TradesSummary = styled.div`
   font-size: 8px;
   color: ${props => props.theme.colors.textMuted};
   padding: 0 2px;
+  font-weight: 700;
 
   .wins { color: #00b894; }
   .losses { color: #ff4757; }
@@ -239,18 +248,21 @@ const StatusFooter = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+  font-weight: 700;
 
   .dot {
     width: 5px;
     height: 5px;
     border-radius: 50%;
-    background: ${props => props.isConnected ? '#00b894' : '#ff4757'};
+    background: ${props => props.theme.colors.accent};
     animation: ${props => props.isConnected ? pulse : 'none'} 1.5s ease-in-out infinite;
+    border: 1px solid ${props => props.theme.colors.accent};
   }
 
   .status-text {
     font-size: 8px;
     color: ${props => props.theme.colors.textMuted};
+    font-weight: 700;
 
     @media (max-width: 768px) {
       font-size: 7px;
