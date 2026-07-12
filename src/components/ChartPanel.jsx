@@ -49,6 +49,7 @@ const PanelContainer = styled.div`
   animation: ${fadeIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1;
   transition: background 0.3s ease;
+  font-weight: 700;
 `;
 
 // ===== HEADER =====
@@ -58,11 +59,11 @@ const Header = styled.div`
   align-items: center;
   flex-shrink: 0;
   padding: 12px 20px;
-  border-bottom: 1px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.background + 'cc'};
-  backdrop-filter: blur(12px);
+  border-bottom: 2px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.background};
   z-index: 10;
   transition: all 0.3s ease;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     padding: 8px 12px;
@@ -82,6 +83,7 @@ const SymbolInfo = styled.div`
   gap: 4px;
   flex: 1;
   min-width: 0;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     gap: 2px;
@@ -101,7 +103,7 @@ const SymbolInfo = styled.div`
   .symbol-label {
     font-size: 11px;
     color: ${props => props.theme.colors.textMuted};
-    font-weight: 500;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 
@@ -122,8 +124,8 @@ const SymbolInfo = styled.div`
     border-radius: 6px;
     transition: all 0.2s ease;
     position: relative;
-    background: ${props => props.theme.colors.background + '60'};
-    border: 1px solid ${props => props.theme.colors.border};
+    background: ${props => props.theme.colors.background};
+    border: 2px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
       font-size: 12px;
@@ -131,8 +133,8 @@ const SymbolInfo = styled.div`
     }
 
     &:hover {
-      background: ${props => props.theme.colors.background + '80'};
-      border-color: ${props => props.theme.colors.accent + '50'};
+      background: ${props => props.theme.colors.background};
+      border-color: ${props => props.theme.colors.accent};
     }
 
     .dropdown-arrow {
@@ -172,7 +174,7 @@ const SymbolInfo = styled.div`
 
   .change {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     padding: 2px 8px;
     border-radius: 4px;
     background: ${props => props.isNegative ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)'};
@@ -188,6 +190,7 @@ const SymbolInfo = styled.div`
     font-size: 11px;
     color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
+    font-weight: 700;
 
     @media (max-width: 480px) {
       font-size: 9px;
@@ -200,12 +203,12 @@ const LiveIndicator = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: #00e676;
-  font-weight: 600;
-  background: rgba(0, 230, 118, 0.08);
+  color: ${props => props.theme.colors.accent};
+  font-weight: 700;
+  background: ${props => props.theme.colors.accentActive};
   padding: 4px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(0, 230, 118, 0.15);
+  border: 2px solid ${props => props.theme.colors.accent};
   text-transform: uppercase;
   letter-spacing: 0.5px;
   flex-shrink: 0;
@@ -220,9 +223,9 @@ const LiveIndicator = styled.div`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: #00e676;
+    background: ${props => props.theme.colors.accent};
     animation: ${pulse} 1.5s ease-in-out infinite;
-    box-shadow: 0 0 8px #00e676;
+    box-shadow: 0 0 8px ${props => props.theme.colors.accent};
 
     @media (max-width: 480px) {
       width: 4px;
@@ -237,16 +240,16 @@ const DropdownMenu = styled.div`
   top: calc(100% + 6px);
   left: 0;
   background: ${props => props.theme.colors.backgroundSecondary};
-  border: 1px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   width: 280px;
   max-height: 340px;
   overflow-y: auto;
   z-index: 9999;
   box-shadow: 0 20px 50px ${props => props.theme.colors.shadow};
-  backdrop-filter: blur(25px);
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 700;
 
   @media (max-width: 480px) {
     width: 220px;
@@ -256,12 +259,12 @@ const DropdownMenu = styled.div`
 
   .dropdown-title {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme.colors.textMuted};
     padding: 10px 14px 6px 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 1px solid ${props => props.theme.colors.border};
+    border-bottom: 2px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
       font-size: 9px;
@@ -287,14 +290,15 @@ const DropdownItem = styled.div`
   color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
   background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme.colors.border + '40'};
+  border-bottom: 2px solid ${props => props.theme.colors.border + '40'};
+  font-weight: 700;
 
   @media (max-width: 480px) {
     padding: 6px 10px;
   }
 
   &:hover {
-    background: ${props => props.theme.colors.background + '40'};
+    background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.text};
   }
 
@@ -344,7 +348,7 @@ const DropdownItem = styled.div`
 
   .display-name {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme.colors.text};
 
     @media (max-width: 480px) {
@@ -356,6 +360,7 @@ const DropdownItem = styled.div`
     font-size: 10px;
     color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
+    font-weight: 700;
 
     @media (max-width: 480px) {
       font-size: 8px;
@@ -417,6 +422,7 @@ const DigitStatsContainer = styled.div`
   gap: 6px;
   pointer-events: none;
   z-index: 1;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     width: calc(100% - 16px);
@@ -445,6 +451,7 @@ const DigitItem = styled.div`
   position: relative;
   padding-bottom: 2px;
   min-width: 0;
+  font-weight: 700;
 
   .circle-badge {
     width: 38px;
@@ -454,7 +461,7 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => props.theme.colors.background + 'f0'};
+    background: ${props => props.theme.colors.background};
     border: 2px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
@@ -478,7 +485,7 @@ const DigitItem = styled.div`
     @media (max-width: 380px) {
       width: 28px;
       height: 28px;
-      border-width: 1.5px;
+      border-width: 2px;
     }
   }
 
@@ -504,7 +511,7 @@ const DigitItem = styled.div`
   .pct-text {
     font-size: 8px;
     font-family: monospace;
-    font-weight: 500;
+    font-weight: 700;
     color: ${props => 
       props.isMax 
         ? '#00e676' 
@@ -533,6 +540,7 @@ const DigitItem = styled.div`
     color: #ff9800;
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
+    font-weight: 700;
 
     @media (max-width: 480px) {
       font-size: 8px;
@@ -705,7 +713,7 @@ const ChartPanel = () => {
     // Grid lines - use theme text muted color with low opacity
     const gridColor = hexToRgb(textMutedColor);
     ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.1)`;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     
     const gridRows = 5;
     for (let i = 0; i <= gridRows; i++) {
@@ -786,7 +794,7 @@ const ChartPanel = () => {
 
     // Y-axis labels - use theme text muted color
     ctx.fillStyle = textMutedColor;
-    ctx.font = '10px monospace';
+    ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
@@ -801,7 +809,7 @@ const ChartPanel = () => {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = textMutedColor;
-    ctx.font = '10px monospace';
+    ctx.font = 'bold 10px monospace';
     
     const sampleTimes = ['08:00', '11:00', '14:00', '17:00', '20:00'];
     sampleTimes.forEach((t, idx) => {
