@@ -27,6 +27,8 @@ const themes = {
       shadow: 'rgba(0, 0, 0, 0.3)',
       tabActive: 'rgba(41, 98, 255, 0.15)',
       scrollbar: '#2a2e3d',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   dark: {
@@ -46,6 +48,8 @@ const themes = {
       shadow: 'rgba(0, 0, 0, 0.4)',
       tabActive: 'rgba(88, 166, 255, 0.15)',
       scrollbar: '#21262d',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   darkBlue: {
@@ -65,6 +69,8 @@ const themes = {
       shadow: 'rgba(0, 10, 30, 0.5)',
       tabActive: 'rgba(77, 171, 247, 0.15)',
       scrollbar: '#1a2a4a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   midnight: {
@@ -84,6 +90,8 @@ const themes = {
       shadow: 'rgba(0, 0, 20, 0.5)',
       tabActive: 'rgba(124, 124, 248, 0.15)',
       scrollbar: '#1a1d3a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   darkGreen: {
@@ -103,6 +111,8 @@ const themes = {
       shadow: 'rgba(0, 20, 0, 0.4)',
       tabActive: 'rgba(72, 187, 120, 0.15)',
       scrollbar: '#1a3a1a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   white: {
@@ -122,6 +132,8 @@ const themes = {
       shadow: 'rgba(0, 0, 0, 0.08)',
       tabActive: 'rgba(37, 99, 235, 0.1)',
       scrollbar: '#c8ced4',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   lightGray: {
@@ -141,6 +153,8 @@ const themes = {
       shadow: 'rgba(0, 0, 0, 0.06)',
       tabActive: 'rgba(74, 108, 247, 0.1)',
       scrollbar: '#c8ced4',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   blue: {
@@ -160,6 +174,8 @@ const themes = {
       shadow: 'rgba(0, 20, 60, 0.4)',
       tabActive: 'rgba(79, 195, 247, 0.15)',
       scrollbar: '#1a4a7a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   ocean: {
@@ -179,6 +195,8 @@ const themes = {
       shadow: 'rgba(0, 20, 40, 0.4)',
       tabActive: 'rgba(77, 208, 225, 0.15)',
       scrollbar: '#1a4a5a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   purple: {
@@ -198,6 +216,8 @@ const themes = {
       shadow: 'rgba(20, 0, 40, 0.4)',
       tabActive: 'rgba(179, 136, 255, 0.15)',
       scrollbar: '#2a1a4a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   pink: {
@@ -217,6 +237,8 @@ const themes = {
       shadow: 'rgba(40, 0, 20, 0.4)',
       tabActive: 'rgba(255, 128, 171, 0.15)',
       scrollbar: '#4a1a30',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   red: {
@@ -236,6 +258,8 @@ const themes = {
       shadow: 'rgba(30, 0, 0, 0.4)',
       tabActive: 'rgba(255, 107, 107, 0.15)',
       scrollbar: '#4a1a1a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   orange: {
@@ -255,6 +279,8 @@ const themes = {
       shadow: 'rgba(30, 15, 0, 0.4)',
       tabActive: 'rgba(255, 138, 80, 0.15)',
       scrollbar: '#4a2a1a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   yellow: {
@@ -274,6 +300,8 @@ const themes = {
       shadow: 'rgba(30, 30, 0, 0.4)',
       tabActive: 'rgba(255, 213, 79, 0.15)',
       scrollbar: '#4a4a1a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   gold: {
@@ -293,6 +321,8 @@ const themes = {
       shadow: 'rgba(30, 25, 0, 0.4)',
       tabActive: 'rgba(255, 215, 0, 0.15)',
       scrollbar: '#4a3a1a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   teal: {
@@ -312,6 +342,8 @@ const themes = {
       shadow: 'rgba(0, 30, 30, 0.4)',
       tabActive: 'rgba(77, 208, 176, 0.15)',
       scrollbar: '#1a4a4a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   violet: {
@@ -331,6 +363,8 @@ const themes = {
       shadow: 'rgba(20, 0, 30, 0.4)',
       tabActive: 'rgba(155, 89, 182, 0.15)',
       scrollbar: '#2a1a4a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   cosmic: {
@@ -350,6 +384,8 @@ const themes = {
       shadow: 'rgba(10, 0, 30, 0.5)',
       tabActive: 'rgba(124, 58, 237, 0.15)',
       scrollbar: '#1a1040',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   },
   forest: {
@@ -369,11 +405,13 @@ const themes = {
       shadow: 'rgba(0, 20, 0, 0.4)',
       tabActive: 'rgba(82, 183, 136, 0.15)',
       scrollbar: '#1a2a1a',
+      success: '#22c55e',
+      danger: '#ef4444',
     }
   }
 };
 
-// ===== STYLED COMPONENTS =====
+// ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -384,6 +422,7 @@ const DashboardContainer = styled.div`
   position: relative;
   width: 100%;
   transition: background 0.3s ease;
+  font-weight: 700;
   
   ${props => props.isFullscreen && `
     position: fixed;
@@ -467,11 +506,12 @@ const PanelContent = styled.div`
 const MobileTabs = styled.div`
   display: flex;
   background: ${props => props.theme.colors.backgroundSecondary};
-  border-top: 1px solid ${props => props.theme.colors.border};
+  border-top: 2px solid ${props => props.theme.colors.border};
   flex-shrink: 0;
   padding: 4px 8px;
   gap: 4px;
   z-index: 10;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     padding: 3px 4px;
@@ -482,12 +522,12 @@ const MobileTabs = styled.div`
 const TabButton = styled.button`
   flex: 1;
   padding: 8px 4px;
-  border: none;
+  border: 2px solid transparent;
   background: ${props => props.active ? props.theme.colors.tabActive : 'transparent'};
   color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textSecondary};
   border-radius: 8px;
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -512,10 +552,12 @@ const TabButton = styled.button`
     font-size: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-weight: 700;
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: ${props => props.theme.colors.accentActive};
+    border-color: ${props => props.active ? props.theme.colors.accent : 'transparent'};
     
     .icon {
       color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.text};
@@ -563,9 +605,8 @@ const FullscreenButton = styled.button`
   width: ${props => props.isMobile ? '44px' : '48px'};
   height: ${props => props.isMobile ? '44px' : '48px'};
   border-radius: 50%;
-  border: 1px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.backgroundSecondary}dd;
-  backdrop-filter: blur(16px);
+  border: 2px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
   color: ${props => props.theme.colors.textSecondary};
   cursor: pointer;
   transition: all 0.3s ease;
@@ -575,9 +616,10 @@ const FullscreenButton = styled.button`
   font-size: 18px;
   box-shadow: 0 4px 20px ${props => props.theme.colors.shadow};
   position: relative;
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme.colors.tabActive};
+    background: ${props => props.theme.colors.accentActive};
     border-color: ${props => props.theme.colors.accent};
     color: ${props => props.theme.colors.accent};
     transform: scale(1.05);
@@ -613,9 +655,8 @@ const ThemeToggleButton = styled.button`
   width: ${props => props.isMobile ? '44px' : '48px'};
   height: ${props => props.isMobile ? '44px' : '48px'};
   border-radius: 50%;
-  border: 1px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.backgroundSecondary}dd;
-  backdrop-filter: blur(16px);
+  border: 2px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
   color: ${props => props.theme.colors.textSecondary};
   cursor: pointer;
   transition: all 0.3s ease;
@@ -625,9 +666,10 @@ const ThemeToggleButton = styled.button`
   font-size: ${props => props.isMobile ? '18px' : '20px'};
   box-shadow: 0 4px 20px ${props => props.theme.colors.shadow};
   position: relative;
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme.colors.tabActive};
+    background: ${props => props.theme.colors.accentActive};
     border-color: ${props => props.theme.colors.accent};
     color: ${props => props.theme.colors.accent};
     transform: scale(1.05);
@@ -650,20 +692,19 @@ const Tooltip = styled.span`
   right: calc(100% + 12px);
   top: 50%;
   transform: translateY(-50%);
-  background: ${props => props.theme.colors.backgroundSecondary}ee;
-  backdrop-filter: blur(12px);
+  background: ${props => props.theme.colors.backgroundSecondary};
   color: ${props => props.theme.colors.text};
   padding: 4px 12px;
   border-radius: 6px;
   font-size: 11px;
   white-space: nowrap;
   letter-spacing: 0.3px;
-  border: 1px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme.colors.border};
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s ease;
   pointer-events: none;
-  font-weight: 500;
+  font-weight: 700;
 
   &::after {
     content: '';
@@ -673,7 +714,7 @@ const Tooltip = styled.span`
     transform: translateY(-50%);
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
-    border-left: 5px solid ${props => props.theme.colors.backgroundSecondary}ee;
+    border-left: 5px solid ${props => props.theme.colors.backgroundSecondary};
   }
 
   ${props => props.show && `
@@ -692,9 +733,8 @@ const ThemeDropdown = styled.div`
   position: absolute;
   bottom: calc(100% + 12px);
   right: 0;
-  background: ${props => props.theme.colors.backgroundSecondary}ee;
-  backdrop-filter: blur(16px);
-  border: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border: 2px solid ${props => props.theme.colors.border};
   border-radius: 12px;
   padding: 6px;
   display: ${props => props.isOpen ? 'flex' : 'none'};
@@ -705,6 +745,7 @@ const ThemeDropdown = styled.div`
   overflow-y: auto;
   box-shadow: 0 8px 32px ${props => props.theme.colors.shadow};
   animation: slideUp 0.2s ease;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -740,7 +781,7 @@ const ThemeOption = styled.button`
   padding: 8px 12px;
   border: none;
   border-radius: 8px;
-  background: ${props => props.active ? props.theme.colors.tabActive : 'transparent'};
+  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textSecondary};
   cursor: pointer;
   transition: all 0.2s ease;
@@ -748,12 +789,12 @@ const ThemeOption = styled.button`
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  font-weight: ${props => props.active ? '600' : '400'};
+  font-weight: ${props => props.active ? '700' : '400'};
   width: 100%;
   text-align: left;
 
   &:hover {
-    background: ${props => props.theme.colors.tabActive};
+    background: ${props => props.theme.colors.accentActive};
     color: ${props => props.theme.colors.text};
   }
 
@@ -844,58 +885,25 @@ const panels = [
 
 // Theme color map for dots
 const themeColorMap = {
-  // 🖤 Base Darks
   black: '#0b0f1a',
   dark: '#111827',
   darkBlue: '#0f172a',
   midnight: '#0b132b',
-  charcoal: '#1f2937',
-  slate: '#334155',
-  cosmic: '#1e1b4b',
-
-  // 🌿 Dark Naturals
   darkGreen: '#052e16',
-  forest: '#14532d',
-  emerald: '#065f46',
-
-  // 🤍 Light Neutrals
   white: '#f9fafb',
   lightGray: '#e5e7eb',
-  gray: '#9ca3af',
-  coolGray: '#6b7280',
-  silver: '#cbd5f5',
-
-  // 🔵 Blues
   blue: '#1d4ed8',
-  sky: '#0ea5e9',
   ocean: '#0369a1',
-  navy: '#1e3a8a',
-  indigo: '#4f46e5',
-
-  // 🟣 Purples & Pinks
   purple: '#6d28d9',
-  violet: '#7c3aed',
-  lavender: '#a78bfa',
   pink: '#db2777',
-  rose: '#f43f5e',
-
-  // 🔴 Warm Colors
   red: '#dc2626',
-  crimson: '#b91c1c',
   orange: '#ea580c',
-  amber: '#f59e0b',
   yellow: '#eab308',
   gold: '#d4af37',
-
-  // 🟢 Greens & Teals
-  green: '#16a34a',
-  lime: '#84cc16',
   teal: '#0d9488',
-  cyan: '#06b6d4',
-
-  // ⚫ Extras for UI depth
-  glass: '#ffffff1a',   // translucent white
-  overlay: '#00000080'  // dark overlay
+  violet: '#7c3aed',
+  cosmic: '#1e1b4b',
+  forest: '#14532d',
 };
 
 // ============================================
