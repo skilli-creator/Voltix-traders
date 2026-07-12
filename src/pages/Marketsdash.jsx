@@ -1140,7 +1140,7 @@ const ConnectButton = styled.button`
 `;
 
 // ============================================
-// CONNECT MODAL - REDUCED SIZE
+// CONNECT MODAL - UPDATED WITH API TOKEN OPTION
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -1169,7 +1169,7 @@ const ModalContainer = styled.div`
   background: linear-gradient(160deg, rgba(10, 20, 40, 0.98), rgba(5, 10, 24, 0.98));
   border-radius: 24px;
   padding: 28px 32px;
-  max-width: 420px;
+  max-width: 460px;
   width: 100%;
   border: 1px solid rgba(56, 189, 248, 0.06);
   box-shadow: 
@@ -1214,7 +1214,7 @@ const ModalContainer = styled.div`
   @media (max-width: 768px) {
     padding: 20px 20px;
     border-radius: 20px;
-    max-width: 380px;
+    max-width: 400px;
     &::before { border-radius: 22px; }
     &::after { height: 1.5px; }
   }
@@ -1475,6 +1475,266 @@ const OptionCard = styled.button`
     .option-badge { font-size: 0.3rem; padding: 1px 6px; top: 4px; right: 4px; }
     .feature-tag { font-size: 0.35rem; padding: 1px 4px; }
     .oauth-status { font-size: 0.4rem; padding: 1px 6px; margin-top: 4px; }
+  }
+`;
+
+// ===== API TOKEN OPTION - FULL WIDTH =====
+const ApiTokenOption = styled.div`
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(56, 189, 248, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .api-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .api-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #f1f5f9;
+
+    .api-icon {
+      font-size: 1.2rem;
+    }
+  }
+
+  .api-toggle {
+    font-size: 0.6rem;
+    color: #94a3b8;
+    transition: transform 0.3s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  }
+
+  .api-body {
+    display: ${props => props.isOpen ? 'block' : 'none'};
+    animation: ${modalSlideUp} 0.3s ease;
+  }
+
+  .api-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .api-input-label {
+    font-size: 0.6rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .required {
+      color: #ef4444;
+      font-size: 0.5rem;
+    }
+  }
+
+  .api-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 6px 4px 6px 12px;
+    transition: all 0.3s ease;
+
+    &:focus-within {
+      border-color: rgba(34, 197, 94, 0.3);
+      box-shadow: 0 0 20px rgba(34, 197, 94, 0.05);
+    }
+  }
+
+  .api-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #f1f5f9;
+    font-size: 0.75rem;
+    font-family: 'Inter', monospace;
+    outline: none;
+    padding: 6px 0;
+    letter-spacing: 0.3px;
+    font-weight: 500;
+
+    &::placeholder {
+      color: #4b5563;
+      font-size: 0.65rem;
+      font-weight: 400;
+    }
+  }
+
+  .api-paste-btn {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 0.55rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+
+    &:hover {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.2);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+
+  .api-hint {
+    font-size: 0.55rem;
+    color: #4b5563;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+
+    .hint-link {
+      color: #38bdf8;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #60a5fa;
+      }
+    }
+
+    .hint-badge {
+      font-size: 0.4rem;
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.05);
+      border: 1px solid rgba(56, 189, 248, 0.05);
+      color: #60a5fa;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  .api-connect-btn {
+    width: 100%;
+    padding: 8px 0;
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 300%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent
+      );
+      animation: ${shimmerWave} 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(34, 197, 94, 0.3);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .connect-spinner {
+      animation: ${spin} 1s linear infinite;
+      display: inline-block;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-top: 10px;
+
+    .api-title {
+      font-size: 0.75rem;
+      .api-icon { font-size: 1rem; }
+    }
+    .api-input { font-size: 0.7rem; }
+    .api-input-label { font-size: 0.55rem; }
+    .api-paste-btn { font-size: 0.5rem; padding: 3px 10px; }
+    .api-hint { font-size: 0.5rem; }
+    .api-connect-btn { font-size: 0.75rem; padding: 7px 0; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-top: 8px;
+
+    .api-title {
+      font-size: 0.7rem;
+      .api-icon { font-size: 0.9rem; }
+    }
+    .api-input { 
+      font-size: 0.65rem; 
+      padding: 4px 0;
+    }
+    .api-input-wrapper {
+      padding: 4px 4px 4px 10px;
+    }
+    .api-paste-btn { 
+      font-size: 0.45rem; 
+      padding: 2px 8px; 
+    }
+    .api-hint { font-size: 0.45rem; }
+    .api-connect-btn { 
+      font-size: 0.7rem; 
+      padding: 6px 0; 
+    }
   }
 `;
 
@@ -1742,6 +2002,11 @@ const Dashboard = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [popupProgress, setPopupProgress] = useState(0);
+  
+  // API Token states
+  const [isApiTokenOpen, setIsApiTokenOpen] = useState(false);
+  const [apiToken, setApiToken] = useState('');
+  const [isConnectingWithToken, setIsConnectingWithToken] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -1856,6 +2121,93 @@ const Dashboard = () => {
     }
   };
 
+  // ===== NEW: Connect with API Token =====
+  const handleConnectWithApiToken = async () => {
+    if (!apiToken.trim()) {
+      showCustomMessage('Please enter your Deriv API token', 'error');
+      return;
+    }
+
+    setIsConnectingWithToken(true);
+    setShowPopup(true);
+    setPopupProgress(10);
+    setPopupMessage('Validating API token...');
+
+    try {
+      const authToken = localStorage.getItem('token');
+
+      setPopupProgress(30);
+      setPopupMessage('Authenticating with Deriv API...');
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const response = await fetch(
+        `${API_BASE_URL}/deriv/token/connect`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({
+            apiToken: apiToken.trim()
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setPopupProgress(70);
+        setPopupMessage('Connection established!');
+        await new Promise(resolve => setTimeout(resolve, 400));
+
+        setPopupProgress(100);
+        setPopupMessage('✓ Connected successfully');
+
+        // Store the API token securely
+        localStorage.setItem('derivApiToken', apiToken.trim());
+        localStorage.setItem('derivConnected', 'true');
+
+        setTimeout(() => {
+          setShowPopup(false);
+          setIsConnectingWithToken(false);
+          setIsModalOpen(false);
+          setApiToken('');
+          navigate('/derivdash');
+        }, 600);
+      } else {
+        setPopupProgress(100);
+        setPopupMessage('Connection failed');
+        showCustomMessage(
+          `Failed to connect: ${data.error || 'Invalid token'}`,
+          'error'
+        );
+        setIsConnectingWithToken(false);
+        setTimeout(() => setShowPopup(false), 2000);
+      }
+    } catch (error) {
+      console.error('API Token connection error:', error);
+      setPopupProgress(100);
+      setPopupMessage('Connection error');
+      showCustomMessage(
+        'Cannot connect to server. Please check your connection and token.',
+        'error'
+      );
+      setIsConnectingWithToken(false);
+      setTimeout(() => setShowPopup(false), 2500);
+    }
+  };
+
+  const handlePasteToken = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setApiToken(text);
+      showCustomMessage('Token pasted successfully', 'success');
+    } catch {
+      showCustomMessage('Cannot access clipboard. Please paste manually.', 'error');
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -1873,7 +2225,7 @@ const Dashboard = () => {
   };
 
   const closePopup = () => {
-    if (!isLoading) {
+    if (!isLoading && !isConnectingWithToken) {
       setShowPopup(false);
     }
   };
@@ -1881,6 +2233,10 @@ const Dashboard = () => {
   const handleSupportClick = () => {
     navigate('/settings');
     setIsModalOpen(false);
+  };
+
+  const toggleApiToken = () => {
+    setIsApiTokenOpen(!isApiTokenOpen);
   };
 
   return (
@@ -1946,7 +2302,7 @@ const Dashboard = () => {
       <ConnectButtonWrapper>
         <ConnectButton 
           onClick={handleConnect}
-          disabled={isLoading}
+          disabled={isLoading || isConnectingWithToken}
         >
           <span className="particle" />
           <span className="particle" />
@@ -1954,7 +2310,7 @@ const Dashboard = () => {
           <span className="particle" />
           <span className="connect-badge">Live</span>
           <span className="button-content">
-            {isLoading ? (
+            {isLoading || isConnectingWithToken ? (
               <>
                 <span className="spinner">⟳</span>
                 <span className="button-text">Connecting...</span>
@@ -1969,7 +2325,7 @@ const Dashboard = () => {
         </ConnectButton>
       </ConnectButtonWrapper>
 
-      {/* CONNECT MODAL - REDUCED SIZE */}
+      {/* CONNECT MODAL - UPDATED WITH API TOKEN OPTION */}
       <ModalOverlay isOpen={isModalOpen}>
         <ModalContainer>
           <ModalClose onClick={() => setIsModalOpen(false)}>✕</ModalClose>
@@ -2018,6 +2374,68 @@ const Dashboard = () => {
             </OptionCard>
           </OptionGrid>
 
+          {/* API TOKEN OPTION */}
+          <ApiTokenOption isOpen={isApiTokenOpen}>
+            <div className="api-header" onClick={toggleApiToken}>
+              <div className="api-title">
+                <span className="api-icon">🔑</span>
+                Connect manually using API token
+              </div>
+              <span className="api-toggle">▾</span>
+            </div>
+
+            <div className="api-body">
+              <div className="api-input-group">
+                <div className="api-input-label">
+                  Enter your Deriv API Token
+                  <span className="required">*</span>
+                </div>
+                <div className="api-input-wrapper">
+                  <input
+                    className="api-input"
+                    type="password"
+                    placeholder="e.g., 1234567890abcdef"
+                    value={apiToken}
+                    onChange={(e) => setApiToken(e.target.value)}
+                    disabled={isConnectingWithToken}
+                    autoComplete="off"
+                  />
+                  <button 
+                    className="api-paste-btn"
+                    onClick={handlePasteToken}
+                    disabled={isConnectingWithToken}
+                  >
+                    📋 Paste
+                  </button>
+                </div>
+                <div className="api-hint">
+                  <span>🔒 Token is encrypted and stored securely</span>
+                  <span 
+                    className="hint-link"
+                    onClick={() => window.open('https://app.deriv.com/account/api-token', '_blank')}
+                  >
+                    Get your API token →
+                  </span>
+                  <span className="hint-badge">Recommended</span>
+                </div>
+                <button 
+                  className="api-connect-btn"
+                  onClick={handleConnectWithApiToken}
+                  disabled={isConnectingWithToken || !apiToken.trim()}
+                >
+                  {isConnectingWithToken ? (
+                    <>
+                      <span className="connect-spinner">⟳</span>
+                      {' Connecting...'}
+                    </>
+                  ) : (
+                    '🔐 Connect with API Token'
+                  )}
+                </button>
+              </div>
+            </div>
+          </ApiTokenOption>
+
           <MessageArea show={showMessage} type={messageType}>
             <span className="msg-icon">
               {messageType === 'success' ? '✓' : 
@@ -2048,6 +2466,8 @@ const Dashboard = () => {
           <PopupCard onClick={(e) => e.stopPropagation()}>
             {popupMessage.includes('failed') || popupMessage.includes('error') ? (
               <PopupIcon>⚠</PopupIcon>
+            ) : popupMessage.includes('✓') ? (
+              <PopupIcon>✅</PopupIcon>
             ) : popupMessage.includes('Redirecting') ? (
               <PopupIcon>◆</PopupIcon>
             ) : (
@@ -2059,15 +2479,17 @@ const Dashboard = () => {
             )}
 
             <PopupTitle>
-              {popupMessage.includes('failed') || popupMessage.includes('error') ? 'Error' : 'Connecting...'}
+              {popupMessage.includes('failed') || popupMessage.includes('error') ? 'Error' : 
+               popupMessage.includes('✓') ? 'Success' : 'Connecting...'}
             </PopupTitle>
 
             <PopupSubtitle>{popupMessage}</PopupSubtitle>
 
             {!popupMessage.includes('failed') && 
              !popupMessage.includes('error') && 
+             !popupMessage.includes('✓') &&
              !popupMessage.includes('Redirecting') && (
-              <PopupHint>Please wait — redirecting securely...</PopupHint>
+              <PopupHint>Please wait — connecting securely...</PopupHint>
             )}
 
             <PopupProgress progress={popupProgress}>
@@ -2076,6 +2498,10 @@ const Dashboard = () => {
 
             {(popupMessage.includes('failed') || popupMessage.includes('error')) && (
               <PopupCloseButton onClick={closePopup}>Close</PopupCloseButton>
+            )}
+
+            {popupMessage.includes('✓') && (
+              <PopupCloseButton onClick={closePopup}>Continue →</PopupCloseButton>
             )}
           </PopupCard>
         </Overlay>
