@@ -671,13 +671,14 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // Get theme colors
+    // Get ALL theme colors
     const bgColor = theme.colors.background || '#0a0e17';
     const textColor = theme.colors.text || '#ffffff';
     const textMutedColor = theme.colors.textMuted || '#4e5d78';
     const successColor = theme.colors.success || '#00e676';
     const dangerColor = theme.colors.danger || '#ff4a4a';
     const accentColor = theme.colors.accent || '#00e676';
+    const borderColor = theme.colors.border || '#1a2332';
     
     // Parse hex color to RGB for gradients
     const hexToRgb = (hex) => {
@@ -713,9 +714,9 @@ const ChartPanel = () => {
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
-    // Grid lines - use theme text muted color with low opacity
-    const gridColor = hexToRgb(textMutedColor);
-    ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.1)`;
+    // Grid lines - use theme border color with low opacity
+    const gridColor = hexToRgb(borderColor);
+    ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.3)`;
     ctx.lineWidth = 2;
     
     const gridRows = 5;
@@ -736,7 +737,10 @@ const ChartPanel = () => {
       ctx.stroke();
     }
 
+    // LINE COLOR - Use theme success or danger based on movement direction
     const lineColor = movementDirection === 'up' ? successColor : dangerColor;
+    
+    // Draw the line graph
     ctx.beginPath();
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 2.2;
@@ -751,19 +755,20 @@ const ChartPanel = () => {
     }
     ctx.stroke();
 
+    // Fill under the line - using theme colors
     const lastX = xScale(ticks.length - 1);
     ctx.lineTo(lastX, height - pad.bottom);
     ctx.lineTo(pad.left, height - pad.bottom);
     ctx.closePath();
 
     const fillGrad = ctx.createLinearGradient(0, pad.top, 0, height - pad.bottom);
-    const fillColor = movementDirection === 'up' ? successColor : dangerColor;
-    const fillRgb = hexToRgb(fillColor);
-    fillGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.08)`);
+    const fillRgb = hexToRgb(lineColor);
+    fillGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.15)`);
     fillGrad.addColorStop(1, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0)`);
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
+    // Current price dot - using theme color
     const currentPrice = ticks[ticks.length - 1].price;
     const currentY = yScale(currentPrice);
 
@@ -772,7 +777,7 @@ const ChartPanel = () => {
     ctx.arc(lastX, currentY, 4.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Dashed line
+    // Dashed line to right edge - using theme text color with opacity
     const dashColor = hexToRgb(textColor);
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.15)`;
@@ -782,7 +787,7 @@ const ChartPanel = () => {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Price badge
+    // Price badge - using theme line color
     const badgeW = 55;
     const badgeH = 20;
     ctx.fillStyle = lineColor;
@@ -790,14 +795,14 @@ const ChartPanel = () => {
     ctx.roundRect(width - pad.right + 4, currentY - badgeH / 2, badgeW, badgeH, 4);
     ctx.fill();
 
-    // Badge text color - use theme background for contrast
+    // Badge text - using theme background for contrast
     ctx.fillStyle = bgColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPrice.toFixed(2), width - pad.right + 4 + badgeW / 2, currentY);
 
-    // Y-axis labels - use theme text muted color
+    // Y-axis labels - using theme text muted color
     ctx.fillStyle = textMutedColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'left';
@@ -810,7 +815,7 @@ const ChartPanel = () => {
       ctx.fillText(targetP.toFixed(2), width - pad.right + 6, targetY);
     }
 
-    // X-axis labels - use theme text muted color
+    // X-axis labels - using theme text muted color
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = textMutedColor;

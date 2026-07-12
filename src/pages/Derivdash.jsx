@@ -844,25 +844,29 @@ const panels = [
 
 // Theme color map for dots
 const themeColorMap = {
-  black: '#0a0f1f',
-  dark: '#0d1117',
-  darkBlue: '#0a1628',
-  midnight: '#0c0e1a',
-  darkGreen: '#0a1a0a',
-  white: '#f0f2f5',
-  lightGray: '#e8ecf0',
-  blue: '#0c1a3a',
-  ocean: '#0a1a2e',
-  purple: '#1a0a2e',
-  pink: '#2e0a1a',
-  red: '#1a0a0a',
-  orange: '#1a0f0a',
-  yellow: '#1a1a0a',
-  gold: '#1a150a',
-  teal: '#0a1a1a',
-  violet: '#100a1a',
-  cosmic: '#0a0818',
-  forest: '#0a120a'
+  black: '#0b0f1a',
+  dark: '#111827',
+  darkBlue: '#0f172a',
+  midnight: '#0b132b',
+  darkGreen: '#052e16',
+
+  white: '#f9fafb',
+  lightGray: '#e5e7eb',
+
+  blue: '#1d4ed8',
+  ocean: '#0369a1',
+  purple: '#6d28d9',
+  pink: '#db2777',
+
+  red: '#dc2626',
+  orange: '#ea580c',
+  yellow: '#ca8a04',
+  gold: '#d4af37',
+
+  teal: '#0d9488',
+  violet: '#7c3aed',
+  cosmic: '#1e1b4b',
+  forest: '#14532d'
 };
 
 // ============================================
