@@ -844,29 +844,58 @@ const panels = [
 
 // Theme color map for dots
 const themeColorMap = {
+  // 🖤 Base Darks
   black: '#0b0f1a',
   dark: '#111827',
   darkBlue: '#0f172a',
   midnight: '#0b132b',
-  darkGreen: '#052e16',
+  charcoal: '#1f2937',
+  slate: '#334155',
+  cosmic: '#1e1b4b',
 
+  // 🌿 Dark Naturals
+  darkGreen: '#052e16',
+  forest: '#14532d',
+  emerald: '#065f46',
+
+  // 🤍 Light Neutrals
   white: '#f9fafb',
   lightGray: '#e5e7eb',
+  gray: '#9ca3af',
+  coolGray: '#6b7280',
+  silver: '#cbd5f5',
 
+  // 🔵 Blues
   blue: '#1d4ed8',
+  sky: '#0ea5e9',
   ocean: '#0369a1',
-  purple: '#6d28d9',
-  pink: '#db2777',
+  navy: '#1e3a8a',
+  indigo: '#4f46e5',
 
+  // 🟣 Purples & Pinks
+  purple: '#6d28d9',
+  violet: '#7c3aed',
+  lavender: '#a78bfa',
+  pink: '#db2777',
+  rose: '#f43f5e',
+
+  // 🔴 Warm Colors
   red: '#dc2626',
+  crimson: '#b91c1c',
   orange: '#ea580c',
-  yellow: '#ca8a04',
+  amber: '#f59e0b',
+  yellow: '#eab308',
   gold: '#d4af37',
 
+  // 🟢 Greens & Teals
+  green: '#16a34a',
+  lime: '#84cc16',
   teal: '#0d9488',
-  violet: '#7c3aed',
-  cosmic: '#1e1b4b',
-  forest: '#14532d'
+  cyan: '#06b6d4',
+
+  // ⚫ Extras for UI depth
+  glass: '#ffffff1a',   // translucent white
+  overlay: '#00000080'  // dark overlay
 };
 
 // ============================================
