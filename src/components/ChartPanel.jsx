@@ -34,7 +34,7 @@ const slideDown = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - APPLYING TOPBAR THEME PATTERNS
+// STYLED COMPONENTS - ALL THEME BASED
 // ============================================
 const PanelContainer = styled.div`
   flex: 1;
@@ -465,7 +465,7 @@ const DigitItem = styled.div`
     background: ${props => props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => 
       props.isLastDigit 
-        ? (props.direction === 'up' ? props.theme.colors.accent : props.theme.colors.accent) 
+        ? props.theme.colors.accent
         : props.theme.colors.border
     };
     box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.theme.colors.accent + '80'}` : 'none'};
@@ -516,7 +516,7 @@ const DigitItem = styled.div`
     color: ${props => 
       props.isMax 
         ? props.theme.colors.accent
-        : (props.isMin ? props.theme.colors.textMuted : props.theme.colors.textMuted)
+        : props.theme.colors.textMuted
     };
     line-height: 1;
     margin-top: 0px;
@@ -672,14 +672,13 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // Get ALL theme colors - everything uses theme
-    const bgColor = theme.colors.background || '#0a0e17';
-    const textColor = theme.colors.text || '#ffffff';
-    const textMutedColor = theme.colors.textMuted || '#4e5d78';
-    const accentColor = theme.colors.accent || '#00e676';
-    const borderColor = theme.colors.border || '#1a2332';
+    // ALL colors from theme - NO hardcoded colors
+    const bgColor = theme.colors.background;
+    const textColor = theme.colors.text;
+    const textMutedColor = theme.colors.textMuted;
+    const accentColor = theme.colors.accent;
+    const borderColor = theme.colors.border;
     
-    // Parse hex color to RGB for gradients
     const hexToRgb = (hex) => {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result ? {
@@ -691,7 +690,6 @@ const ChartPanel = () => {
 
     const rgb = hexToRgb(bgColor);
     
-    // Create gradient background that matches the theme
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
     bgGrad.addColorStop(0, `rgb(${Math.min(rgb.r + 2, 255)}, ${Math.min(rgb.g + 2, 255)}, ${Math.min(rgb.b + 4, 255)})`);
     bgGrad.addColorStop(1, `rgb(${Math.max(rgb.r - 2, 0)}, ${Math.max(rgb.g - 2, 0)}, ${Math.max(rgb.b - 4, 0)})`);
@@ -713,7 +711,7 @@ const ChartPanel = () => {
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
-    // Grid lines - use theme border color
+    // Grid lines - theme border color
     const gridColor = hexToRgb(borderColor);
     ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.3)`;
     ctx.lineWidth = 2;
@@ -736,10 +734,9 @@ const ChartPanel = () => {
       ctx.stroke();
     }
 
-    // LINE COLOR - Use theme accent color for the line (not green/red)
+    // LINE COLOR - Use theme accent color
     const lineColor = accentColor;
     
-    // Draw the line graph
     ctx.beginPath();
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 2.2;
@@ -754,7 +751,7 @@ const ChartPanel = () => {
     }
     ctx.stroke();
 
-    // Fill under the line - using theme accent color
+    // Fill under the line - theme accent color
     const lastX = xScale(ticks.length - 1);
     ctx.lineTo(lastX, height - pad.bottom);
     ctx.lineTo(pad.left, height - pad.bottom);
@@ -767,7 +764,7 @@ const ChartPanel = () => {
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
-    // Current price dot - using theme accent color
+    // Current price dot - theme accent color
     const currentPrice = ticks[ticks.length - 1].price;
     const currentY = yScale(currentPrice);
 
@@ -776,7 +773,7 @@ const ChartPanel = () => {
     ctx.arc(lastX, currentY, 4.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Dashed line to right edge - using theme text color with opacity
+    // Dashed line - theme text color with opacity
     const dashColor = hexToRgb(textColor);
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.15)`;
@@ -786,7 +783,7 @@ const ChartPanel = () => {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Price badge - using theme accent color
+    // Price badge - theme accent color
     const badgeW = 55;
     const badgeH = 20;
     ctx.fillStyle = lineColor;
@@ -794,14 +791,14 @@ const ChartPanel = () => {
     ctx.roundRect(width - pad.right + 4, currentY - badgeH / 2, badgeW, badgeH, 4);
     ctx.fill();
 
-    // Badge text - using theme background for contrast
+    // Badge text - theme background for contrast
     ctx.fillStyle = bgColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPrice.toFixed(2), width - pad.right + 4 + badgeW / 2, currentY);
 
-    // Y-axis labels - using theme text muted color
+    // Y-axis labels - theme text muted color
     ctx.fillStyle = textMutedColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'left';
@@ -814,7 +811,7 @@ const ChartPanel = () => {
       ctx.fillText(targetP.toFixed(2), width - pad.right + 6, targetY);
     }
 
-    // X-axis labels - using theme text muted color
+    // X-axis labels - theme text muted color
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = textMutedColor;
