@@ -2488,7 +2488,7 @@ const Dashboard = () => {
       setPopupProgress(30);
       setPopupMessage('Establishing secure WebSocket connection...');
 
-      // ✅ UPDATED: Correct Deriv WebSocket URL
+      // UPDATED: Correct Deriv WebSocket URL
       const ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');
 
       wsRef.current = ws;
@@ -2498,7 +2498,7 @@ const Dashboard = () => {
         if (isConnectingWithToken) {
           ws.close();
           setPopupProgress(100);
-          setPopupMessage('❌ Connection timeout');
+          setPopupMessage('Connection timeout');
           showCustomMessage('Connection timed out. Please try again.', 'error');
           setIsConnectingWithToken(false);
           setTimeout(() => setShowPopup(false), 2000);
@@ -2532,7 +2532,7 @@ const Dashboard = () => {
               errorMessage = `Error code: ${data.error.code}`;
             }
             
-            setPopupMessage('❌ Auth failed: ' + errorMessage);
+            setPopupMessage('Auth failed: ' + errorMessage);
             showCustomMessage('Authentication failed: ' + errorMessage, 'error');
             setIsConnectingWithToken(false);
             setTimeout(() => setShowPopup(false), 2000);
@@ -2545,14 +2545,14 @@ const Dashboard = () => {
           if (data.code === 0 && data.msg === 'authorize') {
             clearTimeout(connectionTimeout);
             setPopupProgress(80);
-            setPopupMessage('✓ Authorized successfully!');
+            setPopupMessage('Authorized successfully!');
             
             // Store connection info
             localStorage.setItem('derivApiToken', apiToken.trim());
             localStorage.setItem('derivConnected', 'true');
 
             setPopupProgress(100);
-            setPopupMessage('✓ Connected to Deriv!');
+            setPopupMessage('Connected to Deriv!');
 
             setTimeout(() => {
               setShowPopup(false);
@@ -2569,7 +2569,7 @@ const Dashboard = () => {
           if (data.authorize) {
             clearTimeout(connectionTimeout);
             setPopupProgress(80);
-            setPopupMessage('✓ Authorized successfully!');
+            setPopupMessage('Authorized successfully!');
             
             localStorage.setItem('derivApiToken', apiToken.trim());
             localStorage.setItem('derivConnected', 'true');
@@ -2577,7 +2577,7 @@ const Dashboard = () => {
             localStorage.setItem('derivCurrency', data.authorize.currency || 'USD');
 
             setPopupProgress(100);
-            setPopupMessage('✓ Connected to Deriv!');
+            setPopupMessage('Connected to Deriv!');
 
             setTimeout(() => {
               setShowPopup(false);
@@ -2592,7 +2592,7 @@ const Dashboard = () => {
           console.error('WebSocket message error:', error);
           clearTimeout(connectionTimeout);
           setPopupProgress(100);
-          setPopupMessage('❌ Connection error');
+          setPopupMessage('Connection error');
           showCustomMessage('Invalid response from server', 'error');
           setIsConnectingWithToken(false);
           setTimeout(() => setShowPopup(false), 2000);
@@ -2603,7 +2603,7 @@ const Dashboard = () => {
         console.error('WebSocket error:', error);
         clearTimeout(connectionTimeout);
         setPopupProgress(100);
-        setPopupMessage('❌ WebSocket error');
+        setPopupMessage('WebSocket error');
         showCustomMessage('Cannot connect to Deriv WebSocket. Please check your internet connection.', 'error');
         setIsConnectingWithToken(false);
         setTimeout(() => setShowPopup(false), 2000);
@@ -2613,7 +2613,7 @@ const Dashboard = () => {
         clearTimeout(connectionTimeout);
         if (isConnectingWithToken) {
           setPopupProgress(100);
-          setPopupMessage('❌ Connection closed');
+          setPopupMessage('Connection closed');
           setIsConnectingWithToken(false);
           setTimeout(() => setShowPopup(false), 2000);
         }
@@ -2622,7 +2622,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Connection error:', error);
       setPopupProgress(100);
-      setPopupMessage('❌ Connection error');
+      setPopupMessage('Connection error');
       showCustomMessage('Cannot connect to Deriv. Please check your token.', 'error');
       setIsConnectingWithToken(false);
       setTimeout(() => setShowPopup(false), 2500);
@@ -2699,7 +2699,7 @@ const Dashboard = () => {
 
       <Topbar>
         <Brand to="/dashboard">
-          <span className="logo-icon">🔷</span>
+          <span className="logo-icon">◇</span>
           <span className="logo-text">Voltix Traders</span>
           <span className="live-dot" />
         </Brand>
@@ -2889,11 +2889,11 @@ const Dashboard = () => {
                   autoComplete="off"
                 />
                 <ApiTokenPasteBtn onClick={handlePasteToken} disabled={isConnectingWithToken}>
-                  📋 Paste
+                  Paste
                 </ApiTokenPasteBtn>
               </ApiTokenInputRow>
               <ApiTokenHint>
-                <span>🔒 Token is encrypted and stored locally</span>
+                <span>Token is encrypted and stored locally</span>
                 <span 
                   className="hint-link"
                   onClick={() => window.open('https://app.deriv.com/account/api-token', '_blank')}
@@ -2911,7 +2911,7 @@ const Dashboard = () => {
                     {' Connecting...'}
                   </>
                 ) : (
-                  '🔐 Connect with API Token'
+                  'Connect with API Token'
                 )}
               </ApiTokenConnectBtn>
             </ApiTokenInputWrapper>
