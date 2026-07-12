@@ -2758,7 +2758,7 @@ const Dashboard = () => {
         <ModalContainer>
           <ModalClose onClick={() => setIsModalOpen(false)}>✕</ModalClose>
           <ModalTitle>
-            <span className="title-icon">◆</span>
+            <span className="title-icon">🔷</span>
             Connect Platform
           </ModalTitle>
           <ModalSubtitle>
@@ -2773,7 +2773,7 @@ const Dashboard = () => {
             >
               <span className="option-badge">24/7</span>
               <div className="option-content">
-                <span className="option-icon">▣</span>
+                <span className="option-icon">📊</span>
                 <div className="option-name">Deriv</div>
                 <div className="option-desc">Synthetic indices</div>
                 <div className="option-features">
@@ -2791,7 +2791,7 @@ const Dashboard = () => {
             >
               <span className="option-badge">24/5</span>
               <div className="option-content">
-                <span className="option-icon">●</span>
+                <span className="option-icon">💱</span>
                 <div className="option-name">Forex</div>
                 <div className="option-desc">Major • Minor pairs</div>
                 <div className="option-features">
@@ -2836,7 +2836,7 @@ const Dashboard = () => {
           </DerivConnectTitle>
           
           <DerivConnectSubtitle>
-            AI-powered signals for smarter Rise/Fall entries with dual-thread simultaneous contract deployment.<br />
+            AI-powered signals for smarter all trades entries with dual-thread simultaneous contract deployment.<br />
             <span className="highlight">Real-time. Precise. Built for Deriv.</span>
           </DerivConnectSubtitle>
 
