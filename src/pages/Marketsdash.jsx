@@ -2481,7 +2481,7 @@ const Dashboard = () => {
       setPopupProgress(30);
       setPopupMessage('Establishing secure WebSocket connection...');
 
-      const ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');
+      const ws = new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
 
       wsRef.current = ws;
 
