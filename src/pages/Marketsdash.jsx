@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
@@ -2504,6 +2504,15 @@ const Dashboard = () => {
     setIsModalOpen(false);
   };
 
+  // Close Deriv connect popup
+  const closeDerivConnect = () => {
+    if (!isConnectingWithToken) {
+      setIsDerivConnectOpen(false);
+      setShowApiInput(false);
+      setApiToken('');
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -2666,7 +2675,7 @@ const Dashboard = () => {
       {/* DERIV CONNECT POPUP - TWO OPTIONS */}
       <DerivConnectOverlay isOpen={isDerivConnectOpen}>
         <DerivConnectContainer>
-          <DerivConnectClose onClick={() => setIsDerivConnectOpen(false)}>✕</DerivConnectClose>
+          <DerivConnectClose onClick={closeDerivConnect}>✕</DerivConnectClose>
           
           <DerivConnectHeader>
             <span className="icon">📊</span>
