@@ -77,14 +77,15 @@ const NavItem = styled.div`
   transition: all 0.15s ease;
   color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
   background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
-  border: ${props => props.active ? `2px solid ${props.theme.colors.accent}` : '2px solid transparent'};
+  border: 2px solid ${props => props.active ? props.theme.colors.accent : 'transparent'};
   white-space: nowrap;
   font-size: 11px;
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme.colors.background};
+    background: ${props => props.theme.colors.backgroundSecondary};
     color: ${props => props.theme.colors.text};
+    border-color: ${props => props.theme.colors.accent};
   }
 
   .label {
@@ -97,7 +98,7 @@ const NavItem = styled.div`
     font-weight: 700;
     padding: 0 3px;
     border-radius: 3px;
-    background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.background};
+    background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.backgroundSecondary};
     color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted};
     &::before { content: '('; }
     &::after { content: ')'; }
@@ -205,7 +206,7 @@ const SessionLabel = styled.div`
 const SessionPL = styled.div`
   font-size: 13px;
   font-weight: 700;
-  color: ${props => props.isNegative ? '#ff4757' : '#00b894'};
+  color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
 
   .currency {
     font-size: 8px;
@@ -231,8 +232,8 @@ const TradesSummary = styled.div`
   padding: 0 2px;
   font-weight: 700;
 
-  .wins { color: #00b894; }
-  .losses { color: #ff4757; }
+  .wins { color: ${props => props.theme.colors.success}; }
+  .losses { color: ${props => props.theme.colors.danger}; }
 
   @media (max-width: 768px) {
     font-size: 7px;
