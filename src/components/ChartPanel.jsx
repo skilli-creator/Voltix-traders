@@ -465,10 +465,10 @@ const DigitItem = styled.div`
     background: ${props => props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => 
       props.isLastDigit 
-        ? (props.direction === 'up' ? props.theme.colors.success : props.theme.colors.danger) 
+        ? (props.direction === 'up' ? props.theme.colors.accent : props.theme.colors.accent) 
         : props.theme.colors.border
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.direction === 'up' ? props.theme.colors.success + '80' : props.theme.colors.danger + '80'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.theme.colors.accent + '80'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
@@ -515,8 +515,8 @@ const DigitItem = styled.div`
     font-weight: 700;
     color: ${props => 
       props.isMax 
-        ? props.theme.colors.success
-        : (props.isMin ? props.theme.colors.danger : props.theme.colors.textMuted)
+        ? props.theme.colors.accent
+        : (props.isMin ? props.theme.colors.textMuted : props.theme.colors.textMuted)
     };
     line-height: 1;
     margin-top: 0px;
@@ -672,17 +672,12 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // Get ALL theme colors - matching TopBar patterns
+    // Get ALL theme colors - everything uses theme
     const bgColor = theme.colors.background || '#0a0e17';
-    const bgSecondaryColor = theme.colors.backgroundSecondary || '#111927';
     const textColor = theme.colors.text || '#ffffff';
     const textMutedColor = theme.colors.textMuted || '#4e5d78';
-    const textSecondaryColor = theme.colors.textSecondary || '#8899bb';
-    const successColor = theme.colors.success || '#00e676';
-    const dangerColor = theme.colors.danger || '#ff4a4a';
     const accentColor = theme.colors.accent || '#00e676';
     const borderColor = theme.colors.border || '#1a2332';
-    const shadowColor = theme.colors.shadow || 'rgba(0,0,0,0.5)';
     
     // Parse hex color to RGB for gradients
     const hexToRgb = (hex) => {
@@ -718,7 +713,7 @@ const ChartPanel = () => {
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
-    // Grid lines - use theme border color with low opacity
+    // Grid lines - use theme border color
     const gridColor = hexToRgb(borderColor);
     ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.3)`;
     ctx.lineWidth = 2;
@@ -741,8 +736,8 @@ const ChartPanel = () => {
       ctx.stroke();
     }
 
-    // LINE COLOR - Use theme success or danger based on movement direction
-    const lineColor = movementDirection === 'up' ? successColor : dangerColor;
+    // LINE COLOR - Use theme accent color for the line (not green/red)
+    const lineColor = accentColor;
     
     // Draw the line graph
     ctx.beginPath();
@@ -759,7 +754,7 @@ const ChartPanel = () => {
     }
     ctx.stroke();
 
-    // Fill under the line - using theme colors
+    // Fill under the line - using theme accent color
     const lastX = xScale(ticks.length - 1);
     ctx.lineTo(lastX, height - pad.bottom);
     ctx.lineTo(pad.left, height - pad.bottom);
@@ -772,7 +767,7 @@ const ChartPanel = () => {
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
-    // Current price dot - using theme color
+    // Current price dot - using theme accent color
     const currentPrice = ticks[ticks.length - 1].price;
     const currentY = yScale(currentPrice);
 
@@ -791,7 +786,7 @@ const ChartPanel = () => {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Price badge - using theme line color
+    // Price badge - using theme accent color
     const badgeW = 55;
     const badgeH = 20;
     ctx.fillStyle = lineColor;
