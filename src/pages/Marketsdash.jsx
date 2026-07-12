@@ -1785,7 +1785,7 @@ const DerivConnectHeader = styled.div`
   margin-bottom: 6px;
 
   .icon {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .title {
@@ -2195,6 +2195,67 @@ const ApiTokenConnectBtn = styled.button`
     padding: 9px 0;
     border-radius: 8px;
     margin-top: 10px;
+  }
+`;
+
+// ============================================
+// MODAL FOOTER
+// ============================================
+const ModalFooter = styled.div`
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6rem;
+  color: #4b5563;
+
+  .security-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #38bdf8;
+    font-weight: 500;
+
+    .lock-icon {
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+  }
+
+  .support-link {
+    color: #4b5563;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 0.6rem;
+
+    &:hover {
+      color: #22c55e;
+      transform: translateX(4px);
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 0.55rem;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 10px;
+    padding-top: 8px;
+    font-size: 0.5rem;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+    text-align: center;
   }
 `;
 
@@ -2802,7 +2863,7 @@ const Dashboard = () => {
             >
               <span className="option-badge">24/7</span>
               <div className="option-content">
-                <span className="option-icon">📊</span>
+                <span className="option-icon">▣</span>
                 <div className="option-name">Deriv</div>
                 <div className="option-desc">Synthetic indices</div>
                 <div className="option-features">
@@ -2820,7 +2881,7 @@ const Dashboard = () => {
             >
               <span className="option-badge">24/5</span>
               <div className="option-content">
-                <span className="option-icon">💱</span>
+                <span className="option-icon">●</span>
                 <div className="option-name">Forex</div>
                 <div className="option-desc">Major • Minor pairs</div>
                 <div className="option-features">
@@ -2861,7 +2922,7 @@ const Dashboard = () => {
           <DerivConnectClose onClick={closeDerivConnect}>✕</DerivConnectClose>
           
           <DerivConnectHeader>
-            <span className="icon">🔗</span>
+            <span className="icon">◆</span>
             <span className="title">Connect to Deriv</span>
           </DerivConnectHeader>
           <DerivConnectSubtitle>
@@ -2874,7 +2935,7 @@ const Dashboard = () => {
               glowColor="rgba(168, 85, 247, 0.06)"
               onClick={() => setShowApiInput(!showApiInput)}
             >
-              <span className="option-icon">🔑</span>
+              <span className="option-icon">◈</span>
               <div className="option-info">
                 <span className="option-label">Manual Token Connection</span>
                 <span className="option-desc">Connect using your Deriv API token</span>
@@ -2933,7 +2994,7 @@ const Dashboard = () => {
               glowColor="rgba(251, 191, 36, 0.06)"
               onClick={handleDerivOAuth}
             >
-              <span className="option-icon">OAuth</span>
+              <span className="option-icon">◉</span>
               <div className="option-info">
                 <span className="option-label">OAuth 2.0 Connection</span>
                 <span className="option-desc">Secure authentication via Deriv</span>
@@ -2957,7 +3018,7 @@ const Dashboard = () => {
       {/* COMING SOON POPUP */}
       <ComingSoonOverlay isOpen={showComingSoon}>
         <ComingSoonCard>
-          <ComingSoonIcon>🚀</ComingSoonIcon>
+          <ComingSoonIcon>◇</ComingSoonIcon>
           <ComingSoonTitle>Coming Soon</ComingSoonTitle>
           <ComingSoonSubtitle>
             OAuth 2.0 integration with Deriv is currently in development.<br />
@@ -2971,10 +3032,10 @@ const Dashboard = () => {
       {showPopup && (
         <Overlay onClick={closePopup}>
           <PopupCard onClick={(e) => e.stopPropagation()}>
-            {popupMessage.includes('failed') || popupMessage.includes('error') || popupMessage.includes('❌') ? (
+            {popupMessage.includes('failed') || popupMessage.includes('error') ? (
               <PopupIcon>⚠</PopupIcon>
-            ) : popupMessage.includes('✓') ? (
-              <PopupIcon>✅</PopupIcon>
+            ) : popupMessage.includes('Connected') || popupMessage.includes('Authorized') ? (
+              <PopupIcon>✓</PopupIcon>
             ) : popupMessage.includes('Redirecting') ? (
               <PopupIcon>◆</PopupIcon>
             ) : (
@@ -2986,16 +3047,16 @@ const Dashboard = () => {
             )}
 
             <PopupTitle>
-              {popupMessage.includes('failed') || popupMessage.includes('error') || popupMessage.includes('❌') ? 'Error' : 
-               popupMessage.includes('✓') ? 'Success' : 'Connecting...'}
+              {popupMessage.includes('failed') || popupMessage.includes('error') ? 'Error' : 
+               popupMessage.includes('Connected') || popupMessage.includes('Authorized') ? 'Success' : 'Connecting...'}
             </PopupTitle>
 
             <PopupSubtitle>{popupMessage}</PopupSubtitle>
 
             {!popupMessage.includes('failed') && 
              !popupMessage.includes('error') && 
-             !popupMessage.includes('✓') &&
-             !popupMessage.includes('❌') &&
+             !popupMessage.includes('Connected') &&
+             !popupMessage.includes('Authorized') &&
              !popupMessage.includes('Redirecting') && (
               <PopupHint>Please wait — connecting securely...</PopupHint>
             )}
@@ -3004,11 +3065,11 @@ const Dashboard = () => {
               <div className="bar" />
             </PopupProgress>
 
-            {(popupMessage.includes('failed') || popupMessage.includes('error') || popupMessage.includes('❌')) && (
+            {(popupMessage.includes('failed') || popupMessage.includes('error')) && (
               <PopupCloseButton onClick={closePopup}>Close</PopupCloseButton>
             )}
 
-            {popupMessage.includes('✓') && (
+            {(popupMessage.includes('Connected') || popupMessage.includes('Authorized')) && (
               <PopupCloseButton onClick={closePopup}>Continue →</PopupCloseButton>
             )}
           </PopupCard>
