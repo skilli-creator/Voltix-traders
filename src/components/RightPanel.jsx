@@ -32,8 +32,8 @@ const slideDown = keyframes`
 `;
 
 const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '20' || 'rgba(41, 98, 255, 0.1)'}; }
-  50% { box-shadow: 0 0 30px ${props => props.theme?.colors?.accent + '35' || 'rgba(41, 98, 255, 0.2)'}; }
+  0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '40' || 'rgba(41, 98, 255, 0.1)'}; }
+  50% { box-shadow: 0 0 30px ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.2)'}; }
 `;
 
 const floatPulse = keyframes`
@@ -49,7 +49,7 @@ const PanelContainer = styled.div`
   width: 290px;
   min-width: 290px;
   background: ${props => props.theme?.colors?.background || '#0b0e14'};
-  border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-left: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   padding: 16px 14px 12px 14px;
   display: flex;
   flex-direction: column;
@@ -59,6 +59,7 @@ const PanelContainer = styled.div`
   position: relative;
   box-sizing: border-box;
   transition: background 0.3s ease, border-color 0.3s ease;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -134,14 +135,15 @@ const MarketSelectorButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
   }
 
@@ -163,7 +165,7 @@ const MarketSelectorButton = styled.div`
 
   .market-name {
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
@@ -192,7 +194,7 @@ const MarketDropdown = styled.div`
   left: 0;
   right: 0;
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   overflow: hidden;
   z-index: 100;
@@ -201,6 +203,7 @@ const MarketDropdown = styled.div`
   box-shadow: 0 8px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   max-height: 260px;
   overflow-y: auto;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -220,10 +223,11 @@ const MarketOption = styled.div`
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -245,7 +249,7 @@ const MarketOption = styled.div`
 
   .option-name {
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -284,19 +288,20 @@ const TradeTypeButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.isOpen ? props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.isOpen ? props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 700;
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
   }
 
   .left { display: flex; align-items: center; gap: 8px; }
-  .label { font-size: 13px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
+  .label { font-size: 13px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
   .arrow {
     font-size: 10px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.2s ease;
@@ -306,7 +311,7 @@ const TradeTypeButton = styled.div`
     font-size: 7px; text-transform: uppercase; padding: 1px 8px;
     border-radius: 10px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.1)'};
     color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    font-weight: 600;
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -326,12 +331,12 @@ const TradeTypeButton = styled.div`
 const Dropdown = styled.div`
   position: absolute; top: calc(100% + 4px); left: 0; right: 0;
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px; overflow: hidden; z-index: 100;
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s ease;
   box-shadow: 0 8px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
-  backdrop-filter: blur(10px);
+  font-weight: 700;
 
   @media (max-width: 480px) {
     border-radius: 6px;
@@ -348,8 +353,9 @@ const DropdownOption = styled.div`
   background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   font-size: 12px;
   transition: all 0.15s ease;
+  font-weight: 700;
 
-  &:hover { background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'}; color: ${props => props.theme?.colors?.text || '#ffffff'}; }
+  &:hover { background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'}; color: ${props => props.theme?.colors?.text || '#ffffff'}; }
   .check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 13px; opacity: ${props => props.active ? 1 : 0}; }
 
   @media (max-width: 768px) {
@@ -373,6 +379,7 @@ const TradeModeWrapper = styled.div`
   flex-direction: column;
   gap: 3px;
   animation: ${fadeIn} 0.4s ease;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     gap: 2px;
@@ -391,7 +398,7 @@ const TradeModeLabel = styled.div`
   text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#64748b'};
   letter-spacing: 0.6px;
-  font-weight: 600;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     font-size: 7px;
@@ -405,10 +412,10 @@ const TradeModeLabel = styled.div`
 const TradeModeButtons = styled.div`
   display: flex;
   gap: 3px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border-radius: 8px;
   padding: 3px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
 
   @media (max-width: 768px) {
     padding: 2px;
@@ -431,7 +438,7 @@ const TradeModeButton = styled.button`
   background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : 'transparent'};
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#8a93a6'};
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -441,12 +448,12 @@ const TradeModeButton = styled.button`
   letter-spacing: 0.3px;
 
   ${props => props.active && `
-    box-shadow: 0 2px 12px ${props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.2)'};
+    box-shadow: 0 2px 12px ${props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
   `}
 
   &:hover {
     color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.text || '#d1d4dc'};
-    background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+    background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.accentActive || 'rgba(255,255,255,0.02)'};
   }
 
   &:active {
@@ -455,7 +462,7 @@ const TradeModeButton = styled.button`
 
   .mode-label {
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .mode-shortcut {
@@ -496,6 +503,7 @@ const BotGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 4px;
   animation: ${fadeIn} 0.5s ease;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     gap: 3px;
@@ -504,12 +512,13 @@ const BotGrid = styled.div`
 
 const BotCard = styled.div`
   padding: 6px 4px;
-  background: ${props => props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.selected ? props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.selected ? props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
+  font-weight: 700;
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
@@ -518,16 +527,16 @@ const BotCard = styled.div`
 
   ${props => props.selected && `
     border-color: ${props.theme?.colors?.accent || '#2962ff'};
-    box-shadow: 0 0 20px ${props.theme?.colors?.accent + '15' || 'rgba(41,98,255,0.08)'};
+    box-shadow: 0 0 20px ${props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.08)'};
     animation: ${pulseGlow} 2s ease-in-out infinite;
   `}
 
-  .bot-name { font-size: 9px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
-  .bot-type { font-size: 6px; text-transform: uppercase; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px; letter-spacing: 0.3px; }
+  .bot-name { font-size: 9px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
+  .bot-type { font-size: 6px; text-transform: uppercase; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px; letter-spacing: 0.3px; font-weight: 700; }
   .bot-badge {
     font-size: 5px; text-transform: uppercase; padding: 1px 6px;
     border-radius: 4px; background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.08)'};
-    color: ${props => props.theme?.colors?.accent || '#2962ff'}; display: inline-block; margin-top: 1px;
+    color: ${props => props.theme?.colors?.accent || '#2962ff'}; display: inline-block; margin-top: 1px; font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -549,11 +558,12 @@ const BotHeader = styled.div`
   text-align: center;
   padding: 2px 0 3px 0;
   animation: ${fadeIn} 0.4s ease;
+  font-weight: 700;
 
-  .title { font-size: 11px; font-weight: 500; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
+  .title { font-size: 11px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#d1d4dc'}; }
   .subtitle {
-    font-size: 9px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px;
-    .highlight { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-weight: 600; }
+    font-size: 9px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; margin-top: 1px; font-weight: 700;
+    .highlight { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-weight: 700; }
   }
 
   @media (max-width: 768px) {
@@ -577,6 +587,7 @@ const InputGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 6px;
   animation: ${fadeIn} 0.5s ease;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     gap: 4px;
@@ -591,6 +602,7 @@ const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     gap: 1px;
@@ -605,7 +617,7 @@ const InputLabel = styled.div`
   text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
   letter-spacing: 0.5px;
-  font-weight: 600;
+  font-weight: 700;
 
   .suffix { 
     font-size: 6px; 
@@ -618,10 +630,10 @@ const InputLabel = styled.div`
     font-size: 5px; 
     color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'}; 
     text-transform: none;
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'}; 
+    background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'}; 
     padding: 0 4px; 
     border-radius: 3px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     font-weight: 400;
   }
 
@@ -643,24 +655,24 @@ const InputRow = styled.div`
   display: flex;
   align-items: center;
   gap: 0;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 5px;
   transition: all 0.2s ease;
   overflow: hidden;
 
   &:focus-within { 
     border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.25)'}; 
-    box-shadow: 0 0 0 2px ${props => props.theme?.colors?.accent + '10' || 'rgba(41,98,255,0.05)'}; 
+    box-shadow: 0 0 0 2px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.05)'}; 
   }
   
   .prefix {
     padding: 3px 6px;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-    border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+    border-right: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   }
 
   @media (max-width: 768px) {
@@ -681,7 +693,7 @@ const StyledInput = styled.input`
   border: none;
   color: ${props => props.theme?.colors?.text || '#d1d4dc'};
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;
   outline: none;
   width: 100%;
   min-width: 0;
@@ -717,13 +729,14 @@ const ToggleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 5px;
   padding: 2px 5px;
   height: 26px;
   gap: 3px;
   width: 100%;
+  font-weight: 700;
 
   @media (max-width: 768px) {
     padding: 2px 4px;
@@ -747,7 +760,7 @@ const ToggleLabel = styled.div`
   text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
   letter-spacing: 0.4px;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
 
   @media (max-width: 768px) {
@@ -771,7 +784,7 @@ const ToggleTrack = styled.div`
   position: relative;
   flex-shrink: 0;
 
-  &:hover { box-shadow: 0 0 12px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.1)'}; }
+  &:hover { box-shadow: 0 0 12px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'}; }
   
   .thumb {
     width: 10px;
@@ -811,8 +824,8 @@ const ToggleTrack = styled.div`
 
 const ToggleStatus = styled.span`
   font-size: 6px;
-  color: ${props => props.active ? '#22c55e' : props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
-  font-weight: 600;
+  color: ${props => props.active ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
+  font-weight: 700;
   min-width: 16px;
 
   @media (max-width: 768px) {
@@ -838,20 +851,20 @@ const DropdownSelectButton = styled.div`
   align-items: center;
   gap: 2px;
   padding: 1px 5px 1px 6px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   color: ${props => props.theme?.colors?.text || '#f1f5f9'};
   height: 20px;
   min-width: 28px;
   justify-content: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
@@ -883,7 +896,7 @@ const DropdownSelectMenu = styled.div`
   top: calc(100% + 3px);
   right: 0;
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   overflow: hidden;
   z-index: 100;
@@ -893,6 +906,7 @@ const DropdownSelectMenu = styled.div`
   max-height: 150px;
   overflow-y: auto;
   min-width: 40px;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -912,14 +926,14 @@ const DropdownSelectItem = styled.div`
   padding: 4px 8px;
   cursor: pointer;
   font-size: 9px;
-  font-weight: 500;
+  font-weight: 700;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
   text-align: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -968,7 +982,7 @@ const AIFloatingButton = styled.button`
   font-size: ${props => props.isMobile ? '11px' : '14px'};
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 20px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.2)'};
+  box-shadow: 0 2px 20px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -978,7 +992,7 @@ const AIFloatingButton = styled.button`
 
   &:hover {
     transform: scale(1.05) translateY(-3px);
-    box-shadow: 0 4px 30px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.3)'};
+    box-shadow: 0 4px 30px ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.3)'};
   }
 
   &:active {
@@ -991,6 +1005,7 @@ const AIFloatingButton = styled.button`
     letter-spacing: 0.5px;
     opacity: 0.8;
     margin-top: 1px;
+    font-weight: 700;
   }
 `;
 
@@ -1001,8 +1016,7 @@ const AIAnalysisPanel = styled.div`
   width: ${props => props.isMobile ? '220px' : '280px'};
   max-height: ${props => props.isMobile ? '340px' : '400px'};
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.96)'};
-  backdrop-filter: blur(20px);
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 12px;
   padding: ${props => props.isMobile ? '14px 16px' : '16px 20px'};
   z-index: 51;
@@ -1010,6 +1024,7 @@ const AIAnalysisPanel = styled.div`
   animation: ${fadeIn} 0.3s ease;
   display: ${props => props.isOpen ? 'block' : 'none'};
   overflow-y: auto;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -1034,11 +1049,12 @@ const AIAnalysisHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  font-weight: 700;
 
   .title {
     font-size: ${props => props.isMobile ? '11px' : '13px'};
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     display: flex;
     align-items: center;
@@ -1059,8 +1075,8 @@ const AIAnalysisHeader = styled.div`
   }
 
   .close-btn {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     width: 26px;
     height: 26px;
@@ -1071,9 +1087,10 @@ const AIAnalysisHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
 
     &:hover {
-      background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+      background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.04)'};
       color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     }
   }
@@ -1092,18 +1109,20 @@ const AIScannerInputs = styled.div`
   flex-direction: column;
   gap: 6px;
   margin-bottom: 0;
+  font-weight: 700;
 `;
 
 const AISelectWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3px;
+  font-weight: 700;
 
   .label {
     font-size: 8px;
     text-transform: uppercase;
     color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.5px;
   }
 `;
@@ -1119,14 +1138,15 @@ const AIDropdownButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
@@ -1148,7 +1168,7 @@ const AIDropdownButton = styled.div`
 
   .ai-selected-text {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
@@ -1177,7 +1197,7 @@ const AIDropdownMenu = styled.div`
   left: 0;
   right: 0;
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   overflow: hidden;
   z-index: 100;
@@ -1186,6 +1206,7 @@ const AIDropdownMenu = styled.div`
   box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   max-height: 180px;
   overflow-y: auto;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -1209,10 +1230,11 @@ const AIDropdownItem = styled.div`
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -1234,7 +1256,7 @@ const AIDropdownItem = styled.div`
 
   .ai-item-name {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1267,20 +1289,21 @@ const AITradeTypeButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
   .ai-type-selected {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap;
     overflow: hidden;
@@ -1308,7 +1331,7 @@ const AITradeTypeMenu = styled.div`
   left: 0;
   right: 0;
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   overflow: hidden;
   z-index: 100;
@@ -1317,6 +1340,7 @@ const AITradeTypeMenu = styled.div`
   box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   max-height: 150px;
   overflow-y: auto;
+  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -1340,16 +1364,17 @@ const AITradeTypeItem = styled.div`
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   .ai-type-name {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 700;
   }
 
   .ai-check {
@@ -1372,11 +1397,11 @@ const AIScanButton = styled.button`
   padding: 8px 0;
   border: none;
   border-radius: 6px;
-  background: ${props => props.theme?.colors?.background + '60' || 'rgba(255,255,255,0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.03)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   color: ${props => props.theme?.colors?.textMuted || '#64748b'};
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: not-allowed;
   transition: all 0.3s ease;
   opacity: 0.5;
@@ -1399,7 +1424,7 @@ const AIScanButton = styled.button`
     border-radius: 8px;
     background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
     color: ${props => props.theme?.colors?.accent || '#38bdf8'};
-    font-weight: 600;
+    font-weight: 700;
   }
 
   @media (max-width: 480px) {
@@ -1420,6 +1445,7 @@ const DigitStatsContainer = styled.div`
   width: 100%;
   padding: 3px 1px;
   gap: 2px;
+  font-weight: 700;
 
   @media (min-width: 769px) {
     display: none;
@@ -1439,6 +1465,7 @@ const DigitItem = styled.div`
   position: relative;
   padding-bottom: 4px;
   min-width: 0;
+  font-weight: 700;
 
   .circle-badge {
     width: 28px;
@@ -1448,19 +1475,19 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => props.theme?.colors?.background + 'f0' || 'rgba(20,28,43,0.95)'};
-    border: 1.5px solid ${props => 
+    background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(20,28,43,0.95)'};
+    border: 2px solid ${props => 
       props.isLastDigit 
-        ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
+        ? (props.direction === 'up' ? props.theme?.colors?.success || '#00e676' : props.theme?.colors?.danger || '#ff4a4a') 
         : props.theme?.colors?.border || 'rgba(255,255,255,0.06)'
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? 'rgba(0,230,118,0.3)' : 'rgba(255,74,74,0.3)'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 10px ${props.direction === 'up' ? props.theme?.colors?.success + '80' || 'rgba(0,230,118,0.3)' : props.theme?.colors?.danger + '80' || 'rgba(255,74,74,0.3)'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 480px) {
       width: 22px;
       height: 22px;
-      border-width: 1.5px;
+      border-width: 2px;
     }
   }
 
@@ -1478,11 +1505,11 @@ const DigitItem = styled.div`
   .pct-text {
     font-size: 6px;
     font-family: monospace;
-    font-weight: 500;
+    font-weight: 700;
     color: ${props => 
       props.isMax 
-        ? '#00e676' 
-        : (props.isMin ? '#ff4a4a' : props.theme?.colors?.textMuted || '#728096')
+        ? props.theme?.colors?.success || '#00e676' 
+        : (props.isMin ? props.theme?.colors?.danger || '#ff4a4a' : props.theme?.colors?.textMuted || '#728096')
     };
     line-height: 1;
     margin-top: 0px;
@@ -1496,7 +1523,7 @@ const DigitItem = styled.div`
     position: absolute;
     bottom: -2px;
     font-size: 6px;
-    color: #ff9800; 
+    color: ${props => props.theme?.colors?.accent || '#ff9800'}; 
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
 
@@ -1513,6 +1540,7 @@ const DigitItem = styled.div`
 
 const DigitGridWrapper = styled.div`
   animation: ${fadeIn} 0.4s ease;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     margin: 1px 0;
@@ -1523,7 +1551,7 @@ const DigitGridLabel = styled.div`
   font-size: 8px; text-transform: uppercase;
   color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
   letter-spacing: 0.5px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 2px;
 
   @media (max-width: 768px) {
@@ -1547,21 +1575,21 @@ const DigitGrid = styled.div`
 
 const DigitButton = styled.button`
   padding: 5px 0;
-  border: 1px solid ${props => {
+  border: 2px solid ${props => {
     if (props.disabled) return props.theme?.colors?.border + '40' || 'rgba(255,255,255,0.02)';
     return props.selected ? props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)';
   }};
   border-radius: 4px;
   background: ${props => {
     if (props.disabled) return props.theme?.colors?.background + '20' || 'rgba(255,255,255,0.01)';
-    return props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)';
+    return props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)';
   }};
   color: ${props => {
     if (props.disabled) return props.theme?.colors?.textMuted + '40' || '#4a4f5e';
     return props.selected ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.textMuted || '#8a93a6';
   }};
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s ease;
   opacity: ${props => props.disabled ? 0.3 : 1};
@@ -1573,7 +1601,7 @@ const DigitButton = styled.button`
   }
   
   ${props => props.selected && !props.disabled && `
-    box-shadow: 0 0 12px ${props.theme?.colors?.accent + '15' || 'rgba(41,98,255,0.08)'};
+    box-shadow: 0 0 12px ${props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.08)'};
   `}
   
   &:disabled {
@@ -1600,6 +1628,7 @@ const DigitButton = styled.button`
 const EvenOddButtons = styled.div`
   display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
   animation: ${fadeIn} 0.5s ease;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     gap: 3px;
@@ -1611,27 +1640,28 @@ const EvenOddButton = styled.button`
   border: none;
   border-radius: 6px;
   background: ${props => props.variant === 'even'
-    ? 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02))'
-    : 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02))'};
-  border: 1px solid ${props => props.variant === 'even' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'};
-  color: ${props => props.variant === 'even' ? '#22c55e' : '#ef4444'};
+    ? `linear-gradient(135deg, ${props.theme?.colors?.success + '15' || 'rgba(34,197,94,0.08)'}, ${props.theme?.colors?.success + '05' || 'rgba(34,197,94,0.02)'})`
+    : `linear-gradient(135deg, ${props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.08)'}, ${props.theme?.colors?.danger + '05' || 'rgba(239,68,68,0.02)'})`};
+  border: 2px solid ${props => props.variant === 'even' ? props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.15)' : props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.15)'};
+  color: ${props => props.variant === 'even' ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.danger || '#ef4444'};
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1px;
+  font-weight: 700;
 
   &:hover {
     transform: translateY(-1px);
     box-shadow: ${props => props.variant === 'even'
-      ? '0 4px 16px rgba(34,197,94,0.1)'
-      : '0 4px 16px rgba(239,68,68,0.1)'};
+      ? `0 4px 16px ${props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.1)'}`
+      : `0 4px 16px ${props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.1)'}`};
   }
   &:active { transform: scale(0.97); }
   &:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-  .label { font-size: 12px; font-weight: 600; }
+  .label { font-size: 12px; font-weight: 700; }
   .payout { font-size: 9px; font-weight: 400; opacity: 0.7; }
   .sub { font-size: 8px; opacity: 0.5; font-weight: 400; }
 
@@ -1658,6 +1688,7 @@ const EvenOddButton = styled.button`
 const TradeButtonsWrapper = styled.div`
   display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
   animation: ${fadeIn} 0.5s ease;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     gap: 3px;
@@ -1669,27 +1700,28 @@ const TradeButton = styled.button`
   border: none;
   border-radius: 6px;
   background: ${props => props.variant === 'primary'
-    ? 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02))'
-    : 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02))'};
-  border: 1px solid ${props => props.variant === 'primary' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'};
-  color: ${props => props.variant === 'primary' ? '#22c55e' : '#ef4444'};
+    ? `linear-gradient(135deg, ${props.theme?.colors?.success + '15' || 'rgba(34,197,94,0.08)'}, ${props.theme?.colors?.success + '05' || 'rgba(34,197,94,0.02)'})`
+    : `linear-gradient(135deg, ${props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.08)'}, ${props.theme?.colors?.danger + '05' || 'rgba(239,68,68,0.02)'})`};
+  border: 2px solid ${props => props.variant === 'primary' ? props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.15)' : props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.15)'};
+  color: ${props => props.variant === 'primary' ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.danger || '#ef4444'};
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1px;
+  font-weight: 700;
 
   &:hover {
     transform: translateY(-1px);
     box-shadow: ${props => props.variant === 'primary'
-      ? '0 4px 16px rgba(34,197,94,0.1)'
-      : '0 4px 16px rgba(239,68,68,0.1)'};
+      ? `0 4px 16px ${props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.1)'}`
+      : `0 4px 16px ${props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.1)'}`};
   }
   &:active { transform: scale(0.97); }
   &:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-  .label { font-size: 12px; font-weight: 600; }
+  .label { font-size: 12px; font-weight: 700; }
   .payout { font-size: 9px; font-weight: 400; opacity: 0.7; }
   .sub { font-size: 8px; opacity: 0.5; font-weight: 400; }
 
@@ -1721,10 +1753,10 @@ const RunButton = styled.button`
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
   color: ${props => props.theme?.colors?.text || '#ffffff'};
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s ease;
-  box-shadow: 0 2px 12px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.2)'};
+  box-shadow: 0 2px 12px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
   position: relative;
   overflow: hidden;
   animation: ${fadeIn} 0.5s ease;
@@ -1758,11 +1790,12 @@ const RunButton = styled.button`
 
 const SessionInfo = styled.div`
   padding-top: 8px;
-  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-top: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  font-weight: 700;
 
   .left {
     display: flex;
@@ -1775,26 +1808,26 @@ const SessionInfo = styled.div`
     text-transform: uppercase;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     letter-spacing: 0.4px;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .trades {
     font-size: 10px;
     color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
-    font-weight: 500;
+    font-weight: 700;
   }
 
-  .wins { color: #22c55e; }
-  .losses { color: #ef4444; }
+  .wins { color: ${props => props.theme?.colors?.success || '#22c55e'}; }
+  .losses { color: ${props => props.theme?.colors?.danger || '#ef4444'}; }
 
   .pl {
     font-size: 14px;
     font-weight: 700;
-    color: #ef4444;
+    color: ${props => props.theme?.colors?.danger || '#ef4444'};
     padding: 2px 10px;
     border-radius: 4px;
-    background: rgba(239,68,68,0.06);
-    border: 1px solid rgba(239,68,68,0.08);
+    background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.06)'};
+    border: 2px solid ${props => props.theme?.colors?.danger + '20' || 'rgba(239,68,68,0.08)'};
   }
 
   .pl-label {
@@ -1803,6 +1836,7 @@ const SessionInfo = styled.div`
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     letter-spacing: 0.4px;
     text-align: right;
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -1843,10 +1877,10 @@ const SingleTradeButton = styled.button`
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
   color: ${props => props.theme?.colors?.text || '#ffffff'};
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.25s ease;
-  box-shadow: 0 2px 16px ${props => props.theme?.colors?.accent + '25' || 'rgba(41,98,255,0.15)'};
+  box-shadow: 0 2px 16px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.15)'};
   position: relative;
   overflow: hidden;
   opacity: ${props => props.disabled ? 0.5 : 1};
@@ -1854,7 +1888,7 @@ const SingleTradeButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px ${props => props.theme?.colors?.accent + '35' || 'rgba(41,98,255,0.2)'};
+    box-shadow: 0 6px 24px ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.2)'};
   }
 
   &:active:not(:disabled) {
@@ -1877,7 +1911,7 @@ const SingleTradeButton = styled.button`
 
   .buy-text {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -1907,7 +1941,7 @@ const SingleTradeButton = styled.button`
     padding: 1px 8px;
     border-radius: 8px;
     font-size: 9px;
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .stake-info {
@@ -2837,7 +2871,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             <div style={{
               fontSize: '9px', color: '#5a6070', textAlign: 'center',
               padding: '2px 0', animation: `${fadeIn} 0.3s ease`,
-              borderTop: '1px solid rgba(255,255,255,0.04)', marginTop: '2px', paddingTop: '3px'
+              borderTop: '2px solid rgba(255,255,255,0.04)', marginTop: '2px', paddingTop: '3px'
             }}>
               {filteredBots.find(b => b.id === selectedBot)?.name} ready
             </div>
