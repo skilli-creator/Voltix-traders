@@ -26,14 +26,14 @@ const TopBar = styled.div`
   align-items: center;
   padding: 12px 32px;
   background: ${props => props.theme.colors.backgroundSecondary};
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid ${props => props.theme.colors.border};
+  border-bottom: 2px solid ${props => props.theme.colors.border};
   position: sticky;
   top: 0;
   z-index: 100;
   min-height: 64px;
   flex-shrink: 0;
   transition: all 0.3s ease;
+  font-weight: 700;
 
   @media (max-width: 1024px) {
     padding: 10px 20px;
@@ -61,6 +61,7 @@ const LeftSection = styled.div`
   align-items: center;
   gap: 16px;
   flex-shrink: 0;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     gap: 10px;
@@ -79,7 +80,7 @@ const SidebarToggle = styled.button`
   width: 36px;
   height: 36px;
   background: ${props => props.theme.colors.tabActive};
-  border: 1px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -91,7 +92,7 @@ const SidebarToggle = styled.button`
     background: ${props => props.theme.colors.accentActive};
     border-color: ${props => props.theme.colors.accent};
     transform: scale(1.05);
-    box-shadow: 0 0 30px ${props => props.theme.colors.accent + '20'};
+    box-shadow: 0 0 30px ${props => props.theme.colors.accent + '40'};
   }
 
   &:active {
@@ -134,7 +135,7 @@ const SidebarToggle = styled.button`
     gap: 4px;
     .line {
       width: 16px;
-      height: 1.5px;
+      height: 2px;
       &:nth-child(1) {
         width: ${props => props.isOpen ? '18px' : '16px'};
       }
@@ -150,7 +151,7 @@ const SidebarToggle = styled.button`
     gap: 3px;
     .line {
       width: 14px;
-      height: 1.5px;
+      height: 2px;
       &:nth-child(1) {
         width: ${props => props.isOpen ? '16px' : '14px'};
       }
@@ -179,37 +180,40 @@ const Brand = styled.div`
     display: flex;
     align-items: center;
     gap: 4px;
+    font-weight: 700;
   }
 
   .voltix {
     background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-weight: 700;
   }
 
   .deriv {
-    color: ${props => props.theme.colors.accent};
+    color: #FF0000 !important;
     font-style: italic;
     font-weight: 700;
     letter-spacing: 0.5px;
-    -webkit-text-fill-color: ${props => props.theme.colors.accent};
+    -webkit-text-fill-color: #FF0000 !important;
   }
 
   .live-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #22c55e;
+    background: ${props => props.theme.colors.accent};
     position: relative;
     margin-left: 4px;
     flex-shrink: 0;
+    border: 1px solid ${props => props.theme.colors.accent};
 
     &::before {
       content: '';
       position: absolute;
       inset: -4px;
       border-radius: 50%;
-      background: #22c55e;
+      background: ${props => props.theme.colors.accent};
       animation: ${pulseRing} 2s ease-out infinite;
     }
 
@@ -218,7 +222,7 @@ const Brand = styled.div`
       position: absolute;
       inset: -8px;
       border-radius: 50%;
-      background: #22c55e;
+      background: ${props => props.theme.colors.accent};
       animation: ${pulseRing} 2s ease-out infinite 0.5s;
     }
   }
@@ -250,6 +254,7 @@ const RightSection = styled.div`
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+  font-weight: 700;
 
   @media (max-width: 1024px) {
     gap: 10px;
@@ -280,17 +285,18 @@ const AccountBadge = styled.div`
   align-items: center;
   gap: 8px;
   padding: 6px 16px 6px 12px;
-  background: ${props => props.theme.colors.backgroundSecondary + 'cc'};
-  border: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border: 2px solid ${props => props.theme.colors.border};
   border-radius: 40px;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  font-weight: 700;
 
   &:hover {
     background: ${props => props.theme.colors.backgroundTertiary};
     border-color: ${props => props.theme.colors.accent};
-    box-shadow: 0 0 20px ${props => props.theme.colors.accent + '15'};
+    box-shadow: 0 0 20px ${props => props.theme.colors.accent + '30'};
   }
 
   .flag {
@@ -299,7 +305,7 @@ const AccountBadge = styled.div`
 
   .balance {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme.colors.text};
   }
 
@@ -309,12 +315,12 @@ const AccountBadge = styled.div`
     background: ${props => props.theme.colors.accentActive};
     padding: 2px 6px;
     border-radius: 12px;
-    font-weight: 600;
+    font-weight: 700;
     transition: all 0.2s ease;
     margin-left: 2px;
 
     &:hover {
-      background: ${props => props.theme.colors.accent + '30'};
+      background: ${props => props.theme.colors.accent + '40'};
       color: ${props => props.theme.colors.accent};
     }
   }
@@ -370,9 +376,8 @@ const DropdownMenu = styled.div`
   right: 0;
   min-width: 280px;
   max-width: 90vw;
-  background: ${props => props.theme.colors.backgroundSecondary + 'f0'};
-  backdrop-filter: blur(16px);
-  border: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border: 2px solid ${props => props.theme.colors.border};
   border-radius: 12px;
   padding: 6px 0;
   box-shadow: 0 12px 40px ${props => props.theme.colors.shadow};
@@ -382,6 +387,7 @@ const DropdownMenu = styled.div`
   transition: all 0.2s ease;
   z-index: 200;
   overflow: hidden;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     min-width: 220px;
@@ -404,6 +410,7 @@ const DropdownItem = styled.div`
   cursor: pointer;
   transition: all 0.15s ease;
   font-size: 13px;
+  font-weight: 700;
   color: ${props => props.theme.colors.textSecondary};
 
   &:hover {
@@ -428,10 +435,12 @@ const DropdownItem = styled.div`
   .label {
     flex: 1;
     white-space: nowrap;
+    font-weight: 700;
   }
 
   .balance-small {
     font-size: 12px;
+    font-weight: 700;
     color: ${props => props.theme.colors.textMuted};
     white-space: nowrap;
   }
@@ -440,6 +449,7 @@ const DropdownItem = styled.div`
     display: none;
     color: ${props => props.theme.colors.accent};
     flex-shrink: 0;
+    font-weight: 700;
   }
 
   @media (max-width: 480px) {
@@ -472,14 +482,14 @@ const CurrencyToggle = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 12px 16px;
-  border-top: 1px solid ${props => props.theme.colors.border};
+  border-top: 2px solid ${props => props.theme.colors.border};
   margin-top: 4px;
   background: ${props => props.theme.colors.accentActive};
 
   .label {
     font-size: 11px;
     color: ${props => props.theme.colors.textMuted};
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 0.3px;
   }
 
@@ -496,11 +506,11 @@ const CurrencyToggle = styled.div`
     flex: 1;
     padding: 6px 8px;
     border-radius: 16px;
-    border: none;
+    border: 2px solid transparent;
     background: transparent;
     color: ${props => props.theme.colors.textMuted};
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
@@ -517,7 +527,8 @@ const CurrencyToggle = styled.div`
     &.active {
       background: ${props => props.theme.colors.accentActive};
       color: ${props => props.theme.colors.accent};
-      box-shadow: 0 0 20px ${props => props.theme.colors.accent + '20'};
+      border-color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 20px ${props => props.theme.colors.accent + '30'};
     }
 
     &:disabled {
@@ -560,16 +571,15 @@ const ProfessionalFundsButton = styled.a`
   gap: 12px;
   padding: 8px 24px 8px 20px;
   border-radius: 8px;
-  border: none;
+  border: 2px solid ${props => props.theme.colors.border};
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   position: relative;
-  background: ${props => props.theme.colors.background + 'cc'};
+  background: ${props => props.theme.colors.background};
   color: ${props => props.theme.colors.text};
-  border: 1px solid ${props => props.theme.colors.border};
   letter-spacing: 0.3px;
   overflow: hidden;
 
@@ -577,7 +587,7 @@ const ProfessionalFundsButton = styled.a`
     content: '';
     position: absolute;
     inset: 0;
-    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}15, transparent)`};
+    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}25, transparent)`};
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -631,14 +641,7 @@ const ProfessionalFundsButton = styled.a`
     font-size: 16px;
     transition: all 0.3s ease;
     position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: 6px;
-      border: 1px solid ${props => props.theme.colors.border};
-    }
+    border: 2px solid ${props => props.theme.colors.border};
   }
 
   .funds-content {
@@ -649,7 +652,7 @@ const ProfessionalFundsButton = styled.a`
 
   .funds-title {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme.colors.text};
     letter-spacing: 0.5px;
   }
@@ -657,7 +660,7 @@ const ProfessionalFundsButton = styled.a`
   .funds-subtitle {
     font-size: 10px;
     color: ${props => props.theme.colors.textMuted};
-    font-weight: 400;
+    font-weight: 700;
     letter-spacing: 0.2px;
   }
 
@@ -668,6 +671,7 @@ const ProfessionalFundsButton = styled.a`
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -716,12 +720,12 @@ const PremiumExitButton = styled.button`
   gap: 10px;
   padding: 8px 20px;
   border-radius: 8px;
-  border: 1px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme.colors.border};
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: ${props => props.theme.colors.background + '40'};
+  background: ${props => props.theme.colors.background};
   color: ${props => props.theme.colors.textSecondary};
   position: relative;
   letter-spacing: 0.3px;
@@ -732,7 +736,7 @@ const PremiumExitButton = styled.button`
     position: absolute;
     inset: 0;
     border-radius: 8px;
-    background: ${props => props.theme.colors.accent + '08'};
+    background: ${props => props.theme.colors.accent + '15'};
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -784,8 +788,8 @@ const PremiumExitButton = styled.button`
     width: 28px;
     height: 28px;
     border-radius: 6px;
-    border: 1px solid ${props => props.theme.colors.border};
-    background: ${props => props.theme.colors.background + '40'};
+    border: 2px solid ${props => props.theme.colors.border};
+    background: ${props => props.theme.colors.background};
     transition: all 0.3s ease;
     flex-shrink: 0;
   }
@@ -795,10 +799,11 @@ const PremiumExitButton = styled.button`
     height: 16px;
     transition: all 0.3s ease;
     color: ${props => props.theme.colors.textMuted};
+    font-weight: 700;
   }
 
   .exit-text {
-    font-weight: 500;
+    font-weight: 700;
     transition: all 0.3s ease;
     white-space: nowrap;
   }
@@ -810,6 +815,7 @@ const PremiumExitButton = styled.button`
     margin-left: 2px;
     display: flex;
     align-items: center;
+    font-weight: 700;
   }
 
   @media (max-width: 768px) {
@@ -993,7 +999,6 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
         </SidebarToggle>
 
         <Brand>
-          
           <span className="brand-text">
             <span className="voltix">Voltix Traders.</span>
             <span className="deriv">deriv</span>
