@@ -1140,7 +1140,7 @@ const ConnectButton = styled.button`
 `;
 
 // ============================================
-// CONNECT MODAL - UPDATED WITH API TOKEN OPTION
+// PLATFORM SELECTION MODAL
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -1478,263 +1478,485 @@ const OptionCard = styled.button`
   }
 `;
 
-// ===== API TOKEN OPTION - FULL WIDTH =====
-const ApiTokenOption = styled.div`
-  margin-top: 14px;
+// ============================================
+// DERIV CONNECT POPUP - SHOWS AFTER CLICKING DERIV
+// ============================================
+const DerivConnectOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 3000;
+  display: ${props => props.isOpen ? 'flex' : 'none'};
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ${floatIn} 0.3s ease;
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    align-items: flex-end;
+  }
+`;
+
+const DerivConnectContainer = styled.div`
+  background: linear-gradient(160deg, rgba(10, 20, 40, 0.98), rgba(5, 10, 24, 0.98));
+  border-radius: 28px;
+  padding: 32px 28px 28px;
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid rgba(168, 85, 247, 0.08);
+  box-shadow: 
+    0 40px 80px rgba(0, 0, 0, 0.7),
+    0 0 60px rgba(168, 85, 247, 0.03);
+  position: relative;
+  overflow: hidden;
+  animation: ${popIn} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #a855f7, #7c3aed, #a855f7, transparent);
+    background-size: 300% 100%;
+    animation: ${shimmerBorder} 3s ease-in-out infinite;
+    border-radius: 28px 28px 0 0;
+    opacity: 0.6;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(168, 85, 247, 0.05),
+      transparent,
+      rgba(124, 58, 237, 0.05),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 20s linear infinite;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 24px 20px 20px;
+    border-radius: 24px;
+    max-width: 380px;
+    &::before { border-radius: 24px 24px 0 0; }
+    &::after { border-radius: 24px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 16px 16px;
+    border-radius: 18px 18px 0 0;
+    max-width: 100%;
+    &::before { border-radius: 18px 18px 0 0; height: 2px; }
+    &::after { border-radius: 18px; }
+  }
+`;
+
+const DerivConnectClose = styled.button`
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    transform: rotate(90deg) scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    top: 12px;
+    right: 14px;
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    top: 10px;
+    right: 12px;
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+`;
+
+const DerivConnectHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+
+  .icon {
+    font-size: 2rem;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  @media (max-width: 768px) {
+    gap: 10px;
+    .icon { font-size: 1.6rem; }
+    .title { font-size: 1rem; }
+  }
+
+  @media (max-width: 480px) {
+    gap: 8px;
+    .icon { font-size: 1.4rem; }
+    .title { font-size: 0.9rem; }
+  }
+`;
+
+const DerivConnectSubtitle = styled.p`
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  padding-right: 10px;
+
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.65rem;
+    margin-bottom: 12px;
+    padding-right: 0;
+  }
+`;
+
+const DerivConnectOptions = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
+`;
+
+const DerivConnectOption = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 14px;
   padding: 14px 16px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 14px;
-  transition: all 0.3s ease;
   cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  text-align: left;
+  color: #f1f5f9;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: radial-gradient(circle at center, ${props => props.glowColor || 'rgba(168, 85, 247, 0.04)'}, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
 
   &:hover {
+    transform: translateY(-2px) scale(1.01);
     background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(56, 189, 248, 0.06);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border-color: rgba(168, 85, 247, 0.1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   }
 
-  .api-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    cursor: pointer;
+  &:hover::before {
+    opacity: 1;
   }
 
-  .api-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #f1f5f9;
-
-    .api-icon {
-      font-size: 1.2rem;
-    }
+  &:active {
+    transform: scale(0.98);
   }
 
-  .api-toggle {
-    font-size: 0.6rem;
-    color: #94a3b8;
-    transition: transform 0.3s ease;
-    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  .option-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
 
-  .api-body {
-    display: ${props => props.isOpen ? 'block' : 'none'};
-    animation: ${modalSlideUp} 0.3s ease;
-  }
-
-  .api-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
-  .api-input-label {
-    font-size: 0.6rem;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    .required {
-      color: #ef4444;
-      font-size: 0.5rem;
-    }
-  }
-
-  .api-input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: 10px;
-    padding: 6px 4px 6px 12px;
-    transition: all 0.3s ease;
-
-    &:focus-within {
-      border-color: rgba(34, 197, 94, 0.3);
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.05);
-    }
-  }
-
-  .api-input {
+  .option-info {
     flex: 1;
-    background: transparent;
-    border: none;
-    color: #f1f5f9;
-    font-size: 0.75rem;
-    font-family: 'Inter', monospace;
-    outline: none;
-    padding: 6px 0;
-    letter-spacing: 0.3px;
-    font-weight: 500;
-
-    &::placeholder {
-      color: #4b5563;
-      font-size: 0.65rem;
-      font-weight: 400;
-    }
+    position: relative;
+    z-index: 1;
   }
 
-  .api-paste-btn {
-    background: rgba(34, 197, 94, 0.08);
-    border: 1px solid rgba(34, 197, 94, 0.1);
-    color: #4ade80;
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 0.55rem;
+  .option-label {
+    font-size: 0.85rem;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-    font-family: 'Inter', sans-serif;
-
-    &:hover {
-      background: rgba(34, 197, 94, 0.15);
-      border-color: rgba(34, 197, 94, 0.2);
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
+    display: block;
   }
 
-  .api-hint {
-    font-size: 0.55rem;
+  .option-desc {
+    font-size: 0.6rem;
+    color: #94a3b8;
+    display: block;
+    margin-top: 1px;
+  }
+
+  .option-arrow {
+    font-size: 0.9rem;
     color: #4b5563;
-    margin-top: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-
-    .hint-link {
-      color: #38bdf8;
-      cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      transition: color 0.3s ease;
-
-      &:hover {
-        color: #60a5fa;
-      }
-    }
-
-    .hint-badge {
-      font-size: 0.4rem;
-      padding: 1px 6px;
-      border-radius: 6px;
-      background: rgba(56, 189, 248, 0.05);
-      border: 1px solid rgba(56, 189, 248, 0.05);
-      color: #60a5fa;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-  }
-
-  .api-connect-btn {
-    width: 100%;
-    padding: 8px 0;
-    margin-top: 8px;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: #ffffff;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
+    z-index: 1;
+  }
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 300%;
-      height: 100%;
-      background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.1), 
-        transparent
-      );
-      animation: ${shimmerWave} 3s ease-in-out infinite;
-      pointer-events: none;
-    }
+  &:hover .option-arrow {
+    transform: translateX(4px);
+    color: #a855f7;
+  }
 
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(34, 197, 94, 0.3);
-    }
-
-    &:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .connect-spinner {
-      animation: ${spin} 1s linear infinite;
-      display: inline-block;
-    }
+  .option-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.4rem;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.08);
+    color: #a855f7;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    z-index: 1;
   }
 
   @media (max-width: 768px) {
     padding: 12px 14px;
+    gap: 12px;
     border-radius: 12px;
-    margin-top: 10px;
 
-    .api-title {
-      font-size: 0.75rem;
-      .api-icon { font-size: 1rem; }
-    }
-    .api-input { font-size: 0.7rem; }
-    .api-input-label { font-size: 0.55rem; }
-    .api-paste-btn { font-size: 0.5rem; padding: 3px 10px; }
-    .api-hint { font-size: 0.5rem; }
-    .api-connect-btn { font-size: 0.75rem; padding: 7px 0; }
+    .option-icon { font-size: 1.3rem; }
+    .option-label { font-size: 0.75rem; }
+    .option-desc { font-size: 0.55rem; }
+    .option-arrow { font-size: 0.8rem; }
+    .option-badge { font-size: 0.35rem; padding: 1px 6px; top: 6px; right: 6px; }
   }
 
   @media (max-width: 480px) {
     padding: 10px 12px;
+    gap: 10px;
     border-radius: 10px;
-    margin-top: 8px;
 
-    .api-title {
-      font-size: 0.7rem;
-      .api-icon { font-size: 0.9rem; }
+    .option-icon { font-size: 1.1rem; }
+    .option-label { font-size: 0.7rem; }
+    .option-desc { font-size: 0.5rem; }
+    .option-arrow { font-size: 0.7rem; }
+    .option-badge { font-size: 0.3rem; padding: 1px 5px; top: 4px; right: 4px; }
+  }
+`;
+
+// ===== API TOKEN INPUT (inside Deriv Connect) =====
+const ApiTokenInputWrapper = styled.div`
+  display: ${props => props.show ? 'block' : 'none'};
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  animation: ${modalSlideUp} 0.3s ease;
+`;
+
+const ApiTokenLabel = styled.div`
+  font-size: 0.6rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .required {
+    color: #ef4444;
+    font-size: 0.5rem;
+  }
+`;
+
+const ApiTokenInputRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 4px 4px 4px 12px;
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: rgba(168, 85, 247, 0.3);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.05);
+  }
+`;
+
+const ApiTokenInput = styled.input`
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #f1f5f9;
+  font-size: 0.75rem;
+  font-family: 'Inter', monospace;
+  outline: none;
+  padding: 6px 0;
+  letter-spacing: 0.3px;
+  font-weight: 500;
+
+  &::placeholder {
+    color: #4b5563;
+    font-size: 0.65rem;
+    font-weight: 400;
+  }
+`;
+
+const ApiTokenPasteBtn = styled.button`
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.1);
+  color: #a855f7;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.55rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-family: 'Inter', sans-serif;
+
+  &:hover {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: rgba(168, 85, 247, 0.2);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.45rem;
+    padding: 3px 8px;
+  }
+`;
+
+const ApiTokenHint = styled.div`
+  font-size: 0.5rem;
+  color: #4b5563;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+
+  .hint-link {
+    color: #a855f7;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #c084fc;
     }
-    .api-input { 
-      font-size: 0.65rem; 
-      padding: 4px 0;
-    }
-    .api-input-wrapper {
-      padding: 4px 4px 4px 10px;
-    }
-    .api-paste-btn { 
-      font-size: 0.45rem; 
-      padding: 2px 8px; 
-    }
-    .api-hint { font-size: 0.45rem; }
-    .api-connect-btn { 
-      font-size: 0.7rem; 
-      padding: 6px 0; 
-    }
+  }
+`;
+
+const ApiTokenConnectBtn = styled.button`
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  opacity: ${props => props.disabled ? 0.5 : 1};
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.1), 
+      transparent
+    );
+    animation: ${shimmerWave} 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(168, 85, 247, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .connect-spinner {
+    animation: ${spin} 1s linear infinite;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.75rem;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+    padding: 7px 0;
   }
 `;
 
@@ -1995,6 +2217,7 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [greeting, setGreeting] = useState('Trader');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDerivConnectOpen, setIsDerivConnectOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
@@ -2004,9 +2227,12 @@ const Dashboard = () => {
   const [popupProgress, setPopupProgress] = useState(0);
   
   // API Token states
-  const [isApiTokenOpen, setIsApiTokenOpen] = useState(false);
   const [apiToken, setApiToken] = useState('');
+  const [showApiInput, setShowApiInput] = useState(false);
   const [isConnectingWithToken, setIsConnectingWithToken] = useState(false);
+  
+  // WebSocket reference
+  const wsRef = useRef(null);
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -2034,11 +2260,20 @@ const Dashboard = () => {
   }, [showMessage]);
 
   useEffect(() => {
-    if (showPopup && !isLoading) {
+    if (showPopup && !isLoading && !isConnectingWithToken) {
       const timer = setTimeout(() => setShowPopup(false), 3000);
       return () => clearTimeout(timer);
     }
-  }, [showPopup, isLoading]);
+  }, [showPopup, isLoading, isConnectingWithToken]);
+
+  // Cleanup WebSocket on unmount
+  useEffect(() => {
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, []);
 
   const showCustomMessage = (msg, type) => {
     setMessage(msg);
@@ -2050,18 +2285,129 @@ const Dashboard = () => {
     setIsModalOpen(true);
   };
 
-  const handleConnectAccount = async (type) => {
+  const handlePlatformSelect = (type) => {
+    setIsModalOpen(false);
+    
     if (type === 'deriv') {
-      await handleDerivOAuth();
+      // Open Deriv connect popup
+      setIsDerivConnectOpen(true);
+      setShowApiInput(false);
+      setApiToken('');
     } else {
+      // Navigate directly for Forex
       navigate('/derivdash');
-      setIsModalOpen(false);
     }
   };
 
+  // ===== DERIV CONNECT WITH WEBSOCKET =====
+  const handleDerivConnectWithToken = async () => {
+    if (!apiToken.trim()) {
+      showCustomMessage('Please enter your Deriv API token', 'error');
+      return;
+    }
+
+    setIsConnectingWithToken(true);
+    setShowPopup(true);
+    setPopupProgress(10);
+    setPopupMessage('Connecting to Deriv WebSocket...');
+
+    try {
+      setPopupProgress(30);
+      setPopupMessage('Establishing secure WebSocket connection...');
+
+      // Create WebSocket connection
+      const ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');
+
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        setPopupProgress(50);
+        setPopupMessage('Connection established, authorizing...');
+
+        // Send authorization with token
+        ws.send(JSON.stringify({
+          authorize: apiToken.trim()
+        }));
+      };
+
+      ws.onmessage = (msg) => {
+        try {
+          const data = JSON.parse(msg.data);
+          console.log('Deriv WebSocket response:', data);
+
+          if (data.error) {
+            setPopupProgress(100);
+            setPopupMessage('❌ Auth failed: ' + data.error.message);
+            showCustomMessage('Authentication failed: ' + data.error.message, 'error');
+            setIsConnectingWithToken(false);
+            setTimeout(() => setShowPopup(false), 2000);
+            ws.close();
+            return;
+          }
+
+          if (data.authorize) {
+            setPopupProgress(80);
+            setPopupMessage('✓ Authorized successfully!');
+            
+            // Store connection info
+            localStorage.setItem('derivApiToken', apiToken.trim());
+            localStorage.setItem('derivConnected', 'true');
+            localStorage.setItem('derivAccountId', data.authorize.account_id || '');
+            localStorage.setItem('derivCurrency', data.authorize.currency || 'USD');
+
+            setPopupProgress(100);
+            setPopupMessage('✓ Connected to Deriv!');
+
+            setTimeout(() => {
+              setShowPopup(false);
+              setIsConnectingWithToken(false);
+              setIsDerivConnectOpen(false);
+              setApiToken('');
+              navigate('/derivdash');
+            }, 600);
+          }
+        } catch (error) {
+          console.error('WebSocket message error:', error);
+          setPopupProgress(100);
+          setPopupMessage('❌ Connection error');
+          showCustomMessage('Invalid response from server', 'error');
+          setIsConnectingWithToken(false);
+          setTimeout(() => setShowPopup(false), 2000);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        setPopupProgress(100);
+        setPopupMessage('❌ WebSocket error');
+        showCustomMessage('Cannot connect to Deriv WebSocket', 'error');
+        setIsConnectingWithToken(false);
+        setTimeout(() => setShowPopup(false), 2000);
+      };
+
+      ws.onclose = () => {
+        if (isConnectingWithToken) {
+          setPopupProgress(100);
+          setPopupMessage('❌ Connection closed');
+          setIsConnectingWithToken(false);
+          setTimeout(() => setShowPopup(false), 2000);
+        }
+      };
+
+    } catch (error) {
+      console.error('Connection error:', error);
+      setPopupProgress(100);
+      setPopupMessage('❌ Connection error');
+      showCustomMessage('Cannot connect to Deriv. Please check your token.', 'error');
+      setIsConnectingWithToken(false);
+      setTimeout(() => setShowPopup(false), 2500);
+    }
+  };
+
+  // ===== DERIV OAuth (legacy) =====
   const handleDerivOAuth = async () => {
     setIsLoading(true);
-    setIsModalOpen(false);
+    setIsDerivConnectOpen(false);
     setShowPopup(true);
     setPopupProgress(10);
     setPopupMessage('Initiating secure connection...');
@@ -2121,83 +2467,6 @@ const Dashboard = () => {
     }
   };
 
-  // ===== NEW: Connect with API Token =====
-  const handleConnectWithApiToken = async () => {
-    if (!apiToken.trim()) {
-      showCustomMessage('Please enter your Deriv API token', 'error');
-      return;
-    }
-
-    setIsConnectingWithToken(true);
-    setShowPopup(true);
-    setPopupProgress(10);
-    setPopupMessage('Validating API token...');
-
-    try {
-      const authToken = localStorage.getItem('token');
-
-      setPopupProgress(30);
-      setPopupMessage('Authenticating with Deriv API...');
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      const response = await fetch(
-        `${API_BASE_URL}/deriv/token/connect`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
-          },
-          body: JSON.stringify({
-            apiToken: apiToken.trim()
-          })
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setPopupProgress(70);
-        setPopupMessage('Connection established!');
-        await new Promise(resolve => setTimeout(resolve, 400));
-
-        setPopupProgress(100);
-        setPopupMessage('✓ Connected successfully');
-
-        // Store the API token securely
-        localStorage.setItem('derivApiToken', apiToken.trim());
-        localStorage.setItem('derivConnected', 'true');
-
-        setTimeout(() => {
-          setShowPopup(false);
-          setIsConnectingWithToken(false);
-          setIsModalOpen(false);
-          setApiToken('');
-          navigate('/derivdash');
-        }, 600);
-      } else {
-        setPopupProgress(100);
-        setPopupMessage('Connection failed');
-        showCustomMessage(
-          `Failed to connect: ${data.error || 'Invalid token'}`,
-          'error'
-        );
-        setIsConnectingWithToken(false);
-        setTimeout(() => setShowPopup(false), 2000);
-      }
-    } catch (error) {
-      console.error('API Token connection error:', error);
-      setPopupProgress(100);
-      setPopupMessage('Connection error');
-      showCustomMessage(
-        'Cannot connect to server. Please check your connection and token.',
-        'error'
-      );
-      setIsConnectingWithToken(false);
-      setTimeout(() => setShowPopup(false), 2500);
-    }
-  };
-
   const handlePasteToken = async () => {
     try {
       const text = await navigator.clipboard.readText();
@@ -2233,10 +2502,6 @@ const Dashboard = () => {
   const handleSupportClick = () => {
     navigate('/settings');
     setIsModalOpen(false);
-  };
-
-  const toggleApiToken = () => {
-    setIsApiTokenOpen(!isApiTokenOpen);
   };
 
   return (
@@ -2325,7 +2590,7 @@ const Dashboard = () => {
         </ConnectButton>
       </ConnectButtonWrapper>
 
-      {/* CONNECT MODAL - UPDATED WITH API TOKEN OPTION */}
+      {/* PLATFORM SELECTION MODAL */}
       <ModalOverlay isOpen={isModalOpen}>
         <ModalContainer>
           <ModalClose onClick={() => setIsModalOpen(false)}>✕</ModalClose>
@@ -2341,7 +2606,7 @@ const Dashboard = () => {
             <OptionCard 
               color="linear-gradient(90deg, #a855f7, #7c3aed)"
               glowColor="rgba(168, 85, 247, 0.08)"
-              onClick={() => handleConnectAccount('deriv')}
+              onClick={() => handlePlatformSelect('deriv')}
             >
               <span className="option-badge">24/7</span>
               <div className="option-content">
@@ -2359,7 +2624,7 @@ const Dashboard = () => {
             <OptionCard 
               color="linear-gradient(90deg, #2563eb, #1d4ed8)"
               glowColor="rgba(37, 99, 235, 0.08)"
-              onClick={() => handleConnectAccount('forex')}
+              onClick={() => handlePlatformSelect('forex')}
             >
               <span className="option-badge">24/5</span>
               <div className="option-content">
@@ -2373,68 +2638,6 @@ const Dashboard = () => {
               </div>
             </OptionCard>
           </OptionGrid>
-
-          {/* API TOKEN OPTION */}
-          <ApiTokenOption isOpen={isApiTokenOpen}>
-            <div className="api-header" onClick={toggleApiToken}>
-              <div className="api-title">
-                <span className="api-icon">🔑</span>
-                Connect manually using API token
-              </div>
-              <span className="api-toggle">▾</span>
-            </div>
-
-            <div className="api-body">
-              <div className="api-input-group">
-                <div className="api-input-label">
-                  Enter your Deriv API Token
-                  <span className="required">*</span>
-                </div>
-                <div className="api-input-wrapper">
-                  <input
-                    className="api-input"
-                    type="password"
-                    placeholder="e.g., 1234567890abcdef"
-                    value={apiToken}
-                    onChange={(e) => setApiToken(e.target.value)}
-                    disabled={isConnectingWithToken}
-                    autoComplete="off"
-                  />
-                  <button 
-                    className="api-paste-btn"
-                    onClick={handlePasteToken}
-                    disabled={isConnectingWithToken}
-                  >
-                    📋 Paste
-                  </button>
-                </div>
-                <div className="api-hint">
-                  <span>🔒 Token is encrypted and stored securely</span>
-                  <span 
-                    className="hint-link"
-                    onClick={() => window.open('https://app.deriv.com/account/api-token', '_blank')}
-                  >
-                    Get your API token →
-                  </span>
-                  <span className="hint-badge">Recommended</span>
-                </div>
-                <button 
-                  className="api-connect-btn"
-                  onClick={handleConnectWithApiToken}
-                  disabled={isConnectingWithToken || !apiToken.trim()}
-                >
-                  {isConnectingWithToken ? (
-                    <>
-                      <span className="connect-spinner">⟳</span>
-                      {' Connecting...'}
-                    </>
-                  ) : (
-                    '🔐 Connect with API Token'
-                  )}
-                </button>
-              </div>
-            </div>
-          </ApiTokenOption>
 
           <MessageArea show={showMessage} type={messageType}>
             <span className="msg-icon">
@@ -2460,11 +2663,108 @@ const Dashboard = () => {
         </ModalContainer>
       </ModalOverlay>
 
+      {/* DERIV CONNECT POPUP - TWO OPTIONS */}
+      <DerivConnectOverlay isOpen={isDerivConnectOpen}>
+        <DerivConnectContainer>
+          <DerivConnectClose onClick={() => setIsDerivConnectOpen(false)}>✕</DerivConnectClose>
+          
+          <DerivConnectHeader>
+            <span className="icon">📊</span>
+            <span className="title">Connect to Deriv</span>
+          </DerivConnectHeader>
+          <DerivConnectSubtitle>
+            Choose how you want to connect your Deriv account
+          </DerivConnectSubtitle>
+
+          <DerivConnectOptions>
+            {/* Option 1: Connect manually using API token */}
+            <DerivConnectOption 
+              glowColor="rgba(168, 85, 247, 0.06)"
+              onClick={() => setShowApiInput(!showApiInput)}
+            >
+              <span className="option-icon">🔑</span>
+              <div className="option-info">
+                <span className="option-label">Connect manually using API token</span>
+                <span className="option-desc">Use your Deriv API token for direct connection</span>
+              </div>
+              <span className="option-arrow">{showApiInput ? '▾' : '▸'}</span>
+              <span className="option-badge">Secure</span>
+            </DerivConnectOption>
+
+            {/* API Token Input (shown when expanded) */}
+            <ApiTokenInputWrapper show={showApiInput}>
+              <ApiTokenLabel>
+                Enter your Deriv API Token
+                <span className="required">*</span>
+              </ApiTokenLabel>
+              <ApiTokenInputRow>
+                <ApiTokenInput
+                  type="password"
+                  placeholder="e.g., 1234567890abcdef"
+                  value={apiToken}
+                  onChange={(e) => setApiToken(e.target.value)}
+                  disabled={isConnectingWithToken}
+                  autoComplete="off"
+                />
+                <ApiTokenPasteBtn onClick={handlePasteToken} disabled={isConnectingWithToken}>
+                  📋 Paste
+                </ApiTokenPasteBtn>
+              </ApiTokenInputRow>
+              <ApiTokenHint>
+                <span>🔒 Token is encrypted and stored locally</span>
+                <span 
+                  className="hint-link"
+                  onClick={() => window.open('https://app.deriv.com/account/api-token', '_blank')}
+                >
+                  Get your API token →
+                </span>
+              </ApiTokenHint>
+              <ApiTokenConnectBtn
+                onClick={handleDerivConnectWithToken}
+                disabled={isConnectingWithToken || !apiToken.trim()}
+              >
+                {isConnectingWithToken ? (
+                  <>
+                    <span className="connect-spinner">⟳</span>
+                    {' Connecting...'}
+                  </>
+                ) : (
+                  '🔐 Connect with API Token'
+                )}
+              </ApiTokenConnectBtn>
+            </ApiTokenInputWrapper>
+
+            {/* Option 2: Continue with OAuth */}
+            <DerivConnectOption 
+              glowColor="rgba(56, 189, 248, 0.06)"
+              onClick={handleDerivOAuth}
+            >
+              <span className="option-icon">🔐</span>
+              <div className="option-info">
+                <span className="option-label">Continue with OAuth</span>
+                <span className="option-desc">Secure OAuth 2.0 authentication via Deriv</span>
+              </div>
+              <span className="option-arrow">→</span>
+              <span className="option-badge">Recommended</span>
+            </DerivConnectOption>
+          </DerivConnectOptions>
+
+          <MessageArea show={showMessage} type={messageType}>
+            <span className="msg-icon">
+              {messageType === 'success' ? '✓' : 
+               messageType === 'error' ? '✗' : 
+               'ℹ'}
+            </span>
+            {message}
+          </MessageArea>
+        </DerivConnectContainer>
+      </DerivConnectOverlay>
+
       {/* CINEMATIC POPUP */}
       {showPopup && (
         <Overlay onClick={closePopup}>
           <PopupCard onClick={(e) => e.stopPropagation()}>
-            {popupMessage.includes('failed') || popupMessage.includes('error') ? (
+            {popupMessage.includes('failed') || popupMessage.includes('error') || popupMessage.includes('❌') ? (
               <PopupIcon>⚠</PopupIcon>
             ) : popupMessage.includes('✓') ? (
               <PopupIcon>✅</PopupIcon>
@@ -2479,7 +2779,7 @@ const Dashboard = () => {
             )}
 
             <PopupTitle>
-              {popupMessage.includes('failed') || popupMessage.includes('error') ? 'Error' : 
+              {popupMessage.includes('failed') || popupMessage.includes('error') || popupMessage.includes('❌') ? 'Error' : 
                popupMessage.includes('✓') ? 'Success' : 'Connecting...'}
             </PopupTitle>
 
@@ -2488,6 +2788,7 @@ const Dashboard = () => {
             {!popupMessage.includes('failed') && 
              !popupMessage.includes('error') && 
              !popupMessage.includes('✓') &&
+             !popupMessage.includes('❌') &&
              !popupMessage.includes('Redirecting') && (
               <PopupHint>Please wait — connecting securely...</PopupHint>
             )}
@@ -2496,7 +2797,7 @@ const Dashboard = () => {
               <div className="bar" />
             </PopupProgress>
 
-            {(popupMessage.includes('failed') || popupMessage.includes('error')) && (
+            {(popupMessage.includes('failed') || popupMessage.includes('error') || popupMessage.includes('❌')) && (
               <PopupCloseButton onClick={closePopup}>Close</PopupCloseButton>
             )}
 
