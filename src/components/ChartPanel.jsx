@@ -34,7 +34,7 @@ const slideDown = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - UPDATED WITH THEME
+// STYLED COMPONENTS - APPLYING TOPBAR THEME PATTERNS
 // ============================================
 const PanelContainer = styled.div`
   flex: 1;
@@ -48,7 +48,7 @@ const PanelContainer = styled.div`
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   animation: ${fadeIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   font-weight: 700;
 `;
 
@@ -60,7 +60,7 @@ const Header = styled.div`
   flex-shrink: 0;
   padding: 12px 20px;
   border-bottom: 2px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.backgroundSecondary};
   z-index: 10;
   transition: all 0.3s ease;
   font-weight: 700;
@@ -124,7 +124,7 @@ const SymbolInfo = styled.div`
     border-radius: 6px;
     transition: all 0.2s ease;
     position: relative;
-    background: ${props => props.theme.colors.background};
+    background: ${props => props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
@@ -133,8 +133,9 @@ const SymbolInfo = styled.div`
     }
 
     &:hover {
-      background: ${props => props.theme.colors.background};
+      background: ${props => props.theme.colors.backgroundTertiary};
       border-color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 20px ${props => props.theme.colors.accent + '30'};
     }
 
     .dropdown-arrow {
@@ -287,7 +288,7 @@ const DropdownItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
   background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   transition: all 0.15s ease;
   border-bottom: 2px solid ${props => props.theme.colors.border + '40'};
@@ -298,7 +299,7 @@ const DropdownItem = styled.div`
   }
 
   &:hover {
-    background: ${props => props.theme.colors.background};
+    background: ${props => props.theme.colors.accentActive};
     color: ${props => props.theme.colors.text};
   }
 
@@ -461,7 +462,7 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => props.theme.colors.background};
+    background: ${props => props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? props.theme.colors.success : props.theme.colors.danger) 
@@ -671,14 +672,17 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // Get ALL theme colors
+    // Get ALL theme colors - matching TopBar patterns
     const bgColor = theme.colors.background || '#0a0e17';
+    const bgSecondaryColor = theme.colors.backgroundSecondary || '#111927';
     const textColor = theme.colors.text || '#ffffff';
     const textMutedColor = theme.colors.textMuted || '#4e5d78';
+    const textSecondaryColor = theme.colors.textSecondary || '#8899bb';
     const successColor = theme.colors.success || '#00e676';
     const dangerColor = theme.colors.danger || '#ff4a4a';
     const accentColor = theme.colors.accent || '#00e676';
     const borderColor = theme.colors.border || '#1a2332';
+    const shadowColor = theme.colors.shadow || 'rgba(0,0,0,0.5)';
     
     // Parse hex color to RGB for gradients
     const hexToRgb = (hex) => {
