@@ -836,6 +836,176 @@ const PopupCloseButton = styled.button`
 `;
 
 // ============================================
+// COMING SOON POPUP
+// ============================================
+const ComingSoonOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  z-index: 4000;
+  display: ${props => props.isOpen ? 'flex' : 'none'};
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ${floatIn} 0.3s ease;
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
+`;
+
+const ComingSoonCard = styled.div`
+  background: linear-gradient(160deg, rgba(10, 20, 40, 0.98), rgba(5, 10, 24, 0.98));
+  border-radius: 28px;
+  padding: 40px 36px 32px;
+  max-width: 380px;
+  width: 100%;
+  border: 1px solid rgba(56, 189, 248, 0.06);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.7);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: ${popIn} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #f59e0b, #fbbf24, #f59e0b, transparent);
+    background-size: 300% 100%;
+    animation: ${shimmerBorder} 3s ease-in-out infinite;
+    border-radius: 28px 28px 0 0;
+    opacity: 0.6;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(245, 158, 11, 0.05),
+      transparent,
+      rgba(251, 191, 36, 0.05),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 20s linear infinite;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 32px 24px 24px;
+    border-radius: 24px;
+    max-width: 340px;
+    &::before { border-radius: 24px 24px 0 0; }
+    &::after { border-radius: 24px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 24px 20px 20px;
+    border-radius: 20px;
+    max-width: 100%;
+    &::before { border-radius: 20px 20px 0 0; height: 2px; }
+    &::after { border-radius: 20px; }
+  }
+`;
+
+const ComingSoonIcon = styled.div`
+  font-size: 48px;
+  margin-bottom: 12px;
+  animation: ${floatPulse} 2.5s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    font-size: 36px;
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+`;
+
+const ComingSoonTitle = styled.h2`
+  font-size: 22px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
+`;
+
+const ComingSoonSubtitle = styled.p`
+  color: #94a3b8;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+  }
+`;
+
+const ComingSoonButton = styled.button`
+  padding: 10px 32px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 30px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f1f5f9;
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 8px 24px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+    padding: 6px 20px;
+  }
+`;
+
+// ============================================
 // FLOATING CONNECT BUTTON
 // ============================================
 const ConnectButtonWrapper = styled.div`
@@ -2226,6 +2396,9 @@ const Dashboard = () => {
   const [popupMessage, setPopupMessage] = useState('');
   const [popupProgress, setPopupProgress] = useState(0);
   
+  // Coming Soon state
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  
   // API Token states
   const [apiToken, setApiToken] = useState('');
   const [showApiInput, setShowApiInput] = useState(false);
@@ -2299,7 +2472,7 @@ const Dashboard = () => {
     }
   };
 
-  // ===== DERIV CONNECT WITH WEBSOCKET =====
+  // ===== DERIV CONNECT WITH WEBSOCKET (UPDATED URL) =====
   const handleDerivConnectWithToken = async () => {
     if (!apiToken.trim()) {
       showCustomMessage('Please enter your Deriv API token', 'error');
@@ -2315,10 +2488,22 @@ const Dashboard = () => {
       setPopupProgress(30);
       setPopupMessage('Establishing secure WebSocket connection...');
 
-      // Create WebSocket connection
+      // ✅ UPDATED: Correct Deriv WebSocket URL
       const ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');
 
       wsRef.current = ws;
+
+      // Set timeout for connection
+      const connectionTimeout = setTimeout(() => {
+        if (isConnectingWithToken) {
+          ws.close();
+          setPopupProgress(100);
+          setPopupMessage('❌ Connection timeout');
+          showCustomMessage('Connection timed out. Please try again.', 'error');
+          setIsConnectingWithToken(false);
+          setTimeout(() => setShowPopup(false), 2000);
+        }
+      }, 30000);
 
       ws.onopen = () => {
         setPopupProgress(50);
@@ -2335,24 +2520,60 @@ const Dashboard = () => {
           const data = JSON.parse(msg.data);
           console.log('Deriv WebSocket response:', data);
 
+          // Check for error response
           if (data.error) {
+            clearTimeout(connectionTimeout);
             setPopupProgress(100);
-            setPopupMessage('❌ Auth failed: ' + data.error.message);
-            showCustomMessage('Authentication failed: ' + data.error.message, 'error');
+            
+            let errorMessage = 'Authentication failed';
+            if (data.error.message) {
+              errorMessage = data.error.message;
+            } else if (data.error.code) {
+              errorMessage = `Error code: ${data.error.code}`;
+            }
+            
+            setPopupMessage('❌ Auth failed: ' + errorMessage);
+            showCustomMessage('Authentication failed: ' + errorMessage, 'error');
             setIsConnectingWithToken(false);
             setTimeout(() => setShowPopup(false), 2000);
             ws.close();
             return;
           }
 
-          if (data.authorize) {
+          // Check for successful authorization
+          // Deriv returns { "code": 0, "msg": "authorize" } on success
+          if (data.code === 0 && data.msg === 'authorize') {
+            clearTimeout(connectionTimeout);
             setPopupProgress(80);
             setPopupMessage('✓ Authorized successfully!');
             
             // Store connection info
             localStorage.setItem('derivApiToken', apiToken.trim());
             localStorage.setItem('derivConnected', 'true');
-            localStorage.setItem('derivAccountId', data.authorize.account_id || '');
+
+            setPopupProgress(100);
+            setPopupMessage('✓ Connected to Deriv!');
+
+            setTimeout(() => {
+              setShowPopup(false);
+              setIsConnectingWithToken(false);
+              setIsDerivConnectOpen(false);
+              setApiToken('');
+              navigate('/derivdash');
+            }, 600);
+            
+            return;
+          }
+
+          // Handle authorize response with account data
+          if (data.authorize) {
+            clearTimeout(connectionTimeout);
+            setPopupProgress(80);
+            setPopupMessage('✓ Authorized successfully!');
+            
+            localStorage.setItem('derivApiToken', apiToken.trim());
+            localStorage.setItem('derivConnected', 'true');
+            localStorage.setItem('derivAccountId', data.authorize.loginid || '');
             localStorage.setItem('derivCurrency', data.authorize.currency || 'USD');
 
             setPopupProgress(100);
@@ -2366,8 +2587,10 @@ const Dashboard = () => {
               navigate('/derivdash');
             }, 600);
           }
+
         } catch (error) {
           console.error('WebSocket message error:', error);
+          clearTimeout(connectionTimeout);
           setPopupProgress(100);
           setPopupMessage('❌ Connection error');
           showCustomMessage('Invalid response from server', 'error');
@@ -2378,14 +2601,16 @@ const Dashboard = () => {
 
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
+        clearTimeout(connectionTimeout);
         setPopupProgress(100);
         setPopupMessage('❌ WebSocket error');
-        showCustomMessage('Cannot connect to Deriv WebSocket', 'error');
+        showCustomMessage('Cannot connect to Deriv WebSocket. Please check your internet connection.', 'error');
         setIsConnectingWithToken(false);
         setTimeout(() => setShowPopup(false), 2000);
       };
 
       ws.onclose = () => {
+        clearTimeout(connectionTimeout);
         if (isConnectingWithToken) {
           setPopupProgress(100);
           setPopupMessage('❌ Connection closed');
@@ -2404,67 +2629,10 @@ const Dashboard = () => {
     }
   };
 
-  // ===== DERIV OAuth (legacy) =====
-  const handleDerivOAuth = async () => {
-    setIsLoading(true);
+  // ===== DERIV OAuth - Now shows "Coming Soon" =====
+  const handleDerivOAuth = () => {
     setIsDerivConnectOpen(false);
-    setShowPopup(true);
-    setPopupProgress(10);
-    setPopupMessage('Initiating secure connection...');
-
-    try {
-      const authToken = localStorage.getItem('token');
-
-      setPopupProgress(30);
-      setPopupMessage('Authenticating with Deriv...');
-      await new Promise(resolve => setTimeout(resolve, 600));
-
-      const response = await fetch(
-        `${API_BASE_URL}/deriv/oauth/initiate`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
-          },
-          body: JSON.stringify({
-            token: authToken
-          })
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok && data.auth_url) {
-        setPopupProgress(70);
-        setPopupMessage('Redirecting to Deriv login...');
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        setPopupProgress(100);
-        setTimeout(() => {
-          window.location.href = data.auth_url;
-        }, 400);
-      } else {
-        setPopupProgress(100);
-        setPopupMessage('Connection failed');
-        showCustomMessage(
-          `Connection failed: ${data.error || 'Unknown error'}`,
-          'error'
-        );
-        setIsLoading(false);
-        setTimeout(() => setShowPopup(false), 2000);
-      }
-    } catch (error) {
-      console.error('OAuth error:', error);
-      setPopupProgress(100);
-      setPopupMessage('Connection error');
-      showCustomMessage(
-        'Cannot connect to server. Please check your connection.',
-        'error'
-      );
-      setIsLoading(false);
-      setTimeout(() => setShowPopup(false), 2500);
-    }
+    setShowComingSoon(true);
   };
 
   const handlePasteToken = async () => {
@@ -2511,6 +2679,11 @@ const Dashboard = () => {
       setShowApiInput(false);
       setApiToken('');
     }
+  };
+
+  // Close Coming Soon popup
+  const closeComingSoon = () => {
+    setShowComingSoon(false);
   };
 
   return (
@@ -2626,7 +2799,7 @@ const Dashboard = () => {
                   <span className="feature-tag">High-Freq</span>
                   <span className="feature-tag">AI</span>
                 </div>
-                <div className="oauth-status">OAuth 2.0</div>
+                <div className="oauth-status">API Token</div>
               </div>
             </OptionCard>
 
@@ -2743,18 +2916,18 @@ const Dashboard = () => {
               </ApiTokenConnectBtn>
             </ApiTokenInputWrapper>
 
-            {/* Option 2: Continue with OAuth */}
+            {/* Option 2: Continue with OAuth - Now shows Coming Soon */}
             <DerivConnectOption 
-              glowColor="rgba(56, 189, 248, 0.06)"
+              glowColor="rgba(251, 191, 36, 0.06)"
               onClick={handleDerivOAuth}
             >
-              <span className="option-icon">🔐</span>
+              <span className="option-icon">🚀</span>
               <div className="option-info">
                 <span className="option-label">Continue with OAuth</span>
                 <span className="option-desc">Secure OAuth 2.0 authentication via Deriv</span>
               </div>
               <span className="option-arrow">→</span>
-              <span className="option-badge">Recommended</span>
+              <span className="option-badge" style={{ background: 'rgba(251, 191, 36, 0.1)', borderColor: 'rgba(251, 191, 36, 0.08)', color: '#fbbf24' }}>Coming Soon</span>
             </DerivConnectOption>
           </DerivConnectOptions>
 
@@ -2768,6 +2941,19 @@ const Dashboard = () => {
           </MessageArea>
         </DerivConnectContainer>
       </DerivConnectOverlay>
+
+      {/* COMING SOON POPUP */}
+      <ComingSoonOverlay isOpen={showComingSoon}>
+        <ComingSoonCard>
+          <ComingSoonIcon>🚀</ComingSoonIcon>
+          <ComingSoonTitle>Coming Soon</ComingSoonTitle>
+          <ComingSoonSubtitle>
+            OAuth 2.0 integration with Deriv is currently in development.<br />
+            Please use the API token method to connect your account.
+          </ComingSoonSubtitle>
+          <ComingSoonButton onClick={closeComingSoon}>Got it</ComingSoonButton>
+        </ComingSoonCard>
+      </ComingSoonOverlay>
 
       {/* CINEMATIC POPUP */}
       {showPopup && (
