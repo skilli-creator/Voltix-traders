@@ -177,8 +177,8 @@ const SymbolInfo = styled.div`
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 4px;
-    background: ${props => props.isNegative ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)'};
-    color: ${props => props.isNegative ? '#ff4a4a' : '#00e676'};
+    background: ${props => props.isNegative ? props.theme.colors.danger + '25' : props.theme.colors.success + '25'};
+    color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
 
     @media (max-width: 480px) {
       font-size: 10px;
@@ -335,9 +335,9 @@ const DropdownItem = styled.div`
         left: 1px;
       }
     }
-    .c1 { height: 12px; background: #ef4444; &::before { height: 18px; top: -3px; } }
-    .c2 { height: 15px; background: #22c55e; &::before { height: 20px; top: -2px; } }
-    .c3 { height: 9px;  background: #ef4444; &::before { height: 14px; top: -2px; } }
+    .c1 { height: 12px; background: ${props => props.theme.colors.danger}; &::before { height: 18px; top: -3px; } }
+    .c2 { height: 15px; background: ${props => props.theme.colors.success}; &::before { height: 20px; top: -2px; } }
+    .c3 { height: 9px;  background: ${props => props.theme.colors.danger}; &::before { height: 14px; top: -2px; } }
   }
 
   .market-meta {
@@ -370,15 +370,15 @@ const DropdownItem = styled.div`
   .badge-1s {
     font-size: 8px;
     font-weight: 700;
-    color: #ffffff;
-    background: #ff4444;
+    color: ${props => props.theme.colors.text};
+    background: ${props => props.theme.colors.danger};
     padding: 1px 4px;
     border-radius: 3px;
     text-transform: uppercase;
   }
 
   .star-fav {
-    color: ${props => props.active ? '#ffb300' : props.theme.colors.textMuted + '40'};
+    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted + '40'};
     font-size: 14px;
 
     @media (max-width: 480px) {
@@ -464,10 +464,10 @@ const DigitItem = styled.div`
     background: ${props => props.theme.colors.background};
     border: 2px solid ${props => 
       props.isLastDigit 
-        ? (props.direction === 'up' ? '#00e676' : '#ff4a4a') 
+        ? (props.direction === 'up' ? props.theme.colors.success : props.theme.colors.danger) 
         : props.theme.colors.border
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.direction === 'up' ? 'rgba(0,230,118,0.5)' : 'rgba(255,74,74,0.5)'}` : 'none'};
+    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.direction === 'up' ? props.theme.colors.success + '80' : props.theme.colors.danger + '80'}` : 'none'};
     transition: all 0.15s ease;
 
     @media (max-width: 768px) {
@@ -514,8 +514,8 @@ const DigitItem = styled.div`
     font-weight: 700;
     color: ${props => 
       props.isMax 
-        ? '#00e676' 
-        : (props.isMin ? '#ff4a4a' : props.theme.colors.textMuted)
+        ? props.theme.colors.success
+        : (props.isMin ? props.theme.colors.danger : props.theme.colors.textMuted)
     };
     line-height: 1;
     margin-top: 0px;
@@ -537,7 +537,7 @@ const DigitItem = styled.div`
     position: absolute;
     bottom: -4px;
     font-size: 10px;
-    color: #ff9800;
+    color: ${props => props.theme.colors.accent};
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
     font-weight: 700;
@@ -671,12 +671,15 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // Get theme colors from the ThemeContext
+    // Get theme colors
     const bgColor = theme.colors.background || '#0a0e17';
     const textColor = theme.colors.text || '#ffffff';
     const textMutedColor = theme.colors.textMuted || '#4e5d78';
+    const successColor = theme.colors.success || '#00e676';
+    const dangerColor = theme.colors.danger || '#ff4a4a';
+    const accentColor = theme.colors.accent || '#00e676';
     
-    // Parse hex color to RGB for gradient
+    // Parse hex color to RGB for gradients
     const hexToRgb = (hex) => {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result ? {
@@ -733,7 +736,7 @@ const ChartPanel = () => {
       ctx.stroke();
     }
 
-    const lineColor = movementDirection === 'up' ? '#00e676' : '#ff4a4a';
+    const lineColor = movementDirection === 'up' ? successColor : dangerColor;
     ctx.beginPath();
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 2.2;
@@ -754,8 +757,10 @@ const ChartPanel = () => {
     ctx.closePath();
 
     const fillGrad = ctx.createLinearGradient(0, pad.top, 0, height - pad.bottom);
-    fillGrad.addColorStop(0, movementDirection === 'up' ? 'rgba(0, 230, 118, 0.08)' : 'rgba(255, 74, 74, 0.08)');
-    fillGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    const fillColor = movementDirection === 'up' ? successColor : dangerColor;
+    const fillRgb = hexToRgb(fillColor);
+    fillGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.08)`);
+    fillGrad.addColorStop(1, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0)`);
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
