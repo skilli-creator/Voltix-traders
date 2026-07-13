@@ -2475,142 +2475,53 @@ const Dashboard = () => {
     setIsConnectingWithToken(true);
     setShowPopup(true);
     setPopupProgress(10);
-    setPopupMessage('Connecting to Deriv WebSocket...');
+    setPopupMessage('Validating token...');
 
     try {
-      setPopupProgress(30);
-      setPopupMessage('Establishing secure WebSocket connection...');
+      // STEP 1: call your backend (THIS IS THE KEY FIX)
+      const res = await fetch(`${API_BASE_URL}/deriv/connect`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({
+          api_token: apiToken.trim()
+        })
+      });
 
-      const ws = new WebSocket('wss://ws.derivws.com/websockets/v3?app_id=1089');
+      const data = await res.json();
 
-      wsRef.current = ws;
+      if (!data.success) {
+        throw new Error(data.error || "Connection failed");
+      }
 
-      const connectionTimeout = setTimeout(() => {
-        if (isConnectingWithToken) {
-          ws.close();
-          setPopupProgress(100);
-          setPopupMessage('Connection timeout');
-          showCustomMessage('Connection timed out. Please try again.', 'error');
-          setIsConnectingWithToken(false);
-          setTimeout(() => setShowPopup(false), 2000);
-        }
-      }, 30000);
+      setPopupProgress(80);
+      setPopupMessage("Connected to Deriv");
 
-      ws.onopen = () => {
-        setPopupProgress(50);
-        setPopupMessage('Connection established, authorizing...');
+      // save locally
+      localStorage.setItem("derivConnected", "true");
+      localStorage.setItem("derivAccountId", data.data.account_id);
+      localStorage.setItem("derivCurrency", data.data.currency);
 
-        ws.send(JSON.stringify({
-          authorize: apiToken.trim()
-        }));
-      };
-
-      ws.onmessage = (msg) => {
-        try {
-          const data = JSON.parse(msg.data);
-          console.log('Deriv WebSocket response:', data);
-
-          if (data.error) {
-            clearTimeout(connectionTimeout);
-            setPopupProgress(100);
-            
-            let errorMessage = 'Authentication failed';
-            if (data.error.message) {
-              errorMessage = data.error.message;
-            } else if (data.error.code) {
-              errorMessage = `Error code: ${data.error.code}`;
-            }
-            
-            setPopupMessage('Auth failed: ' + errorMessage);
-            showCustomMessage('Authentication failed: ' + errorMessage, 'error');
-            setIsConnectingWithToken(false);
-            setTimeout(() => setShowPopup(false), 2000);
-            ws.close();
-            return;
-          }
-
-          if (data.code === 0 && data.msg === 'authorize') {
-            clearTimeout(connectionTimeout);
-            setPopupProgress(80);
-            setPopupMessage('Authorized successfully!');
-            
-            localStorage.setItem('derivApiToken', apiToken.trim());
-            localStorage.setItem('derivConnected', 'true');
-
-            setPopupProgress(100);
-            setPopupMessage('Connected to Deriv!');
-
-            setTimeout(() => {
-              setShowPopup(false);
-              setIsConnectingWithToken(false);
-              setIsDerivConnectOpen(false);
-              setApiToken('');
-              navigate('/derivdash');
-            }, 600);
-            
-            return;
-          }
-
-          if (data.authorize) {
-            clearTimeout(connectionTimeout);
-            setPopupProgress(80);
-            setPopupMessage('Authorized successfully!');
-            
-            localStorage.setItem('derivApiToken', apiToken.trim());
-            localStorage.setItem('derivConnected', 'true');
-            localStorage.setItem('derivAccountId', data.authorize.loginid || '');
-            localStorage.setItem('derivCurrency', data.authorize.currency || 'USD');
-
-            setPopupProgress(100);
-            setPopupMessage('Connected to Deriv!');
-
-            setTimeout(() => {
-              setShowPopup(false);
-              setIsConnectingWithToken(false);
-              setIsDerivConnectOpen(false);
-              setApiToken('');
-              navigate('/derivdash');
-            }, 600);
-          }
-
-        } catch (error) {
-          console.error('WebSocket message error:', error);
-          clearTimeout(connectionTimeout);
-          setPopupProgress(100);
-          setPopupMessage('Connection error');
-          showCustomMessage('Invalid response from server', 'error');
-          setIsConnectingWithToken(false);
-          setTimeout(() => setShowPopup(false), 2000);
-        }
-      };
-
-      ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        clearTimeout(connectionTimeout);
-        setPopupProgress(100);
-        setPopupMessage('WebSocket error');
-        showCustomMessage('Cannot connect to Deriv WebSocket. Please check your internet connection.', 'error');
-        setIsConnectingWithToken(false);
-        setTimeout(() => setShowPopup(false), 2000);
-      };
-
-      ws.onclose = () => {
-        clearTimeout(connectionTimeout);
-        if (isConnectingWithToken) {
-          setPopupProgress(100);
-          setPopupMessage('Connection closed');
-          setIsConnectingWithToken(false);
-          setTimeout(() => setShowPopup(false), 2000);
-        }
-      };
-
-    } catch (error) {
-      console.error('Connection error:', error);
       setPopupProgress(100);
-      setPopupMessage('Connection error');
-      showCustomMessage('Cannot connect to Deriv. Please check your token.', 'error');
+      setPopupMessage("Success!");
+
+      setTimeout(() => {
+        setShowPopup(false);
+        setIsConnectingWithToken(false);
+        setIsDerivConnectOpen(false);
+        setApiToken('');
+        navigate('/derivdash');
+      }, 800);
+
+    } catch (err) {
+      console.error(err);
+      setPopupProgress(100);
+      setPopupMessage("Connection failed");
+      showCustomMessage(err.message, "error");
       setIsConnectingWithToken(false);
-      setTimeout(() => setShowPopup(false), 2500);
+      setTimeout(() => setShowPopup(false), 2000);
     }
   };
 
