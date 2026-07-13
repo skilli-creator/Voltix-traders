@@ -1,3 +1,4 @@
+// src/pages/Academy.jsx
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -16,16 +17,17 @@ const slideIn = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - WITH THEME
+// STYLED COMPONENTS - UPDATED WITH THEME
 // ============================================
 
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: ${props => props.theme?.colors?.background || '#0b0e14'};
+  background: ${props => props.theme.colors.background};
   padding: 20px;
   overflow-y: auto;
+  transition: background 0.3s ease;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -34,7 +36,7 @@ const PageWrapper = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
+    background: ${props => props.theme.colors.scrollbar};
     border-radius: 4px;
   }
 
@@ -49,7 +51,7 @@ const BackButton = styled.button`
   gap: 8px;
   background: none;
   border: none;
-  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+  color: ${props => props.theme.colors.textMuted};
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -59,7 +61,7 @@ const BackButton = styled.button`
   align-self: flex-start;
 
   &:hover {
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    color: ${props => props.theme.colors.text};
     transform: translateX(-4px);
   }
 
@@ -78,9 +80,9 @@ const HeroSection = styled.div`
     display: inline-block;
     padding: 4px 16px;
     border-radius: 20px;
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.08)'};
-    border: 1px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(56, 189, 248, 0.1)'};
-    color: ${props => props.theme?.colors?.accent || '#38bdf8'};
+    background: ${props => props.theme.colors.accentActive};
+    border: 1px solid ${props => props.theme.colors.border};
+    color: ${props => props.theme.colors.accent};
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -91,12 +93,12 @@ const HeroSection = styled.div`
   .title {
     font-size: 42px;
     font-weight: 800;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    color: ${props => props.theme.colors.text};
     line-height: 1.1;
     margin-bottom: 16px;
 
     .gradient {
-      background: linear-gradient(135deg, #22c55e, #38bdf8, #818cf8);
+      background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -105,7 +107,7 @@ const HeroSection = styled.div`
 
   .subtitle {
     font-size: 18px;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    color: ${props => props.theme.colors.textMuted};
     max-width: 650px;
     margin: 0 auto;
     line-height: 1.8;
@@ -123,11 +125,11 @@ const HeroSection = styled.div`
       align-items: center;
       gap: 8px;
       font-size: 13px;
-      color: ${props => props.theme?.colors?.textSecondary || '#64748b'};
-      background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255, 255, 255, 0.02)'};
+      color: ${props => props.theme.colors.textMuted};
+      background: ${props => props.theme.colors.background + '40'};
       padding: 6px 16px;
       border-radius: 20px;
-      border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+      border: 1px solid ${props => props.theme.colors.border};
 
       .icon { font-size: 16px; }
     }
@@ -149,8 +151,8 @@ const TOCSection = styled.div`
   max-width: 900px;
   margin: 0 auto 40px;
   width: 100%;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255, 255, 255, 0.015)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  background: ${props => props.theme.colors.background + '40'};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 16px;
   padding: 24px 28px;
   animation: ${fadeIn} 0.7s ease;
@@ -158,7 +160,7 @@ const TOCSection = styled.div`
   .toc-title {
     font-size: 20px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    color: ${props => props.theme.colors.text};
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -178,31 +180,25 @@ const TOCSection = styled.div`
       gap: 10px;
       padding: 10px 14px;
       border-radius: 8px;
-      color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+      color: ${props => props.theme.colors.textMuted};
       font-size: 13px;
       transition: all 0.2s ease;
       cursor: pointer;
 
       &:hover {
-        background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.04)'};
-        color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+        background: ${props => props.theme.colors.accentActive};
+        color: ${props => props.theme.colors.text};
       }
 
       .num {
         font-size: 11px;
         font-weight: 700;
-        color: ${props => props.theme?.colors?.accent || '#38bdf8'};
+        color: ${props => props.theme.colors.accent};
         min-width: 28px;
       }
 
       .label {
         flex: 1;
-      }
-
-      .status {
-        font-size: 10px;
-        color: ${props => props.completed ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
-        margin-left: auto;
       }
     }
   }
@@ -224,16 +220,16 @@ const LessonContainer = styled.div`
 `;
 
 const LessonCard = styled.div`
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255, 255, 255, 0.015)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  background: ${props => props.theme.colors.background + '40'};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 16px;
   padding: 28px 30px;
   margin-bottom: 20px;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(56, 189, 248, 0.06)'};
-    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255, 255, 255, 0.02)'};
+    border-color: ${props => props.theme.colors.accent + '30'};
+    background: ${props => props.theme.colors.background + '60'};
   }
 
   .lesson-header {
@@ -242,13 +238,13 @@ const LessonCard = styled.div`
     gap: 14px;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+    border-bottom: 1px solid ${props => props.theme.colors.border};
 
     .lesson-number {
       font-size: 12px;
       font-weight: 700;
-      color: ${props => props.theme?.colors?.accent || '#38bdf8'};
-      background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.08)'};
+      color: ${props => props.theme.colors.accent};
+      background: ${props => props.theme.colors.accentActive};
       padding: 2px 12px;
       border-radius: 20px;
       flex-shrink: 0;
@@ -257,59 +253,44 @@ const LessonCard = styled.div`
     .lesson-title {
       font-size: 20px;
       font-weight: 700;
-      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+      color: ${props => props.theme.colors.text};
       flex: 1;
     }
 
     .lesson-duration {
       font-size: 11px;
-      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-      background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255, 255, 255, 0.02)'};
+      color: ${props => props.theme.colors.textMuted};
+      background: ${props => props.theme.colors.background + '40'};
       padding: 2px 12px;
       border-radius: 20px;
-      border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+      border: 1px solid ${props => props.theme.colors.border};
       flex-shrink: 0;
-    }
-
-    .complete-btn {
-      background: none;
-      border: none;
-      color: ${props => props.completed ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.textMuted || '#64748b'};
-      font-size: 20px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      padding: 0 4px;
-      flex-shrink: 0;
-
-      &:hover {
-        transform: scale(1.1);
-      }
     }
   }
 
   .lesson-content {
-    color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
+    color: ${props => props.theme.colors.textSecondary};
     font-size: 15px;
     line-height: 1.9;
 
     h3 {
-      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+      color: ${props => props.theme.colors.text};
       font-size: 20px;
       font-weight: 600;
       margin: 28px 0 14px 0;
       padding-bottom: 6px;
-      border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+      border-bottom: 1px solid ${props => props.theme.colors.border};
     }
 
     h4 {
-      color: ${props => props.theme?.colors?.text || '#e2e8f0'};
+      color: ${props => props.theme.colors.text};
       font-size: 17px;
       font-weight: 600;
       margin: 20px 0 10px 0;
     }
 
     h5 {
-      color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
+      color: ${props => props.theme.colors.textSecondary};
       font-size: 15px;
       font-weight: 600;
       margin: 16px 0 8px 0;
@@ -317,84 +298,92 @@ const LessonCard = styled.div`
 
     p {
       margin-bottom: 14px;
+      color: ${props => props.theme.colors.textSecondary};
     }
 
     ul, ol {
       margin: 10px 0 14px 24px;
       li {
         margin-bottom: 8px;
+        color: ${props => props.theme.colors.textSecondary};
       }
     }
 
     .highlight-box {
-      background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.04)'};
-      border-left: 3px solid ${props => props.theme?.colors?.accent || '#38bdf8'};
+      background: ${props => props.theme.colors.accentActive};
+      border-left: 3px solid ${props => props.theme.colors.accent};
       padding: 14px 18px;
       border-radius: 6px;
       margin: 14px 0;
       font-size: 14px;
+      color: ${props => props.theme.colors.textSecondary};
     }
 
     .warning-box {
-      background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239, 68, 68, 0.04)'};
-      border-left: 3px solid ${props => props.theme?.colors?.danger || '#ef4444'};
+      background: rgba(239, 68, 68, 0.06);
+      border-left: 3px solid #ef4444;
       padding: 14px 18px;
       border-radius: 6px;
       margin: 14px 0;
       font-size: 14px;
+      color: ${props => props.theme.colors.textSecondary};
     }
 
     .success-box {
-      background: ${props => props.theme?.colors?.success + '15' || 'rgba(34, 197, 94, 0.04)'};
-      border-left: 3px solid ${props => props.theme?.colors?.success || '#22c55e'};
+      background: rgba(34, 197, 94, 0.06);
+      border-left: 3px solid #22c55e;
       padding: 14px 18px;
       border-radius: 6px;
       margin: 14px 0;
       font-size: 14px;
+      color: ${props => props.theme.colors.textSecondary};
     }
 
     .example-box {
-      background: rgba(251, 191, 36, 0.04);
-      border: 1px solid rgba(251, 191, 36, 0.08);
+      background: rgba(251, 191, 36, 0.06);
+      border: 1px solid rgba(251, 191, 36, 0.12);
       padding: 14px 18px;
       border-radius: 6px;
       margin: 14px 0;
       font-size: 14px;
+      color: ${props => props.theme.colors.textSecondary};
     }
 
     .code-block {
-      background: rgba(0, 0, 0, 0.3);
+      background: ${props => props.theme.colors.background + '80'};
       padding: 12px 16px;
       border-radius: 8px;
       font-family: 'Courier New', monospace;
       font-size: 13px;
-      color: ${props => props.theme?.colors?.text || '#e2e8f0'};
+      color: ${props => props.theme.colors.text};
       overflow-x: auto;
       margin: 10px 0;
-      border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
+      border: 1px solid ${props => props.theme.colors.border};
     }
 
     .key-takeaway {
-      background: ${props => props.theme?.colors?.accentActive || 'rgba(129, 140, 248, 0.04)'};
-      border: 1px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(129, 140, 248, 0.08)'};
+      background: rgba(129, 140, 248, 0.06);
+      border: 1px solid rgba(129, 140, 248, 0.12);
       padding: 14px 18px;
       border-radius: 8px;
       margin: 14px 0;
+      color: ${props => props.theme.colors.textSecondary};
 
       strong {
-        color: ${props => props.theme?.colors?.accent || '#818cf8'};
+        color: ${props => props.theme.colors.accent};
       }
     }
 
     .definition-box {
-      background: ${props => props.theme?.colors?.success + '15' || 'rgba(34, 197, 94, 0.02)'};
-      border: 1px solid ${props => props.theme?.colors?.success + '30' || 'rgba(34, 197, 94, 0.06)'};
+      background: rgba(34, 197, 94, 0.04);
+      border: 1px solid rgba(34, 197, 94, 0.08);
       padding: 12px 16px;
       border-radius: 8px;
       margin: 10px 0;
+      color: ${props => props.theme.colors.textSecondary};
 
       .term {
-        color: ${props => props.theme?.colors?.success || '#22c55e'};
+        color: #22c55e;
         font-weight: 700;
       }
     }
@@ -406,20 +395,24 @@ const LessonCard = styled.div`
 
       th, td {
         padding: 10px 14px;
-        border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+        border: 1px solid ${props => props.theme.colors.border};
         text-align: left;
         font-size: 14px;
       }
 
       th {
-        background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.04)'};
-        color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+        background: ${props => props.theme.colors.accentActive};
+        color: ${props => props.theme.colors.text};
         font-weight: 600;
       }
 
       td {
-        color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
+        color: ${props => props.theme.colors.textSecondary};
       }
+    }
+
+    strong {
+      color: ${props => props.theme.colors.text};
     }
   }
 
@@ -442,65 +435,8 @@ const LessonCard = styled.div`
   }
 `;
 
-const CompletionBanner = styled.div`
-  text-align: center;
-  padding: 40px 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  background: ${props => props.theme?.colors?.success + '15' || 'rgba(34, 197, 94, 0.04)'};
-  border: 1px solid ${props => props.theme?.colors?.success + '30' || 'rgba(34, 197, 94, 0.08)'};
-  border-radius: 16px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  animation: ${fadeIn} 0.8s ease;
-
-  .emoji {
-    font-size: 48px;
-    margin-bottom: 12px;
-  }
-
-  .title {
-    font-size: 24px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    margin-bottom: 6px;
-  }
-
-  .subtitle {
-    font-size: 16px;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-  }
-
-  @media (max-width: 768px) {
-    padding: 24px 16px;
-    .title { font-size: 20px; }
-    .subtitle { font-size: 14px; }
-  }
-`;
-
-const Footer = styled.div`
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
-  text-align: center;
-  font-size: 11px;
-  color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-
-  .sub {
-    display: block;
-    margin-top: 2px;
-    color: ${props => props.theme?.colors?.textMuted + '40' || '#3a4055'};
-  }
-`;
-
 // ============================================
-// COMPLETE 5000+ LINE LESSON DATA
+// COMPLETE LESSON DATA (UNCHANGED)
 // ============================================
 
 const lessons = [
@@ -1755,18 +1691,15 @@ const Academy = () => {
       <TOCSection>
         <div className="toc-title"><span className="icon">📑</span> Table of Contents</div>
         <div className="toc-grid">
-          {lessons.map((lesson) => {
-            const isCompleted = completedLessons.includes(lesson.id);
-            return (
-              <div key={lesson.id} className="toc-item" onClick={() => scrollToLesson(lesson.id)}>
-                <span className="num">{lesson.id}.</span>
-                <span className="label">{lesson.title}</span>
-                <span className="status">
-                  {isCompleted ? '✅' : '📖'}
-                </span>
-              </div>
-            );
-          })}
+          {lessons.map((lesson) => (
+            <div key={lesson.id} className="toc-item" onClick={() => scrollToLesson(lesson.id)}>
+              <span className="num">{lesson.id}.</span>
+              <span className="label">{lesson.title}</span>
+              <span style={{ fontSize: '10px', color: completedLessons.includes(lesson.id) ? '#22c55e' : '#4a4f5e', marginLeft: 'auto' }}>
+                {completedLessons.includes(lesson.id) ? '✅' : '📖'}
+              </span>
+            </div>
+          ))}
         </div>
       </TOCSection>
 
@@ -1774,16 +1707,15 @@ const Academy = () => {
         {lessons.map((lesson) => {
           const isCompleted = completedLessons.includes(lesson.id);
           return (
-            <LessonCard key={lesson.id} id={`lesson-${lesson.id}`} completed={isCompleted}>
+            <LessonCard key={lesson.id} id={`lesson-${lesson.id}`}>
               <div className="lesson-header">
                 <span className="lesson-number">Lesson {lesson.id}</span>
                 <span className="lesson-title">{lesson.title}</span>
                 <span className="lesson-duration">{lesson.duration}</span>
-                <button 
-                  className="complete-btn"
-                  onClick={() => toggleLesson(lesson.id)}
-                  aria-label={isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
-                >
+                <button onClick={() => toggleLesson(lesson.id)} style={{
+                  background: 'none', border: 'none', color: isCompleted ? '#22c55e' : '#64748b',
+                  fontSize: '20px', cursor: 'pointer', transition: 'all 0.2s ease', padding: '0 4px'
+                }}>
                   {isCompleted ? '✅' : '○'}
                 </button>
               </div>
@@ -1794,19 +1726,32 @@ const Academy = () => {
       </LessonContainer>
 
       {progress === 100 && (
-        <CompletionBanner>
-          <div className="emoji">🎉🏆🎉</div>
-          <div className="title">Congratulations!</div>
-          <div className="subtitle">
+        <div style={{
+          textAlign: 'center', padding: '40px 20px', marginTop: '20px', marginBottom: '20px',
+          background: 'rgba(34, 197, 94, 0.06)', border: '1px solid rgba(34, 197, 94, 0.08)',
+          borderRadius: '16px', maxWidth: '900px', marginLeft: 'auto', marginRight: 'auto', width: '100%',
+          animation: `${fadeIn} 0.8s ease`
+        }}>
+          <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎉🏆🎉</div>
+          <div style={{ fontSize: '24px', fontWeight: 700, color: '#f1f5f9', marginBottom: '6px' }}>
+            Congratulations!
+          </div>
+          <div style={{ fontSize: '16px', color: '#94a3b8' }}>
             You've completed all {lessons.length} lessons! You're now ready to start your trading journey with confidence. 🚀
           </div>
-        </CompletionBanner>
+        </div>
       )}
 
-      <Footer>
+      <div style={{
+        marginTop: '30px', paddingTop: '20px', borderTop: '1px solid rgba(255, 255, 255, 0.02)',
+        textAlign: 'center', fontSize: '11px', color: '#4a4f5e', maxWidth: '900px',
+        marginLeft: 'auto', marginRight: 'auto', width: '100%'
+      }}>
         Voltix Traders Academy © 2024 • Learn. Practice. Master.
-        <span className="sub">🎓 Every expert was once a beginner. Keep learning!</span>
-      </Footer>
+        <span style={{ display: 'block', marginTop: '2px', color: '#3a4055' }}>
+          🎓 Every expert was once a beginner. Keep learning!
+        </span>
+      </div>
     </PageWrapper>
   );
 };
