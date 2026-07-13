@@ -2239,6 +2239,31 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
+  // === AUTO MODE - ONE DYNAMIC DROPDOWN ===
+  const [autoTradeSelection, setAutoTradeSelection] = useState('Even');
+  const [isAutoTradeOpen, setIsAutoTradeOpen] = useState(false);
+
+  const getAutoTradeOptions = () => {
+    if (tradeType === 'evenodd') return ['Even', 'Odd'];
+    if (tradeType === 'matches') return ['Matches', 'Differs'];
+    if (tradeType === 'overunder') return ['Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
+    return [];
+  };
+
+  const getAutoTradeLabel = () => {
+    if (tradeType === 'evenodd') return 'Even/Odd';
+    if (tradeType === 'matches') return 'Matches/Differs';
+    if (tradeType === 'overunder') return 'Over/Under';
+    return '';
+  };
+
+  // Reset selection when trade type changes
+  useEffect(() => {
+    if (tradeType === 'evenodd') setAutoTradeSelection('Even');
+    else if (tradeType === 'matches') setAutoTradeSelection('Matches');
+    else if (tradeType === 'overunder') setAutoTradeSelection('Over 3');
+  }, [tradeType]);
+
   const selectedMarket = externalMarket || localSelectedMarket;
 
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
@@ -2276,74 +2301,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const martingaleOptions = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
   const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const growthRateOptions = [1, 2, 3, 4, 5];
-
-  // === EVEN/ODD SELECTOR OPTIONS ===
-  const evenOddOptions = ['Even', 'Odd'];
-
-  // === OVER/UNDER SELECTOR OPTIONS ===
-  const overUnderOptions = ['Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
-
-  // === MATCHES/DIFFERS SELECTOR OPTIONS ===
-  const matchesDiffersOptions = ['Matches', 'Differs'];
-
-  // === SELECTED VALUES FOR EACH TRADE TYPE ===
-  const [selectedEvenOdd, setSelectedEvenOdd] = useState('Even');
-  const [selectedOverUnder, setSelectedOverUnder] = useState('Over 3');
-  const [selectedMatchesDiffers, setSelectedMatchesDiffers] = useState('Matches');
-
-  // === DROPDOWN STATES ===
-  const [isEvenOddDropdownOpen, setIsEvenOddDropdownOpen] = useState(false);
-  const [isOverUnderDropdownOpen, setIsOverUnderDropdownOpen] = useState(false);
-  const [isMatchesDiffersDropdownOpen, setIsMatchesDiffersDropdownOpen] = useState(false);
-
-  // === HELPER: Get the current action text based on trade type ===
-  const getActionText = () => {
-    if (tradeType === 'evenodd') return selectedEvenOdd;
-    if (tradeType === 'overunder') return selectedOverUnder;
-    if (tradeType === 'matches') return selectedMatchesDiffers;
-    return '';
-  };
-
-  // === HELPER: Get dropdown options based on trade type ===
-  const getDropdownOptions = () => {
-    if (tradeType === 'evenodd') return evenOddOptions;
-    if (tradeType === 'overunder') return overUnderOptions;
-    if (tradeType === 'matches') return matchesDiffersOptions;
-    return [];
-  };
-
-  // === HELPER: Get selected value based on trade type ===
-  const getSelectedValue = () => {
-    if (tradeType === 'evenodd') return selectedEvenOdd;
-    if (tradeType === 'overunder') return selectedOverUnder;
-    if (tradeType === 'matches') return selectedMatchesDiffers;
-    return '';
-  };
-
-  // === HELPER: Set selected value based on trade type ===
-  const setSelectedValue = (value) => {
-    if (tradeType === 'evenodd') setSelectedEvenOdd(value);
-    else if (tradeType === 'overunder') setSelectedOverUnder(value);
-    else if (tradeType === 'matches') setSelectedMatchesDiffers(value);
-  };
-
-  // === GET PAYOUT FOR SELECTED ACTION ===
-  const getPayout = () => {
-    if (tradeType === 'evenodd') {
-      return { amount: 0.20, pct: 20 };
-    }
-    if (tradeType === 'overunder') {
-      if (selectedOverUnder.startsWith('Over')) {
-        return { amount: 13.57, pct: 35.71 };
-      } else {
-        return { amount: 47.50, pct: 375.00 };
-      }
-    }
-    if (tradeType === 'matches') {
-      return { amount: 0.00, pct: 0 };
-    }
-    return { amount: 0.00, pct: 0 };
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -2455,6 +2412,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     if (tradeType === 'accumulators') {
       console.log(`Growth Rate: ${growthRate}%`);
     }
+    console.log(`Auto Mode Selection: ${autoTradeSelection}`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -2674,175 +2632,97 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ============================================
-  // RENDER TRADE TYPE SPECIFIC SELECTOR
-  // ============================================
-  const renderTradeTypeSelector = () => {
-    if (tradeType === 'overunder') {
-      return (
-        <InputGroup>
-          <InputLabel>
-            <span>Select Over/Under</span>
-          </InputLabel>
-          <ToggleWrapper>
-            <ToggleLabel>Choose</ToggleLabel>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
-              {renderDropdownSelect(
-                overUnderOptions,
-                selectedOverUnder,
-                setSelectedOverUnder,
-                isOverUnderDropdownOpen,
-                setIsOverUnderDropdownOpen
-              )}
-            </div>
-          </ToggleWrapper>
-        </InputGroup>
-      );
-    }
-
-    if (tradeType === 'evenodd') {
-      return (
-        <InputGroup>
-          <InputLabel>
-            <span>Select Even/Odd</span>
-          </InputLabel>
-          <ToggleWrapper>
-            <ToggleLabel>Choose</ToggleLabel>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
-              {renderDropdownSelect(
-                evenOddOptions,
-                selectedEvenOdd,
-                setSelectedEvenOdd,
-                isEvenOddDropdownOpen,
-                setIsEvenOddDropdownOpen
-              )}
-            </div>
-          </ToggleWrapper>
-        </InputGroup>
-      );
-    }
-
-    if (tradeType === 'matches') {
-      return (
-        <InputGroup>
-          <InputLabel>
-            <span>Select Matches/Differs</span>
-          </InputLabel>
-          <ToggleWrapper>
-            <ToggleLabel>Choose</ToggleLabel>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
-              {renderDropdownSelect(
-                matchesDiffersOptions,
-                selectedMatchesDiffers,
-                setSelectedMatchesDiffers,
-                isMatchesDiffersDropdownOpen,
-                setIsMatchesDiffersDropdownOpen
-              )}
-            </div>
-          </ToggleWrapper>
-        </InputGroup>
-      );
-    }
-
-    return null;
-  };
-
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
     return (
-      <>
-        <InputGrid>
-          <div style={{ gridColumn: '1', gridRow: '1' }}>
+      <InputGrid>
+        <div style={{ gridColumn: '1', gridRow: '1' }}>
+          <InputGroup>
+            <InputLabel>
+              <span>Stake</span>
+              <span className="suffix">Min: $0.50</span>
+            </InputLabel>
+            <InputRow>
+              <span className="prefix">$</span>
+              <StyledInput
+                type="number"
+                value={stake}
+                onChange={handleStakeChange}
+                step="0.50"
+                min="0"
+                placeholder="10"
+              />
+            </InputRow>
+          </InputGroup>
+        </div>
+
+        <div style={{ gridColumn: '2', gridRow: '1' }}>
+          {renderBulkTradingToggle()}
+        </div>
+
+        {isManual && tradeType !== 'accumulators' && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
+            {renderDurationDropdown()}
+          </div>
+        )}
+
+        {isManual && tradeType === 'accumulators' && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
+            {renderGrowthRateDropdown()}
+          </div>
+        )}
+
+        {!isManual && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
             <InputGroup>
               <InputLabel>
-                <span>Stake</span>
-                <span className="suffix">Min: $0.50</span>
+                <span>Target Profit</span>
+                <span className="optional">Opt.</span>
               </InputLabel>
               <InputRow>
                 <span className="prefix">$</span>
                 <StyledInput
                   type="number"
-                  value={stake}
-                  onChange={handleStakeChange}
-                  step="0.50"
+                  value={targetProfit}
+                  onChange={handleTargetProfitChange}
+                  step="10"
                   min="0"
-                  placeholder="10"
+                  placeholder="200"
                 />
               </InputRow>
             </InputGroup>
           </div>
+        )}
 
-          <div style={{ gridColumn: '2', gridRow: '1' }}>
-            {renderBulkTradingToggle()}
+        {!isManual && (
+          <div style={{ gridColumn: '2', gridRow: '2' }}>
+            {renderMartingaleToggle()}
           </div>
+        )}
 
-          {isManual && tradeType !== 'accumulators' && (
-            <div style={{ gridColumn: '1', gridRow: '2' }}>
-              {renderDurationDropdown()}
-            </div>
-          )}
-
-          {isManual && tradeType === 'accumulators' && (
-            <div style={{ gridColumn: '1', gridRow: '2' }}>
-              {renderGrowthRateDropdown()}
-            </div>
-          )}
-
-          {!isManual && (
-            <div style={{ gridColumn: '1', gridRow: '2' }}>
-              <InputGroup>
-                <InputLabel>
-                  <span>Target Profit</span>
-                  <span className="optional">Opt.</span>
-                </InputLabel>
-                <InputRow>
-                  <span className="prefix">$</span>
-                  <StyledInput
-                    type="number"
-                    value={targetProfit}
-                    onChange={handleTargetProfitChange}
-                    step="10"
-                    min="0"
-                    placeholder="200"
-                  />
-                </InputRow>
-              </InputGroup>
-            </div>
-          )}
-
-          {!isManual && (
-            <div style={{ gridColumn: '2', gridRow: '2' }}>
-              {renderMartingaleToggle()}
-            </div>
-          )}
-
-          {!isManual && (
-            <div style={{ gridColumn: '1', gridRow: '3' }}>
-              <InputGroup>
-                <InputLabel>
-                  <span>Stop Loss</span>
-                  <span className="optional">Opt.</span>
-                </InputLabel>
-                <InputRow>
-                  <span className="prefix">$</span>
-                  <StyledInput
-                    type="number"
-                    value={stopLoss}
-                    onChange={handleStopLossChange}
-                    step="10"
-                    min="0"
-                    placeholder="999"
-                  />
-                </InputRow>
-              </InputGroup>
-            </div>
-          )}
-        </InputGrid>
-
-        {/* ✅ NEW: Trade Type Specific Selector */}
-        {tradeMode === 'manual' && renderTradeTypeSelector()}
-      </>
+        {!isManual && (
+          <div style={{ gridColumn: '1', gridRow: '3' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>Stop Loss</span>
+                <span className="optional">Opt.</span>
+              </InputLabel>
+              <InputRow>
+                <span className="prefix">$</span>
+                <StyledInput
+                  type="number"
+                  value={stopLoss}
+                  onChange={handleStopLossChange}
+                  step="10"
+                  min="0"
+                  placeholder="999"
+                />
+              </InputRow>
+            </InputGroup>
+          </div>
+        )}
+      </InputGrid>
     );
   };
 
@@ -3048,9 +2928,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ============================================
-  // NEW: RENDER MATCHES/DIFFERS BUTTONS
-  // ============================================
   const renderMatchesDiffersButtons = () => {
     if (tradeType !== 'matches') return null;
     
@@ -3070,9 +2947,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ============================================
-  // NEW: RENDER OVER/UNDER BUTTONS
-  // ============================================
   const renderOverUnderButtons = () => {
     if (tradeType !== 'overunder') return null;
     
@@ -3092,9 +2966,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ============================================
-  // UPDATED: RENDER TRADE BUTTONS
-  // ============================================
   const renderTradeButtons = () => {
     if (tradeType === 'evenodd') return renderEvenOddButtons();
     if (tradeType === 'matches') return renderMatchesDiffersButtons();
@@ -3226,6 +3097,27 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       )}
 
       {renderInputs()}
+
+      {/* ✅ AUTO MODE - ONE DYNAMIC DROPDOWN */}
+      {tradeMode === 'auto' && tradeType !== 'random' && tradeType !== 'accumulators' && (
+        <InputGroup>
+          <InputLabel>
+            <span>{getAutoTradeLabel()}</span>
+          </InputLabel>
+          <ToggleWrapper>
+            <ToggleLabel>Choose</ToggleLabel>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+              {renderDropdownSelect(
+                getAutoTradeOptions(),
+                autoTradeSelection,
+                setAutoTradeSelection,
+                isAutoTradeOpen,
+                setIsAutoTradeOpen
+              )}
+            </div>
+          </ToggleWrapper>
+        </InputGroup>
+      )}
 
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
