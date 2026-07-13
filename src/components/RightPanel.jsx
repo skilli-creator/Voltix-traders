@@ -3098,7 +3098,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
       {renderInputs()}
 
-      {/* ✅ AUTO MODE - ONE DYNAMIC DROPDOWN */}
+      {/* ✅ AUTO MODE - ONE DYNAMIC DROPDOWN at R3C2 */}
       {tradeMode === 'auto' && tradeType !== 'random' && tradeType !== 'accumulators' && (
         <div style={{ gridColumn: '2', gridRow: '3' }}>
           <InputGroup>
