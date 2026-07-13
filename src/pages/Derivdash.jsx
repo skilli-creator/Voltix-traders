@@ -7,6 +7,7 @@ import OptionSideBar from '../components/OptionSideBar';
 import LeftPanel from '../components/LeftPanel';
 import ChartPanel from '../components/ChartPanel';
 import RightPanel from '../components/RightPanel';
+import RiskCalculator from '../components/RiskCalculator';
 
 // ===== THEME DEFINITIONS =====
 const themes = {

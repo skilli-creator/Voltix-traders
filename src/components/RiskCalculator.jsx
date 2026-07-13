@@ -1,8 +1,6 @@
 // src/components/RiskCalculator.jsx
 import React, { useState } from 'react';
-import styled, { keyframes, ThemeProvider } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { themes } from '../pages/Derivdash';
+import styled, { keyframes } from 'styled-components';
 
 // ============================================
 // KEYFRAMES
@@ -31,6 +29,7 @@ const PageWrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+  width: 100%;
   padding: 20px;
   background: ${props => props.theme.colors.background};
   transition: background 0.3s ease;
@@ -331,7 +330,7 @@ const ResultCard = styled.div`
 
     &.low {
       background: rgba(34, 197, 94, 0.15);
-      color: #22c55e;
+      color: ${props => props.theme.colors.success};
     }
     &.medium {
       background: rgba(251, 191, 36, 0.15);
@@ -339,7 +338,7 @@ const ResultCard = styled.div`
     }
     &.high {
       background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
+      color: ${props => props.theme.colors.danger};
     }
   }
 
@@ -468,7 +467,7 @@ const RiskSummary = styled.div`
 // MAIN COMPONENT
 // ============================================
 
-const RiskCalculator = () => {
+const RiskCalculator = ({ onBack }) => {
   const navigate = useNavigate();
   const [capital, setCapital] = useState('');
   const [results, setResults] = useState(null);
@@ -534,153 +533,155 @@ const RiskCalculator = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    if (onBack) {
+      onBack(); // Call the parent's toggle function
+    } else {
+      navigate(-1); // Fallback to navigation
+    }
   };
 
   return (
-    <ThemeProvider theme={themes.dark}>
-      <PageWrapper>
-        <CalculatorContainer>
-          <BackButton onClick={handleGoBack}>
-            <span className="arrow">←</span> Back
-          </BackButton>
+    <PageWrapper>
+      <CalculatorContainer>
+        <BackButton onClick={handleGoBack}>
+          <span className="arrow">←</span> Back
+        </BackButton>
 
-          <Header>
-            <div className="icon">🧮</div>
-            <div className="header-text">
-              <div className="title">Risk Calculator</div>
-              <div className="subtitle">Professional risk management</div>
-            </div>
-          </Header>
+        <Header>
+          <div className="icon">🧮</div>
+          <div className="header-text">
+            <div className="title">Risk Calculator</div>
+            <div className="subtitle">Professional risk management</div>
+          </div>
+        </Header>
 
-          <CapitalInput>
-            <div className="label">
-              <span>Account Capital</span>
-              <span style={{ fontSize: '9px', color: '#4a4f5e' }}>Enter balance</span>
-            </div>
-            <div className="input-wrapper">
-              <span className="prefix">$</span>
-              <input
-                className="input"
-                type="number"
-                placeholder="0.00"
-                value={capital}
-                onChange={(e) => setCapital(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') calculateRisk();
-                }}
-              />
-            </div>
-            <button 
-              className="calculate-btn" 
-              onClick={calculateRisk}
-              disabled={!capital || parseFloat(capital) <= 0 || isCalculating}
-            >
-              {isCalculating ? 'Calculating...' : 'Calculate Risk'}
-            </button>
-          </CapitalInput>
+        <CapitalInput>
+          <div className="label">
+            <span>Account Capital</span>
+            <span style={{ fontSize: '9px', color: '#4a4f5e' }}>Enter balance</span>
+          </div>
+          <div className="input-wrapper">
+            <span className="prefix">$</span>
+            <input
+              className="input"
+              type="number"
+              placeholder="0.00"
+              value={capital}
+              onChange={(e) => setCapital(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') calculateRisk();
+              }}
+            />
+          </div>
+          <button 
+            className="calculate-btn" 
+            onClick={calculateRisk}
+            disabled={!capital || parseFloat(capital) <= 0 || isCalculating}
+          >
+            {isCalculating ? 'Calculating...' : 'Calculate Risk'}
+          </button>
+        </CapitalInput>
 
-          {results ? (
-            <>
-              <ResultsGrid>
-                <ResultCard className="highlight">
-                  <div className="result-label">Stake</div>
-                  <div className="result-value">{formatCurrency(results.stake)}</div>
-                  <div className="result-sub">per trade</div>
-                  <div className="result-color-bar" />
-                </ResultCard>
+        {results ? (
+          <>
+            <ResultsGrid>
+              <ResultCard className="highlight">
+                <div className="result-label">Stake</div>
+                <div className="result-value">{formatCurrency(results.stake)}</div>
+                <div className="result-sub">per trade</div>
+                <div className="result-color-bar" />
+              </ResultCard>
 
-                <ResultCard className="highlight">
-                  <div className="result-label">Martingale</div>
-                  <div className="result-value">×{MARTINGALE_MULTIPLIER}</div>
-                  <div className="result-sub">{formatCurrency(results.martingaleSize)}</div>
-                  <div className="result-color-bar" />
-                </ResultCard>
+              <ResultCard className="highlight">
+                <div className="result-label">Martingale</div>
+                <div className="result-value">×{MARTINGALE_MULTIPLIER}</div>
+                <div className="result-sub">{formatCurrency(results.martingaleSize)}</div>
+                <div className="result-color-bar" />
+              </ResultCard>
 
-                <ResultCard>
-                  <div className="result-label">Take Profit</div>
-                  <div className="result-value" style={{ color: '#22c55e' }}>
-                    {formatCurrency(results.takeProfit)}
-                  </div>
-                  <div className="result-sub">+{results.rewardPotential}%</div>
-                  <div className="result-badge low">Profit</div>
-                </ResultCard>
-
-                <ResultCard>
-                  <div className="result-label">Stop Loss</div>
-                  <div className="result-value" style={{ color: '#ef4444' }}>
-                    {formatCurrency(results.stopLoss)}
-                  </div>
-                  <div className="result-sub">-{results.riskPercentage}%</div>
-                  <div className={`result-badge ${getRiskBadge(results.riskLevel).className}`}>
-                    {getRiskBadge(results.riskLevel).label}
-                  </div>
-                </ResultCard>
-
-                <ResultCard fullWidth>
-                  <div className="result-label">Risk-Reward Ratio</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px' }}>
-                    <span className="result-value" style={{ fontSize: '15px' }}>
-                      1:{RISK_REWARD_RATIO}
-                    </span>
-                    <div style={{ 
-                      flex: 1, 
-                      height: '3px', 
-                      background: 'rgba(255,255,255,0.04)', 
-                      borderRadius: '4px',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}>
-                      <div style={{ 
-                        width: `${(RISK_REWARD_RATIO / 3) * 100}%`, 
-                        height: '100%', 
-                        background: 'linear-gradient(90deg, #22c55e, #38bdf8)',
-                        borderRadius: '4px'
-                      }} />
-                    </div>
-                    <span style={{ fontSize: '10px', color: '#94a3b8' }}>
-                      {RISK_REWARD_RATIO}:1
-                    </span>
-                  </div>
-                  <div className="result-sub">Risk $1 to gain ${RISK_REWARD_RATIO}</div>
-                </ResultCard>
-              </ResultsGrid>
-
-              <RiskSummary>
-                <div className="summary-title">Quick Summary</div>
-                <div className="summary-grid">
-                  <div className="summary-item">
-                    <div className="value" style={{ color: '#22c55e' }}>{results.maxTradesPerDay}</div>
-                    <div className="label">Max/Day</div>
-                  </div>
-                  <div className="summary-item">
-                    <div className="value" style={{ color: results.riskLevel === 'high' ? '#ef4444' : '#fbbf24' }}>
-                      {results.riskPercentage}%
-                    </div>
-                    <div className="label">Risk/Trade</div>
-                  </div>
-                  <div className="summary-item">
-                    <div className="value" style={{ color: '#38bdf8' }}>
-                      {results.rewardPotential}%
-                    </div>
-                    <div className="label">Reward</div>
-                  </div>
+              <ResultCard>
+                <div className="result-label">Take Profit</div>
+                <div className="result-value" style={{ color: '#22c55e' }}>
+                  {formatCurrency(results.takeProfit)}
                 </div>
-              </RiskSummary>
-            </>
-          ) : (
-            <EmptyState>
-              <span className="empty-icon">📊</span>
-              <div className="empty-title">No Calculation Yet</div>
-              <div className="empty-sub">
-                Enter your account capital above<br />
-                to get professional risk metrics.
+                <div className="result-sub">+{results.rewardPotential}%</div>
+                <div className="result-badge low">Profit</div>
+              </ResultCard>
+
+              <ResultCard>
+                <div className="result-label">Stop Loss</div>
+                <div className="result-value" style={{ color: '#ef4444' }}>
+                  {formatCurrency(results.stopLoss)}
+                </div>
+                <div className="result-sub">-{results.riskPercentage}%</div>
+                <div className={`result-badge ${getRiskBadge(results.riskLevel).className}`}>
+                  {getRiskBadge(results.riskLevel).label}
+                </div>
+              </ResultCard>
+
+              <ResultCard fullWidth>
+                <div className="result-label">Risk-Reward Ratio</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px' }}>
+                  <span className="result-value" style={{ fontSize: '15px' }}>
+                    1:{RISK_REWARD_RATIO}
+                  </span>
+                  <div style={{ 
+                    flex: 1, 
+                    height: '3px', 
+                    background: 'rgba(255,255,255,0.04)', 
+                    borderRadius: '4px',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{ 
+                      width: `${(RISK_REWARD_RATIO / 3) * 100}%`, 
+                      height: '100%', 
+                      background: 'linear-gradient(90deg, #22c55e, #38bdf8)',
+                      borderRadius: '4px'
+                    }} />
+                  </div>
+                  <span style={{ fontSize: '10px', color: '#94a3b8' }}>
+                    {RISK_REWARD_RATIO}:1
+                  </span>
+                </div>
+                <div className="result-sub">Risk $1 to gain ${RISK_REWARD_RATIO}</div>
+              </ResultCard>
+            </ResultsGrid>
+
+            <RiskSummary>
+              <div className="summary-title">Quick Summary</div>
+              <div className="summary-grid">
+                <div className="summary-item">
+                  <div className="value" style={{ color: '#22c55e' }}>{results.maxTradesPerDay}</div>
+                  <div className="label">Max/Day</div>
+                </div>
+                <div className="summary-item">
+                  <div className="value" style={{ color: results.riskLevel === 'high' ? '#ef4444' : '#fbbf24' }}>
+                    {results.riskPercentage}%
+                  </div>
+                  <div className="label">Risk/Trade</div>
+                </div>
+                <div className="summary-item">
+                  <div className="value" style={{ color: '#38bdf8' }}>
+                    {results.rewardPotential}%
+                  </div>
+                  <div className="label">Reward</div>
+                </div>
               </div>
-            </EmptyState>
-          )}
-        </CalculatorContainer>
-      </PageWrapper>
-    </ThemeProvider>
+            </RiskSummary>
+          </>
+        ) : (
+          <EmptyState>
+            <span className="empty-icon">📊</span>
+            <div className="empty-title">No Calculation Yet</div>
+            <div className="empty-sub">
+              Enter your account capital above<br />
+              to get professional risk metrics.
+            </div>
+          </EmptyState>
+        )}
+      </CalculatorContainer>
+    </PageWrapper>
   );
 };
 
