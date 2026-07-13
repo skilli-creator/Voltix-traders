@@ -2991,11 +2991,45 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   };
 
   const renderTradeButtons = () => {
-    if (tradeType === 'evenodd') return renderEvenOddButtons();
-    if (tradeType === 'matches') return renderMatchesDiffersButtons();
-    if (tradeType === 'overunder') return renderOverUnderButtons();
-    if (tradeType === 'random' || tradeType === 'accumulators') return null;
-    
+    if (tradeType === 'evenodd' || tradeType === 'random' || tradeType === 'accumulators') return null;
+    if (selectedDigit === null) return null;
+
+    const digit = selectedDigit;
+
+    if (tradeType === 'overunder') {
+      return (
+        <TradeButtonsWrapper>
+          <TradeButton variant="primary" onClick={() => handlePlaceTrade('Over', digit)}>
+            <span className="label">Over {digit}</span>
+            <span className="payout">${payoutOver.toFixed(2)} ({payoutOverPct}%)</span>
+            <span className="sub">${stake || 0} stake</span>
+          </TradeButton>
+          <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Under', digit)}>
+            <span className="label">Under {digit}</span>
+            <span className="payout">${payoutUnder.toFixed(2)} ({payoutUnderPct}%)</span>
+            <span className="sub">${stake || 0} stake</span>
+          </TradeButton>
+        </TradeButtonsWrapper>
+      );
+    }
+
+    if (tradeType === 'matches') {
+      return (
+        <TradeButtonsWrapper>
+          <TradeButton variant="primary" onClick={() => handlePlaceTrade('Matches', digit)}>
+            <span className="label">Matches {digit}</span>
+            <span className="payout">Payout $0.00</span>
+            <span className="sub">${stake || 0} stake</span>
+          </TradeButton>
+          <TradeButton variant="secondary" onClick={() => handlePlaceTrade('Differs', digit)}>
+            <span className="label">Differs {digit}</span>
+            <span className="payout">Payout $0.00</span>
+            <span className="sub">${stake || 0} stake</span>
+          </TradeButton>
+        </TradeButtonsWrapper>
+      );
+    }
+
     return null;
   };
 
@@ -3126,9 +3160,11 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
       {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
 
-      {tradeMode === 'manual' && renderTradeButtons()}
+      {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
 
       {tradeMode === 'manual' && renderAccumulatorButtons()}
+
+      {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulators' && renderTradeButtons()}
 
       {tradeMode === 'use-bots' ? (
         renderRunButton(!selectedBot)
