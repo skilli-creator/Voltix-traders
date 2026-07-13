@@ -1,6 +1,6 @@
 // src/components/RiskCalculator.jsx
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, useTheme } from 'styled-components';
 
 // ============================================
 // KEYFRAMES
@@ -21,7 +21,7 @@ const shimmer = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - UPDATED WITH THEME
+// STYLED COMPONENTS
 // ============================================
 
 const PageWrapper = styled.div`
@@ -481,6 +481,7 @@ const RiskSummary = styled.div`
 // ============================================
 
 const RiskCalculator = ({ onBack }) => {
+  const theme = useTheme();
   const [capital, setCapital] = useState('');
   const [results, setResults] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
@@ -549,6 +550,11 @@ const RiskCalculator = ({ onBack }) => {
       onBack();
     }
   };
+
+  // If theme is not available, show loading or fallback
+  if (!theme) {
+    return <div style={{ color: 'white', padding: '20px' }}>Loading...</div>;
+  }
 
   return (
     <PageWrapper>
