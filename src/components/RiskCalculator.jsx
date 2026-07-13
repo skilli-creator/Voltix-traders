@@ -12,8 +12,8 @@ const fadeIn = keyframes`
 `;
 
 const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '15' || 'rgba(41, 98, 255, 0.08)'}; }
-  50% { box-shadow: 0 0 40px ${props => props.theme?.colors?.accent + '25' || 'rgba(41, 98, 255, 0.15)'}; }
+  0%, 100% { box-shadow: 0 0 20px rgba(41, 98, 255, 0.08); }
+  50% { box-shadow: 0 0 40px rgba(41, 98, 255, 0.15); }
 `;
 
 const shimmer = keyframes`
@@ -31,7 +31,7 @@ const PageWrapper = styled.div`
   justify-content: center;
   height: 100%;
   padding: 20px;
-  background: ${props => props.theme?.colors?.background || 'linear-gradient(180deg, #0b0e14 0%, #0f131a 100%)'};
+  background: ${props => props.theme.colors.background};
   transition: background 0.3s ease;
 
   @media (max-width: 768px) {
@@ -42,12 +42,12 @@ const PageWrapper = styled.div`
 const CalculatorContainer = styled.div`
   width: 100%;
   max-width: 520px;
-  background: ${props => props.theme?.colors?.backgroundSecondary + 'ec' || 'rgba(8, 18, 38, 0.92)'};
+  background: ${props => props.theme.colors.backgroundSecondary};
   backdrop-filter: blur(20px);
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.06)'};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 20px;
   padding: 28px 24px 24px;
-  box-shadow: 0 20px 60px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.4)'};
+  box-shadow: 0 20px 60px ${props => props.theme.colors.shadow};
   animation: ${fadeIn} 0.4s ease;
   max-height: 90vh;
   overflow-y: auto;
@@ -60,7 +60,7 @@ const CalculatorContainer = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
+    background: ${props => props.theme.colors.scrollbar};
     border-radius: 4px;
   }
 
@@ -77,7 +77,7 @@ const BackButton = styled.button`
   gap: 8px;
   background: none;
   border: none;
-  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+  color: ${props => props.theme.colors.textMuted};
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -86,7 +86,7 @@ const BackButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    color: ${props => props.theme.colors.text};
     transform: translateX(-4px);
   }
 
@@ -101,14 +101,14 @@ const Header = styled.div`
   align-items: center;
   gap: 12px;
   padding-bottom: 16px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.06)'};
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   margin-bottom: 20px;
 
   .icon {
     font-size: 28px;
     width: 48px;
     height: 48px;
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.05)'};
+    background: ${props => props.theme.colors.accentActive};
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -123,13 +123,13 @@ const Header = styled.div`
   .title {
     font-size: 18px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    color: ${props => props.theme.colors.text};
     letter-spacing: 0.3px;
   }
 
   .subtitle {
     font-size: 11px;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 400;
     margin-top: 1px;
   }
@@ -150,8 +150,8 @@ const CapitalInput = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.015)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  background: ${props => props.theme.colors.background + '40'};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 12px;
   padding: 16px;
   animation: ${pulseGlow} 3s ease-in-out infinite;
@@ -161,7 +161,7 @@ const CapitalInput = styled.div`
   .label {
     font-size: 11px;
     text-transform: uppercase;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 600;
     letter-spacing: 0.6px;
     display: flex;
@@ -173,15 +173,15 @@ const CapitalInput = styled.div`
     display: flex;
     align-items: center;
     gap: 0;
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    background: ${props => props.theme.colors.background + '40'};
+    border: 1px solid ${props => props.theme.colors.border};
     border-radius: 8px;
     overflow: hidden;
     transition: all 0.2s ease;
 
     &:focus-within {
-      border-color: ${props => props.theme?.colors?.accent + '90' || 'rgba(41, 98, 255, 0.4)'};
-      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '15' || 'rgba(41, 98, 255, 0.05)'};
+      border-color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 0 3px ${props => props.theme.colors.accent + '15'};
     }
   }
 
@@ -189,9 +189,9 @@ const CapitalInput = styled.div`
     padding: 8px 12px;
     font-size: 14px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
-    border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    color: ${props => props.theme.colors.textMuted};
+    background: ${props => props.theme.colors.background + '40'};
+    border-right: 1px solid ${props => props.theme.colors.border};
   }
 
   .input {
@@ -199,7 +199,7 @@ const CapitalInput = styled.div`
     padding: 8px 12px;
     background: transparent;
     border: none;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    color: ${props => props.theme.colors.text};
     font-size: 14px;
     font-weight: 500;
     outline: none;
@@ -207,7 +207,7 @@ const CapitalInput = styled.div`
     min-width: 0;
 
     &::placeholder {
-      color: ${props => props.theme?.colors?.textMuted + '60' || '#3a4055'};
+      color: ${props => props.theme.colors.textMuted + '60'};
       font-weight: 400;
     }
 
@@ -225,8 +225,8 @@ const CapitalInput = styled.div`
     margin-top: 4px;
     border: none;
     border-radius: 8px;
-    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
+    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
+    color: ${props => props.theme.colors.text};
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -236,7 +236,7 @@ const CapitalInput = styled.div`
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px ${props => props.theme?.colors?.accent + '50' || 'rgba(41, 98, 255, 0.3)'};
+      box-shadow: 0 8px 30px ${props => props.theme.colors.accent + '50'};
     }
 
     &:active:not(:disabled) {
@@ -282,8 +282,8 @@ const ResultsGrid = styled.div`
 `;
 
 const ResultCard = styled.div`
-  background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.015)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  background: ${props => props.theme.colors.background + '40'};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 10px;
   padding: 12px 10px;
   transition: all 0.3s ease;
@@ -291,14 +291,14 @@ const ResultCard = styled.div`
   overflow: hidden;
 
   &:hover {
-    border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(56, 189, 248, 0.08)'};
-    background: ${props => props.theme?.colors?.background + '60' || 'rgba(255, 255, 255, 0.025)'};
+    border-color: ${props => props.theme.colors.accent + '40'};
+    background: ${props => props.theme.colors.background + '60'};
   }
 
   .result-label {
     font-size: 9px;
     text-transform: uppercase;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 600;
     letter-spacing: 0.6px;
     margin-bottom: 3px;
@@ -307,13 +307,13 @@ const ResultCard = styled.div`
   .result-value {
     font-size: 18px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    color: ${props => props.theme.colors.text};
     letter-spacing: -0.3px;
   }
 
   .result-sub {
     font-size: 10px;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    color: ${props => props.theme.colors.textMuted};
     margin-top: 2px;
   }
 
@@ -348,7 +348,7 @@ const ResultCard = styled.div`
     left: 0;
     right: 0;
     height: 2px;
-    background: ${props => `linear-gradient(90deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
+    background: ${props => `linear-gradient(90deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
     opacity: 0.3;
   }
 
@@ -357,8 +357,8 @@ const ResultCard = styled.div`
   }
 
   &.highlight {
-    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41, 98, 255, 0.12)'};
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41, 98, 255, 0.03)'};
+    border-color: ${props => props.theme.colors.accent + '30'};
+    background: ${props => props.theme.colors.accentActive};
   }
 
   @media (max-width: 480px) {
@@ -380,7 +380,7 @@ const EmptyState = styled.div`
   padding: 24px 16px;
   gap: 10px;
   animation: ${fadeIn} 0.5s ease;
-  border: 1px dashed ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  border: 1px dashed ${props => props.theme.colors.border};
   border-radius: 12px;
   margin-top: 16px;
 
@@ -392,12 +392,12 @@ const EmptyState = styled.div`
   .empty-title {
     font-size: 13px;
     font-weight: 500;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    color: ${props => props.theme.colors.textMuted};
   }
 
   .empty-sub {
     font-size: 11px;
-    color: ${props => props.theme?.colors?.textMuted + '80' || '#4a4f5e'};
+    color: ${props => props.theme.colors.textMuted + '80'};
     text-align: center;
     line-height: 1.6;
   }
@@ -411,8 +411,8 @@ const EmptyState = styled.div`
 `;
 
 const RiskSummary = styled.div`
-  background: ${props => props.theme?.colors?.accentActive || 'rgba(56, 189, 248, 0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(56, 189, 248, 0.04)'};
+  background: ${props => props.theme.colors.accentActive};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 10px;
   padding: 12px 14px;
   animation: ${fadeIn} 0.7s ease;
@@ -421,7 +421,7 @@ const RiskSummary = styled.div`
   .summary-title {
     font-size: 9px;
     text-transform: uppercase;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    color: ${props => props.theme.colors.textMuted};
     font-weight: 600;
     letter-spacing: 0.6px;
     margin-bottom: 6px;
@@ -436,19 +436,19 @@ const RiskSummary = styled.div`
   .summary-item {
     text-align: center;
     padding: 6px 2px;
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255, 255, 255, 0.02)'};
+    background: ${props => props.theme.colors.background + '40'};
     border-radius: 6px;
 
     .value {
       font-size: 13px;
       font-weight: 700;
-      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+      color: ${props => props.theme.colors.text};
     }
 
     .label {
       font-size: 7px;
       text-transform: uppercase;
-      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+      color: ${props => props.theme.colors.textMuted};
       margin-top: 1px;
       letter-spacing: 0.3px;
     }
