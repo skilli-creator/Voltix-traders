@@ -3100,23 +3100,25 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
       {/* ✅ AUTO MODE - ONE DYNAMIC DROPDOWN */}
       {tradeMode === 'auto' && tradeType !== 'random' && tradeType !== 'accumulators' && (
-        <InputGroup>
-          <InputLabel>
-            <span>{getAutoTradeLabel()}</span>
-          </InputLabel>
-          <ToggleWrapper>
-            <ToggleLabel>Choose</ToggleLabel>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
-              {renderDropdownSelect(
-                getAutoTradeOptions(),
-                autoTradeSelection,
-                setAutoTradeSelection,
-                isAutoTradeOpen,
-                setIsAutoTradeOpen
-              )}
-            </div>
-          </ToggleWrapper>
-        </InputGroup>
+        <div style={{ gridColumn: '2', gridRow: '3' }}>
+          <InputGroup>
+            <InputLabel>
+              <span>{getAutoTradeLabel()}</span>
+            </InputLabel>
+            <ToggleWrapper>
+              <ToggleLabel>Choose</ToggleLabel>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+                {renderDropdownSelect(
+                  getAutoTradeOptions(),
+                  autoTradeSelection,
+                  setAutoTradeSelection,
+                  isAutoTradeOpen,
+                  setIsAutoTradeOpen
+                )}
+              </div>
+            </ToggleWrapper>
+          </InputGroup>
+        </div>
       )}
 
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
