@@ -2244,9 +2244,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [isAutoTradeOpen, setIsAutoTradeOpen] = useState(false);
 
   const getAutoTradeOptions = () => {
-    if (tradeType === 'evenodd') return ['Even', 'Odd'];
-    if (tradeType === 'matches') return ['Matches', 'Differs'];
-    if (tradeType === 'overunder') return ['Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
+    if (tradeType === 'evenodd') return ['Even', 'Odd', 'Both'];
+    if (tradeType === 'matches') return ['Matches', 'Differs', 'Both'];
+    if (tradeType === 'overunder') return ['All','Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
     return [];
   };
 
