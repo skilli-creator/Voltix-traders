@@ -28,11 +28,24 @@ const PageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
   width: 100%;
+  height: 100%;
   padding: 20px;
   background: ${props => props.theme.colors.background};
   transition: background 0.3s ease;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.colors.scrollbar};
+    border-radius: 4px;
+  }
 
   @media (max-width: 768px) {
     padding: 12px;
