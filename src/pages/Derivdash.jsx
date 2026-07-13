@@ -919,6 +919,7 @@ const Derivdash = () => {
   const [currentTheme, setCurrentTheme] = useState('dark');
   const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const [hoveredButton, setHoveredButton] = useState(null);
+  const [showRiskCalculator, setShowRiskCalculator] = useState(false); // ← ADD THIS
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const containerRef = useRef(null);
@@ -1029,6 +1030,11 @@ const Derivdash = () => {
     setIsThemeDropdownOpen(false);
   };
 
+  // Function to toggle RiskCalculator view
+  const toggleRiskCalculator = () => {
+    setShowRiskCalculator(!showRiskCalculator);
+  };
+
   return (
     <ThemeProvider theme={themes[currentTheme]}>
       <DashboardContainer 
@@ -1046,48 +1052,54 @@ const Derivdash = () => {
         />
 
         <MainContent isSidebarOpen={isSidebarOpen} isDesktop={isDesktop}>
-          <DesktopLayout>
-            <LeftPanel />
-            <ChartPanel />
-            <RightPanel />
-          </DesktopLayout>
+          {showRiskCalculator ? (
+            <RiskCalculator onBack={toggleRiskCalculator} />
+          ) : (
+            <>
+              <DesktopLayout>
+                <LeftPanel />
+                <ChartPanel />
+                <RightPanel />
+              </DesktopLayout>
 
-          <MobileLayout>
-            <PanelsContainer
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              {panels.map((panel, index) => {
-                const Component = panel.component;
-                return (
-                  <PanelWrapper
-                    key={panel.id}
-                    index={activeIndex}
-                    style={{
-                      transform: `translateX(-${activeIndex * 100}%)`
-                    }}
-                  >
-                    <PanelContent>
-                      <Component />
-                    </PanelContent>
-                  </PanelWrapper>
-                );
-              })}
-            </PanelsContainer>
-
-            <MobileTabs>
-              {panels.map((panel, index) => (
-                <TabButton
-                  key={panel.id}
-                  active={activeIndex === index}
-                  onClick={() => setActiveIndex(index)}
+              <MobileLayout>
+                <PanelsContainer
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
                 >
-                  <span className="icon">{panel.icon}</span>
-                  <span className="label">{panel.label}</span>
-                </TabButton>
-              ))}
-            </MobileTabs>
-          </MobileLayout>
+                  {panels.map((panel, index) => {
+                    const Component = panel.component;
+                    return (
+                      <PanelWrapper
+                        key={panel.id}
+                        index={activeIndex}
+                        style={{
+                          transform: `translateX(-${activeIndex * 100}%)`
+                        }}
+                      >
+                        <PanelContent>
+                          <Component />
+                        </PanelContent>
+                      </PanelWrapper>
+                    );
+                  })}
+                </PanelsContainer>
+
+                <MobileTabs>
+                  {panels.map((panel, index) => (
+                    <TabButton
+                      key={panel.id}
+                      active={activeIndex === index}
+                      onClick={() => setActiveIndex(index)}
+                    >
+                      <span className="icon">{panel.icon}</span>
+                      <span className="label">{panel.label}</span>
+                    </TabButton>
+                  ))}
+                </MobileTabs>
+              </MobileLayout>
+            </>
+          )}
         </MainContent>
 
         {/* Floating Buttons */}
