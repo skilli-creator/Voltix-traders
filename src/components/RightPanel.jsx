@@ -899,9 +899,8 @@ const DropdownSelectButton = styled.div`
   align-items: center;
   gap: 2px;
   padding: 1px 5px 1px 6px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 4px;
+  background: transparent;
+  border: none;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 9px;
@@ -912,8 +911,7 @@ const DropdownSelectButton = styled.div`
   justify-content: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
-    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
+    color: ${props => props.theme?.colors?.accent || '#2962ff'};
   }
 
   .dropdown-arrow {
@@ -953,7 +951,7 @@ const DropdownSelectMenu = styled.div`
   box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
   max-height: 150px;
   overflow-y: auto;
-  min-width: 40px;
+  min-width: 60px;
   font-weight: 700;
 
   &::-webkit-scrollbar {
@@ -966,7 +964,7 @@ const DropdownSelectMenu = styled.div`
 
   @media (max-width: 480px) {
     max-height: 120px;
-    min-width: 32px;
+    min-width: 50px;
   }
 `;
 
@@ -978,7 +976,7 @@ const DropdownSelectItem = styled.div`
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
-  text-align: center;
+  text-align: left;
 
   &:hover {
     background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
@@ -2634,9 +2632,11 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
+    const isAuto = tradeMode === 'auto';
     
     return (
       <InputGrid>
+        {/* R1C1: Stake - Same for all modes */}
         <div style={{ gridColumn: '1', gridRow: '1' }}>
           <InputGroup>
             <InputLabel>
@@ -2657,24 +2657,16 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </InputGroup>
         </div>
 
+        {/* R1C2: Bulk Trading - Same for all modes */}
         <div style={{ gridColumn: '2', gridRow: '1' }}>
           {renderBulkTradingToggle()}
         </div>
 
-        {isManual && tradeType !== 'accumulators' && (
-          <div style={{ gridColumn: '1', gridRow: '2' }}>
-            {renderDurationDropdown()}
-          </div>
-        )}
-
-        {isManual && tradeType === 'accumulators' && (
-          <div style={{ gridColumn: '1', gridRow: '2' }}>
-            {renderGrowthRateDropdown()}
-          </div>
-        )}
-
-        {!isManual && (
-          <div style={{ gridColumn: '1', gridRow: '2' }}>
+        {/* R2C1: Duration (Manual) OR Target Profit (Auto) */}
+        <div style={{ gridColumn: '1', gridRow: '2' }}>
+          {isManual && tradeType !== 'accumulators' && renderDurationDropdown()}
+          {isManual && tradeType === 'accumulators' && renderGrowthRateDropdown()}
+          {isAuto && (
             <InputGroup>
               <InputLabel>
                 <span>Target Profit</span>
@@ -2692,16 +2684,16 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
                 />
               </InputRow>
             </InputGroup>
-          </div>
-        )}
+          )}
+        </div>
 
-        {!isManual && (
-          <div style={{ gridColumn: '2', gridRow: '2' }}>
-            {renderMartingaleToggle()}
-          </div>
-        )}
+        {/* R2C2: Martingale - Auto only */}
+        <div style={{ gridColumn: '2', gridRow: '2' }}>
+          {isAuto && renderMartingaleToggle()}
+        </div>
 
-        {!isManual && (
+        {/* R3C1: Stop Loss - Auto only */}
+        {isAuto && (
           <div style={{ gridColumn: '1', gridRow: '3' }}>
             <InputGroup>
               <InputLabel>
@@ -2722,105 +2714,47 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             </InputGroup>
           </div>
         )}
+
+        {/* R3C2: CHOOSE DROPDOWN - Auto only */}
+        {isAuto && tradeType !== 'random' && tradeType !== 'accumulators' && (
+          <div style={{ gridColumn: '2', gridRow: '3' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>{getAutoTradeLabel()}</span>
+              </InputLabel>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                background: 'rgba(255,255,255,0.02)',
+                border: '2px solid rgba(255,255,255,0.04)',
+                borderRadius: '5px',
+                padding: '0 4px',
+                height: '26px'
+              }}>
+                <span style={{ 
+                  fontSize: '8px', 
+                  padding: '0 6px',
+                  color: '#5a6070',
+                  fontWeight: 700,
+                  borderRight: '2px solid rgba(255,255,255,0.04)',
+                  marginRight: '4px'
+                }}>
+                  Choose
+                </span>
+                <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                  {renderDropdownSelect(
+                    getAutoTradeOptions(),
+                    autoTradeSelection,
+                    setAutoTradeSelection,
+                    isAutoTradeOpen,
+                    setIsAutoTradeOpen
+                  )}
+                </div>
+              </div>
+            </InputGroup>
+          </div>
+        )}
       </InputGrid>
-    );
-  };
-
-  const renderAIScanner = () => {
-    const selectedAIMarket = getSelectedAIMarket();
-    const selectedAITradeType = getSelectedAITradeType();
-
-    return (
-      <>
-        <AIButtonContainer isMobile={isPhone}>
-          <AIFloatingButton 
-            onClick={toggleAI}
-            isMobile={isPhone}
-          >
-            <span>AI</span>
-            <span className="ai-label">Analyze</span>
-          </AIFloatingButton>
-        </AIButtonContainer>
-        
-        <AIAnalysisPanel isOpen={isAIOpen} isMobile={isPhone}>
-          <AIAnalysisHeader isMobile={isPhone}>
-            <div className="title">
-              <span className="title-icon">AI</span>
-              Market Scanner
-            </div>
-            <button className="close-btn" onClick={toggleAI}>✕</button>
-          </AIAnalysisHeader>
-          
-          <AIScannerInputs>
-            <AISelectWrapper>
-              <span className="label">Select Market</span>
-              <AIDropdown>
-                <AIDropdownButton 
-                  isOpen={isAIMarketDropdownOpen}
-                  onClick={toggleAIMarketDropdown}
-                  color={selectedAIMarket.color}
-                >
-                  <div className="left">
-                    <span className="ai-dot" />
-                    <span className="ai-selected-text">{selectedAIMarket.name}</span>
-                  </div>
-                  <span className="arrow">▾</span>
-                </AIDropdownButton>
-                
-                <AIDropdownMenu isOpen={isAIMarketDropdownOpen}>
-                  {VOLATILITY_MARKETS.map((market) => (
-                    <AIDropdownItem
-                      key={market.symbol}
-                      active={aiMarket === market.symbol}
-                      color={market.color}
-                      onClick={() => handleAIMarketSelect(market)}
-                    >
-                      <div className="left">
-                        <span className="ai-item-dot" />
-                        <span className="ai-item-name">{market.name}</span>
-                      </div>
-                      <span className="ai-check">✓</span>
-                    </AIDropdownItem>
-                  ))}
-                </AIDropdownMenu>
-              </AIDropdown>
-            </AISelectWrapper>
-            
-            <AISelectWrapper>
-              <span className="label">Trade Type</span>
-              <AITradeTypeDropdown>
-                <AITradeTypeButton 
-                  isOpen={isAITradeTypeDropdownOpen}
-                  onClick={toggleAITradeTypeDropdown}
-                >
-                  <span className="ai-type-selected">{selectedAITradeType.label}</span>
-                  <span className="arrow">▾</span>
-                </AITradeTypeButton>
-                
-                <AITradeTypeMenu isOpen={isAITradeTypeDropdownOpen}>
-                  {tradeTypes.map((type) => (
-                    <AITradeTypeItem
-                      key={type.id}
-                      active={aiTradeType === type.id}
-                      onClick={() => handleAITradeTypeSelect(type.id)}
-                    >
-                      <span className="ai-type-name">{type.label}</span>
-                      <span className="ai-check">✓</span>
-                    </AITradeTypeItem>
-                  ))}
-                </AITradeTypeMenu>
-              </AITradeTypeDropdown>
-            </AISelectWrapper>
-            
-            <AIScanButton disabled>
-              <span className="scan-text">
-                Scan Market
-                <span className="coming-soon-badge">Coming Soon</span>
-              </span>
-            </AIScanButton>
-          </AIScannerInputs>
-        </AIAnalysisPanel>
-      </>
     );
   };
 
@@ -2980,6 +2914,104 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     return renderAIScanner();
   };
 
+  const renderAIScanner = () => {
+    const selectedAIMarket = getSelectedAIMarket();
+    const selectedAITradeType = getSelectedAITradeType();
+
+    return (
+      <>
+        <AIButtonContainer isMobile={isPhone}>
+          <AIFloatingButton 
+            onClick={toggleAI}
+            isMobile={isPhone}
+          >
+            <span>AI</span>
+            <span className="ai-label">Analyze</span>
+          </AIFloatingButton>
+        </AIButtonContainer>
+        
+        <AIAnalysisPanel isOpen={isAIOpen} isMobile={isPhone}>
+          <AIAnalysisHeader isMobile={isPhone}>
+            <div className="title">
+              <span className="title-icon">AI</span>
+              Market Scanner
+            </div>
+            <button className="close-btn" onClick={toggleAI}>✕</button>
+          </AIAnalysisHeader>
+          
+          <AIScannerInputs>
+            <AISelectWrapper>
+              <span className="label">Select Market</span>
+              <AIDropdown>
+                <AIDropdownButton 
+                  isOpen={isAIMarketDropdownOpen}
+                  onClick={toggleAIMarketDropdown}
+                  color={selectedAIMarket.color}
+                >
+                  <div className="left">
+                    <span className="ai-dot" />
+                    <span className="ai-selected-text">{selectedAIMarket.name}</span>
+                  </div>
+                  <span className="arrow">▾</span>
+                </AIDropdownButton>
+                
+                <AIDropdownMenu isOpen={isAIMarketDropdownOpen}>
+                  {VOLATILITY_MARKETS.map((market) => (
+                    <AIDropdownItem
+                      key={market.symbol}
+                      active={aiMarket === market.symbol}
+                      color={market.color}
+                      onClick={() => handleAIMarketSelect(market)}
+                    >
+                      <div className="left">
+                        <span className="ai-item-dot" />
+                        <span className="ai-item-name">{market.name}</span>
+                      </div>
+                      <span className="ai-check">✓</span>
+                    </AIDropdownItem>
+                  ))}
+                </AIDropdownMenu>
+              </AIDropdown>
+            </AISelectWrapper>
+            
+            <AISelectWrapper>
+              <span className="label">Trade Type</span>
+              <AITradeTypeDropdown>
+                <AITradeTypeButton 
+                  isOpen={isAITradeTypeDropdownOpen}
+                  onClick={toggleAITradeTypeDropdown}
+                >
+                  <span className="ai-type-selected">{selectedAITradeType.label}</span>
+                  <span className="arrow">▾</span>
+                </AITradeTypeButton>
+                
+                <AITradeTypeMenu isOpen={isAITradeTypeDropdownOpen}>
+                  {tradeTypes.map((type) => (
+                    <AITradeTypeItem
+                      key={type.id}
+                      active={aiTradeType === type.id}
+                      onClick={() => handleAITradeTypeSelect(type.id)}
+                    >
+                      <span className="ai-type-name">{type.label}</span>
+                      <span className="ai-check">✓</span>
+                    </AITradeTypeItem>
+                  ))}
+                </AITradeTypeMenu>
+              </AITradeTypeDropdown>
+            </AISelectWrapper>
+            
+            <AIScanButton disabled>
+              <span className="scan-text">
+                Scan Market
+                <span className="coming-soon-badge">Coming Soon</span>
+              </span>
+            </AIScanButton>
+          </AIScannerInputs>
+        </AIAnalysisPanel>
+      </>
+    );
+  };
+
   return (
     <PanelContainer>
       <PhoneTwoColumnWrapper>
@@ -3097,29 +3129,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       )}
 
       {renderInputs()}
-
-      {/* ✅ AUTO MODE - ONE DYNAMIC DROPDOWN at R3C2 */}
-      {tradeMode === 'auto' && tradeType !== 'random' && tradeType !== 'accumulators' && (
-        <div style={{ gridColumn: '2', gridRow: '3' }}>
-          <InputGroup>
-            <InputLabel>
-              <span>{getAutoTradeLabel()}</span>
-            </InputLabel>
-            <ToggleWrapper>
-              <ToggleLabel>Choose</ToggleLabel>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
-                {renderDropdownSelect(
-                  getAutoTradeOptions(),
-                  autoTradeSelection,
-                  setAutoTradeSelection,
-                  isAutoTradeOpen,
-                  setIsAutoTradeOpen
-                )}
-              </div>
-            </ToggleWrapper>
-          </InputGroup>
-        </div>
-      )}
 
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
