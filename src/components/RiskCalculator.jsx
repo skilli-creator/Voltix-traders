@@ -1,6 +1,6 @@
-// src/components/RiskCalculator.jsx
 import React, { useState } from 'react';
-import styled, { keyframes, useTheme } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 // ============================================
 // KEYFRAMES
@@ -21,42 +21,16 @@ const shimmer = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS WITH FALLBACK VALUES
+// STYLED COMPONENTS
 // ============================================
 
 const PageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  width: 100%;
   height: 100%;
   padding: 20px;
-  background: ${props => {
-    // If theme exists, use it, otherwise use fallback
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.background;
-    }
-    return '#0b0e14';
-  }};
-  transition: background 0.3s ease;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.scrollbar;
-      }
-      return '#2a2e3d';
-    }};
-    border-radius: 4px;
-  }
+  background: linear-gradient(180deg, #0b0e14 0%, #0f131a 100%);
 
   @media (max-width: 768px) {
     padding: 12px;
@@ -66,31 +40,15 @@ const PageWrapper = styled.div`
 const CalculatorContainer = styled.div`
   width: 100%;
   max-width: 520px;
-  background: ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.backgroundSecondary;
-    }
-    return 'rgba(8, 18, 38, 0.92)';
-  }};
+  background: rgba(8, 18, 38, 0.92);
   backdrop-filter: blur(20px);
-  border: 1px solid ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.border;
-    }
-    return 'rgba(56, 189, 248, 0.06)';
-  }};
+  border: 1px solid rgba(56, 189, 248, 0.06);
   border-radius: 20px;
   padding: 28px 24px 24px;
-  box-shadow: 0 20px 60px ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.shadow;
-    }
-    return 'rgba(0, 0, 0, 0.4)';
-  }};
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   animation: ${fadeIn} 0.4s ease;
   max-height: 90vh;
   overflow-y: auto;
-  transition: all 0.3s ease;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -99,12 +57,7 @@ const CalculatorContainer = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.scrollbar;
-      }
-      return '#2a2e3d';
-    }};
+    background: #2a2e3d;
     border-radius: 4px;
   }
 
@@ -121,12 +74,7 @@ const BackButton = styled.button`
   gap: 8px;
   background: none;
   border: none;
-  color: ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.textMuted;
-    }
-    return '#94a3b8';
-  }};
+  color: #94a3b8;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -135,12 +83,7 @@ const BackButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.text;
-      }
-      return '#f1f5f9';
-    }};
+    color: #f1f5f9;
     transform: translateX(-4px);
   }
 
@@ -155,24 +98,14 @@ const Header = styled.div`
   align-items: center;
   gap: 12px;
   padding-bottom: 16px;
-  border-bottom: 1px solid ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.border;
-    }
-    return 'rgba(56, 189, 248, 0.06)';
-  }};
+  border-bottom: 1px solid rgba(56, 189, 248, 0.06);
   margin-bottom: 20px;
 
   .icon {
     font-size: 28px;
     width: 48px;
     height: 48px;
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.accentActive;
-      }
-      return 'rgba(56, 189, 248, 0.05)';
-    }};
+    background: rgba(56, 189, 248, 0.05);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -187,23 +120,13 @@ const Header = styled.div`
   .title {
     font-size: 18px;
     font-weight: 700;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.text;
-      }
-      return '#f1f5f9';
-    }};
+    color: #f1f5f9;
     letter-spacing: 0.3px;
   }
 
   .subtitle {
     font-size: 11px;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted;
-      }
-      return '#64748b';
-    }};
+    color: #64748b;
     font-weight: 400;
     margin-top: 1px;
   }
@@ -224,33 +147,17 @@ const CapitalInput = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.background + '40';
-    }
-    return 'rgba(255, 255, 255, 0.015)';
-  }};
-  border: 1px solid ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.border;
-    }
-    return 'rgba(255, 255, 255, 0.04)';
-  }};
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 12px;
   padding: 16px;
   animation: ${pulseGlow} 3s ease-in-out infinite;
   margin-bottom: 4px;
-  transition: all 0.3s ease;
 
   .label {
     font-size: 11px;
     text-transform: uppercase;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted;
-      }
-      return '#94a3b8';
-    }};
+    color: #94a3b8;
     font-weight: 600;
     letter-spacing: 0.6px;
     display: flex;
@@ -262,35 +169,15 @@ const CapitalInput = styled.div`
     display: flex;
     align-items: center;
     gap: 0;
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.background + '40';
-      }
-      return 'rgba(255, 255, 255, 0.02)';
-    }};
-    border: 1px solid ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.border;
-      }
-      return 'rgba(255, 255, 255, 0.04)';
-    }};
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     border-radius: 8px;
     overflow: hidden;
     transition: all 0.2s ease;
 
     &:focus-within {
-      border-color: ${props => {
-        if (props.theme && props.theme.colors) {
-          return props.theme.colors.accent;
-        }
-        return 'rgba(41, 98, 255, 0.4)';
-      }};
-      box-shadow: 0 0 0 3px ${props => {
-        if (props.theme && props.theme.colors) {
-          return props.theme.colors.accent + '15';
-        }
-        return 'rgba(41, 98, 255, 0.05)';
-      }};
+      border-color: rgba(41, 98, 255, 0.4);
+      box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.05);
     }
   }
 
@@ -298,24 +185,9 @@ const CapitalInput = styled.div`
     padding: 8px 12px;
     font-size: 14px;
     font-weight: 700;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted;
-      }
-      return '#5a6070';
-    }};
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.background + '40';
-      }
-      return 'rgba(255, 255, 255, 0.02)';
-    }};
-    border-right: 1px solid ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.border;
-      }
-      return 'rgba(255, 255, 255, 0.04)';
-    }};
+    color: #5a6070;
+    background: rgba(255, 255, 255, 0.02);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
   }
 
   .input {
@@ -323,12 +195,7 @@ const CapitalInput = styled.div`
     padding: 8px 12px;
     background: transparent;
     border: none;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.text;
-      }
-      return '#f1f5f9';
-    }};
+    color: #f1f5f9;
     font-size: 14px;
     font-weight: 500;
     outline: none;
@@ -336,12 +203,7 @@ const CapitalInput = styled.div`
     min-width: 0;
 
     &::placeholder {
-      color: ${props => {
-        if (props.theme && props.theme.colors) {
-          return props.theme.colors.textMuted + '60';
-        }
-        return '#3a4055';
-      }};
+      color: #3a4055;
       font-weight: 400;
     }
 
@@ -359,18 +221,8 @@ const CapitalInput = styled.div`
     margin-top: 4px;
     border: none;
     border-radius: 8px;
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`;
-      }
-      return 'linear-gradient(135deg, #2962ff, #1a4fcf)';
-    }};
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.text;
-      }
-      return '#ffffff';
-    }};
+    background: linear-gradient(135deg, #2962ff, #1a4fcf);
+    color: #ffffff;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -380,12 +232,7 @@ const CapitalInput = styled.div`
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px ${props => {
-        if (props.theme && props.theme.colors) {
-          return props.theme.colors.accent + '50';
-        }
-        return 'rgba(41, 98, 255, 0.3)';
-      }};
+      box-shadow: 0 8px 30px rgba(41, 98, 255, 0.3);
     }
 
     &:active:not(:disabled) {
@@ -431,18 +278,8 @@ const ResultsGrid = styled.div`
 `;
 
 const ResultCard = styled.div`
-  background: ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.background + '40';
-    }
-    return 'rgba(255, 255, 255, 0.015)';
-  }};
-  border: 1px solid ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.border;
-    }
-    return 'rgba(255, 255, 255, 0.04)';
-  }};
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 10px;
   padding: 12px 10px;
   transition: all 0.3s ease;
@@ -450,29 +287,14 @@ const ResultCard = styled.div`
   overflow: hidden;
 
   &:hover {
-    border-color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.accent + '40';
-      }
-      return 'rgba(56, 189, 248, 0.08)';
-    }};
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.background + '60';
-      }
-      return 'rgba(255, 255, 255, 0.025)';
-    }};
+    border-color: rgba(56, 189, 248, 0.08);
+    background: rgba(255, 255, 255, 0.025);
   }
 
   .result-label {
     font-size: 9px;
     text-transform: uppercase;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted;
-      }
-      return '#64748b';
-    }};
+    color: #64748b;
     font-weight: 600;
     letter-spacing: 0.6px;
     margin-bottom: 3px;
@@ -481,23 +303,13 @@ const ResultCard = styled.div`
   .result-value {
     font-size: 18px;
     font-weight: 700;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.text;
-      }
-      return '#f1f5f9';
-    }};
+    color: #f1f5f9;
     letter-spacing: -0.3px;
   }
 
   .result-sub {
     font-size: 10px;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted;
-      }
-      return '#94a3b8';
-    }};
+    color: #94a3b8;
     margin-top: 2px;
   }
 
@@ -513,15 +325,15 @@ const ResultCard = styled.div`
     letter-spacing: 0.3px;
 
     &.low {
-      background: rgba(34, 197, 94, 0.15);
+      background: rgba(34, 197, 94, 0.1);
       color: #22c55e;
     }
     &.medium {
-      background: rgba(251, 191, 36, 0.15);
+      background: rgba(251, 191, 36, 0.1);
       color: #fbbf24;
     }
     &.high {
-      background: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.1);
       color: #ef4444;
     }
   }
@@ -532,12 +344,7 @@ const ResultCard = styled.div`
     left: 0;
     right: 0;
     height: 2px;
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return `linear-gradient(90deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`;
-      }
-      return 'linear-gradient(90deg, #2962ff, #818cf8)';
-    }};
+    background: linear-gradient(90deg, #2962ff, #818cf8);
     opacity: 0.3;
   }
 
@@ -546,18 +353,8 @@ const ResultCard = styled.div`
   }
 
   &.highlight {
-    border-color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.accent + '30';
-      }
-      return 'rgba(41, 98, 255, 0.12)';
-    }};
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.accentActive;
-      }
-      return 'rgba(41, 98, 255, 0.03)';
-    }};
+    border-color: rgba(41, 98, 255, 0.12);
+    background: rgba(41, 98, 255, 0.03);
   }
 
   @media (max-width: 480px) {
@@ -579,12 +376,7 @@ const EmptyState = styled.div`
   padding: 24px 16px;
   gap: 10px;
   animation: ${fadeIn} 0.5s ease;
-  border: 1px dashed ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.border;
-    }
-    return 'rgba(255, 255, 255, 0.04)';
-  }};
+  border: 1px dashed rgba(255, 255, 255, 0.04);
   border-radius: 12px;
   margin-top: 16px;
 
@@ -596,22 +388,12 @@ const EmptyState = styled.div`
   .empty-title {
     font-size: 13px;
     font-weight: 500;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted;
-      }
-      return '#94a3b8';
-    }};
+    color: #94a3b8;
   }
 
   .empty-sub {
     font-size: 11px;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted + '80';
-      }
-      return '#4a4f5e';
-    }};
+    color: #4a4f5e;
     text-align: center;
     line-height: 1.6;
   }
@@ -625,18 +407,8 @@ const EmptyState = styled.div`
 `;
 
 const RiskSummary = styled.div`
-  background: ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.accentActive;
-    }
-    return 'rgba(56, 189, 248, 0.02)';
-  }};
-  border: 1px solid ${props => {
-    if (props.theme && props.theme.colors) {
-      return props.theme.colors.border;
-    }
-    return 'rgba(56, 189, 248, 0.04)';
-  }};
+  background: rgba(56, 189, 248, 0.02);
+  border: 1px solid rgba(56, 189, 248, 0.04);
   border-radius: 10px;
   padding: 12px 14px;
   animation: ${fadeIn} 0.7s ease;
@@ -645,12 +417,7 @@ const RiskSummary = styled.div`
   .summary-title {
     font-size: 9px;
     text-transform: uppercase;
-    color: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.textMuted;
-      }
-      return '#64748b';
-    }};
+    color: #64748b;
     font-weight: 600;
     letter-spacing: 0.6px;
     margin-bottom: 6px;
@@ -665,34 +432,19 @@ const RiskSummary = styled.div`
   .summary-item {
     text-align: center;
     padding: 6px 2px;
-    background: ${props => {
-      if (props.theme && props.theme.colors) {
-        return props.theme.colors.background + '40';
-      }
-      return 'rgba(255, 255, 255, 0.02)';
-    }};
+    background: rgba(255, 255, 255, 0.02);
     border-radius: 6px;
 
     .value {
       font-size: 13px;
       font-weight: 700;
-      color: ${props => {
-        if (props.theme && props.theme.colors) {
-          return props.theme.colors.text;
-        }
-        return '#f1f5f9';
-      }};
+      color: #f1f5f9;
     }
 
     .label {
       font-size: 7px;
       text-transform: uppercase;
-      color: ${props => {
-        if (props.theme && props.theme.colors) {
-          return props.theme.colors.textMuted;
-        }
-        return '#64748b';
-      }};
+      color: #64748b;
       margin-top: 1px;
       letter-spacing: 0.3px;
     }
@@ -711,8 +463,8 @@ const RiskSummary = styled.div`
 // MAIN COMPONENT
 // ============================================
 
-const RiskCalculator = ({ onBack }) => {
-  const theme = useTheme();
+const RiskCalculator = () => {
+  const navigate = useNavigate();
   const [capital, setCapital] = useState('');
   const [results, setResults] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
@@ -777,26 +529,7 @@ const RiskCalculator = ({ onBack }) => {
   };
 
   const handleGoBack = () => {
-    if (onBack) {
-      onBack();
-    }
-  };
-
-  // If theme is not available, use the default theme
-  const currentTheme = theme || {
-    colors: {
-      background: '#0b0e14',
-      backgroundSecondary: 'rgba(8, 18, 38, 0.92)',
-      text: '#f1f5f9',
-      textMuted: '#94a3b8',
-      border: 'rgba(56, 189, 248, 0.06)',
-      accent: '#2962ff',
-      accentActive: 'rgba(56, 189, 248, 0.05)',
-      scrollbar: '#2a2e3d',
-      shadow: 'rgba(0, 0, 0, 0.4)',
-      success: '#22c55e',
-      danger: '#ef4444',
-    }
+    navigate(-1);
   };
 
   return (
