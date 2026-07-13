@@ -892,7 +892,6 @@ const DropdownSelect = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  flex: 1;
 `;
 
 const DropdownSelectButton = styled.div`
@@ -911,7 +910,6 @@ const DropdownSelectButton = styled.div`
   height: 20px;
   min-width: 28px;
   justify-content: center;
-  flex: 1;
 
   &:hover {
     background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
@@ -1863,7 +1861,69 @@ const OverUnderButton = styled.button`
 `;
 
 // ============================================
-// 12. RUN BUTTON
+// 12. TRADE BUTTONS (Legacy - kept for compatibility)
+// ============================================
+
+const TradeButtonsWrapper = styled.div`
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 4px;
+  animation: ${fadeIn} 0.5s ease;
+  font-weight: 700;
+
+  @media (max-width: 480px) {
+    gap: 3px;
+  }
+`;
+
+const TradeButton = styled.button`
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  background: ${props => props.variant === 'primary'
+    ? 'linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.02))'
+    : 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(239,68,68,0.02))'};
+  border: 1px solid ${props => props.variant === 'primary' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)'};
+  color: ${props => props.variant === 'primary' ? '#22c55e' : '#ef4444'};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  font-weight: 700;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: ${props => props.variant === 'primary'
+      ? '0 4px 16px rgba(34,197,94,0.1)'
+      : '0 4px 16px rgba(239,68,68,0.1)'};
+  }
+  &:active { transform: scale(0.97); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  .label { font-size: 12px; font-weight: 700; }
+  .payout { font-size: 9px; font-weight: 400; opacity: 0.7; }
+  .sub { font-size: 8px; opacity: 0.5; font-weight: 400; }
+
+  @media (max-width: 768px) {
+    padding: 6px 0;
+    .label { font-size: 11px; }
+    .payout { font-size: 8px; }
+    .sub { font-size: 7px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 0;
+    .label { font-size: 10px; }
+    .payout { font-size: 7px; }
+    .sub { font-size: 6px; }
+    border-radius: 4px;
+  }
+`;
+
+// ============================================
+// 13. RUN BUTTON
 // ============================================
 
 const RunButton = styled.button`
@@ -1906,7 +1966,7 @@ const RunButton = styled.button`
 `;
 
 // ============================================
-// 13. SESSION INFO (Bottom)
+// 14. SESSION INFO (Bottom)
 // ============================================
 
 const SessionInfo = styled.div`
@@ -1978,7 +2038,7 @@ const SessionInfo = styled.div`
 `;
 
 // ============================================
-// 14. SINGLE BUY BUTTON - FOR ACCUMULATORS
+// 15. SINGLE BUY BUTTON - PREMIUM STYLE FOR ACCUMULATORS
 // ============================================
 
 const SingleTradeButtonWrapper = styled.div`
@@ -2101,82 +2161,6 @@ const SingleTradeButton = styled.button`
 `;
 
 // ============================================
-// 15. AUTO MODE SELECTOR (2 COLUMNS × 3 ROWS)
-// ============================================
-
-const AutoModeSelector = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  animation: ${fadeIn} 0.4s ease;
-  margin-top: 2px;
-  font-weight: 700;
-
-  @media (max-width: 768px) {
-    gap: 4px;
-  }
-
-  @media (max-width: 480px) {
-    gap: 3px;
-  }
-`;
-
-const AutoSelectorGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-weight: 700;
-
-  @media (max-width: 480px) {
-    gap: 1px;
-  }
-`;
-
-const AutoSelectorLabel = styled.div`
-  font-size: 7px;
-  text-transform: uppercase;
-  color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
-  letter-spacing: 0.5px;
-  font-weight: 700;
-
-  @media (max-width: 768px) {
-    font-size: 6px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 6px;
-  }
-`;
-
-const AutoSelectorValue = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 700;
-  color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-  min-height: 26px;
-
-  @media (max-width: 768px) {
-    padding: 3px 6px;
-    font-size: 10px;
-    min-height: 22px;
-    border-radius: 4px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 2px 5px;
-    font-size: 9px;
-    min-height: 20px;
-    border-radius: 3px;
-  }
-`;
-
-// ============================================
 // BOT DATA
 // ============================================
 
@@ -2255,19 +2239,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
-  // === AUTO MODE SELECTOR STATE ===
-  const [autoEvenOdd, setAutoEvenOdd] = useState('Even');
-  const [autoOverUnder, setAutoOverUnder] = useState('Over 3');
-  const [autoMatchesDiffers, setAutoMatchesDiffers] = useState('Matches');
-  const [isAutoEvenOddOpen, setIsAutoEvenOddOpen] = useState(false);
-  const [isAutoOverUnderOpen, setIsAutoOverUnderOpen] = useState(false);
-  const [isAutoMatchesDiffersOpen, setIsAutoMatchesDiffersOpen] = useState(false);
-
-  // === AUTO MODE OPTIONS ===
-  const autoEvenOddOptions = ['Even', 'Odd'];
-  const autoOverUnderOptions = ['Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
-  const autoMatchesDiffersOptions = ['Matches', 'Differs'];
-
   const selectedMarket = externalMarket || localSelectedMarket;
 
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
@@ -2306,14 +2277,73 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const growthRateOptions = [1, 2, 3, 4, 5];
 
-  const payoutOver = 13.57;
-  const payoutOverPct = 35.71;
-  const payoutUnder = 47.50;
-  const payoutUnderPct = 375.00;
-  const payoutEven = 0.20;
-  const payoutOdd = 0.20;
-  const accumulatorPayout = 50.00;
-  const accumulatorPayoutPct = 500.00;
+  // === EVEN/ODD SELECTOR OPTIONS ===
+  const evenOddOptions = ['Even', 'Odd'];
+
+  // === OVER/UNDER SELECTOR OPTIONS ===
+  const overUnderOptions = ['Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
+
+  // === MATCHES/DIFFERS SELECTOR OPTIONS ===
+  const matchesDiffersOptions = ['Matches', 'Differs'];
+
+  // === SELECTED VALUES FOR EACH TRADE TYPE ===
+  const [selectedEvenOdd, setSelectedEvenOdd] = useState('Even');
+  const [selectedOverUnder, setSelectedOverUnder] = useState('Over 3');
+  const [selectedMatchesDiffers, setSelectedMatchesDiffers] = useState('Matches');
+
+  // === DROPDOWN STATES ===
+  const [isEvenOddDropdownOpen, setIsEvenOddDropdownOpen] = useState(false);
+  const [isOverUnderDropdownOpen, setIsOverUnderDropdownOpen] = useState(false);
+  const [isMatchesDiffersDropdownOpen, setIsMatchesDiffersDropdownOpen] = useState(false);
+
+  // === HELPER: Get the current action text based on trade type ===
+  const getActionText = () => {
+    if (tradeType === 'evenodd') return selectedEvenOdd;
+    if (tradeType === 'overunder') return selectedOverUnder;
+    if (tradeType === 'matches') return selectedMatchesDiffers;
+    return '';
+  };
+
+  // === HELPER: Get dropdown options based on trade type ===
+  const getDropdownOptions = () => {
+    if (tradeType === 'evenodd') return evenOddOptions;
+    if (tradeType === 'overunder') return overUnderOptions;
+    if (tradeType === 'matches') return matchesDiffersOptions;
+    return [];
+  };
+
+  // === HELPER: Get selected value based on trade type ===
+  const getSelectedValue = () => {
+    if (tradeType === 'evenodd') return selectedEvenOdd;
+    if (tradeType === 'overunder') return selectedOverUnder;
+    if (tradeType === 'matches') return selectedMatchesDiffers;
+    return '';
+  };
+
+  // === HELPER: Set selected value based on trade type ===
+  const setSelectedValue = (value) => {
+    if (tradeType === 'evenodd') setSelectedEvenOdd(value);
+    else if (tradeType === 'overunder') setSelectedOverUnder(value);
+    else if (tradeType === 'matches') setSelectedMatchesDiffers(value);
+  };
+
+  // === GET PAYOUT FOR SELECTED ACTION ===
+  const getPayout = () => {
+    if (tradeType === 'evenodd') {
+      return { amount: 0.20, pct: 20 };
+    }
+    if (tradeType === 'overunder') {
+      if (selectedOverUnder.startsWith('Over')) {
+        return { amount: 13.57, pct: 35.71 };
+      } else {
+        return { amount: 47.50, pct: 375.00 };
+      }
+    }
+    if (tradeType === 'matches') {
+      return { amount: 0.00, pct: 0 };
+    }
+    return { amount: 0.00, pct: 0 };
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -2360,6 +2390,15 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   };
 
   const digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  const payoutOver = 13.57;
+  const payoutOverPct = 35.71;
+  const payoutUnder = 47.50;
+  const payoutUnderPct = 375.00;
+  const payoutEven = 0.20;
+  const payoutOdd = 0.20;
+  const accumulatorPayout = 50.00;
+  const accumulatorPayoutPct = 500.00;
 
   const handleTradeTypeSelect = (id) => {
     setTradeType(id);
@@ -2416,7 +2455,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     if (tradeType === 'accumulators') {
       console.log(`Growth Rate: ${growthRate}%`);
     }
-    console.log(`Auto Mode Config - Even/Odd: ${autoEvenOdd}, Over/Under: ${autoOverUnder}, Matches/Differs: ${autoMatchesDiffers}`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -2637,177 +2675,174 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   };
 
   // ============================================
-  // RENDER AUTO MODE SELECTOR (2×3 Grid)
+  // RENDER TRADE TYPE SPECIFIC SELECTOR
   // ============================================
-  const renderAutoModeSelector = () => {
-    if (tradeMode !== 'auto') return null;
-    if (tradeType === 'random' || tradeType === 'accumulators') return null;
+  const renderTradeTypeSelector = () => {
+    if (tradeType === 'overunder') {
+      return (
+        <InputGroup>
+          <InputLabel>
+            <span>Select Over/Under</span>
+          </InputLabel>
+          <ToggleWrapper>
+            <ToggleLabel>Choose</ToggleLabel>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+              {renderDropdownSelect(
+                overUnderOptions,
+                selectedOverUnder,
+                setSelectedOverUnder,
+                isOverUnderDropdownOpen,
+                setIsOverUnderDropdownOpen
+              )}
+            </div>
+          </ToggleWrapper>
+        </InputGroup>
+      );
+    }
 
-    return (
-      <AutoModeSelector>
-        {/* Row 1, Col 1: Even/Odd */}
-        <AutoSelectorGroup>
-          <AutoSelectorLabel>Even/Odd</AutoSelectorLabel>
-          <AutoSelectorValue>
-            {renderDropdownSelect(
-              autoEvenOddOptions,
-              autoEvenOdd,
-              setAutoEvenOdd,
-              isAutoEvenOddOpen,
-              setIsAutoEvenOddOpen
-            )}
-          </AutoSelectorValue>
-        </AutoSelectorGroup>
+    if (tradeType === 'evenodd') {
+      return (
+        <InputGroup>
+          <InputLabel>
+            <span>Select Even/Odd</span>
+          </InputLabel>
+          <ToggleWrapper>
+            <ToggleLabel>Choose</ToggleLabel>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+              {renderDropdownSelect(
+                evenOddOptions,
+                selectedEvenOdd,
+                setSelectedEvenOdd,
+                isEvenOddDropdownOpen,
+                setIsEvenOddDropdownOpen
+              )}
+            </div>
+          </ToggleWrapper>
+        </InputGroup>
+      );
+    }
 
-        {/* Row 1, Col 2: Over/Under */}
-        <AutoSelectorGroup>
-          <AutoSelectorLabel>Over/Under</AutoSelectorLabel>
-          <AutoSelectorValue>
-            {renderDropdownSelect(
-              autoOverUnderOptions,
-              autoOverUnder,
-              setAutoOverUnder,
-              isAutoOverUnderOpen,
-              setIsAutoOverUnderOpen
-            )}
-          </AutoSelectorValue>
-        </AutoSelectorGroup>
+    if (tradeType === 'matches') {
+      return (
+        <InputGroup>
+          <InputLabel>
+            <span>Select Matches/Differs</span>
+          </InputLabel>
+          <ToggleWrapper>
+            <ToggleLabel>Choose</ToggleLabel>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+              {renderDropdownSelect(
+                matchesDiffersOptions,
+                selectedMatchesDiffers,
+                setSelectedMatchesDiffers,
+                isMatchesDiffersDropdownOpen,
+                setIsMatchesDiffersDropdownOpen
+              )}
+            </div>
+          </ToggleWrapper>
+        </InputGroup>
+      );
+    }
 
-        {/* Row 2, Col 1: Matches/Differs */}
-        <AutoSelectorGroup>
-          <AutoSelectorLabel>Matches/Differs</AutoSelectorLabel>
-          <AutoSelectorValue>
-            {renderDropdownSelect(
-              autoMatchesDiffersOptions,
-              autoMatchesDiffers,
-              setAutoMatchesDiffers,
-              isAutoMatchesDiffersOpen,
-              setIsAutoMatchesDiffersOpen
-            )}
-          </AutoSelectorValue>
-        </AutoSelectorGroup>
-
-        {/* Row 2, Col 2: Random Status */}
-        <AutoSelectorGroup>
-          <AutoSelectorLabel>Random</AutoSelectorLabel>
-          <AutoSelectorValue style={{ opacity: 0.5, fontSize: '10px' }}>
-            {tradeType === 'random' ? '🎲 Active' : '—'}
-          </AutoSelectorValue>
-        </AutoSelectorGroup>
-
-        {/* Row 3, Col 1: Current Action */}
-        <AutoSelectorGroup>
-          <AutoSelectorLabel>Action</AutoSelectorLabel>
-          <AutoSelectorValue>
-            {tradeType === 'evenodd' ? autoEvenOdd :
-             tradeType === 'overunder' ? autoOverUnder :
-             tradeType === 'matches' ? autoMatchesDiffers :
-             '—'}
-          </AutoSelectorValue>
-        </AutoSelectorGroup>
-
-        {/* Row 3, Col 2: Status */}
-        <AutoSelectorGroup>
-          <AutoSelectorLabel>Status</AutoSelectorLabel>
-          <AutoSelectorValue style={{ color: '#22c55e', fontSize: '10px' }}>
-            ● Ready
-          </AutoSelectorValue>
-        </AutoSelectorGroup>
-      </AutoModeSelector>
-    );
+    return null;
   };
 
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     
     return (
-      <InputGrid>
-        <div style={{ gridColumn: '1', gridRow: '1' }}>
-          <InputGroup>
-            <InputLabel>
-              <span>Stake</span>
-              <span className="suffix">Min: $0.50</span>
-            </InputLabel>
-            <InputRow>
-              <span className="prefix">$</span>
-              <StyledInput
-                type="number"
-                value={stake}
-                onChange={handleStakeChange}
-                step="0.50"
-                min="0"
-                placeholder="10"
-              />
-            </InputRow>
-          </InputGroup>
-        </div>
-
-        <div style={{ gridColumn: '2', gridRow: '1' }}>
-          {renderBulkTradingToggle()}
-        </div>
-
-        {isManual && tradeType !== 'accumulators' && (
-          <div style={{ gridColumn: '1', gridRow: '2' }}>
-            {renderDurationDropdown()}
-          </div>
-        )}
-
-        {isManual && tradeType === 'accumulators' && (
-          <div style={{ gridColumn: '1', gridRow: '2' }}>
-            {renderGrowthRateDropdown()}
-          </div>
-        )}
-
-        {!isManual && (
-          <div style={{ gridColumn: '1', gridRow: '2' }}>
+      <>
+        <InputGrid>
+          <div style={{ gridColumn: '1', gridRow: '1' }}>
             <InputGroup>
               <InputLabel>
-                <span>Target Profit</span>
-                <span className="optional">Opt.</span>
+                <span>Stake</span>
+                <span className="suffix">Min: $0.50</span>
               </InputLabel>
               <InputRow>
                 <span className="prefix">$</span>
                 <StyledInput
                   type="number"
-                  value={targetProfit}
-                  onChange={handleTargetProfitChange}
-                  step="10"
+                  value={stake}
+                  onChange={handleStakeChange}
+                  step="0.50"
                   min="0"
-                  placeholder="200"
+                  placeholder="10"
                 />
               </InputRow>
             </InputGroup>
           </div>
-        )}
 
-        {!isManual && (
-          <div style={{ gridColumn: '2', gridRow: '2' }}>
-            {renderMartingaleToggle()}
+          <div style={{ gridColumn: '2', gridRow: '1' }}>
+            {renderBulkTradingToggle()}
           </div>
-        )}
 
-        {!isManual && (
-          <div style={{ gridColumn: '1', gridRow: '3' }}>
-            <InputGroup>
-              <InputLabel>
-                <span>Stop Loss</span>
-                <span className="optional">Opt.</span>
-              </InputLabel>
-              <InputRow>
-                <span className="prefix">$</span>
-                <StyledInput
-                  type="number"
-                  value={stopLoss}
-                  onChange={handleStopLossChange}
-                  step="10"
-                  min="0"
-                  placeholder="999"
-                />
-              </InputRow>
-            </InputGroup>
-          </div>
-        )}
-      </InputGrid>
+          {isManual && tradeType !== 'accumulators' && (
+            <div style={{ gridColumn: '1', gridRow: '2' }}>
+              {renderDurationDropdown()}
+            </div>
+          )}
+
+          {isManual && tradeType === 'accumulators' && (
+            <div style={{ gridColumn: '1', gridRow: '2' }}>
+              {renderGrowthRateDropdown()}
+            </div>
+          )}
+
+          {!isManual && (
+            <div style={{ gridColumn: '1', gridRow: '2' }}>
+              <InputGroup>
+                <InputLabel>
+                  <span>Target Profit</span>
+                  <span className="optional">Opt.</span>
+                </InputLabel>
+                <InputRow>
+                  <span className="prefix">$</span>
+                  <StyledInput
+                    type="number"
+                    value={targetProfit}
+                    onChange={handleTargetProfitChange}
+                    step="10"
+                    min="0"
+                    placeholder="200"
+                  />
+                </InputRow>
+              </InputGroup>
+            </div>
+          )}
+
+          {!isManual && (
+            <div style={{ gridColumn: '2', gridRow: '2' }}>
+              {renderMartingaleToggle()}
+            </div>
+          )}
+
+          {!isManual && (
+            <div style={{ gridColumn: '1', gridRow: '3' }}>
+              <InputGroup>
+                <InputLabel>
+                  <span>Stop Loss</span>
+                  <span className="optional">Opt.</span>
+                </InputLabel>
+                <InputRow>
+                  <span className="prefix">$</span>
+                  <StyledInput
+                    type="number"
+                    value={stopLoss}
+                    onChange={handleStopLossChange}
+                    step="10"
+                    min="0"
+                    placeholder="999"
+                  />
+                </InputRow>
+              </InputGroup>
+            </div>
+          )}
+        </InputGrid>
+
+        {/* ✅ NEW: Trade Type Specific Selector */}
+        {tradeMode === 'manual' && renderTradeTypeSelector()}
+      </>
     );
   };
 
@@ -3013,6 +3048,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
+  // ============================================
+  // NEW: RENDER MATCHES/DIFFERS BUTTONS
+  // ============================================
   const renderMatchesDiffersButtons = () => {
     if (tradeType !== 'matches') return null;
     
@@ -3032,6 +3070,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
+  // ============================================
+  // NEW: RENDER OVER/UNDER BUTTONS
+  // ============================================
   const renderOverUnderButtons = () => {
     if (tradeType !== 'overunder') return null;
     
@@ -3051,6 +3092,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
+  // ============================================
+  // UPDATED: RENDER TRADE BUTTONS
+  // ============================================
   const renderTradeButtons = () => {
     if (tradeType === 'evenodd') return renderEvenOddButtons();
     if (tradeType === 'matches') return renderMatchesDiffersButtons();
@@ -3141,9 +3185,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </TradeModeButton>
         </TradeModeButtons>
       </TradeModeWrapper>
-
-      {/* ✅ AUTO MODE SELECTOR - 2 columns × 3 rows */}
-      {renderAutoModeSelector()}
 
       {tradeMode === 'use-bots' && (
         <>
