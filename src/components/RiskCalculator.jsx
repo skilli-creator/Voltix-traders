@@ -1,6 +1,6 @@
 // src/components/RiskCalculator.jsx
-import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useState, useContext } from 'react';
+import styled, { keyframes, ThemeContext } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // ============================================
@@ -22,7 +22,7 @@ const shimmer = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - UPDATED WITH THEME
+// STYLED COMPONENTS
 // ============================================
 
 const PageWrapper = styled.div`
@@ -464,11 +464,12 @@ const RiskSummary = styled.div`
 `;
 
 // ============================================
-// MAIN COMPONENT (UNCHANGED)
+// MAIN COMPONENT
 // ============================================
 
 const RiskCalculator = () => {
   const navigate = useNavigate();
+  const theme = useContext(ThemeContext);
   const [capital, setCapital] = useState('');
   const [results, setResults] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
