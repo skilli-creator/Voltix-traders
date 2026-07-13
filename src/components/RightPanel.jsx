@@ -2122,6 +2122,33 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [movementDirection, setMovementDirection] = useState('down');
   const [price, setPrice] = useState(8459.65);
 
+  // ============================================
+  // AUTO MODE - DYNAMIC DROPDOWN STATE
+  // ============================================
+  const [autoTradeSelection, setAutoTradeSelection] = useState('Even');
+  const [isAutoTradeOpen, setIsAutoTradeOpen] = useState(false);
+
+  const getAutoTradeOptions = () => {
+    if (tradeType === 'evenodd') return ['Even', 'Odd'];
+    if (tradeType === 'matches') return ['Matches', 'Differs'];
+    if (tradeType === 'overunder') return ['Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
+    return [];
+  };
+
+  const getAutoTradeLabel = () => {
+    if (tradeType === 'evenodd') return 'Even/Odd';
+    if (tradeType === 'matches') return 'Matches/Differs';
+    if (tradeType === 'overunder') return 'Over/Under';
+    return '';
+  };
+
+  // Reset selection when trade type changes
+  useEffect(() => {
+    if (tradeType === 'evenodd') setAutoTradeSelection('Even');
+    else if (tradeType === 'matches') setAutoTradeSelection('Matches');
+    else if (tradeType === 'overunder') setAutoTradeSelection('Over 3');
+  }, [tradeType]);
+
   const getTradeTypes = () => {
     const baseTypes = [
       { id: 'overunder', label: 'Over/Under' },
@@ -2263,6 +2290,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     if (tradeType === 'accumulators') {
       console.log(`Growth Rate: ${growthRate}%`);
     }
+    console.log(`Auto Mode Selection: ${autoTradeSelection}`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -2943,6 +2971,29 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       )}
 
       {renderInputs()}
+
+      {/* ✅ AUTO MODE - ONE DYNAMIC DROPDOWN AT R3C2 */}
+      {tradeMode === 'auto' && tradeType !== 'random' && tradeType !== 'accumulators' && (
+        <div style={{ gridColumn: '2', gridRow: '3' }}>
+          <InputGroup>
+            <InputLabel>
+              <span>{getAutoTradeLabel()}</span>
+            </InputLabel>
+            <ToggleWrapper>
+              <ToggleLabel>Choose</ToggleLabel>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+                {renderDropdownSelect(
+                  getAutoTradeOptions(),
+                  autoTradeSelection,
+                  setAutoTradeSelection,
+                  isAutoTradeOpen,
+                  setIsAutoTradeOpen
+                )}
+              </div>
+            </ToggleWrapper>
+          </InputGroup>
+        </div>
+      )}
 
       {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
