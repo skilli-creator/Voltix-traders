@@ -22,7 +22,7 @@ const shimmer = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - UPDATED WITH THEME
+// STYLED COMPONENTS - UPDATED WITH THEME (SAME PATTERN AS TopBar)
 // ============================================
 
 const PageWrapper = styled.div`
