@@ -564,8 +564,8 @@ const FeedbackSection = styled.div`
 
   .feedback-label {
     font-size: 11px;
-    color: ${props => props.theme.colors.textMuted};
     font-weight: 700;
+    color: ${props => props.theme.colors.textMuted};
     margin-bottom: 8px;
     letter-spacing: 0.3px;
   }
@@ -1010,14 +1010,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="nav-label">Voltix Traders Academy</span>
               <span className="badge">NEW</span>
             </NavItem>
-
-            <NavItem 
-              active={activeItem === 'how-to-use'}
-              onClick={handleHowToUseClick}
-            >
-              <span className="nav-icon">📖</span>
-              <span className="nav-label">How to Use This Tool</span>
-            </NavItem>
           </NavSection>
 
           {/* ACCOUNT SECTION */}
@@ -1153,6 +1145,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <div className="feedback-status">{submitStatus}</div>
               )}
             </FeedbackSection>
+          </NavSection>
+
+          {/* HOW TO USE SECTION */}
+          <NavSection>
+            <SectionLabel>Guide</SectionLabel>
+            
+            <NavItem 
+              active={activeItem === 'how-to-use'}
+              onClick={handleHowToUseClick}
+            >
+              <span className="nav-icon">📖</span>
+              <span className="nav-label">How to Use This Tool</span>
+            </NavItem>
           </NavSection>
 
           {/* ABOUT VOLTIX TRADERS SECTION */}
