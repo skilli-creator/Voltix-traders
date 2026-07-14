@@ -952,6 +952,49 @@ const Derivdash = () => {
     };
   }, []);
 
+  // Auto-fullscreen for phone/tablet devices
+  useEffect(() => {
+    const autoFullscreen = async () => {
+      // Check if device is mobile or tablet (width <= 1024px)
+      if (window.innerWidth <= 1024 && !document.fullscreenElement) {
+        try {
+          const element = document.documentElement;
+          if (element.requestFullscreen) {
+            await element.requestFullscreen();
+          } else if (element.webkitRequestFullscreen) {
+            await element.webkitRequestFullscreen();
+          } else if (element.mozRequestFullScreen) {
+            await element.mozRequestFullScreen();
+          } else if (element.msRequestFullscreen) {
+            await element.msRequestFullscreen();
+          }
+          setIsFullscreen(true);
+        } catch (error) {
+          // Silently fail if fullscreen is not supported or blocked
+          console.log('Auto-fullscreen not supported or blocked');
+        }
+      }
+    };
+
+    // Trigger auto-fullscreen on mount
+    autoFullscreen();
+
+    // Add listener for orientation changes or resize to re-trigger
+    const handleOrientationChange = () => {
+      if (window.innerWidth <= 1024 && !document.fullscreenElement) {
+        autoFullscreen();
+      }
+    };
+
+    window.addEventListener('resize', handleOrientationChange);
+    window.addEventListener('orientationchange', handleOrientationChange);
+
+    return () => {
+      window.removeEventListener('resize', handleOrientationChange);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+    };
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (themeDropdownRef.current && !themeDropdownRef.current.contains(event.target)) {
