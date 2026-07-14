@@ -117,6 +117,65 @@ const NavItem = styled.div`
   }
 `;
 
+// ===== SOUND TOGGLE BUTTON =====
+const SoundToggle = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 2px solid ${props => props.theme.colors.border};
+  background: ${props => props.isMuted ? props.theme.colors.backgroundSecondary : props.theme.colors.accentActive};
+  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  font-weight: 700;
+  margin-left: auto;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.accent};
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.accent};
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 2px 6px;
+    .icon { font-size: 12px; }
+    .label { font-size: 8px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 2px 4px;
+    .icon { font-size: 10px; }
+    .label { font-size: 7px; }
+  }
+`;
+
+const NavItemWithSound = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 3px;
+`;
+
 const Divider = styled.div`
   height: 2px;
   background: ${props => props.theme.colors.border};
@@ -274,6 +333,7 @@ const StatusFooter = styled.div`
 const LeftPanel = () => {
   const [activeTab, setActiveTab] = useState('open');
   const [isConnected, setIsConnected] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   const [data, setData] = useState({
     openCount: 0,
@@ -286,6 +346,24 @@ const LeftPanel = () => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const toggleSound = () => {
+    setIsMuted(!isMuted);
+    // Dispatch custom event for sound toggle
+    const event = new CustomEvent('soundToggle', { detail: { isMuted: !isMuted } });
+    window.dispatchEvent(event);
+    
+    // Optional: Save preference to localStorage
+    localStorage.setItem('soundMuted', JSON.stringify(!isMuted));
+  };
+
+  // Load sound preference from localStorage on mount
+  useEffect(() => {
+    const savedMuteState = localStorage.getItem('soundMuted');
+    if (savedMuteState !== null) {
+      setIsMuted(JSON.parse(savedMuteState));
+    }
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -304,19 +382,31 @@ const LeftPanel = () => {
   return (
     <PanelContainer>
       <NavList>
-        <NavItem active={activeTab === 'open'} onClick={() => handleTabClick('open')}>
-          <span className="label">Open</span>
-          <span className="badge">{data.openCount}</span>
-        </NavItem>
+        <NavItemWithSound>
+          <NavItem active={activeTab === 'open'} onClick={() => handleTabClick('open')}>
+            <span className="label">Open</span>
+            <span className="badge">{data.openCount}</span>
+          </NavItem>
 
-        <NavItem active={activeTab === 'closed'} onClick={() => handleTabClick('closed')}>
-          <span className="label">Closed</span>
-          <span className="badge">{data.closedCount}</span>
-        </NavItem>
+          <NavItem active={activeTab === 'closed'} onClick={() => handleTabClick('closed')}>
+            <span className="label">Closed</span>
+            <span className="badge">{data.closedCount}</span>
+          </NavItem>
 
-        <NavItem active={activeTab === 'transactions'} onClick={() => handleTabClick('transactions')}>
-          <span className="label">Transactions</span>
-        </NavItem>
+          <NavItem active={activeTab === 'transactions'} onClick={() => handleTabClick('transactions')}>
+            <span className="label">Transactions</span>
+          </NavItem>
+
+          <SoundToggle 
+            isMuted={isMuted} 
+            onClick={toggleSound}
+            aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
+            title={isMuted ? 'Click to unmute' : 'Click to mute'}
+          >
+            <span className="icon">{isMuted ? '🔇' : '🔊'}</span>
+            <span className="label">{isMuted ? 'Muted' : 'Sound'}</span>
+          </SoundToggle>
+        </NavItemWithSound>
       </NavList>
 
       <Divider />
