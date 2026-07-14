@@ -553,6 +553,107 @@ const AboutCard = styled.div`
   }
 `;
 
+// ===== HOW TO USE CARD =====
+const HowToUseCard = styled.div`
+  padding: 14px;
+  border-radius: 12px;
+  background: ${props => props.theme.colors.accentActive};
+  border: 2px solid ${props => props.theme.colors.border};
+  animation: ${fadeIn} 0.6s ease;
+  margin-top: 4px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.accent};
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme.colors.text};
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon {
+      font-size: 16px;
+    }
+  }
+
+  .step-item {
+    font-size: 10px;
+    color: ${props => props.theme.colors.textSecondary};
+    padding: 4px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+
+    .step-number {
+      color: ${props => props.theme.colors.accent};
+      font-weight: 700;
+      flex-shrink: 0;
+      min-width: 16px;
+    }
+
+    .highlight {
+      color: ${props => props.theme.colors.accent};
+      font-weight: 700;
+    }
+  }
+
+  .learn-more {
+    margin-top: 8px;
+    font-size: 10px;
+    color: ${props => props.theme.colors.accent};
+    cursor: pointer;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      gap: 8px;
+      color: ${props => props.theme.colors.accentHover};
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    
+    .card-title {
+      font-size: 10px;
+      .icon { font-size: 14px; }
+    }
+    .step-item {
+      font-size: 9px;
+      padding: 3px 0;
+    }
+    .learn-more {
+      font-size: 9px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+    
+    .card-title {
+      font-size: 9px;
+      .icon { font-size: 12px; }
+    }
+    .step-item {
+      font-size: 8px;
+      padding: 2px 0;
+    }
+    .learn-more {
+      font-size: 8px;
+    }
+  }
+`;
+
 // ===== FEEDBACK SECTION - ENHANCED STAR VISIBILITY =====
 const FeedbackSection = styled.div`
   padding: 14px;
@@ -898,6 +999,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleHowToUseClick = () => {
+    setActiveItem('how-to-use');
+    navigate('/how-to-use');
+    if (window.innerWidth <= 768) {
+      onClose();
+    }
+  };
+
   const handleSubmitFeedback = async () => {
     if (rating === 0) {
       setSubmitStatus('Please select a rating');
@@ -1139,6 +1248,44 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </FeedbackSection>
           </NavSection>
 
+          {/* HOW TO USE SECTION */}
+          <NavSection>
+            <SectionLabel>Guide</SectionLabel>
+            
+            <HowToUseCard>
+              <div className="card-title">
+                <span className="icon">📖</span>
+                How to Use This Tool
+              </div>
+              <div className="step-item">
+                <span className="step-number">1.</span>
+                <span>Connect your <span className="highlight">Deriv account</span> to access real-time trading data</span>
+              </div>
+              <div className="step-item">
+                <span className="step-number">2.</span>
+                <span>Explore the <span className="highlight">chart panel</span> to analyze market trends and patterns</span>
+              </div>
+              <div className="step-item">
+                <span className="step-number">3.</span>
+                <span>Use the <span className="highlight">trading panel</span> to execute trades with precision</span>
+              </div>
+              <div className="step-item">
+                <span className="step-number">4.</span>
+                <span>Monitor your <span className="highlight">open positions</span> and track performance in real-time</span>
+              </div>
+              <div className="step-item">
+                <span className="step-number">5.</span>
+                <span>Customize your <span className="highlight">experience</span> with themes and sound settings</span>
+              </div>
+              <div 
+                className="learn-more" 
+                onClick={handleHowToUseClick}
+              >
+                View full guide →
+              </div>
+            </HowToUseCard>
+          </NavSection>
+
           {/* ABOUT VOLTIX TRADERS SECTION */}
           <NavSection>
             <SectionLabel>Company</SectionLabel>
@@ -1154,7 +1301,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
-                <span>It supports automated trading, AI-assisted manual trading,  <span className="highlight">and bot trading</span> .</span>
+                <span>It supports automated trading, AI-assisted manual trading, <span className="highlight">and bot trading</span>.</span>
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
