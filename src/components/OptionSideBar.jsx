@@ -906,6 +906,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleTermsClick = () => {
+    setActiveItem('terms');
+    navigate('/terms');
+    if (window.innerWidth <= 768) {
+      onClose();
+    }
+  };
+
   const handleSubmitFeedback = async () => {
     if (rating === 0) {
       setSubmitStatus('Please select a rating');
@@ -1192,6 +1200,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 Learn more about us →
               </div>
             </AboutCard>
+          </NavSection>
+
+          {/* TERMS AND CONDITIONS SECTION */}
+          <NavSection>
+            <SectionLabel>Legal</SectionLabel>
+            
+            <NavItem 
+              active={activeItem === 'terms'}
+              onClick={handleTermsClick}
+            >
+              <span className="nav-icon">⚖️</span>
+              <span className="nav-label">Terms and Conditions</span>
+            </NavItem>
           </NavSection>
         </SidebarContent>
 
