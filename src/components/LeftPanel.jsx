@@ -1,250 +1,449 @@
 // src/components/LeftPanel.jsx
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { HiSpeakerWave, HiSpeakerXMark } from 'react-icons/hi2';
 
 const pulse = keyframes`
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 `;
 
-/* =============================
-   MAIN PANEL
-============================= */
 const PanelContainer = styled.div`
   width: 260px;
   min-width: 260px;
   height: calc(100vh - 48px);
-  background: ${p => p.theme.colors.background};
-  border-right: 1px solid ${p => p.theme.colors.border};
+  background: ${props => props.theme.colors.background};
+  border-right: 2px solid ${props => props.theme.colors.border};
   display: flex;
   flex-direction: column;
-  padding: 12px 10px;
+  padding: 10px 8px;
   overflow-y: auto;
-  gap: 10px;
+  overflow-x: hidden;
+  z-index: 50;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  font-weight: 700;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.colors.scrollbar};
+    border-radius: 10px;
+  }
+
+  @media (max-width: 1024px) and (min-width: 769px) {
+    width: 180px;
+    min-width: 180px;
+    padding: 8px 6px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    min-width: unset;
+    height: 100%;
+    padding: 6px 8px;
+    border-right: none;
+    background: ${props => props.theme.colors.background};
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 6px;
+  }
 `;
 
-/* =============================
-   NAV
-============================= */
 const NavList = styled.div`
   display: flex;
-  gap: 6px;
+  flex-direction: row;
+  gap: 2px;
+  padding: 0 2px;
+  width: 100%;
+  font-weight: 700;
+
+  @media (max-width: 768px) {
+    gap: 4px;
+    justify-content: space-around;
+  }
 `;
 
 const NavItem = styled.div`
-  flex: 1;
-  text-align: center;
-  padding: 6px 8px;
-  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  transition: all 0.2s;
-
-  color: ${p => p.active ? p.theme.colors.text : p.theme.colors.textMuted};
-  background: ${p => p.active ? p.theme.colors.accentActive : 'transparent'};
-  border: 1px solid ${p => p.active ? p.theme.colors.accent : p.theme.colors.border};
+  transition: all 0.15s ease;
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
+  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
+  border: 2px solid ${props => props.active ? props.theme.colors.accent : 'transparent'};
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
 
   &:hover {
-    background: ${p => p.theme.colors.backgroundSecondary};
+    background: ${props => props.theme.colors.backgroundSecondary};
+    color: ${props => props.theme.colors.text};
+    border-color: ${props => props.theme.colors.accent};
+  }
+
+  .label {
+    font-size: 11px;
+    font-weight: 700;
   }
 
   .badge {
-    margin-left: 4px;
-    font-size: 11px;
-    color: ${p => p.theme.colors.textMuted};
+    font-size: 10px;
+    font-weight: 700;
+    padding: 0 3px;
+    border-radius: 3px;
+    background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.backgroundSecondary};
+    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted};
+    &::before { content: '('; }
+    &::after { content: ')'; }
+  }
+
+  @media (max-width: 768px) {
+    padding: 4px 8px;
+    .label { font-size: 10px; }
+    .badge { font-size: 9px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 3px 6px;
+    .label { font-size: 9px; }
+    .badge { font-size: 8px; }
   }
 `;
 
-/* =============================
-   EMPTY STATE
-============================= */
-const EmptyState = styled.div`
+const Divider = styled.div`
+  height: 2px;
+  background: ${props => props.theme.colors.border};
+  margin: 4px 0;
+  transition: background 0.3s ease;
+
+  @media (max-width: 768px) {
+    margin: 2px 0;
+  }
+`;
+
+const NoPositions = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 4px;
+  color: ${props => props.theme.colors.textMuted};
   text-align: center;
-  padding: 20px 10px;
-  color: ${p => p.theme.colors.textMuted};
+  font-weight: 700;
 
-  .icon {
-    font-size: 22px;
-    margin-bottom: 6px;
+  .icon { 
+    font-size: 18px; 
+    margin-bottom: 2px; 
+    color: ${props => props.theme.colors.textMuted + '50'}; 
+  }
+  .title { 
+    font-size: 10px; 
+    font-weight: 700; 
+    color: ${props => props.theme.colors.text}; 
+    margin-bottom: 1px; 
+  }
+  .subtitle { 
+    font-size: 8px; 
+    font-weight: 700;
+    color: ${props => props.theme.colors.textMuted}; 
   }
 
-  .title {
-    font-size: 13px;
-    font-weight: 500;
-    color: ${p => p.theme.colors.text};
+  @media (max-width: 768px) {
+    padding: 4px 2px;
+    .icon { font-size: 14px; }
+    .title { font-size: 9px; }
+    .subtitle { font-size: 7px; }
   }
 
-  .subtitle {
-    font-size: 11px;
+  @media (max-width: 480px) {
+    padding: 2px 2px;
+    .icon { font-size: 12px; }
+    .title { font-size: 8px; }
+    .subtitle { font-size: 6px; }
   }
 `;
 
-/* =============================
-   SESSION
-============================= */
-const SessionBox = styled.div`
-  border-top: 1px solid ${p => p.theme.colors.border};
-  padding-top: 10px;
+const BottomContent = styled.div`
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px;
+  border-top: 2px solid ${props => props.theme.colors.border};
+  transition: border-color 0.3s ease;
+  font-weight: 700;
+
+  @media (max-width: 768px) {
+    gap: 1px;
+    padding-top: 2px;
+  }
+`;
+
+const SessionSection = styled.div`
+  padding: 0 2px;
+  font-weight: 700;
 `;
 
 const SessionLabel = styled.div`
-  font-size: 11px;
-  color: ${p => p.theme.colors.textMuted};
+  font-size: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: ${props => props.theme.colors.textMuted};
+  font-weight: 700;
+
+  @media (max-width: 768px) {
+    font-size: 6px;
+  }
 `;
 
 const SessionPL = styled.div`
-  font-size: 18px;
-  font-weight: 600;
-  color: ${p => p.isNegative ? p.theme.colors.danger : p.theme.colors.success};
+  font-size: 13px;
+  font-weight: 700;
+  color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
+
+  .currency {
+    font-size: 8px;
+    font-weight: 700;
+    color: ${props => props.theme.colors.textMuted};
+    margin-left: 1px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    .currency { font-size: 7px; }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+    .currency { font-size: 6px; }
+  }
+`;
+
+// ===== SESSION ROW WITH SOUND ICON =====
+const SessionRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+  gap: 8px;
+`;
+
+const SessionLeft = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const SoundIcon = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${props => props.isMuted ? 'transparent' : props.theme.colors.accentActive};
+  border: 2px solid ${props => props.isMuted ? props.theme.colors.border : props.theme.colors.accent};
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 16px;
+  flex-shrink: 0;
+  line-height: 1;
+
+  &:hover {
+    transform: scale(1.1);
+    border-color: ${props => props.theme.colors.accent};
+    background: ${props => props.theme.colors.accentActive};
+    box-shadow: 0 2px 12px ${props => props.isMuted ? 'transparent' : props.theme.colors.accent + '40'};
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  @media (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
 `;
 
 const TradesSummary = styled.div`
-  font-size: 11px;
-  color: ${p => p.theme.colors.textMuted};
+  font-size: 8px;
+  color: ${props => props.theme.colors.textMuted};
+  padding: 0 2px;
+  font-weight: 700;
 
-  .wins { color: ${p => p.theme.colors.success}; }
-  .losses { color: ${p => p.theme.colors.danger}; }
+  .wins { color: ${props => props.theme.colors.success}; }
+  .losses { color: ${props => props.theme.colors.danger}; }
+
+  @media (max-width: 768px) {
+    font-size: 7px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 6px;
+  }
 `;
 
-/* =============================
-   FOOTER (STATUS + SOUND)
-============================= */
-const Footer = styled.div`
-  margin-top: auto;
-  padding-top: 10px;
-  border-top: 1px solid ${p => p.theme.colors.border};
+// ===== STATUS DOT =====
+const StatusDot = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 7px;
+  color: ${props => props.theme.colors.textMuted};
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+
+  .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: ${props => props.theme.colors.accent};
+    animation: ${props => props.isConnected ? pulse : 'none'} 1.5s ease-in-out infinite;
+    border: 1px solid ${props => props.theme.colors.accent};
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 6px;
+    .dot { width: 4px; height: 4px; }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 5px;
+    .dot { width: 3px; height: 3px; }
+  }
 `;
 
 const StatusRow = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
+  padding: 2px 2px 0 2px;
 `;
 
-const Status = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${p => p.theme.colors.accent};
-    animation: ${p => p.active ? pulse : 'none'} 1.5s infinite;
-  }
-
-  .text {
-    font-size: 11px;
-    color: ${p => p.theme.colors.textMuted};
-  }
-`;
-
-const SoundButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid ${p => p.isMuted ? p.theme.colors.border : p.theme.colors.accent};
-  background: ${p => p.isMuted ? 'transparent' : p.theme.colors.accentActive};
-  color: ${p => p.isMuted ? p.theme.colors.textMuted : p.theme.colors.accent};
-  cursor: pointer;
-  font-size: 12px;
-
-  svg {
-    font-size: 18px;
-  }
-
-  &:hover {
-    background: ${p => p.theme.colors.accentActive};
-  }
-`;
-
-/* =============================
-   COMPONENT
-============================= */
 const LeftPanel = () => {
   const [activeTab, setActiveTab] = useState('open');
+  const [isConnected, setIsConnected] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
 
   const [data, setData] = useState({
     openCount: 0,
     closedCount: 8,
-    sessionPL: -1270,
+    sessionPL: -1270.00,
+    openPositions: 0,
     trades: { wins: 0, losses: 7, total: 7 }
   });
 
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
   const toggleSound = () => {
-    setIsMuted(prev => !prev);
+    setIsMuted(!isMuted);
+    const event = new CustomEvent('soundToggle', { detail: { isMuted: !isMuted } });
+    window.dispatchEvent(event);
     localStorage.setItem('soundMuted', JSON.stringify(!isMuted));
   };
 
   useEffect(() => {
-    const saved = localStorage.getItem('soundMuted');
-    if (saved) setIsMuted(JSON.parse(saved));
+    const savedMuteState = localStorage.getItem('soundMuted');
+    if (savedMuteState !== null) {
+      setIsMuted(JSON.parse(savedMuteState));
+    }
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setData(prev => ({
+        ...prev,
+        sessionPL: prev.sessionPL + (Math.random() - 0.5) * 5,
+        openPositions: Math.floor(Math.random() * 3)
+      }));
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const isNegative = data.sessionPL < 0;
 
   return (
     <PanelContainer>
-
-      {/* NAV */}
       <NavList>
-        <NavItem active={activeTab === 'open'} onClick={() => setActiveTab('open')}>
-          Open <span className="badge">{data.openCount}</span>
+        <NavItem active={activeTab === 'open'} onClick={() => handleTabClick('open')}>
+          <span className="label">Open</span>
+          <span className="badge">{data.openCount}</span>
         </NavItem>
 
-        <NavItem active={activeTab === 'closed'} onClick={() => setActiveTab('closed')}>
-          Closed <span className="badge">{data.closedCount}</span>
+        <NavItem active={activeTab === 'closed'} onClick={() => handleTabClick('closed')}>
+          <span className="label">Closed</span>
+          <span className="badge">{data.closedCount}</span>
         </NavItem>
 
-        <NavItem active={activeTab === 'transactions'} onClick={() => setActiveTab('transactions')}>
-          Transactions
+        <NavItem active={activeTab === 'transactions'} onClick={() => handleTabClick('transactions')}>
+          <span className="label">Transactions</span>
         </NavItem>
       </NavList>
 
-      {/* EMPTY */}
-      <EmptyState>
+      <Divider />
+
+      <NoPositions>
         <div className="icon">📭</div>
         <div className="title">No open positions</div>
-        <div className="subtitle">Trades will appear here</div>
-      </EmptyState>
+        <div className="subtitle">Your active trades will appear here</div>
+      </NoPositions>
 
-      {/* SESSION */}
-      <SessionBox>
-        <SessionLabel>Last Session</SessionLabel>
-        <SessionPL isNegative={isNegative}>
-          {isNegative ? '-' : ''}${Math.abs(data.sessionPL).toFixed(2)}
-        </SessionPL>
+      <Divider />
+
+      <BottomContent>
+        <SessionRow>
+          <SessionLeft>
+            <SessionSection>
+              <SessionLabel>Last Session</SessionLabel>
+              <SessionPL isNegative={isNegative}>
+                {isNegative ? '-' : ''}${Math.abs(data.sessionPL).toFixed(2)}
+                <span className="currency">USD</span>
+              </SessionPL>
+            </SessionSection>
+          </SessionLeft>
+          <SoundIcon 
+            isMuted={isMuted} 
+            onClick={toggleSound}
+            aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
+            title={isMuted ? 'Click to unmute' : 'Click to mute'}
+          >
+            {isMuted ? '🔇' : '🔊'}
+          </SoundIcon>
+        </SessionRow>
 
         <TradesSummary>
           {data.trades.total} trades (
           <span className="wins">{data.trades.wins}W</span> /{' '}
           <span className="losses">{data.trades.losses}L</span>)
         </TradesSummary>
-      </SessionBox>
 
-      {/* FOOTER */}
-      <Footer>
         <StatusRow>
-
-          <Status active>
+          <StatusDot isConnected={isConnected}>
             <span className="dot" />
-            <span className="text">Live</span>
-          </Status>
-
-          <SoundButton isMuted={isMuted} onClick={toggleSound}>
-            {isMuted ? <HiSpeakerXMark /> : <HiSpeakerWave />}
-            {isMuted ? 'Muted' : 'Sound'}
-          </SoundButton>
-
+            {isConnected ? 'Live' : 'Disconnected'}
+          </StatusDot>
         </StatusRow>
-      </Footer>
-
+      </BottomContent>
     </PanelContainer>
   );
 };
