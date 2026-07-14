@@ -453,137 +453,6 @@ const ResponsibleTradingCard = styled.div`
   }
 `;
 
-// ===== ABOUT VOLTIX TRADERS CARD =====
-const AboutCard = styled.div`
-  padding: 14px;
-  border-radius: 12px;
-  background: ${props => props.theme.colors.accentActive};
-  border: 2px solid ${props => props.theme.colors.border};
-  animation: ${fadeIn} 0.6s ease;
-  margin-top: 4px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.accent};
-  }
-
-  .card-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.text};
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .icon {
-      font-size: 16px;
-    }
-  }
-
-  .about-text {
-    font-size: 10px;
-    color: ${props => props.theme.colors.textSecondary};
-    line-height: 1.6;
-    padding: 2px 0;
-
-    .highlight {
-      color: ${props => props.theme.colors.accent};
-      font-weight: 700;
-    }
-  }
-
-  .about-stats {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 2px solid ${props => props.theme.colors.border};
-  }
-
-  .stat-item {
-    flex: 1;
-    text-align: center;
-
-    .stat-number {
-      font-size: 14px;
-      font-weight: 700;
-      color: ${props => props.theme.colors.accent};
-    }
-
-    .stat-label {
-      font-size: 8px;
-      color: ${props => props.theme.colors.textMuted};
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-top: 2px;
-    }
-  }
-
-  .learn-more {
-    margin-top: 8px;
-    font-size: 10px;
-    color: ${props => props.theme.colors.accent};
-    cursor: pointer;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      gap: 8px;
-      color: ${props => props.theme.colors.accentHover};
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 12px;
-    
-    .card-title {
-      font-size: 10px;
-      .icon { font-size: 14px; }
-    }
-    .about-text {
-      font-size: 9px;
-    }
-    .stat-item .stat-number {
-      font-size: 12px;
-    }
-    .stat-item .stat-label {
-      font-size: 7px;
-    }
-    .learn-more {
-      font-size: 9px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 10px;
-    
-    .card-title {
-      font-size: 9px;
-      .icon { font-size: 12px; }
-    }
-    .about-text {
-      font-size: 8px;
-    }
-    .stat-item .stat-number {
-      font-size: 11px;
-    }
-    .stat-item .stat-label {
-      font-size: 6px;
-    }
-    .learn-more {
-      font-size: 8px;
-    }
-    .about-stats {
-      gap: 8px;
-    }
-  }
-`;
-
 // ===== FEEDBACK SECTION - ENHANCED STAR VISIBILITY =====
 const FeedbackSection = styled.div`
   padding: 14px;
@@ -821,6 +690,67 @@ const SidebarFooter = styled.div`
       .footer-icon {
         font-size: 13px;
       }
+    }
+  }
+`;
+
+// ===== ABOUT VOLTIX TRADERS - FOOTER ITEM =====
+const AboutFooterItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
+  font-size: 13px;
+  font-weight: 700;
+  border: 2px solid transparent;
+
+  &:hover {
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.text};
+    border-color: ${props => props.theme.colors.accent};
+  }
+
+  &.active {
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.text};
+    border-color: ${props => props.theme.colors.accent};
+
+    .footer-icon {
+      color: ${props => props.theme.colors.accent};
+    }
+  }
+
+  .footer-icon {
+    font-size: 16px;
+    transition: color 0.2s ease;
+  }
+
+  .footer-label {
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 10px;
+    font-size: 12px;
+    gap: 10px;
+    
+    .footer-icon {
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 8px;
+    border-radius: 6px;
+    
+    .footer-icon {
+      font-size: 13px;
     }
   }
 `;
@@ -1071,41 +1001,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* ABOUT VOLTIX TRADERS SECTION */}
-          <NavSection>
-            <SectionLabel>Company</SectionLabel>
-            
-            <AboutCard>
-              <div className="card-title">
-                <span className="icon">🏢</span>
-                About Voltix Traders
-              </div>
-              <div className="about-text">
-                <span className="highlight">Voltix Traders</span> is a premier trading platform empowering traders with cutting-edge tools, real-time analytics, and comprehensive educational resources. We're committed to democratizing access to global financial markets.
-              </div>
-              <div className="about-stats">
-                <div className="stat-item">
-                  <div className="stat-number">50K+</div>
-                  <div className="stat-label">Active Traders</div>
-                </div>
-                <div className="stat-item">
-                  <div className="stat-number">120+</div>
-                  <div className="stat-label">Countries</div>
-                </div>
-                <div className="stat-item">
-                  <div className="stat-number">99.9%</div>
-                  <div className="stat-label">Uptime</div>
-                </div>
-              </div>
-              <div 
-                className="learn-more" 
-                onClick={handleAboutClick}
-              >
-                Learn more about us →
-              </div>
-            </AboutCard>
-          </NavSection>
-
           {/* RESPONSIBLE TRADING SECTION */}
           <NavSection>
             <SectionLabel>Wellness</SectionLabel>
@@ -1191,6 +1086,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
         {/* FOOTER - Now always visible at bottom */}
         <SidebarFooter>
+          {/* About Voltix Traders - Added as first footer item */}
+          <AboutFooterItem 
+            active={activeItem === 'about'}
+            onClick={handleAboutClick}
+          >
+            <span className="footer-icon">🏢</span>
+            <span className="footer-label">About Voltix Traders</span>
+          </AboutFooterItem>
+          
           <div className="footer-item" onClick={handleSettingsNavigation}>
             <span className="footer-icon">⚙️</span>
             Settings
