@@ -226,18 +226,12 @@ const SessionPL = styled.div`
   }
 `;
 
-// ===== SESSION ROW WITH SOUND ICON =====
+// ===== SESSION ROW WITH SOUND ICON ON LEFT =====
 const SessionRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 2px;
   gap: 8px;
-`;
-
-const SessionLeft = styled.div`
-  flex: 1;
-  min-width: 0;
+  padding: 0 2px;
 `;
 
 const SoundIcon = styled.button`
@@ -247,12 +241,12 @@ const SoundIcon = styled.button`
   background: ${props => props.isMuted ? 'transparent' : props.theme.colors.accentActive};
   border: 2px solid ${props => props.isMuted ? props.theme.colors.border : props.theme.colors.accent};
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
   cursor: pointer;
   transition: all 0.25s ease;
-  font-size: 16px;
+  font-size: 14px;
   flex-shrink: 0;
   line-height: 1;
 
@@ -268,16 +262,22 @@ const SoundIcon = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
-
-  @media (max-width: 480px) {
     width: 24px;
     height: 24px;
     font-size: 12px;
   }
+
+  @media (max-width: 480px) {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    border-width: 1.5px;
+  }
+`;
+
+const SessionContent = styled.div`
+  flex: 1;
+  min-width: 0;
 `;
 
 const TradesSummary = styled.div`
@@ -333,7 +333,7 @@ const StatusDot = styled.div`
 const StatusRow = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 2px 2px 0 2px;
 `;
 
@@ -412,15 +412,6 @@ const LeftPanel = () => {
 
       <BottomContent>
         <SessionRow>
-          <SessionLeft>
-            <SessionSection>
-              <SessionLabel>Last Session</SessionLabel>
-              <SessionPL isNegative={isNegative}>
-                {isNegative ? '-' : ''}${Math.abs(data.sessionPL).toFixed(2)}
-                <span className="currency">USD</span>
-              </SessionPL>
-            </SessionSection>
-          </SessionLeft>
           <SoundIcon 
             isMuted={isMuted} 
             onClick={toggleSound}
@@ -429,6 +420,15 @@ const LeftPanel = () => {
           >
             {isMuted ? '🔇' : '🔊'}
           </SoundIcon>
+          <SessionContent>
+            <SessionSection>
+              <SessionLabel>Last Session</SessionLabel>
+              <SessionPL isNegative={isNegative}>
+                {isNegative ? '-' : ''}${Math.abs(data.sessionPL).toFixed(2)}
+                <span className="currency">USD</span>
+              </SessionPL>
+            </SessionSection>
+          </SessionContent>
         </SessionRow>
 
         <TradesSummary>
