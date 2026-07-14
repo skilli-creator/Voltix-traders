@@ -1150,15 +1150,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
-                <span><span className="highlight">50K+</span> active traders worldwide</span>
+                <span><span className="highlight">Voltix Traders</span> is a third-party app for trading on Deriv and Forex.</span>
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
-                <span>Trusted in <span className="highlight">120+</span> countries</span>
+                <span>It supports automated trading, AI-assisted manual trading,  <span className="highlight">and bot trading</span> .</span>
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
-                <span><span className="highlight">99.9%</span> platform uptime reliability</span>
+                <span><span className="highlight">It</span>provides live, real-time data from Deriv and Forex via APIs.</span>
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
