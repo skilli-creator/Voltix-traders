@@ -330,7 +330,7 @@ const NavItem = styled.div`
   }
 `;
 
-// ===== FEEDBACK SECTION =====
+// ===== FEEDBACK SECTION - UPDATED FOR BETTER STAR VISIBILITY =====
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 12px;
@@ -338,6 +338,8 @@ const FeedbackSection = styled.div`
   border: 2px solid ${props => props.theme.colors.border};
   animation: ${fadeIn} 0.6s ease;
   font-weight: 700;
+  position: relative;
+  z-index: 1;
 
   .feedback-label {
     font-size: 11px;
@@ -352,22 +354,30 @@ const FeedbackSection = styled.div`
     gap: 8px;
     margin-bottom: 10px;
     justify-content: center;
+    position: relative;
+    z-index: 2;
   }
 
   .star {
-    font-size: 24px;
+    font-size: 28px;
     cursor: pointer;
     transition: all 0.2s ease;
     color: ${props => props.theme.colors.border};
     line-height: 1;
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
     &:hover {
-      transform: scale(1.2);
+      transform: scale(1.25);
+      z-index: 4;
     }
 
     &.active {
       color: #fbbf24;
-      text-shadow: 0 0 30px rgba(251, 191, 36, 0.2);
+      text-shadow: 0 0 30px rgba(251, 191, 36, 0.4), 0 0 60px rgba(251, 191, 36, 0.2);
+      position: relative;
+      z-index: 3;
     }
 
     &:hover ~ .star {
@@ -390,6 +400,8 @@ const FeedbackSection = styled.div`
     outline: none;
     transition: all 0.2s ease;
     margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
 
     &::placeholder {
       color: ${props => props.theme.colors.textMuted + '60'};
@@ -412,6 +424,8 @@ const FeedbackSection = styled.div`
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
@@ -435,6 +449,8 @@ const FeedbackSection = styled.div`
     text-align: center;
     color: ${props => props.theme.colors.success};
     font-weight: 700;
+    position: relative;
+    z-index: 1;
   }
 
   @media (max-width: 768px) {
@@ -445,8 +461,7 @@ const FeedbackSection = styled.div`
       margin-bottom: 6px;
     }
     .star {
-      font-size: 20px;
-      gap: 6px;
+      font-size: 24px;
     }
     .feedback-textarea {
       min-height: 60px;
@@ -466,8 +481,8 @@ const FeedbackSection = styled.div`
       margin-bottom: 4px;
     }
     .star {
-      font-size: 18px;
-      gap: 4px;
+      font-size: 22px;
+      gap: 6px;
     }
     .feedback-textarea {
       min-height: 50px;
