@@ -1158,7 +1158,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
-                <span><span className="highlight">It</span>provides live, real-time data from Deriv and Forex via APIs.</span>
+                <span><span className="highlight">It</span> provides live, real-time data from Deriv and Forex via APIs.</span>
               </div>
               <div className="about-item">
                 <span className="bullet">•</span>
