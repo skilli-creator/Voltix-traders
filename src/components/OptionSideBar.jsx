@@ -330,7 +330,7 @@ const NavItem = styled.div`
   }
 `;
 
-// ===== FEEDBACK SECTION - UPDATED FOR BETTER STAR VISIBILITY =====
+// ===== FEEDBACK SECTION - ENHANCED STAR VISIBILITY =====
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 12px;
@@ -338,8 +338,6 @@ const FeedbackSection = styled.div`
   border: 2px solid ${props => props.theme.colors.border};
   animation: ${fadeIn} 0.6s ease;
   font-weight: 700;
-  position: relative;
-  z-index: 1;
 
   .feedback-label {
     font-size: 11px;
@@ -351,38 +349,55 @@ const FeedbackSection = styled.div`
 
   .stars {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin-bottom: 10px;
     justify-content: center;
+    padding: 4px 0;
+  }
+
+  .star-wrapper {
     position: relative;
-    z-index: 2;
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.3);
+    }
   }
 
   .star {
-    font-size: 28px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: ${props => props.theme.colors.border};
+    font-size: 32px;
     line-height: 1;
-    position: relative;
-    z-index: 3;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-
-    &:hover {
-      transform: scale(1.25);
-      z-index: 4;
-    }
+    color: ${props => props.theme.colors.border};
+    transition: all 0.2s ease;
+    display: block;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 
     &.active {
       color: #fbbf24;
-      text-shadow: 0 0 30px rgba(251, 191, 36, 0.4), 0 0 60px rgba(251, 191, 36, 0.2);
-      position: relative;
-      z-index: 3;
+      text-shadow: 
+        0 0 20px rgba(251, 191, 36, 0.6),
+        0 0 40px rgba(251, 191, 36, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.4);
     }
 
-    &:hover ~ .star {
-      color: ${props => props.theme.colors.border};
+    &.hover {
+      color: #fbbf24;
+      text-shadow: 
+        0 0 20px rgba(251, 191, 36, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.4);
     }
+  }
+
+  .star-rating-text {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    min-height: 20px;
+    color: ${props => props.theme.colors.textSecondary};
+    letter-spacing: 0.3px;
   }
 
   .feedback-textarea {
@@ -400,8 +415,6 @@ const FeedbackSection = styled.div`
     outline: none;
     transition: all 0.2s ease;
     margin-bottom: 10px;
-    position: relative;
-    z-index: 1;
 
     &::placeholder {
       color: ${props => props.theme.colors.textMuted + '60'};
@@ -424,8 +437,6 @@ const FeedbackSection = styled.div`
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    z-index: 1;
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
@@ -449,8 +460,6 @@ const FeedbackSection = styled.div`
     text-align: center;
     color: ${props => props.theme.colors.success};
     font-weight: 700;
-    position: relative;
-    z-index: 1;
   }
 
   @media (max-width: 768px) {
@@ -461,7 +470,10 @@ const FeedbackSection = styled.div`
       margin-bottom: 6px;
     }
     .star {
-      font-size: 24px;
+      font-size: 28px;
+    }
+    .stars {
+      gap: 8px;
     }
     .feedback-textarea {
       min-height: 60px;
@@ -481,7 +493,9 @@ const FeedbackSection = styled.div`
       margin-bottom: 4px;
     }
     .star {
-      font-size: 22px;
+      font-size: 24px;
+    }
+    .stars {
       gap: 6px;
     }
     .feedback-textarea {
@@ -678,11 +692,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const getRatingText = (value) => {
     const texts = {
-      1: 'Needs Improvement',
-      2: 'Fair',
-      3: 'Good',
-      4: 'Great',
-      5: 'Excellent'
+      1: 'Needs Improvement ⭐',
+      2: 'Fair ⭐⭐',
+      3: 'Good ⭐⭐⭐',
+      4: 'Great ⭐⭐⭐⭐',
+      5: 'Excellent ⭐⭐⭐⭐⭐'
     };
     return texts[value] || '';
   };
@@ -771,26 +785,24 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 {[1, 2, 3, 4, 5].map((star) => (
                   <span
                     key={star}
-                    className={`star ${star <= (hoverRating || rating) ? 'active' : ''}`}
+                    className="star-wrapper"
                     onClick={() => setRating(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
                   >
-                    ★
+                    <span 
+                      className={`star ${
+                        star <= (hoverRating || rating) ? 'active' : ''
+                      } ${star <= hoverRating && star > rating ? 'hover' : ''}`}
+                    >
+                      ★
+                    </span>
                   </span>
                 ))}
               </div>
-              {rating > 0 && (
-                <div style={{ 
-                  textAlign: 'center', 
-                  fontSize: '11px', 
-                  color: '#94a3b8', 
-                  marginBottom: '8px',
-                  fontWeight: '700'
-                }}>
-                  {getRatingText(rating)}
-                </div>
-              )}
+              <div className="star-rating-text">
+                {rating > 0 ? getRatingText(rating) : 'Tap a star to rate'}
+              </div>
               <textarea
                 className="feedback-textarea"
                 placeholder="Share your thoughts, suggestions, or issues..."
