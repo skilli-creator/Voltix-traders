@@ -2,172 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
-// NOTIFICATION SYSTEM
-// ============================================
-const slideInRight = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
-
-const slideOutRight = keyframes`
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-`;
-
-const NotificationContainer = styled.div`
-  position: fixed;
-  top: 70px;
-  right: 20px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 380px;
-  width: 100%;
-  pointer-events: none;
-
-  @media (max-width: 768px) {
-    top: 60px;
-    right: 10px;
-    max-width: 300px;
-    gap: 6px;
-  }
-
-  @media (max-width: 480px) {
-    top: 55px;
-    right: 8px;
-    max-width: 260px;
-    gap: 5px;
-  }
-`;
-
-const NotificationItem = styled.div`
-  pointer-events: auto;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: ${props => {
-    if (props.type === 'success') return `linear-gradient(135deg, ${props.theme?.colors?.backgroundSecondary || '#0f1a1f'}, ${props.theme?.colors?.background || '#0a0e17'})`;
-    if (props.type === 'error') return `linear-gradient(135deg, ${props.theme?.colors?.backgroundSecondary || '#1f0f0f'}, ${props.theme?.colors?.background || '#170a0a'})`;
-    if (props.type === 'warning') return `linear-gradient(135deg, ${props.theme?.colors?.backgroundSecondary || '#1f1a0f'}, ${props.theme?.colors?.background || '#170e0a'})`;
-    return `linear-gradient(135deg, ${props.theme?.colors?.backgroundSecondary || '#0f131a'}, ${props.theme?.colors?.background || '#0a0e17'})`;
-  }};
-  border: 2px solid ${props => {
-    if (props.type === 'success') return props.theme?.colors?.success + '60' || 'rgba(34,197,94,0.3)';
-    if (props.type === 'error') return props.theme?.colors?.danger + '60' || 'rgba(239,68,68,0.3)';
-    if (props.type === 'warning') return '#f59e0b' + '60' || 'rgba(245,158,11,0.3)';
-    return props.theme?.colors?.border || 'rgba(255,255,255,0.04)';
-  }};
-  box-shadow: 0 8px 32px ${props => {
-    if (props.type === 'success') return 'rgba(34,197,94,0.15)';
-    if (props.type === 'error') return 'rgba(239,68,68,0.15)';
-    if (props.type === 'warning') return 'rgba(245,158,11,0.15)';
-    return 'rgba(0,0,0,0.3)';
-  }};
-  animation: ${props => props.isExiting ? slideOutRight : slideInRight} 0.4s ease forwards;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: ${props => {
-      if (props.type === 'success') return props.theme?.colors?.success || '#22c55e';
-      if (props.type === 'error') return props.theme?.colors?.danger || '#ef4444';
-      if (props.type === 'warning') return '#f59e0b';
-      return props.theme?.colors?.accent || '#2962ff';
-    }};
-    border-radius: 0 2px 2px 0;
-  }
-
-  .notification-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
-  }
-
-  .notification-icon {
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .notification-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    flex: 1;
-  }
-
-  .notification-close {
-    background: none;
-    border: none;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0 4px;
-    transition: all 0.2s ease;
-    line-height: 1;
-
-    &:hover {
-      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-      transform: scale(1.1);
-    }
-  }
-
-  .notification-message {
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
-    font-weight: 700;
-    line-height: 1.5;
-    padding-left: 28px;
-  }
-
-  .notification-time {
-    font-size: 9px;
-    color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
-    margin-top: 4px;
-    padding-left: 28px;
-    font-weight: 400;
-  }
-
-  @media (max-width: 768px) {
-    padding: 10px 14px;
-    border-radius: 10px;
-
-    .notification-icon { font-size: 16px; }
-    .notification-title { font-size: 11px; }
-    .notification-message { font-size: 10px; padding-left: 24px; }
-    .notification-time { font-size: 8px; padding-left: 24px; }
-  }
-
-  @media (max-width: 480px) {
-    padding: 8px 12px;
-    border-radius: 8px;
-
-    .notification-icon { font-size: 14px; }
-    .notification-title { font-size: 10px; }
-    .notification-message { font-size: 9px; padding-left: 20px; }
-    .notification-time { font-size: 7px; padding-left: 20px; }
-  }
-`;
-
-// ============================================
 // ALL VOLATILITY MARKETS (Deriv Official)
 // ============================================
 const VOLATILITY_MARKETS = [
@@ -2405,141 +2239,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
-  // === NOTIFICATION SYSTEM ===
-  const [notifications, setNotifications] = useState([]);
-
-  const addNotification = (title, message, type = 'info') => {
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, title, message, type, isExiting: false }]);
-    
-    // Auto dismiss after 5 seconds
-    setTimeout(() => {
-      removeNotification(id);
-    }, 5000);
-  };
-
-  const removeNotification = (id) => {
-    setNotifications(prev => 
-      prev.map(n => n.id === id ? { ...n, isExiting: true } : n)
-    );
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 400);
-  };
-
-  // === VALIDATION FUNCTION ===
-  const validateAndTrade = (direction, digit) => {
-    const stakeValue = parseFloat(stake);
-    
-    // Check if stake is provided and valid
-    if (!stake || isNaN(stakeValue) || stakeValue <= 0) {
-      addNotification(
-        '⚠️ Invalid Stake',
-        'Please enter a valid stake amount (minimum $0.50)',
-        'error'
-      );
-      return false;
-    }
-
-    // Check if stake meets minimum
-    if (stakeValue < 0.50) {
-      addNotification(
-        '⚠️ Stake Too Low',
-        'Minimum stake is $0.50. Please increase your stake.',
-        'error'
-      );
-      return false;
-    }
-
-    // For Over/Under, check if digit is selected
-    if (tradeType === 'overunder' || tradeType === 'matches') {
-      if (digit === null || digit === undefined) {
-        addNotification(
-          '⚠️ No Digit Selected',
-          'Please select a digit before placing your trade.',
-          'warning'
-        );
-        return false;
-      }
-    }
-
-    // For Even/Odd, check if direction is provided
-    if (tradeType === 'evenodd' && !direction) {
-      addNotification(
-        '⚠️ No Selection Made',
-        'Please select Even or Odd before placing your trade.',
-        'warning'
-      );
-      return false;
-    }
-
-    // For Accumulators, check if growth rate is set
-    if (tradeType === 'accumulators') {
-      if (!growthRate || growthRate <= 0) {
-        addNotification(
-          '⚠️ Invalid Growth Rate',
-          'Please set a valid growth rate for your accumulator trade.',
-          'warning'
-        );
-        return false;
-      }
-    }
-
-    // For Auto mode, check if auto trade selection is made
-    if (tradeMode === 'auto' && tradeType !== 'random' && tradeType !== 'accumulators') {
-      if (!autoTradeSelection) {
-        addNotification(
-          '⚠️ No Selection Made',
-          'Please select a trading option in Auto mode.',
-          'warning'
-        );
-        return false;
-      }
-    }
-
-    // For Bots mode, check if a bot is selected
-    if (tradeMode === 'use-bots' && !selectedBot) {
-      addNotification(
-        '🤖 No Bot Selected',
-        'Please select a bot to run in Bot mode.',
-        'warning'
-      );
-      return false;
-    }
-
-    // ALL VALIDATIONS PASSED - Execute trade
-    const tradeInfo = {
-      type: tradeType,
-      mode: tradeMode,
-      direction: direction,
-      digit: digit,
-      stake: stakeValue,
-      market: selectedMarket.name,
-      bot: selectedBot ? BOTS.find(b => b.id === selectedBot)?.name : null,
-      bulk: bulkTrading ? bulkCount : 1,
-      duration: tradeMode === 'manual' && tradeType !== 'accumulators' ? duration : null,
-      growthRate: tradeType === 'accumulators' ? growthRate : null,
-      martingale: martingale ? martingaleMultiplier : null,
-      targetProfit: targetProfit || null,
-      stopLoss: stopLoss || null,
-    };
-
-    // Show success notification
-    const directionText = direction || 'Trade';
-    const digitText = digit !== null && digit !== undefined ? ` ${digit}` : '';
-    const botText = tradeMode === 'use-bots' ? ` with ${tradeInfo.bot}` : '';
-    const bulkText = bulkTrading ? ` (${bulkCount}x bulk)` : '';
-    
-    addNotification(
-      '✅ Trade Placed Successfully!',
-      `${directionText}${digitText} on ${selectedMarket.display}${botText}${bulkText}`,
-      'success'
-    );
-
-    console.log('Trade executed:', tradeInfo);
-    return true;
-  };
-
   // === AUTO MODE - DYNAMIC DROPDOWN ===
   const [autoTradeSelection, setAutoTradeSelection] = useState('Even');
   const [isAutoTradeOpen, setIsAutoTradeOpen] = useState(false);
@@ -2692,11 +2391,28 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const handlePlaceTrade = (direction, digit) => {
     const tradeDigit = tradeType === 'random' ? selectedDigit : digit;
-    validateAndTrade(direction, tradeDigit);
+    console.log(`Trade placed: ${direction} ${tradeDigit} on ${tradeType}`);
+    console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
+    console.log(`Duration: ${duration} ticks`);
+    if (tradeMode !== 'manual') {
+      console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    }
+    if (tradeType === 'accumulators') {
+      console.log(`Growth Rate: ${growthRate}%`);
+    }
   };
 
   const handleRunAuto = () => {
-    validateAndTrade('Auto', null);
+    console.log('Auto trading started');
+    console.log(`Bulk Trading: ${bulkTrading ? `Opening ${bulkCount} trades` : 'Single trade'}`);
+    console.log(`Duration: ${duration} ticks`);
+    if (tradeMode !== 'manual') {
+      console.log(`Martingale: ${martingale ? `Multiplier ${martingaleMultiplier}x` : 'Disabled'}`);
+    }
+    if (tradeType === 'accumulators') {
+      console.log(`Growth Rate: ${growthRate}%`);
+    }
+    console.log(`Auto Mode Selection: ${autoTradeSelection}`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -3241,12 +2957,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     
     return (
       <MatchesDiffersButtons>
-        <MatchesDiffersButton variant="matches" onClick={() => handlePlaceTrade('Matches', selectedDigit)}>
+        <MatchesDiffersButton variant="matches" onClick={() => handlePlaceTrade('Matches', '')}>
           <span className="label">Matches</span>
           <span className="payout">Payout ${(parseFloat(stake || 0) * 1.5).toFixed(2)}</span>
           <span className="sub">${stake || 0} stake</span>
         </MatchesDiffersButton>
-        <MatchesDiffersButton variant="differs" onClick={() => handlePlaceTrade('Differs', selectedDigit)}>
+        <MatchesDiffersButton variant="differs" onClick={() => handlePlaceTrade('Differs', '')}>
           <span className="label">Differs</span>
           <span className="payout">Payout ${(parseFloat(stake || 0) * 1.8).toFixed(2)}</span>
           <span className="sub">${stake || 0} stake</span>
@@ -3260,12 +2976,12 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     
     return (
       <OverUnderButtons>
-        <OverUnderButton variant="over" onClick={() => handlePlaceTrade('Over', selectedDigit)}>
+        <OverUnderButton variant="over" onClick={() => handlePlaceTrade('Over', '')}>
           <span className="label">Over</span>
           <span className="payout">Payout ${(parseFloat(stake || 0) * 1.2).toFixed(2)}</span>
           <span className="sub">${stake || 0} stake</span>
         </OverUnderButton>
-        <OverUnderButton variant="under" onClick={() => handlePlaceTrade('Under', selectedDigit)}>
+        <OverUnderButton variant="under" onClick={() => handlePlaceTrade('Under', '')}>
           <span className="label">Under</span>
           <span className="payout">Payout ${(parseFloat(stake || 0) * 1.5).toFixed(2)}</span>
           <span className="sub">${stake || 0} stake</span>
@@ -3323,186 +3039,154 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   };
 
   return (
-    <>
-      {/* NOTIFICATION SYSTEM */}
-      <NotificationContainer>
-        {notifications.map((notification) => (
-          <NotificationItem
-            key={notification.id}
-            type={notification.type}
-            isExiting={notification.isExiting}
-          >
-            <div className="notification-header">
-              <span className="notification-icon">
-                {notification.type === 'success' ? '✅' : 
-                 notification.type === 'error' ? '❌' : 
-                 notification.type === 'warning' ? '⚠️' : 'ℹ️'}
-              </span>
-              <span className="notification-title">{notification.title}</span>
-              <button 
-                className="notification-close" 
-                onClick={() => removeNotification(notification.id)}
+    <PanelContainer>
+      <PhoneTwoColumnWrapper>
+        {isPhone && renderMarketSelector()}
+
+        <TradeTypeWrapper>
+          <TradeTypeButton isOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+            <div className="left">
+              <span className="label">{getCurrentTrade().label}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="badge">Active</span>
+              <span className="arrow">▾</span>
+            </div>
+          </TradeTypeButton>
+          <Dropdown isOpen={isDropdownOpen}>
+            {tradeTypes.map((type) => (
+              <DropdownOption
+                key={type.id}
+                active={tradeType === type.id}
+                onClick={() => handleTradeTypeSelect(type.id)}
               >
-                ✕
-              </button>
+                <span>{type.label}</span>
+                <span className="check">✓</span>
+              </DropdownOption>
+            ))}
+          </Dropdown>
+        </TradeTypeWrapper>
+      </PhoneTwoColumnWrapper>
+
+      <TradeModeWrapper>
+        <TradeModeLabel>
+          <span>Execution Mode</span>
+        </TradeModeLabel>
+        <TradeModeButtons>
+          <TradeModeButton 
+            active={tradeMode === 'auto'} 
+            onClick={() => {
+              setTradeMode('auto');
+              if (tradeType === 'random') {
+                setTradeType('overunder');
+                setSelectedDigit(null);
+              }
+            }}
+          >
+            <span className="mode-label">Auto</span>
+            <span className="mode-shortcut">AI</span>
+          </TradeModeButton>
+          <TradeModeButton 
+            active={tradeMode === 'manual'} 
+            onClick={() => {
+              setTradeMode('manual');
+              if (tradeType === 'random') {
+                setTradeType('overunder');
+                setSelectedDigit(null);
+              }
+            }}
+          >
+            <span className="mode-label">Manual</span>
+            <span className="mode-shortcut">Tap</span>
+          </TradeModeButton>
+          <TradeModeButton 
+            active={tradeMode === 'use-bots'} 
+            onClick={() => {
+              setTradeMode('use-bots');
+              if (tradeType === 'random') {
+                setTradeType('overunder');
+                setSelectedDigit(null);
+              }
+            }}
+          >
+            <span className="mode-label">Bots</span>
+            <span className="mode-shortcut">AI+</span>
+          </TradeModeButton>
+        </TradeModeButtons>
+      </TradeModeWrapper>
+
+      {tradeMode === 'use-bots' && (
+        <>
+          <BotHeader>
+            <div className="title">Select Your Bot</div>
+            <div className="subtitle">
+              <span className="highlight">print maziwa</span> — choose your weapon
             </div>
-            <div className="notification-message">{notification.message}</div>
-            <div className="notification-time">
-              {new Date().toLocaleTimeString()}
+          </BotHeader>
+          <BotGrid>
+            {filteredBots.map((bot) => (
+              <BotCard
+                key={bot.id}
+                selected={selectedBot === bot.id}
+                onClick={() => handleBotSelect(bot.id)}
+              >
+                <div className="bot-name">{bot.name}</div>
+                <div className="bot-type">{bot.type}</div>
+                <span className="bot-badge">{bot.badge}</span>
+              </BotCard>
+            ))}
+          </BotGrid>
+          {selectedBot && (
+            <div style={{
+              fontSize: '9px', 
+              color: props => props.theme?.colors?.textMuted || '#5a6070', 
+              textAlign: 'center',
+              padding: '2px 0', 
+              animation: `${fadeIn} 0.3s ease`,
+              borderTop: '2px solid rgba(255,255,255,0.04)', 
+              marginTop: '2px', 
+              paddingTop: '3px',
+              fontWeight: '700'
+            }}>
+              {filteredBots.find(b => b.id === selectedBot)?.name} ready
             </div>
-          </NotificationItem>
-        ))}
-      </NotificationContainer>
+          )}
+        </>
+      )}
 
-      <PanelContainer>
-        <PhoneTwoColumnWrapper>
-          {isPhone && renderMarketSelector()}
+      {renderInputs()}
 
-          <TradeTypeWrapper>
-            <TradeTypeButton isOpen={isDropdownOpen} onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-              <div className="left">
-                <span className="label">{getCurrentTrade().label}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <span className="badge">Active</span>
-                <span className="arrow">▾</span>
-              </div>
-            </TradeTypeButton>
-            <Dropdown isOpen={isDropdownOpen}>
-              {tradeTypes.map((type) => (
-                <DropdownOption
-                  key={type.id}
-                  active={tradeType === type.id}
-                  onClick={() => handleTradeTypeSelect(type.id)}
-                >
-                  <span>{type.label}</span>
-                  <span className="check">✓</span>
-                </DropdownOption>
-              ))}
-            </Dropdown>
-          </TradeTypeWrapper>
-        </PhoneTwoColumnWrapper>
+      {tradeMode === 'manual' && isPhone && renderDigitStats()}
 
-        <TradeModeWrapper>
-          <TradeModeLabel>
-            <span>Execution Mode</span>
-          </TradeModeLabel>
-          <TradeModeButtons>
-            <TradeModeButton 
-              active={tradeMode === 'auto'} 
-              onClick={() => {
-                setTradeMode('auto');
-                if (tradeType === 'random') {
-                  setTradeType('overunder');
-                  setSelectedDigit(null);
-                }
-              }}
-            >
-              <span className="mode-label">Auto</span>
-              <span className="mode-shortcut">AI</span>
-            </TradeModeButton>
-            <TradeModeButton 
-              active={tradeMode === 'manual'} 
-              onClick={() => {
-                setTradeMode('manual');
-                if (tradeType === 'random') {
-                  setTradeType('overunder');
-                  setSelectedDigit(null);
-                }
-              }}
-            >
-              <span className="mode-label">Manual</span>
-              <span className="mode-shortcut">Tap</span>
-            </TradeModeButton>
-            <TradeModeButton 
-              active={tradeMode === 'use-bots'} 
-              onClick={() => {
-                setTradeMode('use-bots');
-                if (tradeType === 'random') {
-                  setTradeType('overunder');
-                  setSelectedDigit(null);
-                }
-              }}
-            >
-              <span className="mode-label">Bots</span>
-              <span className="mode-shortcut">AI+</span>
-            </TradeModeButton>
-          </TradeModeButtons>
-        </TradeModeWrapper>
+      {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
 
-        {tradeMode === 'use-bots' && (
-          <>
-            <BotHeader>
-              <div className="title">Select Your Bot</div>
-              <div className="subtitle">
-                <span className="highlight">print maziwa</span> — choose your weapon
-              </div>
-            </BotHeader>
-            <BotGrid>
-              {filteredBots.map((bot) => (
-                <BotCard
-                  key={bot.id}
-                  selected={selectedBot === bot.id}
-                  onClick={() => handleBotSelect(bot.id)}
-                >
-                  <div className="bot-name">{bot.name}</div>
-                  <div className="bot-type">{bot.type}</div>
-                  <span className="bot-badge">{bot.badge}</span>
-                </BotCard>
-              ))}
-            </BotGrid>
-            {selectedBot && (
-              <div style={{
-                fontSize: '9px', 
-                color: props => props.theme?.colors?.textMuted || '#5a6070', 
-                textAlign: 'center',
-                padding: '2px 0', 
-                animation: `${fadeIn} 0.3s ease`,
-                borderTop: '2px solid rgba(255,255,255,0.04)', 
-                marginTop: '2px', 
-                paddingTop: '3px',
-                fontWeight: '700'
-              }}>
-                {filteredBots.find(b => b.id === selectedBot)?.name} ready
-              </div>
-            )}
-          </>
-        )}
+      {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
 
-        {renderInputs()}
+      {tradeMode === 'manual' && renderAccumulatorButtons()}
 
-        {tradeMode === 'manual' && isPhone && renderDigitStats()}
+      {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulators' && renderTradeButtons()}
 
-        {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
+      {tradeMode === 'use-bots' ? (
+        renderRunButton(!selectedBot)
+      ) : tradeMode === 'auto' ? (
+        renderRunButton(false)
+      ) : null}
 
-        {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
-
-        {tradeMode === 'manual' && renderAccumulatorButtons()}
-
-        {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulators' && renderTradeButtons()}
-
-        {tradeMode === 'use-bots' ? (
-          renderRunButton(!selectedBot)
-        ) : tradeMode === 'auto' ? (
-          renderRunButton(false)
-        ) : null}
-
-        <SessionInfo>
-          <div className="left">
-            <div className="label">Last Session</div>
-            <div className="trades">
-              <span className="wins">0W</span> / <span className="losses">5L</span> (5 trades)
-            </div>
+      <SessionInfo>
+        <div className="left">
+          <div className="label">Last Session</div>
+          <div className="trades">
+            <span className="wins">0W</span> / <span className="losses">5L</span> (5 trades)
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <div className="pl-label">Session P/L</div>
-            <div className="pl">-$310.00</div>
-          </div>
-        </SessionInfo>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div className="pl-label">Session P/L</div>
+          <div className="pl">-$310.00</div>
+        </div>
+      </SessionInfo>
 
-        {renderAIFloatingButton()}
-      </PanelContainer>
-    </>
+      {renderAIFloatingButton()}
+    </PanelContainer>
   );
 };
 
