@@ -26,6 +26,11 @@ const fadeIn = keyframes`
   }
 `;
 
+const pulse = keyframes`
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+`;
+
 // ============================================
 // STYLED COMPONENTS - UPDATED WITH THEME
 // ============================================
@@ -292,6 +297,16 @@ const NavItem = styled.div`
     flex-shrink: 0;
   }
 
+  .notification-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.theme.colors.danger};
+    animation: ${pulse} 2s ease-in-out infinite;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
   @media (max-width: 768px) {
     padding: 8px 12px;
     gap: 12px;
@@ -307,6 +322,10 @@ const NavItem = styled.div`
     .badge {
       font-size: 8px;
       padding: 1px 8px;
+    }
+    .notification-dot {
+      width: 6px;
+      height: 6px;
     }
   }
 
@@ -326,6 +345,110 @@ const NavItem = styled.div`
     .badge {
       font-size: 7px;
       padding: 1px 6px;
+    }
+    .notification-dot {
+      width: 5px;
+      height: 5px;
+    }
+  }
+`;
+
+// ===== RESPONSIBLE TRADING CARD =====
+const ResponsibleTradingCard = styled.div`
+  padding: 14px;
+  border-radius: 12px;
+  background: ${props => props.theme.colors.accentActive};
+  border: 2px solid ${props => props.theme.colors.border};
+  animation: ${fadeIn} 0.6s ease;
+  margin-top: 4px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.accent};
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme.colors.text};
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon {
+      font-size: 16px;
+    }
+  }
+
+  .fact-item {
+    font-size: 10px;
+    color: ${props => props.theme.colors.textSecondary};
+    padding: 4px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+
+    .bullet {
+      color: ${props => props.theme.colors.accent};
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .highlight {
+      color: ${props => props.theme.colors.accent};
+      font-weight: 700;
+    }
+  }
+
+  .learn-more {
+    margin-top: 8px;
+    font-size: 10px;
+    color: ${props => props.theme.colors.accent};
+    cursor: pointer;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      gap: 8px;
+      color: ${props => props.theme.colors.accentHover};
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    
+    .card-title {
+      font-size: 10px;
+      .icon { font-size: 14px; }
+    }
+    .fact-item {
+      font-size: 9px;
+      padding: 3px 0;
+    }
+    .learn-more {
+      font-size: 9px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+    
+    .card-title {
+      font-size: 9px;
+      .icon { font-size: 12px; }
+    }
+    .fact-item {
+      font-size: 8px;
+      padding: 2px 0;
+    }
+    .learn-more {
+      font-size: 8px;
     }
   }
 `;
@@ -613,7 +736,7 @@ const CloseButton = styled.button`
 `;
 
 // ============================================
-// MAIN COMPONENT (UNCHANGED)
+// MAIN COMPONENT
 // ============================================
 
 const OptionSideBar = ({ isOpen, onClose }) => {
@@ -624,6 +747,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [feedbackText, setFeedbackText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
+  const [hasNotifications, setHasNotifications] = useState(true);
 
   const handleNavClick = (item, path) => {
     setActiveItem(item);
@@ -637,6 +761,22 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const handleSettingsNavigation = () => {
     navigate('/settings');
+    if (window.innerWidth <= 768) {
+      onClose();
+    }
+  };
+
+  const handleNotificationsClick = () => {
+    setActiveItem('notifications');
+    setHasNotifications(false);
+    navigate('/notifications');
+    if (window.innerWidth <= 768) {
+      onClose();
+    }
+  };
+
+  const handleResponsibleTradingClick = () => {
+    navigate('/responsible-trading');
     if (window.innerWidth <= 768) {
       onClose();
     }
@@ -719,7 +859,22 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
-          {/* MAIN NAVIGATION - Only Major Options */}
+          {/* NOTIFICATIONS SECTION */}
+          <NavSection>
+            <SectionLabel>Updates</SectionLabel>
+            
+            <NavItem 
+              active={activeItem === 'notifications'}
+              onClick={handleNotificationsClick}
+            >
+              <span className="nav-icon">🔔</span>
+              <span className="nav-label">Notifications</span>
+              {hasNotifications && <span className="notification-dot" />}
+              <span className="badge">2</span>
+            </NavItem>
+          </NavSection>
+
+          {/* MAIN NAVIGATION - Learning */}
           <NavSection>
             <SectionLabel>Learning</SectionLabel>
             
@@ -733,6 +888,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
+          {/* ACCOUNT SECTION */}
           <NavSection>
             <SectionLabel>Account</SectionLabel>
             
@@ -745,6 +901,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
+          {/* TRADING SECTION */}
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
             
@@ -773,6 +930,40 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="nav-icon">🧮</span>
               <span className="nav-label">Risk Calculator</span>
             </NavItem>
+          </NavSection>
+
+          {/* RESPONSIBLE TRADING SECTION */}
+          <NavSection>
+            <SectionLabel>Wellness</SectionLabel>
+            
+            <ResponsibleTradingCard>
+              <div className="card-title">
+                <span className="icon">🛡️</span>
+                Responsible Trading
+              </div>
+              <div className="fact-item">
+                <span className="bullet">•</span>
+                <span>Set <span className="highlight">deposit limits</span> to manage your trading budget effectively</span>
+              </div>
+              <div className="fact-item">
+                <span className="bullet">•</span>
+                <span>Take regular <span className="highlight">trading breaks</span> to maintain clarity and focus</span>
+              </div>
+              <div className="fact-item">
+                <span className="bullet">•</span>
+                <span>Only trade with <span className="highlight">risk capital</span> you can afford to lose</span>
+              </div>
+              <div className="fact-item">
+                <span className="bullet">•</span>
+                <span><span className="highlight">90%</span> of successful traders keep a trading journal</span>
+              </div>
+              <div 
+                className="learn-more" 
+                onClick={handleResponsibleTradingClick}
+              >
+                Learn more about responsible trading →
+              </div>
+            </ResponsibleTradingCard>
           </NavSection>
 
           {/* FEEDBACK SECTION */}
