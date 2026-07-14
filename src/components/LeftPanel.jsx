@@ -244,23 +244,32 @@ const TradesSummary = styled.div`
   }
 `;
 
-const StatusFooter = styled.div`
-  padding: 2px 2px 0 2px;
+// ===== SOUND TOGGLE - HIGHLY VISIBLE =====
+const SoundFooter = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-weight: 700;
-  gap: 4px;
+  padding: 4px 6px;
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border: 2px solid ${props => props.theme.colors.border};
+  border-radius: 6px;
+  margin-top: 4px;
+  transition: all 0.3s ease;
 
-  .left-group {
+  &:hover {
+    border-color: ${props => props.theme.colors.accent};
+    background: ${props => props.theme.colors.accentActive};
+  }
+
+  .status-group {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
   }
 
   .dot {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: ${props => props.theme.colors.accent};
     animation: ${props => props.isConnected ? pulse : 'none'} 1.5s ease-in-out infinite;
@@ -269,46 +278,71 @@ const StatusFooter = styled.div`
 
   .status-text {
     font-size: 8px;
-    color: ${props => props.theme.colors.textMuted};
     font-weight: 700;
+    color: ${props => props.theme.colors.textMuted};
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
 
     @media (max-width: 768px) {
       font-size: 7px;
     }
   }
+
+  @media (max-width: 768px) {
+    padding: 3px 4px;
+  }
 `;
 
-// ===== SOUND TOGGLE - CLEAN ICON ONLY =====
-const SoundIcon = styled.button`
+const SoundIconButton = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
-  font-size: 16px;
-  cursor: pointer;
-  padding: 2px 4px;
-  transition: all 0.2s ease;
+  gap: 6px;
+  padding: 4px 12px;
   border-radius: 4px;
+  border: 2px solid ${props => props.isMuted ? props.theme.colors.border : props.theme.colors.accent};
+  background: ${props => props.isMuted ? 'transparent' : props.theme.colors.accentActive};
+  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 14px;
+  font-weight: 700;
   line-height: 1;
 
   &:hover {
-    transform: scale(1.2);
-    color: ${props => props.isMuted ? props.theme.colors.text : props.theme.colors.accent};
+    transform: scale(1.05);
+    border-color: ${props => props.theme.colors.accent};
     background: ${props => props.theme.colors.accentActive};
+    box-shadow: 0 2px 12px ${props => props.isMuted ? 'transparent' : props.theme.colors.accent + '40'};
   }
 
   &:active {
-    transform: scale(0.9);
+    transform: scale(0.95);
+  }
+
+  .icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
 
   @media (max-width: 768px) {
-    font-size: 14px;
+    padding: 3px 10px;
+    font-size: 12px;
+    .icon { font-size: 16px; }
+    .label { font-size: 8px; }
   }
 
   @media (max-width: 480px) {
-    font-size: 12px;
+    padding: 2px 8px;
+    font-size: 11px;
+    .icon { font-size: 14px; }
+    .label { font-size: 7px; }
   }
 `;
 
@@ -331,15 +365,11 @@ const LeftPanel = () => {
 
   const toggleSound = () => {
     setIsMuted(!isMuted);
-    // Dispatch custom event for sound toggle
     const event = new CustomEvent('soundToggle', { detail: { isMuted: !isMuted } });
     window.dispatchEvent(event);
-    
-    // Save preference to localStorage
     localStorage.setItem('soundMuted', JSON.stringify(!isMuted));
   };
 
-  // Load sound preference from localStorage on mount
   useEffect(() => {
     const savedMuteState = localStorage.getItem('soundMuted');
     if (savedMuteState !== null) {
@@ -404,22 +434,23 @@ const LeftPanel = () => {
           <span className="losses">{data.trades.losses}L</span>)
         </TradesSummary>
 
-        <StatusFooter isConnected={isConnected}>
-          <div className="left-group">
+        <SoundFooter isConnected={isConnected}>
+          <div className="status-group">
             <span className="dot" />
             <span className="status-text">
               {isConnected ? 'Live' : 'Disconnected'}
             </span>
           </div>
-          <SoundIcon 
+          <SoundIconButton 
             isMuted={isMuted} 
             onClick={toggleSound}
             aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
             title={isMuted ? 'Click to unmute' : 'Click to mute'}
           >
-            {isMuted ? '🔇' : '🔊'}
-          </SoundIcon>
-        </StatusFooter>
+            <span className="icon">{isMuted ? '🔇' : '🔊'}</span>
+            <span className="label">{isMuted ? 'Muted' : 'Sound'}</span>
+          </SoundIconButton>
+        </SoundFooter>
       </BottomContent>
     </PanelContainer>
   );
