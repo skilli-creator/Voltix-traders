@@ -186,94 +186,6 @@ const BottomContent = styled.div`
   }
 `;
 
-// ===== SOUND TOGGLE - MOVED TO BOTTOM =====
-const SoundToggleContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 8px;
-  background: ${props => props.theme.colors.backgroundSecondary};
-  border: 2px solid ${props => props.theme.colors.border};
-  border-radius: 8px;
-  margin-top: 4px;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.accent};
-    background: ${props => props.theme.colors.accentActive};
-  }
-
-  .sound-label {
-    font-size: 9px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted};
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 4px 6px;
-    .sound-label { font-size: 8px; }
-  }
-
-  @media (max-width: 480px) {
-    padding: 3px 5px;
-    .sound-label { font-size: 7px; }
-  }
-`;
-
-const SoundToggleButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 12px;
-  border-radius: 6px;
-  border: 2px solid ${props => props.isMuted ? props.theme.colors.border : props.theme.colors.accent};
-  background: ${props => props.isMuted ? props.theme.colors.background : props.theme.colors.accentActive};
-  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 12px;
-  font-weight: 700;
-
-  &:hover {
-    transform: scale(1.05);
-    border-color: ${props => props.theme.colors.accent};
-    box-shadow: 0 2px 12px ${props => props.isMuted ? 'transparent' : props.theme.colors.accent + '40'};
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  .icon {
-    font-size: 16px;
-    line-height: 1;
-  }
-
-  .status-text {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 3px 10px;
-    font-size: 11px;
-    .icon { font-size: 14px; }
-    .status-text { font-size: 9px; }
-  }
-
-  @media (max-width: 480px) {
-    padding: 2px 8px;
-    font-size: 10px;
-    gap: 4px;
-    .icon { font-size: 12px; }
-    .status-text { font-size: 8px; }
-  }
-`;
-
 const SessionSection = styled.div`
   padding: 0 2px;
   font-weight: 700;
@@ -336,8 +248,15 @@ const StatusFooter = styled.div`
   padding: 2px 2px 0 2px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
   font-weight: 700;
+  gap: 4px;
+
+  .left-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
 
   .dot {
     width: 5px;
@@ -356,6 +275,40 @@ const StatusFooter = styled.div`
     @media (max-width: 768px) {
       font-size: 7px;
     }
+  }
+`;
+
+// ===== SOUND TOGGLE - CLEAN ICON ONLY =====
+const SoundIcon = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  line-height: 1;
+
+  &:hover {
+    transform: scale(1.2);
+    color: ${props => props.isMuted ? props.theme.colors.text : props.theme.colors.accent};
+    background: ${props => props.theme.colors.accentActive};
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 12px;
   }
 `;
 
@@ -451,25 +404,21 @@ const LeftPanel = () => {
           <span className="losses">{data.trades.losses}L</span>)
         </TradesSummary>
 
-        {/* SOUND TOGGLE - NOW AT BOTTOM */}
-        <SoundToggleContainer>
-          <span className="sound-label">🔊 Sound</span>
-          <SoundToggleButton 
+        <StatusFooter isConnected={isConnected}>
+          <div className="left-group">
+            <span className="dot" />
+            <span className="status-text">
+              {isConnected ? 'Live' : 'Disconnected'}
+            </span>
+          </div>
+          <SoundIcon 
             isMuted={isMuted} 
             onClick={toggleSound}
             aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
             title={isMuted ? 'Click to unmute' : 'Click to mute'}
           >
-            <span className="icon">{isMuted ? '🔇' : '🔊'}</span>
-            <span className="status-text">{isMuted ? 'Muted' : 'On'}</span>
-          </SoundToggleButton>
-        </SoundToggleContainer>
-
-        <StatusFooter isConnected={isConnected}>
-          <span className="dot" />
-          <span className="status-text">
-            {isConnected ? 'Live' : 'Disconnected'}
-          </span>
+            {isMuted ? '🔇' : '🔊'}
+          </SoundIcon>
         </StatusFooter>
       </BottomContent>
     </PanelContainer>
