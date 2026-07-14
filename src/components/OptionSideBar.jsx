@@ -453,6 +453,106 @@ const ResponsibleTradingCard = styled.div`
   }
 `;
 
+// ===== ABOUT VOLTIX TRADERS CARD =====
+const AboutCard = styled.div`
+  padding: 14px;
+  border-radius: 12px;
+  background: ${props => props.theme.colors.accentActive};
+  border: 2px solid ${props => props.theme.colors.border};
+  animation: ${fadeIn} 0.6s ease;
+  margin-top: 4px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.accent};
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme.colors.text};
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon {
+      font-size: 16px;
+    }
+  }
+
+  .about-item {
+    font-size: 10px;
+    color: ${props => props.theme.colors.textSecondary};
+    padding: 4px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+
+    .bullet {
+      color: ${props => props.theme.colors.accent};
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .highlight {
+      color: ${props => props.theme.colors.accent};
+      font-weight: 700;
+    }
+  }
+
+  .learn-more {
+    margin-top: 8px;
+    font-size: 10px;
+    color: ${props => props.theme.colors.accent};
+    cursor: pointer;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      gap: 8px;
+      color: ${props => props.theme.colors.accentHover};
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 12px;
+    
+    .card-title {
+      font-size: 10px;
+      .icon { font-size: 14px; }
+    }
+    .about-item {
+      font-size: 9px;
+      padding: 3px 0;
+    }
+    .learn-more {
+      font-size: 9px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px;
+    
+    .card-title {
+      font-size: 9px;
+      .icon { font-size: 12px; }
+    }
+    .about-item {
+      font-size: 8px;
+      padding: 2px 0;
+    }
+    .learn-more {
+      font-size: 8px;
+    }
+  }
+`;
+
 // ===== FEEDBACK SECTION - ENHANCED STAR VISIBILITY =====
 const FeedbackSection = styled.div`
   padding: 14px;
@@ -694,67 +794,6 @@ const SidebarFooter = styled.div`
   }
 `;
 
-// ===== ABOUT VOLTIX TRADERS - FOOTER ITEM =====
-const AboutFooterItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
-  font-size: 13px;
-  font-weight: 700;
-  border: 2px solid transparent;
-
-  &:hover {
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-    border-color: ${props => props.theme.colors.accent};
-  }
-
-  &.active {
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-    border-color: ${props => props.theme.colors.accent};
-
-    .footer-icon {
-      color: ${props => props.theme.colors.accent};
-    }
-  }
-
-  .footer-icon {
-    font-size: 16px;
-    transition: color 0.2s ease;
-  }
-
-  .footer-label {
-    flex: 1;
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px 10px;
-    font-size: 12px;
-    gap: 10px;
-    
-    .footer-icon {
-      font-size: 14px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 6px 10px;
-    font-size: 11px;
-    gap: 8px;
-    border-radius: 6px;
-    
-    .footer-icon {
-      font-size: 13px;
-    }
-  }
-`;
-
 // ===== CLOSE BUTTON FOR MOBILE =====
 const CloseButton = styled.button`
   display: none;
@@ -846,6 +885,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleAboutClick = () => {
     setActiveItem('about');
     navigate('/about');
+    if (window.innerWidth <= 768) {
+      onClose();
+    }
+  };
+
+  const handleAccountManagementClick = () => {
+    setActiveItem('account-management');
+    navigate('/account-management');
     if (window.innerWidth <= 768) {
       onClose();
     }
@@ -993,6 +1040,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
 
             <NavItem 
+              active={activeItem === 'account-management'}
+              onClick={handleAccountManagementClick}
+            >
+              <span className="nav-icon">📋</span>
+              <span className="nav-label">Need Account Management</span>
+              <span className="badge">NEW</span>
+            </NavItem>
+
+            <NavItem 
               active={activeItem === 'risk-calculator'}
               onClick={() => handleNavClick('risk-calculator', '/risk-calculator')}
             >
@@ -1082,19 +1138,44 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               )}
             </FeedbackSection>
           </NavSection>
+
+          {/* ABOUT VOLTIX TRADERS SECTION */}
+          <NavSection>
+            <SectionLabel>Company</SectionLabel>
+            
+            <AboutCard>
+              <div className="card-title">
+                <span className="icon">🏢</span>
+                About Voltix Traders
+              </div>
+              <div className="about-item">
+                <span className="bullet">•</span>
+                <span><span className="highlight">50K+</span> active traders worldwide</span>
+              </div>
+              <div className="about-item">
+                <span className="bullet">•</span>
+                <span>Trusted in <span className="highlight">120+</span> countries</span>
+              </div>
+              <div className="about-item">
+                <span className="bullet">•</span>
+                <span><span className="highlight">99.9%</span> platform uptime reliability</span>
+              </div>
+              <div className="about-item">
+                <span className="bullet">•</span>
+                <span>Empowering traders with <span className="highlight">cutting-edge tools</span></span>
+              </div>
+              <div 
+                className="learn-more" 
+                onClick={handleAboutClick}
+              >
+                Learn more about us →
+              </div>
+            </AboutCard>
+          </NavSection>
         </SidebarContent>
 
         {/* FOOTER - Now always visible at bottom */}
         <SidebarFooter>
-          {/* About Voltix Traders - Added as first footer item */}
-          <AboutFooterItem 
-            active={activeItem === 'about'}
-            onClick={handleAboutClick}
-          >
-            <span className="footer-icon">🏢</span>
-            <span className="footer-label">About Voltix Traders</span>
-          </AboutFooterItem>
-          
           <div className="footer-item" onClick={handleSettingsNavigation}>
             <span className="footer-icon">⚙️</span>
             Settings
