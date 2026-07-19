@@ -16,7 +16,7 @@ import Derivdash from './pages/Derivdash';
 import Binancehome from './pages/Binancehome';
 import Settings from './pages/Settings';
 import ForexDashboard from './pages/ForexDashboard';
-import Terminal from './pages/Terms';
+import Terms from './pages/Terms';
 
 // Import Components
 import RiskCalculator from './components/RiskCalculator';
