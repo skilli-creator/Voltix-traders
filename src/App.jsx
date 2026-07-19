@@ -15,6 +15,7 @@ import Marketsdash from './pages/Marketsdash';
 import Derivdash from './pages/Derivdash';
 import Binancehome from './pages/Binancehome';
 import Settings from './pages/Settings';
+import ForexDashboard from './pages/ForexDashboard';
 
 // Import Components
 import RiskCalculator from './components/RiskCalculator';
@@ -39,6 +40,7 @@ const App = () => {
       <Route path="/marketsdash" element={<Marketsdash />} />
       <Route path="/binancehome" element={<Binancehome />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/forex" element={<ForexDashboard />} />
       
       {/* Trading Tools */}
       <Route path="/risk-calculator" element={<RiskCalculator />} />
