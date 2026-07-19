@@ -1,34 +1,18 @@
 // src/pages/Terms.jsx
 
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
-
-const slideDown = keyframes`
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
 
 const PageContainer = styled.div`
   min-height: calc(100vh - 48px);
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme?.colors?.background || '#0a0e17'};
   padding: 40px 24px;
   display: flex;
   justify-content: center;
-  animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 768px) {
     padding: 20px 16px;
-    min-height: calc(100vh - 56px);
-  }
-
-  @media (max-width: 480px) {
-    padding: 16px 12px;
   }
 `;
 
@@ -43,163 +27,95 @@ const Header = styled.div`
   justify-content: space-between;
   margin-bottom: 32px;
   padding-bottom: 20px;
-  border-bottom: 2px solid ${props => props.theme.colors.border};
+  border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
   }
 `;
 
-const HeaderLeft = styled.div`
+const Title = styled.h1`
+  font-size: 28px;
+  font-weight: 700;
+  color: ${props => props.theme?.colors?.text || '#f1f5f9'};
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 
   .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: ${props => props.theme.colors.text};
-    box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '30'};
-  }
-
-  .title {
-    font-size: 24px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.text};
-    letter-spacing: -0.5px;
-  }
-
-  .version {
-    font-size: 11px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted};
-    background: ${props => props.theme.colors.backgroundSecondary};
-    padding: 2px 10px;
-    border-radius: 12px;
-    border: 2px solid ${props => props.theme.colors.border};
-    margin-left: 8px;
+    font-size: 32px;
   }
 
   @media (max-width: 768px) {
-    .icon { width: 40px; height: 40px; font-size: 20px; }
-    .title { font-size: 20px; }
-    .version { font-size: 10px; }
-  }
-
-  @media (max-width: 480px) {
-    .icon { width: 36px; height: 36px; font-size: 18px; }
-    .title { font-size: 18px; }
-    .version { font-size: 9px; padding: 1px 8px; }
+    font-size: 22px;
   }
 `;
 
 const BackButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
   padding: 8px 16px;
-  border: 2px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 8px;
-  background: ${props => props.theme.colors.backgroundSecondary};
-  color: ${props => props.theme.colors.textSecondary};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${props => props.theme.colors.accent};
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-    transform: translateX(-2px);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 12px;
-    padding: 6px 12px;
+    border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
   }
 `;
 
 const LastUpdated = styled.div`
   font-size: 12px;
-  color: ${props => props.theme.colors.textMuted};
+  color: ${props => props.theme?.colors?.textMuted || '#64748b'};
   margin-bottom: 24px;
   padding: 8px 16px;
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border-radius: 8px;
-  border: 2px solid ${props => props.theme.colors.border};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   display: inline-block;
   font-weight: 700;
-
-  @media (max-width: 768px) {
-    font-size: 11px;
-    padding: 6px 12px;
-    margin-bottom: 20px;
-  }
 `;
 
 const Section = styled.div`
   margin-bottom: 28px;
-  animation: ${slideDown} 0.4s ease;
-  animation-delay: ${props => props.delay || '0s'};
-  animation-fill-mode: both;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 `;
 
 const SectionTitle = styled.h2`
   font-size: 18px;
   font-weight: 700;
-  color: ${props => props.theme.colors.text};
+  color: ${props => props.theme?.colors?.text || '#f1f5f9'};
   margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 10px;
 
-  .section-number {
+  .number {
     font-size: 13px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.accent};
-    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme?.colors?.accent || '#2962ff'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
     padding: 1px 10px;
     border-radius: 6px;
-    border: 2px solid ${props => props.theme.colors.accent + '30'};
-  }
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    .section-number { font-size: 11px; padding: 1px 8px; }
-  }
-
-  @media (max-width: 480px) {
-    font-size: 14px;
-    .section-number { font-size: 10px; padding: 0 6px; }
+    border: 2px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'};
   }
 `;
 
 const SectionContent = styled.div`
-  padding-left: 0;
-
   p {
     font-size: 13px;
     line-height: 1.8;
-    color: ${props => props.theme.colors.textSecondary};
+    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
     margin-bottom: 10px;
     font-weight: 700;
 
-    &:last-child { margin-bottom: 0; }
+    strong {
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    }
   }
 
   ul {
@@ -210,7 +126,7 @@ const SectionContent = styled.div`
     li {
       font-size: 13px;
       line-height: 1.8;
-      color: ${props => props.theme.colors.textSecondary};
+      color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
       padding: 4px 0 4px 24px;
       position: relative;
       font-weight: 700;
@@ -219,74 +135,54 @@ const SectionContent = styled.div`
         content: '▸';
         position: absolute;
         left: 4px;
-        color: ${props => props.theme.colors.accent};
-        font-weight: 700;
+        color: ${props => props.theme?.colors?.accent || '#2962ff'};
       }
 
       strong {
-        color: ${props => props.theme.colors.text};
-        font-weight: 700;
+        color: ${props => props.theme?.colors?.text || '#f1f5f9'};
       }
     }
   }
 
   .highlight-box {
     padding: 14px 18px;
-    background: ${props => props.theme.colors.accentActive};
-    border: 2px solid ${props => props.theme.colors.accent + '30'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
+    border: 2px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'};
     border-radius: 8px;
     margin: 12px 0;
 
     p {
       margin-bottom: 0;
-      color: ${props => props.theme.colors.textSecondary};
-      font-weight: 700;
+      color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
     }
 
     strong {
-      color: ${props => props.theme.colors.accent};
-      font-weight: 700;
+      color: ${props => props.theme?.colors?.accent || '#2962ff'};
     }
   }
 
   .warning-box {
     padding: 14px 18px;
-    background: ${props => props.theme.colors.danger + '15'};
-    border: 2px solid ${props => props.theme.colors.danger + '30'};
+    background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.06)'};
+    border: 2px solid ${props => props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.1)'};
     border-radius: 8px;
     margin: 12px 0;
 
     p {
       margin-bottom: 0;
-      color: ${props => props.theme.colors.textSecondary};
-      font-weight: 700;
+      color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
     }
 
     strong {
-      color: ${props => props.theme.colors.danger};
-      font-weight: 700;
+      color: ${props => props.theme?.colors?.danger || '#ef4444'};
     }
-  }
-
-  @media (max-width: 768px) {
-    p { font-size: 12px; }
-    ul li { font-size: 12px; }
-    .highlight-box { padding: 12px 14px; }
-    .warning-box { padding: 12px 14px; }
-  }
-
-  @media (max-width: 480px) {
-    p { font-size: 11px; }
-    ul li { font-size: 11px; padding: 3px 0 3px 20px; }
-    .highlight-box { padding: 10px 12px; }
-    .warning-box { padding: 10px 12px; }
   }
 `;
 
 const Footer = styled.div`
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 2px solid ${props => props.theme.colors.border};
+  border-top: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -295,7 +191,7 @@ const Footer = styled.div`
 
   .copyright {
     font-size: 12px;
-    color: ${props => props.theme.colors.textMuted};
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     font-weight: 700;
   }
 
@@ -305,13 +201,13 @@ const Footer = styled.div`
 
     a {
       font-size: 12px;
-      color: ${props => props.theme.colors.textSecondary};
+      color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
       text-decoration: none;
       font-weight: 700;
       transition: color 0.2s ease;
 
       &:hover {
-        color: ${props => props.theme.colors.accent};
+        color: ${props => props.theme?.colors?.accent || '#2962ff'};
       }
     }
   }
@@ -319,46 +215,31 @@ const Footer = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    margin-top: 32px;
-    padding-top: 16px;
-
-    .copyright { font-size: 11px; }
-    .links a { font-size: 11px; }
   }
 `;
 
 const Terms = () => {
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   return (
     <PageContainer>
       <ContentWrapper>
         <Header>
-          <HeaderLeft>
-            <div className="icon">⚖️</div>
-            <div>
-              <span className="title">Terms and Conditions</span>
-              <span className="version">v2.0</span>
-            </div>
-          </HeaderLeft>
-          <BackButton onClick={handleBack}>
+          <Title>
+            <span className="icon">⚖️</span>
+            Terms and Conditions
+          </Title>
+          <BackButton onClick={() => navigate(-1)}>
             ← Back
           </BackButton>
         </Header>
 
-        <LastUpdated>
-          📅 Last Updated: July 20, 2026
-        </LastUpdated>
+        <LastUpdated>📅 Last Updated: July 20, 2026</LastUpdated>
 
-        {/* SECTION 1: Introduction */}
-        <Section delay="0.05s">
+        {/* Section 1 */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">1</span>
+            <span className="number">1</span>
             Introduction
           </SectionTitle>
           <SectionContent>
@@ -377,10 +258,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 2: Acceptance */}
-        <Section delay="0.10s">
+        {/* Section 2 */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">2</span>
+            <span className="number">2</span>
             Acceptance of Terms
           </SectionTitle>
           <SectionContent>
@@ -397,16 +278,14 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 3: Services */}
-        <Section delay="0.15s">
+        {/* Section 3 */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">3</span>
+            <span className="number">3</span>
             Services Provided
           </SectionTitle>
           <SectionContent>
-            <p>
-              Voltix Traders provides the following services:
-            </p>
+            <p>Voltix Traders provides the following services:</p>
             <ul>
               <li><strong>Automated Trading</strong> — Execute trades based on predefined strategies and bots.</li>
               <li><strong>AI-Assisted Trading</strong> — Receive AI-powered analysis and recommendations.</li>
@@ -423,10 +302,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 4: Account Responsibility */}
-        <Section delay="0.20s">
+        {/* Section 4 */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">4</span>
+            <span className="number">4</span>
             Account Responsibility
           </SectionTitle>
           <SectionContent>
@@ -449,10 +328,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 5: Payment */}
-        <Section delay="0.25s">
+        {/* Section 5 - Payment */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">5</span>
+            <span className="number">5</span>
             Payment and Fees
           </SectionTitle>
           <SectionContent>
@@ -469,10 +348,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 6: Intellectual Property */}
-        <Section delay="0.30s">
+        {/* Section 6 - Intellectual Property */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">6</span>
+            <span className="number">6</span>
             Intellectual Property
           </SectionTitle>
           <SectionContent>
@@ -489,17 +368,14 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 7: Prohibited Activities */}
-        <Section delay="0.35s">
+        {/* Section 7 - Prohibited Activities */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">7</span>
+            <span className="number">7</span>
             Prohibited Activities
           </SectionTitle>
           <SectionContent>
-            <p>
-              When using Voltix Traders, you agree not to engage in any of the following prohibited 
-              activities:
-            </p>
+            <p>When using Voltix Traders, you agree not to engage in any prohibited activities:</p>
             <ul>
               <li><strong>Illegal Trading</strong> — Using the App for any unlawful activities.</li>
               <li><strong>Market Manipulation</strong> — Any form of market manipulation or fraud.</li>
@@ -510,10 +386,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 8: Termination */}
-        <Section delay="0.40s">
+        {/* Section 8 - Termination */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">8</span>
+            <span className="number">8</span>
             Termination
           </SectionTitle>
           <SectionContent>
@@ -529,17 +405,14 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 9: Limitation of Liability */}
-        <Section delay="0.45s">
+        {/* Section 9 - Limitation of Liability */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">9</span>
+            <span className="number">9</span>
             Limitation of Liability
           </SectionTitle>
           <SectionContent>
-            <p>
-              Voltix Traders provides the App "as is" without any warranties. To the fullest extent 
-              permitted by law:
-            </p>
+            <p>Voltix Traders provides the App "as is" without any warranties. To the fullest extent permitted by law:</p>
             <ul>
               <li>We are <strong>not liable</strong> for any financial losses incurred through the App.</li>
               <li>We are <strong>not responsible</strong> for any technical issues or downtime.</li>
@@ -555,10 +428,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 10: Indemnification */}
-        <Section delay="0.50s">
+        {/* Section 10 - Indemnification */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">10</span>
+            <span className="number">10</span>
             Indemnification
           </SectionTitle>
           <SectionContent>
@@ -574,16 +447,14 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 11: Third-Party Services */}
-        <Section delay="0.55s">
+        {/* Section 11 - Third-Party Services */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">11</span>
+            <span className="number">11</span>
             Third-Party Services
           </SectionTitle>
           <SectionContent>
-            <p>
-              Voltix Traders integrates with third-party services including:
-            </p>
+            <p>Voltix Traders integrates with third-party services including:</p>
             <ul>
               <li><strong>Deriv</strong> — Trading platform for synthetic indices and forex.</li>
               <li><strong>Forex Brokers</strong> — External forex trading providers.</li>
@@ -596,10 +467,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 12: Privacy */}
-        <Section delay="0.60s">
+        {/* Section 12 - Privacy */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">12</span>
+            <span className="number">12</span>
             Privacy Policy
           </SectionTitle>
           <SectionContent>
@@ -622,10 +493,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 13: Changes to Terms */}
-        <Section delay="0.65s">
+        {/* Section 13 - Changes to Terms */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">13</span>
+            <span className="number">13</span>
             Changes to Terms
           </SectionTitle>
           <SectionContent>
@@ -644,10 +515,10 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 14: Governing Law */}
-        <Section delay="0.70s">
+        {/* Section 14 - Governing Law */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">14</span>
+            <span className="number">14</span>
             Governing Law
           </SectionTitle>
           <SectionContent>
@@ -664,16 +535,14 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* SECTION 15: Contact */}
-        <Section delay="0.75s">
+        {/* Section 15 - Contact */}
+        <Section>
           <SectionTitle>
-            <span className="section-number">15</span>
+            <span className="number">15</span>
             Contact Us
           </SectionTitle>
           <SectionContent>
-            <p>
-              If you have any questions, concerns, or feedback about these Terms, please contact us:
-            </p>
+            <p>If you have any questions, concerns, or feedback about these Terms, please contact us:</p>
             <div className="highlight-box">
               <p>
                 <strong>📧 Email:</strong> support@voltixtraders.com<br />
@@ -691,7 +560,6 @@ const Terms = () => {
           <div className="links">
             <a href="/privacy">Privacy Policy</a>
             <a href="/responsible-trading">Responsible Trading</a>
-            <a href="/support">Support</a>
           </div>
         </Footer>
       </ContentWrapper>
