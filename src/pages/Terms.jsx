@@ -1,18 +1,36 @@
 // src/pages/Terms.jsx
 
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
+// ===== ANIMATIONS =====
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const slideDown = keyframes`
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+// ===== STYLED COMPONENTS =====
 const PageContainer = styled.div`
   min-height: calc(100vh - 48px);
   background: ${props => props.theme?.colors?.background || '#0a0e17'};
   padding: 40px 24px;
   display: flex;
   justify-content: center;
+  animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 768px) {
     padding: 20px 16px;
+    min-height: calc(100vh - 56px);
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 12px;
   }
 `;
 
@@ -33,27 +51,70 @@ const Header = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
   }
 `;
 
-const Title = styled.h1`
-  font-size: 28px;
-  font-weight: 700;
-  color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 
   .icon {
-    font-size: 32px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+    box-shadow: 0 4px 20px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
+  }
+
+  .title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    letter-spacing: -0.5px;
+  }
+
+  .version {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   }
 
   @media (max-width: 768px) {
-    font-size: 22px;
+    .icon { width: 40px; height: 40px; font-size: 20px; }
+    .title { font-size: 20px; }
+    .version { font-size: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    .icon { width: 36px; height: 36px; font-size: 18px; }
+    .title { font-size: 18px; }
+    .version { font-size: 9px; padding: 1px 8px; }
   }
 `;
 
 const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 8px 16px;
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 8px;
@@ -66,7 +127,14 @@ const BackButton = styled.button`
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    transform: translateX(-2px);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 `;
 
@@ -80,10 +148,31 @@ const LastUpdated = styled.div`
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   display: inline-block;
   font-weight: 700;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    padding: 6px 12px;
+    margin-bottom: 20px;
+  }
 `;
 
 const Section = styled.div`
   margin-bottom: 28px;
+  animation: ${slideDown} 0.4s ease;
+  animation-delay: ${props => props.delay || '0s'};
+  animation-fill-mode: both;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 20px;
+  }
 `;
 
 const SectionTitle = styled.h2`
@@ -97,11 +186,22 @@ const SectionTitle = styled.h2`
 
   .number {
     font-size: 13px;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.accent || '#2962ff'};
     background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
     padding: 1px 10px;
     border-radius: 6px;
     border: 2px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'};
+  }
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    .number { font-size: 11px; padding: 1px 8px; }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    .number { font-size: 10px; padding: 0 6px; }
   }
 `;
 
@@ -116,6 +216,8 @@ const SectionContent = styled.div`
     strong {
       color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     }
+
+    &:last-child { margin-bottom: 0; }
   }
 
   ul {
@@ -136,10 +238,12 @@ const SectionContent = styled.div`
         position: absolute;
         left: 4px;
         color: ${props => props.theme?.colors?.accent || '#2962ff'};
+        font-weight: 700;
       }
 
       strong {
         color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+        font-weight: 700;
       }
     }
   }
@@ -154,10 +258,12 @@ const SectionContent = styled.div`
     p {
       margin-bottom: 0;
       color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
+      font-weight: 700;
     }
 
     strong {
       color: ${props => props.theme?.colors?.accent || '#2962ff'};
+      font-weight: 700;
     }
   }
 
@@ -171,11 +277,27 @@ const SectionContent = styled.div`
     p {
       margin-bottom: 0;
       color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
+      font-weight: 700;
     }
 
     strong {
       color: ${props => props.theme?.colors?.danger || '#ef4444'};
+      font-weight: 700;
     }
+  }
+
+  @media (max-width: 768px) {
+    p { font-size: 12px; }
+    ul li { font-size: 12px; }
+    .highlight-box { padding: 12px 14px; }
+    .warning-box { padding: 12px 14px; }
+  }
+
+  @media (max-width: 480px) {
+    p { font-size: 11px; }
+    ul li { font-size: 11px; padding: 3px 0 3px 20px; }
+    .highlight-box { padding: 10px 12px; }
+    .warning-box { padding: 10px 12px; }
   }
 `;
 
@@ -215,9 +337,16 @@ const Footer = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
+    margin-top: 32px;
+    padding-top: 16px;
+
+    .copyright { font-size: 11px; }
+    .links a { font-size: 11px; }
   }
 `;
 
+// ===== MAIN COMPONENT =====
 const Terms = () => {
   const navigate = useNavigate();
 
@@ -225,10 +354,13 @@ const Terms = () => {
     <PageContainer>
       <ContentWrapper>
         <Header>
-          <Title>
-            <span className="icon">⚖️</span>
-            Terms and Conditions
-          </Title>
+          <HeaderLeft>
+            <div className="icon">⚖️</div>
+            <div className="title-group">
+              <span className="title">Terms and Conditions</span>
+              <span className="version">v2.0</span>
+            </div>
+          </HeaderLeft>
           <BackButton onClick={() => navigate(-1)}>
             ← Back
           </BackButton>
@@ -237,7 +369,7 @@ const Terms = () => {
         <LastUpdated>📅 Last Updated: July 20, 2026</LastUpdated>
 
         {/* Section 1 */}
-        <Section>
+        <Section delay="0.05s">
           <SectionTitle>
             <span className="number">1</span>
             Introduction
@@ -259,7 +391,7 @@ const Terms = () => {
         </Section>
 
         {/* Section 2 */}
-        <Section>
+        <Section delay="0.10s">
           <SectionTitle>
             <span className="number">2</span>
             Acceptance of Terms
@@ -279,7 +411,7 @@ const Terms = () => {
         </Section>
 
         {/* Section 3 */}
-        <Section>
+        <Section delay="0.15s">
           <SectionTitle>
             <span className="number">3</span>
             Services Provided
@@ -303,7 +435,7 @@ const Terms = () => {
         </Section>
 
         {/* Section 4 */}
-        <Section>
+        <Section delay="0.20s">
           <SectionTitle>
             <span className="number">4</span>
             Account Responsibility
@@ -328,8 +460,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 5 - Payment */}
-        <Section>
+        {/* Section 5 */}
+        <Section delay="0.25s">
           <SectionTitle>
             <span className="number">5</span>
             Payment and Fees
@@ -348,8 +480,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 6 - Intellectual Property */}
-        <Section>
+        {/* Section 6 */}
+        <Section delay="0.30s">
           <SectionTitle>
             <span className="number">6</span>
             Intellectual Property
@@ -368,8 +500,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 7 - Prohibited Activities */}
-        <Section>
+        {/* Section 7 */}
+        <Section delay="0.35s">
           <SectionTitle>
             <span className="number">7</span>
             Prohibited Activities
@@ -386,8 +518,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 8 - Termination */}
-        <Section>
+        {/* Section 8 */}
+        <Section delay="0.40s">
           <SectionTitle>
             <span className="number">8</span>
             Termination
@@ -405,8 +537,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 9 - Limitation of Liability */}
-        <Section>
+        {/* Section 9 */}
+        <Section delay="0.45s">
           <SectionTitle>
             <span className="number">9</span>
             Limitation of Liability
@@ -428,8 +560,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 10 - Indemnification */}
-        <Section>
+        {/* Section 10 */}
+        <Section delay="0.50s">
           <SectionTitle>
             <span className="number">10</span>
             Indemnification
@@ -447,8 +579,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 11 - Third-Party Services */}
-        <Section>
+        {/* Section 11 */}
+        <Section delay="0.55s">
           <SectionTitle>
             <span className="number">11</span>
             Third-Party Services
@@ -467,8 +599,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 12 - Privacy */}
-        <Section>
+        {/* Section 12 */}
+        <Section delay="0.60s">
           <SectionTitle>
             <span className="number">12</span>
             Privacy Policy
@@ -493,8 +625,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 13 - Changes to Terms */}
-        <Section>
+        {/* Section 13 */}
+        <Section delay="0.65s">
           <SectionTitle>
             <span className="number">13</span>
             Changes to Terms
@@ -515,8 +647,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 14 - Governing Law */}
-        <Section>
+        {/* Section 14 */}
+        <Section delay="0.70s">
           <SectionTitle>
             <span className="number">14</span>
             Governing Law
@@ -535,8 +667,8 @@ const Terms = () => {
           </SectionContent>
         </Section>
 
-        {/* Section 15 - Contact */}
-        <Section>
+        {/* Section 15 */}
+        <Section delay="0.75s">
           <SectionTitle>
             <span className="number">15</span>
             Contact Us
