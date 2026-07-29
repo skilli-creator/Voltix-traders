@@ -8,52 +8,263 @@ import { useNavigate } from 'react-router-dom';
 // ANIMATIONS
 // ============================================
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(30px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-`;
-
-const slideUp = keyframes`
-  from { opacity: 0; transform: translateY(40px) scale(0.9); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-`;
-
-const slideDown = keyframes`
-  from { opacity: 0; transform: translateY(-20px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+`;
+
+const slideIn = keyframes`
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
 `;
 
 const pulseGlow = keyframes`
   0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.1)'}; }
-  50% { box-shadow: 0 0 50px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'}; }
-`;
-
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  50% { box-shadow: 0 0 40px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'}; }
 `;
 
 const modalSlideIn = keyframes`
-  from { opacity: 0; transform: scale(0.9) translateY(30px); }
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 `;
 
-const modalBackdrop = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`;
-
 const toastSlide = keyframes`
-  from { opacity: 0; transform: translateX(50px) scale(0.9); }
-  to { opacity: 1; transform: translateX(0) scale(1); }
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
 `;
 
 // ============================================
 // STYLED COMPONENTS
 // ============================================
-const DashboardContainer = styled.div`
+
+// Main Layout
+const DashboardLayout = styled.div`
+  display: flex;
   min-height: calc(100vh - 48px);
   background: ${props => props.theme?.colors?.background || '#0a0e17'};
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+// Sidebar
+const Sidebar = styled.div`
+  width: 260px;
+  min-width: 260px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border-right: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 48px);
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
+    border-radius: 4px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    position: relative;
+    padding: 16px;
+    border-right: none;
+    border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    gap: 2px;
+  }
+`;
+
+const SidebarBrand = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 20px 12px;
+  border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  margin-bottom: 20px;
+
+  .brand-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .brand-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    letter-spacing: -0.3px;
+  }
+
+  .brand-sub {
+    font-size: 10px;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const MobileBrand = styled.div`
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border-radius: 10px;
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  flex-shrink: 0;
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .brand-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+`;
+
+const NavItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: ${props => props.active ? props.theme?.colors?.text || '#f1f5f9' : props.theme?.colors?.textSecondary || '#94a3b8'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  border: 2px solid ${props => props.active ? props.theme?.colors?.accent || '#2962ff' : 'transparent'};
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  position: relative;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.04)'};
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+  }
+
+  .nav-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 10px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.danger || '#ef4444'};
+    color: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 8px;
+    flex-shrink: 0;
+
+    .nav-icon {
+      font-size: 14px;
+      width: 20px;
+    }
+    .nav-badge {
+      font-size: 8px;
+      padding: 1px 6px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 5px 10px;
+    font-size: 10px;
+    .nav-icon { font-size: 12px; width: 16px; }
+  }
+`;
+
+const NavSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: row;
+    margin-bottom: 0;
+    gap: 4px;
+  }
+`;
+
+const NavLabel = styled.div`
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+  padding: 0 12px;
+  margin-bottom: 6px;
+  font-weight: 700;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const NavSpacer = styled.div`
+  flex: 1;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+// Main Content
+const MainContent = styled.div`
+  flex: 1;
   padding: 24px 32px;
+  overflow-y: auto;
   animation: ${fadeIn} 0.5s ease;
 
   @media (max-width: 768px) {
@@ -65,46 +276,14 @@ const DashboardContainer = styled.div`
   }
 `;
 
-const DashboardHeader = styled.div`
+// Page Header
+const PageHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 28px;
   flex-wrap: wrap;
   gap: 16px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-
-  .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-    box-shadow: 0 4px 20px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
-    animation: ${pulseGlow} 3s ease-in-out infinite;
-  }
-
-  .title-group {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
 
   .title {
     font-size: 22px;
@@ -117,62 +296,27 @@ const HeaderLeft = styled.div`
     font-size: 13px;
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     font-weight: 700;
+    margin-top: 2px;
   }
 
   @media (max-width: 768px) {
-    .icon { width: 40px; height: 40px; font-size: 18px; }
     .title { font-size: 20px; }
     .subtitle { font-size: 12px; }
   }
 `;
 
-// ============================================
-// BALANCE CARD
-// ============================================
+// Balance Card
 const BalanceCard = styled.div`
   padding: 28px 32px;
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
-  border-radius: 20px;
+  border-radius: 16px;
   margin-bottom: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-  animation: ${fadeIn} 0.5s ease;
-  box-shadow: 0 8px 40px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -40%;
-    left: -10%;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.03);
-  }
-
-  .balance-left {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    position: relative;
-    z-index: 1;
-  }
+  box-shadow: 0 8px 32px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
 
   .balance-label {
     font-size: 12px;
@@ -183,11 +327,10 @@ const BalanceCard = styled.div`
   }
 
   .balance-amount {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
     color: #ffffff;
     letter-spacing: -0.5px;
-    text-shadow: 0 2px 20px rgba(0,0,0,0.1);
   }
 
   .balance-sub {
@@ -196,48 +339,42 @@ const BalanceCard = styled.div`
     font-weight: 700;
   }
 
-  .balance-right {
+  .balance-actions {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
-    position: relative;
-    z-index: 1;
   }
 
   @media (max-width: 768px) {
     padding: 20px 24px;
     flex-direction: column;
     align-items: flex-start;
-    .balance-amount { font-size: 28px; }
-    .balance-right { width: 100%; }
+    .balance-amount { font-size: 26px; }
+    .balance-actions { width: 100%; }
   }
 
   @media (max-width: 480px) {
     padding: 16px 18px;
-    .balance-amount { font-size: 24px; }
+    .balance-amount { font-size: 22px; }
   }
 `;
 
 const ActionButton = styled.button`
-  padding: 12px 28px;
+  padding: 10px 24px;
   border: 2px solid rgba(255,255,255,0.2);
-  border-radius: 12px;
-  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.08);
   color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  gap: 8px;
   backdrop-filter: blur(10px);
 
   &:hover {
     background: rgba(255,255,255,0.2);
     border-color: rgba(255,255,255,0.4);
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
   }
 
   &:active {
@@ -245,16 +382,14 @@ const ActionButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    padding: 10px 18px;
+    padding: 8px 16px;
     font-size: 12px;
     flex: 1;
     justify-content: center;
   }
 `;
 
-// ============================================
-// STATS GRID
-// ============================================
+// Stats Grid
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -267,24 +402,19 @@ const StatsGrid = styled.div`
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    gap: 10px;
   }
 `;
 
 const StatCard = styled.div`
   padding: 18px 20px;
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 14px;
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: ${fadeIn} 0.5s ease;
-  animation-delay: ${props => props.delay || '0s'};
-  animation-fill-mode: both;
 
   &:hover {
-    border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.15)'};
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.2)'};
+    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'};
+    transform: translateY(-2px);
   }
 
   .stat-label {
@@ -296,7 +426,7 @@ const StatCard = styled.div`
   }
 
   .stat-value {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     margin-top: 4px;
@@ -305,97 +435,201 @@ const StatCard = styled.div`
   .stat-change {
     font-size: 11px;
     font-weight: 700;
-    color: ${props => props.positive ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.danger || '#ef4444'};
     margin-top: 2px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 14px 16px;
-    .stat-value { font-size: 20px; }
+    color: ${props => props.positive ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.danger || '#ef4444'};
   }
 `;
 
-// ============================================
-// FILTER BUTTONS
-// ============================================
-const FilterContainer = styled.div`
+// Filter Bar
+const FilterBar = styled.div`
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
   flex-wrap: wrap;
-
-  @media (max-width: 480px) {
-    gap: 6px;
-  }
 `;
 
 const FilterButton = styled.button`
   padding: 6px 18px;
-  border: 2px solid ${props => props.active ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border: 2px solid ${props => props.active ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 20px;
   background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   color: ${props => props.active ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.textMuted || '#64748b'};
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
     color: ${props => props.active ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.text || '#f1f5f9'};
-    transform: translateY(-1px);
-  }
-
-  @media (max-width: 480px) {
-    padding: 5px 12px;
-    font-size: 10px;
   }
 `;
 
-// ============================================
-// SUPER SMOOTH MODAL
-// ============================================
+// Transaction Table
+const TableCard = styled.div`
+  padding: 20px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 12px;
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .table-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .count {
+      font-size: 11px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+      background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
+      padding: 1px 10px;
+      border-radius: 12px;
+      border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    overflow-x: auto;
+  }
+`;
+
+const TableWrapper = styled.div`
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
+    border-radius: 4px;
+  }
+`;
+
+const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  font-weight: 700;
+
+  thead th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    font-weight: 700;
+    border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
+    border-bottom: 2px solid ${props => props.theme?.colors?.border + '20' || 'rgba(255,255,255,0.02)'};
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  tbody tr:hover {
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.02)'};
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 14px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .status-completed {
+    color: ${props => props.theme?.colors?.success || '#22c55e'};
+    background: ${props => props.theme?.colors?.success + '15' || 'rgba(34,197,94,0.06)'};
+    border: 2px solid ${props => props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.1)'};
+  }
+
+  .status-pending {
+    color: #f59e0b;
+    background: rgba(245,158,11,0.06);
+    border: 2px solid rgba(245,158,11,0.1);
+  }
+
+  .status-failed {
+    color: ${props => props.theme?.colors?.danger || '#ef4444'};
+    background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.06)'};
+    border: 2px solid ${props => props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.1)'};
+  }
+
+  .status-processing {
+    color: ${props => props.theme?.colors?.accent || '#2962ff'};
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
+    border: 2px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'};
+  }
+
+  .amount-positive {
+    color: ${props => props.theme?.colors?.success || '#22c55e'};
+  }
+
+  .amount-negative {
+    color: ${props => props.theme?.colors?.danger || '#ef4444'};
+  }
+
+  .method-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  }
+`;
+
+// Modal
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
   z-index: 1000;
   display: ${props => props.isOpen ? 'flex' : 'none'};
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: ${modalBackdrop} 0.3s ease;
 `;
 
 const Modal = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-  border-radius: 24px;
-  padding: 32px 36px;
-  animation: ${modalSlideIn} 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: ${props => `linear-gradient(90deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'}, ${props.theme?.colors?.accent || '#2962ff'})`};
-    background-size: 200% 100%;
-    animation: ${shimmer} 3s ease-in-out infinite;
-  }
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border-radius: 16px;
+  padding: 28px 32px;
+  animation: ${modalSlideIn} 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
 
   @media (max-width: 480px) {
-    padding: 24px 20px;
-    border-radius: 20px;
+    padding: 20px;
   }
 `;
 
@@ -403,31 +637,24 @@ const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 
   .title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .icon {
-      font-size: 24px;
-    }
   }
 
-  .close {
-    width: 36px;
-    height: 36px;
+  .close-btn {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-    background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
+    background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     font-size: 16px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -435,8 +662,6 @@ const ModalHeader = styled.div`
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
       color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-      transform: rotate(90deg);
-      background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
     }
   }
 `;
@@ -444,7 +669,7 @@ const ModalHeader = styled.div`
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 `;
 
 const FormGroup = styled.div`
@@ -461,24 +686,23 @@ const FormGroup = styled.div`
   }
 
   input, select {
-    padding: 12px 16px;
+    padding: 10px 14px;
     background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
-    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-    border-radius: 12px;
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+    border-radius: 8px;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     font-size: 14px;
     font-weight: 700;
     outline: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
 
     &:focus {
       border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
-      box-shadow: 0 0 0 4px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.05)'};
-      transform: scale(1.01);
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.05)'};
     }
 
     &::placeholder {
-      color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
+      color: ${props => props.theme?.colors?.textMuted + '50' || '#4a4f5e'};
       font-weight: 400;
     }
   }
@@ -486,114 +710,64 @@ const FormGroup = styled.div`
   select option {
     background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
   }
-
-  .input-icon {
-    position: relative;
-
-    input {
-      padding-left: 40px;
-    }
-
-    .icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 16px;
-      opacity: 0.6;
-    }
-  }
 `;
 
 const PaymentMethodGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
+  gap: 8px;
 `;
 
 const PaymentMethodOption = styled.div`
-  padding: 12px;
-  border: 2px solid ${props => props.selected ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 12px;
+  padding: 10px;
+  border: 2px solid ${props => props.selected ? props.theme?.colors?.accent || '#2962ff' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 8px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
   background: ${props => props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    transform: translateY(-2px);
-  }
-
-  .method-icon {
-    font-size: 24px;
-    display: block;
-    margin-bottom: 4px;
   }
 
   .method-name {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: ${props => props.selected ? props.theme?.colors?.text || '#f1f5f9' : props.theme?.colors?.textMuted || '#64748b'};
   }
 
-  @media (max-width: 480px) {
-    padding: 10px;
-    .method-icon { font-size: 20px; }
-    .method-name { font-size: 10px; }
+  .method-sub {
+    font-size: 9px;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    margin-top: 2px;
   }
 `;
 
 const SubmitButton = styled.button`
-  padding: 14px;
+  padding: 12px;
   border: none;
-  border-radius: 14px;
+  border-radius: 10px;
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
   color: #ffffff;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-top: 6px;
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-  }
-
-  &:hover:not(:disabled)::before {
-    transform: translateX(100%);
-  }
+  transition: all 0.3s ease;
+  margin-top: 4px;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(0.98);
+    box-shadow: 0 8px 24px ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
   }
 `;
 
-// ============================================
-// TOAST NOTIFICATION
-// ============================================
+// Toast
 const ToastContainer = styled.div`
   position: fixed;
   top: 80px;
@@ -601,234 +775,52 @@ const ToastContainer = styled.div`
   z-index: 2000;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  max-width: 380px;
+  gap: 8px;
+  max-width: 360px;
   width: 100%;
   pointer-events: none;
-
-  @media (max-width: 480px) {
-    right: 12px;
-    left: 12px;
-    max-width: none;
-    top: 70px;
-  }
 `;
 
 const Toast = styled.div`
   pointer-events: auto;
-  padding: 16px 20px;
-  border-radius: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 2px solid ${props => props.type === 'success' ? props.theme?.colors?.success + '60' || 'rgba(34,197,94,0.3)' : props.theme?.colors?.danger + '60' || 'rgba(239,68,68,0.3)'};
-  box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-  animation: ${toastSlide} 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid ${props => props.type === 'success' ? props.theme?.colors?.success + '50' || 'rgba(34,197,94,0.2)' : props.theme?.colors?.danger + '50' || 'rgba(239,68,68,0.2)'};
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: ${toastSlide} 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 12px;
-  backdrop-filter: blur(20px);
+  gap: 10px;
 
-  .icon {
-    font-size: 22px;
+  .toast-icon {
+    font-size: 18px;
     flex-shrink: 0;
   }
 
-  .content {
+  .toast-content {
     flex: 1;
   }
 
-  .title {
+  .toast-title {
     font-size: 13px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
   }
 
-  .message {
+  .toast-message {
     font-size: 11px;
-    font-weight: 700;
     color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
-    margin-top: 1px;
+    font-weight: 700;
   }
 
-  .close-toast {
+  .toast-close {
     background: none;
     border: none;
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     cursor: pointer;
     font-size: 14px;
     padding: 4px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    }
-  }
-`;
-
-// ============================================
-// TRANSACTION TABLE
-// ============================================
-const TableCard = styled.div`
-  padding: 20px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 16px;
-  animation: ${fadeIn} 0.5s ease;
-
-  .table-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .table-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .count {
-      font-size: 11px;
-      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-      background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
-      padding: 1px 12px;
-      border-radius: 14px;
-      border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 16px;
-    overflow-x: auto;
-  }
-
-  @media (max-width: 480px) {
-    padding: 12px;
-  }
-`;
-
-const TableWrapper = styled.div`
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-
-  &::-webkit-scrollbar {
-    height: 4px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
-    border-radius: 4px;
-  }
-`;
-
-const StyledTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  font-weight: 700;
-
-  thead th {
-    text-align: left;
-    padding: 12px 14px;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    font-weight: 700;
-    border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-    white-space: nowrap;
-  }
-
-  tbody td {
-    padding: 12px 14px;
-    font-size: 12px;
-    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
-    border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
-    white-space: nowrap;
-    font-weight: 700;
-  }
-
-  tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  tbody tr {
-    transition: all 0.2s ease;
-  }
-
-  tbody tr:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.03)'};
-  }
-
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 14px;
-    border-radius: 14px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-
-  .status-completed {
-    color: ${props => props.theme?.colors?.success || '#22c55e'};
-    background: ${props => props.theme?.colors?.success + '15' || 'rgba(34,197,94,0.08)'};
-    border: 2px solid ${props => props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.15)'};
-  }
-
-  .status-pending {
-    color: #f59e0b;
-    background: rgba(245,158,11,0.08);
-    border: 2px solid rgba(245,158,11,0.15);
-  }
-
-  .status-failed {
-    color: ${props => props.theme?.colors?.danger || '#ef4444'};
-    background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.08)'};
-    border: 2px solid ${props => props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.15)'};
-  }
-
-  .status-processing {
-    color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.08)'};
-    border: 2px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
-  }
-
-  .amount-positive {
-    color: ${props => props.theme?.colors?.success || '#22c55e'};
-  }
-
-  .amount-negative {
-    color: ${props => props.theme?.colors?.danger || '#ef4444'};
-  }
-
-  .method-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 10px;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: 700;
-    background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
-    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  }
-
-  @media (max-width: 768px) {
-    thead th, tbody td { padding: 8px 10px; font-size: 11px; }
-  }
-
-  @media (max-width: 480px) {
-    thead th, tbody td { padding: 6px 8px; font-size: 10px; }
-    .status { padding: 2px 10px; font-size: 8px; }
-    .method-badge { font-size: 8px; padding: 1px 6px; }
   }
 `;
 
@@ -837,7 +829,7 @@ const StyledTable = styled.table`
 // ============================================
 const PaymentAgentDashboard = () => {
   const navigate = useNavigate();
-  const [balance, setBalance] = useState(2847293.50);
+  const [activePage, setActivePage] = useState('home');
   const [filter, setFilter] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactionType, setTransactionType] = useState('deposit');
@@ -845,6 +837,7 @@ const PaymentAgentDashboard = () => {
   const [paymentMethod, setPaymentMethod] = useState('safaricom');
   const [isProcessing, setIsProcessing] = useState(false);
   const [toasts, setToasts] = useState([]);
+  const [balance, setBalance] = useState(2847293.50);
 
   const [transactions, setTransactions] = useState([
     { id: '#TRX-7841', type: 'Deposit', amount: 12450.00, status: 'completed', date: '2026-07-29 14:32', method: 'Safaricom' },
@@ -865,10 +858,23 @@ const PaymentAgentDashboard = () => {
   ];
 
   const paymentMethods = [
-    { id: 'safaricom', name: 'Safaricom', icon: '📱' },
-    { id: 'airtel', name: 'Airtel', icon: '📱' },
-    { id: 'bank', name: 'Bank Transfer', icon: '🏦' }
+    { id: 'safaricom', name: 'Safaricom', sub: 'M-Pesa' },
+    { id: 'airtel', name: 'Airtel', sub: 'Airtel Money' },
+    { id: 'bank', name: 'Bank Transfer', sub: 'Wire Transfer' }
   ];
+
+  const navItems = {
+    main: [
+      { id: 'home', label: 'Dashboard', icon: '▣' },
+      { id: 'transactions', label: 'Transactions', icon: '▤' },
+      { id: 'deposits', label: 'Deposits', icon: '↓' },
+      { id: 'withdrawals', label: 'Withdrawals', icon: '↑' },
+    ],
+    secondary: [
+      { id: 'support', label: 'Help & Support', icon: '?' },
+      { id: 'account', label: 'Account', icon: '⚙' },
+    ]
+  };
 
   const filteredTransactions = transactions.filter(tx => {
     if (filter === 'all') return true;
@@ -909,15 +915,15 @@ const PaymentAgentDashboard = () => {
       if (transactionType === 'deposit') {
         setBalance(prev => prev + parseFloat(amount));
         addToast(
-          'Deposit Successful! ✅',
-          `$${parseFloat(amount).toFixed(2)} has been added to your account via ${methodName}`,
+          'Deposit Successful',
+          `$${parseFloat(amount).toFixed(2)} added via ${methodName}`,
           'success'
         );
       } else {
         setBalance(prev => prev - parseFloat(amount));
         addToast(
-          'Withdrawal Initiated! 💳',
-          `$${parseFloat(amount).toFixed(2)} has been requested via ${methodName}`,
+          'Withdrawal Initiated',
+          `$${parseFloat(amount).toFixed(2)} requested via ${methodName}`,
           'success'
         );
       }
@@ -929,148 +935,178 @@ const PaymentAgentDashboard = () => {
   };
 
   const getStatusClass = (status) => `status-${status}`;
-  const getAmountClass = (amount, type) => type === 'Deposit' ? 'amount-positive' : 'amount-negative';
 
   return (
-    <DashboardContainer>
+    <DashboardLayout>
       {/* TOASTS */}
       <ToastContainer>
         {toasts.map(toast => (
           <Toast key={toast.id} type={toast.type}>
-            <span className="icon">{toast.type === 'success' ? '✅' : '❌'}</span>
-            <div className="content">
-              <div className="title">{toast.title}</div>
-              <div className="message">{toast.message}</div>
+            <span className="toast-icon">{toast.type === 'success' ? '✓' : '✕'}</span>
+            <div className="toast-content">
+              <div className="toast-title">{toast.title}</div>
+              <div className="toast-message">{toast.message}</div>
             </div>
-            <button className="close-toast" onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}>✕</button>
+            <button className="toast-close" onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}>✕</button>
           </Toast>
         ))}
       </ToastContainer>
 
-      <DashboardHeader>
-        <HeaderLeft>
-          <div className="icon">💳</div>
-          <div className="title-group">
-            <span className="title">Payment Dashboard</span>
-            <span className="subtitle">Deposit & withdraw via Safaricom, Airtel, or Bank Transfer</span>
+      {/* SIDEBAR */}
+      <Sidebar>
+        <SidebarBrand>
+          <div className="brand-icon">VT</div>
+          <div>
+            <div className="brand-text">Voltix</div>
+            <div className="brand-sub">Payment Agent</div>
           </div>
-        </HeaderLeft>
-      </DashboardHeader>
+        </SidebarBrand>
 
-      {/* BALANCE CARD */}
-      <BalanceCard>
-        <div className="balance-left">
-          <span className="balance-label">Available Balance</span>
-          <span className="balance-amount">${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          <span className="balance-sub">USD • Real-time balance</span>
-        </div>
-        <div className="balance-right">
-          <ActionButton onClick={() => { setTransactionType('deposit'); setIsModalOpen(true); }}>
-            💰 Deposit
-          </ActionButton>
-          <ActionButton onClick={() => { setTransactionType('withdraw'); setIsModalOpen(true); }}>
-            💳 Withdraw
-          </ActionButton>
-        </div>
-      </BalanceCard>
+        <MobileBrand>
+          <div className="brand-icon">VT</div>
+          <span className="brand-text">Voltix Pay</span>
+        </MobileBrand>
 
-      {/* STATS */}
-      <StatsGrid>
-        {stats.map((stat, index) => (
-          <StatCard key={index} delay={`${0.05 + (index * 0.05)}s`} positive={stat.positive}>
-            <div className="stat-label">{stat.label}</div>
-            <div className="stat-value">{stat.value}</div>
-            <div className="stat-change">{stat.positive ? '↑' : '↓'} {stat.change}</div>
-          </StatCard>
-        ))}
-      </StatsGrid>
+        <NavSection>
+          {navItems.main.map((item) => (
+            <NavItem
+              key={item.id}
+              active={activePage === item.id}
+              onClick={() => setActivePage(item.id)}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              {item.label}
+              {item.id === 'transactions' && <span className="nav-badge">12</span>}
+            </NavItem>
+          ))}
+        </NavSection>
 
-      {/* TRANSACTIONS TABLE */}
-      <TableCard>
-        <div className="table-header">
-          <div className="table-title">
-            Recent Transactions
-            <span className="count">{filteredTransactions.length}</span>
+        <NavSpacer />
+
+        <NavSection>
+          <NavLabel>Support</NavLabel>
+          {navItems.secondary.map((item) => (
+            <NavItem
+              key={item.id}
+              active={activePage === item.id}
+              onClick={() => setActivePage(item.id)}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              {item.label}
+            </NavItem>
+          ))}
+        </NavSection>
+      </Sidebar>
+
+      {/* MAIN CONTENT */}
+      <MainContent>
+        <PageHeader>
+          <div>
+            <div className="title">Payment Dashboard</div>
+            <div className="subtitle">Manage deposits, withdrawals, and transactions</div>
           </div>
-        </div>
+        </PageHeader>
 
-        {/* FILTERS */}
-        <FilterContainer>
-          <FilterButton active={filter === 'all'} onClick={() => setFilter('all')}>
-            📊 All
-          </FilterButton>
-          <FilterButton active={filter === 'deposits'} onClick={() => setFilter('deposits')}>
-            💰 Deposits
-          </FilterButton>
-          <FilterButton active={filter === 'withdrawals'} onClick={() => setFilter('withdrawals')}>
-            💳 Withdrawals
-          </FilterButton>
-        </FilterContainer>
+        {/* BALANCE */}
+        <BalanceCard>
+          <div>
+            <div className="balance-label">Available Balance</div>
+            <div className="balance-amount">${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+            <div className="balance-sub">USD · Real-time</div>
+          </div>
+          <div className="balance-actions">
+            <ActionButton onClick={() => { setTransactionType('deposit'); setIsModalOpen(true); }}>
+              Deposit
+            </ActionButton>
+            <ActionButton onClick={() => { setTransactionType('withdraw'); setIsModalOpen(true); }}>
+              Withdraw
+            </ActionButton>
+          </div>
+        </BalanceCard>
 
-        <TableWrapper>
-          <StyledTable>
-            <thead>
-              <tr>
-                <th>Transaction ID</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Method</th>
-                <th>Status</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTransactions.map((tx) => (
-                <tr key={tx.id}>
-                  <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
-                  <td>{tx.type}</td>
-                  <td className={tx.type === 'Deposit' ? 'amount-positive' : 'amount-negative'}>
-                    {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}
-                  </td>
-                  <td>
-                    <span className="method-badge">
-                      {tx.method === 'Safaricom' ? '📱' : tx.method === 'Airtel' ? '📱' : '🏦'} {tx.method}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`status ${getStatusClass(tx.status)}`}>
-                      {tx.status}
-                    </span>
-                  </td>
-                  <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
+        {/* STATS */}
+        <StatsGrid>
+          {stats.map((stat, index) => (
+            <StatCard key={index} positive={stat.positive}>
+              <div className="stat-label">{stat.label}</div>
+              <div className="stat-value">{stat.value}</div>
+              <div className="stat-change">{stat.positive ? '↑' : '↓'} {stat.change}</div>
+            </StatCard>
+          ))}
+        </StatsGrid>
+
+        {/* TRANSACTIONS */}
+        <TableCard>
+          <div className="table-header">
+            <div className="table-title">
+              Recent Transactions
+              <span className="count">{filteredTransactions.length}</span>
+            </div>
+          </div>
+
+          <FilterBar>
+            <FilterButton active={filter === 'all'} onClick={() => setFilter('all')}>All</FilterButton>
+            <FilterButton active={filter === 'deposits'} onClick={() => setFilter('deposits')}>Deposits</FilterButton>
+            <FilterButton active={filter === 'withdrawals'} onClick={() => setFilter('withdrawals')}>Withdrawals</FilterButton>
+          </FilterBar>
+
+          <TableWrapper>
+            <StyledTable>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                  <th>Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </StyledTable>
-        </TableWrapper>
-      </TableCard>
+              </thead>
+              <tbody>
+                {filteredTransactions.map((tx) => (
+                  <tr key={tx.id}>
+                    <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
+                    <td>{tx.type}</td>
+                    <td className={tx.type === 'Deposit' ? 'amount-positive' : 'amount-negative'}>
+                      {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}
+                    </td>
+                    <td>
+                      <span className="method-tag">{tx.method}</span>
+                    </td>
+                    <td>
+                      <span className={`status-badge ${getStatusClass(tx.status)}`}>
+                        {tx.status}
+                      </span>
+                    </td>
+                    <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </StyledTable>
+          </TableWrapper>
+        </TableCard>
+      </MainContent>
 
-      {/* SUPER SMOOTH MODAL */}
+      {/* MODAL */}
       <ModalOverlay isOpen={isModalOpen} onClick={() => !isProcessing && setIsModalOpen(false)}>
         <Modal onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
-            <div className="title">
-              <span className="icon">{transactionType === 'deposit' ? '💰' : '💳'}</span>
-              {transactionType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}
-            </div>
-            <button className="close" onClick={() => !isProcessing && setIsModalOpen(false)}>✕</button>
+            <span className="title">{transactionType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}</span>
+            <button className="close-btn" onClick={() => !isProcessing && setIsModalOpen(false)}>✕</button>
           </ModalHeader>
 
           <ModalBody>
             <FormGroup>
               <label>Amount (USD)</label>
-              <div className="input-icon">
-                <span className="icon">$</span>
-                <input
-                  type="number"
-                  placeholder={transactionType === 'deposit' ? 'Enter deposit amount' : 'Enter withdrawal amount'}
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  min="1"
-                  step="0.01"
-                  disabled={isProcessing}
-                />
-              </div>
+              <input
+                type="number"
+                placeholder={transactionType === 'deposit' ? 'Enter deposit amount' : 'Enter withdrawal amount'}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min="1"
+                step="0.01"
+                disabled={isProcessing}
+              />
             </FormGroup>
 
             <FormGroup>
@@ -1082,8 +1118,8 @@ const PaymentAgentDashboard = () => {
                     selected={paymentMethod === method.id}
                     onClick={() => setPaymentMethod(method.id)}
                   >
-                    <span className="method-icon">{method.icon}</span>
-                    <span className="method-name">{method.name}</span>
+                    <div className="method-name">{method.name}</div>
+                    <div className="method-sub">{method.sub}</div>
                   </PaymentMethodOption>
                 ))}
               </PaymentMethodGrid>
@@ -1091,45 +1127,32 @@ const PaymentAgentDashboard = () => {
 
             {paymentMethod === 'safaricom' && (
               <FormGroup>
-                <label>Safaricom Phone Number</label>
-                <div className="input-icon">
-                  <span className="icon">📱</span>
-                  <input type="text" placeholder="07XX XXX XXX" value="0712 345 678" disabled />
-                </div>
+                <label>Safaricom Number</label>
+                <input type="text" placeholder="07XX XXX XXX" value="0712 345 678" disabled />
               </FormGroup>
             )}
 
             {paymentMethod === 'airtel' && (
               <FormGroup>
-                <label>Airtel Phone Number</label>
-                <div className="input-icon">
-                  <span className="icon">📱</span>
-                  <input type="text" placeholder="07XX XXX XXX" value="0733 456 789" disabled />
-                </div>
+                <label>Airtel Number</label>
+                <input type="text" placeholder="07XX XXX XXX" value="0733 456 789" disabled />
               </FormGroup>
             )}
 
             {paymentMethod === 'bank' && (
               <FormGroup>
                 <label>Bank Account</label>
-                <div className="input-icon">
-                  <span className="icon">🏦</span>
-                  <input type="text" placeholder="Account Number" value="****5678" disabled />
-                </div>
+                <input type="text" placeholder="Account Number" value="****5678" disabled />
               </FormGroup>
             )}
 
             <SubmitButton onClick={handleTransaction} disabled={isProcessing}>
-              {isProcessing ? (
-                <span>⏳ Processing...</span>
-              ) : (
-                transactionType === 'deposit' ? '💰 Deposit Funds' : '💳 Withdraw Funds'
-              )}
+              {isProcessing ? 'Processing...' : transactionType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}
             </SubmitButton>
           </ModalBody>
         </Modal>
       </ModalOverlay>
-    </DashboardContainer>
+    </DashboardLayout>
   );
 };
 
