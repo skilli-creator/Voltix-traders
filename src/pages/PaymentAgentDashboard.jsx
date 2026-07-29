@@ -17,26 +17,15 @@ const slideIn = keyframes`
   to { opacity: 1; transform: translateX(0); }
 `;
 
-const pulseGlow = keyframes`
-  0%, 100% { box-shadow: 0 0 20px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.1)'}; }
-  50% { box-shadow: 0 0 40px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'}; }
-`;
-
 const modalSlideIn = keyframes`
   from { opacity: 0; transform: scale(0.95) translateY(20px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
-`;
-
-const toastSlide = keyframes`
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
 `;
 
 // ============================================
 // STYLED COMPONENTS
 // ============================================
 
-// Main Layout
 const DashboardLayout = styled.div`
   display: flex;
   min-height: calc(100vh - 48px);
@@ -47,7 +36,7 @@ const DashboardLayout = styled.div`
   }
 `;
 
-// Sidebar
+// ===== SIDEBAR =====
 const Sidebar = styled.div`
   width: 260px;
   min-width: 260px;
@@ -60,7 +49,6 @@ const Sidebar = styled.div`
   position: sticky;
   top: 0;
   overflow-y: auto;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -75,17 +63,16 @@ const Sidebar = styled.div`
     min-width: unset;
     height: auto;
     position: relative;
-    padding: 16px;
+    padding: 12px 16px;
     border-right: none;
     border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     flex-direction: row;
     overflow-x: auto;
-    flex-wrap: nowrap;
     gap: 4px;
   }
 
   @media (max-width: 480px) {
-    padding: 12px;
+    padding: 10px 12px;
     gap: 2px;
   }
 `;
@@ -106,7 +93,7 @@ const SidebarBrand = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #ffffff;
   }
@@ -115,7 +102,6 @@ const SidebarBrand = styled.div`
     font-size: 16px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    letter-spacing: -0.3px;
   }
 
   .brand-sub {
@@ -133,9 +119,9 @@ const MobileBrand = styled.div`
   display: none;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
+  padding: 6px 12px;
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border-radius: 10px;
+  border-radius: 8px;
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   flex-shrink: 0;
 
@@ -147,7 +133,7 @@ const MobileBrand = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #ffffff;
   }
@@ -160,68 +146,6 @@ const MobileBrand = styled.div`
 
   @media (max-width: 768px) {
     display: flex;
-  }
-`;
-
-const NavItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  color: ${props => props.active ? props.theme?.colors?.text || '#f1f5f9' : props.theme?.colors?.textSecondary || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
-  border: 2px solid ${props => props.active ? props.theme?.colors?.accent || '#2962ff' : 'transparent'};
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-  position: relative;
-
-  &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.04)'};
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-  }
-
-  .nav-icon {
-    font-size: 18px;
-    width: 24px;
-    text-align: center;
-    flex-shrink: 0;
-    opacity: 0.7;
-  }
-
-  .nav-badge {
-    margin-left: auto;
-    font-size: 9px;
-    font-weight: 700;
-    padding: 1px 10px;
-    border-radius: 10px;
-    background: ${props => props.theme?.colors?.danger || '#ef4444'};
-    color: #ffffff;
-  }
-
-  @media (max-width: 768px) {
-    padding: 6px 12px;
-    font-size: 11px;
-    border-radius: 8px;
-    flex-shrink: 0;
-
-    .nav-icon {
-      font-size: 14px;
-      width: 20px;
-    }
-    .nav-badge {
-      font-size: 8px;
-      padding: 1px 6px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 5px 10px;
-    font-size: 10px;
-    .nav-icon { font-size: 12px; width: 16px; }
   }
 `;
 
@@ -252,15 +176,69 @@ const NavLabel = styled.div`
   }
 `;
 
+const NavItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  color: ${props => props.active ? props.theme?.colors?.text || '#f1f5f9' : props.theme?.colors?.textSecondary || '#94a3b8'};
+  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  border: 2px solid ${props => props.active ? props.theme?.colors?.accent || '#2962ff' : 'transparent'};
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  position: relative;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.04)'};
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+  }
+
+  .nav-icon {
+    font-size: 16px;
+    width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 10px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.danger || '#ef4444'};
+    color: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 12px;
+    font-size: 11px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    .nav-icon { font-size: 14px; width: 18px; }
+    .nav-badge { font-size: 8px; padding: 1px 6px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 5px 10px;
+    font-size: 10px;
+    .nav-icon { font-size: 12px; width: 16px; }
+  }
+`;
+
 const NavSpacer = styled.div`
   flex: 1;
-
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
-// Main Content
+// ===== MAIN CONTENT =====
 const MainContent = styled.div`
   flex: 1;
   padding: 24px 32px;
@@ -276,20 +254,20 @@ const MainContent = styled.div`
   }
 `;
 
-// Page Header
+// ===== PAGE COMPONENTS =====
+
+// Home Page
+const HomePage = styled.div`
+  animation: ${fadeIn} 0.5s ease;
+`;
+
 const PageHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: 28px;
-  flex-wrap: wrap;
-  gap: 16px;
 
   .title {
     font-size: 22px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    letter-spacing: -0.3px;
   }
 
   .subtitle {
@@ -305,7 +283,6 @@ const PageHeader = styled.div`
   }
 `;
 
-// Balance Card
 const BalanceCard = styled.div`
   padding: 28px 32px;
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
@@ -330,7 +307,6 @@ const BalanceCard = styled.div`
     font-size: 32px;
     font-weight: 700;
     color: #ffffff;
-    letter-spacing: -0.5px;
   }
 
   .balance-sub {
@@ -352,11 +328,6 @@ const BalanceCard = styled.div`
     .balance-amount { font-size: 26px; }
     .balance-actions { width: 100%; }
   }
-
-  @media (max-width: 480px) {
-    padding: 16px 18px;
-    .balance-amount { font-size: 22px; }
-  }
 `;
 
 const ActionButton = styled.button`
@@ -368,7 +339,7 @@ const ActionButton = styled.button`
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 
   &:hover {
@@ -377,19 +348,13 @@ const ActionButton = styled.button`
     transform: translateY(-2px);
   }
 
-  &:active {
-    transform: scale(0.97);
-  }
-
   @media (max-width: 480px) {
     padding: 8px 16px;
     font-size: 12px;
     flex: 1;
-    justify-content: center;
   }
 `;
 
-// Stats Grid
 const StatsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -410,7 +375,7 @@ const StatCard = styled.div`
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'};
@@ -440,7 +405,11 @@ const StatCard = styled.div`
   }
 `;
 
-// Filter Bar
+// Transactions Page
+const TransactionsPage = styled.div`
+  animation: ${fadeIn} 0.5s ease;
+`;
+
 const FilterBar = styled.div`
   display: flex;
   gap: 8px;
@@ -457,7 +426,7 @@ const FilterButton = styled.button`
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease;
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
@@ -465,7 +434,6 @@ const FilterButton = styled.button`
   }
 `;
 
-// Transaction Table
 const TableCard = styled.div`
   padding: 20px;
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
@@ -508,10 +476,7 @@ const TableCard = styled.div`
 
 const TableWrapper = styled.div`
   overflow-x: auto;
-
-  &::-webkit-scrollbar {
-    height: 4px;
-  }
+  &::-webkit-scrollbar { height: 4px; }
   &::-webkit-scrollbar-thumb {
     background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'};
     border-radius: 4px;
@@ -530,7 +495,6 @@ const StyledTable = styled.table`
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    font-weight: 700;
     border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     white-space: nowrap;
   }
@@ -550,8 +514,6 @@ const StyledTable = styled.table`
 
   .status-badge {
     display: inline-flex;
-    align-items: center;
-    gap: 6px;
     padding: 3px 14px;
     border-radius: 12px;
     font-size: 10px;
@@ -578,12 +540,6 @@ const StyledTable = styled.table`
     border: 2px solid ${props => props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.1)'};
   }
 
-  .status-processing {
-    color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
-    border: 2px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.1)'};
-  }
-
   .amount-positive {
     color: ${props => props.theme?.colors?.success || '#22c55e'};
   }
@@ -594,8 +550,6 @@ const StyledTable = styled.table`
 
   .method-tag {
     display: inline-flex;
-    align-items: center;
-    gap: 4px;
     padding: 2px 10px;
     border-radius: 6px;
     font-size: 10px;
@@ -605,7 +559,90 @@ const StyledTable = styled.table`
   }
 `;
 
-// Modal
+// Help & Support Page
+const SupportPage = styled.div`
+  animation: ${fadeIn} 0.5s ease;
+`;
+
+const SupportCard = styled.div`
+  padding: 24px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 12px;
+  margin-bottom: 16px;
+
+  .support-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    margin-bottom: 8px;
+  }
+
+  .support-desc {
+    font-size: 13px;
+    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
+    font-weight: 700;
+    line-height: 1.6;
+  }
+
+  .support-contact {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
+    border-radius: 8px;
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+
+    .contact-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
+
+      .label { color: ${props => props.theme?.colors?.textMuted || '#64748b'}; }
+      .value { color: ${props => props.theme?.colors?.text || '#f1f5f9'}; }
+    }
+  }
+`;
+
+// Account Page
+const AccountPage = styled.div`
+  animation: ${fadeIn} 0.5s ease;
+`;
+
+const AccountCard = styled.div`
+  padding: 24px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 12px;
+  margin-bottom: 16px;
+
+  .account-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .label {
+      font-size: 13px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    }
+
+    .value {
+      font-size: 13px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    }
+  }
+`;
+
+// ===== MODAL =====
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -767,7 +804,7 @@ const SubmitButton = styled.button`
   }
 `;
 
-// Toast
+// ===== TOAST =====
 const ToastContainer = styled.div`
   position: fixed;
   top: 80px;
@@ -788,7 +825,7 @@ const Toast = styled.div`
   background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
   border: 2px solid ${props => props.type === 'success' ? props.theme?.colors?.success + '50' || 'rgba(34,197,94,0.2)' : props.theme?.colors?.danger + '50' || 'rgba(239,68,68,0.2)'};
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  animation: ${toastSlide} 0.3s ease;
+  animation: ${fadeIn} 0.3s ease;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -845,9 +882,6 @@ const PaymentAgentDashboard = () => {
     { id: '#TRX-7839', type: 'Deposit', amount: 5670.00, status: 'processing', date: '2026-07-29 12:42', method: 'Bank Transfer' },
     { id: '#TRX-7838', type: 'Deposit', amount: 23400.00, status: 'completed', date: '2026-07-29 11:00', method: 'Safaricom' },
     { id: '#TRX-7837', type: 'Withdrawal', amount: 3200.00, status: 'failed', date: '2026-07-29 09:30', method: 'Airtel' },
-    { id: '#TRX-7836', type: 'Deposit', amount: 8750.00, status: 'completed', date: '2026-07-28 16:45', method: 'Bank Transfer' },
-    { id: '#TRX-7835', type: 'Withdrawal', amount: 15000.00, status: 'pending', date: '2026-07-28 14:20', method: 'Safaricom' },
-    { id: '#TRX-7834', type: 'Deposit', amount: 3200.00, status: 'completed', date: '2026-07-28 11:00', method: 'Airtel' },
   ]);
 
   const stats = [
@@ -914,18 +948,10 @@ const PaymentAgentDashboard = () => {
 
       if (transactionType === 'deposit') {
         setBalance(prev => prev + parseFloat(amount));
-        addToast(
-          'Deposit Successful',
-          `$${parseFloat(amount).toFixed(2)} added via ${methodName}`,
-          'success'
-        );
+        addToast('Deposit Successful', `$${parseFloat(amount).toFixed(2)} added via ${methodName}`, 'success');
       } else {
         setBalance(prev => prev - parseFloat(amount));
-        addToast(
-          'Withdrawal Initiated',
-          `$${parseFloat(amount).toFixed(2)} requested via ${methodName}`,
-          'success'
-        );
+        addToast('Withdrawal Initiated', `$${parseFloat(amount).toFixed(2)} requested via ${methodName}`, 'success');
       }
 
       setIsProcessing(false);
@@ -935,6 +961,265 @@ const PaymentAgentDashboard = () => {
   };
 
   const getStatusClass = (status) => `status-${status}`;
+
+  // ===== RENDER PAGE CONTENT =====
+  const renderPage = () => {
+    switch(activePage) {
+      case 'home':
+        return (
+          <HomePage>
+            <PageHeader>
+              <div className="title">Payment Dashboard</div>
+              <div className="subtitle">Manage deposits, withdrawals, and transactions</div>
+            </PageHeader>
+
+            <BalanceCard>
+              <div>
+                <div className="balance-label">Available Balance</div>
+                <div className="balance-amount">${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div className="balance-sub">USD · Real-time</div>
+              </div>
+              <div className="balance-actions">
+                <ActionButton onClick={() => { setTransactionType('deposit'); setIsModalOpen(true); }}>
+                  Deposit
+                </ActionButton>
+                <ActionButton onClick={() => { setTransactionType('withdraw'); setIsModalOpen(true); }}>
+                  Withdraw
+                </ActionButton>
+              </div>
+            </BalanceCard>
+
+            <StatsGrid>
+              {stats.map((stat, index) => (
+                <StatCard key={index} positive={stat.positive}>
+                  <div className="stat-label">{stat.label}</div>
+                  <div className="stat-value">{stat.value}</div>
+                  <div className="stat-change">{stat.positive ? '↑' : '↓'} {stat.change}</div>
+                </StatCard>
+              ))}
+            </StatsGrid>
+
+            <TableCard>
+              <div className="table-header">
+                <div className="table-title">
+                  Recent Transactions
+                  <span className="count">{transactions.length}</span>
+                </div>
+              </div>
+              <TableWrapper>
+                <StyledTable>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Method</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transactions.slice(0, 5).map((tx) => (
+                      <tr key={tx.id}>
+                        <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
+                        <td>{tx.type}</td>
+                        <td className={tx.type === 'Deposit' ? 'amount-positive' : 'amount-negative'}>
+                          {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}
+                        </td>
+                        <td><span className="method-tag">{tx.method}</span></td>
+                        <td><span className={`status-badge ${getStatusClass(tx.status)}`}>{tx.status}</span></td>
+                        <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </StyledTable>
+              </TableWrapper>
+            </TableCard>
+          </HomePage>
+        );
+
+      case 'transactions':
+        return (
+          <TransactionsPage>
+            <PageHeader>
+              <div className="title">All Transactions</div>
+              <div className="subtitle">Complete transaction history</div>
+            </PageHeader>
+
+            <TableCard>
+              <div className="table-header">
+                <div className="table-title">
+                  Transactions
+                  <span className="count">{filteredTransactions.length}</span>
+                </div>
+              </div>
+
+              <FilterBar>
+                <FilterButton active={filter === 'all'} onClick={() => setFilter('all')}>All</FilterButton>
+                <FilterButton active={filter === 'deposits'} onClick={() => setFilter('deposits')}>Deposits</FilterButton>
+                <FilterButton active={filter === 'withdrawals'} onClick={() => setFilter('withdrawals')}>Withdrawals</FilterButton>
+              </FilterBar>
+
+              <TableWrapper>
+                <StyledTable>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Type</th>
+                      <th>Amount</th>
+                      <th>Method</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTransactions.map((tx) => (
+                      <tr key={tx.id}>
+                        <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
+                        <td>{tx.type}</td>
+                        <td className={tx.type === 'Deposit' ? 'amount-positive' : 'amount-negative'}>
+                          {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}
+                        </td>
+                        <td><span className="method-tag">{tx.method}</span></td>
+                        <td><span className={`status-badge ${getStatusClass(tx.status)}`}>{tx.status}</span></td>
+                        <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </StyledTable>
+              </TableWrapper>
+            </TableCard>
+          </TransactionsPage>
+        );
+
+      case 'deposits':
+        return (
+          <TransactionsPage>
+            <PageHeader>
+              <div className="title">Deposits</div>
+              <div className="subtitle">All deposit transactions</div>
+            </PageHeader>
+            <TableCard>
+              <div className="table-header">
+                <div className="table-title">Deposit History <span className="count">{transactions.filter(t => t.type === 'Deposit').length}</span></div>
+              </div>
+              <TableWrapper>
+                <StyledTable>
+                  <thead>
+                    <tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr>
+                  </thead>
+                  <tbody>
+                    {transactions.filter(t => t.type === 'Deposit').map((tx) => (
+                      <tr key={tx.id}>
+                        <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
+                        <td className="amount-positive">+${tx.amount.toFixed(2)}</td>
+                        <td><span className="method-tag">{tx.method}</span></td>
+                        <td><span className={`status-badge ${getStatusClass(tx.status)}`}>{tx.status}</span></td>
+                        <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </StyledTable>
+              </TableWrapper>
+            </TableCard>
+          </TransactionsPage>
+        );
+
+      case 'withdrawals':
+        return (
+          <TransactionsPage>
+            <PageHeader>
+              <div className="title">Withdrawals</div>
+              <div className="subtitle">All withdrawal transactions</div>
+            </PageHeader>
+            <TableCard>
+              <div className="table-header">
+                <div className="table-title">Withdrawal History <span className="count">{transactions.filter(t => t.type === 'Withdrawal').length}</span></div>
+              </div>
+              <TableWrapper>
+                <StyledTable>
+                  <thead>
+                    <tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr>
+                  </thead>
+                  <tbody>
+                    {transactions.filter(t => t.type === 'Withdrawal').map((tx) => (
+                      <tr key={tx.id}>
+                        <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
+                        <td className="amount-negative">-${tx.amount.toFixed(2)}</td>
+                        <td><span className="method-tag">{tx.method}</span></td>
+                        <td><span className={`status-badge ${getStatusClass(tx.status)}`}>{tx.status}</span></td>
+                        <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </StyledTable>
+              </TableWrapper>
+            </TableCard>
+          </TransactionsPage>
+        );
+
+      case 'support':
+        return (
+          <SupportPage>
+            <PageHeader>
+              <div className="title">Help & Support</div>
+              <div className="subtitle">We're here to help you 24/7</div>
+            </PageHeader>
+
+            <SupportCard>
+              <div className="support-title">Frequently Asked Questions</div>
+              <div className="support-desc">
+                <strong>How do I deposit funds?</strong><br />
+                Click the Deposit button on your dashboard, select your preferred payment method, and follow the instructions.
+                <br /><br />
+                <strong>How long do withdrawals take?</strong><br />
+                Withdrawals are processed within 24-48 hours depending on your payment method.
+                <br /><br />
+                <strong>What payment methods are supported?</strong><br />
+                We support Safaricom M-Pesa, Airtel Money, and Bank Transfers.
+              </div>
+            </SupportCard>
+
+            <SupportCard>
+              <div className="support-title">Contact Support</div>
+              <div className="support-contact">
+                <div className="contact-item"><span className="label">Email</span><span className="value">support@voltixtraders.com</span></div>
+                <div className="contact-item"><span className="label">Phone</span><span className="value">+254 700 123 456</span></div>
+                <div className="contact-item"><span className="label">Live Chat</span><span className="value">Available 24/7</span></div>
+              </div>
+            </SupportCard>
+          </SupportPage>
+        );
+
+      case 'account':
+        return (
+          <AccountPage>
+            <PageHeader>
+              <div className="title">Account Settings</div>
+              <div className="subtitle">Manage your account details</div>
+            </PageHeader>
+
+            <AccountCard>
+              <div className="account-row"><span className="label">Account Name</span><span className="value">John Trader</span></div>
+              <div className="account-row"><span className="label">Email</span><span className="value">john@voltixtraders.com</span></div>
+              <div className="account-row"><span className="label">Phone</span><span className="value">+254 712 345 678</span></div>
+              <div className="account-row"><span className="label">Account Type</span><span className="value">Premium</span></div>
+              <div className="account-row"><span className="label">Joined</span><span className="value">January 2026</span></div>
+            </AccountCard>
+
+            <AccountCard>
+              <div className="support-title" style={{ fontSize: '14px', fontWeight: '700', color: '#f1f5f9', marginBottom: '12px' }}>Payment Methods</div>
+              <div className="account-row"><span className="label">Safaricom</span><span className="value">0712 345 678</span></div>
+              <div className="account-row"><span className="label">Airtel</span><span className="value">0733 456 789</span></div>
+              <div className="account-row"><span className="label">Bank Account</span><span className="value">****5678</span></div>
+            </AccountCard>
+          </AccountPage>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -1000,91 +1285,7 @@ const PaymentAgentDashboard = () => {
 
       {/* MAIN CONTENT */}
       <MainContent>
-        <PageHeader>
-          <div>
-            <div className="title">Payment Dashboard</div>
-            <div className="subtitle">Manage deposits, withdrawals, and transactions</div>
-          </div>
-        </PageHeader>
-
-        {/* BALANCE */}
-        <BalanceCard>
-          <div>
-            <div className="balance-label">Available Balance</div>
-            <div className="balance-amount">${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-            <div className="balance-sub">USD · Real-time</div>
-          </div>
-          <div className="balance-actions">
-            <ActionButton onClick={() => { setTransactionType('deposit'); setIsModalOpen(true); }}>
-              Deposit
-            </ActionButton>
-            <ActionButton onClick={() => { setTransactionType('withdraw'); setIsModalOpen(true); }}>
-              Withdraw
-            </ActionButton>
-          </div>
-        </BalanceCard>
-
-        {/* STATS */}
-        <StatsGrid>
-          {stats.map((stat, index) => (
-            <StatCard key={index} positive={stat.positive}>
-              <div className="stat-label">{stat.label}</div>
-              <div className="stat-value">{stat.value}</div>
-              <div className="stat-change">{stat.positive ? '↑' : '↓'} {stat.change}</div>
-            </StatCard>
-          ))}
-        </StatsGrid>
-
-        {/* TRANSACTIONS */}
-        <TableCard>
-          <div className="table-header">
-            <div className="table-title">
-              Recent Transactions
-              <span className="count">{filteredTransactions.length}</span>
-            </div>
-          </div>
-
-          <FilterBar>
-            <FilterButton active={filter === 'all'} onClick={() => setFilter('all')}>All</FilterButton>
-            <FilterButton active={filter === 'deposits'} onClick={() => setFilter('deposits')}>Deposits</FilterButton>
-            <FilterButton active={filter === 'withdrawals'} onClick={() => setFilter('withdrawals')}>Withdrawals</FilterButton>
-          </FilterBar>
-
-          <TableWrapper>
-            <StyledTable>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Type</th>
-                  <th>Amount</th>
-                  <th>Method</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTransactions.map((tx) => (
-                  <tr key={tx.id}>
-                    <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
-                    <td>{tx.type}</td>
-                    <td className={tx.type === 'Deposit' ? 'amount-positive' : 'amount-negative'}>
-                      {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}
-                    </td>
-                    <td>
-                      <span className="method-tag">{tx.method}</span>
-                    </td>
-                    <td>
-                      <span className={`status-badge ${getStatusClass(tx.status)}`}>
-                        {tx.status}
-                      </span>
-                    </td>
-                    <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </StyledTable>
-          </TableWrapper>
-        </TableCard>
+        {renderPage()}
       </MainContent>
 
       {/* MODAL */}
