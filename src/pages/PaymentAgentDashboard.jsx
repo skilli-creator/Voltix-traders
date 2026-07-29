@@ -1,12 +1,8 @@
 // src/pages/PaymentAgentDashboard.jsx
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import {
-  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area
-} from 'recharts';
 
 // ============================================
 // ANIMATIONS
@@ -26,14 +22,9 @@ const pulseGlow = keyframes`
   50% { box-shadow: 0 0 40px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'}; }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
-const countUp = keyframes`
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
+const slideDown = keyframes`
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 // ============================================
@@ -44,10 +35,6 @@ const DashboardContainer = styled.div`
   background: ${props => props.theme?.colors?.background || '#0a0e17'};
   padding: 24px 32px;
   animation: ${fadeIn} 0.5s ease;
-
-  @media (max-width: 1024px) {
-    padding: 20px 24px;
-  }
 
   @media (max-width: 768px) {
     padding: 16px;
@@ -119,78 +106,103 @@ const HeaderLeft = styled.div`
   }
 `;
 
-const HeaderRight = styled.div`
+// ============================================
+// BALANCE CARD
+// ============================================
+const BalanceCard = styled.div`
+  padding: 24px 28px;
+  background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+  border-radius: 16px;
+  margin-bottom: 24px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
   flex-wrap: wrap;
+  gap: 16px;
+  animation: ${fadeIn} 0.5s ease;
+  box-shadow: 0 8px 32px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
+
+  .balance-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .balance-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .balance-amount {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+  }
+
+  .balance-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 700;
+  }
+
+  .balance-right {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    padding: 18px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    .balance-amount { font-size: 26px; }
+    .balance-right { width: 100%; }
+  }
 
   @media (max-width: 480px) {
-    width: 100%;
+    padding: 14px 16px;
+    .balance-amount { font-size: 22px; }
   }
 `;
 
-const DateRangeButton = styled.button`
+const ActionButton = styled.button`
+  padding: 10px 24px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 8px;
-  color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.4);
+    transform: translateY(-2px);
   }
 
-  .arrow {
-    font-size: 10px;
-    opacity: 0.6;
+  &:active {
+    transform: scale(0.97);
   }
 
   @media (max-width: 480px) {
-    padding: 6px 12px;
-    font-size: 11px;
-    width: 100%;
+    padding: 8px 16px;
+    font-size: 12px;
+    flex: 1;
     justify-content: center;
   }
 `;
 
-const RefreshButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 16px;
-
-  &:hover {
-    border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    transform: rotate(45deg);
-  }
-
-  @media (max-width: 480px) {
-    width: 34px;
-    height: 34px;
-    font-size: 14px;
-  }
-`;
-
 // ============================================
-// STATS CARDS
+// STATS GRID
 // ============================================
 const StatsGrid = styled.div`
   display: grid;
@@ -205,12 +217,11 @@ const StatsGrid = styled.div`
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
     gap: 10px;
-    margin-bottom: 16px;
   }
 `;
 
 const StatCard = styled.div`
-  padding: 18px 20px;
+  padding: 16px 18px;
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 12px;
@@ -222,14 +233,6 @@ const StatCard = styled.div`
   &:hover {
     border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.15)'};
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.2)'};
-  }
-
-  .stat-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
   }
 
   .stat-label {
@@ -240,129 +243,176 @@ const StatCard = styled.div`
     letter-spacing: 0.5px;
   }
 
-  .stat-icon {
-    font-size: 20px;
-    opacity: 0.7;
-  }
-
   .stat-value {
-    font-size: 26px;
+    font-size: 22px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    animation: ${countUp} 0.6s ease;
-    animation-delay: ${props => props.delay || '0s'};
-    animation-fill-mode: both;
+    margin-top: 4px;
   }
 
   .stat-change {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
     font-size: 11px;
     font-weight: 700;
-    margin-top: 6px;
-    padding: 2px 10px;
-    border-radius: 12px;
     color: ${props => props.positive ? props.theme?.colors?.success || '#22c55e' : props.theme?.colors?.danger || '#ef4444'};
-    background: ${props => props.positive 
-      ? (props.theme?.colors?.success + '15' || 'rgba(34,197,94,0.08)')
-      : (props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.08)')
-    };
-    border: 2px solid ${props => props.positive 
-      ? (props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.15)')
-      : (props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.15)')
-    };
-  }
-
-  @media (max-width: 1024px) {
-    padding: 16px 18px;
-    .stat-value { font-size: 22px; }
+    margin-top: 2px;
   }
 
   @media (max-width: 480px) {
     padding: 14px 16px;
-    .stat-value { font-size: 20px; }
-    .stat-icon { font-size: 16px; }
+    .stat-value { font-size: 18px; }
   }
 `;
 
 // ============================================
-// CHARTS
+// TRANSACTION MODAL
 // ============================================
-const ChartsGrid = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-    gap: 14px;
-  }
-`;
-
-const ChartCard = styled.div`
+const ModalOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: ${props => props.isOpen ? 'flex' : 'none'};
+  align-items: center;
+  justify-content: center;
   padding: 20px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  animation: ${fadeIn} 0.3s ease;
+`;
+
+const Modal = styled.div`
+  width: 100%;
+  max-width: 480px;
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 12px;
-  animation: ${fadeIn} 0.5s ease;
-  animation-delay: ${props => props.delay || '0s'};
-  animation-fill-mode: both;
-
-  .chart-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .chart-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-  }
-
-  .chart-subtitle {
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    font-weight: 700;
-  }
-
-  .chart-container {
-    width: 100%;
-    height: 240px;
-
-    @media (max-width: 768px) {
-      height: 200px;
-    }
-
-    @media (max-width: 480px) {
-      height: 180px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 16px;
-  }
+  border-radius: 16px;
+  padding: 28px 32px;
+  animation: ${slideDown} 0.3s ease;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
 
   @media (max-width: 480px) {
-    padding: 14px;
+    padding: 20px 16px;
+  }
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    background: transparent;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    }
+  }
+`;
+
+const ModalBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  input, select {
+    padding: 10px 14px;
+    background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    border-radius: 8px;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    font-size: 14px;
+    font-weight: 700;
+    outline: none;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: ${props => props.theme?.colors?.accent || '#2962ff'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '20' || 'rgba(41,98,255,0.05)'};
+    }
+
+    &::placeholder {
+      color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'};
+      font-weight: 400;
+    }
+  }
+
+  select option {
+    background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  }
+`;
+
+const SubmitButton = styled.button`
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
 // ============================================
-// TRANSACTIONS TABLE
+// TRANSACTION TABLE
 // ============================================
 const TableCard = styled.div`
   padding: 20px;
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 12px;
-  margin-bottom: 24px;
   animation: ${fadeIn} 0.5s ease;
-  animation-delay: 0.3s;
-  animation-fill-mode: both;
 
   .table-header {
     display: flex;
@@ -383,18 +433,12 @@ const TableCard = styled.div`
 
     .count {
       font-size: 11px;
-      font-weight: 700;
       color: ${props => props.theme?.colors?.textMuted || '#64748b'};
       background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
       padding: 1px 10px;
       border-radius: 12px;
       border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     }
-  }
-
-  .table-actions {
-    display: flex;
-    gap: 8px;
   }
 
   @media (max-width: 768px) {
@@ -428,245 +472,130 @@ const StyledTable = styled.table`
   border-collapse: collapse;
   font-weight: 700;
 
-  thead {
-    tr {
-      border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-    }
-
-    th {
-      text-align: left;
-      padding: 10px 12px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-      font-weight: 700;
-      white-space: nowrap;
-    }
+  thead th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    font-weight: 700;
+    border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    white-space: nowrap;
   }
 
-  tbody {
-    tr {
-      border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
-      transition: background 0.2s ease;
+  tbody td {
+    padding: 10px 12px;
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
+    border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+    white-space: nowrap;
+    font-weight: 700;
+  }
 
-      &:hover {
-        background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.03)'};
-      }
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
 
-      &:last-child {
-        border-bottom: none;
-      }
-    }
+  tbody tr:hover {
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.03)'};
+  }
 
-    td {
-      padding: 10px 12px;
-      font-size: 12px;
-      color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
-      white-space: nowrap;
-      font-weight: 700;
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
 
-      .client {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
+  .status-completed {
+    color: ${props => props.theme?.colors?.success || '#22c55e'};
+    background: ${props => props.theme?.colors?.success + '15' || 'rgba(34,197,94,0.08)'};
+    border: 2px solid ${props => props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.15)'};
+  }
 
-      .avatar {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        color: ${props => props.theme?.colors?.text || '#ffffff'};
-        font-weight: 700;
-        flex-shrink: 0;
-      }
+  .status-pending {
+    color: #f59e0b;
+    background: rgba(245,158,11,0.08);
+    border: 2px solid rgba(245,158,11,0.15);
+  }
 
-      .client-name {
-        color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-        font-weight: 700;
-      }
+  .status-failed {
+    color: ${props => props.theme?.colors?.danger || '#ef4444'};
+    background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.08)'};
+    border: 2px solid ${props => props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.15)'};
+  }
 
-      .status {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 3px 12px;
-        border-radius: 12px;
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-      }
+  .amount-positive {
+    color: ${props => props.theme?.colors?.success || '#22c55e'};
+  }
 
-      .status-completed {
-        color: ${props => props.theme?.colors?.success || '#22c55e'};
-        background: ${props => props.theme?.colors?.success + '15' || 'rgba(34,197,94,0.08)'};
-        border: 2px solid ${props => props.theme?.colors?.success + '30' || 'rgba(34,197,94,0.15)'};
-      }
-
-      .status-pending {
-        color: #f59e0b;
-        background: rgba(245,158,11,0.08);
-        border: 2px solid rgba(245,158,11,0.15);
-      }
-
-      .status-failed {
-        color: ${props => props.theme?.colors?.danger || '#ef4444'};
-        background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.08)'};
-        border: 2px solid ${props => props.theme?.colors?.danger + '30' || 'rgba(239,68,68,0.15)'};
-      }
-
-      .status-processing {
-        color: ${props => props.theme?.colors?.accent || '#2962ff'};
-        background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.08)'};
-        border: 2px solid ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
-      }
-
-      .amount-positive {
-        color: ${props => props.theme?.colors?.success || '#22c55e'};
-        font-weight: 700;
-      }
-
-      .amount-negative {
-        color: ${props => props.theme?.colors?.danger || '#ef4444'};
-        font-weight: 700;
-      }
-
-      .amount-neutral {
-        color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
-      }
-    }
+  .amount-negative {
+    color: ${props => props.theme?.colors?.danger || '#ef4444'};
   }
 
   @media (max-width: 768px) {
-    thead th, tbody td {
-      padding: 8px 10px;
-      font-size: 11px;
-    }
+    thead th, tbody td { padding: 8px 10px; font-size: 11px; }
   }
 
   @media (max-width: 480px) {
-    thead th, tbody td {
-      padding: 6px 8px;
-      font-size: 10px;
-    }
-    .avatar { width: 24px; height: 24px; font-size: 8px; }
+    thead th, tbody td { padding: 6px 8px; font-size: 10px; }
     .status { padding: 2px 8px; font-size: 8px; }
   }
 `;
 
 // ============================================
-// CLIENTS SECTION
+// TOAST NOTIFICATION
 // ============================================
-const ClientsSection = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+const ToastContainer = styled.div`
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+  width: 100%;
+  pointer-events: none;
 `;
 
-const ClientCard = styled.div`
-  padding: 18px 20px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+const Toast = styled.div`
+  pointer-events: auto;
+  padding: 14px 18px;
   border-radius: 12px;
-  animation: ${fadeIn} 0.5s ease;
-  animation-delay: ${props => props.delay || '0s'};
-  animation-fill-mode: both;
-  transition: all 0.3s ease;
+  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  border: 2px solid ${props => props.type === 'success' ? props.theme?.colors?.success + '60' || 'rgba(34,197,94,0.3)' : props.theme?.colors?.danger + '60' || 'rgba(239,68,68,0.3)'};
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: ${slideDown} 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
-  &:hover {
-    border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.15)'};
-    transform: translateY(-2px);
-  }
-
-  .client-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-
-  .client-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
+  .icon {
+    font-size: 20px;
     flex-shrink: 0;
   }
 
-  .client-info {
+  .message {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     flex: 1;
-    min-width: 0;
   }
 
-  .client-name {
+  .close-toast {
+    background: none;
+    border: none;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    cursor: pointer;
     font-size: 14px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-  }
-
-  .client-email {
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    font-weight: 700;
-  }
-
-  .client-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  }
-
-  .stat-item {
-    text-align: center;
-  }
-
-  .stat-number {
-    font-size: 16px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-  }
-
-  .stat-label {
-    font-size: 8px;
-    text-transform: uppercase;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    letter-spacing: 0.3px;
-    font-weight: 700;
-    margin-top: 1px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 14px 16px;
-    .client-avatar { width: 38px; height: 38px; font-size: 14px; }
-    .client-name { font-size: 13px; }
-    .stat-number { font-size: 14px; }
-  }
-
-  @media (max-width: 480px) {
-    padding: 12px 14px;
-    .client-avatar { width: 34px; height: 34px; font-size: 12px; }
-    .client-name { font-size: 12px; }
-    .stat-number { font-size: 12px; }
+    padding: 0 4px;
   }
 `;
 
@@ -675,209 +604,124 @@ const ClientCard = styled.div`
 // ============================================
 const PaymentAgentDashboard = () => {
   const navigate = useNavigate();
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [balance, setBalance] = useState(2847293.50);
+  const [transactions, setTransactions] = useState([
+    { id: '#TRX-7841', type: 'Deposit', amount: 12450.00, status: 'completed', date: '2026-07-29 14:32', method: 'Bank Transfer' },
+    { id: '#TRX-7840', type: 'Withdrawal', amount: 8230.50, status: 'pending', date: '2026-07-29 13:15', method: 'Crypto' },
+    { id: '#TRX-7839', type: 'Deposit', amount: 5670.00, status: 'processing', date: '2026-07-29 12:42', method: 'Credit Card' },
+    { id: '#TRX-7838', type: 'Deposit', amount: 23400.00, status: 'completed', date: '2026-07-29 11:00', method: 'Bank Transfer' },
+    { id: '#TRX-7837', type: 'Withdrawal', amount: 3200.00, status: 'failed', date: '2026-07-29 09:30', method: 'Crypto' },
+  ]);
 
-  // ===== STATS DATA =====
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [transactionType, setTransactionType] = useState('deposit');
+  const [amount, setAmount] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('bank');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [toasts, setToasts] = useState([]);
+
   const stats = [
-    {
-      label: 'Total Volume',
-      value: '$2,847,293.50',
-      icon: '💰',
-      change: '+12.5%',
-      positive: true,
-      delay: '0.05s'
-    },
-    {
-      label: 'Active Clients',
-      value: '1,847',
-      icon: '👥',
-      change: '+8.3%',
-      positive: true,
-      delay: '0.10s'
-    },
-    {
-      label: 'Transactions Today',
-      value: '342',
-      icon: '📊',
-      change: '-2.1%',
-      positive: false,
-      delay: '0.15s'
-    },
-    {
-      label: 'Total Commission',
-      value: '$147,890.00',
-      icon: '💳',
-      change: '+18.7%',
-      positive: true,
-      delay: '0.20s'
+    { label: 'Total Deposits', value: '$2,847,293.50', change: '+12.5%', positive: true },
+    { label: 'Total Withdrawals', value: '$847,293.50', change: '-3.2%', positive: false },
+    { label: 'Pending Transactions', value: '12', change: '+2', positive: true },
+    { label: 'Successful Trades', value: '1,847', change: '+8.3%', positive: true }
+  ];
+
+  const addToast = (message, type = 'success') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 5000);
+  };
+
+  const handleTransaction = () => {
+    if (!amount || parseFloat(amount) <= 0) {
+      addToast('Please enter a valid amount', 'error');
+      return;
     }
-  ];
 
-  // ===== CHART DATA =====
-  const volumeData = [
-    { name: 'Mon', volume: 320, deposits: 280, withdrawals: 40 },
-    { name: 'Tue', volume: 450, deposits: 390, withdrawals: 60 },
-    { name: 'Wed', volume: 380, deposits: 320, withdrawals: 60 },
-    { name: 'Thu', volume: 520, deposits: 450, withdrawals: 70 },
-    { name: 'Fri', volume: 490, deposits: 410, withdrawals: 80 },
-    { name: 'Sat', volume: 280, deposits: 230, withdrawals: 50 },
-    { name: 'Sun', volume: 310, deposits: 260, withdrawals: 50 }
-  ];
+    setIsProcessing(true);
 
-  const pieData = [
-    { name: 'Deposits', value: 65, color: '#22c55e' },
-    { name: 'Withdrawals', value: 25, color: '#ef4444' },
-    { name: 'Transfers', value: 10, color: '#2962ff' }
-  ];
+    setTimeout(() => {
+      const newTransaction = {
+        id: `#TRX-${Math.floor(Math.random() * 9000 + 1000)}`,
+        type: transactionType === 'deposit' ? 'Deposit' : 'Withdrawal',
+        amount: parseFloat(amount),
+        status: 'pending',
+        date: new Date().toISOString().replace('T', ' ').slice(0, 16),
+        method: paymentMethod === 'bank' ? 'Bank Transfer' : paymentMethod === 'crypto' ? 'Crypto' : 'Credit Card'
+      };
 
-  // ===== TRANSACTIONS DATA =====
-  const transactions = [
-    { id: '#TRX-7841', client: 'Sarah Johnson', amount: '+$12,450.00', type: 'Deposit', status: 'completed', time: '2 min ago' },
-    { id: '#TRX-7840', client: 'Michael Chen', amount: '-$8,230.50', type: 'Withdrawal', status: 'pending', time: '15 min ago' },
-    { id: '#TRX-7839', client: 'Emma Williams', amount: '+$5,670.00', type: 'Deposit', status: 'processing', time: '42 min ago' },
-    { id: '#TRX-7838', client: 'James Brown', amount: '+$23,400.00', type: 'Deposit', status: 'completed', time: '1 hour ago' },
-    { id: '#TRX-7837', client: 'Lisa Martinez', amount: '-$3,200.00', type: 'Withdrawal', status: 'failed', time: '2 hours ago' },
-    { id: '#TRX-7836', client: 'David Kim', amount: '+$9,875.00', type: 'Deposit', status: 'completed', time: '3 hours ago' },
-    { id: '#TRX-7835', client: 'Rachel Adams', amount: '+$15,300.00', type: 'Deposit', status: 'completed', time: '4 hours ago' },
-    { id: '#TRX-7834', client: 'Robert Taylor', amount: '-$6,750.00', type: 'Withdrawal', status: 'pending', time: '5 hours ago' }
-  ];
+      setTransactions([newTransaction, ...transactions]);
 
-  // ===== CLIENTS DATA =====
-  const clients = [
-    { name: 'Sarah Johnson', email: 'sarah.j@email.com', deposits: 42, withdrawals: 18, total: '$187,450' },
-    { name: 'Michael Chen', email: 'michael.c@email.com', deposits: 28, withdrawals: 12, total: '$94,230' },
-    { name: 'Emma Williams', email: 'emma.w@email.com', deposits: 35, withdrawals: 8, total: '$156,780' },
-    { name: 'James Brown', email: 'james.b@email.com', deposits: 51, withdrawals: 22, total: '$234,100' }
-  ];
+      if (transactionType === 'deposit') {
+        setBalance(prev => prev + parseFloat(amount));
+        addToast(`✅ Deposit of $${parseFloat(amount).toFixed(2)} submitted successfully!`, 'success');
+      } else {
+        setBalance(prev => prev - parseFloat(amount));
+        addToast(`✅ Withdrawal of $${parseFloat(amount).toFixed(2)} submitted successfully!`, 'success');
+      }
 
-  const getStatusClass = (status) => {
-    return `status-${status}`;
+      setIsProcessing(false);
+      setIsModalOpen(false);
+      setAmount('');
+    }, 1500);
   };
 
-  const getAmountClass = (amount) => {
-    if (amount.startsWith('+')) return 'amount-positive';
-    if (amount.startsWith('-')) return 'amount-negative';
-    return 'amount-neutral';
-  };
-
-  const getInitials = (name) => {
-    return name.split(' ').map(n => n[0]).join('');
-  };
-
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => setIsRefreshing(false), 1500);
-  };
+  const getStatusClass = (status) => `status-${status}`;
+  const getAmountClass = (amount) => amount >= 0 ? 'amount-positive' : 'amount-negative';
 
   return (
     <DashboardContainer>
+      {/* TOASTS */}
+      <ToastContainer>
+        {toasts.map(toast => (
+          <Toast key={toast.id} type={toast.type}>
+            <span className="icon">{toast.type === 'success' ? '✅' : '❌'}</span>
+            <span className="message">{toast.message}</span>
+            <button className="close-toast" onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}>✕</button>
+          </Toast>
+        ))}
+      </ToastContainer>
+
       <DashboardHeader>
         <HeaderLeft>
           <div className="icon">💳</div>
           <div className="title-group">
-            <span className="title">Payment Agent Dashboard</span>
-            <span className="subtitle">Real-time transaction monitoring & client management</span>
+            <span className="title">Payment Dashboard</span>
+            <span className="subtitle">Deposit & withdraw directly through Voltix Traders</span>
           </div>
         </HeaderLeft>
-        <HeaderRight>
-          <DateRangeButton>
-            📅 Last 7 Days
-            <span className="arrow">▾</span>
-          </DateRangeButton>
-          <RefreshButton onClick={handleRefresh} style={{ transform: isRefreshing ? 'rotate(360deg)' : 'none' }}>
-            🔄
-          </RefreshButton>
-        </HeaderRight>
       </DashboardHeader>
 
-      {/* STATS CARDS */}
+      {/* BALANCE CARD */}
+      <BalanceCard>
+        <div className="balance-left">
+          <span className="balance-label">Available Balance</span>
+          <span className="balance-amount">${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className="balance-sub">USD • Real-time balance</span>
+        </div>
+        <div className="balance-right">
+          <ActionButton onClick={() => { setTransactionType('deposit'); setIsModalOpen(true); }}>
+            💰 Deposit
+          </ActionButton>
+          <ActionButton onClick={() => { setTransactionType('withdraw'); setIsModalOpen(true); }}>
+            💳 Withdraw
+          </ActionButton>
+        </div>
+      </BalanceCard>
+
+      {/* STATS */}
       <StatsGrid>
         {stats.map((stat, index) => (
-          <StatCard
-            key={index}
-            positive={stat.positive}
-            delay={stat.delay}
-          >
-            <div className="stat-header">
-              <span className="stat-label">{stat.label}</span>
-              <span className="stat-icon">{stat.icon}</span>
-            </div>
+          <StatCard key={index} delay={`${0.05 + (index * 0.05)}s`} positive={stat.positive}>
+            <div className="stat-label">{stat.label}</div>
             <div className="stat-value">{stat.value}</div>
-            <div className="stat-change">
-              {stat.positive ? '↑' : '↓'} {stat.change}
-            </div>
+            <div className="stat-change">{stat.positive ? '↑' : '↓'} {stat.change}</div>
           </StatCard>
         ))}
       </StatsGrid>
-
-      {/* CHARTS */}
-      <ChartsGrid>
-        <ChartCard delay="0.25s">
-          <div className="chart-header">
-            <div>
-              <div className="chart-title">Transaction Volume</div>
-              <div className="chart-subtitle">Weekly overview of deposits, withdrawals & transfers</div>
-            </div>
-          </div>
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={volumeData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                <XAxis dataKey="name" stroke="#64748b" fontSize={10} />
-                <YAxis stroke="#64748b" fontSize={10} tickFormatter={(value) => `$${value}`} />
-                <Tooltip
-                  contentStyle={{
-                    background: 'rgba(10,14,23,0.95)',
-                    border: '2px solid rgba(255,255,255,0.06)',
-                    borderRadius: '8px',
-                    color: '#f1f5f9'
-                  }}
-                  itemStyle={{ color: '#f1f5f9' }}
-                />
-                <Bar dataKey="deposits" fill="#22c55e" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="withdrawals" fill="#ef4444" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </ChartCard>
-
-        <ChartCard delay="0.30s">
-          <div className="chart-header">
-            <div>
-              <div className="chart-title">Transaction Distribution</div>
-              <div className="chart-subtitle">Deposits, withdrawals & transfers</div>
-            </div>
-          </div>
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={4}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: 'rgba(10,14,23,0.95)',
-                    border: '2px solid rgba(255,255,255,0.06)',
-                    borderRadius: '8px',
-                    color: '#f1f5f9'
-                  }}
-                  itemStyle={{ color: '#f1f5f9' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </ChartCard>
-      </ChartsGrid>
 
       {/* TRANSACTIONS TABLE */}
       <TableCard>
@@ -886,48 +730,34 @@ const PaymentAgentDashboard = () => {
             Recent Transactions
             <span className="count">{transactions.length}</span>
           </div>
-          <div className="table-actions">
-            <DateRangeButton style={{ padding: '4px 12px', fontSize: '10px' }}>
-              View All →
-            </DateRangeButton>
-          </div>
         </div>
         <TableWrapper>
           <StyledTable>
             <thead>
               <tr>
                 <th>Transaction ID</th>
-                <th>Client</th>
-                <th>Amount</th>
                 <th>Type</th>
+                <th>Amount</th>
+                <th>Method</th>
                 <th>Status</th>
-                <th>Time</th>
+                <th>Date</th>
               </tr>
             </thead>
             <tbody>
-              {transactions.map((tx, index) => (
-                <tr key={index}>
-                  <td style={{ color: '#f1f5f9', fontWeight: '700', fontSize: '11px' }}>
-                    {tx.id}
-                  </td>
-                  <td>
-                    <div className="client">
-                      <div className="avatar">{getInitials(tx.client)}</div>
-                      <span className="client-name">{tx.client}</span>
-                    </div>
-                  </td>
-                  <td className={getAmountClass(tx.amount)}>
-                    {tx.amount}
-                  </td>
+              {transactions.map((tx) => (
+                <tr key={tx.id}>
+                  <td style={{ color: '#f1f5f9', fontWeight: '700' }}>{tx.id}</td>
                   <td>{tx.type}</td>
+                  <td className={tx.type === 'Deposit' ? 'amount-positive' : 'amount-negative'}>
+                    {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}
+                  </td>
+                  <td>{tx.method}</td>
                   <td>
                     <span className={`status ${getStatusClass(tx.status)}`}>
                       {tx.status}
                     </span>
                   </td>
-                  <td style={{ color: '#64748b', fontSize: '11px' }}>
-                    {tx.time}
-                  </td>
+                  <td style={{ color: '#64748b', fontSize: '11px' }}>{tx.date}</td>
                 </tr>
               ))}
             </tbody>
@@ -935,36 +765,66 @@ const PaymentAgentDashboard = () => {
         </TableWrapper>
       </TableCard>
 
-      {/* CLIENTS SECTION */}
-      <ClientsSection>
-        {clients.map((client, index) => (
-          <ClientCard key={index} delay={`${0.35 + (index * 0.05)}s`}>
-            <div className="client-header">
-              <div className="client-avatar">{getInitials(client.name)}</div>
-              <div className="client-info">
-                <div className="client-name">{client.name}</div>
-                <div className="client-email">{client.email}</div>
-              </div>
+      {/* TRANSACTION MODAL */}
+      <ModalOverlay isOpen={isModalOpen} onClick={() => !isProcessing && setIsModalOpen(false)}>
+        <Modal onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
+            <div className="title">
+              {transactionType === 'deposit' ? '💰 Deposit Funds' : '💳 Withdraw Funds'}
             </div>
-            <div className="client-stats">
-              <div className="stat-item">
-                <div className="stat-number">{client.deposits}</div>
-                <div className="stat-label">Deposits</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">{client.withdrawals}</div>
-                <div className="stat-label">Withdrawals</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number" style={{ color: '#22c55e' }}>
-                  {client.total}
-                </div>
-                <div className="stat-label">Total Volume</div>
-              </div>
-            </div>
-          </ClientCard>
-        ))}
-      </ClientsSection>
+            <button className="close" onClick={() => !isProcessing && setIsModalOpen(false)}>✕</button>
+          </ModalHeader>
+
+          <ModalBody>
+            <FormGroup>
+              <label>Amount (USD)</label>
+              <input
+                type="number"
+                placeholder={transactionType === 'deposit' ? 'Enter deposit amount' : 'Enter withdrawal amount'}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min="1"
+                step="0.01"
+                disabled={isProcessing}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>Payment Method</label>
+              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} disabled={isProcessing}>
+                <option value="bank">🏦 Bank Transfer</option>
+                <option value="crypto">₿ Cryptocurrency</option>
+                <option value="card">💳 Credit Card</option>
+              </select>
+            </FormGroup>
+
+            {paymentMethod === 'bank' && (
+              <FormGroup>
+                <label>Bank Account (Last 4 digits)</label>
+                <input type="text" placeholder="****5678" value="****5678" disabled />
+              </FormGroup>
+            )}
+
+            {paymentMethod === 'crypto' && (
+              <FormGroup>
+                <label>Wallet Address</label>
+                <input type="text" placeholder="0x... (will be provided)" value="0x7F4e...B3c2" disabled />
+              </FormGroup>
+            )}
+
+            {paymentMethod === 'card' && (
+              <FormGroup>
+                <label>Card (Last 4 digits)</label>
+                <input type="text" placeholder="****4242" value="****4242" disabled />
+              </FormGroup>
+            )}
+
+            <SubmitButton onClick={handleTransaction} disabled={isProcessing}>
+              {isProcessing ? 'Processing...' : transactionType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}
+            </SubmitButton>
+          </ModalBody>
+        </Modal>
+      </ModalOverlay>
     </DashboardContainer>
   );
 };
