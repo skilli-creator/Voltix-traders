@@ -1010,7 +1010,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
       <RightSection>
         {/* FUNDS BUTTON - First */}
         <ProfessionalFundsButton 
-          href="https://app.swiftcashfx.com/#/account-home"
+          href="/payment-dashboard"
           target="_blank"
           rel="noopener noreferrer"
         >

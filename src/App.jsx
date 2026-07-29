@@ -17,6 +17,7 @@ import Binancehome from './pages/Binancehome';
 import Settings from './pages/Settings';
 import ForexDashboard from './pages/ForexDashboard';
 import Terms from './pages/Terms';
+import PaymentAgentDashboard from './pages/PaymentAgentDashboard';
 
 // Import Components
 import RiskCalculator from './components/RiskCalculator';
@@ -47,6 +48,7 @@ const App = () => {
       <Route path="/risk-calculator" element={<RiskCalculator />} />
       <Route path="/account-info" element={<AccountInfo />} />
       <Route path="/copy-trading" element={<CopyTrading />} />
+      <Route path="/payment-dashboard" element={<PaymentAgentDashboard />} />
 
       {/* Deriv Trading Dashboard */}
       <Route path="/derivdash" element={<Derivdash />} />
