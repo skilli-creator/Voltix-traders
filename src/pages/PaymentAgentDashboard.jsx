@@ -58,15 +58,13 @@ const KENYAN_BANKS = [
 // ============================================
 const AppContainer = styled.div`
   min-height: calc(100vh - 48px);
-  background: #f5f7fa;
+  background: #0a0e17;
   display: flex;
   flex-direction: column;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   @media (min-width: 768px) {
     flex-direction: row;
-    background: #f5f7fa;
   }
 `;
 
@@ -76,8 +74,9 @@ const AppContainer = styled.div`
 const Sidebar = styled.div`
   width: 220px;
   min-width: 220px;
-  background: #ffffff;
-  border-right: 1px solid #e8ecf0;
+  background: rgba(12, 16, 30, 0.9);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,0.04);
   padding: 32px 20px;
   display: none;
   flex-direction: column;
@@ -93,9 +92,9 @@ const Sidebar = styled.div`
 const SidebarBrand = styled.div`
   font-size: 20px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #f1f5f9;
   padding: 0 12px 28px 12px;
-  border-bottom: 1px solid #e8ecf0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
   margin-bottom: 24px;
   letter-spacing: -0.5px;
 `;
@@ -114,14 +113,14 @@ const SidebarNavItem = styled.div`
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: ${props => props.active ? '#2962ff' : '#5a6378'};
-  background: ${props => props.active ? 'rgba(41, 98, 255, 0.06)' : 'transparent'};
+  color: ${props => props.active ? '#f1f5f9' : 'rgba(148, 163, 184, 0.6)'};
+  background: ${props => props.active ? 'rgba(41, 98, 255, 0.08)' : 'transparent'};
   font-size: 14px;
   font-weight: ${props => props.active ? '600' : '500'};
 
   &:hover {
-    background: rgba(41, 98, 255, 0.04);
-    color: #2962ff;
+    background: rgba(255,255,255,0.03);
+    color: #f1f5f9;
   }
 
   .icon {
@@ -140,8 +139,9 @@ const BottomNav = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background: #ffffff;
-  border-top: 1px solid #e8ecf0;
+  background: rgba(12, 16, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.04);
   padding: 8px 12px 12px;
   z-index: 100;
   justify-content: space-around;
@@ -158,7 +158,7 @@ const BottomNavItem = styled.div`
   gap: 2px;
   padding: 4px 8px;
   cursor: pointer;
-  color: ${props => props.active ? '#2962ff' : '#8a93a6'};
+  color: ${props => props.active ? '#2962ff' : 'rgba(148, 163, 184, 0.5)'};
   font-size: 10px;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -206,13 +206,13 @@ const Header = styled.div`
   .greeting {
     font-size: 22px;
     font-weight: 700;
-    color: #1a1a2e;
+    color: #f1f5f9;
     letter-spacing: -0.3px;
   }
 
   .sub {
     font-size: 14px;
-    color: #8a93a6;
+    color: rgba(148, 163, 184, 0.6);
     font-weight: 400;
     margin-top: 2px;
   }
@@ -222,17 +222,17 @@ const Header = styled.div`
 // WALLET BALANCE CARD
 // ============================================
 const WalletCard = styled.div`
-  background: #ffffff;
+  background: rgba(12, 16, 30, 0.6);
+  backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 24px 20px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  border: 1px solid #e8ecf0;
+  border: 1px solid rgba(255,255,255,0.04);
   animation: ${slideUp} 0.5s ease;
 
   .client-id {
     font-size: 11px;
-    color: #8a93a6;
+    color: rgba(148, 163, 184, 0.4);
     font-weight: 500;
     margin-bottom: 4px;
   }
@@ -240,13 +240,13 @@ const WalletCard = styled.div`
   .balance {
     font-size: 32px;
     font-weight: 700;
-    color: #1a1a2e;
+    color: #f1f5f9;
     letter-spacing: -0.5px;
   }
 
   .currency {
     font-size: 14px;
-    color: #8a93a6;
+    color: rgba(148, 163, 184, 0.4);
     font-weight: 500;
     margin-left: 4px;
   }
@@ -254,27 +254,27 @@ const WalletCard = styled.div`
   .row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     margin-top: 12px;
   }
 
   .badge {
-    background: #f0f2f5;
     padding: 4px 14px;
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
-    color: #1a1a2e;
   }
 
   .badge.deriv {
-    background: #e8f0fe;
+    background: rgba(41, 98, 255, 0.1);
     color: #2962ff;
+    border: 1px solid rgba(41, 98, 255, 0.1);
   }
 
   .badge.transfers {
-    background: #f5f0e8;
-    color: #b8860b;
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.1);
   }
 `;
 
@@ -299,16 +299,17 @@ const QuickAction = styled.div`
   align-items: center;
   gap: 6px;
   padding: 14px 8px;
-  background: #ffffff;
+  background: rgba(12, 16, 30, 0.6);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
-  border: 1px solid #e8ecf0;
+  border: 1px solid rgba(255,255,255,0.04);
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    border-color: #2962ff;
+    border-color: rgba(41, 98, 255, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(41, 98, 255, 0.06);
+    background: rgba(41, 98, 255, 0.04);
   }
 
   .icon {
@@ -318,7 +319,7 @@ const QuickAction = styled.div`
   .label {
     font-size: 11px;
     font-weight: 600;
-    color: #1a1a2e;
+    color: rgba(148, 163, 184, 0.6);
   }
 `;
 
@@ -334,7 +335,7 @@ const TransactionItem = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 14px 0;
-  border-bottom: 1px solid #e8ecf0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 
   &:last-child {
     border-bottom: none;
@@ -354,15 +355,16 @@ const TransactionItem = styled.div`
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    background: #f0f2f5;
   }
 
   .icon-wrap.deposit {
-    background: #e8f5e9;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
   }
 
   .icon-wrap.withdrawal {
-    background: #fce4ec;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
   }
 
   .info {
@@ -373,12 +375,12 @@ const TransactionItem = styled.div`
   .title {
     font-size: 14px;
     font-weight: 600;
-    color: #1a1a2e;
+    color: #f1f5f9;
   }
 
   .meta {
     font-size: 11px;
-    color: #8a93a6;
+    color: rgba(148, 163, 184, 0.4);
     font-weight: 400;
   }
 
@@ -410,17 +412,17 @@ const TransactionItem = styled.div`
 
   .status.completed {
     color: #22c55e;
-    background: #e8f5e9;
+    background: rgba(34, 197, 94, 0.06);
   }
 
   .status.pending {
-    color: #f59e0b;
-    background: #fef3c7;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.06);
   }
 
   .status.failed {
     color: #ef4444;
-    background: #fce4ec;
+    background: rgba(239, 68, 68, 0.06);
   }
 `;
 
@@ -430,8 +432,8 @@ const TransactionItem = styled.div`
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
   z-index: 1000;
   display: ${props => props.open ? 'flex' : 'none'};
   align-items: flex-end;
@@ -447,12 +449,14 @@ const ModalOverlay = styled.div`
 const ModalSheet = styled.div`
   width: 100%;
   max-width: 480px;
-  background: #ffffff;
+  background: rgba(12, 16, 30, 0.95);
+  backdrop-filter: blur(20px);
   border-radius: 20px 20px 0 0;
   padding: 24px 24px 32px;
   animation: ${slideUp} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   max-height: 90vh;
   overflow-y: auto;
+  border: 1px solid rgba(255,255,255,0.04);
 
   @media (min-width: 768px) {
     border-radius: 20px;
@@ -464,7 +468,7 @@ const ModalSheet = styled.div`
 const ModalHandle = styled.div`
   width: 40px;
   height: 4px;
-  background: #dce0e5;
+  background: rgba(255,255,255,0.06);
   border-radius: 4px;
   margin: 0 auto 20px;
 
@@ -476,7 +480,7 @@ const ModalHandle = styled.div`
 const ModalTitle = styled.div`
   font-size: 18px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #f1f5f9;
   margin-bottom: 20px;
   text-align: center;
 `;
@@ -488,42 +492,42 @@ const FormGroup = styled.div`
     display: block;
     font-size: 12px;
     font-weight: 600;
-    color: #5a6378;
+    color: rgba(148, 163, 184, 0.6);
     margin-bottom: 4px;
   }
 
   input, select {
     width: 100%;
     padding: 12px 14px;
-    border: 1px solid #dce0e5;
+    border: 1px solid rgba(255,255,255,0.04);
     border-radius: 10px;
     font-size: 14px;
     font-weight: 500;
-    color: #1a1a2e;
-    background: #f8f9fa;
+    color: #f1f5f9;
+    background: rgba(255,255,255,0.02);
     outline: none;
     transition: border-color 0.2s ease;
     box-sizing: border-box;
 
     &:focus {
-      border-color: #2962ff;
-      background: #ffffff;
+      border-color: rgba(41, 98, 255, 0.3);
     }
 
     &::placeholder {
-      color: #8a93a6;
+      color: rgba(148, 163, 184, 0.2);
     }
   }
 
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a6378' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 14px center;
     padding-right: 40px;
 
     option {
-      background: #ffffff;
+      background: #0c1020;
+      color: #f1f5f9;
     }
   }
 `;
@@ -537,26 +541,26 @@ const MethodGrid = styled.div`
 
 const MethodOption = styled.div`
   padding: 12px 8px;
-  border: 2px solid ${props => props.selected ? '#2962ff' : '#dce0e5'};
+  border: 1px solid ${props => props.selected ? 'rgba(41, 98, 255, 0.3)' : 'rgba(255,255,255,0.04)'};
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: ${props => props.selected ? 'rgba(41, 98, 255, 0.04)' : '#f8f9fa'};
+  background: ${props => props.selected ? 'rgba(41, 98, 255, 0.04)' : 'rgba(255,255,255,0.02)'};
 
   &:hover {
-    border-color: #2962ff;
+    border-color: rgba(41, 98, 255, 0.2);
   }
 
   .name {
     font-size: 12px;
     font-weight: 600;
-    color: ${props => props.selected ? '#2962ff' : '#1a1a2e'};
+    color: ${props => props.selected ? '#2962ff' : 'rgba(148, 163, 184, 0.6)'};
   }
 
   .sub {
     font-size: 9px;
-    color: #8a93a6;
+    color: rgba(148, 163, 184, 0.3);
   }
 `;
 
@@ -565,7 +569,7 @@ const SubmitBtn = styled.button`
   padding: 14px;
   border: none;
   border-radius: 12px;
-  background: #2962ff;
+  background: linear-gradient(135deg, #2962ff, #1a4fcf);
   color: #ffffff;
   font-size: 15px;
   font-weight: 600;
@@ -573,12 +577,14 @@ const SubmitBtn = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: #1a4fcf;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(41, 98, 255, 0.2);
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -610,9 +616,11 @@ const Toast = styled.div`
   pointer-events: auto;
   padding: 14px 18px;
   border-radius: 12px;
-  background: #ffffff;
+  background: rgba(12, 16, 30, 0.95);
+  backdrop-filter: blur(20px);
   border-left: 4px solid ${props => props.type === 'success' ? '#22c55e' : '#ef4444'};
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   animation: ${fadeIn} 0.3s ease;
   display: flex;
   align-items: center;
@@ -620,16 +628,53 @@ const Toast = styled.div`
 
   .icon { font-size: 18px; flex-shrink: 0; }
   .content { flex: 1; }
-  .title { font-size: 13px; font-weight: 600; color: #1a1a2e; }
-  .msg { font-size: 11px; font-weight: 400; color: #5a6378; }
+  .title { font-size: 13px; font-weight: 600; color: #f1f5f9; }
+  .msg { font-size: 11px; font-weight: 400; color: rgba(148, 163, 184, 0.6); }
   .close {
     background: none;
     border: none;
-    color: #8a93a6;
+    color: rgba(148, 163, 184, 0.3);
     cursor: pointer;
     font-size: 14px;
   }
 `;
+
+// ============================================
+// SVG Icons
+// ============================================
+const HomeIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+  </svg>
+);
+
+const ActivityIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </svg>
+);
+
+const HelpIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+    <line x1="12" y1="17" x2="12.01" y2="17"/>
+  </svg>
+);
+
+const AccountIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+
+const navItems = [
+  { id: 'home', label: 'Home', icon: HomeIcon },
+  { id: 'activity', label: 'Activity', icon: ActivityIcon },
+  { id: 'help', label: 'Help', icon: HelpIcon },
+  { id: 'account', label: 'Account', icon: AccountIcon },
+];
 
 // ============================================
 // MAIN COMPONENT
@@ -659,13 +704,6 @@ const PaymentAgentDashboard = () => {
     { id: 'safaricom', name: 'Safaricom', sub: 'M-Pesa' },
     { id: 'airtel', name: 'Airtel', sub: 'Airtel Money' },
     { id: 'bank', name: 'Bank', sub: 'Transfer' },
-  ];
-
-  const navItems = [
-    { id: 'home', label: 'Home', icon: '🏠' },
-    { id: 'activity', label: 'Activity', icon: '📊' },
-    { id: 'help', label: 'Help', icon: '❓' },
-    { id: 'account', label: 'Account', icon: '👤' },
   ];
 
   const addToast = (title, msg, type = 'success') => {
@@ -837,11 +875,11 @@ const PaymentAgentDashboard = () => {
               <div className="sub">We're here to help</div>
             </Header>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '20px', border: '1px solid #e8ecf0' }}>
-              <div style={{ fontSize: '14px', fontWeight: '600', color: '#1a1a2e', marginBottom: '8px' }}>
+            <div style={{ background: 'rgba(12, 16, 30, 0.6)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.04)' }}>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>
                 Frequently Asked Questions
               </div>
-              <div style={{ fontSize: '13px', color: '#5a6378', lineHeight: '1.8' }}>
+              <div style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.6)', lineHeight: '1.8' }}>
                 <strong>How do I deposit?</strong><br />
                 Click the Deposit button, select your payment method, and enter the details.<br /><br />
                 <strong>How long do withdrawals take?</strong><br />
@@ -851,17 +889,17 @@ const PaymentAgentDashboard = () => {
               </div>
             </div>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '20px', border: '1px solid #e8ecf0', marginTop: '12px' }}>
-              <div style={{ fontSize: '14px', fontWeight: '600', color: '#1a1a2e', marginBottom: '8px' }}>
+            <div style={{ background: 'rgba(12, 16, 30, 0.6)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.04)', marginTop: '12px' }}>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>
                 Contact Support
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '13px' }}>
-                <span style={{ color: '#8a93a6' }}>Email</span>
-                <span style={{ color: '#1a1a2e', fontWeight: '500' }}>support@voltixtraders.com</span>
+                <span style={{ color: 'rgba(148, 163, 184, 0.4)' }}>Email</span>
+                <span style={{ color: '#f1f5f9', fontWeight: '500' }}>support@voltixtraders.com</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '13px' }}>
-                <span style={{ color: '#8a93a6' }}>Phone</span>
-                <span style={{ color: '#1a1a2e', fontWeight: '500' }}>+254 700 123 456</span>
+                <span style={{ color: 'rgba(148, 163, 184, 0.4)' }}>Phone</span>
+                <span style={{ color: '#f1f5f9', fontWeight: '500' }}>+254 700 123 456</span>
               </div>
             </div>
           </>
@@ -875,22 +913,22 @@ const PaymentAgentDashboard = () => {
               <div className="sub">Manage your account details</div>
             </Header>
 
-            <div style={{ background: '#ffffff', borderRadius: '16px', padding: '20px', border: '1px solid #e8ecf0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e8ecf0' }}>
-                <span style={{ fontSize: '13px', color: '#8a93a6' }}>Name</span>
-                <span style={{ fontSize: '13px', color: '#1a1a2e', fontWeight: '500' }}>TONNY</span>
+            <div style={{ background: 'rgba(12, 16, 30, 0.6)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.04)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Name</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>TONNY</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e8ecf0' }}>
-                <span style={{ fontSize: '13px', color: '#8a93a6' }}>Email</span>
-                <span style={{ fontSize: '13px', color: '#1a1a2e', fontWeight: '500' }}>tonny@voltixtraders.com</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Email</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>tonny@voltixtraders.com</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #e8ecf0' }}>
-                <span style={{ fontSize: '13px', color: '#8a93a6' }}>Phone</span>
-                <span style={{ fontSize: '13px', color: '#1a1a2e', fontWeight: '500' }}>+254 712 345 678</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Phone</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>+254 712 345 678</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                <span style={{ fontSize: '13px', color: '#8a93a6' }}>Client ID</span>
-                <span style={{ fontSize: '13px', color: '#1a1a2e', fontWeight: '500' }}>client_mq98fho5zxum</span>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Client ID</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>client_mq98fho5zxum</span>
               </div>
             </div>
           </>
@@ -921,16 +959,19 @@ const PaymentAgentDashboard = () => {
         <Sidebar>
           <SidebarBrand>Voltix</SidebarBrand>
           <SidebarNav>
-            {navItems.map(item => (
-              <SidebarNavItem
-                key={item.id}
-                active={page === item.id}
-                onClick={() => setPage(item.id)}
-              >
-                <span className="icon">{item.icon}</span>
-                {item.label}
-              </SidebarNavItem>
-            ))}
+            {navItems.map(item => {
+              const IconComponent = item.icon;
+              return (
+                <SidebarNavItem
+                  key={item.id}
+                  active={page === item.id}
+                  onClick={() => setPage(item.id)}
+                >
+                  <span className="icon"><IconComponent /></span>
+                  {item.label}
+                </SidebarNavItem>
+              );
+            })}
           </SidebarNav>
         </Sidebar>
 
@@ -942,16 +983,19 @@ const PaymentAgentDashboard = () => {
 
       {/* Mobile Bottom Nav */}
       <BottomNav>
-        {navItems.map(item => (
-          <BottomNavItem
-            key={item.id}
-            active={page === item.id}
-            onClick={() => setPage(item.id)}
-          >
-            <span className="icon">{item.icon}</span>
-            <span className="label">{item.label}</span>
-          </BottomNavItem>
-        ))}
+        {navItems.map(item => {
+          const IconComponent = item.icon;
+          return (
+            <BottomNavItem
+              key={item.id}
+              active={page === item.id}
+              onClick={() => setPage(item.id)}
+            >
+              <span className="icon"><IconComponent /></span>
+              <span className="label">{item.label}</span>
+            </BottomNavItem>
+          );
+        })}
       </BottomNav>
 
       {/* Modal */}
@@ -973,7 +1017,7 @@ const PaymentAgentDashboard = () => {
             />
           </FormGroup>
 
-          <label style={{ fontSize: '12px', fontWeight: '600', color: '#5a6378', marginBottom: '4px', display: 'block' }}>
+          <label style={{ fontSize: '12px', fontWeight: '600', color: 'rgba(148, 163, 184, 0.6)', marginBottom: '4px', display: 'block' }}>
             Payment Method
           </label>
           <MethodGrid>
