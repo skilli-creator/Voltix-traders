@@ -1099,60 +1099,7 @@ const Submit = styled.button`
 `;
 
 // ============================================
-// TOAST
-// ============================================
-const ToastContainer = styled.div`
-  position: fixed;
-  top: 80px;
-  right: 24px;
-  z-index: 2000;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 340px;
-  width: 100%;
-  pointer-events: none;
-
-  @media (max-width: 480px) {
-    right: 12px;
-    left: 12px;
-    max-width: none;
-  }
-`;
-
-const Toast = styled.div`
-  pointer-events: auto;
-  padding: 14px 18px;
-  border-radius: 12px;
-  background: rgba(10, 12, 22, 0.95);
-  border: 1px solid ${props => props.type === 'success' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(248, 113, 113, 0.1)'};
-  backdrop-filter: blur(20px);
-  animation: ${fadeIn} 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  .icon { font-size: 16px; flex-shrink: 0; }
-  .content { flex: 1; }
-  .title { font-size: 12px; font-weight: 600; color: #f1f5f9; }
-  .msg { font-size: 11px; font-weight: 400; color: rgba(148, 163, 184, 0.6); }
-  .close {
-    background: none;
-    border: none;
-    color: rgba(148, 163, 184, 0.3);
-    cursor: pointer;
-    font-size: 12px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 12px 14px;
-    .title { font-size: 11px; }
-    .msg { font-size: 10px; }
-  }
-`;
-
-// ============================================
-// TOAST
+// TOAST - SINGLE DECLARATION
 // ============================================
 const ToastContainer = styled.div`
   position: fixed;
