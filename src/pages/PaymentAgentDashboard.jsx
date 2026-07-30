@@ -11,11 +11,6 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const slideIn = keyframes`
-  from { opacity: 0; transform: translateX(-50px); }
-  to { opacity: 1; transform: translateX(0); }
-`;
-
 const pulse = keyframes`
   0%, 100% { transform: scale(1); opacity: 0.8; }
   50% { transform: scale(1.05); opacity: 1; }
@@ -798,7 +793,7 @@ const Card = styled.div`
 `;
 
 // ============================================
-// IMPROVED MODAL - Premium Styling
+// IMPROVED MODAL
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -822,6 +817,9 @@ const ModalBox = styled.div`
   animation: ${modalSlide} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid rgba(99, 102, 241, 0.08);
   box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 
   &::before {
     content: '';
@@ -836,8 +834,12 @@ const ModalBox = styled.div`
     animation: ${fadeIn} 2s ease-in-out infinite;
   }
 
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
+
   @media (max-width: 480px) {
     padding: 24px 20px;
+    max-height: 95vh;
   }
 `;
 
@@ -846,6 +848,8 @@ const ModalHead = styled.div`
   align-items: center;
   justify-content: space-between;
   margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
 
   .title-group {
     display: flex;
@@ -947,6 +951,8 @@ const Field = styled.div`
     outline: none;
     transition: all 0.2s ease;
     font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
 
     &:focus {
       border-color: rgba(99, 102, 241, 0.3);
@@ -976,6 +982,90 @@ const Field = styled.div`
       color: #f1f5f9;
       padding: 8px;
     }
+
+    &:hover {
+      border-color: rgba(99, 102, 241, 0.15);
+    }
+  }
+
+  .helper-text {
+    font-size: 10px;
+    color: rgba(148, 163, 184, 0.25);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .prefix {
+      position: absolute;
+      left: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(148, 163, 184, 0.3);
+    }
+
+    input {
+      padding-left: 30px;
+    }
+  }
+`;
+
+const AmountDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.2s ease;
+
+  &:focus-within {
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.04);
+  }
+
+  .currency {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(148, 163, 184, 0.3);
+  }
+
+  .input-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #f1f5f9;
+    font-size: 18px;
+    font-weight: 600;
+    outline: none;
+    padding: 0;
+    min-width: 0;
+    width: 100%;
+
+    &::placeholder {
+      color: rgba(148, 163, 184, 0.15);
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    &[type="number"] {
+      -moz-appearance: textfield;
+    }
+  }
+
+  .min-label {
+    font-size: 10px;
+    color: rgba(148, 163, 184, 0.25);
+    font-weight: 400;
+    white-space: nowrap;
   }
 `;
 
@@ -1015,52 +1105,15 @@ const Method = styled.div`
     position: absolute;
     top: -6px;
     right: -6px;
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: linear-gradient(135deg, #6366f1, #4f46e5);
     color: #fff;
-    font-size: 10px;
+    font-size: 11px;
     display: ${props => props.selected ? 'flex' : 'none'};
     align-items: center;
     justify-content: center;
-  }
-`;
-
-const AmountDisplay = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: rgba(255,255,255,0.02);
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.03);
-
-  .currency {
-    font-size: 16px;
-    font-weight: 700;
-    color: rgba(148, 163, 184, 0.3);
-  }
-
-  .input-field {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #f1f5f9;
-    font-size: 18px;
-    font-weight: 600;
-    outline: none;
-    padding: 0;
-
-    &::placeholder {
-      color: rgba(148, 163, 184, 0.15);
-    }
-  }
-
-  .min-label {
-    font-size: 10px;
-    color: rgba(148, 163, 184, 0.3);
-    font-weight: 400;
   }
 `;
 
@@ -1077,6 +1130,7 @@ const Submit = styled.button`
   margin-top: 8px;
   position: relative;
   overflow: hidden;
+  width: 100%;
 
   &::before {
     content: '';
@@ -1162,6 +1216,7 @@ const PaymentAgentDashboard = () => {
   const [method, setMethod] = useState('safaricom');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedBank, setSelectedBank] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
   const [processing, setProcessing] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [balance, setBalance] = useState(2847293.50);
@@ -1212,19 +1267,16 @@ const PaymentAgentDashboard = () => {
   const validateAndSubmit = () => {
     const amountNum = parseFloat(amount);
     
-    // Validate amount
     if (!amount || isNaN(amountNum) || amountNum < 1) {
       addToast('Invalid Amount', 'Minimum amount is $1.00', 'error');
       return;
     }
 
-    // Validate based on method
     if (method === 'safaricom' || method === 'airtel') {
       if (!phoneNumber || phoneNumber.length < 10) {
         addToast('Invalid Phone Number', 'Please enter a valid phone number (e.g., 0712345678)', 'error');
         return;
       }
-      // Basic Kenyan phone validation
       const phoneRegex = /^0[17]\d{8}$/;
       if (!phoneRegex.test(phoneNumber)) {
         addToast('Invalid Phone Number', 'Please enter a valid Kenyan phone number starting with 0', 'error');
@@ -1235,6 +1287,10 @@ const PaymentAgentDashboard = () => {
     if (method === 'bank') {
       if (!selectedBank) {
         addToast('Select Bank', 'Please select your bank from the list', 'error');
+        return;
+      }
+      if (!accountNumber || accountNumber.length < 6) {
+        addToast('Invalid Account Number', 'Please enter a valid bank account number', 'error');
         return;
       }
     }
@@ -1262,6 +1318,7 @@ const PaymentAgentDashboard = () => {
       setAmount('');
       setPhoneNumber('');
       setSelectedBank('');
+      setAccountNumber('');
     }, 1200);
   };
 
@@ -1594,26 +1651,38 @@ const PaymentAgentDashboard = () => {
                   maxLength="10"
                   disabled={processing}
                 />
-                <div style={{ fontSize: '10px', color: 'rgba(148,163,184,0.3)', marginTop: '4px' }}>
-                  Enter 10-digit number starting with 0
-                </div>
+                <div className="helper-text">Enter 10-digit number starting with 0 (e.g., 0712345678)</div>
               </Field>
             )}
 
             {method === 'bank' && (
-              <Field>
-                <label>Select Bank <span className="required">*</span></label>
-                <select
-                  value={selectedBank}
-                  onChange={(e) => setSelectedBank(e.target.value)}
-                  disabled={processing}
-                >
-                  <option value="">Select your bank...</option>
-                  {KENYAN_BANKS.map((bank, index) => (
-                    <option key={index} value={bank}>{bank}</option>
-                  ))}
-                </select>
-              </Field>
+              <>
+                <Field>
+                  <label>Select Bank <span className="required">*</span></label>
+                  <select
+                    value={selectedBank}
+                    onChange={(e) => setSelectedBank(e.target.value)}
+                    disabled={processing}
+                  >
+                    <option value="">— Select your bank —</option>
+                    {KENYAN_BANKS.map((bank, index) => (
+                      <option key={index} value={bank}>{bank}</option>
+                    ))}
+                  </select>
+                </Field>
+
+                <Field>
+                  <label>Bank Account Number <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    placeholder="Enter your bank account number"
+                    value={accountNumber}
+                    onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
+                    disabled={processing}
+                  />
+                  <div className="helper-text">Enter your account number (digits only)</div>
+                </Field>
+              </>
             )}
 
             <Submit onClick={validateAndSubmit} disabled={processing}>
