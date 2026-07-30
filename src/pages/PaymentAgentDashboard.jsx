@@ -101,10 +101,15 @@ const AppContainer = styled.div`
     background: radial-gradient(circle, rgba(236, 72, 153, 0.02), transparent 70%);
     pointer-events: none;
   }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    min-height: 100vh;
+  }
 `;
 
 // ============================================
-// SIDEBAR
+// SIDEBAR - Desktop Only
 // ============================================
 const Sidebar = styled.div`
   width: 260px;
@@ -213,23 +218,12 @@ const NavItem = styled.div`
   border: 1px solid ${props => props.active ? 'rgba(99, 102, 241, 0.15)' : 'transparent'};
   font-size: 13px;
   font-weight: 500;
-  position: relative;
 
   .icon {
     font-size: 16px;
     width: 22px;
     text-align: center;
     opacity: ${props => props.active ? 1 : 0.4};
-  }
-
-  .badge {
-    margin-left: auto;
-    background: linear-gradient(135deg, #6366f1, #ec4899);
-    color: #fff;
-    font-size: 9px;
-    font-weight: 700;
-    padding: 1px 10px;
-    border-radius: 20px;
   }
 
   &:hover {
@@ -248,9 +242,14 @@ const Spacer = styled.div`
 const MobileHeader = styled.div`
   display: none;
   padding: 16px 20px;
-  background: rgba(10, 12, 22, 0.9);
+  background: rgba(10, 12, 22, 0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255,255,255,0.03);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  box-sizing: border-box;
 
   @media (max-width: 768px) {
     display: flex;
@@ -290,7 +289,7 @@ const MobileHeader = styled.div`
 `;
 
 // ============================================
-// BOTTOM NAV
+// BOTTOM NAV - Mobile Only
 // ============================================
 const BottomNav = styled.div`
   display: none;
@@ -298,10 +297,10 @@ const BottomNav = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(10, 12, 22, 0.9);
+  background: rgba(10, 12, 22, 0.95);
   backdrop-filter: blur(20px);
   border-top: 1px solid rgba(255,255,255,0.03);
-  padding: 8px 12px 14px;
+  padding: 8px 8px 12px;
   z-index: 100;
   justify-content: space-around;
 
@@ -315,7 +314,7 @@ const BottomItem = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 6px 8px;
+  padding: 6px 4px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -324,22 +323,14 @@ const BottomItem = styled.div`
   font-weight: 500;
   flex: 1;
   text-align: center;
-  position: relative;
+  min-width: 0;
 
   .icon { font-size: 18px; }
-  .label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .label { font-size: 7px; text-transform: uppercase; letter-spacing: 0.3px; }
 
-  .badge {
-    position: absolute;
-    top: 0;
-    right: 50%;
-    transform: translateX(50%);
-    background: linear-gradient(135deg, #6366f1, #ec4899);
-    color: #fff;
-    font-size: 7px;
-    font-weight: 700;
-    padding: 1px 8px;
-    border-radius: 10px;
+  @media (max-width: 400px) {
+    .icon { font-size: 16px; }
+    .label { font-size: 6px; }
   }
 `;
 
@@ -351,19 +342,22 @@ const Content = styled.div`
   padding: 36px 44px;
   overflow-y: auto;
   z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 
   @media (max-width: 1024px) {
     padding: 28px 32px;
   }
 
   @media (max-width: 768px) {
-    padding: 20px;
-    padding-bottom: 90px;
+    padding: 16px 20px;
+    padding-bottom: 80px;
+    width: 100%;
   }
 
   @media (max-width: 480px) {
-    padding: 16px;
-    padding-bottom: 80px;
+    padding: 12px 16px;
+    padding-bottom: 76px;
   }
 `;
 
@@ -391,8 +385,9 @@ const PageHeader = styled.div`
   }
 
   @media (max-width: 768px) {
-    margin-bottom: 24px;
-    h1 { font-size: 22px; }
+    margin-bottom: 20px;
+    h1 { font-size: 20px; }
+    p { font-size: 12px; }
   }
 `;
 
@@ -475,11 +470,19 @@ const BalanceCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 24px;
+    padding: 20px 24px;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 16px;
     .amount { font-size: 28px; }
-    .actions { width: 100%; }
+    .actions { width: 100%; flex-direction: row; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 18px;
+    .amount { font-size: 24px; }
+    .actions { flex-direction: column; }
+    .actions button { width: 100%; }
   }
 `;
 
@@ -530,10 +533,15 @@ const Btn = styled.button`
     background: rgba(255,255,255,0.02);
   }
 
-  @media (max-width: 480px) {
-    padding: 8px 16px;
+  @media (max-width: 768px) {
+    padding: 10px 20px;
     font-size: 12px;
     flex: 1;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 16px;
+    font-size: 12px;
   }
 `;
 
@@ -550,8 +558,14 @@ const Stats = styled.div`
     grid-template-columns: repeat(2, 1fr);
   }
 
+  @media (max-width: 768px) {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
   }
 `;
 
@@ -600,10 +614,24 @@ const Stat = styled.div`
     margin-top: 4px;
     color: ${props => props.positive ? '#34d399' : '#f87171'};
   }
+
+  @media (max-width: 768px) {
+    padding: 14px 16px;
+    .value { font-size: 18px; }
+    .label { font-size: 10px; }
+    .change { font-size: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 14px;
+    .value { font-size: 16px; }
+    .label { font-size: 9px; }
+    .change { font-size: 9px; }
+  }
 `;
 
 // ============================================
-// AGENT ACTIONS GRID
+// ACTIONS GRID - Client focused
 // ============================================
 const ActionsGrid = styled.div`
   display: grid;
@@ -613,10 +641,13 @@ const ActionsGrid = styled.div`
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
   }
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
+    gap: 8px;
   }
 `;
 
@@ -652,6 +683,20 @@ const ActionCard = styled.div`
     color: rgba(148, 163, 184, 0.4);
     font-weight: 400;
   }
+
+  @media (max-width: 768px) {
+    padding: 18px 16px;
+    .action-icon { font-size: 28px; }
+    .action-title { font-size: 13px; }
+    .action-desc { font-size: 10px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 14px;
+    .action-icon { font-size: 24px; }
+    .action-title { font-size: 12px; }
+    .action-desc { font-size: 10px; }
+  }
 `;
 
 // ============================================
@@ -668,6 +713,10 @@ const ModalOverlay = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
 `;
 
 const ModalBox = styled.div`
@@ -699,9 +748,15 @@ const ModalBox = styled.div`
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
 
-  @media (max-width: 480px) {
-    padding: 24px 20px;
+  @media (max-width: 768px) {
+    padding: 28px 24px;
     max-height: 95vh;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 16px;
+    max-height: 95vh;
+    border-radius: 18px;
   }
 `;
 
@@ -765,12 +820,25 @@ const ModalHead = styled.div`
       background: rgba(99, 102, 241, 0.04);
     }
   }
+
+  @media (max-width: 480px) {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    .title-icon { width: 34px; height: 34px; font-size: 15px; }
+    h3 { font-size: 17px; }
+    .subtitle { font-size: 11px; }
+    .close-btn { width: 30px; height: 30px; font-size: 14px; }
+  }
 `;
 
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 18px;
+
+  @media (max-width: 480px) {
+    gap: 14px;
+  }
 `;
 
 const Field = styled.div`
@@ -787,6 +855,7 @@ const Field = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
 
     .required {
       color: #f87171;
@@ -856,6 +925,12 @@ const Field = styled.div`
     margin-top: 4px;
     font-weight: 400;
   }
+
+  @media (max-width: 480px) {
+    input, select { padding: 10px 14px; font-size: 13px; }
+    label { font-size: 10px; }
+    .helper-text { font-size: 9px; }
+  }
 `;
 
 const AmountDisplay = styled.div`
@@ -911,12 +986,23 @@ const AmountDisplay = styled.div`
     font-weight: 400;
     white-space: nowrap;
   }
+
+  @media (max-width: 480px) {
+    padding: 10px 14px;
+    .currency { font-size: 16px; }
+    .input-field { font-size: 16px; }
+    .min-label { font-size: 9px; }
+  }
 `;
 
 const MethodGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
+
+  @media (max-width: 400px) {
+    gap: 4px;
+  }
 `;
 
 const Method = styled.div`
@@ -959,6 +1045,12 @@ const Method = styled.div`
     align-items: center;
     justify-content: center;
   }
+
+  @media (max-width: 480px) {
+    padding: 10px 4px;
+    .method-name { font-size: 11px; }
+    .method-sub { font-size: 8px; }
+  }
 `;
 
 const Submit = styled.button`
@@ -998,6 +1090,11 @@ const Submit = styled.button`
     opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+    font-size: 14px;
   }
 `;
 
@@ -1046,6 +1143,65 @@ const Toast = styled.div`
     cursor: pointer;
     font-size: 12px;
   }
+
+  @media (max-width: 480px) {
+    padding: 12px 14px;
+    .title { font-size: 11px; }
+    .msg { font-size: 10px; }
+  }
+`;
+
+// ============================================
+// TOAST
+// ============================================
+const ToastContainer = styled.div`
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 340px;
+  width: 100%;
+  pointer-events: none;
+
+  @media (max-width: 480px) {
+    right: 12px;
+    left: 12px;
+    max-width: none;
+  }
+`;
+
+const Toast = styled.div`
+  pointer-events: auto;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(10, 12, 22, 0.95);
+  border: 1px solid ${props => props.type === 'success' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(248, 113, 113, 0.1)'};
+  backdrop-filter: blur(20px);
+  animation: ${fadeIn} 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .icon { font-size: 16px; flex-shrink: 0; }
+  .content { flex: 1; }
+  .title { font-size: 12px; font-weight: 600; color: #f1f5f9; }
+  .msg { font-size: 11px; font-weight: 400; color: rgba(148, 163, 184, 0.6); }
+  .close {
+    background: none;
+    border: none;
+    color: rgba(148, 163, 184, 0.3);
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 14px;
+    .title { font-size: 11px; }
+    .msg { font-size: 10px; }
+  }
 `;
 
 // ============================================
@@ -1067,7 +1223,7 @@ const PaymentAgentDashboard = () => {
   const stats = [
     { label: 'Total Deposits', value: '$2.8M', change: '+12.5%', positive: true },
     { label: 'Total Withdrawals', value: '$847K', change: '-3.2%', positive: false },
-    { label: 'Pending Transactions', value: '12', change: '+2', positive: true },
+    { label: 'Pending', value: '12', change: '+2', positive: true },
     { label: 'Success Rate', value: '97.8%', change: '+1.2%', positive: true }
   ];
 
@@ -1081,7 +1237,6 @@ const PaymentAgentDashboard = () => {
     { id: 'home', label: 'Dashboard', icon: '◇' },
     { id: 'deposits', label: 'Deposits', icon: '▽' },
     { id: 'withdrawals', label: 'Withdrawals', icon: '△' },
-    { id: 'clients', label: 'Clients', icon: '◆' },
     { id: 'support', label: 'Support', icon: '?' },
     { id: 'account', label: 'Account', icon: '⚙' },
   ];
@@ -1157,7 +1312,7 @@ const PaymentAgentDashboard = () => {
           <>
             <PageHeader>
               <h1>Dashboard</h1>
-              <p>Overview of your payment activity</p>
+              <p>Manage your funds and transactions</p>
             </PageHeader>
 
             <BalanceCard>
@@ -1187,18 +1342,18 @@ const PaymentAgentDashboard = () => {
             <ActionsGrid>
               <ActionCard onClick={() => { setTxType('deposit'); setModal(true); }}>
                 <div className="action-icon">💰</div>
-                <div className="action-title">New Deposit</div>
-                <div className="action-desc">Process a client deposit</div>
+                <div className="action-title">Deposit</div>
+                <div className="action-desc">Add funds to your account</div>
               </ActionCard>
               <ActionCard onClick={() => { setTxType('withdraw'); setModal(true); }}>
                 <div className="action-icon">💳</div>
-                <div className="action-title">New Withdrawal</div>
-                <div className="action-desc">Process a client withdrawal</div>
+                <div className="action-title">Withdraw</div>
+                <div className="action-desc">Request a withdrawal</div>
               </ActionCard>
               <ActionCard>
                 <div className="action-icon">📊</div>
-                <div className="action-title">View Reports</div>
-                <div className="action-desc">Download transaction reports</div>
+                <div className="action-title">Transaction History</div>
+                <div className="action-desc">View your transactions</div>
               </ActionCard>
             </ActionsGrid>
           </>
@@ -1209,13 +1364,13 @@ const PaymentAgentDashboard = () => {
           <>
             <PageHeader>
               <h1>Deposits</h1>
-              <p>Process client deposits</p>
+              <p>Add funds to your account</p>
             </PageHeader>
             <BalanceCard style={{ marginBottom: '0' }}>
               <div className="glow-ring" />
               <div className="left">
-                <div className="label">Process Deposit</div>
-                <div className="amount" style={{ fontSize: '24px' }}>Enter client details</div>
+                <div className="label">Deposit Funds</div>
+                <div className="amount" style={{ fontSize: '24px' }}>Enter deposit details</div>
                 <div className="sub">Funds will be credited instantly</div>
               </div>
               <div className="actions">
@@ -1232,14 +1387,14 @@ const PaymentAgentDashboard = () => {
           <>
             <PageHeader>
               <h1>Withdrawals</h1>
-              <p>Process client withdrawals</p>
+              <p>Request a withdrawal</p>
             </PageHeader>
             <BalanceCard style={{ marginBottom: '0' }}>
               <div className="glow-ring" />
               <div className="left">
-                <div className="label">Process Withdrawal</div>
-                <div className="amount" style={{ fontSize: '24px' }}>Enter client details</div>
-                <div className="sub">Funds will be sent instantly</div>
+                <div className="label">Withdraw Funds</div>
+                <div className="amount" style={{ fontSize: '24px' }}>Enter withdrawal details</div>
+                <div className="sub">Funds will be sent to your account</div>
               </div>
               <div className="actions">
                 <Btn className="withdraw" onClick={() => { setTxType('withdraw'); setModal(true); }}>
@@ -1247,50 +1402,6 @@ const PaymentAgentDashboard = () => {
                 </Btn>
               </div>
             </BalanceCard>
-          </>
-        );
-
-      case 'clients':
-        return (
-          <>
-            <PageHeader>
-              <h1>Clients</h1>
-              <p>Manage your client list</p>
-            </PageHeader>
-            <Stats>
-              <Stat positive={true}>
-                <div className="stat-line" />
-                <div className="label">Total Clients</div>
-                <div className="value">1,847</div>
-                <div className="change">↑ +12.5%</div>
-              </Stat>
-              <Stat positive={true}>
-                <div className="stat-line" />
-                <div className="label">Active Clients</div>
-                <div className="value">1,234</div>
-                <div className="change">↑ +8.3%</div>
-              </Stat>
-              <Stat positive={false}>
-                <div className="stat-line" />
-                <div className="label">Inactive Clients</div>
-                <div className="value">613</div>
-                <div className="change">↓ -3.2%</div>
-              </Stat>
-              <Stat positive={true}>
-                <div className="stat-line" />
-                <div className="label">New This Month</div>
-                <div className="value">89</div>
-                <div className="change">↑ +18.7%</div>
-              </Stat>
-            </Stats>
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '60px 20px',
-              color: 'rgba(148, 163, 184, 0.3)',
-              fontSize: '14px'
-            }}>
-              Client list will appear here
-            </div>
           </>
         );
 
@@ -1312,10 +1423,10 @@ const PaymentAgentDashboard = () => {
                 Frequently Asked Questions
               </div>
               <div style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.6)', lineHeight: '1.8' }}>
-                <strong>How do I process a deposit?</strong><br />
-                Click the Deposit button, select the payment method, and enter client details.<br /><br />
+                <strong>How do I deposit?</strong><br />
+                Click the Deposit button, select your payment method, and enter the details.<br /><br />
                 <strong>How long do withdrawals take?</strong><br />
-                Processed instantly for M-Pesa and Airtel, 24-48 hours for bank transfers.<br /><br />
+                Withdrawals are processed instantly for M-Pesa and Airtel, 24-48 hours for bank transfers.<br /><br />
                 <strong>What payment methods are supported?</strong><br />
                 Safaricom M-Pesa, Airtel Money, and Bank Transfers.
               </div>
@@ -1327,7 +1438,7 @@ const PaymentAgentDashboard = () => {
               padding: '24px 28px'
             }}>
               <div style={{ fontSize: '15px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>
-                Contact
+                Contact Support
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '13px' }}>
                 <span style={{ color: 'rgba(148, 163, 184, 0.4)' }}>Email</span>
@@ -1372,8 +1483,8 @@ const PaymentAgentDashboard = () => {
                 <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>+254 712 345 678</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Type</span>
-                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>Premium Agent</span>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Account Type</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>Premium</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                 <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Joined</span>
@@ -1395,7 +1506,7 @@ const PaymentAgentDashboard = () => {
                 <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>0733 456 789</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Bank</span>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Bank Account</span>
                 <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>****5678</span>
               </div>
             </div>
@@ -1433,7 +1544,7 @@ const PaymentAgentDashboard = () => {
             </div>
           </Brand>
 
-          {nav.slice(0, 4).map(item => (
+          {nav.slice(0, 3).map(item => (
             <NavItem key={item.id} active={page === item.id} onClick={() => setPage(item.id)}>
               <span className="icon">{item.icon}</span>
               {item.label}
@@ -1444,7 +1555,7 @@ const PaymentAgentDashboard = () => {
 
           <NavSection>
             <NavLabel>Support</NavLabel>
-            {nav.slice(4).map(item => (
+            {nav.slice(3).map(item => (
               <NavItem key={item.id} active={page === item.id} onClick={() => setPage(item.id)}>
                 <span className="icon">{item.icon}</span>
                 {item.label}
@@ -1487,7 +1598,7 @@ const PaymentAgentDashboard = () => {
               <div>
                 <h3>{txType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}</h3>
                 <div className="subtitle">
-                  {txType === 'deposit' ? 'Add funds to client account' : 'Process client withdrawal'}
+                  {txType === 'deposit' ? 'Add funds to your account' : 'Request a withdrawal'}
                 </div>
               </div>
             </div>
@@ -1567,12 +1678,12 @@ const PaymentAgentDashboard = () => {
                   <label>Bank Account Number <span className="required">*</span></label>
                   <input
                     type="text"
-                    placeholder="Enter bank account number"
+                    placeholder="Enter your bank account number"
                     value={accountNumber}
                     onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
                     disabled={processing}
                   />
-                  <div className="helper-text">Enter account number (digits only)</div>
+                  <div className="helper-text">Enter your account number (digits only)</div>
                 </Field>
               </>
             )}
