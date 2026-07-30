@@ -26,20 +26,52 @@ const orbit = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
-const float = keyframes`
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(2deg); }
-`;
-
 const glow = keyframes`
   0%, 100% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.1); }
   50% { box-shadow: 0 0 80px rgba(99, 102, 241, 0.2); }
 `;
+
+const modalSlide = keyframes`
+  from { opacity: 0; transform: scale(0.95) translateY(30px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+`;
+
+// ============================================
+// KENYAN BANKS LIST
+// ============================================
+const KENYAN_BANKS = [
+  'Equity Bank Kenya',
+  'KCB Bank Kenya',
+  'Co-operative Bank of Kenya',
+  'Absa Bank Kenya',
+  'Standard Chartered Bank Kenya',
+  'NCBA Bank Kenya',
+  'Diamond Trust Bank (DTB)',
+  'I&M Bank Kenya',
+  'Stanbic Bank Kenya',
+  'Citibank Kenya',
+  'Bank of Africa Kenya',
+  'Consolidated Bank of Kenya',
+  'Development Bank of Kenya',
+  'Ecobank Kenya',
+  'Family Bank Kenya',
+  'First Community Bank',
+  'Guardian Bank Kenya',
+  'Gulf African Bank',
+  'Habib Bank Kenya',
+  'HFC Bank Kenya',
+  'Jamii Bora Bank',
+  'Middle East Bank Kenya',
+  'M Oriental Bank',
+  'National Bank of Kenya',
+  'NIC Bank Kenya',
+  'Paramount Bank Kenya',
+  'Prime Bank Kenya',
+  'Sidian Bank Kenya',
+  'Spire Bank Kenya',
+  'Transnational Bank Kenya',
+  'Victoria Commercial Bank',
+];
 
 // ============================================
 // LAYOUT
@@ -77,7 +109,7 @@ const AppContainer = styled.div`
 `;
 
 // ============================================
-// SIDEBAR - Futuristic
+// SIDEBAR
 // ============================================
 const Sidebar = styled.div`
   width: 260px;
@@ -263,7 +295,7 @@ const MobileHeader = styled.div`
 `;
 
 // ============================================
-// BOTTOM NAV - Futuristic
+// BOTTOM NAV
 // ============================================
 const BottomNav = styled.div`
   display: none;
@@ -370,7 +402,7 @@ const PageHeader = styled.div`
 `;
 
 // ============================================
-// BALANCE CARD - Neon Glow
+// BALANCE CARD
 // ============================================
 const BalanceCard = styled.div`
   padding: 32px 36px;
@@ -766,13 +798,14 @@ const Card = styled.div`
 `;
 
 // ============================================
-// MODAL - Futuristic
+// IMPROVED MODAL - Premium Styling
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(20px);
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   z-index: 1000;
   display: ${props => props.open ? 'flex' : 'none'};
   align-items: center;
@@ -782,12 +815,26 @@ const ModalOverlay = styled.div`
 
 const ModalBox = styled.div`
   width: 100%;
-  max-width: 440px;
-  background: rgba(10, 12, 22, 0.95);
-  border-radius: 20px;
-  padding: 32px 36px;
-  animation: ${fadeIn} 0.3s ease;
+  max-width: 480px;
+  background: linear-gradient(145deg, rgba(16, 18, 30, 0.95), rgba(10, 12, 22, 0.98));
+  border-radius: 24px;
+  padding: 36px 40px;
+  animation: ${modalSlide} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid rgba(99, 102, 241, 0.08);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    border-radius: 24px 24px 0 0;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #ec4899, #6366f1);
+    background-size: 200% 100%;
+    animation: ${fadeIn} 2s ease-in-out infinite;
+  }
 
   @media (max-width: 480px) {
     padding: 24px 20px;
@@ -798,30 +845,58 @@ const ModalHead = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 
-  h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #f1f5f9;
+  .title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  button {
-    width: 32px;
-    height: 32px;
+  .title-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: ${props => props.type === 'deposit' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(251, 191, 36, 0.1)'};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 1px solid ${props => props.type === 'deposit' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(251, 191, 36, 0.1)'};
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.3px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: rgba(148, 163, 184, 0.4);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.03);
-    background: transparent;
+    background: rgba(255,255,255,0.02);
     color: rgba(148, 163, 184, 0.4);
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease;
 
     &:hover {
       border-color: rgba(99, 102, 241, 0.2);
       color: #f1f5f9;
+      background: rgba(99, 102, 241, 0.04);
     }
   }
 `;
@@ -829,38 +904,77 @@ const ModalHead = styled.div`
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 `;
 
 const Field = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 
   label {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    color: rgba(148, 163, 184, 0.4);
+    color: rgba(148, 163, 184, 0.5);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .required {
+      color: #f87171;
+      font-size: 12px;
+    }
+
+    .min-amount {
+      font-size: 10px;
+      color: rgba(148, 163, 184, 0.3);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+    }
   }
 
-  input {
-    padding: 10px 14px;
+  input, select {
+    padding: 12px 16px;
     background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.03);
-    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px;
     color: #f1f5f9;
     font-size: 14px;
     font-weight: 500;
     outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
 
     &:focus {
       border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.04);
     }
 
     &::placeholder {
       color: rgba(148, 163, 184, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
+
+    option {
+      background: #0c1020;
+      color: #f1f5f9;
+      padding: 8px;
     }
   }
 `;
@@ -872,42 +986,110 @@ const MethodGrid = styled.div`
 `;
 
 const Method = styled.div`
-  padding: 10px;
+  padding: 12px 8px;
   border: 1px solid ${props => props.selected ? 'rgba(99, 102, 241, 0.3)' : 'rgba(255,255,255,0.03)'};
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
   background: ${props => props.selected ? 'rgba(99, 102, 241, 0.04)' : 'transparent'};
+  position: relative;
 
   &:hover {
     border-color: rgba(99, 102, 241, 0.2);
   }
 
-  .name {
+  .method-name {
     font-size: 12px;
     font-weight: 600;
     color: ${props => props.selected ? '#f1f5f9' : 'rgba(148, 163, 184, 0.5)'};
   }
 
-  .sub {
+  .method-sub {
     font-size: 9px;
     color: rgba(148, 163, 184, 0.3);
     margin-top: 2px;
   }
+
+  .check-mark {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #fff;
+    font-size: 10px;
+    display: ${props => props.selected ? 'flex' : 'none'};
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const AmountDisplay = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.03);
+
+  .currency {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(148, 163, 184, 0.3);
+  }
+
+  .input-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #f1f5f9;
+    font-size: 18px;
+    font-weight: 600;
+    outline: none;
+    padding: 0;
+
+    &::placeholder {
+      color: rgba(148, 163, 184, 0.15);
+    }
+  }
+
+  .min-label {
+    font-size: 10px;
+    color: rgba(148, 163, 184, 0.3);
+    font-weight: 400;
+  }
 `;
 
 const Submit = styled.button`
-  padding: 12px;
+  padding: 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #6366f1, #4f46e5);
   color: #fff;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 4px;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  &:hover:not(:disabled)::before {
+    transform: translateX(100%);
+  }
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
@@ -917,6 +1099,7 @@ const Submit = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none !important;
   }
 `;
 
@@ -944,7 +1127,7 @@ const ToastContainer = styled.div`
 
 const Toast = styled.div`
   pointer-events: auto;
-  padding: 12px 16px;
+  padding: 14px 18px;
   border-radius: 12px;
   background: rgba(10, 12, 22, 0.95);
   border: 1px solid ${props => props.type === 'success' ? 'rgba(52, 211, 153, 0.1)' : 'rgba(248, 113, 113, 0.1)'};
@@ -977,6 +1160,8 @@ const PaymentAgentDashboard = () => {
   const [txType, setTxType] = useState('deposit');
   const [amount, setAmount] = useState('');
   const [method, setMethod] = useState('safaricom');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [selectedBank, setSelectedBank] = useState('');
   const [processing, setProcessing] = useState(false);
   const [toasts, setToasts] = useState([]);
   const [balance, setBalance] = useState(2847293.50);
@@ -999,7 +1184,7 @@ const PaymentAgentDashboard = () => {
   const methods = [
     { id: 'safaricom', name: 'Safaricom', sub: 'M-Pesa' },
     { id: 'airtel', name: 'Airtel', sub: 'Airtel Money' },
-    { id: 'bank', name: 'Bank', sub: 'Wire' }
+    { id: 'bank', name: 'Bank Transfer', sub: 'Wire' }
   ];
 
   const nav = [
@@ -1024,24 +1209,59 @@ const PaymentAgentDashboard = () => {
     setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
   };
 
-  const handleTx = () => {
-    if (!amount || parseFloat(amount) <= 0) {
-      addToast('Invalid Amount', 'Please enter a valid amount', 'error');
+  const validateAndSubmit = () => {
+    const amountNum = parseFloat(amount);
+    
+    // Validate amount
+    if (!amount || isNaN(amountNum) || amountNum < 1) {
+      addToast('Invalid Amount', 'Minimum amount is $1.00', 'error');
       return;
     }
+
+    // Validate based on method
+    if (method === 'safaricom' || method === 'airtel') {
+      if (!phoneNumber || phoneNumber.length < 10) {
+        addToast('Invalid Phone Number', 'Please enter a valid phone number (e.g., 0712345678)', 'error');
+        return;
+      }
+      // Basic Kenyan phone validation
+      const phoneRegex = /^0[17]\d{8}$/;
+      if (!phoneRegex.test(phoneNumber)) {
+        addToast('Invalid Phone Number', 'Please enter a valid Kenyan phone number starting with 0', 'error');
+        return;
+      }
+    }
+
+    if (method === 'bank') {
+      if (!selectedBank) {
+        addToast('Select Bank', 'Please select your bank from the list', 'error');
+        return;
+      }
+    }
+
     setProcessing(true);
     setTimeout(() => {
-      const name = methods.find(m => m.id === method)?.name || 'Unknown';
+      const methodName = methods.find(m => m.id === method)?.name || 'Unknown';
+      const displayAmount = amountNum.toFixed(2);
+      
       if (txType === 'deposit') {
-        setBalance(prev => prev + parseFloat(amount));
-        addToast('Deposit Successful', `$${parseFloat(amount).toFixed(2)} added via ${name}`, 'success');
+        setBalance(prev => prev + amountNum);
+        addToast('Deposit Successful', `$${displayAmount} added via ${methodName}`, 'success');
       } else {
-        setBalance(prev => prev - parseFloat(amount));
-        addToast('Withdrawal Initiated', `$${parseFloat(amount).toFixed(2)} requested via ${name}`, 'success');
+        if (amountNum > balance) {
+          addToast('Insufficient Balance', 'You do not have enough funds to withdraw', 'error');
+          setProcessing(false);
+          return;
+        }
+        setBalance(prev => prev - amountNum);
+        addToast('Withdrawal Initiated', `$${displayAmount} requested via ${methodName}`, 'success');
       }
+
       setProcessing(false);
       setModal(false);
       setAmount('');
+      setPhoneNumber('');
+      setSelectedBank('');
     }, 1200);
   };
 
@@ -1251,7 +1471,6 @@ const PaymentAgentDashboard = () => {
       </ToastContainer>
 
       <AppContainer>
-        {/* Sidebar */}
         <Sidebar>
           <Brand>
             <div className="logo-ring">
@@ -1284,7 +1503,6 @@ const PaymentAgentDashboard = () => {
           </NavSection>
         </Sidebar>
 
-        {/* Mobile Header */}
         <MobileHeader>
           <div className="brand">
             <div className="logo-ring">
@@ -1294,13 +1512,11 @@ const PaymentAgentDashboard = () => {
           </div>
         </MobileHeader>
 
-        {/* Content */}
         <Content>
           {renderPage()}
         </Content>
       </AppContainer>
 
-      {/* Bottom Nav */}
       <BottomNav>
         {nav.map(item => (
           <BottomItem key={item.id} active={page === item.id} onClick={() => setPage(item.id)}>
@@ -1311,53 +1527,96 @@ const PaymentAgentDashboard = () => {
         ))}
       </BottomNav>
 
-      {/* Modal */}
+      {/* IMPROVED MODAL */}
       <ModalOverlay open={modal} onClick={() => !processing && setModal(false)}>
         <ModalBox onClick={e => e.stopPropagation()}>
-          <ModalHead>
-            <h3>{txType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}</h3>
-            <button onClick={() => !processing && setModal(false)}>✕</button>
+          <ModalHead type={txType}>
+            <div className="title-group">
+              <div className="title-icon">
+                {txType === 'deposit' ? '↓' : '↑'}
+              </div>
+              <div>
+                <h3>{txType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}</h3>
+                <div className="subtitle">
+                  {txType === 'deposit' ? 'Add funds to your account' : 'Request a withdrawal'}
+                </div>
+              </div>
+            </div>
+            <button className="close-btn" onClick={() => !processing && setModal(false)}>✕</button>
           </ModalHead>
+
           <ModalBody>
             <Field>
-              <label>Amount (USD)</label>
-              <input type="number" placeholder={txType === 'deposit' ? 'Enter deposit amount' : 'Enter withdrawal amount'} value={amount} onChange={e => setAmount(e.target.value)} min="1" disabled={processing} />
+              <label>
+                Amount (USD)
+                <span className="min-amount">Min: $1.00</span>
+              </label>
+              <AmountDisplay>
+                <span className="currency">$</span>
+                <input
+                  type="number"
+                  className="input-field"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  min="1"
+                  step="0.01"
+                  disabled={processing}
+                />
+                <span className="min-label">min $1</span>
+              </AmountDisplay>
             </Field>
 
             <Field>
-              <label>Payment Method</label>
+              <label>Payment Method <span className="required">*</span></label>
               <MethodGrid>
                 {methods.map(m => (
                   <Method key={m.id} selected={method === m.id} onClick={() => setMethod(m.id)}>
-                    <div className="name">{m.name}</div>
-                    <div className="sub">{m.sub}</div>
+                    <div className="method-name">{m.name}</div>
+                    <div className="method-sub">{m.sub}</div>
+                    <div className="check-mark">✓</div>
                   </Method>
                 ))}
               </MethodGrid>
             </Field>
 
-            {method === 'safaricom' && (
+            {(method === 'safaricom' || method === 'airtel') && (
               <Field>
-                <label>Safaricom Number</label>
-                <input type="text" value="0712 345 678" disabled />
-              </Field>
-            )}
-
-            {method === 'airtel' && (
-              <Field>
-                <label>Airtel Number</label>
-                <input type="text" value="0733 456 789" disabled />
+                <label>
+                  {method === 'safaricom' ? 'Safaricom' : 'Airtel'} Phone Number
+                  <span className="required">*</span>
+                </label>
+                <input
+                  type="tel"
+                  placeholder="0712345678"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+                  maxLength="10"
+                  disabled={processing}
+                />
+                <div style={{ fontSize: '10px', color: 'rgba(148,163,184,0.3)', marginTop: '4px' }}>
+                  Enter 10-digit number starting with 0
+                </div>
               </Field>
             )}
 
             {method === 'bank' && (
               <Field>
-                <label>Bank Account</label>
-                <input type="text" value="****5678" disabled />
+                <label>Select Bank <span className="required">*</span></label>
+                <select
+                  value={selectedBank}
+                  onChange={(e) => setSelectedBank(e.target.value)}
+                  disabled={processing}
+                >
+                  <option value="">Select your bank...</option>
+                  {KENYAN_BANKS.map((bank, index) => (
+                    <option key={index} value={bank}>{bank}</option>
+                  ))}
+                </select>
               </Field>
             )}
 
-            <Submit onClick={handleTx} disabled={processing}>
+            <Submit onClick={validateAndSubmit} disabled={processing}>
               {processing ? 'Processing...' : txType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}
             </Submit>
           </ModalBody>
