@@ -1000,7 +1000,7 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle }) => {
 
         <Brand>
           <span className="brand-text">
-            <span className="voltix">Voltix Traders.</span>
+            <span className="voltix">MyTradeApp.</span>
             <span className="deriv">deriv</span>
           </span>
           <span className="live-dot" />
