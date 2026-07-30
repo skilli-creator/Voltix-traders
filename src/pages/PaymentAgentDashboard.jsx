@@ -1,6 +1,6 @@
 // src/pages/PaymentAgentDashboard.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 
 // ============================================
@@ -603,197 +603,59 @@ const Stat = styled.div`
 `;
 
 // ============================================
-// FILTERS
+// AGENT ACTIONS GRID
 // ============================================
-const Filters = styled.div`
-  display: flex;
-  gap: 6px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
-`;
+const ActionsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
 
-const Filter = styled.button`
-  padding: 5px 18px;
-  border-radius: 20px;
-  border: 1px solid ${props => props.active ? 'rgba(99, 102, 241, 0.3)' : 'rgba(255,255,255,0.03)'};
-  background: ${props => props.active ? 'rgba(99, 102, 241, 0.06)' : 'transparent'};
-  color: ${props => props.active ? '#6366f1' : 'rgba(148, 163, 184, 0.5)'};
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
 
-  &:hover {
-    border-color: rgba(99, 102, 241, 0.2);
-    color: ${props => props.active ? '#6366f1' : '#f1f5f9'};
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-// ============================================
-// TABLE
-// ============================================
-const TableWrap = styled.div`
+const ActionCard = styled.div`
+  padding: 24px 20px;
   background: rgba(255,255,255,0.01);
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,0.03);
-  padding: 20px 0;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
-  .head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px 16px 20px;
-    flex-wrap: wrap;
-    gap: 12px;
+  &:hover {
+    border-color: rgba(99, 102, 241, 0.15);
+    transform: translateY(-4px);
+    background: rgba(99, 102, 241, 0.02);
   }
 
-  .title {
+  .action-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .action-title {
     font-size: 14px;
     font-weight: 600;
     color: #f1f5f9;
-
-    .count {
-      font-size: 11px;
-      font-weight: 500;
-      color: rgba(148, 163, 184, 0.4);
-      background: rgba(255,255,255,0.02);
-      padding: 1px 10px;
-      border-radius: 10px;
-      margin-left: 8px;
-    }
+    margin-bottom: 4px;
   }
 
-  @media (max-width: 768px) {
-    padding: 16px 0;
-    .head { padding: 0 16px 12px 16px; }
-  }
-`;
-
-const TableScroll = styled.div`
-  overflow-x: auto;
-  padding: 0 20px;
-
-  @media (max-width: 768px) {
-    padding: 0 16px;
-  }
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  font-weight: 500;
-  min-width: 600px;
-
-  thead th {
-    text-align: left;
-    padding: 8px 12px;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: rgba(148, 163, 184, 0.3);
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    font-weight: 600;
-  }
-
-  tbody td {
-    padding: 8px 12px;
-    font-size: 12px;
-    color: rgba(148, 163, 184, 0.7);
-    border-bottom: 1px solid rgba(255,255,255,0.02);
+  .action-desc {
+    font-size: 11px;
+    color: rgba(148, 163, 184, 0.4);
     font-weight: 400;
   }
-
-  tbody tr:last-child td { border-bottom: none; }
-  tbody tr:hover { background: rgba(255,255,255,0.01); }
-
-  .id { color: #f1f5f9; font-weight: 500; }
-  .pos { color: #34d399; }
-  .neg { color: #f87171; }
-
-  .status {
-    display: inline-block;
-    padding: 2px 14px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-
-  .status-completed {
-    color: #34d399;
-    background: rgba(52, 211, 153, 0.04);
-  }
-
-  .status-pending {
-    color: #fbbf24;
-    background: rgba(251, 191, 36, 0.04);
-  }
-
-  .status-failed {
-    color: #f87171;
-    background: rgba(248, 113, 113, 0.04);
-  }
-
-  .method {
-    display: inline-block;
-    padding: 2px 12px;
-    border-radius: 6px;
-    font-size: 10px;
-    font-weight: 500;
-    background: rgba(255,255,255,0.02);
-  }
-
-  .date {
-    color: rgba(148, 163, 184, 0.3);
-    font-size: 11px;
-  }
 `;
 
 // ============================================
-// CARDS
-// ============================================
-const Card = styled.div`
-  background: rgba(255,255,255,0.01);
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.03);
-  padding: 24px 28px;
-  margin-bottom: 16px;
-
-  .title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #f1f5f9;
-    margin-bottom: 8px;
-  }
-
-  .desc {
-    font-size: 13px;
-    color: rgba(148, 163, 184, 0.6);
-    line-height: 1.8;
-  }
-
-  .row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.02);
-    &:last-child { border-bottom: none; }
-    .lbl { font-size: 13px; color: rgba(148, 163, 184, 0.4); }
-    .val { font-size: 13px; color: #f1f5f9; font-weight: 500; }
-  }
-
-  .contact-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 4px 0;
-    font-size: 13px;
-    .lbl { color: rgba(148, 163, 184, 0.4); }
-    .val { color: #f1f5f9; font-weight: 500; }
-  }
-`;
-
-// ============================================
-// IMPROVED MODAL
+// MODAL
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -994,24 +856,6 @@ const Field = styled.div`
     margin-top: 4px;
     font-weight: 400;
   }
-
-  .input-with-icon {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    .prefix {
-      position: absolute;
-      left: 16px;
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(148, 163, 184, 0.3);
-    }
-
-    input {
-      padding-left: 30px;
-    }
-  }
 `;
 
 const AmountDisplay = styled.div`
@@ -1209,7 +1053,6 @@ const Toast = styled.div`
 // ============================================
 const PaymentAgentDashboard = () => {
   const [page, setPage] = useState('home');
-  const [filter, setFilter] = useState('all');
   const [modal, setModal] = useState(false);
   const [txType, setTxType] = useState('deposit');
   const [amount, setAmount] = useState('');
@@ -1221,18 +1064,10 @@ const PaymentAgentDashboard = () => {
   const [toasts, setToasts] = useState([]);
   const [balance, setBalance] = useState(2847293.50);
 
-  const transactions = [
-    { id: '#TRX-7841', type: 'Deposit', amount: 12450.00, status: 'completed', date: 'Jul 29, 14:32', method: 'Safaricom' },
-    { id: '#TRX-7840', type: 'Withdrawal', amount: 8230.50, status: 'pending', date: 'Jul 29, 13:15', method: 'Airtel' },
-    { id: '#TRX-7839', type: 'Deposit', amount: 5670.00, status: 'processing', date: 'Jul 29, 12:42', method: 'Bank Transfer' },
-    { id: '#TRX-7838', type: 'Deposit', amount: 23400.00, status: 'completed', date: 'Jul 29, 11:00', method: 'Safaricom' },
-    { id: '#TRX-7837', type: 'Withdrawal', amount: 3200.00, status: 'failed', date: 'Jul 29, 09:30', method: 'Airtel' },
-  ];
-
   const stats = [
     { label: 'Total Deposits', value: '$2.8M', change: '+12.5%', positive: true },
     { label: 'Total Withdrawals', value: '$847K', change: '-3.2%', positive: false },
-    { label: 'Pending', value: '12', change: '+2', positive: true },
+    { label: 'Pending Transactions', value: '12', change: '+2', positive: true },
     { label: 'Success Rate', value: '97.8%', change: '+1.2%', positive: true }
   ];
 
@@ -1244,19 +1079,12 @@ const PaymentAgentDashboard = () => {
 
   const nav = [
     { id: 'home', label: 'Dashboard', icon: '◇' },
-    { id: 'transactions', label: 'Transactions', icon: '◈' },
     { id: 'deposits', label: 'Deposits', icon: '▽' },
     { id: 'withdrawals', label: 'Withdrawals', icon: '△' },
+    { id: 'clients', label: 'Clients', icon: '◆' },
     { id: 'support', label: 'Support', icon: '?' },
     { id: 'account', label: 'Account', icon: '⚙' },
   ];
-
-  const filtered = transactions.filter(tx => {
-    if (filter === 'all') return true;
-    if (filter === 'deposits') return tx.type === 'Deposit';
-    if (filter === 'withdrawals') return tx.type === 'Withdrawal';
-    return true;
-  });
 
   const addToast = (title, msg, type = 'success') => {
     const id = Date.now();
@@ -1356,155 +1184,221 @@ const PaymentAgentDashboard = () => {
               ))}
             </Stats>
 
-            <TableWrap>
-              <div className="head">
-                <div className="title">Recent Activity <span className="count">{transactions.length}</span></div>
-              </div>
-              <TableScroll>
-                <Table>
-                  <thead><tr><th>ID</th><th>Type</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
-                  <tbody>
-                    {transactions.slice(0, 5).map(tx => (
-                      <tr key={tx.id}>
-                        <td className="id">{tx.id}</td>
-                        <td>{tx.type}</td>
-                        <td className={tx.type === 'Deposit' ? 'pos' : 'neg'}>{tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}</td>
-                        <td><span className="method">{tx.method}</span></td>
-                        <td><span className={`status status-${tx.status}`}>{tx.status}</span></td>
-                        <td className="date">{tx.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </TableScroll>
-            </TableWrap>
-          </>
-        );
-
-      case 'transactions':
-        return (
-          <>
-            <PageHeader><h1>Transactions</h1><p>Complete transaction history</p></PageHeader>
-            <TableWrap>
-              <div className="head"><div className="title">All Transactions <span className="count">{filtered.length}</span></div></div>
-              <Filters>
-                <Filter active={filter === 'all'} onClick={() => setFilter('all')}>All</Filter>
-                <Filter active={filter === 'deposits'} onClick={() => setFilter('deposits')}>Deposits</Filter>
-                <Filter active={filter === 'withdrawals'} onClick={() => setFilter('withdrawals')}>Withdrawals</Filter>
-              </Filters>
-              <TableScroll>
-                <Table>
-                  <thead><tr><th>ID</th><th>Type</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
-                  <tbody>
-                    {filtered.map(tx => (
-                      <tr key={tx.id}>
-                        <td className="id">{tx.id}</td>
-                        <td>{tx.type}</td>
-                        <td className={tx.type === 'Deposit' ? 'pos' : 'neg'}>{tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toFixed(2)}</td>
-                        <td><span className="method">{tx.method}</span></td>
-                        <td><span className={`status status-${tx.status}`}>{tx.status}</span></td>
-                        <td className="date">{tx.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </TableScroll>
-            </TableWrap>
+            <ActionsGrid>
+              <ActionCard onClick={() => { setTxType('deposit'); setModal(true); }}>
+                <div className="action-icon">💰</div>
+                <div className="action-title">New Deposit</div>
+                <div className="action-desc">Process a client deposit</div>
+              </ActionCard>
+              <ActionCard onClick={() => { setTxType('withdraw'); setModal(true); }}>
+                <div className="action-icon">💳</div>
+                <div className="action-title">New Withdrawal</div>
+                <div className="action-desc">Process a client withdrawal</div>
+              </ActionCard>
+              <ActionCard>
+                <div className="action-icon">📊</div>
+                <div className="action-title">View Reports</div>
+                <div className="action-desc">Download transaction reports</div>
+              </ActionCard>
+            </ActionsGrid>
           </>
         );
 
       case 'deposits':
         return (
           <>
-            <PageHeader><h1>Deposits</h1><p>All deposit transactions</p></PageHeader>
-            <TableWrap>
-              <div className="head"><div className="title">Deposit History <span className="count">{transactions.filter(t => t.type === 'Deposit').length}</span></div></div>
-              <TableScroll>
-                <Table>
-                  <thead><tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
-                  <tbody>
-                    {transactions.filter(t => t.type === 'Deposit').map(tx => (
-                      <tr key={tx.id}>
-                        <td className="id">{tx.id}</td>
-                        <td className="pos">+${tx.amount.toFixed(2)}</td>
-                        <td><span className="method">{tx.method}</span></td>
-                        <td><span className={`status status-${tx.status}`}>{tx.status}</span></td>
-                        <td className="date">{tx.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </TableScroll>
-            </TableWrap>
+            <PageHeader>
+              <h1>Deposits</h1>
+              <p>Process client deposits</p>
+            </PageHeader>
+            <BalanceCard style={{ marginBottom: '0' }}>
+              <div className="glow-ring" />
+              <div className="left">
+                <div className="label">Process Deposit</div>
+                <div className="amount" style={{ fontSize: '24px' }}>Enter client details</div>
+                <div className="sub">Funds will be credited instantly</div>
+              </div>
+              <div className="actions">
+                <Btn className="deposit" onClick={() => { setTxType('deposit'); setModal(true); }}>
+                  New Deposit
+                </Btn>
+              </div>
+            </BalanceCard>
           </>
         );
 
       case 'withdrawals':
         return (
           <>
-            <PageHeader><h1>Withdrawals</h1><p>All withdrawal transactions</p></PageHeader>
-            <TableWrap>
-              <div className="head"><div className="title">Withdrawal History <span className="count">{transactions.filter(t => t.type === 'Withdrawal').length}</span></div></div>
-              <TableScroll>
-                <Table>
-                  <thead><tr><th>ID</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
-                  <tbody>
-                    {transactions.filter(t => t.type === 'Withdrawal').map(tx => (
-                      <tr key={tx.id}>
-                        <td className="id">{tx.id}</td>
-                        <td className="neg">-${tx.amount.toFixed(2)}</td>
-                        <td><span className="method">{tx.method}</span></td>
-                        <td><span className={`status status-${tx.status}`}>{tx.status}</span></td>
-                        <td className="date">{tx.date}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </TableScroll>
-            </TableWrap>
+            <PageHeader>
+              <h1>Withdrawals</h1>
+              <p>Process client withdrawals</p>
+            </PageHeader>
+            <BalanceCard style={{ marginBottom: '0' }}>
+              <div className="glow-ring" />
+              <div className="left">
+                <div className="label">Process Withdrawal</div>
+                <div className="amount" style={{ fontSize: '24px' }}>Enter client details</div>
+                <div className="sub">Funds will be sent instantly</div>
+              </div>
+              <div className="actions">
+                <Btn className="withdraw" onClick={() => { setTxType('withdraw'); setModal(true); }}>
+                  New Withdrawal
+                </Btn>
+              </div>
+            </BalanceCard>
+          </>
+        );
+
+      case 'clients':
+        return (
+          <>
+            <PageHeader>
+              <h1>Clients</h1>
+              <p>Manage your client list</p>
+            </PageHeader>
+            <Stats>
+              <Stat positive={true}>
+                <div className="stat-line" />
+                <div className="label">Total Clients</div>
+                <div className="value">1,847</div>
+                <div className="change">↑ +12.5%</div>
+              </Stat>
+              <Stat positive={true}>
+                <div className="stat-line" />
+                <div className="label">Active Clients</div>
+                <div className="value">1,234</div>
+                <div className="change">↑ +8.3%</div>
+              </Stat>
+              <Stat positive={false}>
+                <div className="stat-line" />
+                <div className="label">Inactive Clients</div>
+                <div className="value">613</div>
+                <div className="change">↓ -3.2%</div>
+              </Stat>
+              <Stat positive={true}>
+                <div className="stat-line" />
+                <div className="label">New This Month</div>
+                <div className="value">89</div>
+                <div className="change">↑ +18.7%</div>
+              </Stat>
+            </Stats>
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '60px 20px',
+              color: 'rgba(148, 163, 184, 0.3)',
+              fontSize: '14px'
+            }}>
+              Client list will appear here
+            </div>
           </>
         );
 
       case 'support':
         return (
           <>
-            <PageHeader><h1>Support</h1><p>We're here to help</p></PageHeader>
-            <Card>
-              <div className="title">Frequently Asked Questions</div>
-              <div className="desc">
-                <strong>How do I deposit?</strong><br />
-                Click Deposit, select your payment method, and follow the instructions.<br /><br />
+            <PageHeader>
+              <h1>Support</h1>
+              <p>We're here to help</p>
+            </PageHeader>
+            <div style={{
+              background: 'rgba(255,255,255,0.01)',
+              borderRadius: '14px',
+              border: '1px solid rgba(255,255,255,0.03)',
+              padding: '24px 28px',
+              marginBottom: '16px'
+            }}>
+              <div style={{ fontSize: '15px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>
+                Frequently Asked Questions
+              </div>
+              <div style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.6)', lineHeight: '1.8' }}>
+                <strong>How do I process a deposit?</strong><br />
+                Click the Deposit button, select the payment method, and enter client details.<br /><br />
                 <strong>How long do withdrawals take?</strong><br />
-                Processed within 24-48 hours.<br /><br />
-                <strong>Supported methods?</strong><br />
+                Processed instantly for M-Pesa and Airtel, 24-48 hours for bank transfers.<br /><br />
+                <strong>What payment methods are supported?</strong><br />
                 Safaricom M-Pesa, Airtel Money, and Bank Transfers.
               </div>
-            </Card>
-            <Card>
-              <div className="title">Contact</div>
-              <div className="contact-row"><span className="lbl">Email</span><span className="val">support@voltixtraders.com</span></div>
-              <div className="contact-row"><span className="lbl">Phone</span><span className="val">+254 700 123 456</span></div>
-              <div className="contact-row"><span className="lbl">Live Chat</span><span className="val">Available 24/7</span></div>
-            </Card>
+            </div>
+            <div style={{
+              background: 'rgba(255,255,255,0.01)',
+              borderRadius: '14px',
+              border: '1px solid rgba(255,255,255,0.03)',
+              padding: '24px 28px'
+            }}>
+              <div style={{ fontSize: '15px', fontWeight: '600', color: '#f1f5f9', marginBottom: '8px' }}>
+                Contact
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '13px' }}>
+                <span style={{ color: 'rgba(148, 163, 184, 0.4)' }}>Email</span>
+                <span style={{ color: '#f1f5f9', fontWeight: '500' }}>support@voltixtraders.com</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '13px' }}>
+                <span style={{ color: 'rgba(148, 163, 184, 0.4)' }}>Phone</span>
+                <span style={{ color: '#f1f5f9', fontWeight: '500' }}>+254 700 123 456</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: '13px' }}>
+                <span style={{ color: 'rgba(148, 163, 184, 0.4)' }}>Live Chat</span>
+                <span style={{ color: '#f1f5f9', fontWeight: '500' }}>Available 24/7</span>
+              </div>
+            </div>
           </>
         );
 
       case 'account':
         return (
           <>
-            <PageHeader><h1>Account</h1><p>Manage your account details</p></PageHeader>
-            <Card>
-              <div className="row"><span className="lbl">Name</span><span className="val">John Trader</span></div>
-              <div className="row"><span className="lbl">Email</span><span className="val">john@voltixtraders.com</span></div>
-              <div className="row"><span className="lbl">Phone</span><span className="val">+254 712 345 678</span></div>
-              <div className="row"><span className="lbl">Type</span><span className="val">Premium</span></div>
-              <div className="row"><span className="lbl">Joined</span><span className="val">January 2026</span></div>
-            </Card>
-            <Card>
-              <div className="row"><span className="lbl">Safaricom</span><span className="val">0712 345 678</span></div>
-              <div className="row"><span className="lbl">Airtel</span><span className="val">0733 456 789</span></div>
-              <div className="row"><span className="lbl">Bank</span><span className="val">****5678</span></div>
-            </Card>
+            <PageHeader>
+              <h1>Account</h1>
+              <p>Manage your account details</p>
+            </PageHeader>
+            <div style={{
+              background: 'rgba(255,255,255,0.01)',
+              borderRadius: '14px',
+              border: '1px solid rgba(255,255,255,0.03)',
+              padding: '24px 28px',
+              marginBottom: '16px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Name</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>John Trader</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Email</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>john@voltixtraders.com</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Phone</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>+254 712 345 678</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Type</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>Premium Agent</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Joined</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>January 2026</span>
+              </div>
+            </div>
+            <div style={{
+              background: 'rgba(255,255,255,0.01)',
+              borderRadius: '14px',
+              border: '1px solid rgba(255,255,255,0.03)',
+              padding: '24px 28px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Safaricom</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>0712 345 678</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Airtel</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>0733 456 789</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                <span style={{ fontSize: '13px', color: 'rgba(148, 163, 184, 0.4)' }}>Bank</span>
+                <span style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: '500' }}>****5678</span>
+              </div>
+            </div>
           </>
         );
 
@@ -1543,7 +1437,6 @@ const PaymentAgentDashboard = () => {
             <NavItem key={item.id} active={page === item.id} onClick={() => setPage(item.id)}>
               <span className="icon">{item.icon}</span>
               {item.label}
-              {item.id === 'transactions' && <span className="badge">12</span>}
             </NavItem>
           ))}
 
@@ -1579,12 +1472,11 @@ const PaymentAgentDashboard = () => {
           <BottomItem key={item.id} active={page === item.id} onClick={() => setPage(item.id)}>
             <span className="icon">{item.icon}</span>
             <span className="label">{item.label}</span>
-            {item.id === 'transactions' && <span className="badge">12</span>}
           </BottomItem>
         ))}
       </BottomNav>
 
-      {/* IMPROVED MODAL */}
+      {/* MODAL */}
       <ModalOverlay open={modal} onClick={() => !processing && setModal(false)}>
         <ModalBox onClick={e => e.stopPropagation()}>
           <ModalHead type={txType}>
@@ -1595,7 +1487,7 @@ const PaymentAgentDashboard = () => {
               <div>
                 <h3>{txType === 'deposit' ? 'Deposit Funds' : 'Withdraw Funds'}</h3>
                 <div className="subtitle">
-                  {txType === 'deposit' ? 'Add funds to your account' : 'Request a withdrawal'}
+                  {txType === 'deposit' ? 'Add funds to client account' : 'Process client withdrawal'}
                 </div>
               </div>
             </div>
@@ -1675,12 +1567,12 @@ const PaymentAgentDashboard = () => {
                   <label>Bank Account Number <span className="required">*</span></label>
                   <input
                     type="text"
-                    placeholder="Enter your bank account number"
+                    placeholder="Enter bank account number"
                     value={accountNumber}
                     onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ''))}
                     disabled={processing}
                   />
-                  <div className="helper-text">Enter your account number (digits only)</div>
+                  <div className="helper-text">Enter account number (digits only)</div>
                 </Field>
               </>
             )}
