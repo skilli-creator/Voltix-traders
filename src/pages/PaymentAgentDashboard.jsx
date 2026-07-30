@@ -631,7 +631,7 @@ const Stat = styled.div`
 `;
 
 // ============================================
-// ACTIONS GRID - Client focused
+// ACTIONS GRID
 // ============================================
 const ActionsGrid = styled.div`
   display: grid;
@@ -696,6 +696,132 @@ const ActionCard = styled.div`
     .action-icon { font-size: 24px; }
     .action-title { font-size: 12px; }
     .action-desc { font-size: 10px; }
+  }
+`;
+
+// ============================================
+// TRANSACTIONS PAGE
+// ============================================
+const TransactionsPage = styled.div`
+  animation: ${fadeIn} 0.5s ease;
+`;
+
+const TransactionCard = styled.div`
+  padding: 20px 24px;
+  background: rgba(255,255,255,0.01);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: rgba(99, 102, 241, 0.1);
+    background: rgba(255,255,255,0.01);
+  }
+
+  .tx-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .tx-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .tx-icon.deposit {
+    background: rgba(52, 211, 153, 0.06);
+    border: 1px solid rgba(52, 211, 153, 0.08);
+  }
+
+  .tx-icon.withdrawal {
+    background: rgba(251, 191, 36, 0.06);
+    border: 1px solid rgba(251, 191, 36, 0.08);
+  }
+
+  .tx-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tx-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+
+  .tx-meta {
+    font-size: 11px;
+    color: rgba(148, 163, 184, 0.4);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  .tx-right {
+    text-align: right;
+  }
+
+  .tx-amount {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .tx-amount.positive {
+    color: #34d399;
+  }
+
+  .tx-amount.negative {
+    color: #f87171;
+  }
+
+  .tx-status {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 2px 12px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+
+  .tx-status.completed {
+    color: #34d399;
+    background: rgba(52, 211, 153, 0.06);
+    border: 1px solid rgba(52, 211, 153, 0.08);
+  }
+
+  .tx-status.pending {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.06);
+    border: 1px solid rgba(251, 191, 36, 0.08);
+  }
+
+  .tx-status.failed {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.06);
+    border: 1px solid rgba(248, 113, 113, 0.08);
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    .tx-right {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 `;
 
@@ -1099,7 +1225,7 @@ const Submit = styled.button`
 `;
 
 // ============================================
-// TOAST - SINGLE DECLARATION
+// TOAST
 // ============================================
 const ToastContainer = styled.div`
   position: fixed;
@@ -1167,6 +1293,17 @@ const PaymentAgentDashboard = () => {
   const [toasts, setToasts] = useState([]);
   const [balance, setBalance] = useState(2847293.50);
 
+  const [transactions] = useState([
+    { id: '#TX-001', type: 'deposit', amount: 12450.00, status: 'completed', date: '2026-07-30 14:32', method: 'Safaricom' },
+    { id: '#TX-002', type: 'withdrawal', amount: 8230.50, status: 'pending', date: '2026-07-30 13:15', method: 'Airtel' },
+    { id: '#TX-003', type: 'deposit', amount: 5670.00, status: 'completed', date: '2026-07-30 12:42', method: 'Bank Transfer' },
+    { id: '#TX-004', type: 'deposit', amount: 23400.00, status: 'completed', date: '2026-07-30 11:00', method: 'Safaricom' },
+    { id: '#TX-005', type: 'withdrawal', amount: 3200.00, status: 'failed', date: '2026-07-30 09:30', method: 'Airtel' },
+    { id: '#TX-006', type: 'deposit', amount: 8750.00, status: 'completed', date: '2026-07-29 16:45', method: 'Bank Transfer' },
+    { id: '#TX-007', type: 'withdrawal', amount: 15000.00, status: 'pending', date: '2026-07-29 14:20', method: 'Safaricom' },
+    { id: '#TX-008', type: 'deposit', amount: 3200.00, status: 'completed', date: '2026-07-29 11:00', method: 'Airtel' },
+  ]);
+
   const stats = [
     { label: 'Total Deposits', value: '$2.8M', change: '+12.5%', positive: true },
     { label: 'Total Withdrawals', value: '$847K', change: '-3.2%', positive: false },
@@ -1182,6 +1319,7 @@ const PaymentAgentDashboard = () => {
 
   const nav = [
     { id: 'home', label: 'Dashboard', icon: '◇' },
+    { id: 'transactions', label: 'Transactions', icon: '◈' },
     { id: 'deposits', label: 'Deposits', icon: '▽' },
     { id: 'withdrawals', label: 'Withdrawals', icon: '△' },
     { id: 'support', label: 'Support', icon: '?' },
@@ -1297,13 +1435,48 @@ const PaymentAgentDashboard = () => {
                 <div className="action-title">Withdraw</div>
                 <div className="action-desc">Request a withdrawal</div>
               </ActionCard>
-              <ActionCard>
+              <ActionCard onClick={() => setPage('transactions')}>
                 <div className="action-icon">📊</div>
                 <div className="action-title">Transaction History</div>
-                <div className="action-desc">View your transactions</div>
+                <div className="action-desc">View all your transactions</div>
               </ActionCard>
             </ActionsGrid>
           </>
+        );
+
+      case 'transactions':
+        return (
+          <TransactionsPage>
+            <PageHeader>
+              <h1>Transaction History</h1>
+              <p>View all your deposits and withdrawals</p>
+            </PageHeader>
+
+            {transactions.map((tx, index) => (
+              <TransactionCard key={index}>
+                <div className="tx-left">
+                  <div className={`tx-icon ${tx.type}`}>
+                    {tx.type === 'deposit' ? '↓' : '↑'}
+                  </div>
+                  <div className="tx-info">
+                    <div className="tx-title">
+                      {tx.type === 'deposit' ? 'Deposit' : 'Withdrawal'}
+                      <span style={{ fontSize: '10px', color: 'rgba(148, 163, 184, 0.3)', marginLeft: '8px', fontWeight: '400' }}>
+                        {tx.id}
+                      </span>
+                    </div>
+                    <div className="tx-meta">{tx.method} · {tx.date}</div>
+                  </div>
+                </div>
+                <div className="tx-right">
+                  <div className={`tx-amount ${tx.type === 'deposit' ? 'positive' : 'negative'}`}>
+                    {tx.type === 'deposit' ? '+' : '-'}${tx.amount.toFixed(2)}
+                  </div>
+                  <span className={`tx-status ${tx.status}`}>{tx.status}</span>
+                </div>
+              </TransactionCard>
+            ))}
+          </TransactionsPage>
         );
 
       case 'deposits':
@@ -1491,7 +1664,7 @@ const PaymentAgentDashboard = () => {
             </div>
           </Brand>
 
-          {nav.slice(0, 3).map(item => (
+          {nav.slice(0, 4).map(item => (
             <NavItem key={item.id} active={page === item.id} onClick={() => setPage(item.id)}>
               <span className="icon">{item.icon}</span>
               {item.label}
@@ -1502,7 +1675,7 @@ const PaymentAgentDashboard = () => {
 
           <NavSection>
             <NavLabel>Support</NavLabel>
-            {nav.slice(3).map(item => (
+            {nav.slice(4).map(item => (
               <NavItem key={item.id} active={page === item.id} onClick={() => setPage(item.id)}>
                 <span className="icon">{item.icon}</span>
                 {item.label}
