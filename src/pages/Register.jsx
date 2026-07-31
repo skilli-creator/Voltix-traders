@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #f5f7fa;
+    background: #f0f2f5;
     color: #1a2332;
     min-height: 100vh;
     display: flex;
@@ -361,7 +361,6 @@ const Checkboxes = styled.div`
     color: #2563eb;
     font-weight: 500;
     text-decoration: none;
-    white-space: nowrap;
 
     &:hover {
       text-decoration: underline;
@@ -424,7 +423,7 @@ const Message = styled.div`
 `;
 
 // ============================================
-// RIGHT COLUMN - PROMO + ACCOUNTS
+// RIGHT COLUMN - SWIFT PAYOUTS + PARTNERSHIP
 // ============================================
 const RightColumn = styled.div`
   background: #f8fafc;
@@ -446,7 +445,8 @@ const RightColumn = styled.div`
   }
 `;
 
-const PromoCard = styled.div`
+// ====== Swift & Secure Payouts ======
+const PayoutCard = styled.div`
   background: #ffffff;
   border-radius: 20px;
   padding: 28px 24px;
@@ -457,18 +457,6 @@ const PromoCard = styled.div`
     font-size: 32px;
     margin-bottom: 8px;
     display: block;
-  }
-
-  .tag {
-    display: inline-block;
-    background: #dbeafe;
-    color: #1d4ed8;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 14px;
-    border-radius: 20px;
-    letter-spacing: 0.2px;
-    margin-bottom: 10px;
   }
 
   h2 {
@@ -495,74 +483,53 @@ const PromoCard = styled.div`
   }
 `;
 
-const BottomSection = styled.div`
+// ====== Partnership Dashboard ======
+const PartnershipSection = styled.div`
   margin-top: 24px;
 `;
 
-const Tabs = styled.div`
+const PartnershipHeader = styled.div`
   display: flex;
-  gap: 2px;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 14px;
-  flex-wrap: wrap;
 
-  span {
-    font-size: 13px;
-    font-weight: 500;
-    color: #6b7a8f;
-    padding: 5px 14px;
-    border-radius: 8px;
-    cursor: default;
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a2332;
 
-    &:first-child {
-      color: #1a2332;
-      background: #ffffff;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    span {
+      font-weight: 400;
+      color: #6b7a8f;
     }
   }
 
-  @media (max-width: 480px) {
-    span {
-      font-size: 12px;
-      padding: 4px 10px;
-    }
+  .summary-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
   }
 `;
 
-const AccountCard = styled.div`
+const PartnershipGrid = styled.div`
   background: #ffffff;
   border-radius: 18px;
   padding: 22px 24px;
   border: 1px solid #eef2f6;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 
-  .top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
 
-    .type {
-      font-size: 13px;
-      font-weight: 600;
-      color: #6b7a8f;
-    }
+    .item {
+      display: flex;
+      flex-direction: column;
 
-    .status {
-      font-size: 11px;
-      font-weight: 600;
-      color: #22c55e;
-      background: #dcfce7;
-      padding: 2px 14px;
-      border-radius: 20px;
-    }
-  }
-
-  .bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-
-    .account {
       .label {
         font-size: 11px;
         font-weight: 500;
@@ -571,61 +538,62 @@ const AccountCard = styled.div`
         letter-spacing: 0.3px;
       }
 
-      .name {
-        font-size: 18px;
+      .value {
+        font-size: 22px;
         font-weight: 700;
         color: #1a2332;
         margin-top: 2px;
       }
 
-      .number {
-        font-size: 14px;
-        font-weight: 500;
+      .sub {
+        font-size: 13px;
         color: #6b7a8f;
         margin-top: 1px;
       }
     }
+  }
 
-    .balance {
-      text-align: right;
+  .divider {
+    border-top: 1px solid #eef2f6;
+    margin: 16px 0 12px 0;
+  }
 
-      .label {
-        font-size: 11px;
-        font-weight: 500;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2px;
+
+    a {
+      color: #2563eb;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
       }
+    }
 
-      .amount {
-        font-size: 26px;
-        font-weight: 800;
-        color: #1a2332;
-        margin-top: 2px;
-      }
+    .stars {
+      color: #f59e0b;
+      letter-spacing: 2px;
+      font-size: 14px;
     }
   }
 
   @media (max-width: 480px) {
     padding: 16px;
 
-    .bottom {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .footer {
       flex-direction: column;
+      gap: 8px;
       align-items: flex-start;
-      gap: 6px;
-
-      .balance {
-        text-align: left;
-        width: 100%;
-      }
-    }
-
-    .bottom .account .name {
-      font-size: 16px;
-    }
-
-    .bottom .balance .amount {
-      font-size: 22px;
     }
   }
 `;
@@ -783,7 +751,7 @@ const Register = () => {
     <>
       <GlobalStyle />
       <Wrapper>
-        {/* LEFT */}
+        {/* ===== LEFT: SIGN UP ===== */}
         <LeftColumn>
           <Brand>MyTradeApp</Brand>
           <SubHeader>
@@ -921,41 +889,59 @@ const Register = () => {
           )}
         </LeftColumn>
 
-        {/* RIGHT */}
+        {/* ===== RIGHT: SWIFT PAYOUTS + PARTNERSHIP ===== */}
         <RightColumn>
-          <PromoCard>
-            <span className="icon">📊</span>
-            <span className="tag">Trade with confidence</span>
-            <h2>Navigate the financial markets effortlessly</h2>
-          </PromoCard>
+          {/* Swift and Secure Payouts */}
+          <PayoutCard>
+            <span className="icon">⚡</span>
+            <h2>Swift and Secure Payouts</h2>
+            <p>Enjoy the convenience of fast and secure transactions</p>
+          </PayoutCard>
 
-          <BottomSection>
-            <Tabs>
-              <span>Accounts</span>
-              <span>Funds</span>
-              <span>Partners</span>
-              <span>Copy/Trading</span>
-              <span>Promotions</span>
-            </Tabs>
+          {/* Partnership Dashboard */}
+          <PartnershipSection>
+            <PartnershipHeader>
+              <h3>
+                MyTradeApp <span>Partnership</span>
+              </h3>
+              <span className="summary-label">Summary</span>
+            </PartnershipHeader>
 
-            <AccountCard>
-              <div className="top">
-                <span className="type">Accounts | Real</span>
-                <span className="status">● Live</span>
-              </div>
-              <div className="bottom">
-                <div className="account">
-                  <div className="label">ACCOUNT</div>
-                  <div className="name">Standard</div>
-                  <div className="number">25458291</div>
+            <PartnershipGrid>
+              <div className="grid">
+                <div className="item">
+                  <span className="label">Partnership overview</span>
+                  <span className="value">$0</span>
+                  <span className="sub">Commissioned Earned</span>
                 </div>
-                <div className="balance">
-                  <div className="label">BALANCE</div>
-                  <div className="amount">$348.55</div>
+                <div className="item">
+                  <span className="label">&nbsp;</span>
+                  <span className="value">0</span>
+                  <span className="sub">Referred Clients</span>
+                </div>
+                <div className="item">
+                  <span className="label">&nbsp;</span>
+                  <span className="value">0</span>
+                  <span className="sub">Referred Account</span>
+                </div>
+                <div className="item">
+                  <span className="label">&nbsp;</span>
+                  <span className="value">Today</span>
+                  <span className="sub">0 lots</span>
                 </div>
               </div>
-            </AccountCard>
-          </BottomSection>
+
+              <div className="divider" />
+
+              <div className="footer">
+                <a href="#">
+                  <span style={{ marginRight: '6px' }}>↗</span>
+                  Share your rating
+                </a>
+                <span className="stars">★★★★☆</span>
+              </div>
+            </PartnershipGrid>
+          </PartnershipSection>
         </RightColumn>
       </Wrapper>
     </>
