@@ -14,26 +14,33 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    color: #0b1a33;
     min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: #f8fafc;
-    color: #0b1a33;
-    padding: 24px;
+    justify-content: center;
+    padding: 20px;
   }
 
   #root {
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 1440px;
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      padding: 12px;
+    }
   }
 
   @media (max-width: 480px) {
     body {
-      padding: 12px;
+      padding: 8px;
     }
   }
 `;
@@ -41,39 +48,37 @@ const GlobalStyle = createGlobalStyle`
 // ============================================
 // ANIMATIONS
 // ============================================
-const floatIn = keyframes`
-  0% { 
-    opacity: 0; 
-    transform: translateY(30px) scale(0.96);
-  }
-  100% { 
-    opacity: 1; 
-    transform: translateY(0) scale(1);
-  }
-`;
-
-const pulseRing = keyframes`
-  0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(1.8); opacity: 0; }
+const fadeIn = keyframes`
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 `;
 
 // ============================================
-// MAIN CONTAINER - MATCHES VALETAX LAYOUT
+// MAIN CONTAINER
 // ============================================
 const Container = styled.div`
-  max-width: 1040px;
-  width: 100%;
-  background: #ffffff;
-  border-radius: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 0;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 90vh;
+  max-height: 95vh;
+  background: #ffffff;
+  border-radius: 40px;
   overflow: hidden;
-  animation: ${floatIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08), 0 10px 30px rgba(0, 0, 0, 0.04);
+  animation: ${fadeIn} 0.6s ease-out;
 
-  @media (max-width: 820px) {
+  @media (max-width: 992px) {
     grid-template-columns: 1fr;
-    border-radius: 24px;
+    max-height: none;
+    min-height: auto;
+    border-radius: 28px;
+  }
+
+  @media (max-width: 480px) {
+    border-radius: 20px;
   }
 `;
 
@@ -81,24 +86,31 @@ const Container = styled.div`
 // LEFT PANEL - SIGN UP FORM
 // ============================================
 const LeftPanel = styled.div`
-  padding: 48px 40px 40px 40px;
+  padding: 48px 44px 40px 44px;
   background: #ffffff;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 
-  @media (max-width: 820px) {
-    padding: 32px 24px;
+  @media (max-width: 1200px) {
+    padding: 36px 32px 32px 32px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 28px 24px 24px 24px;
   }
 
   @media (max-width: 480px) {
-    padding: 24px 16px;
+    padding: 20px 16px 16px 16px;
   }
 `;
 
 const Brand = styled.div`
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 30px;
+  font-weight: 800;
   letter-spacing: -0.5px;
   color: #0b1a33;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 
   span {
     color: #2563eb;
@@ -111,15 +123,17 @@ const Brand = styled.div`
 
 const SignInLink = styled.div`
   font-size: 15px;
-  color: #4b5563;
+  color: #6b7280;
   margin-bottom: 32px;
 
   a {
     color: #2563eb;
     font-weight: 600;
     text-decoration: none;
+    transition: color 0.2s;
 
     &:hover {
+      color: #1d4ed8;
       text-decoration: underline;
     }
   }
@@ -131,96 +145,109 @@ const SignInLink = styled.div`
 `;
 
 const Form = styled.form`
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 2px;
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 
   @media (max-width: 480px) {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 `;
 
 const Label = styled.label`
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #1e293b;
   margin-bottom: 4px;
+  letter-spacing: 0.2px;
 `;
 
 const Hint = styled.span`
   display: block;
   font-size: 12px;
   font-weight: 400;
-  color: #6b7280;
-  margin-top: 2px;
+  color: #94a3b8;
+  margin-top: 3px;
+  line-height: 1.4;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 16px;
   font-size: 15px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  background: #f9fafb;
-  transition: border 0.2s, box-shadow 0.2s;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 14px;
+  background: #fafbfc;
+  transition: all 0.25s ease;
   outline: none;
   font-family: inherit;
   color: #0b1a33;
 
+  &::placeholder {
+    color: #b0b8c4;
+    font-size: 14px;
+  }
+
   &:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
     background: #ffffff;
   }
 
-  &::placeholder {
-    color: #9ca3af;
+  &:hover:not(:focus) {
+    border-color: #d0d7e2;
   }
 
   @media (max-width: 480px) {
-    padding: 10px 14px;
+    padding: 12px 14px;
     font-size: 14px;
+    border-radius: 12px;
   }
 `;
 
 const Select = styled.select`
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 16px;
   font-size: 15px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  background: #f9fafb;
-  transition: border 0.2s, box-shadow 0.2s;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 14px;
+  background: #fafbfc;
+  transition: all 0.25s ease;
   outline: none;
   font-family: inherit;
   color: #0b1a33;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234b5563' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2394a3b8' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
-  padding-right: 40px;
+  padding-right: 44px;
+  cursor: pointer;
 
   &:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
+    background-color: #ffffff;
   }
 
   @media (max-width: 480px) {
-    padding: 10px 14px;
+    padding: 12px 14px;
     font-size: 14px;
+    border-radius: 12px;
   }
 `;
 
 const PhoneRow = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 10px;
 
   select {
-    width: 90px;
+    width: 100px;
     flex-shrink: 0;
   }
 
@@ -230,6 +257,7 @@ const PhoneRow = styled.div`
 
   @media (max-width: 480px) {
     flex-direction: column;
+    gap: 8px;
 
     select {
       width: 100%;
@@ -238,25 +266,25 @@ const PhoneRow = styled.div`
 `;
 
 const PasswordHints = styled.ul`
-  background: #f1f5f9;
-  border-radius: 10px;
+  background: #f8fafc;
+  border-radius: 12px;
   padding: 12px 16px;
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: 13px;
-  color: #334155;
+  color: #475569;
   list-style: none;
+  border: 1px solid #f1f4f9;
 
   li {
-    padding: 2px 0;
+    padding: 3px 0;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 
     &::before {
-      content: "•";
+      content: "●";
       color: #2563eb;
-      font-weight: 700;
-      font-size: 18px;
+      font-size: 10px;
     }
   }
 
@@ -268,24 +296,25 @@ const PasswordHints = styled.ul`
 
 const CodeBox = styled.div`
   background: #f8fafc;
-  border-radius: 12px;
-  padding: 16px 20px;
-  border: 1.5px dashed #d1d9e6;
+  border-radius: 14px;
+  padding: 14px 20px;
+  border: 1.5px dashed #dce2ec;
   display: flex;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-top: 4px;
+  margin-top: 2px;
 
   .code-digits {
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
-    letter-spacing: 8px;
+    letter-spacing: 10px;
     color: #0b1a33;
     background: #ffffff;
-    padding: 4px 16px 4px 20px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
+    padding: 6px 18px 6px 22px;
+    border-radius: 12px;
+    border: 1.5px solid #e8ecf0;
+    font-family: 'Inter', monospace;
   }
 
   .code-label {
@@ -296,48 +325,58 @@ const CodeBox = styled.div`
 
   .code-input {
     flex: 1;
-    min-width: 120px;
+    min-width: 140px;
 
     input {
       width: 100%;
-      padding: 10px 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
+      padding: 12px 16px;
+      border: 1.5px solid #e8ecf0;
+      border-radius: 12px;
       font-size: 15px;
       background: #ffffff;
       outline: none;
       font-family: inherit;
       color: #0b1a33;
+      transition: all 0.25s ease;
 
       &:focus {
         border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
+      }
+
+      &::placeholder {
+        color: #b0b8c4;
       }
     }
   }
 
-  @media (max-width: 820px) {
+  @media (max-width: 600px) {
     flex-direction: column;
     align-items: stretch;
+    padding: 16px;
 
     .code-digits {
       text-align: center;
       letter-spacing: 6px;
-      font-size: 24px;
+      font-size: 26px;
+    }
+
+    .code-input {
+      min-width: auto;
     }
   }
 `;
 
 const CheckboxGroup = styled.div`
-  margin-top: 18px;
+  margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 
   label {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
     font-size: 14px;
     color: #1e293b;
     line-height: 1.5;
@@ -345,19 +384,25 @@ const CheckboxGroup = styled.div`
   }
 
   input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
     margin-top: 1px;
     accent-color: #2563eb;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
+    border: 2px solid #dce2ec;
+
+    &:checked {
+      border-color: #2563eb;
+    }
   }
 
   .terms-link {
     color: #2563eb;
     font-weight: 500;
     text-decoration: none;
+    white-space: nowrap;
 
     &:hover {
       text-decoration: underline;
@@ -366,60 +411,70 @@ const CheckboxGroup = styled.div`
 
   @media (max-width: 480px) {
     font-size: 13px;
+    gap: 10px;
   }
 `;
 
 const SignUpButton = styled.button`
   width: 100%;
-  padding: 16px;
+  padding: 18px;
   background: #2563eb;
   color: #ffffff;
   font-size: 17px;
   font-weight: 700;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  margin-top: 22px;
+  transition: all 0.25s ease;
+  margin-top: 20px;
   letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
 
   &:hover:not(:disabled) {
     background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.25);
   }
 
   &:active:not(:disabled) {
     transform: scale(0.98);
+    box-shadow: none;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
 
   @media (max-width: 480px) {
-    padding: 14px;
+    padding: 15px;
     font-size: 16px;
-    margin-top: 18px;
+    border-radius: 14px;
+    margin-top: 16px;
   }
 `;
 
 const Message = styled.div`
-  margin-top: 12px;
-  font-size: 13px;
-  padding: 8px 12px;
-  border-radius: 10px;
+  margin-top: 14px;
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
   background: ${props => props.isError ? 'rgba(239, 68, 68, 0.06)' : 'rgba(34, 197, 94, 0.06)'};
   color: ${props => props.color || '#6b7280'};
-  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)'};
+  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.12)' : 'rgba(34, 197, 94, 0.12)'};
   text-align: center;
-  min-height: 40px;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1.5;
 
   @media (max-width: 480px) {
-    font-size: 12px;
-    min-height: 36px;
+    font-size: 13px;
+    min-height: 40px;
+    padding: 10px 14px;
   }
 `;
 
@@ -427,34 +482,37 @@ const Message = styled.div`
 // RIGHT PANEL - PROMO + DASHBOARD
 // ============================================
 const RightPanel = styled.div`
-  background: #f1f5f9;
-  padding: 48px 40px 40px 40px;
+  background: #f8fafc;
+  padding: 48px 44px 40px 44px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  justify-content: space-between;
+  overflow-y: auto;
 
-  @media (max-width: 820px) {
-    padding: 32px 24px;
-    gap: 24px;
+  @media (max-width: 1200px) {
+    padding: 36px 32px 32px 32px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 28px 24px 24px 24px;
   }
 
   @media (max-width: 480px) {
-    padding: 24px 16px;
-    gap: 20px;
+    padding: 20px 16px 16px 16px;
   }
 `;
 
 const PromoBox = styled.div`
   background: #ffffff;
-  border-radius: 20px;
-  padding: 28px 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  border: 1px solid #e9edf2;
+  border-radius: 24px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  border: 1px solid #eef2f6;
 
   .icon-wrap {
-    font-size: 32px;
-    color: #2563eb;
+    font-size: 36px;
     margin-bottom: 12px;
+    display: block;
   }
 
   .badge {
@@ -463,146 +521,169 @@ const PromoBox = styled.div`
     color: #1d4ed8;
     font-size: 12px;
     font-weight: 600;
-    padding: 4px 14px;
+    padding: 4px 16px;
     border-radius: 20px;
     letter-spacing: 0.3px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   h2 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
     color: #0b1a33;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    line-height: 1.3;
   }
 
   p {
     color: #4b5563;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
   }
 
   @media (max-width: 480px) {
-    padding: 20px 16px;
+    padding: 24px 20px;
 
     h2 {
-      font-size: 18px;
+      font-size: 19px;
     }
 
     p {
-      font-size: 13px;
+      font-size: 14px;
     }
   }
 `;
 
-const Dashboard = styled.div`
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 24px 24px 20px 24px;
-  border: 1px solid #e9edf2;
+// Bottom section with accounts
+const BottomSection = styled.div`
+  margin-top: 24px;
+`;
 
-  .dash-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+const NavTabs = styled.div`
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 
-    h3 {
-      font-size: 16px;
-      font-weight: 700;
+  span {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    padding: 6px 14px;
+    border-radius: 10px;
+    cursor: default;
+    transition: all 0.2s;
+
+    &:first-child {
       color: #0b1a33;
-
-      .dash-sub {
-        font-weight: 400;
-        color: #4b5563;
-      }
-    }
-
-    > span {
-      font-size: 12px;
-      color: #6b7280;
-    }
-  }
-
-  .dash-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 20px;
-
-    .dash-item {
-      display: flex;
-      flex-direction: column;
-
-      .label {
-        font-size: 12px;
-        color: #6b7280;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-      }
-
-      .value {
-        font-size: 22px;
-        font-weight: 700;
-        color: #0b1a33;
-      }
-
-      .sub {
-        font-size: 13px;
-        color: #4b5563;
-      }
-    }
-  }
-
-  .dash-divider {
-    border-top: 1px solid #e9edf2;
-    margin: 16px 0 12px 0;
-  }
-
-  .dash-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 4px;
-
-    a {
-      color: #2563eb;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    .stars {
-      color: #f59e0b;
-      letter-spacing: 2px;
-      font-size: 14px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
   }
 
   @media (max-width: 480px) {
-    padding: 16px;
+    gap: 2px;
 
-    .dash-grid {
-      grid-template-columns: 1fr;
-      gap: 12px;
+    span {
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+  }
+`;
+
+const AccountCard = styled.div`
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px 28px;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+
+  .account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    .account-type {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      letter-spacing: 0.3px;
     }
 
-    .dash-header h3 {
-      font-size: 14px;
+    .account-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #22c55e;
+      background: #dcfce7;
+      padding: 2px 14px;
+      border-radius: 20px;
+    }
+  }
+
+  .account-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .account-number {
+      .label {
+        font-size: 11px;
+        font-weight: 500;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #0b1a33;
+        margin-top: 2px;
+        letter-spacing: 0.5px;
+      }
     }
 
-    .dash-item .value {
-      font-size: 18px;
-    }
+    .account-balance {
+      text-align: right;
 
-    .dash-footer {
+      .label {
+        font-size: 11px;
+        font-weight: 500;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .balance {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0b1a33;
+        margin-top: 2px;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 18px 16px;
+
+    .account-details {
       flex-direction: column;
-      gap: 8px;
       align-items: flex-start;
+      gap: 8px;
+
+      .account-balance {
+        text-align: left;
+        width: 100%;
+      }
+    }
+
+    .account-details .account-number .number {
+      font-size: 17px;
+    }
+
+    .account-details .account-balance .balance {
+      font-size: 24px;
     }
   }
 `;
@@ -776,9 +857,8 @@ const Register = () => {
           <Form onSubmit={handleSubmit}>
             {/* Country */}
             <FormGroup>
-              <Label htmlFor="country">Country</Label>
+              <Label>Country</Label>
               <Select
-                id="country"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
               >
@@ -795,10 +875,9 @@ const Register = () => {
 
             {/* Email */}
             <FormGroup>
-              <Label htmlFor="email">Email</Label>
+              <Label>Email</Label>
               <Input
                 type="email"
-                id="email"
                 placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -809,10 +888,9 @@ const Register = () => {
 
             {/* Password */}
             <FormGroup>
-              <Label htmlFor="password">Password</Label>
+              <Label>Password</Label>
               <Input
                 type="password"
-                id="password"
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -827,12 +905,11 @@ const Register = () => {
 
             {/* Full Name */}
             <FormGroup>
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label>Full Name</Label>
               <Input
                 type="text"
-                id="fullName"
                 placeholder="Full Name"
-                value={`${firstName} ${lastName}`}
+                value={firstName + (lastName ? ' ' + lastName : '')}
                 onChange={(e) => {
                   const parts = e.target.value.split(' ');
                   setFirstName(parts[0] || '');
@@ -844,10 +921,9 @@ const Register = () => {
 
             {/* Phone Number */}
             <FormGroup>
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label>Phone Number</Label>
               <PhoneRow>
                 <Select
-                  id="phoneCode"
                   value={phoneCode}
                   onChange={(e) => setPhoneCode(e.target.value)}
                 >
@@ -862,7 +938,6 @@ const Register = () => {
                 </Select>
                 <Input
                   type="tel"
-                  id="phone"
                   placeholder="Phone Number"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
@@ -927,56 +1002,41 @@ const Register = () => {
         {/* ========== RIGHT PANEL ========== */}
         <RightPanel>
           <PromoBox>
-            <div className="icon-wrap">⚡</div>
-            <div className="badge">Trusted by traders</div>
-            <h2>Swift and Secure Payouts</h2>
-            <p>
-              Enjoy the convenience of fast and secure transactions — withdraw
-              your earnings in minutes, not days.
-            </p>
+            <span className="icon-wrap">📈</span>
+            <div className="badge">⚡ Trusted by traders</div>
+            <h2>Trade with confidence</h2>
+            <p>Navigate the financial markets effortlessly</p>
           </PromoBox>
 
-          <Dashboard>
-            <div className="dash-header">
-              <h3>
-                MyTradeApp <span className="dash-sub">Partnership</span>
-              </h3>
-              <span>Summary</span>
-            </div>
+          <BottomSection>
+            <NavTabs>
+              <span>Accounts</span>
+              <span>Funds</span>
+              <span>Partners</span>
+              <span>Copy/Trading</span>
+              <span>Promotions</span>
+            </NavTabs>
 
-            <div className="dash-grid">
-              <div className="dash-item">
-                <span className="label">Partnership overview</span>
-                <span className="value">$0</span>
-                <span className="sub">Commissioned Earned</span>
+            <AccountCard>
+              <div className="account-header">
+                <span className="account-type">Accounts | Real</span>
+                <span className="account-badge">● Live</span>
               </div>
-              <div className="dash-item">
-                <span className="label">&nbsp;</span>
-                <span className="value">0</span>
-                <span className="sub">Referred Clients</span>
+              <div className="account-details">
+                <div className="account-number">
+                  <div className="label">ACCOUNT</div>
+                  <div className="number">Standard</div>
+                  <div className="number" style={{ fontSize: '14px', color: '#6b7280', fontWeight: '500' }}>
+                    25458291
+                  </div>
+                </div>
+                <div className="account-balance">
+                  <div className="label">BALANCE</div>
+                  <div className="balance">$348.55</div>
+                </div>
               </div>
-              <div className="dash-item">
-                <span className="label">&nbsp;</span>
-                <span className="value">0</span>
-                <span className="sub">Referred Account</span>
-              </div>
-              <div className="dash-item">
-                <span className="label">&nbsp;</span>
-                <span className="value">Today</span>
-                <span className="sub">0 lots</span>
-              </div>
-            </div>
-
-            <div className="dash-divider"></div>
-
-            <div className="dash-footer">
-              <a href="#">
-                <span style={{ marginRight: '6px' }}>↗</span>
-                Share your rating
-              </a>
-              <span className="stars">★★★★☆</span>
-            </div>
-          </Dashboard>
+            </AccountCard>
+          </BottomSection>
         </RightPanel>
       </Container>
     </>
