@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styled, { keyframes, createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 
 // ============================================
 // GLOBAL STYLES
@@ -13,20 +13,18 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f2f5;
-    color: #0b1a33;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f5f7fa;
+    color: #1a2332;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 24px;
   }
 
   #root {
     width: 100%;
-    max-width: 1440px;
-    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,128 +32,102 @@ const GlobalStyle = createGlobalStyle`
 
   @media (max-width: 768px) {
     body {
-      padding: 12px;
+      padding: 16px;
     }
   }
 
   @media (max-width: 480px) {
     body {
-      padding: 8px;
+      padding: 12px;
     }
   }
 `;
 
 // ============================================
-// ANIMATIONS
+// MAIN WRAPPER
 // ============================================
-const fadeIn = keyframes`
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-`;
-
-// ============================================
-// MAIN CONTAINER
-// ============================================
-const Container = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
+const Wrapper = styled.div`
   width: 100%;
   max-width: 1200px;
-  min-height: 90vh;
-  max-height: 95vh;
   background: #ffffff;
-  border-radius: 40px;
+  border-radius: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.03);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   overflow: hidden;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.08), 0 10px 30px rgba(0, 0, 0, 0.04);
-  animation: ${fadeIn} 0.6s ease-out;
+  min-height: 90vh;
 
-  @media (max-width: 992px) {
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    max-height: none;
     min-height: auto;
-    border-radius: 28px;
+    border-radius: 24px;
   }
 
   @media (max-width: 480px) {
-    border-radius: 20px;
+    border-radius: 16px;
   }
 `;
 
 // ============================================
-// LEFT PANEL - SIGN UP FORM
+// LEFT COLUMN - SIGN UP
 // ============================================
-const LeftPanel = styled.div`
+const LeftColumn = styled.div`
   padding: 48px 44px 40px 44px;
   background: #ffffff;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
 
-  @media (max-width: 1200px) {
-    padding: 36px 32px 32px 32px;
+  @media (max-width: 1024px) {
+    padding: 40px 32px 32px 32px;
   }
 
   @media (max-width: 768px) {
-    padding: 28px 24px 24px 24px;
+    padding: 32px 24px 24px 24px;
   }
 
   @media (max-width: 480px) {
-    padding: 20px 16px 16px 16px;
+    padding: 24px 16px 20px 16px;
   }
 `;
 
 const Brand = styled.div`
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: #0b1a33;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a2332;
+  letter-spacing: -0.3px;
   margin-bottom: 4px;
 
   span {
     color: #2563eb;
   }
-
-  @media (max-width: 480px) {
-    font-size: 24px;
-  }
 `;
 
-const SignInLink = styled.div`
+const SubHeader = styled.div`
   font-size: 15px;
-  color: #6b7280;
-  margin-bottom: 32px;
+  color: #6b7a8f;
+  margin-bottom: 28px;
 
   a {
     color: #2563eb;
     font-weight: 600;
     text-decoration: none;
-    transition: color 0.2s;
 
     &:hover {
-      color: #1d4ed8;
       text-decoration: underline;
     }
-  }
-
-  @media (max-width: 480px) {
-    font-size: 14px;
-    margin-bottom: 24px;
   }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  flex: 1;
-  gap: 2px;
+  gap: 0;
 `;
 
-const FormGroup = styled.div`
-  margin-bottom: 16px;
+const Field = styled.div`
+  margin-bottom: 18px;
 
-  @media (max-width: 480px) {
-    margin-bottom: 12px;
+  &:last-of-type {
+    margin-bottom: 0;
   }
 `;
 
@@ -163,82 +135,106 @@ const Label = styled.label`
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #1e293b;
+  color: #1a2332;
   margin-bottom: 4px;
-  letter-spacing: 0.2px;
-`;
-
-const Hint = styled.span`
-  display: block;
-  font-size: 12px;
-  font-weight: 400;
-  color: #94a3b8;
-  margin-top: 3px;
-  line-height: 1.4;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 14px 16px;
+  padding: 13px 16px;
   font-size: 15px;
-  border: 1.5px solid #e8ecf0;
-  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
   background: #fafbfc;
-  transition: all 0.25s ease;
   outline: none;
   font-family: inherit;
-  color: #0b1a33;
+  color: #1a2332;
+  transition: border 0.2s, box-shadow 0.2s;
 
   &::placeholder {
-    color: #b0b8c4;
-    font-size: 14px;
+    color: #a0aec0;
   }
 
   &:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
     background: #ffffff;
   }
 
-  &:hover:not(:focus) {
-    border-color: #d0d7e2;
-  }
-
   @media (max-width: 480px) {
-    padding: 12px 14px;
+    padding: 11px 14px;
     font-size: 14px;
-    border-radius: 12px;
+    border-radius: 10px;
   }
 `;
 
 const Select = styled.select`
   width: 100%;
-  padding: 14px 16px;
+  padding: 13px 16px;
   font-size: 15px;
-  border: 1.5px solid #e8ecf0;
-  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
   background: #fafbfc;
-  transition: all 0.25s ease;
   outline: none;
   font-family: inherit;
-  color: #0b1a33;
+  color: #1a2332;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpath d='M1 2l6 6 6-6' stroke='%2394a3b8' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
-  padding-right: 44px;
+  padding-right: 40px;
   cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s;
 
   &:focus {
     border-color: #2563eb;
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
-    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+    background: #ffffff;
   }
 
   @media (max-width: 480px) {
-    padding: 12px 14px;
+    padding: 11px 14px;
     font-size: 14px;
-    border-radius: 12px;
+    border-radius: 10px;
+  }
+`;
+
+const Hint = styled.span`
+  display: block;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 3px;
+`;
+
+const PasswordRules = styled.ul`
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-top: 6px;
+  list-style: none;
+  border: 1px solid #f1f4f8;
+
+  li {
+    font-size: 13px;
+    color: #475569;
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: "•";
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 14px;
+    li {
+      font-size: 12px;
+    }
   }
 `;
 
@@ -247,7 +243,7 @@ const PhoneRow = styled.div`
   gap: 10px;
 
   select {
-    width: 100px;
+    width: 90px;
     flex-shrink: 0;
   }
 
@@ -265,87 +261,57 @@ const PhoneRow = styled.div`
   }
 `;
 
-const PasswordHints = styled.ul`
+const VerificationBox = styled.div`
   background: #f8fafc;
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-top: 6px;
-  font-size: 13px;
-  color: #475569;
-  list-style: none;
-  border: 1px solid #f1f4f9;
-
-  li {
-    padding: 3px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    &::before {
-      content: "●";
-      color: #2563eb;
-      font-size: 10px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    font-size: 12px;
-    padding: 10px 14px;
-  }
-`;
-
-const CodeBox = styled.div`
-  background: #f8fafc;
-  border-radius: 14px;
-  padding: 14px 20px;
   border: 1.5px dashed #dce2ec;
+  border-radius: 12px;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-top: 2px;
+  margin-top: 4px;
 
-  .code-digits {
-    font-size: 30px;
+  .code {
+    font-size: 26px;
     font-weight: 700;
-    letter-spacing: 10px;
-    color: #0b1a33;
+    letter-spacing: 8px;
+    color: #1a2332;
     background: #ffffff;
-    padding: 6px 18px 6px 22px;
-    border-radius: 12px;
-    border: 1.5px solid #e8ecf0;
-    font-family: 'Inter', monospace;
+    padding: 4px 16px 4px 20px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    font-family: monospace;
   }
 
-  .code-label {
+  .label {
     font-size: 14px;
-    color: #1e293b;
     font-weight: 500;
+    color: #1a2332;
   }
 
-  .code-input {
+  .input-wrap {
     flex: 1;
-    min-width: 140px;
+    min-width: 120px;
 
     input {
       width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid #e8ecf0;
-      border-radius: 12px;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
       font-size: 15px;
       background: #ffffff;
       outline: none;
       font-family: inherit;
-      color: #0b1a33;
-      transition: all 0.25s ease;
+      color: #1a2332;
 
       &:focus {
         border-color: #2563eb;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.06);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
       }
 
       &::placeholder {
-        color: #b0b8c4;
+        color: #a0aec0;
       }
     }
   }
@@ -353,52 +319,45 @@ const CodeBox = styled.div`
   @media (max-width: 600px) {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
 
-    .code-digits {
+    .code {
       text-align: center;
       letter-spacing: 6px;
-      font-size: 26px;
+      font-size: 22px;
     }
 
-    .code-input {
+    .input-wrap {
       min-width: auto;
     }
   }
 `;
 
-const CheckboxGroup = styled.div`
-  margin-top: 14px;
+const Checkboxes = styled.div`
+  margin-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 
   label {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
     font-size: 14px;
-    color: #1e293b;
+    color: #1a2332;
     line-height: 1.5;
     cursor: pointer;
   }
 
   input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    margin-top: 1px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    margin-top: 2px;
     accent-color: #2563eb;
-    border-radius: 5px;
     cursor: pointer;
-    border: 2px solid #dce2ec;
-
-    &:checked {
-      border-color: #2563eb;
-    }
   }
 
-  .terms-link {
+  a {
     color: #2563eb;
     font-weight: 500;
     text-decoration: none;
@@ -411,47 +370,40 @@ const CheckboxGroup = styled.div`
 
   @media (max-width: 480px) {
     font-size: 13px;
-    gap: 10px;
   }
 `;
 
-const SignUpButton = styled.button`
+const SubmitBtn = styled.button`
   width: 100%;
-  padding: 18px;
+  padding: 16px;
   background: #2563eb;
   color: #ffffff;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background 0.2s, transform 0.1s;
   margin-top: 20px;
-  letter-spacing: 0.3px;
-  position: relative;
-  overflow: hidden;
+  letter-spacing: 0.2px;
 
   &:hover:not(:disabled) {
     background: #1d4ed8;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.25);
   }
 
   &:active:not(:disabled) {
     transform: scale(0.98);
-    box-shadow: none;
   }
 
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
   }
 
   @media (max-width: 480px) {
-    padding: 15px;
-    font-size: 16px;
-    border-radius: 14px;
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 12px;
     margin-top: 16px;
   }
 `;
@@ -459,131 +411,116 @@ const SignUpButton = styled.button`
 const Message = styled.div`
   margin-top: 14px;
   font-size: 14px;
-  padding: 12px 16px;
-  border-radius: 14px;
-  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.06)' : 'rgba(34, 197, 94, 0.06)'};
-  color: ${props => props.color || '#6b7280'};
-  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.12)' : 'rgba(34, 197, 94, 0.12)'};
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.05)' : 'rgba(34, 197, 94, 0.05)'};
+  color: ${props => props.color || '#6b7a8f'};
+  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)'};
   text-align: center;
-  min-height: 48px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1.5;
-
-  @media (max-width: 480px) {
-    font-size: 13px;
-    min-height: 40px;
-    padding: 10px 14px;
-  }
 `;
 
 // ============================================
-// RIGHT PANEL - PROMO + DASHBOARD
+// RIGHT COLUMN - PROMO + ACCOUNTS
 // ============================================
-const RightPanel = styled.div`
+const RightColumn = styled.div`
   background: #f8fafc;
   padding: 48px 44px 40px 44px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow-y: auto;
 
-  @media (max-width: 1200px) {
-    padding: 36px 32px 32px 32px;
+  @media (max-width: 1024px) {
+    padding: 40px 32px 32px 32px;
   }
 
   @media (max-width: 768px) {
-    padding: 28px 24px 24px 24px;
+    padding: 32px 24px 24px 24px;
   }
 
   @media (max-width: 480px) {
-    padding: 20px 16px 16px 16px;
+    padding: 24px 16px 20px 16px;
   }
 `;
 
-const PromoBox = styled.div`
+const PromoCard = styled.div`
   background: #ffffff;
-  border-radius: 24px;
-  padding: 32px 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  border-radius: 20px;
+  padding: 28px 24px;
   border: 1px solid #eef2f6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 
-  .icon-wrap {
-    font-size: 36px;
-    margin-bottom: 12px;
+  .icon {
+    font-size: 32px;
+    margin-bottom: 8px;
     display: block;
   }
 
-  .badge {
+  .tag {
     display: inline-block;
     background: #dbeafe;
     color: #1d4ed8;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    padding: 4px 16px;
+    padding: 3px 14px;
     border-radius: 20px;
-    letter-spacing: 0.3px;
-    margin-bottom: 14px;
+    letter-spacing: 0.2px;
+    margin-bottom: 10px;
   }
 
   h2 {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
-    color: #0b1a33;
-    margin-bottom: 8px;
-    line-height: 1.3;
+    color: #1a2332;
+    margin-bottom: 4px;
   }
 
   p {
-    color: #4b5563;
-    font-size: 15px;
+    color: #6b7a8f;
+    font-size: 14px;
     line-height: 1.6;
   }
 
   @media (max-width: 480px) {
-    padding: 24px 20px;
-
+    padding: 20px 16px;
     h2 {
-      font-size: 19px;
+      font-size: 18px;
     }
-
     p {
-      font-size: 14px;
+      font-size: 13px;
     }
   }
 `;
 
-// Bottom section with accounts
 const BottomSection = styled.div`
   margin-top: 24px;
 `;
 
-const NavTabs = styled.div`
+const Tabs = styled.div`
   display: flex;
-  gap: 4px;
-  margin-bottom: 16px;
+  gap: 2px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
 
   span {
     font-size: 13px;
     font-weight: 500;
-    color: #6b7280;
-    padding: 6px 14px;
-    border-radius: 10px;
+    color: #6b7a8f;
+    padding: 5px 14px;
+    border-radius: 8px;
     cursor: default;
-    transition: all 0.2s;
 
     &:first-child {
-      color: #0b1a33;
+      color: #1a2332;
       background: #ffffff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     }
   }
 
   @media (max-width: 480px) {
-    gap: 2px;
-
     span {
       font-size: 12px;
       padding: 4px 10px;
@@ -593,25 +530,24 @@ const NavTabs = styled.div`
 
 const AccountCard = styled.div`
   background: #ffffff;
-  border-radius: 20px;
-  padding: 24px 28px;
+  border-radius: 18px;
+  padding: 22px 24px;
   border: 1px solid #eef2f6;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 
-  .account-header {
+  .top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 
-    .account-type {
+    .type {
       font-size: 13px;
       font-weight: 600;
-      color: #6b7280;
-      letter-spacing: 0.3px;
+      color: #6b7a8f;
     }
 
-    .account-badge {
+    .status {
       font-size: 11px;
       font-weight: 600;
       color: #22c55e;
@@ -621,30 +557,36 @@ const AccountCard = styled.div`
     }
   }
 
-  .account-details {
+  .bottom {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
 
-    .account-number {
+    .account {
       .label {
         font-size: 11px;
         font-weight: 500;
         color: #94a3b8;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
+      }
+
+      .name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a2332;
+        margin-top: 2px;
       }
 
       .number {
-        font-size: 20px;
-        font-weight: 700;
-        color: #0b1a33;
-        margin-top: 2px;
-        letter-spacing: 0.5px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6b7a8f;
+        margin-top: 1px;
       }
     }
 
-    .account-balance {
+    .balance {
       text-align: right;
 
       .label {
@@ -652,38 +594,38 @@ const AccountCard = styled.div`
         font-weight: 500;
         color: #94a3b8;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.3px;
       }
 
-      .balance {
-        font-size: 28px;
+      .amount {
+        font-size: 26px;
         font-weight: 800;
-        color: #0b1a33;
+        color: #1a2332;
         margin-top: 2px;
       }
     }
   }
 
   @media (max-width: 480px) {
-    padding: 18px 16px;
+    padding: 16px;
 
-    .account-details {
+    .bottom {
       flex-direction: column;
       align-items: flex-start;
-      gap: 8px;
+      gap: 6px;
 
-      .account-balance {
+      .balance {
         text-align: left;
         width: 100%;
       }
     }
 
-    .account-details .account-number .number {
-      font-size: 17px;
+    .bottom .account .name {
+      font-size: 16px;
     }
 
-    .account-details .account-balance .balance {
-      font-size: 24px;
+    .bottom .balance .amount {
+      font-size: 22px;
     }
   }
 `;
@@ -694,7 +636,7 @@ const AccountCard = styled.div`
 
 const Register = () => {
   const navigate = useNavigate();
-  
+
   const [country, setCountry] = useState('KE');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -705,18 +647,13 @@ const Register = () => {
   const [verificationCode, setVerificationCode] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [marketingAccepted, setMarketingAccepted] = useState(true);
-  
+
   const [message, setMessage] = useState('');
-  const [messageColor, setMessageColor] = useState('#6b7280');
+  const [messageColor, setMessageColor] = useState('#6b7a8f');
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
-  const validatePhone = (phone) => {
-    const digits = phone.replace(/\D/g, '');
-    return digits.length >= 8 && digits.length <= 15;
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -728,21 +665,21 @@ const Register = () => {
     const passwordTrimmed = password;
 
     if (!firstNameTrimmed || !lastNameTrimmed) {
-      setMessage('First & last name required');
+      setMessage('First and last name are required');
       setMessageColor('#ef4444');
       setIsError(true);
       return;
     }
 
     if (!phoneTrimmed || !emailTrimmed || !passwordTrimmed) {
-      setMessage('All fields required');
+      setMessage('All fields are required');
       setMessageColor('#ef4444');
       setIsError(true);
       return;
     }
 
-    if (!validatePhone(phoneTrimmed)) {
-      setMessage('Valid phone with country code required');
+    if (phoneTrimmed.replace(/\D/g, '').length < 8) {
+      setMessage('Please enter a valid phone number');
       setMessageColor('#ef4444');
       setIsError(true);
       return;
@@ -791,13 +728,13 @@ const Register = () => {
     }
 
     setIsLoading(true);
-    setMessage('Creating account...');
-    setMessageColor('#6b7280');
+    setMessage('Creating your account...');
+    setMessageColor('#6b7a8f');
     setIsError(false);
 
     try {
       const fullPhone = phoneCode + phoneTrimmed;
-      
+
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -809,8 +746,8 @@ const Register = () => {
           password: passwordTrimmed,
           country: country,
           verification_code: verificationCode.trim(),
-          marketing_opt_in: marketingAccepted
-        })
+          marketing_opt_in: marketingAccepted,
+        }),
       });
 
       const data = await response.json();
@@ -818,12 +755,12 @@ const Register = () => {
       if (response.status === 201) {
         localStorage.setItem('tempUserId', data.user_id);
         localStorage.setItem('userEmail', emailTrimmed);
-        
-        setMessage('Account created! Check your email.');
+
+        setMessage('Account created! Please check your email.');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
-        
+
         setTimeout(() => {
           navigate('/verify');
         }, 2000);
@@ -835,7 +772,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setMessage('Cannot connect to server. Please check your connection.');
+      setMessage('Unable to connect to the server. Please check your connection.');
       setMessageColor('#ef4444');
       setIsError(true);
       setIsLoading(false);
@@ -845,23 +782,18 @@ const Register = () => {
   return (
     <>
       <GlobalStyle />
-      
-      <Container>
-        {/* ========== LEFT PANEL ========== */}
-        <LeftPanel>
+      <Wrapper>
+        {/* LEFT */}
+        <LeftColumn>
           <Brand>MyTradeApp</Brand>
-          <SignInLink>
+          <SubHeader>
             Already have an account? <Link to="/login">Sign In</Link>
-          </SignInLink>
+          </SubHeader>
 
           <Form onSubmit={handleSubmit}>
-            {/* Country */}
-            <FormGroup>
+            <Field>
               <Label>Country</Label>
-              <Select
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-              >
+              <Select value={country} onChange={(e) => setCountry(e.target.value)}>
                 <option value="KE">Kenya</option>
                 <option value="NG">Nigeria</option>
                 <option value="ZA">South Africa</option>
@@ -871,10 +803,9 @@ const Register = () => {
                 <option value="US">United States</option>
                 <option value="GB">United Kingdom</option>
               </Select>
-            </FormGroup>
+            </Field>
 
-            {/* Email */}
-            <FormGroup>
+            <Field>
               <Label>Email</Label>
               <Input
                 type="email"
@@ -884,10 +815,9 @@ const Register = () => {
                 required
               />
               <Hint>Make sure you enter a valid email. It will be used for login.</Hint>
-            </FormGroup>
+            </Field>
 
-            {/* Password */}
-            <FormGroup>
+            <Field>
               <Label>Password</Label>
               <Input
                 type="password"
@@ -896,15 +826,14 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <PasswordHints>
+              <PasswordRules>
                 <li>Use from 8 to 15 characters</li>
                 <li>Use both uppercase and lowercase letters</li>
                 <li>Use a combination of numbers and English letters</li>
-              </PasswordHints>
-            </FormGroup>
+              </PasswordRules>
+            </Field>
 
-            {/* Full Name */}
-            <FormGroup>
+            <Field>
               <Label>Full Name</Label>
               <Input
                 type="text"
@@ -917,16 +846,12 @@ const Register = () => {
                 }}
                 required
               />
-            </FormGroup>
+            </Field>
 
-            {/* Phone Number */}
-            <FormGroup>
+            <Field>
               <Label>Phone Number</Label>
               <PhoneRow>
-                <Select
-                  value={phoneCode}
-                  onChange={(e) => setPhoneCode(e.target.value)}
-                >
+                <Select value={phoneCode} onChange={(e) => setPhoneCode(e.target.value)}>
                   <option value="+254">+254</option>
                   <option value="+234">+234</option>
                   <option value="+27">+27</option>
@@ -944,15 +869,14 @@ const Register = () => {
                   required
                 />
               </PhoneRow>
-            </FormGroup>
+            </Field>
 
-            {/* Verification Code */}
-            <FormGroup>
+            <Field>
               <Label>Please enter this number</Label>
-              <CodeBox>
-                <span className="code-digits">7 9 1 0</span>
-                <span className="code-label">Number</span>
-                <div className="code-input">
+              <VerificationBox>
+                <span className="code">7 9 1 0</span>
+                <span className="label">Number</span>
+                <div className="input-wrap">
                   <Input
                     type="text"
                     placeholder="Enter code"
@@ -961,11 +885,10 @@ const Register = () => {
                     required
                   />
                 </div>
-              </CodeBox>
-            </FormGroup>
+              </VerificationBox>
+            </Field>
 
-            {/* Checkboxes */}
-            <CheckboxGroup>
+            <Checkboxes>
               <label>
                 <input
                   type="checkbox"
@@ -974,7 +897,7 @@ const Register = () => {
                   required
                 />
                 I confirm that I'm not a U.S. tax person, I'm over 18, and I accept
-                <a href="#" className="terms-link">Terms and Conditions</a>
+                <a href="#">Terms and Conditions</a>
               </label>
               <label>
                 <input
@@ -984,12 +907,11 @@ const Register = () => {
                 />
                 I agree to receive MyTradeApp marketing updates
               </label>
-            </CheckboxGroup>
+            </Checkboxes>
 
-            {/* Submit */}
-            <SignUpButton type="submit" disabled={isLoading}>
+            <SubmitBtn type="submit" disabled={isLoading}>
               {isLoading ? 'Creating Account...' : 'Sign up'}
-            </SignUpButton>
+            </SubmitBtn>
           </Form>
 
           {message && (
@@ -997,48 +919,45 @@ const Register = () => {
               {message}
             </Message>
           )}
-        </LeftPanel>
+        </LeftColumn>
 
-        {/* ========== RIGHT PANEL ========== */}
-        <RightPanel>
-          <PromoBox>
-            <span className="icon-wrap">📈</span>
-            <div className="badge">⚡ Trusted by traders</div>
-            <h2>Trade with confidence</h2>
-            <p>Navigate the financial markets effortlessly</p>
-          </PromoBox>
+        {/* RIGHT */}
+        <RightColumn>
+          <PromoCard>
+            <span className="icon">📊</span>
+            <span className="tag">Trade with confidence</span>
+            <h2>Navigate the financial markets effortlessly</h2>
+          </PromoCard>
 
           <BottomSection>
-            <NavTabs>
+            <Tabs>
               <span>Accounts</span>
               <span>Funds</span>
               <span>Partners</span>
               <span>Copy/Trading</span>
               <span>Promotions</span>
-            </NavTabs>
+            </Tabs>
 
             <AccountCard>
-              <div className="account-header">
-                <span className="account-type">Accounts | Real</span>
-                <span className="account-badge">● Live</span>
+              <div className="top">
+                <span className="type">Accounts | Real</span>
+                <span className="status">● Live</span>
               </div>
-              <div className="account-details">
-                <div className="account-number">
+              <div className="bottom">
+                <div className="account">
                   <div className="label">ACCOUNT</div>
-                  <div className="number">Standard</div>
-                  <div className="number" style={{ fontSize: '14px', color: '#6b7280', fontWeight: '500' }}>
-                    25458291
-                  </div>
+                  <div className="name">Standard</div>
+                  <div className="number">25458291</div>
                 </div>
-                <div className="account-balance">
+                <div className="balance">
                   <div className="label">BALANCE</div>
-                  <div className="balance">$348.55</div>
+                  <div className="amount">$348.55</div>
                 </div>
               </div>
             </AccountCard>
           </BottomSection>
-        </RightPanel>
-      </Container>
+        </RightColumn>
+      </Wrapper>
     </>
   );
 };
