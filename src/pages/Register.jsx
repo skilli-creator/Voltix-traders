@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled, { keyframes, createGlobalStyle } from 'styled-components';
 
 // ============================================
 // GLOBAL STYLES
@@ -13,381 +13,488 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: #f0f2f5;
-    color: #1a2332;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: 24px;
+    align-items: center;
+    background: #050a18;
+    color: #f1f5f9;
+    padding: 8px;
+    overflow: hidden;
+    position: relative;
   }
 
   #root {
     width: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
-  }
-
-  @media (max-width: 768px) {
-    body {
-      padding: 16px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    body {
-      padding: 12px;
-    }
-  }
-`;
-
-// ============================================
-// MAIN WRAPPER
-// ============================================
-const Wrapper = styled.div`
-  width: 100%;
-  max-width: 1200px;
-  background: #ffffff;
-  border-radius: 32px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.03);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  overflow: hidden;
-  min-height: 90vh;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    border-radius: 24px;
-  }
-
-  @media (max-width: 480px) {
-    border-radius: 16px;
-  }
-`;
-
-// ============================================
-// LEFT COLUMN - SIGN UP
-// ============================================
-const LeftColumn = styled.div`
-  padding: 48px 44px 40px 44px;
-  background: #ffffff;
-  overflow-y: auto;
-
-  @media (max-width: 1024px) {
-    padding: 40px 32px 32px 32px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 32px 24px 24px 24px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 24px 16px 20px 16px;
-  }
-`;
-
-const Brand = styled.div`
-  font-size: 28px;
-  font-weight: 700;
-  color: #1a2332;
-  letter-spacing: -0.3px;
-  margin-bottom: 4px;
-
-  span {
-    color: #2563eb;
-  }
-`;
-
-const SubHeader = styled.div`
-  font-size: 15px;
-  color: #6b7a8f;
-  margin-bottom: 28px;
-
-  a {
-    color: #2563eb;
-    font-weight: 600;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-`;
-
-const Field = styled.div`
-  margin-bottom: 18px;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-`;
-
-const Label = styled.label`
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a2332;
-  margin-bottom: 4px;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 13px 16px;
-  font-size: 15px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  background: #fafbfc;
-  outline: none;
-  font-family: inherit;
-  color: #1a2332;
-  transition: border 0.2s, box-shadow 0.2s;
-
-  &::placeholder {
-    color: #a0aec0;
-  }
-
-  &:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
-    background: #ffffff;
-  }
-
-  @media (max-width: 480px) {
-    padding: 11px 14px;
-    font-size: 14px;
-    border-radius: 10px;
-  }
-`;
-
-const Select = styled.select`
-  width: 100%;
-  padding: 13px 16px;
-  font-size: 15px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  background: #fafbfc;
-  outline: none;
-  font-family: inherit;
-  color: #1a2332;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  padding-right: 40px;
-  cursor: pointer;
-  transition: border 0.2s, box-shadow 0.2s;
-
-  &:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
-    background: #ffffff;
-  }
-
-  @media (max-width: 480px) {
-    padding: 11px 14px;
-    font-size: 14px;
-    border-radius: 10px;
-  }
-`;
-
-const Hint = styled.span`
-  display: block;
-  font-size: 12px;
-  color: #94a3b8;
-  margin-top: 3px;
-`;
-
-const PasswordRules = styled.ul`
-  background: #f8fafc;
-  border-radius: 10px;
-  padding: 10px 16px;
-  margin-top: 6px;
-  list-style: none;
-  border: 1px solid #f1f4f8;
-
-  li {
-    font-size: 13px;
-    color: #475569;
-    padding: 2px 0;
-    display: flex;
     align-items: center;
-    gap: 8px;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 4px;
+    }
+  }
+`;
+
+// ============================================
+// ANIMATIONS
+// ============================================
+const floatIn = keyframes`
+  0% { 
+    opacity: 0; 
+    transform: translateY(30px) scale(0.96);
+    filter: blur(3px);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+`;
+
+const pulseRing = keyframes`
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -300% center; }
+  100% { background-position: 300% center; }
+`;
+
+const breathe = keyframes`
+  0%, 100% { opacity: 0.1; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(1.04); }
+`;
+
+const slideGlow = keyframes`
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(200%) skewX(-20deg); }
+`;
+
+const rotateGlow = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+// ============================================
+// BACKGROUND - MINIMAL
+// ============================================
+const BackgroundContainer = styled.div`
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+`;
+
+const GradientOrb = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  animation: ${breathe} 7s ease-in-out infinite;
+
+  &:nth-child(1) {
+    width: 180px;
+    height: 180px;
+    top: -80px;
+    right: -60px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.08), transparent 70%);
+    animation-delay: 0s;
+  }
+
+  &:nth-child(2) {
+    width: 150px;
+    height: 150px;
+    bottom: -60px;
+    left: -50px;
+    background: radial-gradient(circle, rgba(129, 140, 248, 0.05), transparent 70%);
+    animation-delay: -2.5s;
+  }
+`;
+
+// ============================================
+// ULTRA COMPACT FORM
+// ============================================
+const FloatingFormContainer = styled.div`
+  width: 100%;
+  max-width: 360px;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+  animation: ${floatIn} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 100vh;
+  overflow: visible;
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    padding: 0 2px;
+  }
+`;
+
+const FormCard = styled.div`
+  background: rgba(8, 18, 38, 0.65);
+  backdrop-filter: blur(32px);
+  border-radius: 28px;
+  padding: 16px 16px 14px;
+  border: 1px solid rgba(56, 189, 248, 0.04);
+  box-shadow: 
+    0 20px 60px -12px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(56, 189, 248, 0.03);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 29px;
+    padding: 1px;
+    background: conic-gradient(
+      from 0deg,
+      transparent,
+      rgba(56, 189, 248, 0.04),
+      transparent,
+      rgba(129, 140, 248, 0.04),
+      transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: ${rotateGlow} 15s linear infinite;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 30%;
+    right: 30%;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, #38bdf8, #818cf8, transparent);
+    opacity: 0.1;
+    border-radius: 0 0 4px 4px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 12px 10px;
+    border-radius: 20px;
+    &::before {
+      border-radius: 21px;
+    }
+  }
+`;
+
+// ============================================
+// BRAND - MINIMAL
+// ============================================
+const BrandSection = styled.div`
+  text-align: center;
+  margin-bottom: 10px;
+
+  @media (max-width: 480px) {
+    margin-bottom: 6px;
+  }
+`;
+
+const PremiumLogo = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 10px 2px 8px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.04), rgba(129, 140, 248, 0.02));
+  border: 1px solid rgba(56, 189, 248, 0.02);
+  border-radius: 20px;
+  margin-bottom: 4px;
+
+  .logo-icon {
+    font-size: 11px;
+  }
+
+  .logo-text {
+    font-size: 9px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #e0f2fe, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.2px;
+  }
+
+  .status-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #22c55e;
+    position: relative;
 
     &::before {
-      content: "•";
-      color: #2563eb;
-      font-weight: 700;
-      font-size: 16px;
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: ${pulseRing} 1.8s ease-out infinite;
     }
   }
 
   @media (max-width: 480px) {
-    padding: 8px 14px;
-    li {
-      font-size: 12px;
-    }
+    padding: 1px 8px 1px 6px;
+    .logo-text { font-size: 8px; }
+    .logo-icon { font-size: 10px; }
+    gap: 4px;
   }
 `;
 
-const PhoneRow = styled.div`
-  display: flex;
-  gap: 10px;
+const PremiumTitle = styled.h1`
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 1px;
 
-  select {
-    width: 90px;
-    flex-shrink: 0;
-  }
-
-  input {
-    flex: 1;
+  .gradient-text {
+    background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: ${shimmer} 6s ease-in-out infinite;
   }
 
   @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 8px;
-
-    select {
-      width: 100%;
-    }
+    font-size: 15px;
   }
 `;
 
-const VerificationBox = styled.div`
-  background: #f8fafc;
-  border: 1.5px dashed #dce2ec;
-  border-radius: 12px;
-  padding: 14px 18px;
+const PremiumSubhead = styled.p`
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 400;
+
+  @media (max-width: 480px) {
+    font-size: 9px;
+  }
+`;
+
+// ============================================
+// ULTRA COMPACT FORM ELEMENTS
+// ============================================
+const Form = styled.form`
+  width: 100%;
+`;
+
+const InputGroup = styled.div`
+  margin-bottom: 5px;
+  text-align: left;
+
+  @media (max-width: 480px) {
+    margin-bottom: 4px;
+  }
+`;
+
+const FloatingLabel = styled.label`
+  font-size: 8px;
+  font-weight: 600;
+  color: #94a3b8;
   display: flex;
   align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  margin-top: 4px;
+  gap: 3px;
+  margin-bottom: 1px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 
-  .code {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 8px;
-    color: #1a2332;
-    background: #ffffff;
-    padding: 4px 16px 4px 20px;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    font-family: monospace;
-  }
-
-  .label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #1a2332;
-  }
-
-  .input-wrap {
-    flex: 1;
-    min-width: 120px;
-
-    input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 15px;
-      background: #ffffff;
-      outline: none;
-      font-family: inherit;
-      color: #1a2332;
-
-      &:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
-      }
-
-      &::placeholder {
-        color: #a0aec0;
-      }
-    }
-  }
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    align-items: stretch;
-
-    .code {
-      text-align: center;
-      letter-spacing: 6px;
-      font-size: 22px;
-    }
-
-    .input-wrap {
-      min-width: auto;
-    }
-  }
-`;
-
-const Checkboxes = styled.div`
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  label {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
-    color: #1a2332;
-    line-height: 1.5;
-    cursor: pointer;
-  }
-
-  input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    margin-top: 2px;
-    accent-color: #2563eb;
-    cursor: pointer;
-  }
-
-  a {
-    color: #2563eb;
-    font-weight: 500;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+  .icon {
+    font-size: 9px;
+    color: #4b5563;
   }
 
   @media (max-width: 480px) {
-    font-size: 13px;
+    font-size: 7px;
+    .icon { font-size: 8px; }
   }
 `;
 
-const SubmitBtn = styled.button`
+const PremiumInputWrapper = styled.div`
+  position: relative;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transition: all 0.25s ease;
+  overflow: hidden;
+
+  &:focus-within {
+    border-color: rgba(56, 189, 248, 0.1);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.02);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  @media (max-width: 480px) {
+    border-radius: 12px;
+  }
+`;
+
+const PremiumInput = styled.input`
   width: 100%;
-  padding: 16px;
-  background: #2563eb;
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 700;
+  padding: 6px 10px;
+  background: transparent;
   border: none;
-  border-radius: 14px;
+  color: #f1f5f9;
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+
+  &::placeholder {
+    color: #4b5563;
+    font-size: 11px;
+    font-weight: 400;
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px 8px;
+    font-size: 11px;
+    &::placeholder { font-size: 10px; }
+  }
+`;
+
+const SplitRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+
+  @media (max-width: 480px) {
+    gap: 4px;
+  }
+`;
+
+const TogglePasswordBtn = styled.button`
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  margin-top: 20px;
-  letter-spacing: 0.2px;
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: #6b7280;
+  padding: 2px;
+
+  &:hover {
+    color: #f1f5f9;
+  }
+
+  @media (max-width: 480px) {
+    right: 6px;
+    font-size: 10px;
+  }
+`;
+
+const PhoneHelper = styled.div`
+  font-size: 7px;
+  color: #4b5563;
+  margin-top: 1px;
+  padding-left: 4px;
+
+  @media (max-width: 480px) {
+    font-size: 6px;
+  }
+`;
+
+// ============================================
+// PASSWORD STRENGTH - ULTRA COMPACT
+// ============================================
+const StrengthContainer = styled.div`
+  margin-top: 2px;
+`;
+
+const StrengthMeter = styled.div`
+  height: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+  overflow: hidden;
+`;
+
+const StrengthFill = styled.div`
+  width: ${props => props.width || '0%'};
+  height: 100%;
+  background: ${props => props.color || '#ef4444'};
+  transition: width 0.3s ease;
+  border-radius: 2px;
+`;
+
+const StrengthText = styled.div`
+  font-size: 7px;
+  margin-top: 1px;
+  color: ${props => props.color || '#6b7280'};
+  transition: color 0.3s ease;
+  font-weight: 500;
+
+  @media (max-width: 480px) {
+    font-size: 6px;
+  }
+`;
+
+// ============================================
+// BUTTON - ULTRA COMPACT
+// ============================================
+const PremiumButton = styled.button`
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background-size: 200% 200%;
+  color: #0a0f1f;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 2px;
+  box-shadow: 0 2px 16px rgba(34, 197, 94, 0.06);
+  animation: ${shimmer} 6s ease-in-out infinite;
+
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .btn-shimmer {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+    animation: ${slideGlow} 4s ease-in-out infinite;
+    z-index: 1;
+  }
+
+  .btn-glow {
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+  }
 
   &:hover:not(:disabled) {
-    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+  }
+
+  &:hover:not(:disabled) .btn-glow {
+    opacity: 1;
   }
 
   &:active:not(:disabled) {
@@ -395,206 +502,92 @@ const SubmitBtn = styled.button`
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
+    animation: none;
   }
 
   @media (max-width: 480px) {
-    padding: 14px;
-    font-size: 15px;
-    border-radius: 12px;
-    margin-top: 16px;
+    padding: 6px;
+    font-size: 11px;
+    border-radius: 16px;
   }
 `;
 
-const Message = styled.div`
-  margin-top: 14px;
-  font-size: 14px;
-  padding: 10px 16px;
-  border-radius: 12px;
-  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.05)' : 'rgba(34, 197, 94, 0.05)'};
-  color: ${props => props.color || '#6b7a8f'};
-  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)'};
-  text-align: center;
-  min-height: 44px;
+// ============================================
+// MESSAGE - ULTRA COMPACT
+// ============================================
+const PremiumMessage = styled.div`
+  margin-top: 6px;
+  font-size: 10px;
+  min-height: 22px;
+  padding: 3px 10px;
+  border-radius: 14px;
+  background: ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'rgba(0, 0, 0, 0.08)'};
+  color: ${props => props.color || '#94a3b8'};
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-`;
+  gap: 4px;
+  border: 1px solid ${props => props.isError ? 'rgba(239, 68, 68, 0.04)' : 'transparent'};
 
-// ============================================
-// RIGHT COLUMN - SWIFT PAYOUTS + PARTNERSHIP
-// ============================================
-const RightColumn = styled.div`
-  background: #f8fafc;
-  padding: 48px 44px 40px 44px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  @media (max-width: 1024px) {
-    padding: 40px 32px 32px 32px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 32px 24px 24px 24px;
+  .msg-icon {
+    font-size: 10px;
+    color: ${props => props.color || '#94a3b8'};
   }
 
   @media (max-width: 480px) {
-    padding: 24px 16px 20px 16px;
+    font-size: 9px;
+    min-height: 18px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    .msg-icon { font-size: 9px; }
   }
 `;
 
-// ====== Swift & Secure Payouts ======
-const PayoutCard = styled.div`
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 28px 24px;
-  border: 1px solid #eef2f6;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-
-  .icon {
-    font-size: 32px;
-    margin-bottom: 8px;
-    display: block;
-  }
-
-  h2 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a2332;
-    margin-bottom: 4px;
-  }
-
-  p {
-    color: #6b7a8f;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  @media (max-width: 480px) {
-    padding: 20px 16px;
-    h2 {
-      font-size: 18px;
-    }
-    p {
-      font-size: 13px;
-    }
-  }
-`;
-
-// ====== Partnership Dashboard ======
-const PartnershipSection = styled.div`
-  margin-top: 24px;
-`;
-
-const PartnershipHeader = styled.div`
+// ============================================
+// FOOTER - ULTRA COMPACT
+// ============================================
+const PremiumFooter = styled.div`
+  margin-top: 8px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
+  justify-content: center;
+  gap: 3px;
+  font-size: 10px;
+  color: #94a3b8;
 
-  h3 {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1a2332;
-
-    span {
-      font-weight: 400;
-      color: #6b7a8f;
-    }
-  }
-
-  .summary-label {
-    font-size: 12px;
+  a {
+    color: #38bdf8;
+    text-decoration: none;
     font-weight: 500;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-`;
+    transition: all 0.3s ease;
+    position: relative;
 
-const PartnershipGrid = styled.div`
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 22px 24px;
-  border: 1px solid #eef2f6;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 20px;
-
-    .item {
-      display: flex;
-      flex-direction: column;
-
-      .label {
-        font-size: 11px;
-        font-weight: 500;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-      }
-
-      .value {
-        font-size: 22px;
-        font-weight: 700;
-        color: #1a2332;
-        margin-top: 2px;
-      }
-
-      .sub {
-        font-size: 13px;
-        color: #6b7a8f;
-        margin-top: 1px;
-      }
-    }
-  }
-
-  .divider {
-    border-top: 1px solid #eef2f6;
-    margin: 16px 0 12px 0;
-  }
-
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2px;
-
-    a {
-      color: #2563eb;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      transition: width 0.3s ease;
     }
 
-    .stars {
-      color: #f59e0b;
-      letter-spacing: 2px;
-      font-size: 14px;
+    &:hover {
+      color: #7dd3fc;
+    }
+
+    &:hover::after {
+      width: 100%;
     }
   }
 
   @media (max-width: 480px) {
-    padding: 16px;
-
-    .grid {
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .footer {
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-start;
-    }
+    font-size: 9px;
+    margin-top: 6px;
   }
 `;
 
@@ -604,24 +597,70 @@ const PartnershipGrid = styled.div`
 
 const Register = () => {
   const navigate = useNavigate();
-
-  const [country, setCountry] = useState('KE');
+  
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [phoneCode, setPhoneCode] = useState('+254');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [marketingAccepted, setMarketingAccepted] = useState(true);
-
+  const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState('');
-  const [messageColor, setMessageColor] = useState('#6b7a8f');
+  const [messageColor, setMessageColor] = useState('#94a3b8');
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const [strengthScore, setStrengthScore] = useState(0);
+  const [strengthWidth, setStrengthWidth] = useState('0%');
+  const [strengthColor, setStrengthColor] = useState('#ef4444');
+  const [strengthLabel, setStrengthLabel] = useState('Enter a strong password');
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+  const checkStrength = (pw) => {
+    let score = 0;
+    if (pw.length >= 6) score++;
+    if (pw.length >= 10) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    
+    const widthMap = ['0%', '20%', '40%', '60%', '80%', '100%'];
+    const colorMap = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#2dd4bf'];
+    const textMap = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'];
+    
+    setStrengthScore(score);
+    setStrengthWidth(widthMap[score]);
+    setStrengthColor(colorMap[score]);
+    setStrengthLabel(textMap[score]);
+    
+    return score;
+  };
+
+  useEffect(() => {
+    if (password) {
+      checkStrength(password);
+    } else {
+      setStrengthWidth('0%');
+      setStrengthColor('#ef4444');
+      setStrengthLabel('Enter a strong password');
+    }
+  }, [password]);
+
+  const validatePhone = (phone) => {
+    const digits = phone.replace(/\D/g, '');
+    return digits.length >= 8 && digits.length <= 15;
+  };
+
+  const togglePasswordVisibility = (field) => {
+    if (field === 'password') {
+      setShowPassword(!showPassword);
+    } else if (field === 'confirm') {
+      setShowConfirmPassword(!showConfirmPassword);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -631,91 +670,74 @@ const Register = () => {
     const phoneTrimmed = phoneNumber.trim();
     const emailTrimmed = email.trim();
     const passwordTrimmed = password;
+    const confirmPasswordTrimmed = confirmPassword;
 
     if (!firstNameTrimmed || !lastNameTrimmed) {
-      setMessage('First and last name are required');
-      setMessageColor('#ef4444');
+      setMessage('First & last name required');
+      setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
     if (!phoneTrimmed || !emailTrimmed || !passwordTrimmed) {
-      setMessage('All fields are required');
-      setMessageColor('#ef4444');
+      setMessage('All fields required');
+      setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
-    if (phoneTrimmed.replace(/\D/g, '').length < 8) {
-      setMessage('Please enter a valid phone number');
-      setMessageColor('#ef4444');
+    if (!validatePhone(phoneTrimmed)) {
+      setMessage('Valid phone with country code');
+      setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
     if (!emailTrimmed.includes('@') || !emailTrimmed.includes('.')) {
-      setMessage('Please enter a valid email address');
-      setMessageColor('#ef4444');
+      setMessage('Valid email address');
+      setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
-    if (passwordTrimmed.length < 8 || passwordTrimmed.length > 15) {
-      setMessage('Password must be 8-15 characters');
-      setMessageColor('#ef4444');
+    if (passwordTrimmed !== confirmPasswordTrimmed) {
+      setMessage('Passwords do not match');
+      setMessageColor('#f87171');
       setIsError(true);
       return;
     }
 
-    if (!/[a-z]/.test(passwordTrimmed) || !/[A-Z]/.test(passwordTrimmed)) {
-      setMessage('Use both uppercase and lowercase letters');
-      setMessageColor('#ef4444');
-      setIsError(true);
+    if (passwordTrimmed.length < 6) {
+      setMessage('Password must be 6+ characters');
+      setMessageColor('#fbbf24');
+      setIsError(false);
       return;
     }
 
-    if (!/[0-9]/.test(passwordTrimmed) || !/[a-zA-Z]/.test(passwordTrimmed)) {
-      setMessage('Use a combination of numbers and English letters');
-      setMessageColor('#ef4444');
-      setIsError(true);
-      return;
-    }
-
-    if (!verificationCode.trim()) {
-      setMessage('Please enter the verification code');
-      setMessageColor('#ef4444');
-      setIsError(true);
-      return;
-    }
-
-    if (!termsAccepted) {
-      setMessage('You must accept the Terms and Conditions');
-      setMessageColor('#ef4444');
-      setIsError(true);
+    const strength = checkStrength(passwordTrimmed);
+    if (strength < 2) {
+      setMessage('Choose a stronger password');
+      setMessageColor('#fbbf24');
+      setIsError(false);
       return;
     }
 
     setIsLoading(true);
-    setMessage('Creating your account...');
-    setMessageColor('#6b7a8f');
+    setMessage('Creating account...');
+    setMessageColor('#94a3b8');
     setIsError(false);
 
     try {
-      const fullPhone = phoneCode + phoneTrimmed;
-
       const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           first_name: firstNameTrimmed,
           last_name: lastNameTrimmed,
-          phone: fullPhone,
+          phone: phoneTrimmed,
           email: emailTrimmed,
-          password: passwordTrimmed,
-          country: country,
-          verification_code: verificationCode.trim(),
-          marketing_opt_in: marketingAccepted,
-        }),
+          password: passwordTrimmed
+        })
       });
 
       const data = await response.json();
@@ -723,25 +745,25 @@ const Register = () => {
       if (response.status === 201) {
         localStorage.setItem('tempUserId', data.user_id);
         localStorage.setItem('userEmail', emailTrimmed);
-
-        setMessage('Account created! Please check your email.');
+        
+        setMessage('Account created! Check your email.');
         setMessageColor('#22c55e');
         setIsError(false);
         setIsLoading(false);
-
+        
         setTimeout(() => {
           navigate('/verify');
         }, 2000);
       } else {
-        setMessage(data.error || 'Registration failed. Please try again.');
-        setMessageColor('#ef4444');
+        setMessage(`${data.error || 'Registration failed'}`);
+        setMessageColor('#f87171');
         setIsError(true);
         setIsLoading(false);
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setMessage('Unable to connect to the server. Please check your connection.');
-      setMessageColor('#ef4444');
+      setMessage('Cannot connect to server.');
+      setMessageColor('#f87171');
       setIsError(true);
       setIsLoading(false);
     }
@@ -750,200 +772,147 @@ const Register = () => {
   return (
     <>
       <GlobalStyle />
-      <Wrapper>
-        {/* ===== LEFT: SIGN UP ===== */}
-        <LeftColumn>
-          <Brand>MyTradeApp</Brand>
-          <SubHeader>
-            Already have an account? <Link to="/login">Sign In</Link>
-          </SubHeader>
+      
+      <BackgroundContainer>
+        <GradientOrb />
+        <GradientOrb />
+      </BackgroundContainer>
+
+      <FloatingFormContainer>
+        <FormCard>
+          <BrandSection>
+            <PremiumLogo>
+              <span className="logo-icon">🔷</span>
+              <span className="logo-text">Voltix Traders</span>
+              <span className="status-dot" />
+            </PremiumLogo>
+            <PremiumTitle>
+              Create <span className="gradient-text">Account</span>
+            </PremiumTitle>
+            <PremiumSubhead>Start your automated trading journey</PremiumSubhead>
+          </BrandSection>
 
           <Form onSubmit={handleSubmit}>
-            <Field>
-              <Label>Country</Label>
-              <Select value={country} onChange={(e) => setCountry(e.target.value)}>
-                <option value="KE">Kenya</option>
-                <option value="NG">Nigeria</option>
-                <option value="ZA">South Africa</option>
-                <option value="GH">Ghana</option>
-                <option value="UG">Uganda</option>
-                <option value="TZ">Tanzania</option>
-                <option value="US">United States</option>
-                <option value="GB">United Kingdom</option>
-              </Select>
-            </Field>
+            <SplitRow>
+              <InputGroup>
+                <FloatingLabel><span className="icon">◈</span> First</FloatingLabel>
+                <PremiumInputWrapper>
+                  <PremiumInput
+                    type="text"
+                    placeholder="John"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    required
+                  />
+                </PremiumInputWrapper>
+              </InputGroup>
 
-            <Field>
-              <Label>Email</Label>
-              <Input
-                type="email"
-                placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <Hint>Make sure you enter a valid email. It will be used for login.</Hint>
-            </Field>
+              <InputGroup>
+                <FloatingLabel><span className="icon">◈</span> Last</FloatingLabel>
+                <PremiumInputWrapper>
+                  <PremiumInput
+                    type="text"
+                    placeholder="Doe"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                  />
+                </PremiumInputWrapper>
+              </InputGroup>
+            </SplitRow>
 
-            <Field>
-              <Label>Password</Label>
-              <Input
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <PasswordRules>
-                <li>Use from 8 to 15 characters</li>
-                <li>Use both uppercase and lowercase letters</li>
-                <li>Use a combination of numbers and English letters</li>
-              </PasswordRules>
-            </Field>
-
-            <Field>
-              <Label>Full Name</Label>
-              <Input
-                type="text"
-                placeholder="Full Name"
-                value={firstName + (lastName ? ' ' + lastName : '')}
-                onChange={(e) => {
-                  const parts = e.target.value.split(' ');
-                  setFirstName(parts[0] || '');
-                  setLastName(parts.slice(1).join(' ') || '');
-                }}
-                required
-              />
-            </Field>
-
-            <Field>
-              <Label>Phone Number</Label>
-              <PhoneRow>
-                <Select value={phoneCode} onChange={(e) => setPhoneCode(e.target.value)}>
-                  <option value="+254">+254</option>
-                  <option value="+234">+234</option>
-                  <option value="+27">+27</option>
-                  <option value="+233">+233</option>
-                  <option value="+256">+256</option>
-                  <option value="+255">+255</option>
-                  <option value="+1">+1</option>
-                  <option value="+44">+44</option>
-                </Select>
-                <Input
+            <InputGroup>
+              <FloatingLabel><span className="icon">◈</span> Phone</FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
                   type="tel"
-                  placeholder="Phone Number"
+                  placeholder="+1 234 567 8900"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   required
                 />
-              </PhoneRow>
-            </Field>
+              </PremiumInputWrapper>
+              <PhoneHelper>Include country code (e.g., +1, +44)</PhoneHelper>
+            </InputGroup>
 
-            <Field>
-              <Label>Please enter this number</Label>
-              <VerificationBox>
-                <span className="code">7 9 1 0</span>
-                <span className="label">Number</span>
-                <div className="input-wrap">
-                  <Input
-                    type="text"
-                    placeholder="Enter code"
-                    value={verificationCode}
-                    onChange={(e) => setVerificationCode(e.target.value)}
-                    required
-                  />
-                </div>
-              </VerificationBox>
-            </Field>
-
-            <Checkboxes>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={termsAccepted}
-                  onChange={(e) => setTermsAccepted(e.target.checked)}
+            <InputGroup>
+              <FloatingLabel><span className="icon">◈</span> Email</FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type="email"
+                  placeholder="trader@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                I confirm that I'm not a U.S. tax person, I'm over 18, and I accept
-                <a href="#">Terms and Conditions</a>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={marketingAccepted}
-                  onChange={(e) => setMarketingAccepted(e.target.checked)}
-                />
-                I agree to receive MyTradeApp marketing updates
-              </label>
-            </Checkboxes>
+              </PremiumInputWrapper>
+            </InputGroup>
 
-            <SubmitBtn type="submit" disabled={isLoading}>
-              {isLoading ? 'Creating Account...' : 'Sign up'}
-            </SubmitBtn>
+            <InputGroup>
+              <FloatingLabel><span className="icon">◈</span> Password</FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Create strong password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <TogglePasswordBtn 
+                  type="button" 
+                  onClick={() => togglePasswordVisibility('password')}
+                >
+                  {showPassword ? '◈' : '◇'}
+                </TogglePasswordBtn>
+              </PremiumInputWrapper>
+              <StrengthContainer>
+                <StrengthMeter>
+                  <StrengthFill width={strengthWidth} color={strengthColor} />
+                </StrengthMeter>
+                <StrengthText color={strengthColor}>{strengthLabel}</StrengthText>
+              </StrengthContainer>
+            </InputGroup>
+
+            <InputGroup>
+              <FloatingLabel><span className="icon">◈</span> Confirm</FloatingLabel>
+              <PremiumInputWrapper>
+                <PremiumInput
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                <TogglePasswordBtn 
+                  type="button" 
+                  onClick={() => togglePasswordVisibility('confirm')}
+                >
+                  {showConfirmPassword ? '◈' : '◇'}
+                </TogglePasswordBtn>
+              </PremiumInputWrapper>
+            </InputGroup>
+
+            <PremiumButton type="submit" disabled={isLoading}>
+              <div className="btn-shimmer" />
+              <div className="btn-glow" />
+              <div className="btn-content">
+                {isLoading ? 'Creating...' : 'Register & Start Trading'}
+              </div>
+            </PremiumButton>
           </Form>
 
-          {message && (
-            <Message color={messageColor} isError={isError}>
-              {message}
-            </Message>
-          )}
-        </LeftColumn>
+          <PremiumMessage color={messageColor} isError={isError}>
+            <span className="msg-icon">
+              {isError ? '✗' : messageColor === '#22c55e' ? '✓' : messageColor === '#fbbf24' ? '!' : 'i'}
+            </span>
+            {message || '\u00A0'}
+          </PremiumMessage>
 
-        {/* ===== RIGHT: SWIFT PAYOUTS + PARTNERSHIP ===== */}
-        <RightColumn>
-          {/* Swift and Secure Payouts */}
-          <PayoutCard>
-            <span className="icon">⚡</span>
-            <h2>Swift and Secure Payouts</h2>
-            <p>Enjoy the convenience of fast and secure transactions</p>
-          </PayoutCard>
-
-          {/* Partnership Dashboard */}
-          <PartnershipSection>
-            <PartnershipHeader>
-              <h3>
-                MyTradeApp <span>Partnership</span>
-              </h3>
-              <span className="summary-label">Summary</span>
-            </PartnershipHeader>
-
-            <PartnershipGrid>
-              <div className="grid">
-                <div className="item">
-                  <span className="label">Partnership overview</span>
-                  <span className="value">$0</span>
-                  <span className="sub">Commissioned Earned</span>
-                </div>
-                <div className="item">
-                  <span className="label">&nbsp;</span>
-                  <span className="value">0</span>
-                  <span className="sub">Referred Clients</span>
-                </div>
-                <div className="item">
-                  <span className="label">&nbsp;</span>
-                  <span className="value">0</span>
-                  <span className="sub">Referred Account</span>
-                </div>
-                <div className="item">
-                  <span className="label">&nbsp;</span>
-                  <span className="value">Today</span>
-                  <span className="sub">0 lots</span>
-                </div>
-              </div>
-
-              <div className="divider" />
-
-              <div className="footer">
-                <a href="#">
-                  <span style={{ marginRight: '6px' }}>↗</span>
-                  Share your rating
-                </a>
-                <span className="stars">★★★★☆</span>
-              </div>
-            </PartnershipGrid>
-          </PartnershipSection>
-        </RightColumn>
-      </Wrapper>
+          <PremiumFooter>
+            Already have an account? <Link to="/login">Sign in →</Link>
+          </PremiumFooter>
+        </FormCard>
+      </FloatingFormContainer>
     </>
   );
 };
