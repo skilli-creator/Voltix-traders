@@ -421,6 +421,8 @@ const DashboardContainer = styled.div`
   overflow: hidden;
   position: relative;
   width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
   transition: background 0.3s ease;
   font-weight: 700;
   
@@ -438,6 +440,9 @@ const MainContent = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-left: ${props => props.isSidebarOpen && props.isDesktop ? '280px' : '0'};
 
@@ -450,6 +455,9 @@ const DesktopLayout = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 
   @media (max-width: 768px) {
     display: none;
@@ -462,6 +470,9 @@ const MobileLayout = styled.div`
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 
   @media (max-width: 768px) {
     display: flex;
@@ -472,11 +483,15 @@ const PanelsContainer = styled.div`
   display: flex;
   flex: 1;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   position: relative;
 `;
 
 const PanelWrapper = styled.div`
   flex: 0 0 100%;
+  min-width: 0;
   height: 100%;
   overflow-y: auto;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -501,6 +516,9 @@ const PanelContent = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 `;
 
 const MobileTabs = styled.div`
