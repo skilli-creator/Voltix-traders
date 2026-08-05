@@ -12,11 +12,6 @@ const pulseRing = keyframes`
   100% { transform: scale(2.4); opacity: 0; }
 `;
 
-const float = keyframes`
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-`;
-
 const rotateIn = keyframes`
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -187,9 +182,9 @@ const GlassDropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  min-width: 280px;
+  min-width: 300px;
   max-width: 90vw;
-  max-height: 400px;
+  max-height: 450px;
   overflow-y: auto;
   background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(15,17,23,0.94)'};
   backdrop-filter: blur(24px) saturate(190%);
@@ -337,9 +332,9 @@ const ThemeOptionItem = styled.div`
 `;
 
 // ============================================
-// 2. FUNDS BUTTON - Improved Design
+// 2. FUNDS BUTTON - With Dropdown & Transaction Options
 // ============================================
-const ProfessionalFundsButton = styled.a`
+const FundsButton = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -351,6 +346,7 @@ const ProfessionalFundsButton = styled.a`
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
@@ -413,6 +409,62 @@ const ProfessionalFundsButton = styled.a`
   }
 `;
 
+const FundsOption = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
+  font-size: 13px;
+  font-weight: 600;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.08)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+  }
+
+  .fund-icon {
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
+  }
+
+  .fund-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fund-name {
+    font-weight: 700;
+  }
+
+  .fund-desc {
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-weight: 400;
+  }
+
+  .fund-arrow {
+    opacity: 0.3;
+    transition: all 0.2s ease;
+  }
+
+  &:hover .fund-arrow {
+    opacity: 1;
+    transform: translateX(4px);
+    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+  }
+`;
+
 // ============================================
 // 3. ACCOUNT BADGE - With Global Currency Support
 // ============================================
@@ -458,7 +510,6 @@ const COUNTRY_CURRENCIES = [
   { code: 'LYD', flag: '🇱🇾', name: 'Libyan Dinar', symbol: 'ل.د' },
   { code: 'TND', flag: '🇹🇳', name: 'Tunisian Dinar', symbol: 'د.ت' },
   { code: 'DZD', flag: '🇩🇿', name: 'Algerian Dinar', symbol: 'د.ج' },
-  { code: 'MAD', flag: '🇲🇦', name: 'Moroccan Dirham', symbol: 'د.م.' },
   { code: 'ETB', flag: '🇪🇹', name: 'Ethiopian Birr', symbol: 'Br' },
 ];
 
@@ -515,7 +566,7 @@ const AccountBadge = styled.div`
   }
 `;
 
-// ===== CURRENCY SEARCH INPUT =====
+// ===== CURRENCY SEARCH INPUT - FIXED =====
 const SearchInput = styled.input`
   width: 100%;
   padding: 8px 12px;
@@ -666,63 +717,30 @@ const TopPanel = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
+  const [isFundsOpen, setIsFundsOpen] = useState(false);
   const [accountType, setAccountType] = useState('real');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [currencySearch, setCurrencySearch] = useState('');
   
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
+  const fundsRef = useRef(null);
   const navigate = useNavigate();
 
-  // Exchange rates (simplified - in production would come from API)
+  // Exchange rates
   const exchangeRates = {
-    USD: 1,
-    EUR: 0.92,
-    GBP: 0.79,
-    JPY: 149.50,
-    CHF: 0.88,
-    CAD: 1.36,
-    AUD: 1.52,
-    CNY: 7.20,
-    INR: 83.50,
-    BRL: 4.95,
-    ZAR: 18.90,
-    KSh: 150.50,
-    NGN: 1570.00,
-    EGP: 48.50,
-    MAD: 10.10,
-    GHS: 12.30,
-    KES: 150.50,
-    TZS: 2600.00,
-    UGX: 3800.00,
-    RWF: 1300.00,
-    ZMW: 26.50,
-    MXN: 17.80,
-    SGD: 1.35,
-    HKD: 7.82,
-    NZD: 1.64,
-    SEK: 10.50,
-    NOK: 10.60,
-    DKK: 6.90,
-    PLN: 4.10,
-    TRY: 32.50,
-    SAR: 3.75,
-    AED: 3.67,
-    QAR: 3.64,
-    KWD: 0.31,
-    BHD: 0.38,
-    OMR: 0.38,
-    JOD: 0.71,
-    IQD: 1310.00,
-    LYD: 4.85,
-    TND: 3.12,
-    DZD: 134.50,
-    ETB: 56.80,
+    USD: 1, EUR: 0.92, GBP: 0.79, JPY: 149.50, CHF: 0.88,
+    CAD: 1.36, AUD: 1.52, CNY: 7.20, INR: 83.50, BRL: 4.95,
+    ZAR: 18.90, KSh: 150.50, NGN: 1570.00, EGP: 48.50, MAD: 10.10,
+    GHS: 12.30, KES: 150.50, TZS: 2600.00, UGX: 3800.00, RWF: 1300.00,
+    ZMW: 26.50, MXN: 17.80, SGD: 1.35, HKD: 7.82, NZD: 1.64,
+    SEK: 10.50, NOK: 10.60, DKK: 6.90, PLN: 4.10, TRY: 32.50,
+    SAR: 3.75, AED: 3.67, QAR: 3.64, KWD: 0.31, BHD: 0.38,
+    OMR: 0.38, JOD: 0.71, IQD: 1310.00, LYD: 4.85, TND: 3.12,
+    DZD: 134.50, ETB: 56.80,
   };
 
-  const getExchangeRate = (currency) => {
-    return exchangeRates[currency] || 1;
-  };
+  const getExchangeRate = (currency) => exchangeRates[currency] || 1;
 
   const accountData = {
     real: { balance: 7110.00 },
@@ -736,7 +754,6 @@ const TopPanel = ({
     const converted = acc.balance * rate;
     const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
     const symbol = currencyInfo?.symbol || '$';
-    
     return `${symbol} ${converted.toFixed(2)}`;
   };
 
@@ -747,18 +764,25 @@ const TopPanel = ({
 
   const filteredCurrencies = COUNTRY_CURRENCIES.filter(c => 
     c.name.toLowerCase().includes(currencySearch.toLowerCase()) ||
-    c.code.toLowerCase().includes(currencySearch.toLowerCase()) ||
-    c.flag.includes(currencySearch)
+    c.code.toLowerCase().includes(currencySearch.toLowerCase())
   );
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
     setIsThemeOpen(false);
+    setIsFundsOpen(false);
   };
 
   const toggleThemeDropdown = () => {
     setIsThemeOpen(!isThemeOpen);
     setIsDropdownOpen(false);
+    setIsFundsOpen(false);
+  };
+
+  const toggleFundsDropdown = () => {
+    setIsFundsOpen(!isFundsOpen);
+    setIsDropdownOpen(false);
+    setIsThemeOpen(false);
   };
 
   useEffect(() => {
@@ -769,12 +793,23 @@ const TopPanel = ({
       if (themeRef.current && !themeRef.current.contains(e.target)) {
         setIsThemeOpen(false);
       }
+      if (fundsRef.current && !fundsRef.current.contains(e.target)) {
+        setIsFundsOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const activeThemeObj = THEME_OPTIONS.find(t => t.key === currentTheme) || THEME_OPTIONS[0];
+
+  // Funds options
+  const fundOptions = [
+    { icon: '💰', name: 'Deposit', desc: 'Add funds to your account' },
+    { icon: '💳', name: 'Withdraw', desc: 'Request a withdrawal' },
+    { icon: '🔄', name: 'Transfer', desc: 'Transfer between accounts' },
+    { icon: '📊', name: 'History', desc: 'View transaction history' },
+  ];
 
   return (
     <TopBar>
@@ -795,7 +830,7 @@ const TopPanel = ({
       </LeftSection>
 
       <RightSection>
-        {/* 1. THEME BUTTON - With Star Icon */}
+        {/* 1. THEME BUTTON */}
         <DropdownContainer ref={themeRef}>
           <ThemeButton onClick={toggleThemeDropdown} activeColor={activeThemeObj.color}>
             <span className="theme-icon"><ThemeStarIcon /></span>
@@ -823,17 +858,49 @@ const TopPanel = ({
           </GlassDropdownMenu>
         </DropdownContainer>
 
-        {/* 2. FUNDS BUTTON - Improved Design */}
-        <ProfessionalFundsButton href="/payment-dashboard" target="_blank" rel="noopener noreferrer">
-          <span className="funds-icon-wrapper">💳</span>
-          <span className="funds-content">
-            <span className="funds-title">Funds</span>
-            <span className="funds-sub">Secure transactions</span>
-          </span>
-          <span className="arrow">→</span>
-        </ProfessionalFundsButton>
+        {/* 2. FUNDS BUTTON - With Dropdown Options */}
+        <DropdownContainer ref={fundsRef}>
+          <FundsButton onClick={toggleFundsDropdown}>
+            <span className="funds-icon-wrapper">💳</span>
+            <span className="funds-content">
+              <span className="funds-title">Funds</span>
+              <span className="funds-sub">Manage your money</span>
+            </span>
+            <span className={`arrow ${isFundsOpen ? 'open' : ''}`}>▾</span>
+          </FundsButton>
 
-        {/* 3. ACCOUNT BALANCE - With Global Currency Dropdown */}
+          <GlassDropdownMenu isOpen={isFundsOpen}>
+            <MenuHeader>Funds Management</MenuHeader>
+            {fundOptions.map((option, index) => (
+              <FundsOption 
+                key={index}
+                onClick={() => {
+                  setIsFundsOpen(false);
+                  // Handle each action
+                  if (option.name === 'Deposit') {
+                    navigate('/payment-dashboard');
+                  } else if (option.name === 'Withdraw') {
+                    navigate('/payment-dashboard');
+                  } else if (option.name === 'Transfer') {
+                    // Handle transfer
+                    alert('Transfer feature coming soon');
+                  } else if (option.name === 'History') {
+                    navigate('/payment-dashboard');
+                  }
+                }}
+              >
+                <span className="fund-icon">{option.icon}</span>
+                <span className="fund-info">
+                  <span className="fund-name">{option.name}</span>
+                  <span className="fund-desc">{option.desc}</span>
+                </span>
+                <span className="fund-arrow">→</span>
+              </FundsOption>
+            ))}
+          </GlassDropdownMenu>
+        </DropdownContainer>
+
+        {/* 3. ACCOUNT BALANCE */}
         <DropdownContainer ref={dropdownRef}>
           <AccountBadge onClick={toggleDropdown}>
             <span className="flag-badge">{getCurrencyFlag()}</span>
@@ -845,7 +912,6 @@ const TopPanel = ({
           <GlassDropdownMenu isOpen={isDropdownOpen}>
             <MenuHeader>Account</MenuHeader>
             
-            {/* Account Type Options */}
             <ThemeOptionItem
               onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }}
               className={accountType === 'real' ? 'active' : ''}
@@ -864,7 +930,6 @@ const TopPanel = ({
               <span style={{ fontSize: '11px', opacity: 0.6 }}>{getFormattedBalance(accountData.demo)}</span>
             </ThemeOptionItem>
 
-            {/* Currency Selector with Search */}
             <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
               <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
               <SearchInput 
@@ -874,23 +939,24 @@ const TopPanel = ({
                 onChange={(e) => setCurrencySearch(e.target.value)}
               />
               <CurrencyList>
-                {filteredCurrencies.map((curr) => (
-                  <CurrencyOptionItem
-                    key={curr.code}
-                    onClick={() => {
-                      setSelectedCurrency(curr.code);
-                      setCurrencySearch('');
-                      setIsDropdownOpen(false);
-                    }}
-                    className={selectedCurrency === curr.code ? 'active' : ''}
-                  >
-                    <span className="flag">{curr.flag}</span>
-                    <span className="code">{curr.code}</span>
-                    <span className="name">{curr.name}</span>
-                    {selectedCurrency === curr.code && <span className="check">✓</span>}
-                  </CurrencyOptionItem>
-                ))}
-                {filteredCurrencies.length === 0 && (
+                {filteredCurrencies.length > 0 ? (
+                  filteredCurrencies.map((curr) => (
+                    <CurrencyOptionItem
+                      key={curr.code}
+                      onClick={() => {
+                        setSelectedCurrency(curr.code);
+                        setCurrencySearch('');
+                        setIsDropdownOpen(false);
+                      }}
+                      className={selectedCurrency === curr.code ? 'active' : ''}
+                    >
+                      <span className="flag">{curr.flag}</span>
+                      <span className="code">{curr.code}</span>
+                      <span className="name">{curr.name}</span>
+                      {selectedCurrency === curr.code && <span className="check">✓</span>}
+                    </CurrencyOptionItem>
+                  ))
+                ) : (
                   <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>
                     No currencies found
                   </div>
