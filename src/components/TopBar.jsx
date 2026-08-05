@@ -1,4 +1,4 @@
-// src/components/TopBar.jsx (Updated - Fixed Number Formatting)
+// src/components/TopBar.jsx
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
@@ -16,6 +16,100 @@ const rotateIn = keyframes`
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 `;
+
+// ============================================
+// PROFESSIONAL SVG ICONS
+// ============================================
+
+// Theme Icon (Star/Sun)
+const ThemeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="5" />
+    <line x1="12" y1="1" x2="12" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="23" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+    <line x1="1" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="23" y2="12" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+  </svg>
+);
+
+// Funds Icon (Wallet)
+const FundsIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <line x1="2" y1="10" x2="22" y2="10" />
+  </svg>
+);
+
+// Deposit Icon
+const DepositIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+// Withdraw Icon
+const WithdrawIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+// Transfer Icon
+const TransferIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="17 1 21 5 17 9" />
+    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+    <polyline points="7 23 3 19 7 15" />
+    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+  </svg>
+);
+
+// History Icon
+const HistoryIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+// Exit Icon
+const ExitIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2v10" />
+    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+  </svg>
+);
+
+// Arrow Right Icon
+const ArrowRightIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+// Chevron Down Icon
+const ChevronDownIcon = ({ open }) => (
+  <svg 
+    width="12" 
+    height="12" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}
+  >
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
 
 // ============================================
 // CORE CONTAINERS
@@ -216,22 +310,8 @@ const MenuHeader = styled.div`
 `;
 
 // ============================================
-// 1. THEME BUTTON - With Star Icon
+// 1. THEME BUTTON
 // ============================================
-const ThemeStarIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" />
-    <line x1="12" y1="21" x2="12" y2="23" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-    <line x1="1" y1="12" x2="3" y2="12" />
-    <line x1="21" y1="12" x2="23" y2="12" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-  </svg>
-);
-
 const ThemeButton = styled.button`
   display: flex;
   align-items: center;
@@ -279,10 +359,9 @@ const ThemeButton = styled.button`
   }
 
   .chevron {
-    font-size: 9px;
+    display: flex;
+    align-items: center;
     opacity: 0.5;
-    transition: transform 0.2s ease;
-    &.open { transform: rotate(180deg); }
   }
 
   @media (max-width: 480px) {
@@ -332,7 +411,7 @@ const ThemeOptionItem = styled.div`
 `;
 
 // ============================================
-// 2. FUNDS BUTTON - With Dropdown & Transaction Options
+// 2. FUNDS BUTTON
 // ============================================
 const FundsButton = styled.button`
   display: flex;
@@ -373,7 +452,7 @@ const FundsButton = styled.button`
     border-radius: 8px;
     background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.08)'};
     transition: all 0.3s ease;
-    font-size: 14px;
+    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
   .funds-content {
@@ -395,7 +474,8 @@ const FundsButton = styled.button`
   }
 
   .arrow {
-    font-size: 11px;
+    display: flex;
+    align-items: center;
     transition: transform 0.3s ease, color 0.3s ease;
     opacity: 0.6;
     margin-left: 2px;
@@ -404,7 +484,7 @@ const FundsButton = styled.button`
   @media (max-width: 480px) {
     padding: 5px 10px;
     .funds-sub { display: none; }
-    .funds-icon-wrapper { width: 24px; height: 24px; font-size: 12px; }
+    .funds-icon-wrapper { width: 24px; height: 24px; }
     .funds-title { font-size: 11px; }
   }
 `;
@@ -427,7 +507,6 @@ const FundsOption = styled.div`
   }
 
   .fund-icon {
-    font-size: 18px;
     width: 32px;
     height: 32px;
     display: flex;
@@ -435,6 +514,7 @@ const FundsOption = styled.div`
     justify-content: center;
     border-radius: 8px;
     background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
+    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
   .fund-info {
@@ -466,7 +546,7 @@ const FundsOption = styled.div`
 `;
 
 // ============================================
-// 3. ACCOUNT BADGE - With Proper Number Formatting
+// 3. ACCOUNT BADGE WITH REAL/DEMO DISPLAY
 // ============================================
 const COUNTRY_CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
@@ -485,7 +565,6 @@ const COUNTRY_CURRENCIES = [
   { code: 'EGP', flag: '🇪🇬', name: 'Egyptian Pound', symbol: 'E£' },
   { code: 'MAD', flag: '🇲🇦', name: 'Moroccan Dirham', symbol: 'DH' },
   { code: 'GHS', flag: '🇬🇭', name: 'Ghanaian Cedi', symbol: 'GH₵' },
-  { code: 'KES', flag: '🇰🇪', name: 'Kenyan Shilling', symbol: 'KSh' },
   { code: 'TZS', flag: '🇹🇿', name: 'Tanzanian Shilling', symbol: 'TSh' },
   { code: 'UGX', flag: '🇺🇬', name: 'Ugandan Shilling', symbol: 'USh' },
   { code: 'RWF', flag: '🇷🇼', name: 'Rwandan Franc', symbol: 'FRw' },
@@ -542,6 +621,19 @@ const AccountBadge = styled.div`
     font-weight: 700;
   }
 
+  .account-type-badge {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: ${props => props.isDemo ? 'rgba(59,130,246,0.12)' : 'rgba(52,211,153,0.12)'};
+    color: ${props => props.isDemo ? '#60a5fa' : '#34d399'};
+    border: 1px solid ${props => props.isDemo ? 'rgba(59,130,246,0.2)' : 'rgba(52,211,153,0.2)'};
+    margin-left: 4px;
+  }
+
   .currency-tag {
     font-size: 10px;
     padding: 2px 8px;
@@ -552,10 +644,9 @@ const AccountBadge = styled.div`
   }
 
   .chevron {
-    font-size: 10px;
+    display: flex;
+    align-items: center;
     opacity: 0.5;
-    transition: transform 0.2s ease;
-    &.open { transform: rotate(180deg); }
   }
 
   @media (max-width: 480px) {
@@ -563,6 +654,7 @@ const AccountBadge = styled.div`
     font-size: 12px;
     .flag-badge { font-size: 14px; }
     .currency-tag { font-size: 9px; padding: 1px 6px; }
+    .account-type-badge { font-size: 8px; padding: 1px 6px; }
   }
 `;
 
@@ -682,13 +774,6 @@ const ExitButton = styled.button`
   }
 `;
 
-const PowerIcon = () => (
-  <svg className="exit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2v10" />
-    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
-  </svg>
-);
-
 // ============================================
 // THEME DEFINITIONS
 // ============================================
@@ -743,11 +828,12 @@ const TopPanel = ({
   const getExchangeRate = (currency) => exchangeRates[currency] || 1;
 
   const accountData = {
-    real: { balance: 7110.00 },
-    demo: { balance: 10000.00 }
+    real: { balance: 7110.00, label: 'Real' },
+    demo: { balance: 10000.00, label: 'Demo' }
   };
 
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
+  const isDemo = accountType === 'demo';
 
   // ===== FORMAT NUMBER WITH COMMAS =====
   const formatNumberWithCommas = (number) => {
@@ -810,10 +896,10 @@ const TopPanel = ({
 
   // Funds options
   const fundOptions = [
-    { icon: '💰', name: 'Deposit', desc: 'Add funds to your account' },
-    { icon: '💳', name: 'Withdraw', desc: 'Request a withdrawal' },
-    { icon: '🔄', name: 'Transfer', desc: 'Transfer between accounts' },
-    { icon: '📊', name: 'History', desc: 'View transaction history' },
+    { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds to your account' },
+    { icon: <WithdrawIcon />, name: 'Withdraw', desc: 'Request a withdrawal' },
+    { icon: <TransferIcon />, name: 'Transfer', desc: 'Transfer between accounts' },
+    { icon: <HistoryIcon />, name: 'History', desc: 'View transaction history' },
   ];
 
   return (
@@ -838,10 +924,10 @@ const TopPanel = ({
         {/* 1. THEME BUTTON */}
         <DropdownContainer ref={themeRef}>
           <ThemeButton onClick={toggleThemeDropdown} activeColor={activeThemeObj.color}>
-            <span className="theme-icon"><ThemeStarIcon /></span>
+            <span className="theme-icon"><ThemeIcon /></span>
             <span className="theme-swatch" style={{ background: activeThemeObj.color }} />
             <span className="theme-name">{activeThemeObj.name}</span>
-            <span className={`chevron ${isThemeOpen ? 'open' : ''}`}>▾</span>
+            <span className="chevron"><ChevronDownIcon open={isThemeOpen} /></span>
           </ThemeButton>
 
           <GlassDropdownMenu isOpen={isThemeOpen}>
@@ -863,15 +949,15 @@ const TopPanel = ({
           </GlassDropdownMenu>
         </DropdownContainer>
 
-        {/* 2. FUNDS BUTTON - With Dropdown Options */}
+        {/* 2. FUNDS BUTTON */}
         <DropdownContainer ref={fundsRef}>
           <FundsButton onClick={toggleFundsDropdown}>
-            <span className="funds-icon-wrapper">💳</span>
+            <span className="funds-icon-wrapper"><FundsIcon /></span>
             <span className="funds-content">
               <span className="funds-title">Funds</span>
               <span className="funds-sub">Manage your money</span>
             </span>
-            <span className={`arrow ${isFundsOpen ? 'open' : ''}`}>▾</span>
+            <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
           </FundsButton>
 
           <GlassDropdownMenu isOpen={isFundsOpen}>
@@ -897,19 +983,20 @@ const TopPanel = ({
                   <span className="fund-name">{option.name}</span>
                   <span className="fund-desc">{option.desc}</span>
                 </span>
-                <span className="fund-arrow">→</span>
+                <span className="fund-arrow"><ArrowRightIcon /></span>
               </FundsOption>
             ))}
           </GlassDropdownMenu>
         </DropdownContainer>
 
-        {/* 3. ACCOUNT BALANCE - With Proper Number Formatting */}
+        {/* 3. ACCOUNT BALANCE - Shows Real/Demo badge */}
         <DropdownContainer ref={dropdownRef}>
-          <AccountBadge onClick={toggleDropdown}>
+          <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
             <span className="flag-badge">{getCurrencyFlag()}</span>
             <span className="balance-display">{getFormattedBalance(currentAccount)}</span>
+            <span className="account-type-badge">{currentAccount.label}</span>
             <span className="currency-tag">{selectedCurrency}</span>
-            <span className={`chevron ${isDropdownOpen ? 'open' : ''}`}>▾</span>
+            <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
           </AccountBadge>
 
           <GlassDropdownMenu isOpen={isDropdownOpen}>
@@ -921,7 +1008,7 @@ const TopPanel = ({
             >
               <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
               <span className="theme-label">Real Account</span>
-              <span style={{ fontSize: '11px', opacity: 0.6 }}>{getFormattedBalance(accountData.real)}</span>
+              <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
             </ThemeOptionItem>
 
             <ThemeOptionItem
@@ -930,14 +1017,14 @@ const TopPanel = ({
             >
               <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
               <span className="theme-label">Demo Practice</span>
-              <span style={{ fontSize: '11px', opacity: 0.6 }}>{getFormattedBalance(accountData.demo)}</span>
+              <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
             </ThemeOptionItem>
 
             <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
               <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
               <SearchInput 
                 type="text" 
-                placeholder="🔍 Search currency..." 
+                placeholder="Search currency..." 
                 value={currencySearch}
                 onChange={(e) => setCurrencySearch(e.target.value)}
               />
@@ -971,7 +1058,7 @@ const TopPanel = ({
 
         {/* 4. EXIT BUTTON */}
         <ExitButton onClick={() => navigate('/')}>
-          <PowerIcon />
+          <span className="exit-icon"><ExitIcon /></span>
           <span>Exit</span>
         </ExitButton>
       </RightSection>
