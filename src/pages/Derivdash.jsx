@@ -18,7 +18,7 @@ import RightPanel from '../components/RightPanel';
  * Features: Frosted Translucent Floating Surfaces + Pure Solid Light & Dark Themes
  */
 
-export const themes = {
+const themes = {
   // === SOLID DARK THEME ===
   darkSolid: {
     name: 'Solid Dark',
