@@ -10,58 +10,20 @@ const pulseRing = keyframes`
   100% { transform: scale(2.4); opacity: 0; }
 `;
 
-const spinGlow = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+const float = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
 `;
 
-// ============================================
-// PROFESSIONAL SVG ICONS (NO EMOJIS)
-// ============================================
-const StarThemeIcon = ({ className }) => (
-  <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
-);
-
-const PremiumFundsIcon = ({ className }) => (
-  <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="6" width="20" height="12" rx="2" />
-    <path d="M12 12h.01" />
-    <path d="M17 12h.01" />
-    <path d="M7 12h.01" />
-  </svg>
-);
-
-const SearchIcon = ({ className }) => (
-  <svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-);
-
-const CheckIcon = ({ className }) => (
-  <svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
-
-const PowerIcon = ({ className }) => (
-  <svg className={className} width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2v10" />
-    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
-  </svg>
-);
-
-const ChevronIcon = ({ className }) => (
-  <svg className={className} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="6 9 12 15 18 9" />
-  </svg>
-);
+const glowPulse = keyframes`
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+`;
 
 // ============================================
 // CORE CONTAINERS
 // ============================================
+
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -90,6 +52,7 @@ const TopBar = styled.header`
   }
 `;
 
+// ===== LEFT SECTION: TOGGLE + BRAND =====
 const LeftSection = styled.div`
   display: flex;
   align-items: center;
@@ -121,6 +84,11 @@ const SidebarToggle = styled.button`
   &:hover {
     background: ${props => props.theme?.colors?.surfaceActive || 'rgba(255, 255, 255, 0.08)'};
     border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    box-shadow: 0 0 16px ${props => (props.theme?.colors?.accent || '#3b82f6') + '25'};
+  }
+
+  &:active {
+    transform: scale(0.94);
   }
 
   .line {
@@ -134,11 +102,13 @@ const SidebarToggle = styled.button`
       width: ${props => props.isOpen ? '18px' : '18px'};
       transform: ${props => props.isOpen ? 'rotate(45deg) translate(4px, 4.5px)' : 'rotate(0)'};
     }
+
     &:nth-child(2) {
       width: 14px;
       opacity: ${props => props.isOpen ? '0' : '1'};
       transform: ${props => props.isOpen ? 'scaleX(0)' : 'scaleX(1)'};
     }
+
     &:nth-child(3) {
       width: ${props => props.isOpen ? '18px' : '10px'};
       transform: ${props => props.isOpen ? 'rotate(-45deg) translate(4px, -4.5px)' : 'rotate(0)'};
@@ -167,7 +137,7 @@ const Brand = styled.div`
   }
 
   .deriv {
-    color: #ff444f;
+    color: #ff444f !important;
     font-style: italic;
     font-weight: 900;
     letter-spacing: -0.2px;
@@ -193,10 +163,11 @@ const Brand = styled.div`
   }
 `;
 
+// ===== RIGHT SECTION: ACTIONS =====
 const RightSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 
   @media (max-width: 768px) {
@@ -210,19 +181,20 @@ const DropdownContainer = styled.div`
   display: inline-block;
 `;
 
+// ===== SOLID TRANSLUCENT DROPDOWN POPUP =====
 const GlassDropdownMenu = styled.div`
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 10px);
   right: 0;
-  width: ${props => props.width || '280px'};
+  min-width: 270px;
   max-width: 90vw;
-  background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(15, 17, 23, 0.98)'};
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(15, 17, 23, 0.94)'};
+  backdrop-filter: blur(${props => props.theme?.colors?.glassBlur || '24px'}) saturate(190%);
+  -webkit-backdrop-filter: blur(${props => props.theme?.colors?.glassBlur || '24px'}) saturate(190%);
   border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255, 255, 255, 0.12)'};
   border-radius: 14px;
-  padding: 10px;
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8);
+  padding: 8px;
+  box-shadow: ${props => props.theme?.colors?.shadow || '0 20px 40px -10px rgba(0,0,0,0.6)'};
   opacity: ${props => props.isOpen ? 1 : 0};
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
   transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)'};
@@ -231,20 +203,11 @@ const GlassDropdownMenu = styled.div`
   overflow: hidden;
 `;
 
-const MenuHeader = styled.div`
-  padding: 4px 10px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-`;
-
-// ===== 1. THEME SWITCHER (MODIFIED) =====
+// ===== BUTTON 1: THEME SWITCHER (LEFT OF FUNDS) =====
 const ThemeButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 8px 14px;
   background: ${props => props.theme?.colors?.surface || '#0f172a'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
@@ -257,32 +220,40 @@ const ThemeButton = styled.button`
 
   &:hover {
     background: ${props => props.theme?.colors?.surfaceHover || '#1e293b'};
-    border-color: ${props => props.activeColor || '#3b82f6'};
-    .theme-icon { color: ${props => props.activeColor || '#3b82f6'}; }
+    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
-  .theme-icon {
-    transition: color 0.2s ease;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+  .theme-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 8px ${props => (props.activeColor || '#3b82f6') + '60'};
   }
 
   .label-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    @media (max-width: 640px) { display: none; }
-  }
-
-  .active-theme-name {
-    color: ${props => props.activeColor || '#3b82f6'};
-    font-weight: 700;
+    @media (max-width: 640px) {
+      display: none;
+    }
   }
 
   .chevron {
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-size: 10px;
+    opacity: 0.6;
     transition: transform 0.2s ease;
     &.open { transform: rotate(180deg); }
   }
+`;
+
+const MenuHeader = styled.div`
+  padding: 6px 10px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  margin-bottom: 4px;
 `;
 
 const ThemeOptionItem = styled.div`
@@ -298,7 +269,7 @@ const ThemeOptionItem = styled.div`
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(255, 255, 255, 0.05)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -308,51 +279,74 @@ const ThemeOptionItem = styled.div`
   }
 
   .color-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.2);
     flex-shrink: 0;
   }
 
-  .title { flex: 1; }
-  .check-mark { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
+  .title {
+    flex: 1;
+  }
+
+  .check-mark {
+    font-size: 12px;
+    font-weight: 800;
+  }
 `;
 
-// ===== 2. PROFESSIONAL FUNDS BUTTON (MODIFIED) =====
+// ===== BUTTON 2: FUNDS BUTTON =====
 const ProfessionalFundsButton = styled.a`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
+  gap: 10px;
+  padding: 7px 16px;
   border-radius: 10px;
-  border: 1px solid ${props => props.theme?.colors?.accent || '#3b82f6'};
-  background: linear-gradient(180deg, rgba(59,130,246,0.15) 0%, rgba(37,99,235,0.05) 100%);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+  background: ${props => props.theme?.colors?.surface || '#0f172a'};
   color: ${props => props.theme?.colors?.text || '#ffffff'};
   text-decoration: none;
   font-size: 13px;
-  font-weight: 700;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  font-weight: 600;
+  transition: all 0.2s ease;
 
   &:hover {
-    background: linear-gradient(180deg, rgba(59,130,246,0.25) 0%, rgba(37,99,235,0.15) 100%);
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    background: ${props => props.theme?.colors?.surfaceHover || '#1e293b'};
     transform: translateY(-1px);
+
+    .arrow { transform: translateX(3px); color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
   }
 
   .icon-wrapper {
-    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.15)'};
+    font-size: 13px;
+  }
+
+  .arrow {
+    font-size: 12px;
+    transition: transform 0.2s ease, color 0.2s ease;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    .sub { display: none; }
   }
 `;
 
-// ===== 3. ACCOUNT / CURRENCY DROPDOWN (MODIFIED) =====
+// ===== BUTTON 3: ACCOUNT BADGE =====
 const AccountBadge = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   padding: 7px 14px;
   background: ${props => props.theme?.colors?.surface || '#0f172a'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
@@ -360,7 +354,7 @@ const AccountBadge = styled.div`
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   color: ${props => props.theme?.colors?.text || '#ffffff'};
 
@@ -369,145 +363,79 @@ const AccountBadge = styled.div`
     border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
-  .country-code-badge {
-    background: ${props => props.theme?.colors?.surfaceHover || '#1e293b'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
-    padding: 3px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-family: monospace;
-    font-weight: 800;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+  .flag-badge {
+    font-size: 14px;
   }
 
-  .balance-text {
-    font-family: 'Inter', -apple-system, sans-serif;
-    letter-spacing: -0.2px;
+  .currency-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.15)'};
+    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    font-weight: 800;
   }
 
   .chevron {
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-size: 10px;
+    opacity: 0.6;
     transition: transform 0.2s ease;
     &.open { transform: rotate(180deg); }
   }
 `;
 
-const SearchInputWrapper = styled.div`
-  position: relative;
-  margin-bottom: 10px;
-  
-  .search-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-  }
+const CurrencyControlGroup = styled.div`
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
 
-  input {
-    width: 100%;
-    background: ${props => props.theme?.colors?.surface || '#0f172a'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-    border-radius: 8px;
-    padding: 10px 10px 10px 34px;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s;
-
-    &:focus {
-      border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-    }
-    
-    &::placeholder {
-      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    }
-  }
-`;
-
-const CurrencyScrollList = styled.div`
-  max-height: 240px;
-  overflow-y: auto;
-  padding-right: 4px;
-  
-  /* Custom Scrollbar */
-  &::-webkit-scrollbar { width: 6px; }
-  &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { 
-    background: rgba(255, 255, 255, 0.1); 
-    border-radius: 10px; 
-  }
-  &::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
-`;
-
-const CurrencyItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-  margin-bottom: 2px;
-
-  &:hover {
-    background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.05)'};
-  }
-
-  &.active {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.15)'};
-  }
-
-  .country-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .text-badge {
-    width: 28px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+  .label {
     font-size: 10px;
-    font-weight: 800;
-    font-family: monospace;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-  }
-
-  .details {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .country-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-  }
-
-  .currency-code {
-    font-size: 11px;
     color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-weight: 700;
+    margin-bottom: 6px;
+    display: block;
+    text-transform: uppercase;
   }
 
-  .check-icon {
-    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+  .segmented-control {
+    display: flex;
+    gap: 4px;
+    background: ${props => props.theme?.colors?.bg || '#020617'};
+    padding: 3px;
+    border-radius: 8px;
+  }
+
+  .segment-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover { color: ${props => props.theme?.colors?.text || '#ffffff'}; }
+    &.active {
+      background: ${props => props.theme?.colors?.surfaceHover || '#1e293b'};
+      color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
   }
 `;
 
-// ===== 4. EXIT BUTTON =====
+// ===== BUTTON 4: EXIT BUTTON =====
 const ExitButton = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
+  padding: 7px 14px;
   border-radius: 10px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
-  background: transparent;
+  background: ${props => props.theme?.colors?.surface || '#0f172a'};
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
   cursor: pointer;
   font-size: 13px;
@@ -517,13 +445,26 @@ const ExitButton = styled.button`
   &:hover {
     border-color: ${props => props.theme?.colors?.danger || '#ef4444'};
     color: ${props => props.theme?.colors?.danger || '#ef4444'};
-    background: rgba(239, 68, 68, 0.1);
+    background: ${props => (props.theme?.colors?.danger || '#ef4444') + '10'};
+
+    .exit-icon { stroke: ${props => props.theme?.colors?.danger || '#ef4444'}; }
+  }
+
+  .exit-icon {
+    width: 15px;
+    height: 15px;
+    transition: stroke 0.2s ease;
   }
 `;
 
-// ============================================
-// DATA CONSTANTS
-// ============================================
+const PowerIcon = () => (
+  <svg className="exit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2v10" />
+    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+  </svg>
+);
+
+// THEME DEFINITIONS
 const THEME_OPTIONS = [
   { key: 'light', name: 'Pure White', color: '#ffffff' },
   { key: 'minimalWhite', name: 'Minimal White', color: '#f8fafc' },
@@ -535,41 +476,30 @@ const THEME_OPTIONS = [
   { key: 'sunset', name: 'Warm Sunset', color: '#0f0705' }
 ];
 
-const WORLD_CURRENCIES = [
-  { country: 'United States', code: 'US', currency: 'USD', symbol: '$', rate: 1 },
-  { country: 'Eurozone', code: 'EU', currency: 'EUR', symbol: '€', rate: 0.92 },
-  { country: 'United Kingdom', code: 'GB', currency: 'GBP', symbol: '£', rate: 0.79 },
-  { country: 'Kenya', code: 'KE', currency: 'KES', symbol: 'KSh', rate: 130.50 },
-  { country: 'Japan', code: 'JP', currency: 'JPY', symbol: '¥', rate: 150.00 },
-  { country: 'Canada', code: 'CA', currency: 'CAD', symbol: 'C$', rate: 1.35 },
-  { country: 'Australia', code: 'AU', currency: 'AUD', symbol: 'A$', rate: 1.50 },
-  { country: 'Switzerland', code: 'CH', currency: 'CHF', symbol: 'Fr', rate: 0.90 },
-  { country: 'India', code: 'IN', currency: 'INR', symbol: '₹', rate: 83.00 },
-  { country: 'South Africa', code: 'ZA', currency: 'ZAR', symbol: 'R', rate: 19.00 },
-  { country: 'China', code: 'CN', currency: 'CNY', symbol: '¥', rate: 7.20 },
-  { country: 'United Arab Emirates', code: 'AE', currency: 'AED', symbol: 'د.إ', rate: 3.67 }
-];
+// ============================================
+// MAIN COMPONENT EXPORT
+// ============================================
 
-// ============================================
-// MAIN COMPONENT
-// ============================================
 const TopPanel = ({ isSidebarOpen, onSidebarToggle, currentTheme = 'dark', onThemeChange }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
-  
-  // Base balance logic
-  const [baseUsdBalance] = useState(10000.00); 
-  const [selectedCurrency, setSelectedCurrency] = useState(WORLD_CURRENCIES[0]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [accountType, setAccountType] = useState('real');
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
   
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
   const navigate = useNavigate();
 
+  const accountData = {
+    real: { balance: 7110.00, kshBalance: 7110.00 * 150.50, eurBalance: 7110.00 * 0.92 },
+    demo: { balance: 10000.00, kshBalance: 10000.00 * 150.50, eurBalance: 10000.00 * 0.92 }
+  };
+
+  const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
     setIsThemeOpen(false);
-    setSearchQuery('');
   };
 
   const toggleThemeDropdown = () => {
@@ -577,30 +507,35 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle, currentTheme = 'dark', onThe
     setIsDropdownOpen(false);
   };
 
+  const formatNumber = (num) => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  const getFormattedBalance = (acc) => {
+    switch (selectedCurrency) {
+      case 'KSh': return `KSh ${formatNumber(acc.kshBalance)}`;
+      case 'EUR': return `€ ${formatNumber(acc.eurBalance)}`;
+      default: return `$ ${formatNumber(acc.balance)}`;
+    }
+  };
+
+  const getCurrencyFlag = () => {
+    if (accountType === 'demo') return '🎯';
+    switch (selectedCurrency) {
+      case 'KSh': return '🇰🇪';
+      case 'EUR': return '🇪🇺';
+      default: return '🇺🇸';
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsDropdownOpen(false);
-      }
-      if (themeRef.current && !themeRef.current.contains(e.target)) {
-        setIsThemeOpen(false);
-      }
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setIsDropdownOpen(false);
+      if (themeRef.current && !themeRef.current.contains(e.target)) setIsThemeOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const activeThemeObj = THEME_OPTIONS.find(t => t.key === currentTheme) || THEME_OPTIONS[2];
-
-  // Search logic
-  const filteredCurrencies = WORLD_CURRENCIES.filter(c => 
-    c.country.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    c.currency.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Formatting balance based on selected country rate
-  const convertedBalance = baseUsdBalance * selectedCurrency.rate;
-  const formattedBalance = convertedBalance.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   return (
     <TopBar>
@@ -621,18 +556,16 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle, currentTheme = 'dark', onThe
       </LeftSection>
 
       <RightSection>
-        {/* 1. THEME SWITCHER */}
+        {/* 1. THEME SWITCHER BUTTON (LEFT OF FUNDS) */}
         <DropdownContainer ref={themeRef}>
           <ThemeButton onClick={toggleThemeDropdown} activeColor={activeThemeObj.color}>
-            <StarThemeIcon className="theme-icon" />
-            <span className="label-text">
-              Change Theme: <span className="active-theme-name">{activeThemeObj.name}</span>
-            </span>
-            <ChevronIcon className={`chevron ${isThemeOpen ? 'open' : ''}`} />
+            <span className="theme-swatch" style={{ background: activeThemeObj.color }} />
+            <span className="label-text">{activeThemeObj.name}</span>
+            <span className={`chevron ${isThemeOpen ? 'open' : ''}`}>▾</span>
           </ThemeButton>
 
-          <GlassDropdownMenu isOpen={isThemeOpen} width="220px">
-            <MenuHeader>Interface Palette</MenuHeader>
+          <GlassDropdownMenu isOpen={isThemeOpen}>
+            <MenuHeader>Color Schemes</MenuHeader>
             {THEME_OPTIONS.map((t) => (
               <ThemeOptionItem
                 key={t.key}
@@ -644,71 +577,62 @@ const TopPanel = ({ isSidebarOpen, onSidebarToggle, currentTheme = 'dark', onThe
               >
                 <span className="color-dot" style={{ background: t.color }} />
                 <span className="title">{t.name}</span>
-                {currentTheme === t.key && <CheckIcon className="check-mark" />}
+                {currentTheme === t.key && <span className="check-mark">✓</span>}
               </ThemeOptionItem>
             ))}
           </GlassDropdownMenu>
         </DropdownContainer>
 
-        {/* 2. PREMIUM FUNDS BUTTON */}
-        <ProfessionalFundsButton href="/funds-management" target="_blank" rel="noopener noreferrer">
-          <div className="icon-wrapper">
-            <PremiumFundsIcon />
-          </div>
-          <span>Manage Funds</span>
+        {/* 2. FUNDS BUTTON */}
+        <ProfessionalFundsButton href="/payment-dashboard" target="_blank" rel="noopener noreferrer">
+          <span className="icon-wrapper">💳</span>
+          <span>Funds</span>
+          <span className="arrow">→</span>
         </ProfessionalFundsButton>
 
-        {/* 3. ACCOUNT/CURRENCY DROPDOWN */}
+        {/* 3. ACCOUNT BALANCE DROPDOWN */}
         <DropdownContainer ref={dropdownRef}>
           <AccountBadge onClick={toggleDropdown}>
-            <span className="country-code-badge">{selectedCurrency.code}</span>
-            <span className="balance-text">{selectedCurrency.symbol} {formattedBalance}</span>
-            <ChevronIcon className={`chevron ${isDropdownOpen ? 'open' : ''}`} />
+            <span className="flag-badge">{getCurrencyFlag()}</span>
+            <span>{getFormattedBalance(currentAccount)}</span>
+            <span className="currency-tag">{selectedCurrency}</span>
+            <span className={`chevron ${isDropdownOpen ? 'open' : ''}`}>▾</span>
           </AccountBadge>
 
-          <GlassDropdownMenu isOpen={isDropdownOpen} width="320px">
-            <MenuHeader>Select Region / Currency</MenuHeader>
-            
-            <SearchInputWrapper>
-              <SearchIcon className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Search country or currency..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus={isDropdownOpen}
-              />
-            </SearchInputWrapper>
+          <GlassDropdownMenu isOpen={isDropdownOpen}>
+            <MenuHeader>Account Tier</MenuHeader>
+            <ThemeOptionItem
+              onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }}
+              className={accountType === 'real' ? 'active' : ''}
+            >
+              <span className="flag-badge">🇺🇸</span>
+              <span className="title">Real Account</span>
+              <span style={{ fontSize: '11px', opacity: 0.7 }}>{getFormattedBalance(accountData.real)}</span>
+            </ThemeOptionItem>
 
-            <CurrencyScrollList>
-              {filteredCurrencies.length > 0 ? (
-                filteredCurrencies.map((item) => (
-                  <CurrencyItem 
-                    key={item.currency}
-                    className={selectedCurrency.currency === item.currency ? 'active' : ''}
-                    onClick={() => {
-                      setSelectedCurrency(item);
-                      setIsDropdownOpen(false);
-                    }}
+            <ThemeOptionItem
+              onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }}
+              className={accountType === 'demo' ? 'active' : ''}
+            >
+              <span className="flag-badge">🎯</span>
+              <span className="title">Demo Practice</span>
+              <span style={{ fontSize: '11px', opacity: 0.7 }}>{getFormattedBalance(accountData.demo)}</span>
+            </ThemeOptionItem>
+
+            <CurrencyControlGroup>
+              <span className="label">Display Currency</span>
+              <div className="segmented-control">
+                {['USD', 'EUR', 'KSh'].map((curr) => (
+                  <button
+                    key={curr}
+                    className={`segment-btn ${selectedCurrency === curr ? 'active' : ''}`}
+                    onClick={() => setSelectedCurrency(curr)}
                   >
-                    <div className="country-info">
-                      <div className="text-badge">{item.code}</div>
-                      <div className="details">
-                        <span className="country-name">{item.country}</span>
-                        <span className="currency-code">{item.currency} - {item.symbol}</span>
-                      </div>
-                    </div>
-                    {selectedCurrency.currency === item.currency && (
-                      <CheckIcon className="check-icon" />
-                    )}
-                  </CurrencyItem>
-                ))
-              ) : (
-                <div style={{ padding: '10px', textAlign: 'center', fontSize: '12px', color: '#64748b' }}>
-                  No matches found.
-                </div>
-              )}
-            </CurrencyScrollList>
+                    {curr}
+                  </button>
+                ))}
+              </div>
+            </CurrencyControlGroup>
           </GlassDropdownMenu>
         </DropdownContainer>
 
