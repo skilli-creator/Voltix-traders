@@ -1,9 +1,9 @@
 // src/components/ChartPanel.jsx
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import styled, { keyframes, ThemeContext } from 'styled-components';
 
 // ============================================
-// ALL VOLATILITY MARKETS (Deriv Official)
+// VOLATILITY MARKETS DEFINITION
 // ============================================
 const VOLATILITY_MARKETS = [
   { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true },
@@ -18,23 +18,44 @@ const VOLATILITY_MARKETS = [
   { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false },
 ];
 
+// Helper to reliably parse HEX colors to RGBA
+const getRgba = (hex, alpha = 1) => {
+  if (!hex || typeof hex !== 'string') return `rgba(128, 128, 128, ${alpha})`;
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  const num = parseInt(c, 16);
+  if (isNaN(num)) return `rgba(128, 128, 128, ${alpha})`;
+  return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
+};
+
+const hexToRgb = (hex) => {
+  if (!hex || typeof hex !== 'string') return { r: 128, g: 128, b: 128 };
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  const num = parseInt(c, 16);
+  return isNaN(num) ? { r: 128, g: 128, b: 128 } : { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+};
+
+// ============================================
+// ANIMATIONS
+// ============================================
 const pulse = keyframes`
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.15); }
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
 `;
 
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 `;
 
 const slideDown = keyframes`
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
 // ============================================
-// STYLED COMPONENTS - ALL THEME BASED
+// STYLED COMPONENTS
 // ============================================
 const PanelContainer = styled.div`
   flex: 1;
@@ -45,157 +66,107 @@ const PanelContainer = styled.div`
   overflow: hidden;
   min-width: 0;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  animation: ${fadeIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  animation: ${fadeIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1;
-  transition: all 0.3s ease;
-  font-weight: 700;
 `;
 
-// ===== HEADER =====
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  padding: 12px 20px;
-  border-bottom: 2px solid ${props => props.theme.colors.border};
+  padding: 12px 18px;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   background: ${props => props.theme.colors.backgroundSecondary};
   z-index: 10;
-  transition: all 0.3s ease;
-  font-weight: 700;
+  transition: background 0.2s ease, border-color 0.2s ease;
 
   @media (max-width: 768px) {
     padding: 8px 12px;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 6px 8px;
-    gap: 4px;
+    gap: 8px;
   }
 `;
 
 const SymbolInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   flex: 1;
   min-width: 0;
-  font-weight: 700;
-
-  @media (max-width: 480px) {
-    gap: 2px;
-  }
 
   .symbol-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-
-    @media (max-width: 480px) {
-      gap: 4px;
-    }
+    gap: 8px;
+    position: relative;
   }
 
   .symbol-label {
-    font-size: 11px;
+    font-size: 10px;
     color: ${props => props.theme.colors.textMuted};
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-
-    @media (max-width: 480px) {
-      font-size: 9px;
-    }
+    letter-spacing: 0.6px;
   }
 
   .market-selector {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     cursor: pointer;
     color: ${props => props.theme.colors.text};
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
     padding: 4px 10px;
     border-radius: 6px;
-    transition: all 0.2s ease;
-    position: relative;
-    background: ${props => props.theme.colors.backgroundSecondary};
-    border: 2px solid ${props => props.theme.colors.border};
-
-    @media (max-width: 480px) {
-      font-size: 12px;
-      padding: 2px 6px;
-    }
+    transition: all 0.15s ease;
+    background: ${props => props.theme.colors.background};
+    border: 1px solid ${props => props.theme.colors.border};
+    user-select: none;
 
     &:hover {
-      background: ${props => props.theme.colors.backgroundTertiary};
       border-color: ${props => props.theme.colors.accent};
-      box-shadow: 0 0 20px ${props => props.theme.colors.accent + '30'};
+      box-shadow: 0 0 12px ${props => getRgba(props.theme.colors.accent, 0.15)};
     }
 
     .dropdown-arrow {
-      font-size: 11px;
+      font-size: 10px;
       color: ${props => props.theme.colors.textMuted};
       transition: transform 0.2s ease;
-      transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
-
-      @media (max-width: 480px) {
-        font-size: 9px;
-      }
+      transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     }
   }
 
   .price-row {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 10px;
     flex-wrap: wrap;
-
-    @media (max-width: 480px) {
-      gap: 4px;
-    }
   }
 
   .price {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     color: ${props => props.theme.colors.text};
     letter-spacing: -0.5px;
-    font-family: 'Courier New', Courier, monospace;
-
-    @media (max-width: 480px) {
-      font-size: 18px;
-    }
+    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
   }
 
   .change {
-    font-size: 12px;
-    font-weight: 700;
-    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
     border-radius: 4px;
-    background: ${props => props.isNegative ? props.theme.colors.danger + '25' : props.theme.colors.success + '25'};
-    color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
-
-    @media (max-width: 480px) {
-      font-size: 10px;
-      padding: 1px 4px;
-    }
+    background: ${props => props.$isNegative ? getRgba(props.theme.colors.danger, 0.12) : getRgba(props.theme.colors.success, 0.12)};
+    color: ${props => props.$isNegative ? props.theme.colors.danger : props.theme.colors.success};
+    font-family: 'JetBrains Mono', monospace;
   }
 
   .change-time {
     font-size: 11px;
     color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
-    font-weight: 700;
-
-    @media (max-width: 480px) {
-      font-size: 9px;
-    }
   }
 `;
 
@@ -203,22 +174,16 @@ const LiveIndicator = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 10px;
   color: ${props => props.theme.colors.accent};
-  font-weight: 700;
-  background: ${props => props.theme.colors.accentActive};
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 2px solid ${props => props.theme.colors.accent};
+  font-weight: 600;
+  background: ${props => getRgba(props.theme.colors.accent, 0.1)};
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid ${props => getRgba(props.theme.colors.accent, 0.3)};
   text-transform: uppercase;
   letter-spacing: 0.5px;
   flex-shrink: 0;
-
-  @media (max-width: 480px) {
-    font-size: 9px;
-    padding: 2px 8px;
-    gap: 4px;
-  }
 
   .dot {
     width: 6px;
@@ -226,169 +191,101 @@ const LiveIndicator = styled.div`
     border-radius: 50%;
     background: ${props => props.theme.colors.accent};
     animation: ${pulse} 1.5s ease-in-out infinite;
-    box-shadow: 0 0 8px ${props => props.theme.colors.accent};
-
-    @media (max-width: 480px) {
-      width: 4px;
-      height: 4px;
-    }
+    box-shadow: 0 0 6px ${props => props.theme.colors.accent};
   }
 `;
 
-// ===== MARKET SELECTION DROPDOWN =====
 const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
   background: ${props => props.theme.colors.backgroundSecondary};
-  border: 2px solid ${props => props.theme.colors.border};
+  border: 1px solid ${props => props.theme.colors.border};
   border-radius: 8px;
-  width: 280px;
-  max-height: 340px;
+  width: 260px;
+  max-height: 320px;
   overflow-y: auto;
-  z-index: 9999;
-  box-shadow: 0 20px 50px ${props => props.theme.colors.shadow};
-  display: ${props => props.isOpen ? 'block' : 'none'};
-  animation: ${slideDown} 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  font-weight: 700;
-
-  @media (max-width: 480px) {
-    width: 220px;
-    max-height: 260px;
-    left: -10px;
-  }
+  z-index: 100;
+  box-shadow: 0 12px 32px ${props => getRgba(props.theme.colors.shadow || '#000000', 0.25)};
+  display: ${props => props.$isOpen ? 'block' : 'none'};
+  animation: ${slideDown} 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
 
   .dropdown-title {
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 10px;
+    font-weight: 600;
     color: ${props => props.theme.colors.textMuted};
-    padding: 10px 14px 6px 14px;
+    padding: 10px 12px 6px 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid ${props => props.theme.colors.border};
-
-    @media (max-width: 480px) {
-      font-size: 9px;
-      padding: 6px 10px 4px 10px;
-    }
+    border-bottom: 1px solid ${props => props.theme.colors.border};
   }
 
   &::-webkit-scrollbar {
     width: 4px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.scrollbar};
+    background: ${props => props.theme.colors.scrollbar || props.theme.colors.border};
     border-radius: 4px;
   }
 `;
 
 const DropdownItem = styled.div`
-  padding: 10px 14px;
+  padding: 8px 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
-  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
-  transition: all 0.15s ease;
-  border-bottom: 2px solid ${props => props.theme.colors.border + '40'};
-  font-weight: 700;
-
-  @media (max-width: 480px) {
-    padding: 6px 10px;
-  }
+  color: ${props => props.$active ? props.theme.colors.text : props.theme.colors.textSecondary || props.theme.colors.textMuted};
+  background: ${props => props.$active ? getRgba(props.theme.colors.accent, 0.12) : 'transparent'};
+  transition: all 0.12s ease;
+  border-bottom: 1px solid ${props => getRgba(props.theme.colors.border, 0.4)};
 
   &:hover {
-    background: ${props => props.theme.colors.accentActive};
+    background: ${props => getRgba(props.theme.colors.accent, 0.1)};
     color: ${props => props.theme.colors.text};
   }
 
   .left-container {
     display: flex;
     align-items: center;
-    gap: 12px;
-
-    @media (max-width: 480px) {
-      gap: 6px;
-    }
-  }
-
-  .candle-icon-mock {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    height: 20px;
-    opacity: 0.75;
-
-    @media (max-width: 480px) {
-      display: none;
-    }
-
-    .candle {
-      width: 3px;
-      background: ${props => props.theme.colors.textMuted};
-      position: relative;
-      &::before {
-        content: '';
-        position: absolute;
-        width: 1px;
-        background: inherit;
-        left: 1px;
-      }
-    }
-    .c1 { height: 12px; background: ${props => props.theme.colors.danger}; &::before { height: 18px; top: -3px; } }
-    .c2 { height: 15px; background: ${props => props.theme.colors.success}; &::before { height: 20px; top: -2px; } }
-    .c3 { height: 9px;  background: ${props => props.theme.colors.danger}; &::before { height: 14px; top: -2px; } }
+    gap: 10px;
   }
 
   .market-meta {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    gap: 2px;
   }
 
   .display-name {
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
     color: ${props => props.theme.colors.text};
-
-    @media (max-width: 480px) {
-      font-size: 11px;
-    }
   }
 
   .system-symbol {
-    font-size: 10px;
+    font-size: 9px;
     color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
-    font-weight: 700;
-
-    @media (max-width: 480px) {
-      font-size: 8px;
-    }
   }
 
   .badge-1s {
     font-size: 8px;
     font-weight: 700;
-    color: ${props => props.theme.colors.text};
-    background: ${props => props.theme.colors.danger};
+    color: #ffffff;
+    background: ${props => props.theme.colors.accent};
     padding: 1px 4px;
     border-radius: 3px;
-    text-transform: uppercase;
+    margin-left: 4px;
   }
 
   .star-fav {
-    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted + '40'};
-    font-size: 14px;
-
-    @media (max-width: 480px) {
-      font-size: 11px;
-    }
+    color: ${props => props.$active ? props.theme.colors.accent : getRgba(props.theme.colors.textMuted, 0.3)};
+    font-size: 12px;
   }
 `;
 
-// ===== CHART =====
 const ChartWrapper = styled.div`
   flex: 1;
   position: relative;
@@ -396,7 +293,6 @@ const ChartWrapper = styled.div`
   background: ${props => props.theme.colors.background};
   overflow: hidden;
   z-index: 2;
-  transition: background 0.3s ease;
 `;
 
 const ChartCanvas = styled.canvas`
@@ -405,43 +301,19 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: calc(100% - 20px);
-  max-width: 680px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  width: calc(100% - 24px);
+  max-width: 640px;
   position: absolute;
-  bottom: 55px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   gap: 6px;
   pointer-events: none;
-  z-index: 1;
-  font-weight: 700;
-
-  @media (max-width: 768px) {
-    width: calc(100% - 16px);
-    bottom: 48px;
-    gap: 5px;
-  }
-
-  @media (max-width: 480px) {
-    width: calc(100% - 8px);
-    bottom: 42px;
-    gap: 4px;
-  }
-
-  @media (max-width: 380px) {
-    width: calc(100% - 4px);
-    bottom: 38px;
-    gap: 3px;
-  }
+  z-index: 5;
 `;
 
 const DigitItem = styled.div`
@@ -450,61 +322,38 @@ const DigitItem = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
-  padding-bottom: 2px;
   min-width: 0;
-  font-weight: 700;
 
   .circle-badge {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background: ${props => props.theme.colors.backgroundSecondary};
-    border: 2px solid ${props => 
-      props.isLastDigit 
-        ? props.theme.colors.accent
+    border: 1px solid ${props => 
+      props.$isLastDigit 
+        ? props.theme.colors.accent 
         : props.theme.colors.border
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.theme.colors.accent + '80'}` : 'none'};
-    transition: all 0.15s ease;
-
-    @media (max-width: 768px) {
-      width: 34px;
-      height: 34px;
-      border-width: 2px;
-    }
+    box-shadow: ${props => props.$isLastDigit ? `0 0 12px ${getRgba(props.theme.colors.accent, 0.4)}` : 'none'};
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
     @media (max-width: 480px) {
-      width: 32px;
-      height: 32px;
-      border-width: 2px;
-    }
-
-    @media (max-width: 380px) {
       width: 28px;
       height: 28px;
-      border-width: 2px;
     }
   }
 
   .digit-num {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
     color: ${props => props.theme.colors.text};
     line-height: 1;
 
-    @media (max-width: 768px) {
-      font-size: 13px;
-    }
-
     @media (max-width: 480px) {
-      font-size: 12px;
-    }
-
-    @media (max-width: 380px) {
       font-size: 10px;
     }
   }
@@ -512,56 +361,38 @@ const DigitItem = styled.div`
   .pct-text {
     font-size: 8px;
     font-family: monospace;
-    font-weight: 700;
+    font-weight: 600;
     color: ${props => 
-      props.isMax 
-        ? props.theme.colors.accent
+      props.$isMax 
+        ? props.theme.colors.accent 
         : props.theme.colors.textMuted
     };
     line-height: 1;
-    margin-top: 0px;
-
-    @media (max-width: 768px) {
-      font-size: 7px;
-    }
+    margin-top: 2px;
 
     @media (max-width: 480px) {
       font-size: 7px;
-    }
-
-    @media (max-width: 380px) {
-      font-size: 6px;
     }
   }
 
   .active-arrow {
     position: absolute;
-    bottom: -4px;
-    font-size: 10px;
+    bottom: -10px;
+    font-size: 8px;
     color: ${props => props.theme.colors.accent};
-    display: ${props => props.isLastDigit ? 'block' : 'none'};
-    line-height: 1;
-    font-weight: 700;
-
-    @media (max-width: 480px) {
-      font-size: 8px;
-      bottom: -3px;
-    }
-
-    @media (max-width: 380px) {
-      font-size: 7px;
-      bottom: -2px;
-    }
+    opacity: ${props => props.$isLastDigit ? 1 : 0};
+    transform: ${props => props.$isLastDigit ? 'translateY(0)' : 'translateY(-3px)'};
+    transition: all 0.2s ease;
   }
 `;
 
 // ============================================
 // CANVAS POLYFILL
 // ============================================
-if (!CanvasRenderingContext2D.prototype.roundRect) {
+if (typeof window !== 'undefined' && CanvasRenderingContext2D && !CanvasRenderingContext2D.prototype.roundRect) {
   CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-    if (r > w/2) r = w/2;
-    if (r > h/2) r = h/2;
+    if (r > w / 2) r = w / 2;
+    if (r > h / 2) r = h / 2;
     this.moveTo(x + r, y);
     this.arcTo(x + w, y, x + w, y + h, r);
     this.arcTo(x + w, y + h, x, y + h, r);
@@ -576,7 +407,9 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 // ============================================
 const ChartPanel = () => {
   const canvasRef = useRef(null);
+  const dropdownRef = useRef(null);
   const theme = useContext(ThemeContext);
+
   const [selectedMarket, setSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [price, setPrice] = useState(8459.65);
@@ -586,9 +419,20 @@ const ChartPanel = () => {
   const [ticks, setTicks] = useState([]);
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
   const [lastDigit, setLastDigit] = useState(5);
-  const [movementDirection, setMovementDirection] = useState('down');
   const [currentTime, setCurrentTime] = useState('');
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Clock tick
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -599,6 +443,7 @@ const ChartPanel = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Market Data Simulation
   useEffect(() => {
     let basePrice = selectedMarket.symbol.includes('100') ? 8459.65 : 230.15;
     const initialTicks = [];
@@ -624,10 +469,8 @@ const ChartPanel = () => {
         setChangePct((newChange / initialTicks[0].price) * 100);
         setIsNegative(newChange < 0);
 
-        setMovementDirection(newPrice >= previousPrice ? 'up' : 'down');
-
         const priceStr = newPrice.toFixed(2);
-        const currentLastDigit = parseInt(priceStr.slice(-1));
+        const currentLastDigit = parseInt(priceStr.slice(-1), 10);
         if (!isNaN(currentLastDigit)) {
           setLastDigit(currentLastDigit);
         }
@@ -635,7 +478,7 @@ const ChartPanel = () => {
         const digits = Array(10).fill(0);
         updated.forEach(t => {
           const str = t.price.toFixed(2);
-          const d = parseInt(str.slice(-1));
+          const d = parseInt(str.slice(-1), 10);
           if (!isNaN(d)) digits[d]++;
         });
         const total = updated.length || 1;
@@ -652,9 +495,10 @@ const ChartPanel = () => {
     return () => clearInterval(interval);
   }, [selectedMarket]);
 
-  useEffect(() => {
+  // Canvas Drawing Logic
+  const drawChart = useCallback(() => {
     const canvas = canvasRef.current;
-    if (!canvas || ticks.length < 2 || !theme) return;
+    if (!canvas || ticks.length < 2 || !theme || !theme.colors) return;
 
     const rect = canvas.parentElement.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -672,31 +516,25 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // ALL colors from theme - NO hardcoded colors
-    const bgColor = theme.colors.background;
-    const textColor = theme.colors.text;
-    const textMutedColor = theme.colors.textMuted;
-    const accentColor = theme.colors.accent;
-    const borderColor = theme.colors.border;
-    
-    const hexToRgb = (hex) => {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : { r: 10, g: 14, b: 23 };
-    };
+    // Dynamic Theme Colors
+    const bgColor = theme.colors.background || '#0f172a';
+    const textColor = theme.colors.text || '#f8fafc';
+    const textMutedColor = theme.colors.textMuted || '#64748b';
+    const accentColor = theme.colors.accent || '#3b82f6';
+    const borderColor = theme.colors.border || '#1e293b';
 
-    const rgb = hexToRgb(bgColor);
-    
+    const bgRgb = hexToRgb(bgColor);
+    const gridRgb = hexToRgb(borderColor);
+    const accentRgb = hexToRgb(accentColor);
+
+    // Smooth gradient background
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-    bgGrad.addColorStop(0, `rgb(${Math.min(rgb.r + 2, 255)}, ${Math.min(rgb.g + 2, 255)}, ${Math.min(rgb.b + 4, 255)})`);
-    bgGrad.addColorStop(1, `rgb(${Math.max(rgb.r - 2, 0)}, ${Math.max(rgb.g - 2, 0)}, ${Math.max(rgb.b - 4, 0)})`);
+    bgGrad.addColorStop(0, `rgb(${Math.min(bgRgb.r + 4, 255)}, ${Math.min(bgRgb.g + 4, 255)}, ${Math.min(bgRgb.b + 6, 255)})`);
+    bgGrad.addColorStop(1, bgColor);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const pad = { top: 25, bottom: 35, left: 15, right: 65 };
+    const pad = { top: 20, bottom: 60, left: 15, right: 65 };
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
 
@@ -711,12 +549,11 @@ const ChartPanel = () => {
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
-    // Grid lines - theme border color
-    const gridColor = hexToRgb(borderColor);
-    ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.3)`;
-    ctx.lineWidth = 2;
+    // Grid lines
+    ctx.strokeStyle = `rgba(${gridRgb.r}, ${gridRgb.g}, ${gridRgb.b}, 0.5)`;
+    ctx.lineWidth = 1;
     
-    const gridRows = 5;
+    const gridRows = 4;
     for (let i = 0; i <= gridRows; i++) {
       const y = pad.top + (i / gridRows) * chartH;
       ctx.beginPath();
@@ -725,21 +562,10 @@ const ChartPanel = () => {
       ctx.stroke();
     }
 
-    const gridCols = 10;
-    for (let i = 0; i <= gridCols; i++) {
-      const x = pad.left + (i / gridCols) * chartW;
-      ctx.beginPath();
-      ctx.moveTo(x, pad.top);
-      ctx.lineTo(x, height - pad.bottom);
-      ctx.stroke();
-    }
-
-    // LINE COLOR - Use theme accent color
-    const lineColor = accentColor;
-    
+    // Chart Line
     ctx.beginPath();
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 2.2;
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 2;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
 
@@ -751,56 +577,55 @@ const ChartPanel = () => {
     }
     ctx.stroke();
 
-    // Fill under the line - theme accent color
+    // Area Fill
     const lastX = xScale(ticks.length - 1);
     ctx.lineTo(lastX, height - pad.bottom);
     ctx.lineTo(pad.left, height - pad.bottom);
     ctx.closePath();
 
     const fillGrad = ctx.createLinearGradient(0, pad.top, 0, height - pad.bottom);
-    const fillRgb = hexToRgb(lineColor);
-    fillGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.15)`);
-    fillGrad.addColorStop(1, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0)`);
+    fillGrad.addColorStop(0, `rgba(${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}, 0.18)`);
+    fillGrad.addColorStop(1, `rgba(${accentRgb.r}, ${accentRgb.g}, ${accentRgb.b}, 0)`);
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
-    // Current price dot - theme accent color
+    // Current price pulse dot
     const currentPrice = ticks[ticks.length - 1].price;
     const currentY = yScale(currentPrice);
 
-    ctx.fillStyle = lineColor;
+    ctx.fillStyle = accentColor;
     ctx.beginPath();
-    ctx.arc(lastX, currentY, 4.5, 0, Math.PI * 2);
+    ctx.arc(lastX, currentY, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    // Dashed line - theme text color with opacity
-    const dashColor = hexToRgb(textColor);
-    ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.15)`;
+    // Price Axis Guide Line
+    const dashRgb = hexToRgb(textColor);
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = `rgba(${dashRgb.r}, ${dashRgb.g}, ${dashRgb.b}, 0.15)`;
     ctx.beginPath();
     ctx.moveTo(lastX, currentY);
     ctx.lineTo(width - pad.right, currentY);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Price badge - theme accent color
-    const badgeW = 55;
-    const badgeH = 20;
-    ctx.fillStyle = lineColor;
+    // Price Badge
+    const badgeW = 54;
+    const badgeH = 18;
+    ctx.fillStyle = accentColor;
     ctx.beginPath();
     ctx.roundRect(width - pad.right + 4, currentY - badgeH / 2, badgeW, badgeH, 4);
     ctx.fill();
 
-    // Badge text - theme background for contrast
+    // Badge Text
     ctx.fillStyle = bgColor;
-    ctx.font = 'bold 10px monospace';
+    ctx.font = '600 10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPrice.toFixed(2), width - pad.right + 4 + badgeW / 2, currentY);
 
-    // Y-axis labels - theme text muted color
+    // Y-axis Labels
     ctx.fillStyle = textMutedColor;
-    ctx.font = 'bold 10px monospace';
+    ctx.font = '500 9px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
 
@@ -810,22 +635,19 @@ const ChartPanel = () => {
       const targetY = yScale(targetP);
       ctx.fillText(targetP.toFixed(2), width - pad.right + 6, targetY);
     }
+  }, [ticks, theme]);
 
-    // X-axis labels - theme text muted color
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillStyle = textMutedColor;
-    ctx.font = 'bold 10px monospace';
-    
-    const sampleTimes = ['08:00', '11:00', '14:00', '17:00', '20:00'];
-    sampleTimes.forEach((t, idx) => {
-      const posX = pad.left + (idx / (sampleTimes.length - 1)) * chartW;
-      ctx.fillText(t, posX, height - pad.bottom + 6);
-    });
+  useEffect(() => {
+    drawChart();
+  }, [drawChart]);
 
-  }, [ticks, movementDirection, theme]);
+  // Handle Resize
+  useEffect(() => {
+    const handleResize = () => drawChart();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [drawChart]);
 
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const selectMarket = (market) => {
     setSelectedMarket(market);
     setIsDropdownOpen(false);
@@ -838,44 +660,40 @@ const ChartPanel = () => {
   return (
     <PanelContainer>
       <Header>
-        <SymbolInfo isNegative={isNegative}>
-          <div className="symbol-row">
+        <SymbolInfo $isNegative={isNegative}>
+          <div className="symbol-row" ref={dropdownRef}>
             <span className="symbol-label">Volatility Index</span>
             <div
               className="market-selector"
-              isOpen={isDropdownOpen}
-              onClick={toggleDropdown}
+              $isOpen={isDropdownOpen}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <span>{selectedMarket.name}</span>
               <span className="dropdown-arrow">▾</span>
-              
-              <DropdownMenu isOpen={isDropdownOpen} onClick={(e) => e.stopPropagation()}>
-                <div className="dropdown-title">Volatility Indices</div>
-                {VOLATILITY_MARKETS.map((market) => (
-                  <DropdownItem
-                    key={market.symbol}
-                    active={selectedMarket.symbol === market.symbol}
-                    onClick={() => selectMarket(market)}
-                  >
-                    <div className="left-container">
-                      <div className="candle-icon-mock">
-                        <div className="candle c1" />
-                        <div className="candle c2" />
-                        <div className="candle c3" />
-                      </div>
-                      <div className="market-meta">
-                        <span className="display-name">
-                          {market.name.split(' (1s)')[0]} {market.isOneSec && <span className="badge-1s">1s</span>}
-                        </span>
-                        <span className="system-symbol">{market.symbol}</span>
-                      </div>
-                    </div>
-                    <span className="star-fav">★</span>
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
             </div>
+
+            <DropdownMenu $isOpen={isDropdownOpen} onClick={(e) => e.stopPropagation()}>
+              <div className="dropdown-title">Volatility Indices</div>
+              {VOLATILITY_MARKETS.map((market) => (
+                <DropdownItem
+                  key={market.symbol}
+                  $active={selectedMarket.symbol === market.symbol}
+                  onClick={() => selectMarket(market)}
+                >
+                  <div className="left-container">
+                    <div className="market-meta">
+                      <span className="display-name">
+                        {market.name.split(' (1s)')[0]} {market.isOneSec && <span className="badge-1s">1s</span>}
+                      </span>
+                      <span className="system-symbol">{market.symbol}</span>
+                    </div>
+                  </div>
+                  <span className="star-fav">★</span>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
           </div>
+
           <div className="price-row">
             <span className="price">{price.toFixed(2)}</span>
             <span className="change">
@@ -900,10 +718,9 @@ const ChartPanel = () => {
             return (
               <DigitItem
                 key={stat.digit}
-                isLastDigit={isLastDigit}
-                isMax={stat.pct === maxPct}
-                isMin={stat.pct === minPct}
-                direction={movementDirection}
+                $isLastDigit={isLastDigit}
+                $isMax={stat.pct === maxPct}
+                $isMin={stat.pct === minPct}
               >
                 <div className="circle-badge">
                   <span className="digit-num">{stat.digit}</span>
