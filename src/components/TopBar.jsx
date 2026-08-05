@@ -17,6 +17,11 @@ const rotateIn = keyframes`
   to { transform: rotate(360deg); }
 `;
 
+const pulseGlow = keyframes`
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+`;
+
 // ============================================
 // PROFESSIONAL SVG ICONS
 // ============================================
@@ -73,8 +78,8 @@ const TransferIcon = () => (
 // History Icon
 const HistoryIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-    <polyline points="17 6 23 6 23 12" />
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
   </svg>
 );
 
@@ -119,26 +124,27 @@ const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 28px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || '#0a0a0c'};
+  padding: 12px 28px;
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0b0f19'};
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   position: sticky;
   top: 0;
   z-index: 100;
-  min-height: 64px;
+  min-height: 76px;
   flex-shrink: 0;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
 
   @media (max-width: 1024px) {
-    padding: 10px 20px;
+    padding: 12px 20px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
   }
 
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: 10px 16px;
-    gap: 8px;
+    align-items: stretch;
+    padding: 12px 16px;
   }
 `;
 
@@ -280,10 +286,10 @@ const GlassDropdownMenu = styled.div`
   max-width: 90vw;
   max-height: 450px;
   overflow-y: auto;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(15,17,23,0.94)'};
+  background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(15,17,23,0.94)'};
   backdrop-filter: blur(24px) saturate(190%);
   -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.12)'};
+  border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255,255,255,0.12)'};
   border-radius: 14px;
   padding: 8px;
   box-shadow: ${props => props.theme?.colors?.shadow || '0 20px 40px -10px rgba(0,0,0,0.6)'};
@@ -310,26 +316,25 @@ const MenuHeader = styled.div`
 `;
 
 // ============================================
-// 1. THEME BUTTON
+// 1. THEME BUTTON - Updated with premium styling
 // ============================================
 const ThemeButton = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 7px 14px;
-  background: ${props => props.theme?.colors?.background || '#0f172a'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.12)'};
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   color: ${props => props.theme?.colors?.text || '#ffffff'};
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.08)'};
     border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-    box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '20'};
+    box-shadow: 0 0 16px ${props => (props.theme?.colors?.accent || '#3b82f6') + '20'};
 
     .theme-icon {
       animation: ${rotateIn} 0.6s ease;
@@ -344,13 +349,13 @@ const ThemeButton = styled.button`
     transition: all 0.3s ease;
   }
 
-  .theme-swatch {
-    width: 14px;
-    height: 14px;
+  .swatch-glow {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    border: 1.5px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.2)'};
-    flex-shrink: 0;
-    box-shadow: 0 0 12px ${props => (props.activeColor || '#3b82f6') + '40'};
+    background: ${props => props.activeColor || '#3b82f6'};
+    box-shadow: 0 0 10px ${props => props.activeColor || '#3b82f6'};
+    animation: ${pulseGlow} 2.5s infinite;
   }
 
   .theme-name {
@@ -361,7 +366,7 @@ const ThemeButton = styled.button`
   .chevron {
     display: flex;
     align-items: center;
-    opacity: 0.5;
+    opacity: 0.7;
   }
 
   @media (max-width: 480px) {
@@ -383,12 +388,12 @@ const ThemeOptionItem = styled.div`
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.08)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   &.active {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.12)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'};
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
@@ -411,47 +416,32 @@ const ThemeOptionItem = styled.div`
 `;
 
 // ============================================
-// 2. FUNDS BUTTON
+// 2. FUNDS BUTTON - Updated with premium styling
 // ============================================
 const FundsButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 7px 16px;
+  gap: 8px;
+  padding: 7px 15px;
   border-radius: 10px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-  background: ${props => props.theme?.colors?.background || '#0f172a'};
+  border: 1px solid ${props => props.theme?.colors?.accent || '#3b82f6'};
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
   color: ${props => props.theme?.colors?.text || '#ffffff'};
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12.5px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
-    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.06)'};
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
+    box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '30'};
     transform: translateY(-1px);
-    box-shadow: 0 4px 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '15'};
-
-    .arrow { 
-      transform: translateX(4px); 
-      color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-    }
-    .funds-icon-wrapper {
-      background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.15)'};
-    }
   }
 
   .funds-icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.08)'};
-    transition: all 0.3s ease;
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
@@ -462,7 +452,7 @@ const FundsButton = styled.button`
   }
 
   .funds-title {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 700;
   }
 
@@ -477,14 +467,13 @@ const FundsButton = styled.button`
     display: flex;
     align-items: center;
     transition: transform 0.3s ease, color 0.3s ease;
-    opacity: 0.6;
+    opacity: 0.8;
     margin-left: 2px;
   }
 
   @media (max-width: 480px) {
     padding: 5px 10px;
     .funds-sub { display: none; }
-    .funds-icon-wrapper { width: 24px; height: 24px; }
     .funds-title { font-size: 11px; }
   }
 `;
@@ -502,7 +491,7 @@ const FundsOption = styled.div`
   font-weight: 600;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.08)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -597,18 +586,18 @@ const AccountBadge = styled.div`
   align-items: center;
   gap: 8px;
   padding: 7px 14px;
-  background: ${props => props.theme?.colors?.background || '#0f172a'};
+  background: ${props => props.theme?.colors?.surface || 'rgba(15, 23, 42, 0.6)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: ${props => props.theme?.colors?.text || '#ffffff'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.06)'};
+    background: ${props => props.theme?.colors?.surfaceHover || '#1e293b'};
     border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
     box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '15'};
   }
@@ -635,10 +624,10 @@ const AccountBadge = styled.div`
   }
 
   .currency-tag {
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 6px;
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.1)'};
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.15)'};
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
     font-weight: 800;
   }
@@ -646,14 +635,14 @@ const AccountBadge = styled.div`
   .chevron {
     display: flex;
     align-items: center;
-    opacity: 0.5;
+    opacity: 0.6;
   }
 
   @media (max-width: 480px) {
     padding: 5px 10px;
     font-size: 12px;
     .flag-badge { font-size: 14px; }
-    .currency-tag { font-size: 9px; padding: 1px 6px; }
+    .currency-tag { font-size: 8px; padding: 1px 6px; }
     .account-type-badge { font-size: 8px; padding: 1px 6px; }
   }
 `;
@@ -696,12 +685,12 @@ const CurrencyOptionItem = styled.div`
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.06)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.06)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
   &.active {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.1)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
@@ -741,21 +730,21 @@ const CurrencyList = styled.div`
 const ExitButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding: 7px 14px;
   border-radius: 10px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-  background: ${props => props.theme?.colors?.background || '#0f172a'};
+  background: ${props => props.theme?.colors?.surface || 'transparent'};
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
     border-color: ${props => props.theme?.colors?.danger || '#ef4444'};
     color: ${props => props.theme?.colors?.danger || '#ef4444'};
-    background: ${props => (props.theme?.colors?.danger || '#ef4444') + '10'};
+    background: ${props => (props.theme?.colors?.danger || '#ef4444') + '15'};
     transform: translateX(-2px);
 
     .exit-icon { stroke: ${props => props.theme?.colors?.danger || '#ef4444'}; }
@@ -775,18 +764,17 @@ const ExitButton = styled.button`
 `;
 
 // ============================================
-// THEME DEFINITIONS
-// ============================================
+// THEME DEFINITIONS - Updated with premium themes// ============================================
 const THEME_OPTIONS = [
   { key: 'dark', name: 'Solid Dark', color: '#09090b' },
-  { key: 'midnight', name: 'Midnight', color: '#0b132b' },
-  { key: 'darkBlue', name: 'Deep Blue', color: '#0f172a' },
+  { key: 'midnight', name: 'Midnight Indigo', color: '#070a12' },
   { key: 'ocean', name: 'Deep Ocean', color: '#020d14' },
   { key: 'cosmic', name: 'Cosmic Violet', color: '#07040d' },
+  { key: 'darkBlue', name: 'Deep Blue', color: '#0f172a' },
   { key: 'forest', name: 'Emerald', color: '#040d0a' },
   { key: 'darkGreen', name: 'Forest Green', color: '#052e16' },
   { key: 'black', name: 'Pure Black', color: '#000000' },
-  { key: 'white', name: 'Pure White', color: '#f9fafb' },
+  { key: 'light', name: 'Pure White', color: '#f9fafb' },
   { key: 'lightGray', name: 'Light Gray', color: '#e5e7eb' },
 ];
 
@@ -921,17 +909,17 @@ const TopPanel = ({
       </LeftSection>
 
       <RightSection>
-        {/* 1. THEME BUTTON */}
+        {/* 1. THEME BUTTON - Premium styled */}
         <DropdownContainer ref={themeRef}>
           <ThemeButton onClick={toggleThemeDropdown} activeColor={activeThemeObj.color}>
             <span className="theme-icon"><ThemeIcon /></span>
-            <span className="theme-swatch" style={{ background: activeThemeObj.color }} />
+            <span className="swatch-glow" style={{ background: activeThemeObj.color }} />
             <span className="theme-name">{activeThemeObj.name}</span>
             <span className="chevron"><ChevronDownIcon open={isThemeOpen} /></span>
           </ThemeButton>
 
           <GlassDropdownMenu isOpen={isThemeOpen}>
-            <MenuHeader>Select Theme</MenuHeader>
+            <MenuHeader>Choose Theme</MenuHeader>
             {THEME_OPTIONS.map((t) => (
               <ThemeOptionItem
                 key={t.key}
@@ -949,7 +937,7 @@ const TopPanel = ({
           </GlassDropdownMenu>
         </DropdownContainer>
 
-        {/* 2. FUNDS BUTTON */}
+        {/* 2. FUNDS BUTTON - Premium styled */}
         <DropdownContainer ref={fundsRef}>
           <FundsButton onClick={toggleFundsDropdown}>
             <span className="funds-icon-wrapper"><FundsIcon /></span>
