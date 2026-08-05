@@ -14,51 +14,14 @@ import RightPanel from '../components/RightPanel';
  */
 
 /**
- * Fixed Theme Definitions
- * Retains exact theme keys ('dark', 'light', etc.) to prevent React undefined crashes.
- * Adds 'surfaceGlass', 'glassBorder', and 'glassBlur' to all themes for translucent dropdowns.
+ * Modern Design System - Premium Color Schemes
+ * Preserves exact legacy keys ('dark', 'light', 'minimalWhite', etc.) to prevent crashes.
  */
 
 const themes = {
-  // === SOLID DARK (Default) ===
-  dark: {
-    name: 'Solid Dark',
-    category: 'dark',
-    colors: {
-      bg: '#000000',
-      surface: '#0a0a0c',
-      surfaceHover: '#141417',
-      surfaceActive: '#1f1f24',
-      
-      // Translucent Dropdown Surface
-      surfaceGlass: 'rgba(12, 12, 15, 0.88)',
-      glassBorder: 'rgba(255, 255, 255, 0.12)',
-      glassBlur: '16px',
-      
-      border: '#1f1f24',
-      borderMuted: '#141417',
-      
-      text: '#ffffff',
-      textSecondary: '#a1a1aa',
-      textMuted: '#52525b',
-      
-      accent: '#3b82f6',
-      accentHover: '#2563eb',
-      accentLight: 'rgba(59, 130, 246, 0.15)',
-      accentMuted: 'rgba(59, 130, 246, 0.3)',
-      
-      success: '#10b981',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      
-      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.9)',
-      scrollbar: '#27272a',
-    }
-  },
-
-  // === SOLID WHITE ===
+  // === SOLID WHITE THEMES ===
   light: {
-    name: 'Solid White',
+    name: 'Pure White (Solid)',
     category: 'light',
     colors: {
       bg: '#ffffff',
@@ -66,10 +29,10 @@ const themes = {
       surfaceHover: '#f1f5f9',
       surfaceActive: '#e2e8f0',
       
-      // Translucent Dropdown Surface
-      surfaceGlass: 'rgba(255, 255, 255, 0.88)',
-      glassBorder: 'rgba(0, 0, 0, 0.1)',
-      glassBlur: '16px',
+      // Translucent Dropdown Surface (High Opacity + Blur)
+      surfaceGlass: 'rgba(255, 255, 255, 0.92)',
+      glassBorder: 'rgba(0, 0, 0, 0.08)',
+      glassBlur: '20px',
       
       border: '#e2e8f0',
       borderMuted: '#f1f5f9',
@@ -92,6 +55,76 @@ const themes = {
     }
   },
 
+  minimalWhite: {
+    name: 'Minimal White',
+    category: 'light',
+    colors: {
+      bg: '#ffffff',
+      surface: '#f9fafb',
+      surfaceHover: '#f3f4f6',
+      surfaceActive: '#e5e7eb',
+      
+      surfaceGlass: 'rgba(255, 255, 255, 0.94)',
+      glassBorder: 'rgba(0, 0, 0, 0.06)',
+      glassBlur: '20px',
+      
+      border: '#e5e7eb',
+      borderMuted: '#f3f4f6',
+      
+      text: '#111827',
+      textSecondary: '#4b5563',
+      textMuted: '#9ca3af',
+      
+      accent: '#2563eb',
+      accentHover: '#1d4ed8',
+      accentLight: 'rgba(37, 99, 235, 0.08)',
+      accentMuted: 'rgba(37, 99, 235, 0.2)',
+      
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      
+      shadow: '0 10px 30px -10px rgba(0, 0, 0, 0.06)',
+      scrollbar: '#d1d5db',
+    }
+  },
+
+  // === SOLID DARK THEMES ===
+  dark: {
+    name: 'Solid Dark',
+    category: 'dark',
+    colors: {
+      bg: '#000000',
+      surface: '#0a0a0c',
+      surfaceHover: '#141417',
+      surfaceActive: '#1f1f24',
+      
+      // Translucent Dropdown Surface (High Opacity + Blur)
+      surfaceGlass: 'rgba(10, 10, 12, 0.88)',
+      glassBorder: 'rgba(255, 255, 255, 0.12)',
+      glassBlur: '20px',
+      
+      border: '#1f1f24',
+      borderMuted: '#141417',
+      
+      text: '#ffffff',
+      textSecondary: '#a1a1aa',
+      textMuted: '#52525b',
+      
+      accent: '#3b82f6',
+      accentHover: '#2563eb',
+      accentLight: 'rgba(59, 130, 246, 0.15)',
+      accentMuted: 'rgba(59, 130, 246, 0.3)',
+      
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      
+      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.9)',
+      scrollbar: '#27272a',
+    }
+  },
+
   midnight: {
     name: 'Midnight Indigo',
     category: 'dark',
@@ -101,9 +134,9 @@ const themes = {
       surfaceHover: '#1e293b',
       surfaceActive: '#334155',
       
-      surfaceGlass: 'rgba(15, 23, 42, 0.85)',
+      surfaceGlass: 'rgba(15, 23, 42, 0.88)',
       glassBorder: 'rgba(99, 102, 241, 0.25)',
-      glassBlur: '16px',
+      glassBlur: '20px',
       
       border: '#1e293b',
       borderMuted: '#0f172a',
@@ -135,9 +168,9 @@ const themes = {
       surfaceHover: '#0d283d',
       surfaceActive: '#153650',
       
-      surfaceGlass: 'rgba(7, 30, 46, 0.85)',
+      surfaceGlass: 'rgba(7, 30, 46, 0.88)',
       glassBorder: 'rgba(6, 182, 212, 0.25)',
-      glassBlur: '16px',
+      glassBlur: '20px',
       
       border: '#133048',
       borderMuted: '#071e2e',
@@ -169,9 +202,9 @@ const themes = {
       surfaceHover: '#1c1436',
       surfaceActive: '#281c4d',
       
-      surfaceGlass: 'rgba(19, 13, 36, 0.85)',
+      surfaceGlass: 'rgba(19, 13, 36, 0.88)',
       glassBorder: 'rgba(139, 92, 246, 0.25)',
-      glassBlur: '16px',
+      glassBlur: '20px',
       
       border: '#241a45',
       borderMuted: '#130d24',
@@ -203,9 +236,9 @@ const themes = {
       surfaceHover: '#122b24',
       surfaceActive: '#1a3d33',
       
-      surfaceGlass: 'rgba(11, 28, 23, 0.85)',
+      surfaceGlass: 'rgba(11, 28, 23, 0.88)',
       glassBorder: 'rgba(16, 185, 129, 0.25)',
-      glassBlur: '16px',
+      glassBlur: '20px',
       
       border: '#16382e',
       borderMuted: '#0b1c17',
@@ -237,9 +270,9 @@ const themes = {
       surfaceHover: '#311b17',
       surfaceActive: '#442721',
       
-      surfaceGlass: 'rgba(33, 18, 15, 0.85)',
+      surfaceGlass: 'rgba(33, 18, 15, 0.88)',
       glassBorder: 'rgba(249, 115, 22, 0.25)',
-      glassBlur: '16px',
+      glassBlur: '20px',
       
       border: '#3a201b',
       borderMuted: '#21120f',
@@ -259,40 +292,6 @@ const themes = {
       
       shadow: '0 20px 40px -15px rgba(15, 5, 3, 0.8)',
       scrollbar: '#3a201b',
-    }
-  },
-
-  minimalWhite: {
-    name: 'Pure White',
-    category: 'light',
-    colors: {
-      bg: '#ffffff',
-      surface: '#f9fafb',
-      surfaceHover: '#f3f4f6',
-      surfaceActive: '#e5e7eb',
-      
-      surfaceGlass: 'rgba(249, 250, 251, 0.9)',
-      glassBorder: 'rgba(0, 0, 0, 0.08)',
-      glassBlur: '16px',
-      
-      border: '#e5e7eb',
-      borderMuted: '#f3f4f6',
-      
-      text: '#111827',
-      textSecondary: '#4b5563',
-      textMuted: '#9ca3af',
-      
-      accent: '#000000',
-      accentHover: '#1f2937',
-      accentLight: 'rgba(0, 0, 0, 0.05)',
-      accentMuted: 'rgba(0, 0, 0, 0.15)',
-      
-      success: '#10b981',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      
-      shadow: '0 10px 30px -10px rgba(0, 0, 0, 0.06)',
-      scrollbar: '#d1d5db',
     }
   }
 };
