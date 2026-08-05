@@ -26,23 +26,23 @@ const pulseGlow = keyframes`
   0%, 100% {
     opacity: 1;
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    box-shadow: 0 0 0 0 ${props => props.theme.colors.danger || '#EF4444'};
   }
   50% {
     opacity: 0.85;
     transform: scale(1.15);
-    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    box-shadow: 0 0 0 6px rgba(0, 0, 0, 0);
   }
 `;
 
 // ============================================
-// STYLED COMPONENTS - PROFESSIONAL THEME
+// STYLED COMPONENTS - THEMED
 // ============================================
 
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: ${props => props.theme.colors.shadow || 'rgba(10, 15, 29, 0.7)'};
+  background: ${props => props.theme.colors.overlay || props.theme.colors.shadow || 'rgba(10, 15, 29, 0.7)'};
   backdrop-filter: blur(4px);
   z-index: 98;
   opacity: ${props => (props.isOpen ? 1 : 0)};
@@ -60,7 +60,7 @@ const SidebarContainer = styled.aside`
   left: 0;
   width: 280px;
   height: 100vh;
-  background: ${props => props.theme.colors.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme.colors.sidebarBackground || props.theme.colors.backgroundSecondary || '#0F172A'};
   border-right: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -68,7 +68,7 @@ const SidebarContainer = styled.aside`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 4px 0 24px ${props => props.theme.colors.shadow || 'rgba(0, 0, 0, 0.25)'};
 
   @media (max-width: 768px) {
     width: 290px;
@@ -148,13 +148,14 @@ const SidebarHeader = styled.div`
     height: 40px;
     border-radius: 10px;
     background: ${props =>
+      props.theme.colors.gradientPrimary ||
       `linear-gradient(135deg, ${props.theme.colors.accent || '#3B82F6'}, #1D4ED8)`};
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
     font-weight: 700;
-    color: #ffffff;
+    color: ${props => props.theme.colors.buttonText || '#ffffff'};
     letter-spacing: 0.5px;
     box-shadow: 0 4px 12px ${props => (props.theme.colors.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
     flex-shrink: 0;
@@ -266,8 +267,8 @@ const NavItem = styled.div`
     font-weight: 700;
     padding: 2px 7px;
     border-radius: 6px;
-    background: ${props => (props.active ? (props.theme.colors.accent || '#3B82F6') : 'rgba(255, 255, 255, 0.06)')};
-    color: ${props => (props.active ? '#FFFFFF' : (props.theme.colors.textMuted || '#94A3B8'))};
+    background: ${props => (props.active ? (props.theme.colors.accent || '#3B82F6') : (props.theme.colors.badgeBg || 'rgba(255, 255, 255, 0.06)'))};
+    color: ${props => (props.active ? (props.theme.colors.buttonText || '#FFFFFF') : (props.theme.colors.textMuted || '#94A3B8'))};
     text-transform: uppercase;
     letter-spacing: 0.4px;
     flex-shrink: 0;
@@ -287,14 +288,14 @@ const NavItem = styled.div`
 const SideCard = styled.div`
   padding: 12px 14px;
   border-radius: 10px;
-  background: ${props => props.theme.colors.background || 'rgba(15, 23, 42, 0.6)'};
+  background: ${props => props.theme.colors.cardBackground || props.theme.colors.background || 'rgba(15, 23, 42, 0.6)'};
   border: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
   animation: ${fadeIn} 0.4s ease;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
     border-color: ${props => (props.theme.colors.accent ? `${props.theme.colors.accent}60` : 'rgba(59, 130, 246, 0.4)')};
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 16px ${props => props.theme.colors.shadow || 'rgba(0, 0, 0, 0.2)'};
   }
 
   .card-title {
@@ -354,7 +355,7 @@ const SideCard = styled.div`
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 10px;
-  background: ${props => props.theme.colors.background || 'rgba(15, 23, 42, 0.6)'};
+  background: ${props => props.theme.colors.cardBackground || props.theme.colors.background || 'rgba(15, 23, 42, 0.6)'};
   border: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
   animation: ${fadeIn} 0.4s ease;
 
@@ -378,7 +379,7 @@ const FeedbackSection = styled.div`
     border: none;
     padding: 0;
     cursor: pointer;
-    color: ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.15)'};
+    color: ${props => props.theme.colors.starInactive || props.theme.colors.border || 'rgba(255, 255, 255, 0.15)'};
     transition: transform 0.15s ease, color 0.15s ease, filter 0.15s ease;
     display: flex;
     align-items: center;
@@ -396,8 +397,8 @@ const FeedbackSection = styled.div`
 
     &.active,
     &.hover {
-      color: #F59E0B;
-      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.5));
+      color: ${props => props.theme.colors.starActive || '#F59E0B'};
+      filter: drop-shadow(0 0 6px ${props => (props.theme.colors.starActive ? `${props.theme.colors.starActive}80` : 'rgba(245, 158, 11, 0.5)')});
     }
   }
 
@@ -414,7 +415,7 @@ const FeedbackSection = styled.div`
     width: 100%;
     min-height: 64px;
     padding: 8px 10px;
-    background: ${props => props.theme.colors.backgroundSecondary || '#0F172A'};
+    background: ${props => props.theme.colors.inputBackground || props.theme.colors.backgroundSecondary || '#0F172A'};
     border: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.1)'};
     border-radius: 6px;
     color: ${props => props.theme.colors.text || '#F8FAFC'};
@@ -441,7 +442,7 @@ const FeedbackSection = styled.div`
     border: none;
     border-radius: 6px;
     background: ${props => props.theme.colors.accent || '#3B82F6'};
-    color: #ffffff;
+    color: ${props => props.theme.colors.buttonText || '#ffffff'};
     font-size: 11.5px;
     font-weight: 600;
     cursor: pointer;
@@ -476,7 +477,7 @@ const SidebarFooter = styled.footer`
   flex-shrink: 0;
   padding: 12px 14px;
   border-top: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
-  background: ${props => props.theme.colors.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme.colors.sidebarBackground || props.theme.colors.backgroundSecondary || '#0F172A'};
   display: flex;
   flex-direction: column;
   gap: 2px;
