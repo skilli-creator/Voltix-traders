@@ -3,37 +3,37 @@ import React, { useState, useEffect, useRef, useContext, useCallback } from 'rea
 import styled, { keyframes, ThemeContext } from 'styled-components';
 
 // ============================================
-// VOLATILITY MARKETS DEFINITION
+// ALL VOLATILITY MARKETS
 // ============================================
 const VOLATILITY_MARKETS = [
-  { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', color: '#a855f7', isOneSec: true },
-  { symbol: 'R_10_1S', name: 'Volatility 10 (1s) Index', display: '10 (1s)', color: '#2962ff', isOneSec: true },
-  { symbol: 'R_25_1S', name: 'Volatility 25 (1s) Index', display: '25 (1s)', color: '#3b82f6', isOneSec: true },
-  { symbol: 'R_50_1S', name: 'Volatility 50 (1s) Index', display: '50 (1s)', color: '#6366f1', isOneSec: true },
-  { symbol: 'R_75_1S', name: 'Volatility 75 (1s) Index', display: '75 (1s)', color: '#8b5cf6', isOneSec: true },
-  { symbol: 'R_10', name: 'Volatility 10 Index', display: '10', color: '#10b981', isOneSec: false },
-  { symbol: 'R_25', name: 'Volatility 25 Index', display: '25', color: '#059669', isOneSec: false },
-  { symbol: 'R_50', name: 'Volatility 50 Index', display: '50', color: '#047857', isOneSec: false },
-  { symbol: 'R_75', name: 'Volatility 75 Index', display: '75', color: '#065f46', isOneSec: false },
-  { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false },
+  { symbol: 'R_100_1S', name: 'Volatility 100 (1s) Index', display: '100 (1s)', isOneSec: true },
+  { symbol: 'R_10_1S', name: 'Volatility 10 (1s) Index', display: '10 (1s)', isOneSec: true },
+  { symbol: 'R_25_1S', name: 'Volatility 25 (1s) Index', display: '25 (1s)', isOneSec: true },
+  { symbol: 'R_50_1S', name: 'Volatility 50 (1s) Index', display: '50 (1s)', isOneSec: true },
+  { symbol: 'R_75_1S', name: 'Volatility 75 (1s) Index', display: '75 (1s)', isOneSec: true },
+  { symbol: 'R_10', name: 'Volatility 10 Index', display: '10', isOneSec: false },
+  { symbol: 'R_25', name: 'Volatility 25 Index', display: '25', isOneSec: false },
+  { symbol: 'R_50', name: 'Volatility 50 Index', display: '50', isOneSec: false },
+  { symbol: 'R_75', name: 'Volatility 75 Index', display: '75', isOneSec: false },
+  { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', isOneSec: false },
 ];
 
-// Helper to reliably parse HEX colors to RGBA
+// Helper to reliably convert theme hex colors to RGBA
 const getRgba = (hex, alpha = 1) => {
-  if (!hex || typeof hex !== 'string') return `rgba(128, 128, 128, ${alpha})`;
+  if (!hex || typeof hex !== 'string') return `rgba(0, 0, 0, ${alpha})`;
   let c = hex.replace('#', '');
   if (c.length === 3) c = c.split('').map(x => x + x).join('');
   const num = parseInt(c, 16);
-  if (isNaN(num)) return `rgba(128, 128, 128, ${alpha})`;
+  if (isNaN(num)) return `rgba(0, 0, 0, ${alpha})`;
   return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
 };
 
 const hexToRgb = (hex) => {
-  if (!hex || typeof hex !== 'string') return { r: 128, g: 128, b: 128 };
+  if (!hex || typeof hex !== 'string') return { r: 0, g: 0, b: 0 };
   let c = hex.replace('#', '');
   if (c.length === 3) c = c.split('').map(x => x + x).join('');
   const num = parseInt(c, 16);
-  return isNaN(num) ? { r: 128, g: 128, b: 128 } : { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+  return isNaN(num) ? { r: 0, g: 0, b: 0 } : { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
 };
 
 // ============================================
@@ -55,7 +55,7 @@ const slideDown = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS
+// STYLED COMPONENTS - FULLY DYNAMIC THEME
 // ============================================
 const PanelContainer = styled.div`
   flex: 1;
@@ -66,7 +66,7 @@ const PanelContainer = styled.div`
   overflow: hidden;
   min-width: 0;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  font-family: inherit;
   animation: ${fadeIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1;
 `;
@@ -80,7 +80,6 @@ const Header = styled.div`
   border-bottom: 1px solid ${props => props.theme.colors.border};
   background: ${props => props.theme.colors.backgroundSecondary};
   z-index: 10;
-  transition: background 0.2s ease, border-color 0.2s ease;
 
   @media (max-width: 768px) {
     padding: 8px 12px;
@@ -127,6 +126,7 @@ const SymbolInfo = styled.div`
 
     &:hover {
       border-color: ${props => props.theme.colors.accent};
+      background: ${props => props.theme.colors.backgroundTertiary || props.theme.colors.background};
       box-shadow: 0 0 12px ${props => getRgba(props.theme.colors.accent, 0.15)};
     }
 
@@ -150,7 +150,7 @@ const SymbolInfo = styled.div`
     font-weight: 700;
     color: ${props => props.theme.colors.text};
     letter-spacing: -0.5px;
-    font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    font-family: monospace;
   }
 
   .change {
@@ -160,7 +160,7 @@ const SymbolInfo = styled.div`
     border-radius: 4px;
     background: ${props => props.$isNegative ? getRgba(props.theme.colors.danger, 0.12) : getRgba(props.theme.colors.success, 0.12)};
     color: ${props => props.$isNegative ? props.theme.colors.danger : props.theme.colors.success};
-    font-family: 'JetBrains Mono', monospace;
+    font-family: monospace;
   }
 
   .change-time {
@@ -206,10 +206,9 @@ const DropdownMenu = styled.div`
   max-height: 320px;
   overflow-y: auto;
   z-index: 100;
-  box-shadow: 0 12px 32px ${props => getRgba(props.theme.colors.shadow || '#000000', 0.25)};
+  box-shadow: 0 12px 32px ${props => getRgba(props.theme.colors.shadow || props.theme.colors.border, 0.35)};
   display: ${props => props.$isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(8px);
 
   .dropdown-title {
     font-size: 10px;
@@ -273,7 +272,7 @@ const DropdownItem = styled.div`
   .badge-1s {
     font-size: 8px;
     font-weight: 700;
-    color: #ffffff;
+    color: ${props => props.theme.colors.background};
     background: ${props => props.theme.colors.accent};
     padding: 1px 4px;
     border-radius: 3px;
@@ -517,21 +516,18 @@ const ChartPanel = () => {
     ctx.clearRect(0, 0, width, height);
 
     // Dynamic Theme Colors
-    const bgColor = theme.colors.background || '#0f172a';
-    const textColor = theme.colors.text || '#f8fafc';
-    const textMutedColor = theme.colors.textMuted || '#64748b';
-    const accentColor = theme.colors.accent || '#3b82f6';
-    const borderColor = theme.colors.border || '#1e293b';
+    const bgColor = theme.colors.background;
+    const textColor = theme.colors.text;
+    const textMutedColor = theme.colors.textMuted;
+    const accentColor = theme.colors.accent;
+    const borderColor = theme.colors.border;
 
     const bgRgb = hexToRgb(bgColor);
     const gridRgb = hexToRgb(borderColor);
     const accentRgb = hexToRgb(accentColor);
 
-    // Smooth gradient background
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-    bgGrad.addColorStop(0, `rgb(${Math.min(bgRgb.r + 4, 255)}, ${Math.min(bgRgb.g + 4, 255)}, ${Math.min(bgRgb.b + 6, 255)})`);
-    bgGrad.addColorStop(1, bgColor);
-    ctx.fillStyle = bgGrad;
+    // Dynamic background fill
+    ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, width, height);
 
     const pad = { top: 20, bottom: 60, left: 15, right: 65 };
@@ -549,7 +545,7 @@ const ChartPanel = () => {
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
-    // Grid lines
+    // Grid lines using theme border color
     ctx.strokeStyle = `rgba(${gridRgb.r}, ${gridRgb.g}, ${gridRgb.b}, 0.5)`;
     ctx.lineWidth = 1;
     
@@ -562,7 +558,7 @@ const ChartPanel = () => {
       ctx.stroke();
     }
 
-    // Chart Line
+    // Chart Line using theme accent color
     ctx.beginPath();
     ctx.strokeStyle = accentColor;
     ctx.lineWidth = 2;
@@ -577,7 +573,7 @@ const ChartPanel = () => {
     }
     ctx.stroke();
 
-    // Area Fill
+    // Gradient fill under line using theme accent color
     const lastX = xScale(ticks.length - 1);
     ctx.lineTo(lastX, height - pad.bottom);
     ctx.lineTo(pad.left, height - pad.bottom);
@@ -589,7 +585,7 @@ const ChartPanel = () => {
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
-    // Current price pulse dot
+    // Current price dot
     const currentPrice = ticks[ticks.length - 1].price;
     const currentY = yScale(currentPrice);
 
