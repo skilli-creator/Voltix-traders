@@ -1,5 +1,4 @@
 // src/components/ChartPanel.jsx
-
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled, { keyframes, ThemeContext } from 'styled-components';
 
@@ -19,66 +18,51 @@ const VOLATILITY_MARKETS = [
   { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false },
 ];
 
-// ============================================
-// PREMIUM ANIMATIONS
-// ============================================
 const pulse = keyframes`
   0%, 100% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.15); }
 `;
 
-const pulseGlow = keyframes`
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.08); }
-`;
-
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 `;
 
 const slideDown = keyframes`
-  from { opacity: 0; transform: translateY(-10px); }
+  from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const shimmer = keyframes`
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-`;
-
 // ============================================
-// STYLED COMPONENTS - PREMIUM THEME
+// STYLED COMPONENTS - ALL THEME BASED
 // ============================================
 const PanelContainer = styled.div`
   flex: 1;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.background || '#0b0f19'};
+  background: ${props => props.theme.colors.background};
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
   min-width: 0;
   position: relative;
-  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-  animation: ${fadeIn} 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  animation: ${fadeIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 1;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s ease;
   font-weight: 700;
 `;
 
-// ===== HEADER - Premium =====
+// ===== HEADER =====
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  padding: 10px 20px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(11, 15, 25, 0.6)'};
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-bottom: 2px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme.colors.backgroundSecondary};
   z-index: 10;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s ease;
   font-weight: 700;
 
   @media (max-width: 768px) {
@@ -108,7 +92,7 @@ const SymbolInfo = styled.div`
   .symbol-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 
     @media (max-width: 480px) {
@@ -117,54 +101,51 @@ const SymbolInfo = styled.div`
   }
 
   .symbol-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-size: 11px;
+    color: ${props => props.theme.colors.textMuted};
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    opacity: 0.6;
+    letter-spacing: 0.5px;
 
     @media (max-width: 480px) {
-      font-size: 8px;
-      letter-spacing: 0.5px;
+      font-size: 9px;
     }
   }
 
   .market-selector {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     cursor: pointer;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-    font-size: 14px;
+    color: ${props => props.theme.colors.text};
+    font-size: 15px;
     font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 8px;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
     position: relative;
-    background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    background: ${props => props.theme.colors.backgroundSecondary};
+    border: 2px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
-      font-size: 11px;
-      padding: 2px 8px;
-      gap: 4px;
+      font-size: 12px;
+      padding: 2px 6px;
     }
 
     &:hover {
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
-      border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-      box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '20'};
+      background: ${props => props.theme.colors.backgroundTertiary};
+      border-color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 20px ${props => props.theme.colors.accent + '30'};
     }
 
     .dropdown-arrow {
-      font-size: 10px;
-      color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+      font-size: 11px;
+      color: ${props => props.theme.colors.textMuted};
       transition: transform 0.2s ease;
       transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
 
       @media (max-width: 480px) {
-        font-size: 8px;
+        font-size: 9px;
       }
     }
   }
@@ -172,50 +153,48 @@ const SymbolInfo = styled.div`
   .price-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
 
     @media (max-width: 480px) {
-      gap: 6px;
+      gap: 4px;
     }
   }
 
   .price {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
+    color: ${props => props.theme.colors.text};
     letter-spacing: -0.5px;
     font-family: 'Courier New', Courier, monospace;
 
     @media (max-width: 480px) {
-      font-size: 17px;
+      font-size: 18px;
     }
   }
 
   .change {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 6px;
-    background: ${props => props.isNegative ? (props.theme?.colors?.danger || '#ef4444') + '15' : (props.theme?.colors?.success || '#22c55e') + '15'};
-    color: ${props => props.isNegative ? props.theme?.colors?.danger || '#ef4444' : props.theme?.colors?.success || '#22c55e'};
-    border: 1px solid ${props => props.isNegative ? (props.theme?.colors?.danger || '#ef4444') + '30' : (props.theme?.colors?.success || '#22c55e') + '30'};
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: ${props => props.isNegative ? props.theme.colors.danger + '25' : props.theme.colors.success + '25'};
+    color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
 
     @media (max-width: 480px) {
-      font-size: 9px;
-      padding: 1px 6px;
+      font-size: 10px;
+      padding: 1px 4px;
     }
   }
 
   .change-time {
-    font-size: 10px;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-size: 11px;
+    color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
-    font-weight: 600;
-    opacity: 0.5;
+    font-weight: 700;
 
     @media (max-width: 480px) {
-      font-size: 8px;
+      font-size: 9px;
     }
   }
 `;
@@ -223,33 +202,31 @@ const SymbolInfo = styled.div`
 const LiveIndicator = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+  gap: 6px;
+  font-size: 11px;
+  color: ${props => props.theme.colors.accent};
   font-weight: 700;
-  background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
-  padding: 4px 14px;
+  background: ${props => props.theme.colors.accentActive};
+  padding: 4px 12px;
   border-radius: 20px;
-  border: 1px solid ${props => props.theme?.colors?.accent || '#3b82f6'};
+  border: 2px solid ${props => props.theme.colors.accent};
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.5px;
   flex-shrink: 0;
-  animation: ${pulseGlow} 2.5s infinite;
 
   @media (max-width: 480px) {
-    font-size: 8px;
-    padding: 2px 10px;
+    font-size: 9px;
+    padding: 2px 8px;
     gap: 4px;
-    letter-spacing: 0.5px;
   }
 
   .dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    background: ${props => props.theme.colors.accent};
     animation: ${pulse} 1.5s ease-in-out infinite;
-    box-shadow: 0 0 12px ${props => props.theme?.colors?.accent || '#3b82f6'};
+    box-shadow: 0 0 8px ${props => props.theme.colors.accent};
 
     @media (max-width: 480px) {
       width: 4px;
@@ -258,21 +235,19 @@ const LiveIndicator = styled.div`
   }
 `;
 
-// ===== MARKET SELECTION DROPDOWN - Premium Glass =====
+// ===== MARKET SELECTION DROPDOWN =====
 const DropdownMenu = styled.div`
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + 6px);
   left: 0;
-  background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(11, 15, 25, 0.95)'};
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255, 255, 255, 0.08)'};
-  border-radius: 12px;
+  background: ${props => props.theme.colors.backgroundSecondary};
+  border: 2px solid ${props => props.theme.colors.border};
+  border-radius: 8px;
   width: 280px;
   max-height: 340px;
   overflow-y: auto;
   z-index: 9999;
-  box-shadow: 0 20px 50px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.5)'};
+  box-shadow: 0 20px 50px ${props => props.theme.colors.shadow};
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   font-weight: 700;
@@ -284,14 +259,13 @@ const DropdownMenu = styled.div`
   }
 
   .dropdown-title {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    color: ${props => props.theme.colors.textMuted};
     padding: 10px 14px 6px 14px;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
-    border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-    opacity: 0.6;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
       font-size: 9px;
@@ -300,11 +274,11 @@ const DropdownMenu = styled.div`
   }
 
   &::-webkit-scrollbar {
-    width: 3px;
+    width: 4px;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.06)'};
-    border-radius: 10px;
+    background: ${props => props.theme.colors.scrollbar};
+    border-radius: 4px;
   }
 `;
 
@@ -314,10 +288,10 @@ const DropdownItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textSecondary || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)' : 'transparent'};
+  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
+  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   transition: all 0.15s ease;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  border-bottom: 2px solid ${props => props.theme.colors.border + '40'};
   font-weight: 700;
 
   @media (max-width: 480px) {
@@ -325,8 +299,8 @@ const DropdownItem = styled.div`
   }
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
+    background: ${props => props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.text};
   }
 
   .left-container {
@@ -352,7 +326,7 @@ const DropdownItem = styled.div`
 
     .candle {
       width: 3px;
-      background: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+      background: ${props => props.theme.colors.textMuted};
       position: relative;
       &::before {
         content: '';
@@ -362,9 +336,9 @@ const DropdownItem = styled.div`
         left: 1px;
       }
     }
-    .c1 { height: 12px; background: ${props => props.theme?.colors?.danger || '#ef4444'}; &::before { height: 18px; top: -3px; } }
-    .c2 { height: 15px; background: ${props => props.theme?.colors?.success || '#22c55e'}; &::before { height: 20px; top: -2px; } }
-    .c3 { height: 9px;  background: ${props => props.theme?.colors?.danger || '#ef4444'}; &::before { height: 14px; top: -2px; } }
+    .c1 { height: 12px; background: ${props => props.theme.colors.danger}; &::before { height: 18px; top: -3px; } }
+    .c2 { height: 15px; background: ${props => props.theme.colors.success}; &::before { height: 20px; top: -2px; } }
+    .c3 { height: 9px;  background: ${props => props.theme.colors.danger}; &::before { height: 14px; top: -2px; } }
   }
 
   .market-meta {
@@ -374,9 +348,9 @@ const DropdownItem = styled.div`
   }
 
   .display-name {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
+    color: ${props => props.theme.colors.text};
 
     @media (max-width: 480px) {
       font-size: 11px;
@@ -384,11 +358,10 @@ const DropdownItem = styled.div`
   }
 
   .system-symbol {
-    font-size: 9px;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-size: 10px;
+    color: ${props => props.theme.colors.textMuted};
     font-family: monospace;
-    font-weight: 600;
-    opacity: 0.5;
+    font-weight: 700;
 
     @media (max-width: 480px) {
       font-size: 8px;
@@ -396,18 +369,18 @@ const DropdownItem = styled.div`
   }
 
   .badge-1s {
-    font-size: 7px;
+    font-size: 8px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-    background: ${props => props.theme?.colors?.danger || '#ef4444'};
-    padding: 1px 6px;
-    border-radius: 4px;
+    color: ${props => props.theme.colors.text};
+    background: ${props => props.theme.colors.danger};
+    padding: 1px 4px;
+    border-radius: 3px;
     text-transform: uppercase;
   }
 
   .star-fav {
-    color: ${props => props.active ? props.theme?.colors?.accent || '#3b82f6' : (props.theme?.colors?.textMuted || '#94a3b8') + '30'};
-    font-size: 13px;
+    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted + '40'};
+    font-size: 14px;
 
     @media (max-width: 480px) {
       font-size: 11px;
@@ -420,7 +393,7 @@ const ChartWrapper = styled.div`
   flex: 1;
   position: relative;
   min-height: 0;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.background || '#0b0f19'};
+  background: ${props => props.theme.colors.background};
   overflow: hidden;
   z-index: 2;
   transition: background 0.3s ease;
@@ -432,7 +405,7 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY - Premium =====
+// ===== FLOATING DIGIT OVERLAY CONTAINER =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -489,16 +462,14 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(11, 15, 25, 0.8)'};
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: ${props => props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => 
       props.isLastDigit 
-        ? props.theme?.colors?.accent || '#3b82f6'
-        : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'
+        ? props.theme.colors.accent
+        : props.theme.colors.border
     };
-    box-shadow: ${props => props.isLastDigit ? `0 0 20px ${(props.theme?.colors?.accent || '#3b82f6') + '50'}` : 'none'};
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.theme.colors.accent + '80'}` : 'none'};
+    transition: all 0.15s ease;
 
     @media (max-width: 768px) {
       width: 34px;
@@ -522,7 +493,7 @@ const DigitItem = styled.div`
   .digit-num {
     font-size: 14px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
+    color: ${props => props.theme.colors.text};
     line-height: 1;
 
     @media (max-width: 768px) {
@@ -544,8 +515,8 @@ const DigitItem = styled.div`
     font-weight: 700;
     color: ${props => 
       props.isMax 
-        ? props.theme?.colors?.accent || '#3b82f6'
-        : props.theme?.colors?.textMuted || '#94a3b8'
+        ? props.theme.colors.accent
+        : props.theme.colors.textMuted
     };
     line-height: 1;
     margin-top: 0px;
@@ -567,7 +538,7 @@ const DigitItem = styled.div`
     position: absolute;
     bottom: -4px;
     font-size: 10px;
-    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    color: ${props => props.theme.colors.accent};
     display: ${props => props.isLastDigit ? 'block' : 'none'};
     line-height: 1;
     font-weight: 700;
@@ -702,11 +673,11 @@ const ChartPanel = () => {
     ctx.clearRect(0, 0, width, height);
 
     // ALL colors from theme - NO hardcoded colors
-    const bgColor = theme.colors.background || '#0b0f19';
-    const textColor = theme.colors.text || '#ffffff';
-    const textMutedColor = theme.colors.textMuted || '#94a3b8';
-    const accentColor = theme.colors.accent || '#3b82f6';
-    const borderColor = theme.colors.border || 'rgba(255, 255, 255, 0.06)';
+    const bgColor = theme.colors.background;
+    const textColor = theme.colors.text;
+    const textMutedColor = theme.colors.textMuted;
+    const accentColor = theme.colors.accent;
+    const borderColor = theme.colors.border;
     
     const hexToRgb = (hex) => {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -743,7 +714,7 @@ const ChartPanel = () => {
     // Grid lines - theme border color
     const gridColor = hexToRgb(borderColor);
     ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.3)`;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     
     const gridRows = 5;
     for (let i = 0; i <= gridRows; i++) {
@@ -768,7 +739,7 @@ const ChartPanel = () => {
     
     ctx.beginPath();
     ctx.strokeStyle = lineColor;
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 2.2;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
 
@@ -788,7 +759,7 @@ const ChartPanel = () => {
 
     const fillGrad = ctx.createLinearGradient(0, pad.top, 0, height - pad.bottom);
     const fillRgb = hexToRgb(lineColor);
-    fillGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.12)`);
+    fillGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.15)`);
     fillGrad.addColorStop(1, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0)`);
     ctx.fillStyle = fillGrad;
     ctx.fill();
@@ -796,15 +767,6 @@ const ChartPanel = () => {
     // Current price dot - theme accent color
     const currentPrice = ticks[ticks.length - 1].price;
     const currentY = yScale(currentPrice);
-
-    // Glow effect
-    const glowGrad = ctx.createRadialGradient(lastX, currentY, 0, lastX, currentY, 12);
-    glowGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.3)`);
-    glowGrad.addColorStop(1, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0)`);
-    ctx.fillStyle = glowGrad;
-    ctx.beginPath();
-    ctx.arc(lastX, currentY, 12, 0, Math.PI * 2);
-    ctx.fill();
 
     ctx.fillStyle = lineColor;
     ctx.beginPath();
@@ -814,8 +776,7 @@ const ChartPanel = () => {
     // Dashed line - theme text color with opacity
     const dashColor = hexToRgb(textColor);
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.1)`;
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.15)`;
     ctx.beginPath();
     ctx.moveTo(lastX, currentY);
     ctx.lineTo(width - pad.right, currentY);
