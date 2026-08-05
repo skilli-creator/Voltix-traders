@@ -21,7 +21,7 @@ const PanelContainer = styled.div`
   width: 260px;
   min-width: 260px;
   height: calc(100vh - 48px);
-  background: ${props => props.theme.colors.background};
+  background: #ffffff;
   border-right: 2px solid ${props => props.theme.colors.border};
   display: flex;
   flex-direction: column;
@@ -31,6 +31,10 @@ const PanelContainer = styled.div`
   z-index: 50;
   transition: background 0.3s ease, border-color 0.3s ease;
   animation: ${fadeIn} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #1a1a1a;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 150%;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -55,11 +59,12 @@ const PanelContainer = styled.div`
     height: 100%;
     padding: 6px 8px;
     border-right: none;
-    background: ${props => props.theme.colors.background};
+    background: #ffffff;
   }
 
   @media (max-width: 480px) {
     padding: 4px 6px;
+    font-size: 12px;
   }
 `;
 
@@ -84,64 +89,66 @@ const NavItem = styled.div`
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
+  color: ${props => props.active ? '#1a1a1a' : '#666666'};
   background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   border: 2px solid ${props => props.active ? props.theme.colors.accent : 'transparent'};
   white-space: nowrap;
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   &:hover {
     background: ${props => props.theme.colors.backgroundSecondary};
-    color: ${props => props.theme.colors.text};
+    color: #1a1a1a;
     border-color: ${props => props.theme.colors.accent};
   }
 
   .label {
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
+    color: ${props => props.active ? '#1a1a1a' : '#666666'};
   }
 
   .badge {
-    font-size: 10px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 600;
     padding: 0 3px;
     border-radius: 3px;
     background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.backgroundSecondary};
-    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted};
+    color: ${props => props.active ? props.theme.colors.accent : '#666666'};
     &::before { content: '('; }
     &::after { content: ')'; }
   }
 
   @media (max-width: 768px) {
     padding: 4px 8px;
-    .label { font-size: 10px; }
-    .badge { font-size: 9px; }
+    .label { font-size: 12px; }
+    .badge { font-size: 10px; }
   }
 
   @media (max-width: 480px) {
     padding: 3px 6px;
-    .label { font-size: 9px; }
-    .badge { font-size: 8px; }
+    .label { font-size: 11px; }
+    .badge { font-size: 9px; }
   }
 `;
 
-// ===== NEW: DROPDOWN STYLED MENU (like ChartPanel) =====
 const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: #ffffff;
   border: 2px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   width: 200px;
   max-height: 280px;
   overflow-y: auto;
   z-index: 9999;
-  box-shadow: 0 20px 50px ${props => props.theme.colors.shadow};
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
   display: ${props => props.isOpen ? 'block' : 'none'};
   animation: ${slideDown} 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  font-weight: 700;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1a1a1a;
 
   @media (max-width: 480px) {
     width: 180px;
@@ -151,8 +158,8 @@ const DropdownMenu = styled.div`
 
   .dropdown-title {
     font-size: 11px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted};
+    font-weight: 600;
+    color: #666666;
     padding: 10px 14px 6px 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -179,11 +186,11 @@ const DropdownItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
+  color: ${props => props.active ? '#1a1a1a' : '#666666'};
   background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   transition: all 0.15s ease;
   border-bottom: 2px solid ${props => props.theme.colors.border + '40'};
-  font-weight: 700;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   @media (max-width: 480px) {
     padding: 6px 10px;
@@ -191,7 +198,7 @@ const DropdownItem = styled.div`
 
   &:hover {
     background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
+    color: #1a1a1a;
   }
 
   .left-container {
@@ -212,8 +219,8 @@ const DropdownItem = styled.div`
 
   .display-name {
     font-size: 13px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.text};
+    font-weight: 600;
+    color: #1a1a1a;
 
     @media (max-width: 480px) {
       font-size: 11px;
@@ -222,9 +229,9 @@ const DropdownItem = styled.div`
 
   .system-symbol {
     font-size: 10px;
-    color: ${props => props.theme.colors.textMuted};
-    font-family: monospace;
-    font-weight: 700;
+    color: #666666;
+    font-family: 'Inter', monospace;
+    font-weight: 400;
 
     @media (max-width: 480px) {
       font-size: 8px;
@@ -233,8 +240,8 @@ const DropdownItem = styled.div`
 
   .badge-count {
     font-size: 10px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.text};
+    font-weight: 600;
+    color: #1a1a1a;
     background: ${props => props.theme.colors.accentActive};
     padding: 1px 6px;
     border-radius: 10px;
@@ -247,7 +254,7 @@ const DropdownItem = styled.div`
   }
 
   .star-fav {
-    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted + '40'};
+    color: ${props => props.active ? props.theme.colors.accent : '#66666640'};
     font-size: 14px;
 
     @media (max-width: 480px) {
@@ -256,21 +263,21 @@ const DropdownItem = styled.div`
   }
 `;
 
-// ===== DROPDOWN TRIGGER (like ChartPanel's market selector) =====
 const DropdownTrigger = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  color: ${props => props.theme.colors.text};
-  font-size: 15px;
-  font-weight: 700;
+  color: #1a1a1a;
+  font-size: 13px;
+  font-weight: 600;
   padding: 4px 10px;
   border-radius: 6px;
   transition: all 0.2s ease;
   position: relative;
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: #f5f5f5;
   border: 2px solid ${props => props.theme.colors.border};
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   @media (max-width: 480px) {
     font-size: 12px;
@@ -285,7 +292,7 @@ const DropdownTrigger = styled.div`
 
   .dropdown-arrow {
     font-size: 11px;
-    color: ${props => props.theme.colors.textMuted};
+    color: #666666;
     transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
 
@@ -312,39 +319,39 @@ const NoPositions = styled.div`
   align-items: center;
   justify-content: center;
   padding: 12px 4px;
-  color: ${props => props.theme.colors.textMuted};
+  color: #666666;
   text-align: center;
-  font-weight: 700;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   .icon { 
     font-size: 18px; 
     margin-bottom: 2px; 
-    color: ${props => props.theme.colors.textMuted + '50'}; 
+    color: #999999; 
   }
   .title { 
-    font-size: 10px; 
-    font-weight: 700; 
-    color: ${props => props.theme.colors.text}; 
+    font-size: 13px; 
+    font-weight: 600; 
+    color: #1a1a1a; 
     margin-bottom: 1px; 
   }
   .subtitle { 
-    font-size: 8px; 
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted}; 
+    font-size: 11px; 
+    font-weight: 400;
+    color: #666666; 
   }
 
   @media (max-width: 768px) {
     padding: 4px 2px;
     .icon { font-size: 14px; }
-    .title { font-size: 9px; }
-    .subtitle { font-size: 7px; }
+    .title { font-size: 12px; }
+    .subtitle { font-size: 10px; }
   }
 
   @media (max-width: 480px) {
     padding: 2px 2px;
     .icon { font-size: 12px; }
-    .title { font-size: 8px; }
-    .subtitle { font-size: 6px; }
+    .title { font-size: 11px; }
+    .subtitle { font-size: 9px; }
   }
 `;
 
@@ -356,7 +363,7 @@ const BottomContent = styled.div`
   padding-top: 4px;
   border-top: 2px solid ${props => props.theme.colors.border};
   transition: border-color 0.3s ease;
-  font-weight: 700;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   @media (max-width: 768px) {
     gap: 1px;
@@ -366,41 +373,40 @@ const BottomContent = styled.div`
 
 const SessionSection = styled.div`
   padding: 0 2px;
-  font-weight: 700;
 `;
 
 const SessionLabel = styled.div`
-  font-size: 7px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  color: ${props => props.theme.colors.textMuted};
-  font-weight: 700;
+  color: #666666;
+  font-weight: 600;
 
   @media (max-width: 768px) {
-    font-size: 6px;
+    font-size: 9px;
   }
 `;
 
 const SessionPL = styled.div`
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
-  color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
+  color: ${props => props.isNegative ? '#dc2626' : '#16a34a'};
 
   .currency {
-    font-size: 8px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted};
+    font-size: 10px;
+    font-weight: 600;
+    color: #666666;
     margin-left: 1px;
   }
 
   @media (max-width: 768px) {
-    font-size: 11px;
-    .currency { font-size: 7px; }
+    font-size: 13px;
+    .currency { font-size: 9px; }
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    .currency { font-size: 6px; }
+    font-size: 12px;
+    .currency { font-size: 8px; }
   }
 `;
 
@@ -420,7 +426,7 @@ const SoundIcon = styled.button`
   border-radius: 50%;
   width: 28px;
   height: 28px;
-  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
+  color: ${props => props.isMuted ? '#666666' : '#1a1a1a'};
   cursor: pointer;
   transition: all 0.25s ease;
   font-size: 14px;
@@ -458,20 +464,20 @@ const SessionContent = styled.div`
 `;
 
 const TradesSummary = styled.div`
-  font-size: 8px;
-  color: ${props => props.theme.colors.textMuted};
+  font-size: 11px;
+  color: #666666;
   padding: 0 2px;
-  font-weight: 700;
+  font-weight: 400;
 
-  .wins { color: ${props => props.theme.colors.success}; }
-  .losses { color: ${props => props.theme.colors.danger}; }
+  .wins { color: #16a34a; font-weight: 600; }
+  .losses { color: #dc2626; font-weight: 600; }
 
   @media (max-width: 768px) {
-    font-size: 7px;
+    font-size: 10px;
   }
 
   @media (max-width: 480px) {
-    font-size: 6px;
+    font-size: 9px;
   }
 `;
 
@@ -479,9 +485,9 @@ const StatusDot = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 7px;
-  color: ${props => props.theme.colors.textMuted};
-  font-weight: 700;
+  font-size: 10px;
+  color: #666666;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 
@@ -496,12 +502,12 @@ const StatusDot = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 6px;
+    font-size: 9px;
     .dot { width: 4px; height: 4px; }
   }
 
   @media (max-width: 480px) {
-    font-size: 5px;
+    font-size: 8px;
     .dot { width: 3px; height: 3px; }
   }
 `;
@@ -513,7 +519,6 @@ const StatusRow = styled.div`
   padding: 2px 2px 0 2px;
 `;
 
-// ===== DROPDOWN SECTION FOR POSITIONS =====
 const PositionsHeader = styled.div`
   display: flex;
   align-items: center;
@@ -523,11 +528,12 @@ const PositionsHeader = styled.div`
 `;
 
 const PositionsTitle = styled.span`
-  font-size: 10px;
-  font-weight: 700;
-  color: ${props => props.theme.colors.textMuted};
+  font-size: 11px;
+  font-weight: 600;
+  color: #666666;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const LeftPanel = () => {
@@ -610,7 +616,6 @@ const LeftPanel = () => {
 
       <Divider />
 
-      {/* ===== DROPDOWN SECTION (like ChartPanel's market selector) ===== */}
       <PositionsHeader>
         <PositionsTitle>Positions</PositionsTitle>
         <DropdownTrigger 
