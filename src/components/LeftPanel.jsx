@@ -20,7 +20,6 @@ const PanelContainer = styled.div`
   overflow-x: hidden;
   z-index: 50;
   transition: background 0.3s ease, border-color 0.3s ease;
-  font-weight: 700;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -59,7 +58,6 @@ const NavList = styled.div`
   gap: 2px;
   padding: 0 2px;
   width: 100%;
-  font-weight: 700;
 
   @media (max-width: 768px) {
     gap: 4px;
@@ -75,31 +73,32 @@ const NavItem = styled.div`
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
+  color: ${props => props.active ? '#000000' : '#333333'};
   background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
   border: 2px solid ${props => props.active ? props.theme.colors.accent : 'transparent'};
   white-space: nowrap;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 900 !important;
 
   &:hover {
     background: ${props => props.theme.colors.backgroundSecondary};
-    color: ${props => props.theme.colors.text};
+    color: '#000000';
     border-color: ${props => props.theme.colors.accent};
   }
 
   .label {
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 900 !important;
+    color: #000000;
   }
 
   .badge {
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 900 !important;
     padding: 0 3px;
     border-radius: 3px;
     background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.backgroundSecondary};
-    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted};
+    color: #000000;
     &::before { content: '('; }
     &::after { content: ')'; }
   }
@@ -134,25 +133,24 @@ const NoPositions = styled.div`
   align-items: center;
   justify-content: center;
   padding: 12px 4px;
-  color: ${props => props.theme.colors.textMuted};
+  color: #333333;
   text-align: center;
-  font-weight: 700;
 
   .icon { 
     font-size: 18px; 
     margin-bottom: 2px; 
-    color: ${props => props.theme.colors.textMuted + '50'}; 
+    color: #666666; 
   }
   .title { 
     font-size: 10px; 
-    font-weight: 700; 
-    color: ${props => props.theme.colors.text}; 
+    font-weight: 900 !important;
+    color: #000000; 
     margin-bottom: 1px; 
   }
   .subtitle { 
     font-size: 8px; 
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted}; 
+    font-weight: 900 !important;
+    color: #333333; 
   }
 
   @media (max-width: 768px) {
@@ -178,7 +176,6 @@ const BottomContent = styled.div`
   padding-top: 4px;
   border-top: 2px solid ${props => props.theme.colors.border};
   transition: border-color 0.3s ease;
-  font-weight: 700;
 
   @media (max-width: 768px) {
     gap: 1px;
@@ -188,15 +185,14 @@ const BottomContent = styled.div`
 
 const SessionSection = styled.div`
   padding: 0 2px;
-  font-weight: 700;
 `;
 
 const SessionLabel = styled.div`
   font-size: 7px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-  color: ${props => props.theme.colors.textMuted};
-  font-weight: 700;
+  color: #333333;
+  font-weight: 900 !important;
 
   @media (max-width: 768px) {
     font-size: 6px;
@@ -205,13 +201,13 @@ const SessionLabel = styled.div`
 
 const SessionPL = styled.div`
   font-size: 13px;
-  font-weight: 700;
-  color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
+  font-weight: 900 !important;
+  color: ${props => props.isNegative ? '#dc2626' : '#16a34a'};
 
   .currency {
     font-size: 8px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted};
+    font-weight: 900 !important;
+    color: #333333;
     margin-left: 1px;
   }
 
@@ -226,7 +222,6 @@ const SessionPL = styled.div`
   }
 `;
 
-// ===== SESSION ROW WITH SOUND ICON ON LEFT =====
 const SessionRow = styled.div`
   display: flex;
   align-items: center;
@@ -243,7 +238,7 @@ const SoundIcon = styled.button`
   border-radius: 50%;
   width: 28px;
   height: 28px;
-  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
+  color: ${props => props.isMuted ? '#333333' : '#000000'};
   cursor: pointer;
   transition: all 0.25s ease;
   font-size: 14px;
@@ -282,12 +277,12 @@ const SessionContent = styled.div`
 
 const TradesSummary = styled.div`
   font-size: 8px;
-  color: ${props => props.theme.colors.textMuted};
+  color: #333333;
   padding: 0 2px;
-  font-weight: 700;
+  font-weight: 900 !important;
 
-  .wins { color: ${props => props.theme.colors.success}; }
-  .losses { color: ${props => props.theme.colors.danger}; }
+  .wins { color: #16a34a; font-weight: 900 !important; }
+  .losses { color: #dc2626; font-weight: 900 !important; }
 
   @media (max-width: 768px) {
     font-size: 7px;
@@ -298,14 +293,13 @@ const TradesSummary = styled.div`
   }
 `;
 
-// ===== STATUS DOT =====
 const StatusDot = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
   font-size: 7px;
-  color: ${props => props.theme.colors.textMuted};
-  font-weight: 700;
+  color: #333333;
+  font-weight: 900 !important;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 
