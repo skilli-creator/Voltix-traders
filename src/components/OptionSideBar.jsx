@@ -1,15 +1,15 @@
 // src/components/OptionSideBar.jsx
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // ============================================
-// KEYFRAMES
+// KEYFRAMES & MICRO-INTERACTIONS
 // ============================================
 const slideIn = keyframes`
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-12px);
   }
   to {
     opacity: 1;
@@ -18,58 +18,106 @@ const slideIn = keyframes`
 `;
 
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const pulseGlow = keyframes`
+  0%, 100% {
     opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.15);
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
   }
 `;
 
-const pulse = keyframes`
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+// ============================================
+// STYLED COMPONENTS - PROFESSIONAL THEME
+// ============================================
+
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: ${props => props.theme.colors.shadow || 'rgba(10, 15, 29, 0.7)'};
+  backdrop-filter: blur(4px);
+  z-index: 98;
+  opacity: ${props => (props.isOpen ? 1 : 0)};
+  visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s ease;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
 `;
 
-// ============================================
-// STYLED COMPONENTS - UPDATED WITH THEME
-// ============================================
-
-const SidebarContainer = styled.div`
+const SidebarContainer = styled.aside`
   position: fixed;
   top: 0;
   left: 0;
   width: 280px;
   height: 100vh;
-  background: ${props => props.theme.colors.backgroundSecondary};
-  border-right: 2px solid ${props => props.theme.colors.border};
-  transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: ${props => props.theme.colors.backgroundSecondary || '#0F172A'};
+  border-right: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
+  transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 99;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  font-weight: 700;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
 
   @media (max-width: 768px) {
+    width: 290px;
+  }
+
+  @media (max-width: 480px) {
     width: 100%;
-    top: 0;
-    height: 100vh;
-    transform: ${props => props.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
   }
 `;
 
-// ===== SCROLLABLE CONTENT =====
+const CloseButton = styled.button`
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 100;
+  background: ${props => props.theme.colors.background || 'rgba(255, 255, 255, 0.05)'};
+  border: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.1)'};
+  color: ${props => props.theme.colors.textMuted || '#94A3B8'};
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: ${props => props.theme.colors.accentActive || 'rgba(59, 130, 246, 0.15)'};
+    color: ${props => props.theme.colors.text || '#FFFFFF'};
+    border-color: ${props => props.theme.colors.accent || '#3B82F6'};
+  }
+
+  @media (max-width: 768px) {
+    display: ${props => (props.isOpen ? 'flex' : 'none')};
+  }
+`;
+
 const SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 76px 16px 8px 16px;
-  -webkit-overflow-scrolling: touch;
-  font-weight: 700;
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 
   &::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
   }
 
   &::-webkit-scrollbar-track {
@@ -77,30 +125,12 @@ const SidebarContent = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.scrollbar};
-    border-radius: 2px;
+    background: ${props => props.theme.colors.scrollbar || 'rgba(255, 255, 255, 0.15)'};
+    border-radius: 99px;
   }
 
-  @media (max-width: 768px) {
-    padding: 80px 16px 8px 16px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 74px 14px 6px 14px;
-  }
-`;
-
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background: ${props => props.theme.colors.shadow};
-  z-index: 98;
-  opacity: ${props => props.isOpen ? 1 : 0};
-  visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
-  transition: all 0.3s ease;
-
-  @media (min-width: 769px) {
-    display: none;
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme.colors.textMuted || 'rgba(255, 255, 255, 0.3)'};
   }
 `;
 
@@ -109,25 +139,24 @@ const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 4px 16px 4px;
-  border-bottom: 2px solid ${props => props.theme.colors.border};
-  margin-bottom: 16px;
-  animation: ${slideIn} 0.4s ease;
-  flex-shrink: 0;
-  font-weight: 700;
+  padding: 10px 10px 16px 10px;
+  border-bottom: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
+  animation: ${slideIn} 0.3s ease;
 
   .avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: ${props => `linear-gradient(135deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: ${props =>
+      `linear-gradient(135deg, ${props.theme.colors.accent || '#3B82F6'}, #1D4ED8)`};
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 14px;
     font-weight: 700;
-    color: ${props => props.theme.colors.text};
-    box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '40'};
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px ${props => (props.theme.colors.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
     flex-shrink: 0;
   }
 
@@ -137,534 +166,290 @@ const SidebarHeader = styled.div`
   }
 
   .user-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.text};
-    letter-spacing: 0.3px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: ${props => props.theme.colors.text || '#F8FAFC'};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .user-email {
     font-size: 11px;
-    color: ${props => props.theme.colors.textMuted};
-    margin-top: 2px;
-    letter-spacing: 0.2px;
-    word-break: break-all;
-    font-weight: 700;
-  }
-
-  @media (max-width: 768px) {
-    padding: 10px 4px 12px 4px;
-    margin-bottom: 12px;
-    
-    .avatar {
-      width: 40px;
-      height: 40px;
-      font-size: 17px;
-    }
-    .user-name {
-      font-size: 14px;
-    }
-    .user-email {
-      font-size: 11px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 8px 4px 10px 4px;
-    margin-bottom: 10px;
-    gap: 10px;
-    
-    .avatar {
-      width: 36px;
-      height: 36px;
-      font-size: 15px;
-      border-radius: 10px;
-    }
-    .user-name {
-      font-size: 13px;
-    }
-    .user-email {
-      font-size: 10px;
-    }
+    color: ${props => props.theme.colors.textMuted || '#94A3B8'};
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
-// ===== NAVIGATION ITEMS =====
+// ===== NAVIGATION SECTION & ITEMS =====
 const NavSection = styled.div`
-  margin-bottom: 20px;
-  animation: ${slideIn} 0.5s ease;
-  font-weight: 700;
-
-  @media (max-width: 768px) {
-    margin-bottom: 14px;
-  }
-
-  @media (max-width: 480px) {
-    margin-bottom: 10px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: ${slideIn} 0.4s ease;
 `;
 
 const SectionLabel = styled.div`
   font-size: 10px;
   font-weight: 700;
-  color: ${props => props.theme.colors.textMuted};
+  color: ${props => props.theme.colors.textMuted || '#64748B'};
   text-transform: uppercase;
-  letter-spacing: 1.2px;
-  padding: 0 4px;
-  margin-bottom: 6px;
-
-  @media (max-width: 768px) {
-    font-size: 9px;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 8px;
-    letter-spacing: 0.8px;
-    margin-bottom: 3px;
-  }
+  letter-spacing: 1px;
+  padding: 0 8px;
+  margin-bottom: 4px;
 `;
 
 const NavItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  margin-bottom: 2px;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
-  font-weight: 700;
+  background: ${props => (props.active ? (props.theme.colors.accentActive || 'rgba(59, 130, 246, 0.12)') : 'transparent')};
+  color: ${props => (props.active ? (props.theme.colors.accent || '#3B82F6') : (props.theme.colors.textSecondary || '#CBD5E1'))};
 
   &:hover {
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-    border-color: ${props => props.theme.colors.accent};
+    background: ${props => props.theme.colors.accentActive || 'rgba(59, 130, 246, 0.08)'};
+    color: ${props => props.theme.colors.text || '#F8FAFC'};
+    transform: translateX(2px);
   }
 
-  &.active {
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 24px;
-      background: ${props => `linear-gradient(180deg, ${props.theme.colors.accent}, ${props.theme.colors.accent}dd)`};
-      border-radius: 0 3px 3px 0;
-    }
-
-    .nav-icon {
-      color: ${props => props.theme.colors.accent};
-    }
-
-    .badge {
-      background: ${props => props.theme.colors.accentActive};
-      color: ${props => props.theme.colors.accent};
-    }
-  }
+  ${props =>
+    props.active &&
+    css`
+      font-weight: 600;
+      &::before {
+        content: '';
+        position: absolute;
+        left: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3.5px;
+        height: 18px;
+        background: ${props.theme.colors.accent || '#3B82F6'};
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 0 10px ${props.theme.colors.accent || '#3B82F6'};
+      }
+    `}
 
   .nav-icon {
-    font-size: 18px;
-    width: 24px;
-    text-align: center;
-    transition: all 0.2s ease;
+    font-size: 16px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover .nav-icon {
+    transform: scale(1.1);
   }
 
   .nav-label {
     flex: 1;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.2px;
+    font-size: 12.5px;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .badge {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 20px;
-    background: ${props => props.theme.colors.backgroundSecondary};
-    color: ${props => props.theme.colors.textMuted};
-    transition: all 0.2s ease;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: ${props => (props.active ? (props.theme.colors.accent || '#3B82F6') : 'rgba(255, 255, 255, 0.06)')};
+    color: ${props => (props.active ? '#FFFFFF' : (props.theme.colors.textMuted || '#94A3B8'))};
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
     flex-shrink: 0;
   }
 
   .notification-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background: ${props => props.theme.colors.danger};
-    animation: ${pulse} 2s ease-in-out infinite;
+    background: ${props => props.theme.colors.danger || '#EF4444'};
+    animation: ${pulseGlow} 2s infinite;
     flex-shrink: 0;
-    margin-left: auto;
+  }
+`;
+
+// ===== CARDS (RESPONSIBLE TRADING & ABOUT) =====
+const SideCard = styled.div`
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: ${props => props.theme.colors.background || 'rgba(15, 23, 42, 0.6)'};
+  border: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
+  animation: ${fadeIn} 0.4s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: ${props => (props.theme.colors.accent ? `${props.theme.colors.accent}60` : 'rgba(59, 130, 246, 0.4)')};
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   }
 
-  @media (max-width: 768px) {
-    padding: 8px 12px;
-    gap: 12px;
-    border-radius: 8px;
-    
-    .nav-icon {
-      font-size: 16px;
-      width: 20px;
-    }
-    .nav-label {
-      font-size: 12px;
-    }
-    .badge {
-      font-size: 8px;
-      padding: 1px 8px;
-    }
-    .notification-dot {
-      width: 6px;
-      height: 6px;
-    }
-  }
+  .card-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: ${props => props.theme.colors.text || '#F8FAFC'};
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-  @media (max-width: 480px) {
-    padding: 6px 10px;
-    gap: 10px;
-    border-radius: 6px;
-    margin-bottom: 1px;
-    
-    .nav-icon {
+    .icon {
       font-size: 14px;
-      width: 18px;
-    }
-    .nav-label {
-      font-size: 11px;
-    }
-    .badge {
-      font-size: 7px;
-      padding: 1px 6px;
-    }
-    .notification-dot {
-      width: 5px;
-      height: 5px;
-    }
-  }
-`;
-
-// ===== RESPONSIBLE TRADING CARD =====
-const ResponsibleTradingCard = styled.div`
-  padding: 14px;
-  border-radius: 12px;
-  background: ${props => props.theme.colors.accentActive};
-  border: 2px solid ${props => props.theme.colors.border};
-  animation: ${fadeIn} 0.6s ease;
-  margin-top: 4px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.accent};
-  }
-
-  .card-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.text};
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .icon {
-      font-size: 16px;
     }
   }
 
-  .fact-item {
-    font-size: 10px;
-    color: ${props => props.theme.colors.textSecondary};
-    padding: 4px 0;
+  .card-item {
+    font-size: 10.5px;
+    color: ${props => props.theme.colors.textSecondary || '#94A3B8'};
+    padding: 3px 0;
     display: flex;
     align-items: flex-start;
-    gap: 8px;
-    line-height: 1.4;
+    gap: 6px;
+    line-height: 1.45;
 
     .bullet {
-      color: ${props => props.theme.colors.accent};
+      color: ${props => props.theme.colors.accent || '#3B82F6'};
       font-weight: 700;
       flex-shrink: 0;
     }
 
     .highlight {
-      color: ${props => props.theme.colors.accent};
-      font-weight: 700;
+      color: ${props => props.theme.colors.text || '#F8FAFC'};
+      font-weight: 600;
     }
   }
 
   .learn-more {
-    margin-top: 8px;
-    font-size: 10px;
-    color: ${props => props.theme.colors.accent};
+    margin-top: 10px;
+    font-size: 10.5px;
+    color: ${props => props.theme.colors.accent || '#3B82F6'};
     cursor: pointer;
-    font-weight: 700;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    transition: all 0.2s ease;
+    transition: gap 0.2s ease, color 0.2s ease;
 
     &:hover {
-      gap: 8px;
-      color: ${props => props.theme.colors.accentHover};
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 12px;
-    
-    .card-title {
-      font-size: 10px;
-      .icon { font-size: 14px; }
-    }
-    .fact-item {
-      font-size: 9px;
-      padding: 3px 0;
-    }
-    .learn-more {
-      font-size: 9px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 10px;
-    
-    .card-title {
-      font-size: 9px;
-      .icon { font-size: 12px; }
-    }
-    .fact-item {
-      font-size: 8px;
-      padding: 2px 0;
-    }
-    .learn-more {
-      font-size: 8px;
+      gap: 7px;
+      color: ${props => props.theme.colors.accentHover || '#60A5FA'};
     }
   }
 `;
 
-// ===== ABOUT VOLTIX TRADERS CARD =====
-const AboutCard = styled.div`
-  padding: 14px;
-  border-radius: 12px;
-  background: ${props => props.theme.colors.accentActive};
-  border: 2px solid ${props => props.theme.colors.border};
-  animation: ${fadeIn} 0.6s ease;
-  margin-top: 4px;
-  font-weight: 700;
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: ${props => props.theme.colors.accent};
-  }
-
-  .card-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.text};
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .icon {
-      font-size: 16px;
-    }
-  }
-
-  .about-item {
-    font-size: 10px;
-    color: ${props => props.theme.colors.textSecondary};
-    padding: 4px 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    line-height: 1.4;
-
-    .bullet {
-      color: ${props => props.theme.colors.accent};
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .highlight {
-      color: ${props => props.theme.colors.accent};
-      font-weight: 700;
-    }
-  }
-
-  .learn-more {
-    margin-top: 8px;
-    font-size: 10px;
-    color: ${props => props.theme.colors.accent};
-    cursor: pointer;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s ease;
-
-    &:hover {
-      gap: 8px;
-      color: ${props => props.theme.colors.accentHover};
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 12px;
-    
-    .card-title {
-      font-size: 10px;
-      .icon { font-size: 14px; }
-    }
-    .about-item {
-      font-size: 9px;
-      padding: 3px 0;
-    }
-    .learn-more {
-      font-size: 9px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 10px;
-    
-    .card-title {
-      font-size: 9px;
-      .icon { font-size: 12px; }
-    }
-    .about-item {
-      font-size: 8px;
-      padding: 2px 0;
-    }
-    .learn-more {
-      font-size: 8px;
-    }
-  }
-`;
-
-// ===== FEEDBACK SECTION - ENHANCED STAR VISIBILITY =====
+// ===== FEEDBACK SECTION =====
 const FeedbackSection = styled.div`
   padding: 14px;
-  border-radius: 12px;
-  background: ${props => props.theme.colors.accentActive};
-  border: 2px solid ${props => props.theme.colors.border};
-  animation: ${fadeIn} 0.6s ease;
-  font-weight: 700;
+  border-radius: 10px;
+  background: ${props => props.theme.colors.background || 'rgba(15, 23, 42, 0.6)'};
+  border: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
+  animation: ${fadeIn} 0.4s ease;
 
   .feedback-label {
     font-size: 11px;
-    font-weight: 700;
-    color: ${props => props.theme.colors.textMuted};
+    font-weight: 600;
+    color: ${props => props.theme.colors.textMuted || '#94A3B8'};
     margin-bottom: 8px;
-    letter-spacing: 0.3px;
+    text-align: center;
   }
 
   .stars {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 8px;
     justify-content: center;
-    padding: 4px 0;
   }
 
-  .star-wrapper {
-    position: relative;
-    display: inline-block;
+  .star-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
     cursor: pointer;
-    transition: transform 0.2s ease;
-    
+    color: ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.15)'};
+    transition: transform 0.15s ease, color 0.15s ease, filter 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
     &:hover {
-      transform: scale(1.3);
-    }
-  }
-
-  .star {
-    font-size: 32px;
-    line-height: 1;
-    color: ${props => props.theme.colors.border};
-    transition: all 0.2s ease;
-    display: block;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-
-    &.active {
-      color: #fbbf24;
-      text-shadow: 
-        0 0 20px rgba(251, 191, 36, 0.6),
-        0 0 40px rgba(251, 191, 36, 0.3),
-        0 2px 8px rgba(0, 0, 0, 0.4);
+      transform: scale(1.25);
     }
 
+    &.active,
     &.hover {
-      color: #fbbf24;
-      text-shadow: 
-        0 0 20px rgba(251, 191, 36, 0.4),
-        0 2px 8px rgba(0, 0, 0, 0.4);
+      color: #F59E0B;
+      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.5));
     }
   }
 
   .star-rating-text {
     text-align: center;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 10.5px;
+    font-weight: 600;
     margin-bottom: 10px;
-    min-height: 20px;
-    color: ${props => props.theme.colors.textSecondary};
-    letter-spacing: 0.3px;
+    min-height: 16px;
+    color: ${props => props.theme.colors.textSecondary || '#CBD5E1'};
   }
 
   .feedback-textarea {
     width: 100%;
-    min-height: 70px;
-    padding: 10px 12px;
-    background: ${props => props.theme.colors.background};
-    border: 2px solid ${props => props.theme.colors.border};
-    border-radius: 8px;
-    color: ${props => props.theme.colors.text};
-    font-size: 12px;
+    min-height: 64px;
+    padding: 8px 10px;
+    background: ${props => props.theme.colors.backgroundSecondary || '#0F172A'};
+    border: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.1)'};
+    border-radius: 6px;
+    color: ${props => props.theme.colors.text || '#F8FAFC'};
+    font-size: 11.5px;
     font-family: inherit;
-    font-weight: 700;
-    resize: vertical;
+    resize: none;
     outline: none;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     margin-bottom: 10px;
 
     &::placeholder {
-      color: ${props => props.theme.colors.textMuted + '60'};
+      color: ${props => props.theme.colors.textMuted || '#64748B'};
     }
 
     &:focus {
-      border-color: ${props => props.theme.colors.accent};
-      box-shadow: 0 0 0 3px ${props => props.theme.colors.accent + '30'};
+      border-color: ${props => props.theme.colors.accent || '#3B82F6'};
+      box-shadow: 0 0 0 2px ${props => (props.theme.colors.accent ? `${props.theme.colors.accent}30` : 'rgba(59, 130, 246, 0.2)')};
     }
   }
 
   .feedback-submit {
     width: 100%;
     padding: 8px 0;
-    border: 2px solid ${props => props.theme.colors.accent};
-    border-radius: 8px;
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-    font-size: 12px;
-    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    background: ${props => props.theme.colors.accent || '#3B82F6'};
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 
     &:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 20px ${props => props.theme.colors.accent + '50'};
-      border-color: ${props => props.theme.colors.accent};
+      background: ${props => props.theme.colors.accentHover || '#2563EB'};
+      box-shadow: 0 4px 12px ${props => (props.theme.colors.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
     }
 
     &:active:not(:disabled) {
@@ -679,159 +464,43 @@ const FeedbackSection = styled.div`
 
   .feedback-status {
     margin-top: 8px;
-    font-size: 11px;
+    font-size: 10.5px;
     text-align: center;
-    color: ${props => props.theme.colors.success};
-    font-weight: 700;
-  }
-
-  @media (max-width: 768px) {
-    padding: 12px;
-    
-    .feedback-label {
-      font-size: 10px;
-      margin-bottom: 6px;
-    }
-    .star {
-      font-size: 28px;
-    }
-    .stars {
-      gap: 8px;
-    }
-    .feedback-textarea {
-      min-height: 60px;
-      font-size: 11px;
-    }
-    .feedback-submit {
-      font-size: 11px;
-      padding: 7px 0;
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 10px;
-    
-    .feedback-label {
-      font-size: 9px;
-      margin-bottom: 4px;
-    }
-    .star {
-      font-size: 24px;
-    }
-    .stars {
-      gap: 6px;
-    }
-    .feedback-textarea {
-      min-height: 50px;
-      font-size: 10px;
-      padding: 8px 10px;
-    }
-    .feedback-submit {
-      font-size: 10px;
-      padding: 6px 0;
-    }
+    color: ${props => props.theme.colors.success || '#10B981'};
+    font-weight: 500;
   }
 `;
 
-// ===== FOOTER - STICKY AT BOTTOM =====
-const SidebarFooter = styled.div`
+// ===== FOOTER =====
+const SidebarFooter = styled.footer`
   flex-shrink: 0;
-  padding: 12px 16px 20px 16px;
-  border-top: 2px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.backgroundSecondary};
-  animation: ${fadeIn} 0.7s ease;
-  font-weight: 700;
+  padding: 12px 14px;
+  border-top: 1px solid ${props => props.theme.colors.border || 'rgba(255, 255, 255, 0.08)'};
+  background: ${props => props.theme.colors.backgroundSecondary || '#0F172A'};
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 
   .footer-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: ${props => props.theme.colors.textSecondary};
-    font-size: 13px;
-    font-weight: 700;
+    color: ${props => props.theme.colors.textSecondary || '#94A3B8'};
+    font-size: 12px;
+    font-weight: 500;
 
     &:hover {
-      background: ${props => props.theme.colors.accentActive};
-      color: ${props => props.theme.colors.text};
+      background: ${props => props.theme.colors.accentActive || 'rgba(59, 130, 246, 0.08)'};
+      color: ${props => props.theme.colors.text || '#F8FAFC'};
     }
 
     .footer-icon {
-      font-size: 16px;
+      font-size: 14px;
     }
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px 14px 14px 14px;
-    
-    .footer-item {
-      padding: 8px 10px;
-      font-size: 12px;
-      gap: 10px;
-      
-      .footer-icon {
-        font-size: 14px;
-      }
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 6px 12px 12px 12px;
-    
-    .footer-item {
-      padding: 6px 10px;
-      font-size: 11px;
-      gap: 8px;
-      border-radius: 6px;
-      
-      .footer-icon {
-        font-size: 13px;
-      }
-    }
-  }
-`;
-
-// ===== CLOSE BUTTON FOR MOBILE =====
-const CloseButton = styled.button`
-  display: none;
-  position: fixed;
-  top: 12px;
-  right: 16px;
-  z-index: 100;
-  background: ${props => props.theme.colors.backgroundSecondary};
-  border: 2px solid ${props => props.theme.colors.border};
-  color: ${props => props.theme.colors.textMuted};
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-
-  &:hover {
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-    border-color: ${props => props.theme.colors.accent};
-  }
-
-  @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'flex' : 'none'};
-    top: 14px;
-    right: 16px;
-  }
-
-  @media (max-width: 480px) {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-    top: 12px;
-    right: 12px;
   }
 `;
 
@@ -849,69 +518,23 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
 
-  const handleNavClick = (item, path) => {
-    setActiveItem(item);
-    if (path) {
-      navigate(path);
-    }
+  const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) {
       onClose();
     }
   };
 
-  const handleSettingsNavigation = () => {
-    navigate('/settings');
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
+  const handleNavClick = (item, path) => {
+    setActiveItem(item);
+    if (path) navigate(path);
+    closeSidebarOnMobile();
   };
 
   const handleNotificationsClick = () => {
     setActiveItem('notifications');
     setHasNotifications(false);
     navigate('/notifications');
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
-  };
-
-  const handleResponsibleTradingClick = () => {
-    navigate('/responsible-trading');
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
-  };
-
-  const handleAboutClick = () => {
-    setActiveItem('about');
-    navigate('/about');
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
-  };
-
-  const handleAccountManagementClick = () => {
-    setActiveItem('account-management');
-    navigate('/account-management');
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
-  };
-
-  const handleHowToUseClick = () => {
-    setActiveItem('how-to-use');
-    navigate('/how-to-use');
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
-  };
-
-  const handleTermsClick = () => {
-    setActiveItem('terms');
-    navigate('/terms');
-    if (window.innerWidth <= 768) {
-      onClose();
-    }
+    closeSidebarOnMobile();
   };
 
   const handleSubmitFeedback = async () => {
@@ -933,11 +556,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     try {
       const response = await fetch('/api/feedback', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          rating: rating,
+          rating,
           feedback: feedbackText.trim(),
           user: 'John Trader',
           email: 'john@voltixtraders.com'
@@ -964,11 +585,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const getRatingText = (value) => {
     const texts = {
-      1: 'Needs Improvement ⭐',
-      2: 'Fair ⭐⭐',
-      3: 'Good ⭐⭐⭐',
-      4: 'Great ⭐⭐⭐⭐',
-      5: 'Excellent ⭐⭐⭐⭐⭐'
+      1: 'Needs Improvement',
+      2: 'Fair',
+      3: 'Good',
+      4: 'Great',
+      5: 'Excellent'
     };
     return texts[value] || '';
   };
@@ -978,11 +599,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       <Overlay isOpen={isOpen} onClick={onClose} />
       
       <SidebarContainer isOpen={isOpen}>
-        <CloseButton isOpen={isOpen} onClick={onClose}>
+        <CloseButton isOpen={isOpen} onClick={onClose} aria-label="Close Sidebar">
           ✕
         </CloseButton>
 
         <SidebarContent>
+          {/* USER HEADER */}
           <SidebarHeader>
             <div className="avatar">VT</div>
             <div className="user-info">
@@ -991,10 +613,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
-          {/* NOTIFICATIONS SECTION */}
+          {/* UPDATES SECTION */}
           <NavSection>
             <SectionLabel>Updates</SectionLabel>
-            
             <NavItem 
               active={activeItem === 'notifications'}
               onClick={handleNotificationsClick}
@@ -1006,16 +627,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* MAIN NAVIGATION - Learning */}
+          {/* LEARNING SECTION */}
           <NavSection>
             <SectionLabel>Learning</SectionLabel>
-            
             <NavItem 
               active={activeItem === 'academy'}
               onClick={() => handleNavClick('academy', '/academy')}
             >
               <span className="nav-icon">📚</span>
-              <span className="nav-label">Voltix Traders Academy</span>
+              <span className="nav-label">Voltix Academy</span>
               <span className="badge">NEW</span>
             </NavItem>
           </NavSection>
@@ -1023,20 +643,18 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           {/* ACCOUNT SECTION */}
           <NavSection>
             <SectionLabel>Account</SectionLabel>
-            
             <NavItem 
               active={activeItem === 'account-info'}
               onClick={() => handleNavClick('account-info', '/account-info')}
             >
               <span className="nav-icon">👤</span>
-              <span className="nav-label">Your Linked Deriv Account Information</span>
+              <span className="nav-label">Deriv Account Info</span>
             </NavItem>
           </NavSection>
 
           {/* TRADING SECTION */}
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
-            
             <NavItem 
               active={activeItem === 'switch-to-forex'}
               onClick={() => handleNavClick('switch-to-forex', '/forex')}
@@ -1057,10 +675,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
             <NavItem 
               active={activeItem === 'account-management'}
-              onClick={handleAccountManagementClick}
+              onClick={() => handleNavClick('account-management', '/account-management')}
             >
               <span className="nav-icon">📋</span>
-              <span className="nav-label">Need Account Management</span>
+              <span className="nav-label">Account Management</span>
               <span className="badge">NEW</span>
             </NavItem>
 
@@ -1073,63 +691,57 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* RESPONSIBLE TRADING SECTION */}
+          {/* WELLNESS / RESPONSIBLE TRADING */}
           <NavSection>
             <SectionLabel>Wellness</SectionLabel>
-            
-            <ResponsibleTradingCard>
+            <SideCard>
               <div className="card-title">
                 <span className="icon">🛡️</span>
                 Responsible Trading
               </div>
-              <div className="fact-item">
+              <div className="card-item">
                 <span className="bullet">•</span>
-                <span>Set <span className="highlight">deposit limits</span> to manage your trading budget effectively</span>
+                <span>Set <span className="highlight">deposit limits</span> to control your capital budget.</span>
               </div>
-              <div className="fact-item">
+              <div className="card-item">
                 <span className="bullet">•</span>
-                <span>Take regular <span className="highlight">trading breaks</span> to maintain clarity and focus</span>
+                <span>Take regular <span className="highlight">trading breaks</span> to maintain discipline.</span>
               </div>
-              <div className="fact-item">
+              <div className="card-item">
                 <span className="bullet">•</span>
-                <span>Only trade with <span className="highlight">risk capital</span> you can afford to lose</span>
-              </div>
-              <div className="fact-item">
-                <span className="bullet">•</span>
-                <span><span className="highlight">90%</span> of successful traders keep a trading journal</span>
+                <span>Trade only with risk capital you can afford to lose.</span>
               </div>
               <div 
                 className="learn-more" 
-                onClick={handleResponsibleTradingClick}
+                onClick={() => handleNavClick('responsible-trading', '/responsible-trading')}
               >
-                Learn more about responsible trading →
+                Learn more →
               </div>
-            </ResponsibleTradingCard>
+            </SideCard>
           </NavSection>
 
           {/* FEEDBACK SECTION */}
           <NavSection>
             <SectionLabel>Feedback</SectionLabel>
-            
             <FeedbackSection>
               <div className="feedback-label">Rate your experience</div>
               <div className="stars">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <span
+                  <button
                     key={star}
-                    className="star-wrapper"
+                    type="button"
+                    className={`star-btn ${
+                      star <= (hoverRating || rating) ? 'active' : ''
+                    } ${star <= hoverRating && star > rating ? 'hover' : ''}`}
                     onClick={() => setRating(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
+                    aria-label={`Rate ${star} star`}
                   >
-                    <span 
-                      className={`star ${
-                        star <= (hoverRating || rating) ? 'active' : ''
-                      } ${star <= hoverRating && star > rating ? 'hover' : ''}`}
-                    >
-                      ★
-                    </span>
-                  </span>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                  </button>
                 ))}
               </div>
               <div className="star-rating-text">
@@ -1137,7 +749,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
               <textarea
                 className="feedback-textarea"
-                placeholder="Share your thoughts, suggestions, or issues..."
+                placeholder="Share your feedback or suggestions..."
                 value={feedbackText}
                 onChange={(e) => setFeedbackText(e.target.value)}
                 disabled={isSubmitting}
@@ -1155,74 +767,58 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </FeedbackSection>
           </NavSection>
 
-          {/* HOW TO USE SECTION */}
+          {/* GUIDE & LEGAL SECTION */}
           <NavSection>
-            <SectionLabel>Guide</SectionLabel>
-            
+            <SectionLabel>Information</SectionLabel>
             <NavItem 
               active={activeItem === 'how-to-use'}
-              onClick={handleHowToUseClick}
+              onClick={() => handleNavClick('how-to-use', '/how-to-use')}
             >
               <span className="nav-icon">📖</span>
-              <span className="nav-label">How to Use This Tool</span>
+              <span className="nav-label">How to Use</span>
+            </NavItem>
+            <NavItem 
+              active={activeItem === 'terms'}
+              onClick={() => handleNavClick('terms', '/terms')}
+            >
+              <span className="nav-icon">⚖️</span>
+              <span className="nav-label">Terms & Conditions</span>
             </NavItem>
           </NavSection>
 
-          {/* ABOUT VOLTIX TRADERS SECTION */}
+          {/* COMPANY SECTION */}
           <NavSection>
             <SectionLabel>Company</SectionLabel>
-            
-            <AboutCard>
+            <SideCard>
               <div className="card-title">
                 <span className="icon">🏢</span>
                 About Voltix Traders
               </div>
-              <div className="about-item">
+              <div className="card-item">
                 <span className="bullet">•</span>
-                <span><span className="highlight">Voltix Traders</span> is a third-party app for trading on Deriv and Forex.</span>
+                <span>Third-party app supporting Deriv & Forex platforms.</span>
               </div>
-              <div className="about-item">
+              <div className="card-item">
                 <span className="bullet">•</span>
-                <span>It supports automated trading, AI-assisted manual trading, <span className="highlight">and bot trading</span>.</span>
-              </div>
-              <div className="about-item">
-                <span className="bullet">•</span>
-                <span><span className="highlight">It</span> provides live, real-time data from Deriv and Forex via APIs.</span>
-              </div>
-              <div className="about-item">
-                <span className="bullet">•</span>
-                <span>Empowering traders with <span className="highlight">cutting-edge tools</span></span>
+                <span>Provides real-time API market streams and automated execution tools.</span>
               </div>
               <div 
                 className="learn-more" 
-                onClick={handleAboutClick}
+                onClick={() => handleNavClick('about', '/about')}
               >
-                Learn more about us →
+                About us →
               </div>
-            </AboutCard>
-          </NavSection>
-
-          {/* TERMS AND CONDITIONS SECTION */}
-          <NavSection>
-            <SectionLabel>Legal</SectionLabel>
-            
-            <NavItem 
-              active={activeItem === 'terms'}
-              onClick={handleTermsClick}
-            >
-              <span className="nav-icon">⚖️</span>
-              <span className="nav-label">Terms and Conditions</span>
-            </NavItem>
+            </SideCard>
           </NavSection>
         </SidebarContent>
 
-        {/* FOOTER - Now always visible at bottom */}
+        {/* FOOTER */}
         <SidebarFooter>
-          <div className="footer-item" onClick={handleSettingsNavigation}>
+          <div className="footer-item" onClick={() => handleNavClick('settings', '/settings')}>
             <span className="footer-icon">⚙️</span>
             Settings
           </div>
-          <div className="footer-item" onClick={handleSettingsNavigation}>
+          <div className="footer-item" onClick={() => handleNavClick('help', '/settings')}>
             <span className="footer-icon">❓</span>
             Help & Support
           </div>
