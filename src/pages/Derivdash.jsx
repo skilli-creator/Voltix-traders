@@ -118,7 +118,7 @@ const themes = {
   white: {
     name: 'White',
     colors: {
-      background: '#f0f2f5',
+      background: '#fff',
       backgroundSecondary: '#ffffff',
       backgroundTertiary: '#f8f9fa',
       text: '#1a1a2e',
