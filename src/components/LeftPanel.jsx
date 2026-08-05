@@ -1,27 +1,70 @@
 // src/components/LeftPanel.jsx
+
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
+// ============================================
+// PREMIUM ANIMATIONS
+// ============================================
 const pulse = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.9); }
 `;
 
+const pulseGlow = keyframes`
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+`;
+
+const rippleEffect = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+// ============================================
+// PROFESSIONAL SVG ICONS
+// ============================================
+const SoundOnIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+  </svg>
+);
+
+const SoundOffIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <line x1="23" y1="9" x2="17" y2="15" />
+    <line x1="17" y1="9" x2="23" y2="15" />
+  </svg>
+);
+
+// ============================================
+// STYLED COMPONENTS - PREMIUM THEME
+// ============================================
+
 const PanelContainer = styled.div`
-  /* REMOVED fixed width - now fills parent container */
   width: 100%;
   min-width: 0;
   height: 100%;
-  background: ${props => props.theme.colors.background};
-  border-right: 2px solid ${props => props.theme.colors.border};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.background || '#0b0f19'};
+  border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   display: flex;
   flex-direction: column;
-  padding: 10px 8px;
+  padding: 12px 10px;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 50;
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
 
   &::-webkit-scrollbar {
     width: 3px;
@@ -30,7 +73,7 @@ const PanelContainer = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.scrollbar};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.06)'};
     border-radius: 10px;
   }
 
@@ -42,27 +85,38 @@ const PanelContainer = styled.div`
     width: 100%;
     min-width: unset;
     height: 100%;
-    padding: 6px 8px;
+    padding: 8px 10px;
     border-right: none;
-    background: ${props => props.theme.colors.background};
+    background: ${props => props.theme?.colors?.surface || '#0b0f19'};
   }
 
   @media (max-width: 480px) {
-    padding: 4px 6px;
+    padding: 6px 8px;
   }
 `;
 
 const NavList = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 2px;
-  padding: 0 2px;
+  gap: 4px;
+  padding: 4px;
+  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 4px;
   width: 100%;
   font-weight: 700;
 
   @media (max-width: 768px) {
-    gap: 4px;
-    justify-content: space-around;
+    gap: 3px;
+    padding: 3px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 2px;
+    padding: 2px;
+    border-radius: 6px;
   }
 `;
 
@@ -70,23 +124,23 @@ const NavItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  padding: 3px 6px;
-  border-radius: 4px;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textMuted};
-  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
-  border: 2px solid ${props => props.active ? props.theme.colors.accent : 'transparent'};
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
+  background: ${props => props.active ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)' : 'transparent'};
+  border: 1px solid ${props => props.active ? props.theme?.colors?.accent || '#3b82f6' : 'transparent'};
   white-space: nowrap;
   font-size: 11px;
   font-weight: 700;
   flex: 1;
 
   &:hover {
-    background: ${props => props.theme.colors.backgroundSecondary};
-    color: ${props => props.theme.colors.text};
-    border-color: ${props => props.theme.colors.accent};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+    border-color: ${props => props.active ? props.theme?.colors?.accent || '#3b82f6' : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   }
 
   .label {
@@ -95,37 +149,38 @@ const NavItem = styled.div`
   }
 
   .badge {
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 700;
-    padding: 0 3px;
-    border-radius: 3px;
-    background: ${props => props.active ? props.theme.colors.accent + '30' : props.theme.colors.backgroundSecondary};
-    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textMuted};
-    &::before { content: '('; }
-    &::after { content: ')'; }
+    padding: 0 6px;
+    border-radius: 4px;
+    background: ${props => props.active ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.15)' : props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.04)'};
+    color: ${props => props.active ? props.theme?.colors?.accent || '#3b82f6' : props.theme?.colors?.textMuted || '#94a3b8'};
   }
 
   @media (max-width: 768px) {
     padding: 4px 8px;
+    border-radius: 6px;
     .label { font-size: 10px; }
-    .badge { font-size: 9px; }
+    .badge { font-size: 8px; padding: 0 4px; }
   }
 
   @media (max-width: 480px) {
     padding: 3px 6px;
+    border-radius: 5px;
     .label { font-size: 9px; }
-    .badge { font-size: 8px; }
+    .badge { font-size: 7px; padding: 0 3px; }
   }
 `;
 
 const Divider = styled.div`
-  height: 2px;
-  background: ${props => props.theme.colors.border};
-  margin: 4px 0;
+  height: 1px;
+  background: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin: 6px 0;
   transition: background 0.3s ease;
+  opacity: 0.6;
 
   @media (max-width: 768px) {
-    margin: 2px 0;
+    margin: 4px 0;
   }
 `;
 
@@ -134,40 +189,60 @@ const NoPositions = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 4px;
-  color: ${props => props.theme.colors.textMuted};
-  text-align: center;
-  font-weight: 700;
+  padding: 20px 16px;
+  margin: 4px 0;
+  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 12px;
+  border: 1px dashed ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  transition: all 0.3s ease;
+  animation: ${fadeIn} 0.5s ease;
+
+  &:hover {
+    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+  }
 
   .icon { 
-    font-size: 18px; 
-    margin-bottom: 2px; 
-    color: ${props => props.theme.colors.textMuted + '50'}; 
+    font-size: 28px; 
+    margin-bottom: 6px;
+    opacity: 0.5;
+    transition: all 0.3s ease;
   }
+
+  &:hover .icon {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+
   .title { 
-    font-size: 10px; 
+    font-size: 11px; 
     font-weight: 700; 
-    color: ${props => props.theme.colors.text}; 
-    margin-bottom: 1px; 
+    color: ${props => props.theme?.colors?.text || '#ffffff'}; 
+    margin-bottom: 2px; 
+    letter-spacing: 0.3px;
   }
+
   .subtitle { 
-    font-size: 8px; 
+    font-size: 9px; 
     font-weight: 700;
-    color: ${props => props.theme.colors.textMuted}; 
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; 
+    letter-spacing: 0.2px;
   }
 
   @media (max-width: 768px) {
-    padding: 4px 2px;
-    .icon { font-size: 14px; }
-    .title { font-size: 9px; }
-    .subtitle { font-size: 7px; }
+    padding: 14px 12px;
+    border-radius: 10px;
+    .icon { font-size: 22px; margin-bottom: 4px; }
+    .title { font-size: 10px; }
+    .subtitle { font-size: 8px; }
   }
 
   @media (max-width: 480px) {
-    padding: 2px 2px;
-    .icon { font-size: 12px; }
-    .title { font-size: 8px; }
-    .subtitle { font-size: 6px; }
+    padding: 10px 8px;
+    border-radius: 8px;
+    .icon { font-size: 18px; margin-bottom: 3px; }
+    .title { font-size: 9px; }
+    .subtitle { font-size: 7px; }
   }
 `;
 
@@ -175,55 +250,92 @@ const BottomContent = styled.div`
   margin-top: auto;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding-top: 4px;
-  border-top: 2px solid ${props => props.theme.colors.border};
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   transition: border-color 0.3s ease;
   font-weight: 700;
+  animation: ${fadeIn} 0.4s ease;
 
   @media (max-width: 768px) {
-    gap: 1px;
-    padding-top: 2px;
+    gap: 3px;
+    padding-top: 6px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 2px;
+    padding-top: 4px;
   }
 `;
 
 const SessionSection = styled.div`
-  padding: 0 2px;
-  font-weight: 700;
+  padding: 6px 10px;
+  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+  }
+
+  @media (max-width: 768px) {
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 3px 6px;
+    border-radius: 6px;
+  }
 `;
 
 const SessionLabel = styled.div`
-  font-size: 7px;
+  font-size: 8px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
-  color: ${props => props.theme.colors.textMuted};
+  letter-spacing: 0.6px;
+  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
   font-weight: 700;
 
   @media (max-width: 768px) {
-    font-size: 6px;
+    font-size: 7px;
+    letter-spacing: 0.4px;
   }
 `;
 
 const SessionPL = styled.div`
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
-  color: ${props => props.isNegative ? props.theme.colors.danger : props.theme.colors.success};
+  color: ${props => props.isNegative ? props.theme?.colors?.danger || '#ef4444' : props.theme?.colors?.success || '#22c55e'};
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 2px;
 
   .currency {
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 700;
-    color: ${props => props.theme.colors.textMuted};
-    margin-left: 1px;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    opacity: 0.5;
+  }
+
+  .change-indicator {
+    font-size: 11px;
+    margin-left: 2px;
+    opacity: 0.6;
   }
 
   @media (max-width: 768px) {
-    font-size: 11px;
-    .currency { font-size: 7px; }
+    font-size: 12px;
+    .currency { font-size: 8px; }
+    .change-indicator { font-size: 10px; }
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    .currency { font-size: 6px; }
+    font-size: 11px;
+    .currency { font-size: 7px; }
+    .change-indicator { font-size: 9px; }
   }
 `;
 
@@ -231,7 +343,7 @@ const SessionPL = styled.div`
 const SessionRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   padding: 0 2px;
 `;
 
@@ -239,38 +351,45 @@ const SoundIcon = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${props => props.isMuted ? 'transparent' : props.theme.colors.accentActive};
-  border: 2px solid ${props => props.isMuted ? props.theme.colors.border : props.theme.colors.accent};
+  background: ${props => props.isMuted ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+  border: 1px solid ${props => props.isMuted ? props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)' : props.theme?.colors?.accent || '#3b82f6'};
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  color: ${props => props.isMuted ? props.theme.colors.textMuted : props.theme.colors.accent};
+  width: 30px;
+  height: 30px;
+  color: ${props => props.isMuted ? props.theme?.colors?.textMuted || '#94a3b8' : props.theme?.colors?.accent || '#3b82f6'};
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   font-size: 14px;
   flex-shrink: 0;
   line-height: 1;
+  box-shadow: ${props => props.isMuted ? 'none' : `0 0 16px ${props.theme?.colors?.accent || '#3b82f6'}20`};
 
   &:hover {
     transform: scale(1.1);
-    border-color: ${props => props.theme.colors.accent};
-    background: ${props => props.theme.colors.accentActive};
-    box-shadow: 0 2px 12px ${props => props.isMuted ? 'transparent' : props.theme.colors.accent + '40'};
+    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    box-shadow: 0 2px 20px ${props => props.isMuted ? 'transparent' : props.theme?.colors?.accent + '30' || 'rgba(59, 130, 246, 0.15)'};
   }
 
   &:active {
     transform: scale(0.9);
   }
 
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   @media (max-width: 768px) {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
     font-size: 12px;
   }
 
   @media (max-width: 480px) {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     font-size: 10px;
     border-width: 1.5px;
   }
@@ -282,20 +401,65 @@ const SessionContent = styled.div`
 `;
 
 const TradesSummary = styled.div`
-  font-size: 8px;
-  color: ${props => props.theme.colors.textMuted};
-  padding: 0 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  font-size: 9px;
   font-weight: 700;
+  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+  transition: all 0.3s ease;
 
-  .wins { color: ${props => props.theme.colors.success}; }
-  .losses { color: ${props => props.theme.colors.danger}; }
+  &:hover {
+    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stats {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .wins { 
+    color: ${props => props.theme?.colors?.success || '#22c55e'};
+    font-weight: 700;
+  }
+
+  .losses { 
+    color: ${props => props.theme?.colors?.danger || '#ef4444'};
+    font-weight: 700;
+  }
+
+  .win-rate {
+    font-size: 8px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    font-weight: 700;
+  }
 
   @media (max-width: 768px) {
-    font-size: 7px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 8px;
+    .win-rate { font-size: 7px; padding: 1px 6px; }
   }
 
   @media (max-width: 480px) {
-    font-size: 6px;
+    padding: 3px 6px;
+    border-radius: 6px;
+    font-size: 7px;
+    .win-rate { font-size: 6px; padding: 0 5px; }
   }
 `;
 
@@ -303,31 +467,32 @@ const TradesSummary = styled.div`
 const StatusDot = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 7px;
-  color: ${props => props.theme.colors.textMuted};
+  gap: 6px;
+  font-size: 8px;
+  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
 
   .dot {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: ${props => props.theme.colors.accent};
+    background: ${props => props.theme?.colors?.accent || '#3b82f6'};
     animation: ${props => props.isConnected ? pulse : 'none'} 1.5s ease-in-out infinite;
-    border: 1px solid ${props => props.theme.colors.accent};
+    border: 1px solid ${props => props.theme?.colors?.accent || '#3b82f6'};
+    box-shadow: 0 0 10px ${props => props.theme?.colors?.accent || '#3b82f6'}40;
     flex-shrink: 0;
   }
 
   @media (max-width: 768px) {
-    font-size: 6px;
-    .dot { width: 4px; height: 4px; }
+    font-size: 7px;
+    .dot { width: 5px; height: 5px; }
   }
 
   @media (max-width: 480px) {
-    font-size: 5px;
-    .dot { width: 3px; height: 3px; }
+    font-size: 6px;
+    .dot { width: 4px; height: 4px; }
   }
 `;
 
@@ -335,8 +500,16 @@ const StatusRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 2px 2px 0 2px;
+  padding: 4px 4px 0 4px;
+
+  @media (max-width: 768px) {
+    padding: 2px 2px 0 2px;
+  }
 `;
+
+// ============================================
+// MAIN COMPONENT
+// ============================================
 
 const LeftPanel = () => {
   const [activeTab, setActiveTab] = useState('open');
@@ -382,6 +555,9 @@ const LeftPanel = () => {
   }, []);
 
   const isNegative = data.sessionPL < 0;
+  const winRate = data.trades.total > 0 
+    ? Math.round((data.trades.wins / data.trades.total) * 100) 
+    : 0;
 
   return (
     <PanelContainer>
@@ -397,7 +573,7 @@ const LeftPanel = () => {
         </NavItem>
 
         <NavItem active={activeTab === 'transactions'} onClick={() => handleTabClick('transactions')}>
-          <span className="label">Transactions</span>
+          <span className="label">History</span>
         </NavItem>
       </NavList>
 
@@ -405,8 +581,8 @@ const LeftPanel = () => {
 
       <NoPositions>
         <div className="icon">📭</div>
-        <div className="title">No open positions</div>
-        <div className="subtitle">Your active trades will appear here</div>
+        <div className="title">No Active Positions</div>
+        <div className="subtitle">Your trades will appear here</div>
       </NoPositions>
 
       <Divider />
@@ -419,23 +595,36 @@ const LeftPanel = () => {
             aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
             title={isMuted ? 'Click to unmute' : 'Click to mute'}
           >
-            {isMuted ? '🔇' : '🔊'}
+            <span className="icon">
+              {isMuted ? <SoundOffIcon /> : <SoundOnIcon />}
+            </span>
           </SoundIcon>
           <SessionContent>
             <SessionSection>
-              <SessionLabel>Last Session</SessionLabel>
+              <SessionLabel>Session Performance</SessionLabel>
               <SessionPL isNegative={isNegative}>
-                {isNegative ? '-' : ''}${Math.abs(data.sessionPL).toFixed(2)}
+                {isNegative ? '−' : '+'}${Math.abs(data.sessionPL).toFixed(2)}
                 <span className="currency">USD</span>
+                <span className="change-indicator">
+                  {isNegative ? '↓' : '↑'}
+                </span>
               </SessionPL>
             </SessionSection>
           </SessionContent>
         </SessionRow>
 
         <TradesSummary>
-          {data.trades.total} trades (
-          <span className="wins">{data.trades.wins}W</span> /{' '}
-          <span className="losses">{data.trades.losses}L</span>)
+          <div className="left">
+            <span>📊 Trades</span>
+            <span className="stats">
+              <span className="wins">{data.trades.wins}W</span>
+              <span style={{ opacity: 0.3 }}>|</span>
+              <span className="losses">{data.trades.losses}L</span>
+            </span>
+          </div>
+          <span className="win-rate">
+            {winRate}% Win Rate
+          </span>
         </TradesSummary>
 
         <StatusRow>
