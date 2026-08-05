@@ -8,9 +8,10 @@ const pulse = keyframes`
 `;
 
 const PanelContainer = styled.div`
-  width: 260px;
-  min-width: 260px;
-  height: calc(100vh - 48px);
+  /* REMOVED fixed width - now fills parent container */
+  width: 100%;
+  min-width: 0;
+  height: 100%;
   background: ${props => props.theme.colors.background};
   border-right: 2px solid ${props => props.theme.colors.border};
   display: flex;
@@ -34,8 +35,6 @@ const PanelContainer = styled.div`
   }
 
   @media (max-width: 1024px) and (min-width: 769px) {
-    width: 180px;
-    min-width: 180px;
     padding: 8px 6px;
   }
 
@@ -70,6 +69,7 @@ const NavList = styled.div`
 const NavItem = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 3px;
   padding: 3px 6px;
   border-radius: 4px;
@@ -81,6 +81,7 @@ const NavItem = styled.div`
   white-space: nowrap;
   font-size: 11px;
   font-weight: 700;
+  flex: 1;
 
   &:hover {
     background: ${props => props.theme.colors.backgroundSecondary};
