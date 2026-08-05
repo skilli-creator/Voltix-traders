@@ -14,13 +14,14 @@ import RightPanel from '../components/RightPanel';
  */
 
 /**
- * Professional Theme System
- * Features: Frosted Translucent Floating Surfaces + Pure Solid Light & Dark Themes
+ * Fixed Theme Definitions
+ * Retains exact theme keys ('dark', 'light', etc.) to prevent React undefined crashes.
+ * Adds 'surfaceGlass', 'glassBorder', and 'glassBlur' to all themes for translucent dropdowns.
  */
 
 const themes = {
-  // === SOLID DARK THEME ===
-  darkSolid: {
+  // === SOLID DARK (Default) ===
+  dark: {
     name: 'Solid Dark',
     category: 'dark',
     colors: {
@@ -29,8 +30,8 @@ const themes = {
       surfaceHover: '#141417',
       surfaceActive: '#1f1f24',
       
-      // Floating / Dropdown Surfaces (Translucent + Blur)
-      surfaceGlass: 'rgba(15, 15, 18, 0.85)',
+      // Translucent Dropdown Surface
+      surfaceGlass: 'rgba(12, 12, 15, 0.88)',
       glassBorder: 'rgba(255, 255, 255, 0.12)',
       glassBlur: '16px',
       
@@ -44,6 +45,7 @@ const themes = {
       accent: '#3b82f6',
       accentHover: '#2563eb',
       accentLight: 'rgba(59, 130, 246, 0.15)',
+      accentMuted: 'rgba(59, 130, 246, 0.3)',
       
       success: '#10b981',
       warning: '#f59e0b',
@@ -54,8 +56,8 @@ const themes = {
     }
   },
 
-  // === SOLID WHITE THEME ===
-  whiteSolid: {
+  // === SOLID WHITE ===
+  light: {
     name: 'Solid White',
     category: 'light',
     colors: {
@@ -64,9 +66,9 @@ const themes = {
       surfaceHover: '#f1f5f9',
       surfaceActive: '#e2e8f0',
       
-      // Floating / Dropdown Surfaces (Translucent + Blur)
+      // Translucent Dropdown Surface
       surfaceGlass: 'rgba(255, 255, 255, 0.88)',
-      glassBorder: 'rgba(0, 0, 0, 0.08)',
+      glassBorder: 'rgba(0, 0, 0, 0.1)',
       glassBlur: '16px',
       
       border: '#e2e8f0',
@@ -79,6 +81,7 @@ const themes = {
       accent: '#0f172a',
       accentHover: '#1e293b',
       accentLight: 'rgba(15, 23, 42, 0.06)',
+      accentMuted: 'rgba(15, 23, 42, 0.15)',
       
       success: '#059669',
       warning: '#d97706',
@@ -89,7 +92,6 @@ const themes = {
     }
   },
 
-  // === MIDNIGHT INDIGO ===
   midnight: {
     name: 'Midnight Indigo',
     category: 'dark',
@@ -99,8 +101,8 @@ const themes = {
       surfaceHover: '#1e293b',
       surfaceActive: '#334155',
       
-      surfaceGlass: 'rgba(15, 23, 42, 0.82)',
-      glassBorder: 'rgba(99, 102, 241, 0.2)',
+      surfaceGlass: 'rgba(15, 23, 42, 0.85)',
+      glassBorder: 'rgba(99, 102, 241, 0.25)',
       glassBlur: '16px',
       
       border: '#1e293b',
@@ -113,6 +115,7 @@ const themes = {
       accent: '#6366f1',
       accentHover: '#4f46e5',
       accentLight: 'rgba(99, 102, 241, 0.15)',
+      accentMuted: 'rgba(99, 102, 241, 0.3)',
       
       success: '#10b981',
       warning: '#f59e0b',
@@ -123,7 +126,6 @@ const themes = {
     }
   },
 
-  // === DEEP OCEAN ===
   ocean: {
     name: 'Deep Ocean',
     category: 'dark',
@@ -133,7 +135,7 @@ const themes = {
       surfaceHover: '#0d283d',
       surfaceActive: '#153650',
       
-      surfaceGlass: 'rgba(7, 30, 46, 0.82)',
+      surfaceGlass: 'rgba(7, 30, 46, 0.85)',
       glassBorder: 'rgba(6, 182, 212, 0.25)',
       glassBlur: '16px',
       
@@ -147,6 +149,7 @@ const themes = {
       accent: '#06b6d4',
       accentHover: '#0891b2',
       accentLight: 'rgba(6, 182, 212, 0.15)',
+      accentMuted: 'rgba(6, 182, 212, 0.3)',
       
       success: '#10b981',
       warning: '#f59e0b',
@@ -157,7 +160,6 @@ const themes = {
     }
   },
 
-  // === COSMIC VIOLET ===
   cosmic: {
     name: 'Cosmic Violet',
     category: 'dark',
@@ -181,6 +183,7 @@ const themes = {
       accent: '#8b5cf6',
       accentHover: '#7c3aed',
       accentLight: 'rgba(139, 92, 246, 0.15)',
+      accentMuted: 'rgba(139, 92, 246, 0.3)',
       
       success: '#10b981',
       warning: '#f59e0b',
@@ -189,8 +192,111 @@ const themes = {
       shadow: '0 20px 40px -15px rgba(5, 2, 12, 0.9)',
       scrollbar: '#241a45',
     }
+  },
+
+  forest: {
+    name: 'Emerald Forest',
+    category: 'dark',
+    colors: {
+      bg: '#040d0a',
+      surface: '#0b1c17',
+      surfaceHover: '#122b24',
+      surfaceActive: '#1a3d33',
+      
+      surfaceGlass: 'rgba(11, 28, 23, 0.85)',
+      glassBorder: 'rgba(16, 185, 129, 0.25)',
+      glassBlur: '16px',
+      
+      border: '#16382e',
+      borderMuted: '#0b1c17',
+      
+      text: '#ecfdf5',
+      textSecondary: '#6ee7b7',
+      textMuted: '#34d399',
+      
+      accent: '#10b981',
+      accentHover: '#059669',
+      accentLight: 'rgba(16, 185, 129, 0.15)',
+      accentMuted: 'rgba(16, 185, 129, 0.3)',
+      
+      success: '#059669',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      
+      shadow: '0 20px 40px -15px rgba(2, 10, 8, 0.8)',
+      scrollbar: '#16382e',
+    }
+  },
+
+  sunset: {
+    name: 'Warm Sunset',
+    category: 'dark',
+    colors: {
+      bg: '#0f0705',
+      surface: '#21120f',
+      surfaceHover: '#311b17',
+      surfaceActive: '#442721',
+      
+      surfaceGlass: 'rgba(33, 18, 15, 0.85)',
+      glassBorder: 'rgba(249, 115, 22, 0.25)',
+      glassBlur: '16px',
+      
+      border: '#3a201b',
+      borderMuted: '#21120f',
+      
+      text: '#fff7ed',
+      textSecondary: '#fdba74',
+      textMuted: '#fb923c',
+      
+      accent: '#f97316',
+      accentHover: '#ea580c',
+      accentLight: 'rgba(249, 115, 22, 0.15)',
+      accentMuted: 'rgba(249, 115, 22, 0.3)',
+      
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      
+      shadow: '0 20px 40px -15px rgba(15, 5, 3, 0.8)',
+      scrollbar: '#3a201b',
+    }
+  },
+
+  minimalWhite: {
+    name: 'Pure White',
+    category: 'light',
+    colors: {
+      bg: '#ffffff',
+      surface: '#f9fafb',
+      surfaceHover: '#f3f4f6',
+      surfaceActive: '#e5e7eb',
+      
+      surfaceGlass: 'rgba(249, 250, 251, 0.9)',
+      glassBorder: 'rgba(0, 0, 0, 0.08)',
+      glassBlur: '16px',
+      
+      border: '#e5e7eb',
+      borderMuted: '#f3f4f6',
+      
+      text: '#111827',
+      textSecondary: '#4b5563',
+      textMuted: '#9ca3af',
+      
+      accent: '#000000',
+      accentHover: '#1f2937',
+      accentLight: 'rgba(0, 0, 0, 0.05)',
+      accentMuted: 'rgba(0, 0, 0, 0.15)',
+      
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      
+      shadow: '0 10px 30px -10px rgba(0, 0, 0, 0.06)',
+      scrollbar: '#d1d5db',
+    }
   }
 };
+
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
