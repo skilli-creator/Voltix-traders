@@ -13,242 +13,184 @@ import RightPanel from '../components/RightPanel';
  * Compatible with styled-components, Emotion, or CSS Variables injection.
  */
 
+/**
+ * Professional Theme System
+ * Features: Frosted Translucent Floating Surfaces + Pure Solid Light & Dark Themes
+ */
+
 const themes = {
-  // === DARK THEMES ===
-  dark: {
-    name: 'Zinc (Default Dark)',
+  // === SOLID DARK THEME ===
+  darkSolid: {
+    name: 'Solid Dark',
     category: 'dark',
     colors: {
-      bg: '#09090b',
-      surface: '#121215',
-      surfaceHover: '#18181b',
-      surfaceActive: '#27272a',
-      border: '#27272a',
-      borderMuted: '#1c1c21',
+      bg: '#000000',
+      surface: '#0a0a0c',
+      surfaceHover: '#141417',
+      surfaceActive: '#1f1f24',
       
-      text: '#f4f4f5',
+      // Floating / Dropdown Surfaces (Translucent + Blur)
+      surfaceGlass: 'rgba(15, 15, 18, 0.85)',
+      glassBorder: 'rgba(255, 255, 255, 0.12)',
+      glassBlur: '16px',
+      
+      border: '#1f1f24',
+      borderMuted: '#141417',
+      
+      text: '#ffffff',
       textSecondary: '#a1a1aa',
-      textMuted: '#71717a',
+      textMuted: '#52525b',
       
       accent: '#3b82f6',
-      accentHover: '#60a5fa',
-      accentLight: 'rgba(59, 130, 246, 0.12)',
-      accentMuted: 'rgba(59, 130, 246, 0.25)',
+      accentHover: '#2563eb',
+      accentLight: 'rgba(59, 130, 246, 0.15)',
       
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#ef4444',
       
-      shadow: '0 10px 30px -10px rgba(0, 0, 0, 0.5)',
+      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.9)',
       scrollbar: '#27272a',
     }
   },
 
+  // === SOLID WHITE THEME ===
+  whiteSolid: {
+    name: 'Solid White',
+    category: 'light',
+    colors: {
+      bg: '#ffffff',
+      surface: '#f8fafc',
+      surfaceHover: '#f1f5f9',
+      surfaceActive: '#e2e8f0',
+      
+      // Floating / Dropdown Surfaces (Translucent + Blur)
+      surfaceGlass: 'rgba(255, 255, 255, 0.88)',
+      glassBorder: 'rgba(0, 0, 0, 0.08)',
+      glassBlur: '16px',
+      
+      border: '#e2e8f0',
+      borderMuted: '#f1f5f9',
+      
+      text: '#020617',
+      textSecondary: '#475569',
+      textMuted: '#94a3b8',
+      
+      accent: '#0f172a',
+      accentHover: '#1e293b',
+      accentLight: 'rgba(15, 23, 42, 0.06)',
+      
+      success: '#059669',
+      warning: '#d97706',
+      danger: '#dc2626',
+      
+      shadow: '0 20px 30px -10px rgba(0, 0, 0, 0.08)',
+      scrollbar: '#cbd5e1',
+    }
+  },
+
+  // === MIDNIGHT INDIGO ===
   midnight: {
     name: 'Midnight Indigo',
     category: 'dark',
     colors: {
-      bg: '#090d16',
+      bg: '#070a12',
       surface: '#0f172a',
       surfaceHover: '#1e293b',
       surfaceActive: '#334155',
+      
+      surfaceGlass: 'rgba(15, 23, 42, 0.82)',
+      glassBorder: 'rgba(99, 102, 241, 0.2)',
+      glassBlur: '16px',
+      
       border: '#1e293b',
-      borderMuted: '#131c2e',
+      borderMuted: '#0f172a',
       
       text: '#f8fafc',
       textSecondary: '#94a3b8',
       textMuted: '#64748b',
       
       accent: '#6366f1',
-      accentHover: '#818cf8',
+      accentHover: '#4f46e5',
       accentLight: 'rgba(99, 102, 241, 0.15)',
-      accentMuted: 'rgba(99, 102, 241, 0.3)',
       
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#f43f5e',
       
-      shadow: '0 10px 30px -10px rgba(2, 6, 23, 0.7)',
+      shadow: '0 20px 40px -15px rgba(2, 6, 23, 0.8)',
       scrollbar: '#1e293b',
     }
   },
 
+  // === DEEP OCEAN ===
   ocean: {
     name: 'Deep Ocean',
     category: 'dark',
     colors: {
-      bg: '#03141f',
+      bg: '#020d14',
       surface: '#071e2e',
       surfaceHover: '#0d283d',
       surfaceActive: '#153650',
+      
+      surfaceGlass: 'rgba(7, 30, 46, 0.82)',
+      glassBorder: 'rgba(6, 182, 212, 0.25)',
+      glassBlur: '16px',
+      
       border: '#133048',
-      borderMuted: '#0a2337',
+      borderMuted: '#071e2e',
       
       text: '#f0f9ff',
       textSecondary: '#7dd3fc',
       textMuted: '#38bdf8',
       
       accent: '#06b6d4',
-      accentHover: '#22d3ee',
+      accentHover: '#0891b2',
       accentLight: 'rgba(6, 182, 212, 0.15)',
-      accentMuted: 'rgba(6, 182, 212, 0.3)',
       
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#f43f5e',
       
-      shadow: '0 10px 30px -10px rgba(1, 15, 26, 0.7)',
+      shadow: '0 20px 40px -15px rgba(1, 15, 26, 0.8)',
       scrollbar: '#133048',
     }
   },
 
+  // === COSMIC VIOLET ===
   cosmic: {
     name: 'Cosmic Violet',
     category: 'dark',
     colors: {
-      bg: '#0b0714',
+      bg: '#07040d',
       surface: '#130d24',
       surfaceHover: '#1c1436',
       surfaceActive: '#281c4d',
+      
+      surfaceGlass: 'rgba(19, 13, 36, 0.85)',
+      glassBorder: 'rgba(139, 92, 246, 0.25)',
+      glassBlur: '16px',
+      
       border: '#241a45',
-      borderMuted: '#181130',
+      borderMuted: '#130d24',
       
       text: '#f5f3ff',
       textSecondary: '#a78bfa',
       textMuted: '#7c3aed',
       
       accent: '#8b5cf6',
-      accentHover: '#a78bfa',
+      accentHover: '#7c3aed',
       accentLight: 'rgba(139, 92, 246, 0.15)',
-      accentMuted: 'rgba(139, 92, 246, 0.3)',
       
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#ef4444',
       
-      shadow: '0 10px 30px -10px rgba(5, 2, 12, 0.8)',
+      shadow: '0 20px 40px -15px rgba(5, 2, 12, 0.9)',
       scrollbar: '#241a45',
-    }
-  },
-
-  forest: {
-    name: 'Emerald Forest',
-    category: 'dark',
-    colors: {
-      bg: '#06120e',
-      surface: '#0b1c17',
-      surfaceHover: '#122b24',
-      surfaceActive: '#1a3d33',
-      border: '#16382e',
-      borderMuted: '#0f261f',
-      
-      text: '#ecfdf5',
-      textSecondary: '#6ee7b7',
-      textMuted: '#34d399',
-      
-      accent: '#10b981',
-      accentHover: '#34d399',
-      accentLight: 'rgba(16, 185, 129, 0.15)',
-      accentMuted: 'rgba(16, 185, 129, 0.3)',
-      
-      success: '#059669',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      
-      shadow: '0 10px 30px -10px rgba(2, 10, 8, 0.7)',
-      scrollbar: '#16382e',
-    }
-  },
-
-  sunset: {
-    name: 'Warm Sunset',
-    category: 'dark',
-    colors: {
-      bg: '#140a08',
-      surface: '#21120f',
-      surfaceHover: '#311b17',
-      surfaceActive: '#442721',
-      border: '#3a201b',
-      borderMuted: '#291612',
-      
-      text: '#fff7ed',
-      textSecondary: '#fdba74',
-      textMuted: '#fb923c',
-      
-      accent: '#f97316',
-      accentHover: '#fb923c',
-      accentLight: 'rgba(249, 115, 22, 0.15)',
-      accentMuted: 'rgba(249, 115, 22, 0.3)',
-      
-      success: '#10b981',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      
-      shadow: '0 10px 30px -10px rgba(15, 5, 3, 0.7)',
-      scrollbar: '#3a201b',
-    }
-  },
-
-  // === LIGHT THEMES ===
-  light: {
-    name: 'Slate Light',
-    category: 'light',
-    colors: {
-      bg: '#f8fafc',
-      surface: '#ffffff',
-      surfaceHover: '#f1f5f9',
-      surfaceActive: '#e2e8f0',
-      border: '#e2e8f0',
-      borderMuted: '#f1f5f9',
-      
-      text: '#0f172a',
-      textSecondary: '#475569',
-      textMuted: '#94a3b8',
-      
-      accent: '#2563eb',
-      accentHover: '#1d4ed8',
-      accentLight: 'rgba(37, 99, 235, 0.08)',
-      accentMuted: 'rgba(37, 99, 235, 0.2)',
-      
-      success: '#10b981',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      
-      shadow: '0 10px 30px -10px rgba(0, 0, 0, 0.06)',
-      scrollbar: '#cbd5e1',
-    }
-  },
-
-  minimalWhite: {
-    name: 'Pure White',
-    category: 'light',
-    colors: {
-      bg: '#ffffff',
-      surface: '#f9fafb',
-      surfaceHover: '#f3f4f6',
-      surfaceActive: '#e5e7eb',
-      border: '#e5e7eb',
-      borderMuted: '#f3f4f6',
-      
-      text: '#111827',
-      textSecondary: '#4b5563',
-      textMuted: '#9ca3af',
-      
-      accent: '#000000',
-      accentHover: '#1f2937',
-      accentLight: 'rgba(0, 0, 0, 0.05)',
-      accentMuted: 'rgba(0, 0, 0, 0.15)',
-      
-      success: '#10b981',
-      warning: '#f59e0b',
-      danger: '#ef4444',
-      
-      shadow: '0 4px 20px rgba(0, 0, 0, 0.04)',
-      scrollbar: '#d1d5db',
     }
   }
 };
-
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
