@@ -1,4 +1,4 @@
-// src/components/TopBar.jsx
+// src/components/TopBar.jsx (Updated - Fixed Number Formatting)
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
@@ -466,7 +466,7 @@ const FundsOption = styled.div`
 `;
 
 // ============================================
-// 3. ACCOUNT BADGE - With Global Currency Support
+// 3. ACCOUNT BADGE - With Proper Number Formatting
 // ============================================
 const COUNTRY_CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
@@ -566,7 +566,7 @@ const AccountBadge = styled.div`
   }
 `;
 
-// ===== CURRENCY SEARCH INPUT - FIXED =====
+// ===== CURRENCY SEARCH INPUT =====
 const SearchInput = styled.input`
   width: 100%;
   padding: 8px 12px;
@@ -749,12 +749,17 @@ const TopPanel = ({
 
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
 
+  // ===== FORMAT NUMBER WITH COMMAS =====
+  const formatNumberWithCommas = (number) => {
+    return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   const getFormattedBalance = (acc) => {
     const rate = getExchangeRate(selectedCurrency);
     const converted = acc.balance * rate;
     const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
     const symbol = currencyInfo?.symbol || '$';
-    return `${symbol} ${converted.toFixed(2)}`;
+    return `${symbol} ${formatNumberWithCommas(converted)}`;
   };
 
   const getCurrencyFlag = () => {
@@ -876,13 +881,11 @@ const TopPanel = ({
                 key={index}
                 onClick={() => {
                   setIsFundsOpen(false);
-                  // Handle each action
                   if (option.name === 'Deposit') {
                     navigate('/payment-dashboard');
                   } else if (option.name === 'Withdraw') {
                     navigate('/payment-dashboard');
                   } else if (option.name === 'Transfer') {
-                    // Handle transfer
                     alert('Transfer feature coming soon');
                   } else if (option.name === 'History') {
                     navigate('/payment-dashboard');
@@ -900,7 +903,7 @@ const TopPanel = ({
           </GlassDropdownMenu>
         </DropdownContainer>
 
-        {/* 3. ACCOUNT BALANCE */}
+        {/* 3. ACCOUNT BALANCE - With Proper Number Formatting */}
         <DropdownContainer ref={dropdownRef}>
           <AccountBadge onClick={toggleDropdown}>
             <span className="flag-badge">{getCurrencyFlag()}</span>
