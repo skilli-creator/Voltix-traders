@@ -464,26 +464,24 @@ const DesktopLayout = styled.div`
   }
 `;
 
-// ===== ADD THESE NEW STYLED COMPONENTS FOR PANEL SIZING =====
-const LeftPanelWrapper = styled.div`
-  flex: 0 0 25%;
+// ===== FIXED PANEL WRAPPERS WITH FORCED SIZING =====
+const PanelWrapper = styled.div`
+  flex: ${props => props.flex || '1'};
   min-width: 0;
   overflow: hidden;
   height: 100%;
-`;
-
-const ChartPanelWrapper = styled.div`
-  flex: 0 0 50%;
-  min-width: 0;
-  overflow: hidden;
-  height: 100%;
-`;
-
-const RightPanelWrapper = styled.div`
-  flex: 0 0 25%;
-  min-width: 0;
-  overflow: hidden;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  /* Force the panel to take full width of wrapper */
+  & > * {
+    flex: 1;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    overflow: hidden;
+  }
 `;
 
 const MobileLayout = styled.div`
@@ -511,7 +509,7 @@ const PanelsContainer = styled.div`
   position: relative;
 `;
 
-const PanelWrapper = styled.div`
+const MobilePanelWrapper = styled.div`
   flex: 0 0 100%;
   min-width: 0;
   height: 100%;
@@ -1129,15 +1127,15 @@ const Derivdash = () => {
 
         <MainContent isSidebarOpen={isSidebarOpen} isDesktop={isDesktop}>
           <DesktopLayout>
-            <LeftPanelWrapper>
+            <PanelWrapper flex="0 0 25%">
               <LeftPanel />
-            </LeftPanelWrapper>
-            <ChartPanelWrapper>
+            </PanelWrapper>
+            <PanelWrapper flex="0 0 50%">
               <ChartPanel />
-            </ChartPanelWrapper>
-            <RightPanelWrapper>
+            </PanelWrapper>
+            <PanelWrapper flex="0 0 25%">
               <RightPanel />
-            </RightPanelWrapper>
+            </PanelWrapper>
           </DesktopLayout>
 
           <MobileLayout>
@@ -1148,17 +1146,14 @@ const Derivdash = () => {
               {panels.map((panel, index) => {
                 const Component = panel.component;
                 return (
-                  <PanelWrapper
+                  <MobilePanelWrapper
                     key={panel.id}
                     index={activeIndex}
-                    style={{
-                      transform: `translateX(-${activeIndex * 100}%)`
-                    }}
                   >
                     <PanelContent>
                       <Component />
                     </PanelContent>
-                  </PanelWrapper>
+                  </MobilePanelWrapper>
                 );
               })}
             </PanelsContainer>
