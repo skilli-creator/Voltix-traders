@@ -464,6 +464,28 @@ const DesktopLayout = styled.div`
   }
 `;
 
+// ===== ADD THESE NEW STYLED COMPONENTS FOR PANEL SIZING =====
+const LeftPanelWrapper = styled.div`
+  flex: 0 0 25%;
+  min-width: 0;
+  overflow: hidden;
+  height: 100%;
+`;
+
+const ChartPanelWrapper = styled.div`
+  flex: 0 0 50%;
+  min-width: 0;
+  overflow: hidden;
+  height: 100%;
+`;
+
+const RightPanelWrapper = styled.div`
+  flex: 0 0 25%;
+  min-width: 0;
+  overflow: hidden;
+  height: 100%;
+`;
+
 const MobileLayout = styled.div`
   display: none;
   flex: 1;
@@ -1107,9 +1129,15 @@ const Derivdash = () => {
 
         <MainContent isSidebarOpen={isSidebarOpen} isDesktop={isDesktop}>
           <DesktopLayout>
-            <LeftPanel />
-            <ChartPanel />
-            <RightPanel />
+            <LeftPanelWrapper>
+              <LeftPanel />
+            </LeftPanelWrapper>
+            <ChartPanelWrapper>
+              <ChartPanel />
+            </ChartPanelWrapper>
+            <RightPanelWrapper>
+              <RightPanel />
+            </RightPanelWrapper>
           </DesktopLayout>
 
           <MobileLayout>
