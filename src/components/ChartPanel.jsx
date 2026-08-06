@@ -38,7 +38,7 @@ const slideDown = keyframes`
 // ============================================
 const PanelContainer = styled.div`
   flex: 1;
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.bg || props.theme.colors.background};
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -60,7 +60,7 @@ const Header = styled.div`
   flex-shrink: 0;
   padding: 12px 20px;
   border-bottom: 2px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   z-index: 10;
   transition: all 0.3s ease;
   font-weight: 700;
@@ -124,7 +124,7 @@ const SymbolInfo = styled.div`
     border-radius: 6px;
     transition: all 0.2s ease;
     position: relative;
-    background: ${props => props.theme.colors.backgroundSecondary};
+    background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => props.theme.colors.border};
 
     @media (max-width: 480px) {
@@ -133,7 +133,7 @@ const SymbolInfo = styled.div`
     }
 
     &:hover {
-      background: ${props => props.theme.colors.backgroundTertiary};
+      background: ${props => props.theme.colors.surfaceHover || props.theme.colors.backgroundTertiary};
       border-color: ${props => props.theme.colors.accent};
       box-shadow: 0 0 20px ${props => props.theme.colors.accent + '30'};
     }
@@ -206,7 +206,7 @@ const LiveIndicator = styled.div`
   font-size: 11px;
   color: ${props => props.theme.colors.accent};
   font-weight: 700;
-  background: ${props => props.theme.colors.accentActive};
+  background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
   padding: 4px 12px;
   border-radius: 20px;
   border: 2px solid ${props => props.theme.colors.accent};
@@ -240,7 +240,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   border: 2px solid ${props => props.theme.colors.border};
   border-radius: 8px;
   width: 280px;
@@ -289,7 +289,7 @@ const DropdownItem = styled.div`
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme.colors.text : props.theme.colors.textSecondary};
-  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
+  background: ${props => props.active ? props.theme.colors.accentLight || props.theme.colors.accentActive : 'transparent'};
   transition: all 0.15s ease;
   border-bottom: 2px solid ${props => props.theme.colors.border + '40'};
   font-weight: 700;
@@ -299,7 +299,7 @@ const DropdownItem = styled.div`
   }
 
   &:hover {
-    background: ${props => props.theme.colors.accentActive};
+    background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
     color: ${props => props.theme.colors.text};
   }
 
@@ -393,7 +393,7 @@ const ChartWrapper = styled.div`
   flex: 1;
   position: relative;
   min-height: 0;
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.bg || props.theme.colors.background};
   overflow: hidden;
   z-index: 2;
   transition: background 0.3s ease;
@@ -462,7 +462,7 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => props.theme.colors.backgroundSecondary};
+    background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => 
       props.isLastDigit 
         ? props.theme.colors.accent
@@ -672,14 +672,20 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // ALL colors from theme - NO hardcoded colors
-    const bgColor = theme.colors.background;
+    // ============================================
+    // ALL COLORS FROM THEME - NO HARDCODED COLORS
+    // ============================================
+    const bgColor = theme.colors.bg || theme.colors.background;
     const textColor = theme.colors.text;
     const textMutedColor = theme.colors.textMuted;
     const accentColor = theme.colors.accent;
     const borderColor = theme.colors.border;
-    
+    const dangerColor = theme.colors.danger;
+    const successColor = theme.colors.success;
+    const surfaceColor = theme.colors.surface || theme.colors.backgroundSecondary;
+
     const hexToRgb = (hex) => {
+      if (!hex) return { r: 10, g: 14, b: 23 };
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
       return result ? {
         r: parseInt(result[1], 16),
@@ -690,6 +696,7 @@ const ChartPanel = () => {
 
     const rgb = hexToRgb(bgColor);
     
+    // Background
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
     bgGrad.addColorStop(0, `rgb(${Math.min(rgb.r + 2, 255)}, ${Math.min(rgb.g + 2, 255)}, ${Math.min(rgb.b + 4, 255)})`);
     bgGrad.addColorStop(1, `rgb(${Math.max(rgb.r - 2, 0)}, ${Math.max(rgb.g - 2, 0)}, ${Math.max(rgb.b - 4, 0)})`);
@@ -699,6 +706,8 @@ const ChartPanel = () => {
     const pad = { top: 25, bottom: 35, left: 15, right: 65 };
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
+
+    if (chartW <= 0 || chartH <= 0) return;
 
     const prices = ticks.map(t => t.price);
     const minP = Math.min(...prices);
@@ -792,7 +801,7 @@ const ChartPanel = () => {
     ctx.fill();
 
     // Badge text - theme background for contrast
-    ctx.fillStyle = bgColor;
+    ctx.fillStyle = surfaceColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -822,6 +831,12 @@ const ChartPanel = () => {
       const posX = pad.left + (idx / (sampleTimes.length - 1)) * chartW;
       ctx.fillText(t, posX, height - pad.bottom + 6);
     });
+
+    // Optional: Draw a subtle border around the chart - theme border color
+    const borderRgb = hexToRgb(borderColor);
+    ctx.strokeStyle = `rgba(${borderRgb.r}, ${borderRgb.g}, ${borderRgb.b}, 0.2)`;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(pad.left, pad.top, chartW, chartH);
 
   }, [ticks, movementDirection, theme]);
 
