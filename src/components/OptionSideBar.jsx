@@ -38,12 +38,28 @@ const pulseGlow = keyframes`
 const slideInRight = keyframes`
   from {
     opacity: 0;
-    transform: translateX(40px);
+    transform: translateX(60px) scale(0.96);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
   }
+`;
+
+const slideOutRight = keyframes`
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(60px) scale(0.96);
+  }
+`;
+
+const pulseVoice = keyframes`
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 `;
 
 // ============================================
@@ -62,6 +78,14 @@ const VoiceIcon = () => (
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
     <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
     <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+  </svg>
+);
+
+const VoiceOffIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <line x1="23" y1="9" x2="17" y2="15" />
+    <line x1="17" y1="9" x2="23" y2="15" />
   </svg>
 );
 
@@ -146,49 +170,70 @@ const HelpIcon = () => (
 );
 
 const CloseXIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
+const CheckIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const ArrowRightIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+const CalculatorIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="2" width="16" height="20" rx="2" />
+    <line x1="8" y1="6" x2="16" y2="6" />
+    <line x1="16" y1="10" x2="8" y2="10" />
+    <line x1="8" y1="14" x2="16" y2="14" />
+    <line x1="8" y1="18" x2="12" y2="18" />
+  </svg>
+);
+
+const DollarIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+);
+
 // ============================================
-// POPUP / MODAL COMPONENTS
+// PROFESSIONAL RIGHT-SLIDING POPUP
 // ============================================
 
 const PopupOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
   z-index: 1000;
   display: ${props => props.isOpen ? 'flex' : 'none'};
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  justify-content: flex-end;
   animation: ${fadeIn} 0.3s ease;
 `;
 
 const PopupContainer = styled.div`
-  max-width: 480px;
-  width: 100%;
+  width: 480px;
+  max-width: 90vw;
+  height: 100vh;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.12)'};
-  border-radius: 16px;
-  padding: 28px 32px;
-  box-shadow: 0 24px 64px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.5)'};
-  animation: ${slideInRight} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  max-height: 90vh;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.15)'};
-    border-radius: 10px;
-  }
+  border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+  display: flex;
+  flex-direction: column;
+  box-shadow: -8px 0 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.5)'};
+  animation: ${props => props.isClosing ? slideOutRight : slideInRight} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 
   @media (max-width: 480px) {
-    padding: 20px 16px;
+    width: 100%;
     max-width: 100%;
   }
 `;
@@ -197,9 +242,10 @@ const PopupHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  padding: 20px 24px;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  flex-shrink: 0;
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
 
   .title-group {
     display: flex;
@@ -215,18 +261,27 @@ const PopupHeader = styled.div`
   }
 
   .title {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: -0.3px;
+  }
+
+  .title-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
   }
 
   .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
     background: transparent;
@@ -243,16 +298,231 @@ const PopupHeader = styled.div`
 `;
 
 const PopupBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px 24px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.15)'};
+    border-radius: 10px;
+  }
 `;
 
-const PopupInfoRow = styled.div`
+// ============================================
+// NOTIFICATIONS COMPONENT
+// ============================================
+const NotificationItem = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 8px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: ${props => props.read ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+  border: 1px solid ${props => props.read ? 'transparent' : props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.08)'};
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
+  }
+
+  .notif-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => props.type === 'trade' ? '#10B981' : '#3B82F6'};
+  }
+
+  .notif-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .notif-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+
+  .notif-desc {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .notif-time {
+    font-size: 10px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .notif-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    flex-shrink: 0;
+    margin-top: 4px;
+    ${props => props.read && 'display: none;'}
+  }
+`;
+
+// ============================================
+// VOICE SETTINGS COMPONENT
+// ============================================
+const VoiceSettingsGroup = styled.div`
+  margin-bottom: 16px;
+
+  .group-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+  }
+`;
+
+const VoiceToggleRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 8px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 8px;
+
+  .toggle-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  }
+
+  .toggle-status {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.active ? '#10B981' : '#94A3B8'};
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: ${props => props.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
+  }
+`;
+
+const ToggleSwitch = styled.button`
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
+  border: none;
+  background: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.scrollbar || '#2a2e3d'};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: ${props => props.active ? '20px' : '2px'};
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.text || '#ffffff'};
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const VolumeSlider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 8px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+
+  .slider-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    min-width: 40px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
+    outline: none;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      cursor: pointer;
+      border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .slider-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    min-width: 30px;
+    text-align: right;
+  }
+`;
+
+const VoiceEventItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+
+  .event-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    flex: 1;
+  }
+
+  .event-status {
+    font-size: 10px;
+    font-weight: 700;
+    color: ${props => props.enabled ? '#10B981' : '#94A3B8'};
+  }
+`;
+
+// ============================================
+// ACCOUNT INFO COMPONENT
+// ============================================
+const AccountInfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
   &:last-child {
@@ -260,101 +530,155 @@ const PopupInfoRow = styled.div`
   }
 
   .row-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    min-width: 80px;
   }
 
   .row-value {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    flex: 1;
-  }
-`;
-
-const PopupDescription = styled.p`
-  font-size: 13px;
-  line-height: 1.7;
-  color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-  font-weight: 500;
-  margin: 4px 0;
-`;
-
-const PopupFeatureList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 8px 0;
-
-  li {
-    font-size: 12px;
-    line-height: 1.6;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    padding: 4px 0 4px 20px;
-    position: relative;
-    font-weight: 500;
-
-    &::before {
-      content: '•';
-      position: absolute;
-      left: 0;
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      font-weight: 700;
-    }
-
-    strong {
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-weight: 600;
-    }
-  }
-`;
-
-const PopupStatusBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  background: ${props => props.active ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)'};
-  color: ${props => props.active ? '#10B981' : '#EF4444'};
-  border: 1px solid ${props => props.active ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
-
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${props => props.active ? '#10B981' : '#EF4444'};
-  }
-`;
-
-const PopupActionButton = styled.button`
-  width: 100%;
-  padding: 10px 0;
-  border: none;
-  border-radius: 8px;
-  background: ${props => props.theme?.colors?.accent || '#3B82F6'};
-  color: ${props => props.theme?.colors?.buttonText || '#ffffff'};
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 4px;
-
-  &:hover {
-    background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
-    box-shadow: 0 4px 16px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
-  }
-
-  &:active {
-    transform: scale(0.98);
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 `;
 
 // ============================================
-// STYLED COMPONENTS - SIDEBAR
+// RISK CALCULATOR COMPONENT
+// ============================================
+const CalcInputGroup = styled.div`
+  margin-bottom: 14px;
+
+  .calc-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .calc-input-wrap {
+    display: flex;
+    align-items: center;
+    background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+
+    &:focus-within {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    }
+
+    .calc-prefix {
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    }
+
+    input {
+      flex: 1;
+      padding: 8px 12px;
+      background: transparent;
+      border: none;
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+      width: 100%;
+
+      &::placeholder {
+        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+        font-weight: 400;
+      }
+    }
+  }
+`;
+
+const CalcResultRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+  border-radius: 8px;
+  border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.08)'};
+  margin-bottom: 6px;
+
+  .result-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+  }
+
+  .result-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  &.success .result-value {
+    color: #10B981;
+  }
+
+  &.danger .result-value {
+    color: #EF4444;
+  }
+`;
+
+// ============================================
+// HOW TO USE COMPONENT
+// ============================================
+const StepItem = styled.div`
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+    line-height: 1.5;
+  }
+`;
+
+// ============================================
+// SIDEBAR STYLED COMPONENTS
 // ============================================
 
 const Overlay = styled.div`
@@ -452,7 +776,6 @@ const SidebarContent = styled.div`
   }
 `;
 
-// ===== SIDEBAR HEADER =====
 const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
@@ -503,7 +826,6 @@ const SidebarHeader = styled.div`
   }
 `;
 
-// ===== NAVIGATION SECTION & ITEMS =====
 const NavSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -601,7 +923,6 @@ const NavItem = styled.div`
   }
 `;
 
-// ===== CARDS =====
 const SideCard = styled.div`
   padding: 12px 14px;
   border-radius: 10px;
@@ -670,7 +991,6 @@ const SideCard = styled.div`
   }
 `;
 
-// ===== FEEDBACK SECTION =====
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 10px;
@@ -791,7 +1111,6 @@ const FeedbackSection = styled.div`
   }
 `;
 
-// ===== FOOTER =====
 const SidebarFooter = styled.footer`
   flex-shrink: 0;
   padding: 12px 14px;
@@ -839,11 +1158,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
-  const [voiceNotifications, setVoiceNotifications] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceVolume, setVoiceVolume] = useState(70);
   
   // Popup states
   const [popupData, setPopupData] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) {
@@ -854,11 +1175,16 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const openPopup = (data) => {
     setPopupData(data);
     setIsPopupOpen(true);
+    setIsClosing(false);
   };
 
   const closePopup = () => {
-    setIsPopupOpen(false);
-    setPopupData(null);
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsPopupOpen(false);
+      setPopupData(null);
+      setIsClosing(false);
+    }, 350);
   };
 
   const handleNavClick = (item, path) => {
@@ -867,66 +1193,111 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     closeSidebarOnMobile();
   };
 
+  // ===== NOTIFICATIONS =====
   const handleNotificationsClick = () => {
     setActiveItem('notifications');
     setHasNotifications(false);
     
-    // Open popup for Notifications
+    const notifications = [
+      { id: 1, type: 'trade', title: 'Trade Executed', desc: 'Buy order #TRX-7841 filled at $12,450.00', time: '2 min ago', read: false },
+      { id: 2, type: 'alert', title: 'Market Alert', desc: 'Volatility 100 (1s) Index reached resistance level', time: '15 min ago', read: false },
+      { id: 3, type: 'trade', title: 'Position Closed', desc: 'Sell order #TRX-7839 closed at $5,670.00', time: '1 hour ago', read: true },
+      { id: 4, type: 'alert', title: 'System Update', desc: 'New trading features available in version 2.1.0', time: '3 hours ago', read: true },
+    ];
+
     openPopup({
       title: 'Notifications',
       icon: <BellIcon />,
+      badge: '2 New',
       content: (
         <>
-          <PopupStatusBadge active={true}>
-            <span className="status-dot" />
-            2 Unread
-          </PopupStatusBadge>
-          <PopupDescription style={{ marginTop: '12px' }}>
-            Your latest notifications and updates will appear here.
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Trade Executed</strong> — Your order #TRX-7841 was filled at $12,450.00</li>
-            <li><strong>Market Alert</strong> — Volatility 100 (1s) Index reached resistance level</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/notifications'); }}>
-            View All Notifications
-          </PopupActionButton>
+          {notifications.map((notif) => (
+            <NotificationItem key={notif.id} read={notif.read} type={notif.type}>
+              <div className="notif-icon">
+                {notif.type === 'trade' ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                )}
+              </div>
+              <div className="notif-content">
+                <div className="notif-title">{notif.title}</div>
+                <div className="notif-desc">{notif.desc}</div>
+                <div className="notif-time">{notif.time}</div>
+              </div>
+              <div className="notif-dot" />
+            </NotificationItem>
+          ))}
         </>
       )
     });
   };
 
-  const handleVoiceToggle = () => {
-    setVoiceNotifications(!voiceNotifications);
+  // ===== VOICE NOTIFICATIONS =====
+  const handleVoiceClick = () => {
+    setActiveItem('voice');
     
-    // Open popup for Voice Notifications
     openPopup({
       title: 'Voice Notifications',
-      icon: <VoiceIcon />,
+      icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />,
+      badge: voiceEnabled ? 'Active' : 'Muted',
       content: (
         <>
-          <PopupStatusBadge active={voiceNotifications}>
-            <span className="status-dot" />
-            {voiceNotifications ? 'Active' : 'Muted'}
-          </PopupStatusBadge>
-          <PopupDescription style={{ marginTop: '12px' }}>
-            {voiceNotifications 
-              ? 'Voice notifications are currently enabled. You will hear audio alerts for trade executions, market updates, and important events.' 
-              : 'Voice notifications are currently muted. Enable them to receive audio alerts for important trading events.'}
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Trade Execution</strong> — Hear a confirmation sound when trades are placed</li>
-            <li><strong>Price Alerts</strong> — Get audio alerts when price targets are hit</li>
-            <li><strong>Market Signals</strong> — Receive audible notifications for market events</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { setVoiceNotifications(!voiceNotifications); closePopup(); }}>
-            {voiceNotifications ? 'Mute Voice Notifications' : 'Enable Voice Notifications'}
-          </PopupActionButton>
+          <VoiceToggleRow active={voiceEnabled}>
+            <span className="toggle-label">Voice Notifications</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
+              <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
+            </div>
+          </VoiceToggleRow>
+
+          <VoiceSettingsGroup>
+            <span className="group-label">Volume</span>
+            <VolumeSlider>
+              <span className="slider-label">Vol</span>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                value={voiceVolume} 
+                onChange={(e) => setVoiceVolume(parseInt(e.target.value))}
+                disabled={!voiceEnabled}
+              />
+              <span className="slider-value">{voiceVolume}%</span>
+            </VolumeSlider>
+          </VoiceSettingsGroup>
+
+          <VoiceSettingsGroup>
+            <span className="group-label">Notification Events</span>
+            <VoiceEventItem enabled={true}>
+              <span className="event-name">Trade Execution</span>
+              <span className="event-status">Enabled</span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={true}>
+              <span className="event-name">Price Alerts</span>
+              <span className="event-status">Enabled</span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={false}>
+              <span className="event-name">Market Signals</span>
+              <span className="event-status">Disabled</span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={true}>
+              <span className="event-name">System Updates</span>
+              <span className="event-status">Enabled</span>
+            </VoiceEventItem>
+          </VoiceSettingsGroup>
         </>
       )
     });
   };
 
+  // ===== ACCOUNT INFO =====
   const handleAccountInfoClick = () => {
     setActiveItem('account-info');
     
@@ -935,80 +1306,168 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       icon: <AccountIcon />,
       content: (
         <>
-          <PopupInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Account ID</span>
-            <span className="row-value">#ACC-8472-001</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
+            <span className="row-value">ACC-8472-001</span>
+          </AccountInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Type</span>
             <span className="row-value">Real Trading</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
+          </AccountInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Balance</span>
             <span className="row-value" style={{ color: '#10B981' }}>$7,110.00 USD</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
+          </AccountInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Status</span>
-            <span className="row-value" style={{ color: '#10B981' }}>Active</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
+            <span className="row-value">
+              <span style={{ 
+                display: 'inline-block',
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                background: '#10B981',
+                marginRight: '6px'
+              }} />
+              Active
+            </span>
+          </AccountInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Joined</span>
             <span className="row-value">January 2026</span>
-          </PopupInfoRow>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/account-info'); }}>
-            View Full Account Details
-          </PopupActionButton>
+          </AccountInfoRow>
+          <AccountInfoRow>
+            <span className="row-label">Last Login</span>
+            <span className="row-value">Today, 14:32</span>
+          </AccountInfoRow>
         </>
       )
     });
   };
 
+  // ===== RISK CALCULATOR =====
+  const [calcStake, setCalcStake] = useState(100);
+  const [calcRisk, setCalcRisk] = useState(2);
+  const [calcStopLoss, setCalcStopLoss] = useState(50);
+  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
+
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
+    
+    const riskAmount = calcStake * (calcRisk / 100);
+    const rewardAmount = calcStake * ((calcTakeProfit / calcStopLoss) * (calcRisk / 100));
     
     openPopup({
       title: 'Risk Calculator',
       icon: <RiskIcon />,
       content: (
         <>
-          <PopupDescription>
-            Calculate your optimal position size and manage trading risk with precision.
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Position Sizing</strong> — Determine optimal trade size based on risk tolerance</li>
-            <li><strong>Stop Loss</strong> — Calculate appropriate stop-loss levels for each trade</li>
-            <li><strong>Risk/Reward</strong> — Analyze potential risk-to-reward ratios before entering</li>
-            <li><strong>Portfolio Risk</strong> — Evaluate overall portfolio exposure across multiple trades</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/risk-calculator'); }}>
-            Open Risk Calculator
-          </PopupActionButton>
+          <CalcInputGroup>
+            <span className="calc-label">Stake Amount</span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">$</span>
+              <input 
+                type="number" 
+                value={calcStake} 
+                onChange={(e) => setCalcStake(parseFloat(e.target.value) || 0)}
+                min="0"
+                step="10"
+              />
+            </div>
+          </CalcInputGroup>
+
+          <CalcInputGroup>
+            <span className="calc-label">Risk Percentage</span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">%</span>
+              <input 
+                type="number" 
+                value={calcRisk} 
+                onChange={(e) => setCalcRisk(parseFloat(e.target.value) || 0)}
+                min="0"
+                max="100"
+                step="0.5"
+              />
+            </div>
+          </CalcInputGroup>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <CalcInputGroup>
+              <span className="calc-label">Stop Loss</span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">$</span>
+                <input 
+                  type="number" 
+                  value={calcStopLoss} 
+                  onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="5"
+                />
+              </div>
+            </CalcInputGroup>
+
+            <CalcInputGroup>
+              <span className="calc-label">Take Profit</span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">$</span>
+                <input 
+                  type="number" 
+                  value={calcTakeProfit} 
+                  onChange={(e) => setCalcTakeProfit(parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="5"
+                />
+              </div>
+            </CalcInputGroup>
+          </div>
+
+          <div style={{ marginTop: '8px' }}>
+            <CalcResultRow>
+              <span className="result-label">Risk Amount</span>
+              <span className="result-value">${riskAmount.toFixed(2)}</span>
+            </CalcResultRow>
+            <CalcResultRow className="success">
+              <span className="result-label">Reward Amount</span>
+              <span className="result-value">${rewardAmount.toFixed(2)}</span>
+            </CalcResultRow>
+            <CalcResultRow>
+              <span className="result-label">Risk/Reward Ratio</span>
+              <span className="result-value">
+                1:{(rewardAmount / (riskAmount || 0.01)).toFixed(2)}
+              </span>
+            </CalcResultRow>
+          </div>
         </>
       )
     });
   };
 
+  // ===== HOW TO USE =====
   const handleHowToUseClick = () => {
     setActiveItem('how-to-use');
     
+    const steps = [
+      { number: 1, title: 'Connect Your Account', desc: 'Link your Deriv account to access real-time trading data and execute trades directly from the platform.' },
+      { number: 2, title: 'Select a Market', desc: 'Choose from multiple volatility indices including 1s and standard options to start trading.' },
+      { number: 3, title: 'Choose Your Strategy', desc: 'Select between manual, auto, or bot-assisted trading modes based on your preference.' },
+      { number: 4, title: 'Monitor Your Positions', desc: 'Track open positions, view performance metrics, and manage risk in real-time.' },
+      { number: 5, title: 'Customize Experience', desc: 'Personalize themes, notification settings, and display preferences to suit your workflow.' },
+    ];
+
     openPopup({
       title: 'How to Use This Tool',
       icon: <BookIcon />,
       content: (
         <>
-          <PopupDescription>
-            A comprehensive guide to help you navigate and utilize all the features of Voltix Traders.
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Connect Account</strong> — Link your Deriv account to access real-time trading data</li>
-            <li><strong>Select Market</strong> — Choose from multiple volatility indices and trading pairs</li>
-            <li><strong>Execute Trades</strong> — Use manual, auto, or bot-assisted trading modes</li>
-            <li><strong>Monitor Positions</strong> — Track open positions and performance in real-time</li>
-            <li><strong>Customize Experience</strong> — Personalize themes, notifications, and display settings</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/how-to-use'); }}>
-            View Full Guide
-          </PopupActionButton>
+          {steps.map((step) => (
+            <StepItem key={step.number}>
+              <div className="step-number">{step.number}</div>
+              <div className="step-content">
+                <div className="step-title">{step.title}</div>
+                <div className="step-desc">{step.desc}</div>
+              </div>
+            </StepItem>
+          ))}
         </>
       )
     });
@@ -1073,13 +1532,16 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* POPUP / MODAL */}
+      {/* PROFESSIONAL RIGHT-SLIDING POPUP */}
       <PopupOverlay isOpen={isPopupOpen} onClick={closePopup}>
-        <PopupContainer onClick={(e) => e.stopPropagation()}>
+        <PopupContainer isClosing={isClosing} onClick={(e) => e.stopPropagation()}>
           <PopupHeader>
             <div className="title-group">
               <span className="title-icon">{popupData?.icon}</span>
               <span className="title">{popupData?.title}</span>
+              {popupData?.badge && (
+                <span className="title-badge">{popupData.badge}</span>
+              )}
             </div>
             <button className="close-btn" onClick={closePopup}>
               <CloseXIcon />
@@ -1091,6 +1553,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         </PopupContainer>
       </PopupOverlay>
 
+      {/* SIDEBAR */}
       <Overlay isOpen={isOpen} onClick={onClose} />
       
       <SidebarContainer isOpen={isOpen}>
@@ -1108,7 +1571,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
-          {/* UPDATES SECTION - Includes Voice Notifications toggle */}
+          {/* UPDATES SECTION */}
           <NavSection>
             <SectionLabel>Updates</SectionLabel>
             <NavItem 
@@ -1122,15 +1585,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
             <NavItem 
               active={activeItem === 'voice'}
-              onClick={handleVoiceToggle}
+              onClick={handleVoiceClick}
             >
-              <span className="nav-icon"><VoiceIcon /></span>
+              <span className="nav-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
               <span className="nav-label">Voice Notifications</span>
               <span className="badge" style={{ 
-                background: voiceNotifications ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                color: voiceNotifications ? '#10B981' : '#EF4444'
+                background: voiceEnabled ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                color: voiceEnabled ? '#10B981' : '#EF4444'
               }}>
-                {voiceNotifications ? 'On' : 'Off'}
+                {voiceEnabled ? 'On' : 'Off'}
               </span>
             </NavItem>
           </NavSection>
@@ -1190,7 +1653,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* WELLNESS / RESPONSIBLE TRADING */}
+          {/* WELLNESS */}
           <NavSection>
             <SectionLabel>Wellness</SectionLabel>
             <SideCard>
@@ -1266,7 +1729,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </FeedbackSection>
           </NavSection>
 
-          {/* GUIDE & LEGAL SECTION */}
+          {/* INFORMATION SECTION */}
           <NavSection>
             <SectionLabel>Information</SectionLabel>
             <NavItem 
