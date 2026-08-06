@@ -12,8 +12,8 @@ import RightPanel from '../components/RightPanel';
  * Modern Design System - Premium Color Schemes
  */
 const themes = {
-  // === 1. PURE WHITE BACKGROUNDS (LIGHT) ===
-  pureWhiteGold: {
+  // === 1. SOLID WHITE BACKGROUNDS ===
+  light: {
     name: 'Pure White & Champagne Gold',
     category: 'light',
     colors: {
@@ -41,7 +41,7 @@ const themes = {
     }
   },
 
-  minimalWhitePro: {
+  minimalWhite: {
     name: 'Minimal Platinum White',
     category: 'light',
     colors: {
@@ -69,7 +69,7 @@ const themes = {
     }
   },
 
-  titaniumLightGold: {
+  titaniumLight: {
     name: 'Titanium Light & Rose Gold',
     category: 'light',
     colors: {
@@ -98,7 +98,7 @@ const themes = {
   },
 
   // === 2. DARK & OLED BACKGROUNDS ===
-  quantBlackGold: {
+  dark: {
     name: 'Quant Black & Liquid Gold',
     category: 'dark',
     colors: {
@@ -126,7 +126,7 @@ const themes = {
     }
   },
 
-  obsidianGold: {
+  quantOLED: {
     name: 'Obsidian Velvet Gold',
     category: 'dark',
     colors: {
@@ -154,7 +154,7 @@ const themes = {
     }
   },
 
-  midnightEmeraldGold: {
+  emeraldGold: {
     name: 'Midnight Emerald & Gold',
     category: 'dark',
     colors: {
@@ -182,7 +182,7 @@ const themes = {
     }
   },
 
-  royalSapphireGold: {
+  sapphireGold: {
     name: 'Royal Sapphire & Gold',
     category: 'dark',
     colors: {
@@ -210,8 +210,8 @@ const themes = {
     }
   },
 
-  // === 3. GOLD BACKGROUNDS (RICH / LUXURY) ===
-  monacoSolidGold: {
+  // === 3. GOLD BACKGROUNDS ===
+  monacoGold: {
     name: 'Monaco Solid Gold',
     category: 'gold',
     colors: {
@@ -267,7 +267,7 @@ const themes = {
     }
   },
 
-  champagneGoldLight: {
+  champagneGold: {
     name: 'Champagne Silk Gold',
     category: 'gold',
     colors: {
@@ -291,10 +291,12 @@ const themes = {
       warning: '#b45309',
       danger: '#b91c1c',
       shadow: '0 20px 30px -10px rgba(100, 75, 30, 0.12)',
-      scrollbar: '#bd8f',
+      scrollbar: '#cbb696',
     }
   }
 };
+
+export default themes;
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
