@@ -20,7 +20,6 @@ import Terms from './pages/Terms';
 import PaymentAgentDashboard from './pages/PaymentAgentDashboard';
 
 // Import Components
-import RiskCalculator from './components/RiskCalculator';
 import Academy from './pages/Academy';
 import AccountInfo from './pages/AccountInfo';
 import CopyTrading from './pages/CopyTrading';
@@ -45,7 +44,6 @@ const App = () => {
       <Route path="/terms" element={<Terms />} />
       
       {/* Trading Tools */}
-      <Route path="/risk-calculator" element={<RiskCalculator />} />
       <Route path="/account-info" element={<AccountInfo />} />
       <Route path="/copy-trading" element={<CopyTrading />} />
       <Route path="/payment-dashboard" element={<PaymentAgentDashboard />} />
