@@ -198,14 +198,6 @@ const LogoutIcon = () => (
   </svg>
 );
 
-const GlobeIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="2" y1="12" x2="22" y2="12" />
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-  </svg>
-);
-
 const EditIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -637,61 +629,6 @@ const SettingsBtn = styled.button`
     }
   }
 
-  &.call {
-    background: linear-gradient(135deg, #22c55e, #059669);
-    color: #ffffff;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25);
-    }
-  }
-
-  &.whatsapp {
-    background: linear-gradient(135deg, #25D366, #128C7E);
-    color: #ffffff;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
-    }
-  }
-
-  &.admin {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.05));
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    color: #a78bfa;
-
-    &:hover {
-      background: rgba(139, 92, 246, 0.18);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.12);
-    }
-  }
-
-  &.premium {
-    background: linear-gradient(135deg, #818cf8, #6366f1);
-    color: #ffffff;
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 60%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
-      animation: ${shimmer} 4s ease-in-out infinite;
-    }
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
-    }
-  }
-
   &:disabled {
     opacity: 0.45;
     cursor: not-allowed;
@@ -726,62 +663,6 @@ const SettingsDangerZone = styled.div`
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     margin-bottom: 8px;
   }
-`;
-
-const SettingsSupport = styled.div`
-  margin-top: 14px;
-  padding: 14px 16px;
-  border-radius: 12px;
-  background: rgba(139, 92, 246, 0.03);
-  border: 1px solid rgba(139, 92, 246, 0.08);
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: rgba(139, 92, 246, 0.15);
-    background: rgba(139, 92, 246, 0.04);
-  }
-
-  .stitle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #a78bfa;
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 3px;
-  }
-
-  .sdesc {
-    font-size: 10px;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    margin-bottom: 10px;
-  }
-
-  .support-number {
-    font-size: 14px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    font-family: 'Courier New', monospace;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.01)'};
-    border-radius: 8px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
-
-    .icon {
-      font-size: 16px;
-      color: ${props => props.theme?.colors?.textMuted || '#4b5563'};
-    }
-  }
-`;
-
-const SettingsContactRow = styled.div`
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 8px;
 `;
 
 const SettingsSuccess = styled.div`
@@ -1936,14 +1817,17 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [isSettingsPopup, setIsSettingsPopup] = useState(false);
 
   // Settings state
-  const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [dobError, setDobError] = useState('');
   const [calculatedAge, setCalculatedAge] = useState(null);
   const [formData, setFormData] = useState({
-    first_name: '', last_name: '', phone: '',
-    date_of_birth: '', gender: '', email: ''
+    first_name: '',
+    last_name: '',
+    phone: '',
+    date_of_birth: '',
+    gender: '',
+    email: ''
   });
 
   // Risk calculator state
@@ -1956,18 +1840,16 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // Load user data for settings
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    setUser(userData);
-    const dob = userData.date_of_birth || '';
     setFormData({
       first_name: userData.first_name || '',
       last_name: userData.last_name || '',
       phone: userData.phone || '',
-      date_of_birth: dob,
+      date_of_birth: userData.date_of_birth || '',
       gender: userData.gender || '',
       email: userData.email || ''
     });
-    if (dob) {
-      const age = calculateAge(dob);
+    if (userData.date_of_birth) {
+      const age = calculateAge(userData.date_of_birth);
       setCalculatedAge(age);
     }
   }, []);
@@ -2003,20 +1885,22 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const handleDobChange = (e) => {
     const v = e.target.value;
-    setFormData(p => ({ ...p, date_of_birth: v }));
+    setFormData(prev => ({ ...prev, date_of_birth: v }));
     validateDob(v);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(p => ({ ...p, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSaveProfile = () => {
     if (formData.date_of_birth && !validateDob(formData.date_of_birth)) return;
-    const updated = { ...user, ...formData };
+    
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    const updated = { ...userData, ...formData };
     localStorage.setItem('user', JSON.stringify(updated));
-    setUser(updated);
+    
     setIsEditing(false);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
@@ -2029,16 +1913,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       navigate('/login');
       closePopup();
     }
-  };
-
-  const handleCallAdmin = () => {
-    window.location.href = 'tel:0704182603';
-  };
-
-  const openWhatsApp = () => {
-    const phone = '254704182603';
-    const msg = encodeURIComponent('Hello, I need assistance with my account.');
-    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
   };
 
   const closeSidebarOnMobile = () => {
@@ -2083,6 +1957,23 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // ===== SETTINGS HANDLER =====
   const handleSettingsClick = () => {
     setActiveItem('settings');
+    // Reload user data when opening settings
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    setFormData({
+      first_name: userData.first_name || '',
+      last_name: userData.last_name || '',
+      phone: userData.phone || '',
+      date_of_birth: userData.date_of_birth || '',
+      gender: userData.gender || '',
+      email: userData.email || ''
+    });
+    if (userData.date_of_birth) {
+      setCalculatedAge(calculateAge(userData.date_of_birth));
+    }
+    setIsEditing(false);
+    setShowSuccess(false);
+    setDobError('');
+
     openPopup({
       title: 'Account Settings',
       icon: <SettingsIcon />,
@@ -2091,7 +1982,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <SettingsProfile>
             <div className="profile-avatar">
               {formData.first_name && formData.last_name 
-                ? `${formData.first_name[0]}${formData.last_name[0]}` 
+                ? `${formData.first_name[0]}${formData.last_name[0]}`.toUpperCase()
                 : 'U'}
             </div>
             <div className="profile-info">
@@ -2120,25 +2011,53 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <span className="icon">◈</span> Personal Information
               </div>
 
-              {['first_name', 'last_name', 'phone'].map((field) => (
-                <SettingsField key={field}>
-                  <label>{field.replace('_', ' ')}</label>
-                  {isEditing ? (
-                    <input
-                      type={field === 'phone' ? 'tel' : 'text'}
-                      name={field}
-                      className="inp"
-                      value={formData[field]}
-                      onChange={handleInputChange}
-                      placeholder={field.replace('_', ' ')}
-                    />
-                  ) : (
-                    <div className="val">
-                      {formData[field] || 'Not set'}
-                    </div>
-                  )}
-                </SettingsField>
-              ))}
+              <SettingsField>
+                <label>First Name</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="first_name"
+                    className="inp"
+                    value={formData.first_name}
+                    onChange={handleInputChange}
+                    placeholder="First name"
+                  />
+                ) : (
+                  <div className="val">{formData.first_name || 'Not set'}</div>
+                )}
+              </SettingsField>
+
+              <SettingsField>
+                <label>Last Name</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="last_name"
+                    className="inp"
+                    value={formData.last_name}
+                    onChange={handleInputChange}
+                    placeholder="Last name"
+                  />
+                ) : (
+                  <div className="val">{formData.last_name || 'Not set'}</div>
+                )}
+              </SettingsField>
+
+              <SettingsField>
+                <label>Phone Number</label>
+                {isEditing ? (
+                  <input
+                    type="tel"
+                    name="phone"
+                    className="inp"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="Phone number"
+                  />
+                ) : (
+                  <div className="val">{formData.phone || 'Not set'}</div>
+                )}
+              </SettingsField>
 
               <SettingsField>
                 <label>Email Address</label>
@@ -2265,23 +2184,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   })}
                 </div>
               </SettingsField>
-
-              <SettingsSupport>
-                <div className="stitle">◇ Need Help?</div>
-                <div className="sdesc">Reach our support team via WhatsApp or call the admin directly.</div>
-                <div className="support-number">
-                  <span className="icon">◈</span>
-                  <span>0704 182 603</span>
-                </div>
-                <SettingsContactRow>
-                  <SettingsBtn className="call" onClick={handleCallAdmin}>
-                    <PhoneIcon /> Call Admin
-                  </SettingsBtn>
-                  <SettingsBtn className="whatsapp" onClick={openWhatsApp}>
-                    <WhatsAppIcon /> WhatsApp
-                  </SettingsBtn>
-                </SettingsContactRow>
-              </SettingsSupport>
 
               <SettingsDangerZone>
                 <div className="dtitle">! Danger Zone</div>
