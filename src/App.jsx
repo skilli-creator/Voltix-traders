@@ -13,16 +13,11 @@ import Verifyresetcode from './pages/Verifyresetcode';
 import Resetpass from './pages/Resetpass';
 import Marketsdash from './pages/Marketsdash';
 import Derivdash from './pages/Derivdash';
-import Binancehome from './pages/Binancehome';
-import Settings from './pages/Settings';
-import ForexDashboard from './pages/ForexDashboard';
-import Terms from './pages/Terms';
 import PaymentAgentDashboard from './pages/PaymentAgentDashboard';
 
 // Import Components
 import Academy from './pages/Academy';
-import AccountInfo from './pages/AccountInfo';
-import CopyTrading from './pages/CopyTrading';
+
 
 const App = () => {
   return (
@@ -39,13 +34,8 @@ const App = () => {
 
       {/* Dashboard Pages */}
       <Route path="/marketsdash" element={<Marketsdash />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/forex" element={<ForexDashboard />} />
-      <Route path="/terms" element={<Terms />} />
       
       {/* Trading Tools */}
-      <Route path="/account-info" element={<AccountInfo />} />
-      <Route path="/copy-trading" element={<CopyTrading />} />
       <Route path="/payment-dashboard" element={<PaymentAgentDashboard />} />
 
       {/* Deriv Trading Dashboard */}
