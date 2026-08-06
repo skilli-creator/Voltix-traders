@@ -95,10 +95,6 @@ const PanelContainer = styled.div`
   }
 `;
 
-// ============================================
-// PHONE TWO-COLUMN WRAPPER
-// ============================================
-
 const PhoneTwoColumnWrapper = styled.div`
   @media (max-width: 768px) {
     display: grid;
@@ -117,10 +113,6 @@ const PhoneTwoColumnWrapper = styled.div`
     display: block;
   }
 `;
-
-// ============================================
-// 1. MARKET SELECTOR - ONLY ON PHONE
-// ============================================
 
 const MarketSelectorWrapper = styled.div`
   position: relative;
@@ -272,10 +264,6 @@ const MarketOption = styled.div`
   }
 `;
 
-// ============================================
-// 2. TRADE TYPE SELECTOR
-// ============================================
-
 const TradeTypeWrapper = styled.div`
   position: relative;
   animation: ${fadeIn} 0.3s ease;
@@ -391,10 +379,6 @@ const DropdownOption = styled.div`
     .check { font-size: 11px; }
   }
 `;
-
-// ============================================
-// 3. TRADE MODE TOGGLE
-// ============================================
 
 const TradeModeWrapper = styled.div`
   display: flex;
@@ -516,10 +500,6 @@ const TradeModeButton = styled.button`
   }
 `;
 
-// ============================================
-// 4. BOT SELECTION
-// ============================================
-
 const BotGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -626,10 +606,6 @@ const BotHeader = styled.div`
     .subtitle { font-size: 7px; }
   }
 `;
-
-// ============================================
-// 5. INPUT FIELDS
-// ============================================
 
 const InputGrid = styled.div`
   display: grid;
@@ -773,7 +749,6 @@ const StyledInput = styled.input`
   }
 `;
 
-// ===== TOGGLE COMPONENTS =====
 const ToggleWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -888,7 +863,6 @@ const ToggleStatus = styled.span`
   }
 `;
 
-// ===== DROPDOWN SELECT =====
 const DropdownSelect = styled.div`
   position: relative;
   display: flex;
@@ -996,10 +970,6 @@ const DropdownSelectItem = styled.div`
     padding: 3px 5px;
   }
 `;
-
-// ============================================
-// 6. AI ANALYSIS
-// ============================================
 
 const AIButtonContainer = styled.div`
   position: fixed;
@@ -1176,7 +1146,6 @@ const AISelectWrapper = styled.div`
   }
 `;
 
-// ===== AI DROPDOWN SELECTOR =====
 const AIDropdown = styled.div`
   position: relative;
   width: 100%;
@@ -1328,7 +1297,6 @@ const AIDropdownItem = styled.div`
   }
 `;
 
-// ===== AI Trade Type Dropdown =====
 const AITradeTypeDropdown = styled.div`
   position: relative;
   width: 100%;
@@ -1485,10 +1453,6 @@ const AIScanButton = styled.button`
   }
 `;
 
-// ============================================
-// 7. DIGIT STATS
-// ============================================
-
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -1585,10 +1549,6 @@ const DigitItem = styled.div`
   }
 `;
 
-// ============================================
-// 8. DIGIT GRID
-// ============================================
-
 const DigitGridWrapper = styled.div`
   animation: ${fadeIn} 0.4s ease;
   font-weight: 700;
@@ -1675,10 +1635,6 @@ const DigitButton = styled.button`
   }
 `;
 
-// ============================================
-// 9. EVEN/ODD BUTTONS
-// ============================================
-
 const EvenOddButtons = styled.div`
   display: grid; 
   grid-template-columns: 1fr 1fr; 
@@ -1736,10 +1692,6 @@ const EvenOddButton = styled.button`
     border-radius: 4px;
   }
 `;
-
-// ============================================
-// 10. MATCHES/DIFFERS BUTTONS
-// ============================================
 
 const MatchesDiffersButtons = styled.div`
   display: grid; 
@@ -1799,10 +1751,6 @@ const MatchesDiffersButton = styled.button`
   }
 `;
 
-// ============================================
-// 11. OVER/UNDER BUTTONS
-// ============================================
-
 const OverUnderButtons = styled.div`
   display: grid; 
   grid-template-columns: 1fr 1fr; 
@@ -1860,10 +1808,6 @@ const OverUnderButton = styled.button`
     border-radius: 4px;
   }
 `;
-
-// ============================================
-// 12. TRADE BUTTONS (Legacy - kept for compatibility)
-// ============================================
 
 const TradeButtonsWrapper = styled.div`
   display: grid; 
@@ -1923,10 +1867,6 @@ const TradeButton = styled.button`
   }
 `;
 
-// ============================================
-// 13. RUN BUTTON
-// ============================================
-
 const RunButton = styled.button`
   width: 100%;
   padding: 8px 0;
@@ -1965,82 +1905,6 @@ const RunButton = styled.button`
     .run-icon { margin-right: 2px; font-size: 8px; }
   }
 `;
-
-// ============================================
-// 14. SESSION INFO (Bottom)
-// ============================================
-
-const SessionInfo = styled.div`
-  padding-top: 8px;
-  border-top: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-  font-weight: 700;
-
-  .left {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-  }
-
-  .label {
-    font-size: 7px;
-    text-transform: uppercase;
-    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    letter-spacing: 0.4px;
-    font-weight: 700;
-  }
-
-  .trades {
-    font-size: 10px;
-    color: ${props => props.theme?.colors?.textMuted || '#8a93a6'};
-    font-weight: 700;
-  }
-
-  .wins { color: ${props => props.theme?.colors?.success || '#22c55e'}; }
-  .losses { color: ${props => props.theme?.colors?.danger || '#ef4444'}; }
-
-  .pl {
-    font-size: 14px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.danger || '#ef4444'};
-    padding: 2px 10px;
-    border-radius: 4px;
-    background: ${props => props.theme?.colors?.danger + '15' || 'rgba(239,68,68,0.06)'};
-    border: 2px solid ${props => props.theme?.colors?.danger + '20' || 'rgba(239,68,68,0.08)'};
-  }
-
-  .pl-label {
-    font-size: 7px;
-    text-transform: uppercase;
-    color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    letter-spacing: 0.4px;
-    text-align: right;
-    font-weight: 700;
-  }
-
-  @media (max-width: 768px) {
-    padding-top: 6px;
-    .label { font-size: 6px; }
-    .trades { font-size: 9px; }
-    .pl { font-size: 12px; padding: 2px 8px; }
-    .pl-label { font-size: 6px; }
-  }
-
-  @media (max-width: 480px) {
-    padding-top: 4px;
-    .label { font-size: 6px; }
-    .trades { font-size: 8px; }
-    .pl { font-size: 11px; padding: 1px 6px; }
-    .pl-label { font-size: 6px; }
-  }
-`;
-
-// ============================================
-// 15. SINGLE BUY BUTTON - PREMIUM STYLE FOR ACCUMULATORS
-// ============================================
 
 const SingleTradeButtonWrapper = styled.div`
   display: flex;
@@ -2161,10 +2025,6 @@ const SingleTradeButton = styled.button`
   }
 `;
 
-// ============================================
-// BOT DATA
-// ============================================
-
 const BOTS = [
   {
     id: 'sniper',
@@ -2245,6 +2105,36 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   // === STRATEGY SELECTION (mutually exclusive) ===
   const [activeStrategy, setActiveStrategy] = useState('none'); // 'none', 'myApp', 'other'
+  const [myTradeAppStrategy, setMyTradeAppStrategy] = useState('Even');
+  const [isMyTradeAppDropdownOpen, setIsMyTradeAppDropdownOpen] = useState(false);
+  const [otherTradersStrategy, setOtherTradersStrategy] = useState('TrendMaster Pro');
+  const [isOtherTradersDropdownOpen, setIsOtherTradersDropdownOpen] = useState(false);
+
+  const getMyTradeAppOptions = () => {
+    if (tradeType === 'evenodd') return ['Even', 'Odd', 'Both'];
+    if (tradeType === 'matches') return ['Matches', 'Differs', 'Both'];
+    if (tradeType === 'overunder') return ['All','Over 1', 'Over 2', 'Over 3', 'Over 4', 'Over 5', 'Under 8', 'Under 7', 'Under 6', 'Under 5'];
+    return [];
+  };
+
+  const otherTradersOptions = [
+    'TrendMaster Pro',
+    'ScalperX',
+    'Reversal Wizard',
+    'Momentum Surfer',
+    'GridBot Elite',
+    'Breakout Hunter',
+    'Volume Surge',
+    'Fibonacci Sniper',
+    'Pivot King',
+    'Shadow Trader',
+  ];
+
+  useEffect(() => {
+    if (tradeType === 'evenodd') setMyTradeAppStrategy('Even');
+    else if (tradeType === 'matches') setMyTradeAppStrategy('Matches');
+    else if (tradeType === 'overunder') setMyTradeAppStrategy('Over 3');
+  }, [tradeType]);
 
   const selectedMarket = externalMarket || localSelectedMarket;
 
@@ -2396,6 +2286,8 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     }
     console.log(`Auto Switch Markets: ${autoSwitchMarkets}`);
     console.log(`Active Strategy: ${activeStrategy}`);
+    if (activeStrategy === 'myApp') console.log(`MyTradeApp Strategy: ${myTradeAppStrategy}`);
+    if (activeStrategy === 'other') console.log(`Other Traders Strategy: ${otherTradersStrategy}`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -2633,25 +2525,66 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     </InputGroup>
   );
 
-  const renderStrategyToggle = (label, strategyKey) => {
-    const isActive = activeStrategy === strategyKey;
+  const renderMyTradeAppStrategies = () => {
+    const isActive = activeStrategy === 'myApp';
+    const options = getMyTradeAppOptions();
+    if (options.length === 0) return null;
+
     return (
       <InputGroup>
         <InputLabel>
-          <span>{label}</span>
+          <span>MyTradeApp STRATEGIES</span>
           <span className="suffix">{isActive ? 'ON' : 'OFF'}</span>
         </InputLabel>
         <ToggleWrapper>
           <ToggleLabel>Strategy</ToggleLabel>
           <ToggleTrack 
             active={isActive} 
-            onClick={() => setActiveStrategy(isActive ? 'none' : strategyKey)}
+            onClick={() => setActiveStrategy(isActive ? 'none' : 'myApp')}
           >
             <div className="thumb" />
           </ToggleTrack>
           <ToggleStatus active={isActive}>
             {isActive ? 'ON' : 'OFF'}
           </ToggleStatus>
+          {isActive && renderDropdownSelect(
+            options,
+            myTradeAppStrategy,
+            setMyTradeAppStrategy,
+            isMyTradeAppDropdownOpen,
+            setIsMyTradeAppDropdownOpen
+          )}
+        </ToggleWrapper>
+      </InputGroup>
+    );
+  };
+
+  const renderOtherTradersStrategies = () => {
+    const isActive = activeStrategy === 'other';
+    return (
+      <InputGroup>
+        <InputLabel>
+          <span>Other Traders Strategies</span>
+          <span className="suffix">{isActive ? 'ON' : 'OFF'}</span>
+        </InputLabel>
+        <ToggleWrapper>
+          <ToggleLabel>Strategy</ToggleLabel>
+          <ToggleTrack 
+            active={isActive} 
+            onClick={() => setActiveStrategy(isActive ? 'none' : 'other')}
+          >
+            <div className="thumb" />
+          </ToggleTrack>
+          <ToggleStatus active={isActive}>
+            {isActive ? 'ON' : 'OFF'}
+          </ToggleStatus>
+          {isActive && renderDropdownSelect(
+            otherTradersOptions,
+            otherTradersStrategy,
+            setOtherTradersStrategy,
+            isOtherTradersDropdownOpen,
+            setIsOtherTradersDropdownOpen
+          )}
         </ToggleWrapper>
       </InputGroup>
     );
@@ -2756,17 +2689,17 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </div>
         )}
 
-        {/* R4: MY TRADE APP STRATEGIES (full width) - Only in Auto mode */}
+        {/* R4: MyTradeApp STRATEGIES (full width) - Only in Auto mode */}
         {isAuto && (
           <div style={{ gridColumn: '1 / -1', gridRow: '4' }}>
-            {renderStrategyToggle('MyTradeApp Strategies', 'myApp')}
+            {renderMyTradeAppStrategies()}
           </div>
         )}
 
-        {/* R5: OTHER TRADERS STRATEGIES (full width) - Only in Auto mode */}
+        {/* R5: Other Traders Strategies (full width) - Only in Auto mode */}
         {isAuto && (
           <div style={{ gridColumn: '1 / -1', gridRow: '5' }}>
-            {renderStrategyToggle('Other Traders Strategies', 'other')}
+            {renderOtherTradersStrategies()}
           </div>
         )}
       </InputGrid>
@@ -3194,19 +3127,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       ) : tradeMode === 'auto' ? (
         renderRunButton(false)
       ) : null}
-
-      <SessionInfo>
-        <div className="left">
-          <div className="label">Last Session</div>
-          <div className="trades">
-            <span className="wins">0W</span> / <span className="losses">5L</span> (5 trades)
-          </div>
-        </div>
-        <div style={{ textAlign: 'right' }}>
-          <div className="pl-label">Session P/L</div>
-          <div className="pl">-$310.00</div>
-        </div>
-      </SessionInfo>
 
       {renderAIFloatingButton()}
     </PanelContainer>
