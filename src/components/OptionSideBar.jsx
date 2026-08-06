@@ -35,9 +35,15 @@ const pulseGlow = keyframes`
   }
 `;
 
-const pulseVoice = keyframes`
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
+const slideInRight = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 `;
 
 // ============================================
@@ -48,6 +54,14 @@ const BellIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+  </svg>
+);
+
+const VoiceIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
   </svg>
 );
 
@@ -131,26 +145,216 @@ const HelpIcon = () => (
   </svg>
 );
 
-// Voice Notification Icon
-const VoiceIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-  </svg>
-);
-
-// Voice Off Icon
-const VoiceOffIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-    <line x1="23" y1="9" x2="17" y2="15" />
-    <line x1="17" y1="9" x2="23" y2="15" />
+const CloseXIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 // ============================================
-// STYLED COMPONENTS - THEMED
+// POPUP / MODAL COMPONENTS
+// ============================================
+
+const PopupOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: ${props => props.isOpen ? 'flex' : 'none'};
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ${fadeIn} 0.3s ease;
+`;
+
+const PopupContainer = styled.div`
+  max-width: 480px;
+  width: 100%;
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.12)'};
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: 0 24px 64px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.5)'};
+  animation: ${slideInRight} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.15)'};
+    border-radius: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px 16px;
+    max-width: 100%;
+  }
+`;
+
+const PopupHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+
+  .title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .title-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    letter-spacing: -0.3px;
+  }
+
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    background: transparent;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+    }
+  }
+`;
+
+const PopupBody = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const PopupInfoRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .row-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    min-width: 80px;
+  }
+
+  .row-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    flex: 1;
+  }
+`;
+
+const PopupDescription = styled.p`
+  font-size: 13px;
+  line-height: 1.7;
+  color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+  font-weight: 500;
+  margin: 4px 0;
+`;
+
+const PopupFeatureList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+
+  li {
+    font-size: 12px;
+    line-height: 1.6;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    padding: 4px 0 4px 20px;
+    position: relative;
+    font-weight: 500;
+
+    &::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+    }
+
+    strong {
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-weight: 600;
+    }
+  }
+`;
+
+const PopupStatusBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: ${props => props.active ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)'};
+  color: ${props => props.active ? '#10B981' : '#EF4444'};
+  border: 1px solid ${props => props.active ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => props.active ? '#10B981' : '#EF4444'};
+  }
+`;
+
+const PopupActionButton = styled.button`
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  color: ${props => props.theme?.colors?.buttonText || '#ffffff'};
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
+    box-shadow: 0 4px 16px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
+// ============================================
+// STYLED COMPONENTS - SIDEBAR
 // ============================================
 
 const Overlay = styled.div`
@@ -296,49 +500,6 @@ const SidebarHeader = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-`;
-
-// ===== VOICE NOTIFICATION TOGGLE =====
-const VoiceToggle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  border-radius: 8px;
-  margin-top: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
-    border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-  }
-
-  .voice-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: ${props => props.isActive ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.textMuted || '#94A3B8'};
-    animation: ${props => props.isActive ? pulseVoice : 'none'} 1.5s ease-in-out infinite;
-  }
-
-  .voice-label {
-    flex: 1;
-    font-size: 11px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-  }
-
-  .voice-status {
-    font-size: 9px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 4px;
-    color: ${props => props.isActive ? props.theme?.colors?.success || '#10B981' : props.theme?.colors?.textMuted || '#94A3B8'};
-    background: ${props => props.isActive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
   }
 `;
 
@@ -679,11 +840,25 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
   const [voiceNotifications, setVoiceNotifications] = useState(true);
+  
+  // Popup states
+  const [popupData, setPopupData] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) {
       onClose();
     }
+  };
+
+  const openPopup = (data) => {
+    setPopupData(data);
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    setPopupData(null);
   };
 
   const handleNavClick = (item, path) => {
@@ -695,12 +870,148 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleNotificationsClick = () => {
     setActiveItem('notifications');
     setHasNotifications(false);
-    navigate('/notifications');
-    closeSidebarOnMobile();
+    
+    // Open popup for Notifications
+    openPopup({
+      title: 'Notifications',
+      icon: <BellIcon />,
+      content: (
+        <>
+          <PopupStatusBadge active={true}>
+            <span className="status-dot" />
+            2 Unread
+          </PopupStatusBadge>
+          <PopupDescription style={{ marginTop: '12px' }}>
+            Your latest notifications and updates will appear here.
+          </PopupDescription>
+          <PopupFeatureList>
+            <li><strong>Trade Executed</strong> — Your order #TRX-7841 was filled at $12,450.00</li>
+            <li><strong>Market Alert</strong> — Volatility 100 (1s) Index reached resistance level</li>
+          </PopupFeatureList>
+          <PopupActionButton onClick={() => { closePopup(); navigate('/notifications'); }}>
+            View All Notifications
+          </PopupActionButton>
+        </>
+      )
+    });
   };
 
-  const toggleVoiceNotifications = () => {
+  const handleVoiceToggle = () => {
     setVoiceNotifications(!voiceNotifications);
+    
+    // Open popup for Voice Notifications
+    openPopup({
+      title: 'Voice Notifications',
+      icon: <VoiceIcon />,
+      content: (
+        <>
+          <PopupStatusBadge active={voiceNotifications}>
+            <span className="status-dot" />
+            {voiceNotifications ? 'Active' : 'Muted'}
+          </PopupStatusBadge>
+          <PopupDescription style={{ marginTop: '12px' }}>
+            {voiceNotifications 
+              ? 'Voice notifications are currently enabled. You will hear audio alerts for trade executions, market updates, and important events.' 
+              : 'Voice notifications are currently muted. Enable them to receive audio alerts for important trading events.'}
+          </PopupDescription>
+          <PopupFeatureList>
+            <li><strong>Trade Execution</strong> — Hear a confirmation sound when trades are placed</li>
+            <li><strong>Price Alerts</strong> — Get audio alerts when price targets are hit</li>
+            <li><strong>Market Signals</strong> — Receive audible notifications for market events</li>
+          </PopupFeatureList>
+          <PopupActionButton onClick={() => { setVoiceNotifications(!voiceNotifications); closePopup(); }}>
+            {voiceNotifications ? 'Mute Voice Notifications' : 'Enable Voice Notifications'}
+          </PopupActionButton>
+        </>
+      )
+    });
+  };
+
+  const handleAccountInfoClick = () => {
+    setActiveItem('account-info');
+    
+    openPopup({
+      title: 'Deriv Account Information',
+      icon: <AccountIcon />,
+      content: (
+        <>
+          <PopupInfoRow>
+            <span className="row-label">Account ID</span>
+            <span className="row-value">#ACC-8472-001</span>
+          </PopupInfoRow>
+          <PopupInfoRow>
+            <span className="row-label">Type</span>
+            <span className="row-value">Real Trading</span>
+          </PopupInfoRow>
+          <PopupInfoRow>
+            <span className="row-label">Balance</span>
+            <span className="row-value" style={{ color: '#10B981' }}>$7,110.00 USD</span>
+          </PopupInfoRow>
+          <PopupInfoRow>
+            <span className="row-label">Status</span>
+            <span className="row-value" style={{ color: '#10B981' }}>Active</span>
+          </PopupInfoRow>
+          <PopupInfoRow>
+            <span className="row-label">Joined</span>
+            <span className="row-value">January 2026</span>
+          </PopupInfoRow>
+          <PopupActionButton onClick={() => { closePopup(); navigate('/account-info'); }}>
+            View Full Account Details
+          </PopupActionButton>
+        </>
+      )
+    });
+  };
+
+  const handleRiskCalculatorClick = () => {
+    setActiveItem('risk-calculator');
+    
+    openPopup({
+      title: 'Risk Calculator',
+      icon: <RiskIcon />,
+      content: (
+        <>
+          <PopupDescription>
+            Calculate your optimal position size and manage trading risk with precision.
+          </PopupDescription>
+          <PopupFeatureList>
+            <li><strong>Position Sizing</strong> — Determine optimal trade size based on risk tolerance</li>
+            <li><strong>Stop Loss</strong> — Calculate appropriate stop-loss levels for each trade</li>
+            <li><strong>Risk/Reward</strong> — Analyze potential risk-to-reward ratios before entering</li>
+            <li><strong>Portfolio Risk</strong> — Evaluate overall portfolio exposure across multiple trades</li>
+          </PopupFeatureList>
+          <PopupActionButton onClick={() => { closePopup(); navigate('/risk-calculator'); }}>
+            Open Risk Calculator
+          </PopupActionButton>
+        </>
+      )
+    });
+  };
+
+  const handleHowToUseClick = () => {
+    setActiveItem('how-to-use');
+    
+    openPopup({
+      title: 'How to Use This Tool',
+      icon: <BookIcon />,
+      content: (
+        <>
+          <PopupDescription>
+            A comprehensive guide to help you navigate and utilize all the features of Voltix Traders.
+          </PopupDescription>
+          <PopupFeatureList>
+            <li><strong>Connect Account</strong> — Link your Deriv account to access real-time trading data</li>
+            <li><strong>Select Market</strong> — Choose from multiple volatility indices and trading pairs</li>
+            <li><strong>Execute Trades</strong> — Use manual, auto, or bot-assisted trading modes</li>
+            <li><strong>Monitor Positions</strong> — Track open positions and performance in real-time</li>
+            <li><strong>Customize Experience</strong> — Personalize themes, notifications, and display settings</li>
+          </PopupFeatureList>
+          <PopupActionButton onClick={() => { closePopup(); navigate('/how-to-use'); }}>
+            View Full Guide
+          </PopupActionButton>
+        </>
+      )
+    });
   };
 
   const handleSubmitFeedback = async () => {
@@ -762,6 +1073,24 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
+      {/* POPUP / MODAL */}
+      <PopupOverlay isOpen={isPopupOpen} onClick={closePopup}>
+        <PopupContainer onClick={(e) => e.stopPropagation()}>
+          <PopupHeader>
+            <div className="title-group">
+              <span className="title-icon">{popupData?.icon}</span>
+              <span className="title">{popupData?.title}</span>
+            </div>
+            <button className="close-btn" onClick={closePopup}>
+              <CloseXIcon />
+            </button>
+          </PopupHeader>
+          <PopupBody>
+            {popupData?.content}
+          </PopupBody>
+        </PopupContainer>
+      </PopupOverlay>
+
       <Overlay isOpen={isOpen} onClick={onClose} />
       
       <SidebarContainer isOpen={isOpen}>
@@ -779,16 +1108,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
-          {/* VOICE NOTIFICATIONS TOGGLE */}
-          <VoiceToggle isActive={voiceNotifications} onClick={toggleVoiceNotifications}>
-            <span className="voice-icon">
-              {voiceNotifications ? <VoiceIcon /> : <VoiceOffIcon />}
-            </span>
-            <span className="voice-label">Voice Notifications</span>
-            <span className="voice-status">{voiceNotifications ? 'On' : 'Off'}</span>
-          </VoiceToggle>
-
-          {/* UPDATES SECTION */}
+          {/* UPDATES SECTION - Includes Voice Notifications toggle */}
           <NavSection>
             <SectionLabel>Updates</SectionLabel>
             <NavItem 
@@ -799,6 +1119,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="nav-label">Notifications</span>
               {hasNotifications && <span className="notification-dot" />}
               <span className="badge">2</span>
+            </NavItem>
+            <NavItem 
+              active={activeItem === 'voice'}
+              onClick={handleVoiceToggle}
+            >
+              <span className="nav-icon"><VoiceIcon /></span>
+              <span className="nav-label">Voice Notifications</span>
+              <span className="badge" style={{ 
+                background: voiceNotifications ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                color: voiceNotifications ? '#10B981' : '#EF4444'
+              }}>
+                {voiceNotifications ? 'On' : 'Off'}
+              </span>
             </NavItem>
           </NavSection>
 
@@ -820,14 +1153,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <SectionLabel>Account</SectionLabel>
             <NavItem 
               active={activeItem === 'account-info'}
-              onClick={() => handleNavClick('account-info', '/account-info')}
+              onClick={handleAccountInfoClick}
             >
               <span className="nav-icon"><AccountIcon /></span>
               <span className="nav-label">Deriv Account Info</span>
             </NavItem>
           </NavSection>
 
-          {/* TRADING SECTION - Removed Switch to Forex */}
+          {/* TRADING SECTION */}
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
             <NavItem 
@@ -850,7 +1183,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
             <NavItem 
               active={activeItem === 'risk-calculator'}
-              onClick={() => handleNavClick('risk-calculator', '/risk-calculator')}
+              onClick={handleRiskCalculatorClick}
             >
               <span className="nav-icon"><RiskIcon /></span>
               <span className="nav-label">Risk Calculator</span>
@@ -938,7 +1271,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <SectionLabel>Information</SectionLabel>
             <NavItem 
               active={activeItem === 'how-to-use'}
-              onClick={() => handleNavClick('how-to-use', '/how-to-use')}
+              onClick={handleHowToUseClick}
             >
               <span className="nav-icon"><BookIcon /></span>
               <span className="nav-label">How to Use</span>
