@@ -191,6 +191,20 @@ const CheckIcon = () => (
   </svg>
 );
 
+const TrendingUpIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+const TrendingDownIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
+    <polyline points="17 18 23 18 23 12" />
+  </svg>
+);
+
 // ============================================
 // PREMIUM MODAL
 // ============================================
@@ -363,7 +377,7 @@ const ModalBody = styled.div`
 `;
 
 // ============================================
-// SETTINGS - COMPLETE
+// SETTINGS STYLES
 // ============================================
 const SettingsProfile = styled.div`
   display: flex;
@@ -660,7 +674,7 @@ const SettingsSuccess = styled.div`
 `;
 
 // ============================================
-// HELP & SUPPORT
+// HELP & SUPPORT STYLES
 // ============================================
 const HelpContactCard = styled.div`
   padding: 14px 16px;
@@ -736,6 +750,395 @@ const HelpContactCard = styled.div`
       background: ${props => props.theme?.colors?.accent || '#3B82F6'};
       color: #ffffff;
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    }
+  }
+`;
+
+// ============================================
+// PREMIUM RISK CALCULATOR
+// ============================================
+const RiskInputGroup = styled.div`
+  margin-bottom: 16px;
+
+  .risk-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .risk-hint {
+      font-size: 9px;
+      font-weight: 400;
+      opacity: 0.4;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+  }
+
+  .risk-input-wrap {
+    display: flex;
+    align-items: center;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:focus-within {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      box-shadow: 0 0 0 4px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
+    }
+
+    .risk-prefix {
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.03)'};
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+      min-width: 40px;
+      text-align: center;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px 14px;
+      background: transparent;
+      border: none;
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      width: 100%;
+      min-width: 0;
+
+      &::placeholder {
+        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+        font-weight: 400;
+        opacity: 0.3;
+      }
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &[type='number'] {
+        -moz-appearance: textfield;
+      }
+    }
+  }
+`;
+
+const RiskCalculateBtn = styled.button`
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    animation: ${shimmer} 4s ease-in-out infinite;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.3)'};
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const RiskResultsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+  animation: ${fadeUp} 0.5s ease;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const RiskResultBox = styled.div`
+  padding: 14px 12px;
+  border-radius: 12px;
+  text-align: center;
+  background: ${props =>
+    props.type === 'risk'
+      ? 'rgba(239, 68, 68, 0.06)'
+      : props.type === 'reward'
+      ? 'rgba(16, 185, 129, 0.06)'
+      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+  border: 1px solid ${props =>
+    props.type === 'risk'
+      ? 'rgba(239, 68, 68, 0.1)'
+      : props.type === 'reward'
+      ? 'rgba(16, 185, 129, 0.1)'
+      : props.theme?.colors?.border || 'rgba(59, 130, 246, 0.1)'};
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .result-label {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 4px;
+  }
+
+  .result-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: ${props =>
+      props.type === 'risk'
+        ? '#EF4444'
+        : props.type === 'reward'
+        ? '#10B981'
+        : props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  .result-sub {
+    font-size: 9px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 4px;
+    opacity: 0.6;
+    font-weight: 500;
+  }
+`;
+
+const RiskSummaryBox = styled.div`
+  margin-top: 14px;
+  padding: 14px 18px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 12px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  animation: ${fadeUp} 0.6s ease;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 12px;
+    font-weight: 500;
+
+    .label {
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    }
+
+    .value {
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-weight: 600;
+    }
+
+    &.highlight-risk .value {
+      color: #EF4444;
+    }
+
+    &.highlight-reward .value {
+      color: #10B981;
+    }
+
+    &.highlight-ratio .value {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    }
+  }
+
+  .summary-divider {
+    height: 1px;
+    background: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    margin: 6px 0;
+  }
+`;
+
+// ============================================
+// RESPONSIBLE TRADING POPUP
+// ============================================
+const ResponsibleTradingContent = styled.div`
+  .rt-section {
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  }
+
+  .rt-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rt-desc {
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+  }
+
+  .rt-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+
+    .bullet-dot {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .highlight {
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-weight: 600;
+    }
+  }
+
+  .rt-tip {
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.04);
+    border: 1px solid rgba(59, 130, 246, 0.08);
+    margin-top: 10px;
+
+    .tip-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      margin-bottom: 2px;
+    }
+
+    .tip-text {
+      font-size: 11px;
+      color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+      line-height: 1.6;
+    }
+  }
+`;
+
+// ============================================
+// ABOUT US POPUP
+// ============================================
+const AboutContent = styled.div`
+  .about-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+
+    .logo-icon {
+      font-size: 40px;
+    }
+
+    .logo-text {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+
+  .about-section {
+    margin-bottom: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  }
+
+  .about-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 4px;
+  }
+
+  .about-desc {
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+  }
+
+  .about-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+
+    @media (max-width: 400px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .about-feature {
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    text-align: center;
+
+    .feature-icon {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .feature-name {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    }
+
+    .feature-desc {
+      font-size: 9.5px;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      margin-top: 2px;
     }
   }
 `;
@@ -995,188 +1398,6 @@ const AccountInfoRow = styled.div`
       animation: ${pulseGlow} 2s infinite;
     }
   }
-`;
-
-// ============================================
-// RISK CALCULATOR
-// ============================================
-const CalcInputGroup = styled.div`
-  margin-bottom: 12px;
-
-  .calc-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-
-    .calc-hint {
-      font-size: 9px;
-      font-weight: 400;
-      opacity: 0.55;
-      text-transform: none;
-      letter-spacing: 0;
-    }
-  }
-
-  .calc-input-wrap {
-    display: flex;
-    align-items: center;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-    border-radius: 10px;
-    overflow: hidden;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-    &:focus-within {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
-    }
-
-    .calc-prefix {
-      padding: 9px 11px;
-      font-size: 12px;
-      font-weight: 700;
-      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-      background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.03)'};
-      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-      min-width: 36px;
-      text-align: center;
-    }
-
-    input {
-      flex: 1;
-      padding: 9px 12px;
-      background: transparent;
-      border: none;
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-size: 13px;
-      font-weight: 600;
-      outline: none;
-      width: 100%;
-      min-width: 0;
-
-      &::placeholder {
-        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-        font-weight: 400;
-        opacity: 0.45;
-      }
-
-      &::-webkit-inner-spin-button,
-      &::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-      &[type='number'] {
-        -moz-appearance: textfield;
-      }
-    }
-  }
-`;
-
-const CalcResultsGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-top: 8px;
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr 1fr;
-  }
-`;
-
-const CalcResultBox = styled.div`
-  padding: 12px 10px;
-  border-radius: 10px;
-  text-align: center;
-  background: ${props =>
-    props.type === 'risk'
-      ? 'rgba(239, 68, 68, 0.08)'
-      : props.type === 'reward'
-      ? 'rgba(16, 185, 129, 0.08)'
-      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
-  border: 1px solid ${props =>
-    props.type === 'risk'
-      ? 'rgba(239, 68, 68, 0.14)'
-      : props.type === 'reward'
-      ? 'rgba(16, 185, 129, 0.14)'
-      : props.theme?.colors?.border || 'rgba(59, 130, 246, 0.14)'};
-
-  .result-label {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 4px;
-  }
-
-  .result-value {
-    font-size: 14px;
-    font-weight: 700;
-    color: ${props =>
-      props.type === 'risk'
-        ? props.theme?.colors?.danger || '#EF4444'
-        : props.type === 'reward'
-        ? props.theme?.colors?.success || '#10B981'
-        : props.theme?.colors?.accent || '#3B82F6'};
-  }
-
-  .result-sub {
-    font-size: 9px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 3px;
-    opacity: 0.7;
-  }
-`;
-
-const CalcSummaryBox = styled.div`
-  margin-top: 12px;
-  padding: 12px 14px;
-  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 10px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 4px 0;
-    font-size: 11px;
-    font-weight: 600;
-
-    .label { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
-    .value { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
-
-    &.risk .value { color: ${props => props.theme?.colors?.danger || '#EF4444'}; }
-    &.reward .value { color: ${props => props.theme?.colors?.success || '#10B981'}; }
-  }
-`;
-
-const CalcButton = styled.button`
-  width: 100%;
-  padding: 11px 0;
-  border: none;
-  border-radius: 10px;
-  background: ${props => props.theme?.colors?.accent || '#3B82F6'};
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 4px;
-
-  &:hover {
-    background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
-    box-shadow: 0 6px 16px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'};
-    transform: translateY(-1px);
-  }
-
-  &:active { transform: translateY(0); }
 `;
 
 // ============================================
@@ -1770,7 +1991,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   });
 
   // Risk calculator state
-  const [calcAccountBalance, setCalcAccountBalance] = useState(10000);
+  const [calcAccountBalance, setCalcAccountBalance] = useState('');
   const [calcRiskPercent, setCalcRiskPercent] = useState(2);
   const [calcStopLoss, setCalcStopLoss] = useState(50);
   const [calcTakeProfit, setCalcTakeProfit] = useState(150);
@@ -1877,18 +2098,25 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   // ===== RISK CALCULATOR LOGIC =====
   const calculateRisk = () => {
+    if (!calcAccountBalance || parseFloat(calcAccountBalance) <= 0) return;
     setCalculated(true);
   };
 
   const getRiskResults = () => {
-    const riskAmount = calcAccountBalance * (calcRiskPercent / 100);
-    const rewardAmount = calcAccountBalance * ((calcTakeProfit / calcStopLoss) * (calcRiskPercent / 100));
+    const balance = parseFloat(calcAccountBalance) || 0;
+    const riskPercent = parseFloat(calcRiskPercent) || 0;
+    const stopLoss = parseFloat(calcStopLoss) || 1;
+    const takeProfit = parseFloat(calcTakeProfit) || 1;
+
+    const riskAmount = balance * (riskPercent / 100);
+    const rewardAmount = balance * ((takeProfit / stopLoss) * (riskPercent / 100));
     const riskRewardRatio = riskAmount > 0 ? rewardAmount / riskAmount : 0;
-    const positionSize = calcStopLoss > 0 ? riskAmount / (calcStopLoss / 100) : 0;
+    const positionSize = stopLoss > 0 ? riskAmount / (stopLoss / 100) : 0;
     const maxLoss = riskAmount;
     const maxProfit = rewardAmount;
+    const stakeAmount = riskAmount;
 
-    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit };
+    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit, stakeAmount, balance };
   };
 
   const riskResults = getRiskResults();
@@ -1896,7 +2124,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // ===== SETTINGS HANDLER =====
   const handleSettingsClick = () => {
     setActiveItem('settings');
-    // Reload user data when opening settings
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     setFormData({
       first_name: userData.first_name || '',
@@ -2201,6 +2428,221 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     });
   };
 
+  // ===== RESPONSIBLE TRADING HANDLER =====
+  const handleResponsibleTradingClick = () => {
+    setActiveItem('responsible-trading');
+    openPopup({
+      title: 'Responsible Trading',
+      icon: <ShieldIcon />,
+      content: (
+        <ResponsibleTradingContent>
+          <div className="rt-section">
+            <div className="rt-title">🛡️ What is Responsible Trading?</div>
+            <div className="rt-desc">
+              Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.
+            </div>
+          </div>
+
+          <div className="rt-section">
+            <div className="rt-title">📋 Key Principles</div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Set <span className="highlight">deposit limits</span> to control your capital budget and prevent overspending.</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Take regular <span className="highlight">trading breaks</span> to maintain discipline and avoid emotional decisions.</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Trade only with <span className="highlight">risk capital</span> — money you can afford to lose without affecting your daily life.</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Use <span className="highlight">stop-loss orders</span> to automatically limit potential losses on each trade.</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Never trade under the influence of <span className="highlight">alcohol or drugs</span> or during emotional distress.</span>
+            </div>
+          </div>
+
+          <div className="rt-section">
+            <div className="rt-title">⚠️ Warning Signs</div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Chasing losses by increasing trade sizes</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Borrowing money to trade</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Trading with money meant for essential expenses</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Feeling anxious or stressed about trading</span>
+            </div>
+            <div className="rt-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Neglecting work, family, or health for trading</span>
+            </div>
+          </div>
+
+          <div className="rt-tip">
+            <div className="tip-title">💡 Pro Tip</div>
+            <div className="tip-text">
+              Consider using the <strong style={{ color: '#F8FAFC' }}>Risk Calculator</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
+            </div>
+          </div>
+        </ResponsibleTradingContent>
+      )
+    });
+  };
+
+  // ===== ABOUT US HANDLER =====
+  const handleAboutClick = () => {
+    setActiveItem('about');
+    openPopup({
+      title: 'About MyTradeApp',
+      icon: <CompanyIcon />,
+      content: (
+        <AboutContent>
+          <div className="about-logo">
+            <span className="logo-icon">🔷</span>
+            <span className="logo-text">MyTradeApp</span>
+          </div>
+
+          <div className="about-section">
+            <div className="about-title">🚀 Our Mission</div>
+            <div className="about-desc">
+              MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities for the Deriv platform.
+            </div>
+          </div>
+
+          <div className="about-section">
+            <div className="about-title">⚡ What We Offer</div>
+            <div className="about-features">
+              <div className="about-feature">
+                <div className="feature-icon">📊</div>
+                <div className="feature-name">Real-Time Data</div>
+                <div className="feature-desc">Live market streams</div>
+              </div>
+              <div className="about-feature">
+                <div className="feature-icon">🤖</div>
+                <div className="feature-name">Auto Trading</div>
+                <div className="feature-desc">Automated execution</div>
+              </div>
+              <div className="about-feature">
+                <div className="feature-icon">📈</div>
+                <div className="feature-name">Risk Management</div>
+                <div className="feature-desc">Smart risk tools</div>
+              </div>
+              <div className="about-feature">
+                <div className="feature-icon">🔒</div>
+                <div className="feature-name">Secure</div>
+                <div className="feature-desc">Your data is safe</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="about-section">
+            <div className="about-title">💬 Contact Us</div>
+            <div className="about-desc">
+              Have questions or need support? Reach out to us through the <strong style={{ color: '#F8FAFC' }}>Help & Support</strong> section or email us at <strong style={{ color: '#3B82F6' }}>tonnykyalo054@gmail.com</strong>
+            </div>
+          </div>
+        </AboutContent>
+      )
+    });
+  };
+
+  // ===== RISK CALCULATOR HANDLER =====
+  const handleRiskCalculatorClick = () => {
+    setActiveItem('risk-calculator');
+    setCalculated(false);
+    setCalcAccountBalance('');
+    openPopup({
+      title: 'Risk Calculator',
+      icon: <RiskIcon />,
+      badge: 'Premium',
+      content: (
+        <>
+          <RiskInputGroup>
+            <div className="risk-label">
+              Account Balance <span className="risk-hint">(USD)</span>
+            </div>
+            <div className="risk-input-wrap">
+              <span className="risk-prefix">$</span>
+              <input 
+                type="number" 
+                placeholder="Enter your account balance" 
+                value={calcAccountBalance}
+                onChange={(e) => setCalcAccountBalance(e.target.value)}
+                min="0"
+                step="100"
+              />
+            </div>
+          </RiskInputGroup>
+
+          <RiskCalculateBtn 
+            onClick={calculateRisk}
+            disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}
+          >
+            Calculate Risk
+          </RiskCalculateBtn>
+
+          {calculated && parseFloat(calcAccountBalance) > 0 && (
+            <>
+              <RiskResultsGrid>
+                <RiskResultBox type="stake">
+                  <div className="result-label">Stake Amount</div>
+                  <div className="result-value">${riskResults.stakeAmount.toFixed(2)}</div>
+                  <div className="result-sub">per trade</div>
+                </RiskResultBox>
+                <RiskResultBox type="risk">
+                  <div className="result-label">Risk Amount</div>
+                  <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
+                  <div className="result-sub">{calcRiskPercent}% of balance</div>
+                </RiskResultBox>
+                <RiskResultBox type="reward">
+                  <div className="result-label">Reward Amount</div>
+                  <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
+                  <div className="result-sub">
+                    {((parseFloat(calcTakeProfit) / parseFloat(calcStopLoss)) * parseFloat(calcRiskPercent)).toFixed(2)}%
+                  </div>
+                </RiskResultBox>
+              </RiskResultsGrid>
+
+              <RiskSummaryBox>
+                <div className="summary-row">
+                  <span className="label">Position Size</span>
+                  <span className="value">{riskResults.positionSize.toFixed(2)} units</span>
+                </div>
+                <div className="summary-divider" />
+                <div className="summary-row highlight-risk">
+                  <span className="label">Max Loss</span>
+                  <span className="value">${riskResults.maxLoss.toFixed(2)}</span>
+                </div>
+                <div className="summary-row highlight-reward">
+                  <span className="label">Max Profit</span>
+                  <span className="value">${riskResults.maxProfit.toFixed(2)}</span>
+                </div>
+                <div className="summary-divider" />
+                <div className="summary-row highlight-ratio">
+                  <span className="label">Risk/Reward Ratio</span>
+                  <span className="value">1:{riskResults.riskRewardRatio.toFixed(2)}</span>
+                </div>
+              </RiskSummaryBox>
+            </>
+          )}
+        </>
+      )
+    });
+  };
+
   // ===== ALL POPUP HANDLERS =====
   const handleNotificationsClick = () => {
     setActiveItem('notifications');
@@ -2212,22 +2654,38 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       content: (
         <>
           <NotificationItem read={false} type="trade">
-            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /></svg></div>
-            <div className="notif-content"><div className="notif-title">Trade Executed</div><div className="notif-desc">Buy order #TRX-7841 filled at $12,450.00</div><div className="notif-time">2 min ago</div></div>
+            <div className="notif-icon"><TrendingUpIcon /></div>
+            <div className="notif-content">
+              <div className="notif-title">Trade Executed</div>
+              <div className="notif-desc">Buy order #TRX-7841 filled at $12,450.00</div>
+              <div className="notif-time">2 min ago</div>
+            </div>
             <div className="notif-dot" />
           </NotificationItem>
           <NotificationItem read={false} type="alert">
-            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg></div>
-            <div className="notif-content"><div className="notif-title">Market Alert</div><div className="notif-desc">Volatility 100 (1s) Index reached resistance level</div><div className="notif-time">15 min ago</div></div>
+            <div className="notif-icon"><TrendingDownIcon /></div>
+            <div className="notif-content">
+              <div className="notif-title">Market Alert</div>
+              <div className="notif-desc">Volatility 100 (1s) Index reached resistance level</div>
+              <div className="notif-time">15 min ago</div>
+            </div>
             <div className="notif-dot" />
           </NotificationItem>
           <NotificationItem read={true} type="trade">
-            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /></svg></div>
-            <div className="notif-content"><div className="notif-title">Position Closed</div><div className="notif-desc">Sell order #TRX-7839 closed at $5,670.00</div><div className="notif-time">1 hour ago</div></div>
+            <div className="notif-icon"><TrendingUpIcon /></div>
+            <div className="notif-content">
+              <div className="notif-title">Position Closed</div>
+              <div className="notif-desc">Sell order #TRX-7839 closed at $5,670.00</div>
+              <div className="notif-time">1 hour ago</div>
+            </div>
           </NotificationItem>
           <NotificationItem read={true} type="alert">
-            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg></div>
-            <div className="notif-content"><div className="notif-title">System Update</div><div className="notif-desc">New trading features available in version 2.1.0</div><div className="notif-time">3 hours ago</div></div>
+            <div className="notif-icon"><BellIcon /></div>
+            <div className="notif-content">
+              <div className="notif-title">System Update</div>
+              <div className="notif-desc">New trading features available in version 2.1.0</div>
+              <div className="notif-time">3 hours ago</div>
+            </div>
           </NotificationItem>
         </>
       )
@@ -2254,10 +2712,30 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <input type="range" min="0" max="100" value={voiceVolume} onChange={(e) => setVoiceVolume(parseInt(e.target.value))} disabled={!voiceEnabled} />
             <span className="slider-value">{voiceVolume}%</span>
           </VolumeSlider>
-          <VoiceEventItem enabled={voiceEvents.trade}><span className="event-name"><span className="event-dot" />Trade Execution</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>{voiceEvents.trade ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
-          <VoiceEventItem enabled={voiceEvents.price}><span className="event-name"><span className="event-dot" />Price Alerts</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>{voiceEvents.price ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
-          <VoiceEventItem enabled={voiceEvents.market}><span className="event-name"><span className="event-dot" />Market Signals</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>{voiceEvents.market ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
-          <VoiceEventItem enabled={voiceEvents.system}><span className="event-name"><span className="event-dot" />System Updates</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>{voiceEvents.system ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.trade}>
+            <span className="event-name"><span className="event-dot" />Trade Execution</span>
+            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>
+              {voiceEvents.trade ? 'Enabled' : 'Disabled'}
+            </span>
+          </VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.price}>
+            <span className="event-name"><span className="event-dot" />Price Alerts</span>
+            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>
+              {voiceEvents.price ? 'Enabled' : 'Disabled'}
+            </span>
+          </VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.market}>
+            <span className="event-name"><span className="event-dot" />Market Signals</span>
+            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>
+              {voiceEvents.market ? 'Enabled' : 'Disabled'}
+            </span>
+          </VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.system}>
+            <span className="event-name"><span className="event-dot" />System Updates</span>
+            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>
+              {voiceEvents.system ? 'Enabled' : 'Disabled'}
+            </span>
+          </VoiceEventItem>
         </>
       )
     });
@@ -2276,78 +2754,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <AccountInfoRow><span className="row-label">Status</span><span className="row-value"><span className="status-indicator"><span className="dot" />Active</span></span></AccountInfoRow>
           <AccountInfoRow><span className="row-label">Joined</span><span className="row-value">January 2026</span></AccountInfoRow>
           <AccountInfoRow><span className="row-label">Last Login</span><span className="row-value">Today, 14:32</span></AccountInfoRow>
-        </>
-      )
-    });
-  };
-
-  const handleRiskCalculatorClick = () => {
-    setActiveItem('risk-calculator');
-    setCalculated(false);
-    openPopup({
-      title: 'Risk Calculator',
-      icon: <RiskIcon />,
-      content: (
-        <>
-          <CalcInputGroup>
-            <span className="calc-label">Account Balance <span className="calc-hint">(USD)</span></span>
-            <div className="calc-input-wrap">
-              <span className="calc-prefix">$</span>
-              <input type="number" value={calcAccountBalance} onChange={(e) => setCalcAccountBalance(parseFloat(e.target.value) || 0)} min="0" step="100" />
-            </div>
-          </CalcInputGroup>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            <CalcInputGroup>
-              <span className="calc-label">Risk % <span className="calc-hint">(per trade)</span></span>
-              <div className="calc-input-wrap">
-                <span className="calc-prefix">%</span>
-                <input type="number" value={calcRiskPercent} onChange={(e) => setCalcRiskPercent(parseFloat(e.target.value) || 0)} min="0" max="100" step="0.5" />
-              </div>
-            </CalcInputGroup>
-            <CalcInputGroup>
-              <span className="calc-label">Stop Loss <span className="calc-hint">(pips)</span></span>
-              <div className="calc-input-wrap">
-                <span className="calc-prefix">SL</span>
-                <input type="number" value={calcStopLoss} onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)} min="1" step="5" />
-              </div>
-            </CalcInputGroup>
-          </div>
-          <CalcInputGroup>
-            <span className="calc-label">Take Profit <span className="calc-hint">(pips)</span></span>
-            <div className="calc-input-wrap">
-              <span className="calc-prefix">TP</span>
-              <input type="number" value={calcTakeProfit} onChange={(e) => setCalcTakeProfit(parseFloat(e.target.value) || 0)} min="1" step="5" />
-            </div>
-          </CalcInputGroup>
-
-          <CalcButton onClick={calculateRisk}>Calculate Risk</CalcButton>
-
-          {calculated && (
-            <>
-              <CalcResultsGrid>
-                <CalcResultBox type="risk">
-                  <div className="result-label">Risk Amount</div>
-                  <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
-                  <div className="result-sub">{calcRiskPercent}% of balance</div>
-                </CalcResultBox>
-                <CalcResultBox type="reward">
-                  <div className="result-label">Reward Amount</div>
-                  <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
-                  <div className="result-sub">{((calcTakeProfit / calcStopLoss) * calcRiskPercent).toFixed(2)}%</div>
-                </CalcResultBox>
-                <CalcResultBox type="ratio">
-                  <div className="result-label">Risk/Reward</div>
-                  <div className="result-value">1:{riskResults.riskRewardRatio.toFixed(2)}</div>
-                  <div className="result-sub">{riskResults.riskRewardRatio.toFixed(2)}x</div>
-                </CalcResultBox>
-              </CalcResultsGrid>
-              <CalcSummaryBox>
-                <div className="summary-row"><span className="label">Position Size</span><span className="value">{riskResults.positionSize.toFixed(2)} units</span></div>
-                <div className="summary-row risk"><span className="label">Max Loss</span><span className="value" style={{ color: '#EF4444' }}>${riskResults.maxLoss.toFixed(2)}</span></div>
-                <div className="summary-row reward"><span className="label">Max Profit</span><span className="value" style={{ color: '#10B981' }}>${riskResults.maxProfit.toFixed(2)}</span></div>
-              </CalcSummaryBox>
-            </>
-          )}
         </>
       )
     });
@@ -2507,7 +2913,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="card-item"><span className="bullet">•</span><span>Set <span className="highlight">deposit limits</span> to control your capital budget.</span></div>
               <div className="card-item"><span className="bullet">•</span><span>Take regular <span className="highlight">trading breaks</span> to maintain discipline.</span></div>
               <div className="card-item"><span className="bullet">•</span><span>Trade only with risk capital you can afford to lose.</span></div>
-              <div className="learn-more" onClick={() => handleNavClick('responsible-trading', '/responsible-trading')}>Learn more →</div>
+              <div className="learn-more" onClick={handleResponsibleTradingClick}>Learn more →</div>
             </SideCard>
           </NavSection>
 
@@ -2547,7 +2953,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="card-title"><span className="icon"><CompanyIcon /></span>About MyTradeApp</div>
               <div className="card-item"><span className="bullet">•</span><span>Third-party trading application for Deriv platform.</span></div>
               <div className="card-item"><span className="bullet">•</span><span>Provides real-time API market streams and automated execution tools.</span></div>
-              <div className="learn-more" onClick={() => handleNavClick('about', '/about')}>About us →</div>
+              <div className="learn-more" onClick={handleAboutClick}>About us →</div>
             </SideCard>
           </NavSection>
         </SidebarContent>
