@@ -1,3 +1,4 @@
+// src/components/RightPanel.jsx
 import React, { useState, useMemo, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
@@ -42,13 +43,13 @@ const floatPulse = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS
+// STYLED COMPONENTS - ALL THEME BASED
 // ============================================
 
 const PanelContainer = styled.div`
   width: 290px;
   min-width: 290px;
-  background: ${props => props.theme?.colors?.background || '#0b0e14'};
+  background: ${props => props.theme?.colors?.bg || props.theme?.colors?.background || '#0b0e14'};
   border-left: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   padding: 16px 14px 12px 14px;
   display: flex;
@@ -84,7 +85,7 @@ const PanelContainer = styled.div`
     height: 100%;
     padding: 8px 16px 6px 16px !important;
     border-left: none;
-    background: ${props => props.theme?.colors?.background || '#0a0e17'};
+    background: ${props => props.theme?.colors?.bg || props.theme?.colors?.background || '#0a0e17'};
     gap: 4px;
   }
 
@@ -135,7 +136,7 @@ const MarketSelectorButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   cursor: pointer;
@@ -143,7 +144,7 @@ const MarketSelectorButton = styled.div`
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
   }
 
@@ -193,7 +194,7 @@ const MarketDropdown = styled.div`
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   overflow: hidden;
@@ -221,13 +222,13 @@ const MarketOption = styled.div`
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
   border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -289,7 +290,7 @@ const TradeTypeButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 12px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.isOpen ? props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px;
   cursor: pointer;
@@ -298,7 +299,7 @@ const TradeTypeButton = styled.div`
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
-    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
   }
 
   .left { display: flex; align-items: center; gap: 8px; }
@@ -318,7 +319,7 @@ const TradeTypeButton = styled.div`
     text-transform: uppercase; 
     padding: 1px 8px;
     border-radius: 10px; 
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.1)'};
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.1)'};
     color: ${props => props.theme?.colors?.accent || '#2962ff'};
     font-weight: 700;
   }
@@ -342,7 +343,7 @@ const Dropdown = styled.div`
   top: calc(100% + 4px); 
   left: 0; 
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 8px; 
   overflow: hidden; 
@@ -364,13 +365,13 @@ const DropdownOption = styled.div`
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#8a93a6'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   font-size: 12px;
   transition: all 0.15s ease;
   font-weight: 700;
 
   &:hover { 
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'}; 
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'}; 
     color: ${props => props.theme?.colors?.text || '#ffffff'}; 
   }
   .check { 
@@ -433,7 +434,7 @@ const TradeModeLabel = styled.div`
 const TradeModeButtons = styled.div`
   display: flex;
   gap: 3px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border-radius: 8px;
   padding: 3px;
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
@@ -474,7 +475,7 @@ const TradeModeButton = styled.button`
 
   &:hover {
     color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.text || '#d1d4dc'};
-    background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.accentActive || 'rgba(255,255,255,0.02)'};
+    background: ${props => props.active ? `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})` : props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.02)'};
   }
 
   &:active {
@@ -533,7 +534,7 @@ const BotGrid = styled.div`
 
 const BotCard = styled.div`
   padding: 6px 4px;
-  background: ${props => props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.selected ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.selected ? props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)' : props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   cursor: pointer;
@@ -570,7 +571,7 @@ const BotCard = styled.div`
     text-transform: uppercase; 
     padding: 1px 6px;
     border-radius: 4px; 
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.08)'};
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.08)'};
     color: ${props => props.theme?.colors?.accent || '#2962ff'}; 
     display: inline-block; 
     margin-top: 1px; 
@@ -678,7 +679,7 @@ const InputLabel = styled.div`
     font-size: 5px; 
     color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'}; 
     text-transform: none;
-    background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'}; 
+    background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'}; 
     padding: 0 4px; 
     border-radius: 3px;
     border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
@@ -703,7 +704,7 @@ const InputRow = styled.div`
   display: flex;
   align-items: center;
   gap: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 5px;
   transition: all 0.2s ease;
@@ -719,7 +720,7 @@ const InputRow = styled.div`
     font-size: 10px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    background: ${props => props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
+    background: ${props => props.theme?.colors?.bg + '40' || props.theme?.colors?.background + '40' || 'rgba(255,255,255,0.02)'};
     border-right: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   }
 
@@ -777,7 +778,7 @@ const ToggleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 5px;
   padding: 2px 5px;
@@ -899,7 +900,7 @@ const DropdownSelectButton = styled.div`
   align-items: center;
   gap: 2px;
   padding: 1px 5px 1px 6px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 4px;
   cursor: pointer;
@@ -912,7 +913,7 @@ const DropdownSelectButton = styled.div`
   justify-content: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
@@ -943,7 +944,7 @@ const DropdownSelectMenu = styled.div`
   position: absolute;
   top: calc(100% + 3px);
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   overflow: hidden;
@@ -976,12 +977,12 @@ const DropdownSelectItem = styled.div`
   font-size: 9px;
   font-weight: 700;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
   text-align: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -1063,7 +1064,7 @@ const AIAnalysisPanel = styled.div`
   right: ${props => props.isMobile ? '8px' : '24px'};
   width: ${props => props.isMobile ? '220px' : '280px'};
   max-height: ${props => props.isMobile ? '340px' : '400px'};
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.96)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.96)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 12px;
   padding: ${props => props.isMobile ? '14px 16px' : '16px 20px'};
@@ -1123,7 +1124,7 @@ const AIAnalysisHeader = styled.div`
   }
 
   .close-btn {
-    background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+    background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
     border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
     color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     width: 26px;
@@ -1138,7 +1139,7 @@ const AIAnalysisHeader = styled.div`
     font-weight: 700;
 
     &:hover {
-      background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.04)'};
+      background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.04)'};
       color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     }
   }
@@ -1186,7 +1187,7 @@ const AIDropdownButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   cursor: pointer;
@@ -1194,7 +1195,7 @@ const AIDropdownButton = styled.div`
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
@@ -1244,7 +1245,7 @@ const AIDropdownMenu = styled.div`
   top: calc(100% + 3px);
   left: 0;
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   overflow: hidden;
@@ -1276,13 +1277,13 @@ const AIDropdownItem = styled.div`
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
   border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -1338,7 +1339,7 @@ const AITradeTypeButton = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   cursor: pointer;
@@ -1346,7 +1347,7 @@ const AITradeTypeButton = styled.div`
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
+    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
 
@@ -1379,7 +1380,7 @@ const AITradeTypeMenu = styled.div`
   top: calc(100% + 3px);
   left: 0;
   right: 0;
-  background: ${props => props.theme?.colors?.backgroundSecondary || '#111622'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   border-radius: 6px;
   overflow: hidden;
@@ -1411,13 +1412,13 @@ const AITradeTypeItem = styled.div`
   align-items: center;
   justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
+  background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
   border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 
@@ -1447,7 +1448,7 @@ const AIScanButton = styled.button`
   padding: 8px 0;
   border: none;
   border-radius: 6px;
-  background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.03)'};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.03)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   color: ${props => props.theme?.colors?.textMuted || '#64748b'};
   font-size: 11px;
@@ -1472,7 +1473,7 @@ const AIScanButton = styled.button`
     text-transform: uppercase;
     padding: 1px 6px;
     border-radius: 8px;
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
     color: ${props => props.theme?.colors?.accent || '#38bdf8'};
     font-weight: 700;
   }
@@ -1525,7 +1526,7 @@ const DigitItem = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${props => props.theme?.colors?.backgroundSecondary || 'rgba(20,28,43,0.95)'};
+    background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(20,28,43,0.95)'};
     border: 2px solid ${props => 
       props.isLastDigit 
         ? (props.direction === 'up' ? props.theme?.colors?.success || '#00e676' : props.theme?.colors?.danger || '#ff4a4a') 
@@ -1634,8 +1635,8 @@ const DigitButton = styled.button`
   }};
   border-radius: 4px;
   background: ${props => {
-    if (props.disabled) return props.theme?.colors?.background + '20' || 'rgba(255,255,255,0.01)';
-    return props.selected ? props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)';
+    if (props.disabled) return props.theme?.colors?.bg + '20' || props.theme?.colors?.background + '20' || 'rgba(255,255,255,0.01)';
+    return props.selected ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)';
   }};
   color: ${props => {
     if (props.disabled) return props.theme?.colors?.textMuted + '40' || '#4a4f5e';
