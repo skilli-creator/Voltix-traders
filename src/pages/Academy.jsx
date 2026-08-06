@@ -1800,7 +1800,7 @@ const Academy = () => {
           Complete Course
         </div>
         <h1 className="title">
-          Voltix Traders <span className="gradient">Academy</span>
+          MyTradeApp <span className="gradient">Academy</span>
         </h1>
         <p className="subtitle">
           Your complete guide to Deriv trading. From absolute beginner to confident trader.
@@ -1883,7 +1883,7 @@ const Academy = () => {
       )}
 
       <Footer>
-        Voltix Traders Academy • Learn. Practice. Master.
+        MyTradeApp Academy • Learn. Practice. Master.
         <span className="footer-sub">
           <GraduationCapIcon style={{ width: '14px', height: '14px', marginRight: '4px' }} />
           Every expert was once a beginner. Keep learning!
