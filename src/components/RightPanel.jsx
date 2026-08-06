@@ -2243,6 +2243,18 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   // === AUTO MODE - DYNAMIC DROPDOWN ===
   const [autoTradeSelection, setAutoTradeSelection] = useState('Even');
   const [isAutoTradeOpen, setIsAutoTradeOpen] = useState(false);
+  
+  // === AUTO SWITCH MARKETS TOGGLE ===
+  const [autoSwitchMarkets, setAutoSwitchMarkets] = useState(false);
+  const [isAutoSwitchDropdownOpen, setIsAutoSwitchDropdownOpen] = useState(false);
+
+  // === MY TRADE APP STRATEGIES ===
+  const [myTradeAppStrategy, setMyTradeAppStrategy] = useState('Default');
+  const [isMyTradeAppDropdownOpen, setIsMyTradeAppDropdownOpen] = useState(false);
+
+  // === OTHER TRADERS STRATEGIES ===
+  const [otherTradersStrategy, setOtherTradersStrategy] = useState('None');
+  const [isOtherTradersDropdownOpen, setIsOtherTradersDropdownOpen] = useState(false);
 
   const getAutoTradeOptions = () => {
     if (tradeType === 'evenodd') return ['Even', 'Odd', 'Both'];
@@ -2302,6 +2314,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const martingaleOptions = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
   const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const growthRateOptions = [1, 2, 3, 4, 5];
+  
+  // Strategy options
+  const myTradeAppStrategies = ['Default', 'Aggressive', 'Conservative', 'Scalping', 'Swing'];
+  const otherTradersStrategies = ['None', 'Trend Follower', 'Breakout', 'Reversal', 'Momentum'];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -2414,6 +2430,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       console.log(`Growth Rate: ${growthRate}%`);
     }
     console.log(`Auto Mode Selection: ${autoTradeSelection}`);
+    console.log(`Auto Switch Markets: ${autoSwitchMarkets}`);
+    console.log(`MyTradeApp Strategy: ${myTradeAppStrategy}`);
+    console.log(`Other Traders Strategy: ${otherTradersStrategy}`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -2633,6 +2652,24 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
+  const renderAutoSwitchMarkets = () => (
+    <InputGroup>
+      <InputLabel>
+        <span>Auto Switch Markets</span>
+        <span className="suffix">{autoSwitchMarkets ? 'ON' : 'OFF'}</span>
+      </InputLabel>
+      <ToggleWrapper>
+        <ToggleLabel>Switch</ToggleLabel>
+        <ToggleTrack active={autoSwitchMarkets} onClick={() => setAutoSwitchMarkets(!autoSwitchMarkets)}>
+          <div className="thumb" />
+        </ToggleTrack>
+        <ToggleStatus active={autoSwitchMarkets}>
+          {autoSwitchMarkets ? 'ON' : 'OFF'}
+        </ToggleStatus>
+      </ToggleWrapper>
+    </InputGroup>
+  );
+
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     const isAuto = tradeMode === 'auto';
@@ -2725,9 +2762,62 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </div>
         )}
 
+        {/* C2R3: AUTO SWITCH MARKETS - Only in Auto mode */}
+        {isAuto && (
+          <div style={{ gridColumn: '2', gridRow: '3' }}>
+            {renderAutoSwitchMarkets()}
+          </div>
+        )}
+
+        {/* C1R4: MY TRADE APP STRATEGIES - Only in Auto mode */}
+        {isAuto && tradeType !== 'random' && tradeType !== 'accumulators' && (
+          <div style={{ gridColumn: '1', gridRow: '4' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>MyTradeApp Strategies</span>
+              </InputLabel>
+              <ToggleWrapper>
+                <ToggleLabel>Strategy</ToggleLabel>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+                  {renderDropdownSelect(
+                    myTradeAppStrategies,
+                    myTradeAppStrategy,
+                    setMyTradeAppStrategy,
+                    isMyTradeAppDropdownOpen,
+                    setIsMyTradeAppDropdownOpen
+                  )}
+                </div>
+              </ToggleWrapper>
+            </InputGroup>
+          </div>
+        )}
+
+        {/* C2R4: OTHER TRADERS STRATEGIES - Only in Auto mode */}
+        {isAuto && tradeType !== 'random' && tradeType !== 'accumulators' && (
+          <div style={{ gridColumn: '2', gridRow: '4' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>Other Traders Strategies</span>
+              </InputLabel>
+              <ToggleWrapper>
+                <ToggleLabel>Strategy</ToggleLabel>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+                  {renderDropdownSelect(
+                    otherTradersStrategies,
+                    otherTradersStrategy,
+                    setOtherTradersStrategy,
+                    isOtherTradersDropdownOpen,
+                    setIsOtherTradersDropdownOpen
+                  )}
+                </div>
+              </ToggleWrapper>
+            </InputGroup>
+          </div>
+        )}
+
         {/* R3C2: AUTO MODE DROPDOWN - Only in Auto mode, not for Random or Accumulators */}
         {isAuto && tradeType !== 'random' && tradeType !== 'accumulators' && (
-          <div style={{ gridColumn: '2', gridRow: '3' }}>
+          <div style={{ gridColumn: '1', gridRow: '5' }}>
             <InputGroup>
               <InputLabel>
                 <span>{getAutoTradeLabel()}</span>
@@ -3140,7 +3230,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           {selectedBot && (
             <div style={{
               fontSize: '9px', 
-              color: props => props.theme?.colors?.textMuted || '#5a6070', 
+              color: '#5a6070', 
               textAlign: 'center',
               padding: '2px 0', 
               animation: `${fadeIn} 0.3s ease`,
