@@ -4,17 +4,11 @@ import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // ============================================
-// KEYFRAMES & MICRO-INTERACTIONS
+// KEYFRAMES - PREMIUM ANIMATIONS
 // ============================================
 const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
 `;
 
 const fadeIn = keyframes`
@@ -35,15 +29,30 @@ const pulseGlow = keyframes`
   }
 `;
 
-const slideInRight = keyframes`
+const modalSlideIn = keyframes`
   from {
     opacity: 0;
-    transform: translateX(40px);
+    transform: scale(0.92) translateY(40px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: scale(1) translateY(0);
   }
+`;
+
+const modalBackdrop = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+const pulseVoice = keyframes`
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
 `;
 
 // ============================================
@@ -51,49 +60,57 @@ const slideInRight = keyframes`
 // ============================================
 
 const BellIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
   </svg>
 );
 
 const VoiceIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
     <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
     <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
   </svg>
 );
 
+const VoiceOffIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <line x1="23" y1="9" x2="17" y2="15" />
+    <line x1="17" y1="9" x2="23" y2="15" />
+  </svg>
+);
+
 const AcademyIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
   </svg>
 );
 
 const AccountIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
     <circle cx="12" cy="7" r="4" />
   </svg>
 );
 
 const CopyIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
   </svg>
 );
 
 const ManagementIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
   </svg>
 );
 
 const RiskIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     <path d="M12 8v4" />
     <path d="M12 16h.01" />
@@ -101,20 +118,20 @@ const RiskIcon = () => (
 );
 
 const ShieldIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
   </svg>
 );
 
 const BookIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
   </svg>
 );
 
 const TermsIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <polyline points="14 2 14 8 20 8" />
     <line x1="16" y1="13" x2="8" y2="13" />
@@ -124,21 +141,21 @@ const TermsIcon = () => (
 );
 
 const CompanyIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
   </svg>
 );
 
 const SettingsIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />
   </svg>
 );
 
 const HelpIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
     <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -146,89 +163,134 @@ const HelpIcon = () => (
 );
 
 const CloseXIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
+const CheckCircleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </svg>
+);
+
+const AlertCircleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="8" x2="12" y2="12" />
+    <line x1="12" y1="16" x2="12.01" y2="16" />
+  </svg>
+);
+
 // ============================================
-// POPUP / MODAL COMPONENTS
+// PREMIUM MODAL / POPUP - CENTERED
 // ============================================
 
-const PopupOverlay = styled.div`
+const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 1000;
   display: ${props => props.isOpen ? 'flex' : 'none'};
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  animation: ${fadeIn} 0.3s ease;
+  padding: 24px;
+  animation: ${modalBackdrop} 0.3s ease;
 `;
 
-const PopupContainer = styled.div`
-  max-width: 480px;
+const ModalContainer = styled.div`
+  max-width: 520px;
   width: 100%;
+  max-height: 85vh;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.12)'};
-  border-radius: 16px;
-  padding: 28px 32px;
-  box-shadow: 0 24px 64px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.5)'};
-  animation: ${slideInRight} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  max-height: 90vh;
-  overflow-y: auto;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  border-radius: 24px;
+  box-shadow: 0 32px 80px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
+  animation: ${modalSlideIn} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.15)'};
-    border-radius: 10px;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      ${props => props.theme?.colors?.accent || '#3B82F6'}, 
+      ${props => props.theme?.colors?.accent + '60' || '#60A5FA'}, 
+      ${props => props.theme?.colors?.accent || '#3B82F6'}
+    );
+    background-size: 200% 100%;
+    animation: ${shimmer} 3s ease-in-out infinite;
   }
 
   @media (max-width: 480px) {
-    padding: 20px 16px;
     max-width: 100%;
+    margin: 12px;
+    border-radius: 20px;
+    max-height: 90vh;
   }
 `;
 
-const PopupHeader = styled.div`
+const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  padding: 22px 28px 18px 28px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  flex-shrink: 0;
 
   .title-group {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
   }
 
   .title-icon {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   }
 
-  .title {
-    font-size: 16px;
+  .title-text {
+    font-size: 18px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: -0.3px;
+  }
+
+  .title-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 12px;
+    border-radius: 20px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.08)'};
   }
 
   .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
     background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
@@ -237,124 +299,500 @@ const PopupHeader = styled.div`
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+      transform: rotate(90deg);
     }
+  }
+
+  @media (max-width: 480px) {
+    padding: 18px 20px 14px 20px;
+    .title-text { font-size: 16px; }
+    .title-icon { width: 34px; height: 34px; }
   }
 `;
 
-const PopupBody = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+const ModalBody = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px 28px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.08)'};
+    border-radius: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 18px 20px;
+  }
 `;
 
-const PopupInfoRow = styled.div`
+// ============================================
+// NOTIFICATIONS COMPONENT
+// ============================================
+const NotificationItem = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: ${props => props.read ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.03)'};
+  border: 1px solid ${props => props.read ? 'transparent' : props.theme?.colors?.accent + '15' || 'rgba(59, 130, 246, 0.04)'};
+  margin-bottom: 8px;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
+    border-color: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  }
+
+  .notif-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(59, 130, 246, 0.08)'};
+    color: ${props => props.type === 'trade' ? '#10B981' : '#3B82F6'};
+    border: 1px solid ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.06)' : 'rgba(59, 130, 246, 0.06)'};
+  }
+
+  .notif-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .notif-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+
+  .notif-desc {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .notif-time {
+    font-size: 10px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  .notif-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    flex-shrink: 0;
+    margin-top: 4px;
+    box-shadow: 0 0 12px ${props => props.theme?.colors?.accent + '30' || 'rgba(59, 130, 246, 0.1)'};
+    ${props => props.read && 'display: none;'}
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 12px;
+    .notif-icon { width: 30px; height: 30px; }
+    .notif-title { font-size: 12px; }
+    .notif-desc { font-size: 11px; }
+  }
+`;
+
+// ============================================
+// VOICE SETTINGS COMPONENT
+// ============================================
+const VoiceGroup = styled.div`
+  margin-bottom: 20px;
+
+  .group-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    display: block;
+  }
+`;
+
+const VoiceToggleRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  margin-bottom: 10px;
+
+  .toggle-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  }
+
+  .toggle-status {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 12px;
+    color: ${props => props.active ? '#10B981' : '#94A3B8'};
+    background: ${props => props.active ? 'rgba(16, 185, 129, 0.06)' : 'rgba(255, 255, 255, 0.03)'};
+    border: 1px solid ${props => props.active ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)'};
+  }
+`;
+
+const ToggleSwitch = styled.button`
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  border: none;
+  background: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.scrollbar || '#2a2e3d'};
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: ${props => props.active ? `0 0 20px ${props.theme?.colors?.accent + '30' || 'rgba(59, 130, 246, 0.15)'}` : 'none'};
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: ${props => props.active ? '23px' : '3px'};
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.text || '#ffffff'};
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover {
+    opacity: 0.85;
+  }
+`;
+
+const VolumeSlider = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+
+  .slider-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    min-width: 36px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
+    outline: none;
+    transition: background 0.2s ease;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      cursor: pointer;
+      border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.05)'};
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    &:disabled {
+      opacity: 0.4;
+    }
+  }
+
+  .slider-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    min-width: 32px;
+    text-align: right;
+  }
+`;
+
+const VoiceEventItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .event-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => props.enabled ? '#10B981' : '#94A3B8'};
+  }
+
+  .event-status {
+    font-size: 10px;
+    font-weight: 700;
+    color: ${props => props.enabled ? '#10B981' : '#94A3B8'};
+    padding: 2px 10px;
+    border-radius: 10px;
+    background: ${props => props.enabled ? 'rgba(16, 185, 129, 0.04)' : 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.enabled ? 'rgba(16, 185, 129, 0.06)' : 'rgba(255, 255, 255, 0.03)'};
+  }
+`;
+
+// ============================================
+// ACCOUNT INFO COMPONENT
+// ============================================
+const AccountInfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
 
   &:last-child {
     border-bottom: none;
   }
 
   .row-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    min-width: 80px;
   }
 
   .row-value {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-`;
 
-const PopupDescription = styled.p`
-  font-size: 13px;
-  line-height: 1.7;
-  color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-  font-weight: 500;
-  margin: 4px 0;
-`;
-
-const PopupFeatureList = styled.ul`
-  list-style: none;
-  padding: 0;
-  margin: 8px 0;
-
-  li {
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 12px;
-    line-height: 1.6;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    padding: 4px 0 4px 20px;
-    position: relative;
-    font-weight: 500;
+    font-weight: 700;
+    color: #10B981;
 
-    &::before {
-      content: '•';
-      position: absolute;
-      left: 0;
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      font-weight: 700;
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: ${pulseGlow} 2s infinite;
     }
-
-    strong {
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-weight: 600;
-    }
-  }
-`;
-
-const PopupStatusBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  background: ${props => props.active ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)'};
-  color: ${props => props.active ? '#10B981' : '#EF4444'};
-  border: 1px solid ${props => props.active ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
-
-  .status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${props => props.active ? '#10B981' : '#EF4444'};
-  }
-`;
-
-const PopupActionButton = styled.button`
-  width: 100%;
-  padding: 10px 0;
-  border: none;
-  border-radius: 8px;
-  background: ${props => props.theme?.colors?.accent || '#3B82F6'};
-  color: ${props => props.theme?.colors?.buttonText || '#ffffff'};
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 4px;
-
-  &:hover {
-    background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
-    box-shadow: 0 4px 16px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
-  }
-
-  &:active {
-    transform: scale(0.98);
   }
 `;
 
 // ============================================
-// STYLED COMPONENTS - SIDEBAR
+// RISK CALCULATOR - FULLY FUNCTIONAL
+// ============================================
+const CalcInputGroup = styled.div`
+  margin-bottom: 16px;
+
+  .calc-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .calc-hint {
+      font-size: 10px;
+      font-weight: 400;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      opacity: 0.5;
+    }
+  }
+
+  .calc-input-wrap {
+    display: flex;
+    align-items: center;
+    background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:focus-within {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '15' || 'rgba(59, 130, 246, 0.04)'};
+    }
+
+    .calc-prefix {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
+      min-width: 28px;
+      text-align: center;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px 14px;
+      background: transparent;
+      border: none;
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+      width: 100%;
+      min-width: 0;
+
+      &::placeholder {
+        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+        font-weight: 400;
+        opacity: 0.4;
+      }
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      &[type="number"] { -moz-appearance: textfield; }
+    }
+  }
+`;
+
+const CalcResultGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const CalcResultBox = styled.div`
+  padding: 14px 16px;
+  border-radius: 10px;
+  text-align: center;
+  background: ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.04)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.04)' : 'rgba(59, 130, 246, 0.04)'};
+  border: 1px solid ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.08)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(59, 130, 246, 0.08)'};
+
+  .result-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 4px;
+  }
+
+  .result-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: ${props => props.type === 'risk' ? '#EF4444' : props.type === 'reward' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  .result-sub {
+    font-size: 9px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
+    font-weight: 400;
+  }
+`;
+
+// ============================================
+// HOW TO USE COMPONENT
+// ============================================
+const StepItem = styled.div`
+  display: flex;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.06)'};
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+
+  .step-desc {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    .step-number { width: 28px; height: 28px; font-size: 11px; }
+    .step-title { font-size: 12px; }
+    .step-desc { font-size: 11px; }
+  }
+`;
+
+// ============================================
+// SIDEBAR STYLED COMPONENTS
 // ============================================
 
 const Overlay = styled.div`
@@ -452,7 +890,6 @@ const SidebarContent = styled.div`
   }
 `;
 
-// ===== SIDEBAR HEADER =====
 const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
@@ -503,7 +940,6 @@ const SidebarHeader = styled.div`
   }
 `;
 
-// ===== NAVIGATION SECTION & ITEMS =====
 const NavSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -601,7 +1037,6 @@ const NavItem = styled.div`
   }
 `;
 
-// ===== CARDS =====
 const SideCard = styled.div`
   padding: 12px 14px;
   border-radius: 10px;
@@ -670,7 +1105,6 @@ const SideCard = styled.div`
   }
 `;
 
-// ===== FEEDBACK SECTION =====
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 10px;
@@ -791,7 +1225,6 @@ const FeedbackSection = styled.div`
   }
 `;
 
-// ===== FOOTER =====
 const SidebarFooter = styled.footer`
   flex-shrink: 0;
   padding: 12px 14px;
@@ -839,11 +1272,24 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
-  const [voiceNotifications, setVoiceNotifications] = useState(true);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [voiceVolume, setVoiceVolume] = useState(70);
+  const [voiceEvents, setVoiceEvents] = useState({
+    trade: true,
+    price: true,
+    market: false,
+    system: true
+  });
   
   // Popup states
   const [popupData, setPopupData] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  // Risk calculator state
+  const [calcStake, setCalcStake] = useState(100);
+  const [calcRisk, setCalcRisk] = useState(2);
+  const [calcStopLoss, setCalcStopLoss] = useState(50);
+  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
 
   const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) {
@@ -858,7 +1304,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const closePopup = () => {
     setIsPopupOpen(false);
-    setPopupData(null);
+    setTimeout(() => setPopupData(null), 300);
   };
 
   const handleNavClick = (item, path) => {
@@ -867,66 +1313,137 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     closeSidebarOnMobile();
   };
 
+  // Calculate risk values
+  const riskAmount = calcStake * (calcRisk / 100);
+  const rewardAmount = calcStake * ((calcTakeProfit / calcStopLoss) * (calcRisk / 100));
+  const riskRewardRatio = rewardAmount / (riskAmount || 0.01);
+
+  // ===== NOTIFICATIONS =====
   const handleNotificationsClick = () => {
     setActiveItem('notifications');
     setHasNotifications(false);
     
-    // Open popup for Notifications
+    const notifications = [
+      { id: 1, type: 'trade', title: 'Trade Executed', desc: 'Buy order #TRX-7841 filled at $12,450.00', time: '2 min ago', read: false },
+      { id: 2, type: 'alert', title: 'Market Alert', desc: 'Volatility 100 (1s) Index reached resistance level', time: '15 min ago', read: false },
+      { id: 3, type: 'trade', title: 'Position Closed', desc: 'Sell order #TRX-7839 closed at $5,670.00', time: '1 hour ago', read: true },
+      { id: 4, type: 'alert', title: 'System Update', desc: 'New trading features available in version 2.1.0', time: '3 hours ago', read: true },
+      { id: 5, type: 'trade', title: 'Deposit Confirmed', desc: '$10,000.00 deposited to account ACC-8472-001', time: '5 hours ago', read: true },
+    ];
+
     openPopup({
       title: 'Notifications',
       icon: <BellIcon />,
+      badge: '2 New',
       content: (
         <>
-          <PopupStatusBadge active={true}>
-            <span className="status-dot" />
-            2 Unread
-          </PopupStatusBadge>
-          <PopupDescription style={{ marginTop: '12px' }}>
-            Your latest notifications and updates will appear here.
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Trade Executed</strong> — Your order #TRX-7841 was filled at $12,450.00</li>
-            <li><strong>Market Alert</strong> — Volatility 100 (1s) Index reached resistance level</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/notifications'); }}>
-            View All Notifications
-          </PopupActionButton>
+          {notifications.map((notif) => (
+            <NotificationItem key={notif.id} read={notif.read} type={notif.type}>
+              <div className="notif-icon">
+                {notif.type === 'trade' ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                )}
+              </div>
+              <div className="notif-content">
+                <div className="notif-title">{notif.title}</div>
+                <div className="notif-desc">{notif.desc}</div>
+                <div className="notif-time">{notif.time}</div>
+              </div>
+              <div className="notif-dot" />
+            </NotificationItem>
+          ))}
         </>
       )
     });
   };
 
-  const handleVoiceToggle = () => {
-    setVoiceNotifications(!voiceNotifications);
+  // ===== VOICE NOTIFICATIONS =====
+  const handleVoiceClick = () => {
+    setActiveItem('voice');
     
-    // Open popup for Voice Notifications
     openPopup({
       title: 'Voice Notifications',
-      icon: <VoiceIcon />,
+      icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />,
+      badge: voiceEnabled ? 'Active' : 'Muted',
       content: (
         <>
-          <PopupStatusBadge active={voiceNotifications}>
-            <span className="status-dot" />
-            {voiceNotifications ? 'Active' : 'Muted'}
-          </PopupStatusBadge>
-          <PopupDescription style={{ marginTop: '12px' }}>
-            {voiceNotifications 
-              ? 'Voice notifications are currently enabled. You will hear audio alerts for trade executions, market updates, and important events.' 
-              : 'Voice notifications are currently muted. Enable them to receive audio alerts for important trading events.'}
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Trade Execution</strong> — Hear a confirmation sound when trades are placed</li>
-            <li><strong>Price Alerts</strong> — Get audio alerts when price targets are hit</li>
-            <li><strong>Market Signals</strong> — Receive audible notifications for market events</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { setVoiceNotifications(!voiceNotifications); closePopup(); }}>
-            {voiceNotifications ? 'Mute Voice Notifications' : 'Enable Voice Notifications'}
-          </PopupActionButton>
+          <VoiceToggleRow active={voiceEnabled}>
+            <span className="toggle-label">Voice Notifications</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
+              <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
+            </div>
+          </VoiceToggleRow>
+
+          <VoiceGroup>
+            <span className="group-label">Volume</span>
+            <VolumeSlider>
+              <span className="slider-label">Vol</span>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                value={voiceVolume} 
+                onChange={(e) => setVoiceVolume(parseInt(e.target.value))}
+                disabled={!voiceEnabled}
+              />
+              <span className="slider-value">{voiceVolume}%</span>
+            </VolumeSlider>
+          </VoiceGroup>
+
+          <VoiceGroup>
+            <span className="group-label">Notification Events</span>
+            <VoiceEventItem enabled={voiceEvents.trade}>
+              <span className="event-name">
+                <span className="event-dot" />
+                Trade Execution
+              </span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})} style={{ cursor: 'pointer' }}>
+                {voiceEvents.trade ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.price}>
+              <span className="event-name">
+                <span className="event-dot" />
+                Price Alerts
+              </span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})} style={{ cursor: 'pointer' }}>
+                {voiceEvents.price ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.market}>
+              <span className="event-name">
+                <span className="event-dot" />
+                Market Signals
+              </span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})} style={{ cursor: 'pointer' }}>
+                {voiceEvents.market ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.system}>
+              <span className="event-name">
+                <span className="event-dot" />
+                System Updates
+              </span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})} style={{ cursor: 'pointer' }}>
+                {voiceEvents.system ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+          </VoiceGroup>
         </>
       )
     });
   };
 
+  // ===== ACCOUNT INFO =====
   const handleAccountInfoClick = () => {
     setActiveItem('account-info');
     
@@ -935,34 +1452,41 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       icon: <AccountIcon />,
       content: (
         <>
-          <PopupInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Account ID</span>
-            <span className="row-value">#ACC-8472-001</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
-            <span className="row-label">Type</span>
+            <span className="row-value">ACC-8472-001</span>
+          </AccountInfoRow>
+          <AccountInfoRow>
+            <span className="row-label">Account Type</span>
             <span className="row-value">Real Trading</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
+          </AccountInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Balance</span>
             <span className="row-value" style={{ color: '#10B981' }}>$7,110.00 USD</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
+          </AccountInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Status</span>
-            <span className="row-value" style={{ color: '#10B981' }}>Active</span>
-          </PopupInfoRow>
-          <PopupInfoRow>
+            <span className="row-value">
+              <span className="status-indicator">
+                <span className="dot" />
+                Active
+              </span>
+            </span>
+          </AccountInfoRow>
+          <AccountInfoRow>
             <span className="row-label">Joined</span>
             <span className="row-value">January 2026</span>
-          </PopupInfoRow>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/account-info'); }}>
-            View Full Account Details
-          </PopupActionButton>
+          </AccountInfoRow>
+          <AccountInfoRow>
+            <span className="row-label">Last Login</span>
+            <span className="row-value">Today, 14:32</span>
+          </AccountInfoRow>
         </>
       )
     });
   };
 
+  // ===== RISK CALCULATOR =====
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
     
@@ -971,44 +1495,113 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       icon: <RiskIcon />,
       content: (
         <>
-          <PopupDescription>
-            Calculate your optimal position size and manage trading risk with precision.
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Position Sizing</strong> — Determine optimal trade size based on risk tolerance</li>
-            <li><strong>Stop Loss</strong> — Calculate appropriate stop-loss levels for each trade</li>
-            <li><strong>Risk/Reward</strong> — Analyze potential risk-to-reward ratios before entering</li>
-            <li><strong>Portfolio Risk</strong> — Evaluate overall portfolio exposure across multiple trades</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/risk-calculator'); }}>
-            Open Risk Calculator
-          </PopupActionButton>
+          <CalcInputGroup>
+            <span className="calc-label">Stake Amount <span className="calc-hint">(USD)</span></span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">$</span>
+              <input 
+                type="number" 
+                value={calcStake} 
+                onChange={(e) => setCalcStake(parseFloat(e.target.value) || 0)}
+                min="0"
+                step="10"
+              />
+            </div>
+          </CalcInputGroup>
+
+          <CalcInputGroup>
+            <span className="calc-label">Risk Percentage <span className="calc-hint">(% of stake)</span></span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">%</span>
+              <input 
+                type="number" 
+                value={calcRisk} 
+                onChange={(e) => setCalcRisk(parseFloat(e.target.value) || 0)}
+                min="0"
+                max="100"
+                step="0.5"
+              />
+            </div>
+          </CalcInputGroup>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <CalcInputGroup>
+              <span className="calc-label">Stop Loss <span className="calc-hint">(pips)</span></span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">SL</span>
+                <input 
+                  type="number" 
+                  value={calcStopLoss} 
+                  onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="5"
+                />
+              </div>
+            </CalcInputGroup>
+
+            <CalcInputGroup>
+              <span className="calc-label">Take Profit <span className="calc-hint">(pips)</span></span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">TP</span>
+                <input 
+                  type="number" 
+                  value={calcTakeProfit} 
+                  onChange={(e) => setCalcTakeProfit(parseFloat(e.target.value) || 0)}
+                  min="0"
+                  step="5"
+                />
+              </div>
+            </CalcInputGroup>
+          </div>
+
+          <CalcResultGrid>
+            <CalcResultBox type="risk">
+              <div className="result-label">Risk Amount</div>
+              <div className="result-value">${riskAmount.toFixed(2)}</div>
+              <div className="result-sub">{calcRisk}% of stake</div>
+            </CalcResultBox>
+            <CalcResultBox type="reward">
+              <div className="result-label">Reward Amount</div>
+              <div className="result-value">${rewardAmount.toFixed(2)}</div>
+              <div className="result-sub">{((calcTakeProfit / calcStopLoss) * calcRisk).toFixed(2)}% of stake</div>
+            </CalcResultBox>
+            <CalcResultBox type="ratio">
+              <div className="result-label">Risk/Reward</div>
+              <div className="result-value">1:{riskRewardRatio.toFixed(2)}</div>
+              <div className="result-sub">{riskRewardRatio.toFixed(2)}x reward</div>
+            </CalcResultBox>
+          </CalcResultGrid>
         </>
       )
     });
   };
 
+  // ===== HOW TO USE =====
   const handleHowToUseClick = () => {
     setActiveItem('how-to-use');
     
+    const steps = [
+      { number: 1, title: 'Connect Your Account', desc: 'Link your Deriv account to access real-time trading data and execute trades directly from the platform.' },
+      { number: 2, title: 'Select a Market', desc: 'Choose from multiple volatility indices including 1s and standard options to start trading.' },
+      { number: 3, title: 'Choose Your Strategy', desc: 'Select between manual, auto, or bot-assisted trading modes based on your preference.' },
+      { number: 4, title: 'Monitor Your Positions', desc: 'Track open positions, view performance metrics, and manage risk in real-time.' },
+      { number: 5, title: 'Customize Experience', desc: 'Personalize themes, notification settings, and display preferences to suit your workflow.' },
+    ];
+
     openPopup({
       title: 'How to Use This Tool',
       icon: <BookIcon />,
       content: (
         <>
-          <PopupDescription>
-            A comprehensive guide to help you navigate and utilize all the features of Voltix Traders.
-          </PopupDescription>
-          <PopupFeatureList>
-            <li><strong>Connect Account</strong> — Link your Deriv account to access real-time trading data</li>
-            <li><strong>Select Market</strong> — Choose from multiple volatility indices and trading pairs</li>
-            <li><strong>Execute Trades</strong> — Use manual, auto, or bot-assisted trading modes</li>
-            <li><strong>Monitor Positions</strong> — Track open positions and performance in real-time</li>
-            <li><strong>Customize Experience</strong> — Personalize themes, notifications, and display settings</li>
-          </PopupFeatureList>
-          <PopupActionButton onClick={() => { closePopup(); navigate('/how-to-use'); }}>
-            View Full Guide
-          </PopupActionButton>
+          {steps.map((step) => (
+            <StepItem key={step.number}>
+              <div className="step-number">{step.number}</div>
+              <div className="step-content">
+                <div className="step-title">{step.title}</div>
+                <div className="step-desc">{step.desc}</div>
+              </div>
+            </StepItem>
+          ))}
         </>
       )
     });
@@ -1073,24 +1666,28 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* POPUP / MODAL */}
-      <PopupOverlay isOpen={isPopupOpen} onClick={closePopup}>
-        <PopupContainer onClick={(e) => e.stopPropagation()}>
-          <PopupHeader>
+      {/* PREMIUM CENTERED MODAL */}
+      <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
+        <ModalContainer onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
             <div className="title-group">
               <span className="title-icon">{popupData?.icon}</span>
-              <span className="title">{popupData?.title}</span>
+              <span className="title-text">{popupData?.title}</span>
+              {popupData?.badge && (
+                <span className="title-badge">{popupData.badge}</span>
+              )}
             </div>
             <button className="close-btn" onClick={closePopup}>
               <CloseXIcon />
             </button>
-          </PopupHeader>
-          <PopupBody>
+          </ModalHeader>
+          <ModalBody>
             {popupData?.content}
-          </PopupBody>
-        </PopupContainer>
-      </PopupOverlay>
+          </ModalBody>
+        </ModalContainer>
+      </ModalOverlay>
 
+      {/* SIDEBAR */}
       <Overlay isOpen={isOpen} onClick={onClose} />
       
       <SidebarContainer isOpen={isOpen}>
@@ -1099,7 +1696,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         </CloseButton>
 
         <SidebarContent>
-          {/* USER HEADER */}
           <SidebarHeader>
             <div className="avatar">VT</div>
             <div className="user-info">
@@ -1108,7 +1704,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
-          {/* UPDATES SECTION - Includes Voice Notifications toggle */}
           <NavSection>
             <SectionLabel>Updates</SectionLabel>
             <NavItem 
@@ -1122,20 +1717,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
             <NavItem 
               active={activeItem === 'voice'}
-              onClick={handleVoiceToggle}
+              onClick={handleVoiceClick}
             >
-              <span className="nav-icon"><VoiceIcon /></span>
+              <span className="nav-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
               <span className="nav-label">Voice Notifications</span>
               <span className="badge" style={{ 
-                background: voiceNotifications ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                color: voiceNotifications ? '#10B981' : '#EF4444'
+                background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                color: voiceEnabled ? '#10B981' : '#EF4444'
               }}>
-                {voiceNotifications ? 'On' : 'Off'}
+                {voiceEnabled ? 'On' : 'Off'}
               </span>
             </NavItem>
           </NavSection>
 
-          {/* LEARNING SECTION */}
           <NavSection>
             <SectionLabel>Learning</SectionLabel>
             <NavItem 
@@ -1148,7 +1742,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* ACCOUNT SECTION */}
           <NavSection>
             <SectionLabel>Account</SectionLabel>
             <NavItem 
@@ -1160,7 +1753,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* TRADING SECTION */}
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
             <NavItem 
@@ -1190,7 +1782,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* WELLNESS / RESPONSIBLE TRADING */}
           <NavSection>
             <SectionLabel>Wellness</SectionLabel>
             <SideCard>
@@ -1219,7 +1810,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </SideCard>
           </NavSection>
 
-          {/* FEEDBACK SECTION */}
           <NavSection>
             <SectionLabel>Feedback</SectionLabel>
             <FeedbackSection>
@@ -1266,7 +1856,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </FeedbackSection>
           </NavSection>
 
-          {/* GUIDE & LEGAL SECTION */}
           <NavSection>
             <SectionLabel>Information</SectionLabel>
             <NavItem 
@@ -1285,7 +1874,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* COMPANY SECTION */}
           <NavSection>
             <SectionLabel>Company</SectionLabel>
             <SideCard>
@@ -1311,7 +1899,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </NavSection>
         </SidebarContent>
 
-        {/* FOOTER */}
         <SidebarFooter>
           <div className="footer-item" onClick={() => handleNavClick('settings', '/settings')}>
             <span className="footer-icon"><SettingsIcon /></span>
