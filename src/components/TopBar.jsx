@@ -764,18 +764,17 @@ const ExitButton = styled.button`
 `;
 
 // ============================================
-// THEME DEFINITIONS - Updated with premium themes// ============================================
+// THEME DEFINITIONS - Premium themes (matching Derivdash)
+// ============================================
 const THEME_OPTIONS = [
   { key: 'dark', name: 'Solid Dark', color: '#09090b' },
   { key: 'midnight', name: 'Midnight Indigo', color: '#070a12' },
   { key: 'ocean', name: 'Deep Ocean', color: '#020d14' },
   { key: 'cosmic', name: 'Cosmic Violet', color: '#07040d' },
-  { key: 'darkBlue', name: 'Deep Blue', color: '#0f172a' },
   { key: 'forest', name: 'Emerald', color: '#040d0a' },
-  { key: 'darkGreen', name: 'Forest Green', color: '#052e16' },
-  { key: 'black', name: 'Pure Black', color: '#000000' },
+  { key: 'sunset', name: 'Warm Sunset', color: '#0f0705' },
   { key: 'light', name: 'Pure White', color: '#f9fafb' },
-  { key: 'lightGray', name: 'Light Gray', color: '#e5e7eb' },
+  { key: 'minimalWhite', name: 'Minimal White', color: '#f9fafb' },
 ];
 
 // ============================================
@@ -786,7 +785,7 @@ const TopPanel = ({
   isSidebarOpen, 
   onSidebarToggle, 
   currentTheme = 'dark', 
-  onThemeChange 
+  onThemeChange // <-- Theme control from Derivdash
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
@@ -823,7 +822,6 @@ const TopPanel = ({
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
   const isDemo = accountType === 'demo';
 
-  // ===== FORMAT NUMBER WITH COMMAS =====
   const formatNumberWithCommas = (number) => {
     return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
@@ -882,7 +880,6 @@ const TopPanel = ({
 
   const activeThemeObj = THEME_OPTIONS.find(t => t.key === currentTheme) || THEME_OPTIONS[0];
 
-  // Funds options
   const fundOptions = [
     { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds to your account' },
     { icon: <WithdrawIcon />, name: 'Withdraw', desc: 'Request a withdrawal' },
@@ -909,7 +906,7 @@ const TopPanel = ({
       </LeftSection>
 
       <RightSection>
-        {/* 1. THEME BUTTON - Premium styled */}
+        {/* 1. THEME BUTTON - Controls theme for all pages */}
         <DropdownContainer ref={themeRef}>
           <ThemeButton onClick={toggleThemeDropdown} activeColor={activeThemeObj.color}>
             <span className="theme-icon"><ThemeIcon /></span>
@@ -924,7 +921,9 @@ const TopPanel = ({
               <ThemeOptionItem
                 key={t.key}
                 onClick={() => {
-                  if (onThemeChange) onThemeChange(t.key);
+                  if (onThemeChange) {
+                    onThemeChange(t.key); // <-- Updates theme in Derivdash
+                  }
                   setIsThemeOpen(false);
                 }}
                 className={currentTheme === t.key ? 'active' : ''}

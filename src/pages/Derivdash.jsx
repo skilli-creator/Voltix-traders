@@ -1,4 +1,4 @@
-// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fullscreen + Theme Switch)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fullscreen)
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
@@ -9,15 +9,8 @@ import ChartPanel from '../components/ChartPanel';
 import RightPanel from '../components/RightPanel';
 
 /**
- * Modern Design System Theme Definitions
- * Compatible with styled-components, Emotion, or CSS Variables injection.
- */
-
-/**
  * Modern Design System - Premium Color Schemes
- * Preserves exact legacy keys ('dark', 'light', 'minimalWhite', etc.) to prevent crashes.
  */
-
 const themes = {
   // === SOLID WHITE THEMES ===
   light: {
@@ -28,28 +21,21 @@ const themes = {
       surface: '#f8fafc',
       surfaceHover: '#f1f5f9',
       surfaceActive: '#e2e8f0',
-      
-      // Translucent Dropdown Surface (High Opacity + Blur)
       surfaceGlass: 'rgba(255, 255, 255, 0.92)',
       glassBorder: 'rgba(0, 0, 0, 0.08)',
       glassBlur: '20px',
-      
       border: '#e2e8f0',
       borderMuted: '#f1f5f9',
-      
       text: '#020617',
       textSecondary: '#475569',
       textMuted: '#94a3b8',
-      
       accent: '#0f172a',
       accentHover: '#1e293b',
       accentLight: 'rgba(15, 23, 42, 0.06)',
       accentMuted: 'rgba(15, 23, 42, 0.15)',
-      
       success: '#059669',
       warning: '#d97706',
       danger: '#dc2626',
-      
       shadow: '0 20px 30px -10px rgba(0, 0, 0, 0.08)',
       scrollbar: '#cbd5e1',
     }
@@ -63,27 +49,21 @@ const themes = {
       surface: '#f9fafb',
       surfaceHover: '#f3f4f6',
       surfaceActive: '#e5e7eb',
-      
       surfaceGlass: 'rgba(255, 255, 255, 0.94)',
       glassBorder: 'rgba(0, 0, 0, 0.06)',
       glassBlur: '20px',
-      
       border: '#e5e7eb',
       borderMuted: '#f3f4f6',
-      
       text: '#111827',
       textSecondary: '#4b5563',
       textMuted: '#9ca3af',
-      
       accent: '#2563eb',
       accentHover: '#1d4ed8',
       accentLight: 'rgba(37, 99, 235, 0.08)',
       accentMuted: 'rgba(37, 99, 235, 0.2)',
-      
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#ef4444',
-      
       shadow: '0 10px 30px -10px rgba(0, 0, 0, 0.06)',
       scrollbar: '#d1d5db',
     }
@@ -98,28 +78,21 @@ const themes = {
       surface: '#0a0a0c',
       surfaceHover: '#141417',
       surfaceActive: '#1f1f24',
-      
-      // Translucent Dropdown Surface (High Opacity + Blur)
       surfaceGlass: 'rgba(10, 10, 12, 0.88)',
       glassBorder: 'rgba(255, 255, 255, 0.12)',
       glassBlur: '20px',
-      
       border: '#1f1f24',
       borderMuted: '#141417',
-      
       text: '#ffffff',
       textSecondary: '#a1a1aa',
       textMuted: '#52525b',
-      
       accent: '#3b82f6',
       accentHover: '#2563eb',
       accentLight: 'rgba(59, 130, 246, 0.15)',
       accentMuted: 'rgba(59, 130, 246, 0.3)',
-      
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#ef4444',
-      
       shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.9)',
       scrollbar: '#27272a',
     }
@@ -133,27 +106,21 @@ const themes = {
       surface: '#0f172a',
       surfaceHover: '#1e293b',
       surfaceActive: '#334155',
-      
       surfaceGlass: 'rgba(15, 23, 42, 0.88)',
       glassBorder: 'rgba(99, 102, 241, 0.25)',
       glassBlur: '20px',
-      
       border: '#1e293b',
       borderMuted: '#0f172a',
-      
       text: '#f8fafc',
       textSecondary: '#94a3b8',
       textMuted: '#64748b',
-      
       accent: '#6366f1',
       accentHover: '#4f46e5',
       accentLight: 'rgba(99, 102, 241, 0.15)',
       accentMuted: 'rgba(99, 102, 241, 0.3)',
-      
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#f43f5e',
-      
       shadow: '0 20px 40px -15px rgba(2, 6, 23, 0.8)',
       scrollbar: '#1e293b',
     }
@@ -167,27 +134,21 @@ const themes = {
       surface: '#071e2e',
       surfaceHover: '#0d283d',
       surfaceActive: '#153650',
-      
       surfaceGlass: 'rgba(7, 30, 46, 0.88)',
       glassBorder: 'rgba(6, 182, 212, 0.25)',
       glassBlur: '20px',
-      
       border: '#133048',
       borderMuted: '#071e2e',
-      
       text: '#f0f9ff',
       textSecondary: '#7dd3fc',
       textMuted: '#38bdf8',
-      
       accent: '#06b6d4',
       accentHover: '#0891b2',
       accentLight: 'rgba(6, 182, 212, 0.15)',
       accentMuted: 'rgba(6, 182, 212, 0.3)',
-      
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#f43f5e',
-      
       shadow: '0 20px 40px -15px rgba(1, 15, 26, 0.8)',
       scrollbar: '#133048',
     }
@@ -201,27 +162,21 @@ const themes = {
       surface: '#130d24',
       surfaceHover: '#1c1436',
       surfaceActive: '#281c4d',
-      
       surfaceGlass: 'rgba(19, 13, 36, 0.88)',
       glassBorder: 'rgba(139, 92, 246, 0.25)',
       glassBlur: '20px',
-      
       border: '#241a45',
       borderMuted: '#130d24',
-      
       text: '#f5f3ff',
       textSecondary: '#a78bfa',
       textMuted: '#7c3aed',
-      
       accent: '#8b5cf6',
       accentHover: '#7c3aed',
       accentLight: 'rgba(139, 92, 246, 0.15)',
       accentMuted: 'rgba(139, 92, 246, 0.3)',
-      
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#ef4444',
-      
       shadow: '0 20px 40px -15px rgba(5, 2, 12, 0.9)',
       scrollbar: '#241a45',
     }
@@ -235,27 +190,21 @@ const themes = {
       surface: '#0b1c17',
       surfaceHover: '#122b24',
       surfaceActive: '#1a3d33',
-      
       surfaceGlass: 'rgba(11, 28, 23, 0.88)',
       glassBorder: 'rgba(16, 185, 129, 0.25)',
       glassBlur: '20px',
-      
       border: '#16382e',
       borderMuted: '#0b1c17',
-      
       text: '#ecfdf5',
       textSecondary: '#6ee7b7',
       textMuted: '#34d399',
-      
       accent: '#10b981',
       accentHover: '#059669',
       accentLight: 'rgba(16, 185, 129, 0.15)',
       accentMuted: 'rgba(16, 185, 129, 0.3)',
-      
       success: '#059669',
       warning: '#f59e0b',
       danger: '#ef4444',
-      
       shadow: '0 20px 40px -15px rgba(2, 10, 8, 0.8)',
       scrollbar: '#16382e',
     }
@@ -269,27 +218,21 @@ const themes = {
       surface: '#21120f',
       surfaceHover: '#311b17',
       surfaceActive: '#442721',
-      
       surfaceGlass: 'rgba(33, 18, 15, 0.88)',
       glassBorder: 'rgba(249, 115, 22, 0.25)',
       glassBlur: '20px',
-      
       border: '#3a201b',
       borderMuted: '#21120f',
-      
       text: '#fff7ed',
       textSecondary: '#fdba74',
       textMuted: '#fb923c',
-      
       accent: '#f97316',
       accentHover: '#ea580c',
       accentLight: 'rgba(249, 115, 22, 0.15)',
       accentMuted: 'rgba(249, 115, 22, 0.3)',
-      
       success: '#10b981',
       warning: '#f59e0b',
       danger: '#ef4444',
-      
       shadow: '0 20px 40px -15px rgba(15, 5, 3, 0.8)',
       scrollbar: '#3a201b',
     }
@@ -302,7 +245,7 @@ const DashboardContainer = styled.div`
   flex-direction: column;
   height: 100vh;
   height: ${props => props.isFullscreen ? '100dvh' : '100vh'};
-  background: ${props => props.theme.colors.background};
+  background: ${props => props.theme.colors.bg || props.theme.colors.background};
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -349,7 +292,6 @@ const DesktopLayout = styled.div`
   }
 `;
 
-// ===== FIXED PANEL WRAPPERS WITH FORCED SIZING =====
 const PanelWrapper = styled.div`
   flex: ${props => props.flex || '1'};
   min-width: 0;
@@ -358,7 +300,6 @@ const PanelWrapper = styled.div`
   display: flex;
   flex-direction: column;
   
-  /* Force the panel to take full width of wrapper */
   & > * {
     flex: 1;
     width: 100% !important;
@@ -428,7 +369,7 @@ const PanelContent = styled.div`
 
 const MobileTabs = styled.div`
   display: flex;
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   border-top: 2px solid ${props => props.theme.colors.border};
   flex-shrink: 0;
   padding: 4px 8px;
@@ -446,7 +387,7 @@ const TabButton = styled.button`
   flex: 1;
   padding: 8px 4px;
   border: 2px solid transparent;
-  background: ${props => props.active ? props.theme.colors.tabActive : 'transparent'};
+  background: ${props => props.active ? props.theme.colors.accentLight : 'transparent'};
   color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textSecondary};
   border-radius: 8px;
   font-size: 10px;
@@ -479,7 +420,7 @@ const TabButton = styled.button`
   }
 
   &:hover {
-    background: ${props => props.theme.colors.accentActive};
+    background: ${props => props.theme.colors.accentLight};
     border-color: ${props => props.active ? props.theme.colors.accent : 'transparent'};
     
     .icon {
@@ -529,7 +470,7 @@ const FullscreenButton = styled.button`
   height: ${props => props.isMobile ? '44px' : '48px'};
   border-radius: 50%;
   border: 2px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   color: ${props => props.theme.colors.textSecondary};
   cursor: pointer;
   transition: all 0.3s ease;
@@ -542,7 +483,7 @@ const FullscreenButton = styled.button`
   font-weight: 700;
 
   &:hover {
-    background: ${props => props.theme.colors.accentActive};
+    background: ${props => props.theme.colors.accentLight};
     border-color: ${props => props.theme.colors.accent};
     color: ${props => props.theme.colors.accent};
     transform: scale(1.05);
@@ -573,49 +514,13 @@ const FullscreenButton = styled.button`
   }
 `;
 
-// ===== THEME SWITCH BUTTON =====
-const ThemeToggleButton = styled.button`
-  width: ${props => props.isMobile ? '44px' : '48px'};
-  height: ${props => props.isMobile ? '44px' : '48px'};
-  border-radius: 50%;
-  border: 2px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.backgroundSecondary};
-  color: ${props => props.theme.colors.textSecondary};
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: ${props => props.isMobile ? '18px' : '20px'};
-  box-shadow: 0 4px 20px ${props => props.theme.colors.shadow};
-  position: relative;
-  font-weight: 700;
-
-  &:hover {
-    background: ${props => props.theme.colors.accentActive};
-    border-color: ${props => props.theme.colors.accent};
-    color: ${props => props.theme.colors.accent};
-    transform: scale(1.05);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  @media (max-width: 480px) {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-  }
-`;
-
 // ===== TOOLTIP =====
 const Tooltip = styled.span`
   position: absolute;
   right: calc(100% + 12px);
   top: 50%;
   transform: translateY(-50%);
-  background: ${props => props.theme.colors.backgroundSecondary};
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   color: ${props => props.theme.colors.text};
   padding: 4px 12px;
   border-radius: 6px;
@@ -637,7 +542,7 @@ const Tooltip = styled.span`
     transform: translateY(-50%);
     border-top: 5px solid transparent;
     border-bottom: 5px solid transparent;
-    border-left: 5px solid ${props => props.theme.colors.backgroundSecondary};
+    border-left: 5px solid ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   }
 
   ${props => props.show && `
@@ -648,102 +553,6 @@ const Tooltip = styled.span`
 
   @media (max-width: 768px) {
     display: none;
-  }
-`;
-
-// ===== THEME DROPDOWN =====
-const ThemeDropdown = styled.div`
-  position: absolute;
-  bottom: calc(100% + 12px);
-  right: 0;
-  background: ${props => props.theme.colors.backgroundSecondary};
-  border: 2px solid ${props => props.theme.colors.border};
-  border-radius: 12px;
-  padding: 6px;
-  display: ${props => props.isOpen ? 'flex' : 'none'};
-  flex-direction: column;
-  gap: 4px;
-  min-width: 160px;
-  max-height: 360px;
-  overflow-y: auto;
-  box-shadow: 0 8px 32px ${props => props.theme.colors.shadow};
-  animation: slideUp 0.2s ease;
-  font-weight: 700;
-
-  &::-webkit-scrollbar {
-    width: 3px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.scrollbar};
-    border-radius: 4px;
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (max-width: 480px) {
-    min-width: 130px;
-    right: -5px;
-    max-height: 280px;
-  }
-`;
-
-// ===== THEME OPTION =====
-const ThemeOption = styled.button`
-  padding: 8px 12px;
-  border: none;
-  border-radius: 8px;
-  background: ${props => props.active ? props.theme.colors.accentActive : 'transparent'};
-  color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textSecondary};
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: ${props => props.active ? '700' : '400'};
-  width: 100%;
-  text-align: left;
-
-  &:hover {
-    background: ${props => props.theme.colors.accentActive};
-    color: ${props => props.theme.colors.text};
-  }
-
-  .color-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid ${props => props.theme.colors.border};
-    flex-shrink: 0;
-    transition: border-color 0.2s ease;
-  }
-
-  ${props => props.active && `
-    .color-dot {
-      border-color: ${props.theme.colors.accent};
-    }
-  `}
-
-  @media (max-width: 480px) {
-    padding: 6px 10px;
-    font-size: 11px;
-    
-    .color-dot {
-      width: 14px;
-      height: 14px;
-    }
   }
 `;
 
@@ -786,48 +595,11 @@ const FullscreenExitIcon = () => (
   </svg>
 );
 
-const ThemeIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" />
-    <line x1="12" y1="21" x2="12" y2="23" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-    <line x1="1" y1="12" x2="3" y2="12" />
-    <line x1="21" y1="12" x2="23" y2="12" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-  </svg>
-);
-
 const panels = [
   { id: 'chart', label: 'Chart', icon: <ChartIcon />, component: ChartPanel },
   { id: 'trade', label: 'Trade', icon: <TradeIcon />, component: RightPanel },
   { id: 'positions', label: 'Positions', icon: <PositionsIcon />, component: LeftPanel },
 ];
-
-// Theme color map for dots
-const themeColorMap = {
-  black: '#0b0f1a',
-  dark: '#111827',
-  darkBlue: '#0f172a',
-  midnight: '#0b132b',
-  darkGreen: '#052e16',
-  white: '#f9fafb',
-  lightGray: '#e5e7eb',
-  blue: '#1d4ed8',
-  ocean: '#0369a1',
-  purple: '#6d28d9',
-  pink: '#db2777',
-  red: '#dc2626',
-  orange: '#ea580c',
-  yellow: '#eab308',
-  gold: '#d4af37',
-  teal: '#0d9488',
-  violet: '#7c3aed',
-  cosmic: '#1e1b4b',
-  forest: '#14532d',
-};
 
 // ============================================
 // MAIN COMPONENT
@@ -838,13 +610,15 @@ const Derivdash = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState('dark');
-  const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
-  const [hoveredButton, setHoveredButton] = useState(null);
+  const [currentTheme, setCurrentTheme] = useState('dark'); // Theme state managed here
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const containerRef = useRef(null);
-  const themeDropdownRef = useRef(null);
+
+  // Theme change handler - passed to TopBar
+  const handleThemeChange = (themeName) => {
+    setCurrentTheme(themeName);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -878,7 +652,6 @@ const Derivdash = () => {
   // Auto-fullscreen for phone/tablet devices
   useEffect(() => {
     const autoFullscreen = async () => {
-      // Check if device is mobile or tablet (width <= 1024px)
       if (window.innerWidth <= 1024 && !document.fullscreenElement) {
         try {
           const element = document.documentElement;
@@ -893,16 +666,13 @@ const Derivdash = () => {
           }
           setIsFullscreen(true);
         } catch (error) {
-          // Silently fail if fullscreen is not supported or blocked
           console.log('Auto-fullscreen not supported or blocked');
         }
       }
     };
 
-    // Trigger auto-fullscreen on mount
     autoFullscreen();
 
-    // Add listener for orientation changes or resize to re-trigger
     const handleOrientationChange = () => {
       if (window.innerWidth <= 1024 && !document.fullscreenElement) {
         autoFullscreen();
@@ -916,17 +686,6 @@ const Derivdash = () => {
       window.removeEventListener('resize', handleOrientationChange);
       window.removeEventListener('orientationchange', handleOrientationChange);
     };
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (themeDropdownRef.current && !themeDropdownRef.current.contains(event.target)) {
-        setIsThemeDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const toggleSidebar = () => {
@@ -985,15 +744,6 @@ const Derivdash = () => {
     }
   };
 
-  const toggleThemeDropdown = () => {
-    setIsThemeDropdownOpen(!isThemeDropdownOpen);
-  };
-
-  const changeTheme = (themeName) => {
-    setCurrentTheme(themeName);
-    setIsThemeDropdownOpen(false);
-  };
-
   return (
     <ThemeProvider theme={themes[currentTheme]}>
       <DashboardContainer 
@@ -1002,7 +752,9 @@ const Derivdash = () => {
       >
         <TopBar 
           isSidebarOpen={isSidebarOpen} 
-          onSidebarToggle={toggleSidebar} 
+          onSidebarToggle={toggleSidebar}
+          currentTheme={currentTheme}        // Pass current theme to TopBar
+          onThemeChange={handleThemeChange}  // Pass theme change handler
         />
 
         <OptionSideBar 
@@ -1058,51 +810,15 @@ const Derivdash = () => {
           </MobileLayout>
         </MainContent>
 
-        {/* Floating Buttons */}
+        {/* Floating Buttons - Only Fullscreen */}
         <FloatingButtonsContainer isMobile={isMobile}>
-          <div ref={themeDropdownRef} style={{ position: 'relative' }}>
-            <ThemeToggleButton
-              onClick={toggleThemeDropdown}
-              isMobile={isMobile}
-              aria-label="Toggle Theme"
-              onMouseEnter={() => setHoveredButton('theme')}
-              onMouseLeave={() => setHoveredButton(null)}
-            >
-              <ThemeIcon />
-              <Tooltip show={hoveredButton === 'theme' && !isMobile}>
-                Change Theme
-              </Tooltip>
-            </ThemeToggleButton>
-
-            <ThemeDropdown isOpen={isThemeDropdownOpen}>
-              {Object.entries(themes).map(([key, theme]) => (
-                <ThemeOption
-                  key={key}
-                  active={currentTheme === key}
-                  onClick={() => changeTheme(key)}
-                >
-                  <span 
-                    className="color-dot" 
-                    style={{ background: themeColorMap[key] }}
-                  />
-                  {theme.name}
-                </ThemeOption>
-              ))}
-            </ThemeDropdown>
-          </div>
-
           <FullscreenButton 
             onClick={toggleFullscreen}
             isFullscreen={isFullscreen}
             isMobile={isMobile}
             aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-            onMouseEnter={() => setHoveredButton('fullscreen')}
-            onMouseLeave={() => setHoveredButton(null)}
           >
             {isFullscreen ? <FullscreenExitIcon /> : <FullscreenEnterIcon />}
-            <Tooltip show={hoveredButton === 'fullscreen' && !isMobile}>
-              {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-            </Tooltip>
           </FullscreenButton>
         </FloatingButtonsContainer>
       </DashboardContainer>
