@@ -296,7 +296,6 @@ const themes = {
   }
 };
 
-export default themes;
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
