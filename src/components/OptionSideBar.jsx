@@ -1,5 +1,5 @@
 // src/components/OptionSideBar.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -44,6 +44,16 @@ const fadeUp = keyframes`
 const breathe = keyframes`
   0%, 100% { opacity: 0.3; }
   50% { opacity: 0.6; }
+`;
+
+const slideInRight = keyframes`
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+`;
+
+const slideOutRight = keyframes`
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
 `;
 
 // ============================================
@@ -285,8 +295,268 @@ const UsersIcon = () => (
   </svg>
 );
 
+const CloseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
 // ============================================
-// PREMIUM MODAL
+// FULL PANEL (Right Side Slide-in)
+// ============================================
+const FullPanelOverlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: ${props => (props.isOpen ? 'flex' : 'none')};
+  align-items: center;
+  justify-content: flex-end;
+  animation: ${modalBackdrop} 0.3s ease;
+`;
+
+const FullPanelContainer = styled.div`
+  width: 75%;
+  height: 100vh;
+  height: 100dvh;
+  background: ${props => props.theme?.colors?.surface || '#0F172A'};
+  border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  animation: ${slideInRight} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.4);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme?.colors?.accent || '#3B82F6'},
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: ${shimmer} 4s ease-in-out infinite;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+const FullPanelHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  flex-shrink: 0;
+
+  .panel-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  }
+
+  .panel-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    letter-spacing: -0.3px;
+  }
+
+  .panel-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    background: transparent;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    &:hover {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+      transform: rotate(90deg);
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 16px;
+    .panel-title { font-size: 16px; }
+    .panel-icon { width: 34px; height: 34px; }
+  }
+`;
+
+const FullPanelBody = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 28px;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
+    border-radius: 99px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
+`;
+
+// ============================================
+// ACADEMY CONTENT STYLES
+// ============================================
+const AcademyContent = styled.div`
+  animation: ${fadeUp} 0.5s ease;
+`;
+
+const AcademyHero = styled.div`
+  text-align: center;
+  padding: 20px 0 30px;
+
+  .badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #f1f5f9;
+    line-height: 1.1;
+    margin-bottom: 6px;
+
+    .gradient {
+      background: linear-gradient(135deg, #22c55e, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #94a3b8;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 0 20px;
+    .title { font-size: 22px; }
+    .subtitle { font-size: 12px; }
+  }
+`;
+
+const AcademyGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const AcademyCard = styled.div`
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.3)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.02)'};
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 4px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'};
+    line-height: 1.5;
+  }
+
+  .card-tag {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: rgba(34, 197, 94, 0.08);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.06);
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 16px;
+    .card-title { font-size: 13px; }
+    .card-desc { font-size: 11px; }
+  }
+`;
+
+// ============================================
+// PREMIUM MODAL (Small Popups)
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -2626,6 +2896,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSettingsPopup, setIsSettingsPopup] = useState(false);
 
+  // Full Panel state
+  const [isFullPanelOpen, setIsFullPanelOpen] = useState(false);
+  const [fullPanelContent, setFullPanelContent] = useState(null);
+
   // Settings state
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -2746,6 +3020,16 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const closePopup = () => {
     setIsPopupOpen(false);
     setTimeout(() => setPopupData(null), 300);
+  };
+
+  const openFullPanel = (content) => {
+    setFullPanelContent(content);
+    setIsFullPanelOpen(true);
+  };
+
+  const closeFullPanel = () => {
+    setIsFullPanelOpen(false);
+    setTimeout(() => setFullPanelContent(null), 300);
   };
 
   const handleNavClick = (item, path) => {
@@ -3302,6 +3586,80 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     });
   };
 
+  // ===== ACADEMY HANDLER (Full Panel) =====
+  const handleAcademyClick = () => {
+    setActiveItem('academy');
+    openFullPanel(
+      <AcademyContent>
+        <AcademyHero>
+          <div className="badge">Learning Center</div>
+          <h1 className="title">
+            MyTradeApp <span className="gradient">Academy</span>
+          </h1>
+          <p className="subtitle">
+            Master your trading skills with our comprehensive learning resources and expert guides.
+          </p>
+        </AcademyHero>
+
+        <AcademyGrid>
+          <AcademyCard>
+            <div className="card-icon"><AcademyIcon /></div>
+            <div className="card-title">Getting Started</div>
+            <div className="card-desc">
+              Learn the basics of trading on Deriv and how to use MyTradeApp effectively.
+            </div>
+            <span className="card-tag">Beginner</span>
+          </AcademyCard>
+
+          <AcademyCard>
+            <div className="card-icon"><TrendingUpIcon /></div>
+            <div className="card-title">Trading Strategies</div>
+            <div className="card-desc">
+              Discover proven trading strategies for volatility indices and forex markets.
+            </div>
+            <span className="card-tag">Intermediate</span>
+          </AcademyCard>
+
+          <AcademyCard>
+            <div className="card-icon"><RiskIcon /></div>
+            <div className="card-title">Risk Management</div>
+            <div className="card-desc">
+              Master position sizing, stop-loss placement, and portfolio protection techniques.
+            </div>
+            <span className="card-tag">Advanced</span>
+          </AcademyCard>
+
+          <AcademyCard>
+            <div className="card-icon"><BookIcon /></div>
+            <div className="card-title">Technical Analysis</div>
+            <div className="card-desc">
+              Learn to read charts, identify patterns, and use indicators for better entries.
+            </div>
+            <span className="card-tag">Intermediate</span>
+          </AcademyCard>
+
+          <AcademyCard>
+            <div className="card-icon"><ShieldIcon /></div>
+            <div className="card-title">Psychology of Trading</div>
+            <div className="card-desc">
+              Understand trading psychology and develop the discipline needed for success.
+            </div>
+            <span className="card-tag">All Levels</span>
+          </AcademyCard>
+
+          <AcademyCard>
+            <div className="card-icon"><SettingsIcon /></div>
+            <div className="card-title">Platform Features</div>
+            <div className="card-desc">
+              Explore all MyTradeApp features and learn how to maximize your trading efficiency.
+            </div>
+            <span className="card-tag">All Levels</span>
+          </AcademyCard>
+        </AcademyGrid>
+      </AcademyContent>
+    );
+  };
+
   // ===== RISK CALCULATOR HANDLER =====
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
@@ -3835,6 +4193,25 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
+      {/* Full Panel - Right Side Slide-in */}
+      <FullPanelOverlay isOpen={isFullPanelOpen} onClick={closeFullPanel}>
+        <FullPanelContainer onClick={(e) => e.stopPropagation()}>
+          <FullPanelHeader>
+            <div className="panel-title-group">
+              <span className="panel-icon"><AcademyIcon /></span>
+              <span className="panel-title">MyTradeApp Academy</span>
+            </div>
+            <button className="panel-close-btn" onClick={closeFullPanel}>
+              <CloseIcon />
+            </button>
+          </FullPanelHeader>
+          <FullPanelBody>
+            {fullPanelContent}
+          </FullPanelBody>
+        </FullPanelContainer>
+      </FullPanelOverlay>
+
+      {/* Small Modal Popups */}
       <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
         <ModalContainer settings={isSettingsPopup} onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
@@ -3878,7 +4255,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
           <NavSection>
             <SectionLabel>Learning</SectionLabel>
-            <NavItem active={activeItem === 'academy'} onClick={() => handleNavClick('academy', '/academy')}>
+            <NavItem active={activeItem === 'academy'} onClick={handleAcademyClick}>
               <span className="nav-icon"><AcademyIcon /></span>
               <span className="nav-label">MyTradeApp Academy</span>
               <span className="badge">NEW</span>
