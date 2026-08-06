@@ -11,10 +11,10 @@ import RightPanel from '../components/RightPanel';
 /**
  * Modern Design System - Premium Color Schemes
  */
-const themes = {
-  // === 1. SOLID WHITE BACKGROUNDS ===
+export const themes = {
+  // === 1. WHITE BACKGROUNDS ===
   light: {
-    name: 'Pure White & Champagne Gold',
+    name: 'Pure White (Solid)',
     category: 'light',
     colors: {
       bg: '#ffffff',
@@ -70,7 +70,7 @@ const themes = {
   },
 
   titaniumLight: {
-    name: 'Titanium Light & Rose Gold',
+    name: 'Titanium Pro (Light)',
     category: 'light',
     colors: {
       bg: '#ffffff',
@@ -97,9 +97,93 @@ const themes = {
     }
   },
 
-  // === 2. DARK & OLED BACKGROUNDS ===
+  // === 2. DARK BACKGROUNDS ===
+  bloombergTerminal: {
+    name: 'Bloomberg Pro Amber',
+    category: 'dark',
+    colors: {
+      bg: '#000000',
+      surface: '#0d0d0d',
+      surfaceHover: '#171717',
+      surfaceActive: '#242424',
+      surfaceGlass: 'rgba(13, 13, 13, 0.92)',
+      glassBorder: 'rgba(255, 153, 0, 0.2)',
+      glassBlur: '16px',
+      border: '#1f1f1f',
+      borderMuted: '#121212',
+      text: '#ff9900',
+      textSecondary: '#d1a153',
+      textMuted: '#785e2f',
+      accent: '#ff9900',
+      accentHover: '#ffad33',
+      accentLight: 'rgba(255, 153, 0, 0.1)',
+      accentMuted: 'rgba(255, 153, 0, 0.25)',
+      success: '#00ff66',
+      warning: '#ffcc00',
+      danger: '#ff3333',
+      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.95)',
+      scrollbar: '#262626',
+    }
+  },
+
+  quantOLED: {
+    name: 'Quant Black (OLED)',
+    category: 'dark',
+    colors: {
+      bg: '#000000',
+      surface: '#050505',
+      surfaceHover: '#0d0d0d',
+      surfaceActive: '#171717',
+      surfaceGlass: 'rgba(5, 5, 5, 0.95)',
+      glassBorder: 'rgba(59, 130, 246, 0.2)',
+      glassBlur: '24px',
+      border: '#121212',
+      borderMuted: '#0a0a0a',
+      text: '#ffffff',
+      textSecondary: '#888888',
+      textMuted: '#444444',
+      accent: '#3b82f6',
+      accentHover: '#60a5fa',
+      accentLight: 'rgba(59, 130, 246, 0.12)',
+      accentMuted: 'rgba(59, 130, 246, 0.25)',
+      success: '#00e676',
+      warning: '#ffb300',
+      danger: '#ff1744',
+      shadow: '0 24px 48px -12px rgba(0, 0, 0, 1)',
+      scrollbar: '#1a1a1a',
+    }
+  },
+
+  binanceFutures: {
+    name: 'Futures Dark Gold',
+    category: 'dark',
+    colors: {
+      bg: '#0b0e11',
+      surface: '#181a20',
+      surfaceHover: '#2b313a',
+      surfaceActive: '#363c4e',
+      surfaceGlass: 'rgba(24, 26, 32, 0.9)',
+      glassBorder: 'rgba(240, 185, 11, 0.2)',
+      glassBlur: '20px',
+      border: '#2b313a',
+      borderMuted: '#1e2329',
+      text: '#eaecef',
+      textSecondary: '#848e9c',
+      textMuted: '#474d57',
+      accent: '#f0b90b',
+      accentHover: '#fcd535',
+      accentLight: 'rgba(240, 185, 11, 0.12)',
+      accentMuted: 'rgba(240, 185, 11, 0.25)',
+      success: '#0ecb81',
+      warning: '#f0b90b',
+      danger: '#f6465d',
+      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.85)',
+      scrollbar: '#2b313a',
+    }
+  },
+
   dark: {
-    name: 'Quant Black & Liquid Gold',
+    name: 'Solid Dark Gold',
     category: 'dark',
     colors: {
       bg: '#000000',
@@ -126,35 +210,7 @@ const themes = {
     }
   },
 
-  quantOLED: {
-    name: 'Obsidian Velvet Gold',
-    category: 'dark',
-    colors: {
-      bg: '#050505',
-      surface: '#0d0d0d',
-      surfaceHover: '#171717',
-      surfaceActive: '#242424',
-      surfaceGlass: 'rgba(13, 13, 13, 0.9)',
-      glassBorder: 'rgba(240, 185, 11, 0.25)',
-      glassBlur: '20px',
-      border: '#262214',
-      borderMuted: '#14120a',
-      text: '#f5f5f7',
-      textSecondary: '#e6c667',
-      textMuted: '#8a7433',
-      accent: '#f0b90b',
-      accentHover: '#fcd535',
-      accentLight: 'rgba(240, 185, 11, 0.12)',
-      accentMuted: 'rgba(240, 185, 11, 0.25)',
-      success: '#0ecb81',
-      warning: '#f0b90b',
-      danger: '#f6465d',
-      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.95)',
-      scrollbar: '#2a2415',
-    }
-  },
-
-  emeraldGold: {
+  midnight: {
     name: 'Midnight Emerald & Gold',
     category: 'dark',
     colors: {
@@ -182,7 +238,7 @@ const themes = {
     }
   },
 
-  sapphireGold: {
+  ocean: {
     name: 'Royal Sapphire & Gold',
     category: 'dark',
     colors: {
@@ -211,8 +267,8 @@ const themes = {
   },
 
   // === 3. GOLD BACKGROUNDS ===
-  monacoGold: {
-    name: 'Monaco Solid Gold',
+  monacoLuxury: {
+    name: 'Monaco Obsidian Gold',
     category: 'gold',
     colors: {
       bg: '#1c160c',
@@ -239,7 +295,7 @@ const themes = {
     }
   },
 
-  imperialGold: {
+  sunset: {
     name: 'Imperial Metallic Gold',
     category: 'gold',
     colors: {
@@ -267,7 +323,7 @@ const themes = {
     }
   },
 
-  champagneGold: {
+  cosmic: {
     name: 'Champagne Silk Gold',
     category: 'gold',
     colors: {
@@ -296,6 +352,16 @@ const themes = {
   }
 };
 
+// Aliases to prevent blank screens when selecting remaining legacy keys
+themes.forest = themes.midnight;
+themes.tokyoNight = themes.ocean;
+
+// Safe accessor function to prevent blank screen crashes
+export const getTheme = (themeKey) => {
+  return themes[themeKey] || themes.dark || themes.light;
+};
+
+export default themes;
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
