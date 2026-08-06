@@ -108,7 +108,7 @@ const RiskIcon = () => (
 );
 
 const ShieldIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
   </svg>
 );
@@ -138,14 +138,14 @@ const CompanyIcon = () => (
 );
 
 const SettingsIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />
   </svg>
 );
 
 const HelpIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
     <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -160,20 +160,20 @@ const CloseXIcon = () => (
 );
 
 const EmailIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="4" width="20" height="16" rx="2" />
     <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
   </svg>
 );
 
 const PhoneIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
   </svg>
 );
 
 const WhatsAppIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
   </svg>
 );
@@ -202,6 +202,60 @@ const TrendingDownIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
     <polyline points="17 18 23 18 23 12" />
+  </svg>
+);
+
+const LogoutIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const GlobeIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+);
+
+const LogoIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+    <path d="M2 17l10 5 10-5" />
+    <path d="M2 12l10 5 10-5" />
+  </svg>
+);
+
+const DiamondIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+    <path d="M2 17l10 5 10-5" />
+    <path d="M2 12l10 5 10-5" />
+  </svg>
+);
+
+const InfoIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+  </svg>
+);
+
+const AwardIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="6" />
+    <polyline points="9 14 9 22 12 20 15 22 15 14" />
   </svg>
 );
 
@@ -479,7 +533,9 @@ const SettingsCard = styled.div`
     border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
     .icon {
-      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: ${props => props.theme?.colors?.textMuted || '#4b5563'};
     }
   }
@@ -1073,7 +1129,10 @@ const AboutContent = styled.div`
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
     .logo-icon {
-      font-size: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     }
 
     .logo-text {
@@ -1125,7 +1184,10 @@ const AboutContent = styled.div`
     text-align: center;
 
     .feature-icon {
-      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
       margin-bottom: 4px;
     }
 
@@ -2174,7 +2236,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <SettingsGrid>
             <SettingsCard>
               <div className="card-head">
-                <span className="icon">◈</span> Personal Information
+                <span className="icon"><DiamondIcon /></span> Personal Information
               </div>
 
               <SettingsField>
@@ -2323,7 +2385,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
             <SettingsCard>
               <div className="card-head">
-                <span className="icon">◈</span> Security & Privacy
+                <span className="icon"><DiamondIcon /></span> Security & Privacy
               </div>
 
               <SettingsField>
@@ -2352,10 +2414,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </SettingsField>
 
               <SettingsDangerZone>
-                <div className="dtitle">! Danger Zone</div>
+                <div className="dtitle"><LogoutIcon /> Danger Zone</div>
                 <div className="ddesc">Permanently delete your account and all data. Cannot be undone.</div>
                 <SettingsBtn className="danger" onClick={handleDeleteAccount}>
-                  🗑 Delete Account
+                  Delete Account
                 </SettingsBtn>
               </SettingsDangerZone>
             </SettingsCard>
@@ -2374,7 +2436,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       content: (
         <>
           <HelpContactCard>
-            <div className="contact-label">📧 Email Support</div>
+            <div className="contact-label">Email Support</div>
             <div className="contact-row">
               <div className="contact-icon"><EmailIcon /></div>
               <div className="contact-info">
@@ -2391,7 +2453,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </HelpContactCard>
 
           <HelpContactCard>
-            <div className="contact-label">📞 Phone Support</div>
+            <div className="contact-label">Phone Support</div>
             <div className="contact-row">
               <div className="contact-icon"><PhoneIcon /></div>
               <div className="contact-info">
@@ -2408,7 +2470,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </HelpContactCard>
 
           <HelpContactCard>
-            <div className="contact-label">💬 WhatsApp</div>
+            <div className="contact-label">WhatsApp</div>
             <div className="contact-row">
               <div className="contact-icon"><WhatsAppIcon /></div>
               <div className="contact-info">
@@ -2437,14 +2499,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       content: (
         <ResponsibleTradingContent>
           <div className="rt-section">
-            <div className="rt-title">🛡️ What is Responsible Trading?</div>
+            <div className="rt-title"><InfoIcon /> What is Responsible Trading?</div>
             <div className="rt-desc">
               Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.
             </div>
           </div>
 
           <div className="rt-section">
-            <div className="rt-title">📋 Key Principles</div>
+            <div className="rt-title"><DiamondIcon /> Key Principles</div>
             <div className="rt-bullet">
               <span className="bullet-dot">•</span>
               <span>Set <span className="highlight">deposit limits</span> to control your capital budget and prevent overspending.</span>
@@ -2468,7 +2530,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </div>
 
           <div className="rt-section">
-            <div className="rt-title">⚠️ Warning Signs</div>
+            <div className="rt-title"><InfoIcon /> Warning Signs</div>
             <div className="rt-bullet">
               <span className="bullet-dot">•</span>
               <span>Chasing losses by increasing trade sizes</span>
@@ -2492,7 +2554,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </div>
 
           <div className="rt-tip">
-            <div className="tip-title">💡 Pro Tip</div>
+            <div className="tip-title"><AwardIcon /> Pro Tip</div>
             <div className="tip-text">
               Consider using the <strong style={{ color: '#F8FAFC' }}>Risk Calculator</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
             </div>
@@ -2511,37 +2573,37 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       content: (
         <AboutContent>
           <div className="about-logo">
-            <span className="logo-icon">🔷</span>
+            <span className="logo-icon"><LogoIcon /></span>
             <span className="logo-text">MyTradeApp</span>
           </div>
 
           <div className="about-section">
-            <div className="about-title">🚀 Our Mission</div>
+            <div className="about-title"><InfoIcon /> Our Mission</div>
             <div className="about-desc">
               MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities for the Deriv platform.
             </div>
           </div>
 
           <div className="about-section">
-            <div className="about-title">⚡ What We Offer</div>
+            <div className="about-title"><DiamondIcon /> What We Offer</div>
             <div className="about-features">
               <div className="about-feature">
-                <div className="feature-icon">📊</div>
+                <div className="feature-icon"><TrendingUpIcon /></div>
                 <div className="feature-name">Real-Time Data</div>
                 <div className="feature-desc">Live market streams</div>
               </div>
               <div className="about-feature">
-                <div className="feature-icon">🤖</div>
+                <div className="feature-icon"><SettingsIcon /></div>
                 <div className="feature-name">Auto Trading</div>
                 <div className="feature-desc">Automated execution</div>
               </div>
               <div className="about-feature">
-                <div className="feature-icon">📈</div>
+                <div className="feature-icon"><ShieldIcon /></div>
                 <div className="feature-name">Risk Management</div>
                 <div className="feature-desc">Smart risk tools</div>
               </div>
               <div className="about-feature">
-                <div className="feature-icon">🔒</div>
+                <div className="feature-icon"><LockIcon /></div>
                 <div className="feature-name">Secure</div>
                 <div className="feature-desc">Your data is safe</div>
               </div>
@@ -2549,7 +2611,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </div>
 
           <div className="about-section">
-            <div className="about-title">💬 Contact Us</div>
+            <div className="about-title"><HelpIcon /> Contact Us</div>
             <div className="about-desc">
               Have questions or need support? Reach out to us through the <strong style={{ color: '#F8FAFC' }}>Help & Support</strong> section or email us at <strong style={{ color: '#3B82F6' }}>tonnykyalo054@gmail.com</strong>
             </div>
@@ -2827,6 +2889,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     const texts = { 1: 'Needs Improvement', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' };
     return texts[value] || '';
   };
+
+  // Missing LockIcon - adding it here
+  const LockIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
 
   return (
     <>
