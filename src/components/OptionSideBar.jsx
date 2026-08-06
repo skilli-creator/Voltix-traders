@@ -35,8 +35,122 @@ const pulseGlow = keyframes`
   }
 `;
 
+const pulseVoice = keyframes`
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+`;
+
 // ============================================
-// STYLED COMPONENTS - THEMED (ALL THEME PROPERTIES)
+// PROFESSIONAL SVG ICONS
+// ============================================
+
+const BellIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+  </svg>
+);
+
+const AcademyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  </svg>
+);
+
+const AccountIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const CopyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </svg>
+);
+
+const ManagementIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+  </svg>
+);
+
+const RiskIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M12 8v4" />
+    <path d="M12 16h.01" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+const BookIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+  </svg>
+);
+
+const TermsIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+    <polyline points="10 9 9 9 8 9" />
+  </svg>
+);
+
+const CompanyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+  </svg>
+);
+
+const SettingsIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />
+  </svg>
+);
+
+const HelpIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+);
+
+// Voice Notification Icon
+const VoiceIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+  </svg>
+);
+
+// Voice Off Icon
+const VoiceOffIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <line x1="23" y1="9" x2="17" y2="15" />
+    <line x1="17" y1="9" x2="23" y2="15" />
+  </svg>
+);
+
+// ============================================
+// STYLED COMPONENTS - THEMED
 // ============================================
 
 const Overlay = styled.div`
@@ -185,6 +299,49 @@ const SidebarHeader = styled.div`
   }
 `;
 
+// ===== VOICE NOTIFICATION TOGGLE =====
+const VoiceToggle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.03)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  border-radius: 8px;
+  margin-top: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  .voice-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.isActive ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.textMuted || '#94A3B8'};
+    animation: ${props => props.isActive ? pulseVoice : 'none'} 1.5s ease-in-out infinite;
+  }
+
+  .voice-label {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  }
+
+  .voice-status {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: ${props => props.isActive ? props.theme?.colors?.success || '#10B981' : props.theme?.colors?.textMuted || '#94A3B8'};
+    background: ${props => props.isActive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
+  }
+`;
+
 // ===== NAVIGATION SECTION & ITEMS =====
 const NavSection = styled.div`
   display: flex;
@@ -240,7 +397,6 @@ const NavItem = styled.div`
     `}
 
   .nav-icon {
-    font-size: 16px;
     width: 20px;
     display: flex;
     align-items: center;
@@ -284,7 +440,7 @@ const NavItem = styled.div`
   }
 `;
 
-// ===== CARDS (RESPONSIBLE TRADING & ABOUT) =====
+// ===== CARDS =====
 const SideCard = styled.div`
   padding: 12px 14px;
   border-radius: 10px;
@@ -308,7 +464,9 @@ const SideCard = styled.div`
     gap: 8px;
 
     .icon {
-      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
@@ -500,7 +658,9 @@ const SidebarFooter = styled.footer`
     }
 
     .footer-icon {
-      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 `;
@@ -518,6 +678,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
+  const [voiceNotifications, setVoiceNotifications] = useState(true);
 
   const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) {
@@ -536,6 +697,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setHasNotifications(false);
     navigate('/notifications');
     closeSidebarOnMobile();
+  };
+
+  const toggleVoiceNotifications = () => {
+    setVoiceNotifications(!voiceNotifications);
   };
 
   const handleSubmitFeedback = async () => {
@@ -614,6 +779,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
+          {/* VOICE NOTIFICATIONS TOGGLE */}
+          <VoiceToggle isActive={voiceNotifications} onClick={toggleVoiceNotifications}>
+            <span className="voice-icon">
+              {voiceNotifications ? <VoiceIcon /> : <VoiceOffIcon />}
+            </span>
+            <span className="voice-label">Voice Notifications</span>
+            <span className="voice-status">{voiceNotifications ? 'On' : 'Off'}</span>
+          </VoiceToggle>
+
           {/* UPDATES SECTION */}
           <NavSection>
             <SectionLabel>Updates</SectionLabel>
@@ -621,7 +795,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               active={activeItem === 'notifications'}
               onClick={handleNotificationsClick}
             >
-              <span className="nav-icon">🔔</span>
+              <span className="nav-icon"><BellIcon /></span>
               <span className="nav-label">Notifications</span>
               {hasNotifications && <span className="notification-dot" />}
               <span className="badge">2</span>
@@ -635,7 +809,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               active={activeItem === 'academy'}
               onClick={() => handleNavClick('academy', '/academy')}
             >
-              <span className="nav-icon">📚</span>
+              <span className="nav-icon"><AcademyIcon /></span>
               <span className="nav-label">Voltix Academy</span>
               <span className="badge">NEW</span>
             </NavItem>
@@ -648,28 +822,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               active={activeItem === 'account-info'}
               onClick={() => handleNavClick('account-info', '/account-info')}
             >
-              <span className="nav-icon">👤</span>
+              <span className="nav-icon"><AccountIcon /></span>
               <span className="nav-label">Deriv Account Info</span>
             </NavItem>
           </NavSection>
 
-          {/* TRADING SECTION */}
+          {/* TRADING SECTION - Removed Switch to Forex */}
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
-            <NavItem 
-              active={activeItem === 'switch-to-forex'}
-              onClick={() => handleNavClick('switch-to-forex', '/forex')}
-            >
-              <span className="nav-icon">💱</span>
-              <span className="nav-label">Switch to Forex</span>
-              <span className="badge">HOT</span>
-            </NavItem>
-
             <NavItem 
               active={activeItem === 'copy-trading'}
               onClick={() => handleNavClick('copy-trading', '/copy-trading')}
             >
-              <span className="nav-icon">🔄</span>
+              <span className="nav-icon"><CopyIcon /></span>
               <span className="nav-label">Copy Trading</span>
               <span className="badge">BETA</span>
             </NavItem>
@@ -678,7 +843,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               active={activeItem === 'account-management'}
               onClick={() => handleNavClick('account-management', '/account-management')}
             >
-              <span className="nav-icon">📋</span>
+              <span className="nav-icon"><ManagementIcon /></span>
               <span className="nav-label">Account Management</span>
               <span className="badge">NEW</span>
             </NavItem>
@@ -687,7 +852,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               active={activeItem === 'risk-calculator'}
               onClick={() => handleNavClick('risk-calculator', '/risk-calculator')}
             >
-              <span className="nav-icon">🧮</span>
+              <span className="nav-icon"><RiskIcon /></span>
               <span className="nav-label">Risk Calculator</span>
             </NavItem>
           </NavSection>
@@ -697,7 +862,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <SectionLabel>Wellness</SectionLabel>
             <SideCard>
               <div className="card-title">
-                <span className="icon">🛡️</span>
+                <span className="icon"><ShieldIcon /></span>
                 Responsible Trading
               </div>
               <div className="card-item">
@@ -775,14 +940,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               active={activeItem === 'how-to-use'}
               onClick={() => handleNavClick('how-to-use', '/how-to-use')}
             >
-              <span className="nav-icon">📖</span>
+              <span className="nav-icon"><BookIcon /></span>
               <span className="nav-label">How to Use</span>
             </NavItem>
             <NavItem 
               active={activeItem === 'terms'}
               onClick={() => handleNavClick('terms', '/terms')}
             >
-              <span className="nav-icon">⚖️</span>
+              <span className="nav-icon"><TermsIcon /></span>
               <span className="nav-label">Terms & Conditions</span>
             </NavItem>
           </NavSection>
@@ -792,12 +957,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <SectionLabel>Company</SectionLabel>
             <SideCard>
               <div className="card-title">
-                <span className="icon">🏢</span>
+                <span className="icon"><CompanyIcon /></span>
                 About Voltix Traders
               </div>
               <div className="card-item">
                 <span className="bullet">•</span>
-                <span>Third-party app supporting Deriv & Forex platforms.</span>
+                <span>Third-party trading application for Deriv platform.</span>
               </div>
               <div className="card-item">
                 <span className="bullet">•</span>
@@ -816,11 +981,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         {/* FOOTER */}
         <SidebarFooter>
           <div className="footer-item" onClick={() => handleNavClick('settings', '/settings')}>
-            <span className="footer-icon">⚙️</span>
+            <span className="footer-icon"><SettingsIcon /></span>
             Settings
           </div>
           <div className="footer-item" onClick={() => handleNavClick('help', '/settings')}>
-            <span className="footer-icon">❓</span>
+            <span className="footer-icon"><HelpIcon /></span>
             Help & Support
           </div>
         </SidebarFooter>
