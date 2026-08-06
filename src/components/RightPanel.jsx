@@ -19,9 +19,9 @@ const VOLATILITY_MARKETS = [
 ];
 
 // ============================================
-// OTHER TRADERS DATA (filtered by trade type)
+// OTHER TRADERS DATA (extended with accumulators)
 // ============================================
-const OTHER_TRADERS_DATA = [
+const INITIAL_OTHER_TRADERS_DATA = [
   { id: 1, traderName: "David Ndung'u", strategy: "Over 1", type: "overunder" },
   { id: 2, traderName: "David Ndung'u", strategy: "Under 5", type: "overunder" },
   { id: 3, traderName: "Jane Muthoni", strategy: "Over 3", type: "overunder" },
@@ -42,6 +42,11 @@ const OTHER_TRADERS_DATA = [
   { id: 18, traderName: "George Kamau", strategy: "Odd", type: "evenodd" },
   { id: 19, traderName: "Lucy Akinyi", strategy: "Even", type: "evenodd" },
   { id: 20, traderName: "Lucy Akinyi", strategy: "Odd", type: "evenodd" },
+  // Accumulators
+  { id: 21, traderName: "Michael Njoroge", strategy: "Rise", type: "accumulators" },
+  { id: 22, traderName: "Michael Njoroge", strategy: "Fall", type: "accumulators" },
+  { id: 23, traderName: "Faith Chebet", strategy: "Rise 3", type: "accumulators" },
+  { id: 24, traderName: "Faith Chebet", strategy: "Fall 2", type: "accumulators" },
 ];
 
 // ============================================
@@ -65,7 +70,7 @@ const floatPulse = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS - ALL THEME BASED
+// STYLED COMPONENTS – FULL & COMPLETE
 // ============================================
 const PanelContainer = styled.div`
   width: 290px; min-width: 290px;
@@ -325,6 +330,45 @@ const SearchInput = styled.input`
   font-size: 9px; font-weight: 700; outline: none;
   &::placeholder { color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'}; font-size: 9px; }
   &:focus { border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.25)'}; }
+`;
+
+// ============================================
+// NEW: Wider dropdown for Other Traders & Modal
+// ============================================
+const WideDropdownSelectMenu = styled(DropdownSelectMenu)`
+  min-width: 220px;
+  max-width: 260px;
+  @media (max-width: 480px) {
+    min-width: 180px;
+    max-width: 220px;
+  }
+`;
+const ModalOverlay = styled.div`
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  animation: ${fadeIn} 0.2s ease;
+`;
+const ModalContent = styled.div`
+  background: ${props => props.theme?.colors?.surface || '#111622'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 12px; padding: 20px; width: 90%; max-width: 320px;
+  color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+  font-weight: 700; display: flex; flex-direction: column; gap: 12px;
+`;
+const ModalInput = styled.input`
+  padding: 8px 10px; background: ${props => props.theme?.colors?.surface || 'rgba(255,255,255,0.03)'};
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 6px; color: inherit; font-weight: 700; outline: none;
+  &::placeholder { color: ${props => props.theme?.colors?.textMuted + '60' || '#4a4f5e'}; }
+  &:focus { border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.25)'}; }
+`;
+const ModalButton = styled.button`
+  padding: 8px 0; border: none; border-radius: 6px;
+  background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#1a4fcf'})`};
+  color: ${props => props.theme?.colors?.text || '#ffffff'}; font-weight: 700; cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(41,98,255,0.2); }
 `;
 
 // ============================================
@@ -632,34 +676,57 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [otherTradersStrategy, setOtherTradersStrategy] = useState('');
   const [isOtherTradersDropdownOpen, setIsOtherTradersDropdownOpen] = useState(false);
   const [otherTradersSearch, setOtherTradersSearch] = useState('');
+  // State for dynamic other traders data (so we can add custom strategies)
+  const [otherTradersData, setOtherTradersData] = useState(INITIAL_OTHER_TRADERS_DATA);
+  // Strategy builder modal
+  const [showStrategyBuilder, setShowStrategyBuilder] = useState(false);
+  const [newTraderName, setNewTraderName] = useState('');
+  const [newStrategy, setNewStrategy] = useState('');
 
   const getMyTradeAppOptions = useCallback(() => {
     if (tradeType === 'evenodd') return ['Even', 'Odd', 'Both'];
     if (tradeType === 'matches') return ['Matches', 'Differs', 'Both'];
     if (tradeType === 'overunder') return ['All','Over 1','Over 2','Over 3','Over 4','Over 5','Under 8','Under 7','Under 6','Under 5'];
+    if (tradeType === 'accumulators') return ['All', 'Rise', 'Fall'];
     return [];
   }, [tradeType]);
 
   const filteredOtherTraders = useMemo(() => {
-    let filtered = OTHER_TRADERS_DATA.filter(t => t.type === tradeType);
+    const allowedTypes = ['overunder', 'matches', 'evenodd', 'accumulators'];
+    let filtered = otherTradersData.filter(t => t.type === tradeType);
     if (otherTradersSearch.trim()) {
       const lower = otherTradersSearch.toLowerCase();
-      filtered = filtered.filter(t => 
-        t.traderName.toLowerCase().includes(lower) || 
+      filtered = filtered.filter(t =>
+        t.traderName.toLowerCase().includes(lower) ||
         t.strategy.toLowerCase().includes(lower)
       );
     }
     return filtered;
-  }, [tradeType, otherTradersSearch]);
+  }, [tradeType, otherTradersSearch, otherTradersData]);
 
   useEffect(() => {
     if (tradeType === 'evenodd') setMyTradeAppStrategy('Even');
     else if (tradeType === 'matches') setMyTradeAppStrategy('Matches');
     else if (tradeType === 'overunder') setMyTradeAppStrategy('Over 3');
-    // Reset other trader selection when trade type changes
+    else if (tradeType === 'accumulators') setMyTradeAppStrategy('All');
     setOtherTradersStrategy('');
     setOtherTradersSearch('');
   }, [tradeType]);
+
+  const handleAddCustomStrategy = () => {
+    if (!newTraderName.trim() || !newStrategy.trim()) return;
+    const newEntry = {
+      id: Date.now(),
+      traderName: newTraderName.trim(),
+      strategy: newStrategy.trim(),
+      type: tradeType,
+    };
+    setOtherTradersData(prev => [...prev, newEntry]);
+    setOtherTradersStrategy(`${newEntry.traderName} - ${newEntry.strategy}`);
+    setShowStrategyBuilder(false);
+    setNewTraderName('');
+    setNewStrategy('');
+  };
 
   const selectedMarket = externalMarket || localSelectedMarket;
   const [digitStats, setDigitStats] = useState(Array(10).fill(0).map((_, i) => ({ digit: i, pct: 10 })));
@@ -865,10 +932,11 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
+  // Updated Other Traders Strategies with wider dropdown, "Add your strategy", search, and modal
   const renderOtherTradersStrategies = () => {
     const isActive = activeStrategy === 'other';
-    if (!['overunder', 'matches', 'evenodd'].includes(tradeType)) return null;
     const displayValue = otherTradersStrategy || 'Select a trader';
+    const traderItems = filteredOtherTraders.map(t => `${t.traderName} - ${t.strategy}`);
     return (
       <InputGroup>
         <InputLabel><span>Other Traders Strategies</span><span className="suffix">{isActive ? 'ON' : 'OFF'}</span></InputLabel>
@@ -878,32 +946,47 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           <ToggleStatus active={isActive}>{isActive ? 'ON' : 'OFF'}</ToggleStatus>
           {isActive && (
             <DropdownSelect>
-              <DropdownSelectButton isOpen={isOtherTradersDropdownOpen} onClick={() => setIsOtherTradersDropdownOpen(!isOtherTradersDropdownOpen)}>
-                {displayValue.length > 22 ? displayValue.substring(0, 20) + '…' : displayValue}
+              <DropdownSelectButton
+                isOpen={isOtherTradersDropdownOpen}
+                onClick={() => setIsOtherTradersDropdownOpen(!isOtherTradersDropdownOpen)}
+                style={{ minWidth: '120px', maxWidth: '160px', justifyContent: 'flex-start', overflow: 'hidden' }}
+              >
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {displayValue.length > 22 ? displayValue.substring(0, 20) + '…' : displayValue}
+                </span>
                 <span className="dropdown-arrow">▾</span>
               </DropdownSelectButton>
-              <DropdownSelectMenu isOpen={isOtherTradersDropdownOpen} dropUp={true}>
+              <WideDropdownSelectMenu isOpen={isOtherTradersDropdownOpen} dropUp={true}>
+                {/* "Add your strategy" item */}
+                <DropdownSelectItem
+                  onClick={() => {
+                    setIsOtherTradersDropdownOpen(false);
+                    setShowStrategyBuilder(true);
+                  }}
+                  style={{ borderBottom: '2px solid rgba(255,255,255,0.06)', fontWeight: 700, color: '#38bdf8' }}
+                >
+                  + Add your strategy
+                </DropdownSelectItem>
                 <SearchInput
                   placeholder="Search trader or strategy..."
                   value={otherTradersSearch}
                   onChange={(e) => setOtherTradersSearch(e.target.value)}
                   onClick={(e) => e.stopPropagation()}
                 />
-                {filteredOtherTraders.length === 0 ? (
+                {traderItems.length === 0 ? (
                   <div style={{ padding: '8px', fontSize: '9px', color: 'rgba(255,255,255,0.4)', textAlign: 'center' }}>No traders found</div>
                 ) : (
-                  filteredOtherTraders.map((trader) => {
-                    const label = `${trader.traderName} - ${trader.strategy}`;
-                    const isSelected = otherTradersStrategy === label;
+                  traderItems.map((traderStr, idx) => {
+                    const isSelected = otherTradersStrategy === traderStr;
                     return (
-                      <DropdownSelectItem key={trader.id} active={isSelected}
-                        onClick={() => { setOtherTradersStrategy(label); setIsOtherTradersDropdownOpen(false); setOtherTradersSearch(''); }}>
-                        {label}
+                      <DropdownSelectItem key={idx} active={isSelected}
+                        onClick={() => { setOtherTradersStrategy(traderStr); setIsOtherTradersDropdownOpen(false); setOtherTradersSearch(''); }}>
+                        {traderStr}
                       </DropdownSelectItem>
                     );
                   })
                 )}
-              </DropdownSelectMenu>
+              </WideDropdownSelectMenu>
             </DropdownSelect>
           )}
         </ToggleWrapper>
@@ -958,6 +1041,36 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
           </>
         )}
       </InputGrid>
+    );
+  };
+
+  const renderStrategyBuilderModal = () => {
+    if (!showStrategyBuilder) return null;
+    return (
+      <ModalOverlay onClick={() => setShowStrategyBuilder(false)}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '14px' }}>Build Your Strategy</span>
+            <button onClick={() => setShowStrategyBuilder(false)} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '18px', cursor: 'pointer' }}>✕</button>
+          </div>
+          <div style={{ fontSize: '10px', color: '#8a93a6', marginTop: '-4px' }}>
+            Trade type: <strong>{getCurrentTrade().label}</strong>
+          </div>
+          <ModalInput
+            placeholder="Your trader name"
+            value={newTraderName}
+            onChange={(e) => setNewTraderName(e.target.value)}
+          />
+          <ModalInput
+            placeholder="Strategy (e.g., Over 2, Rise)"
+            value={newStrategy}
+            onChange={(e) => setNewStrategy(e.target.value)}
+          />
+          <ModalButton onClick={handleAddCustomStrategy}>
+            Submit Strategy
+          </ModalButton>
+        </ModalContent>
+      </ModalOverlay>
     );
   };
 
@@ -1212,6 +1325,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       {tradeMode === 'use-bots' ? renderRunButton(!selectedBot) : tradeMode === 'auto' ? renderRunButton(false) : null}
 
       {renderAIFloatingButton()}
+      {renderStrategyBuilderModal()}
     </PanelContainer>
   );
 };
