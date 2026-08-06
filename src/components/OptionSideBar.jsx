@@ -1,5 +1,5 @@
 // src/components/OptionSideBar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -34,6 +34,21 @@ const modalBackdrop = keyframes`
 const shimmer = keyframes`
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+`;
+
+const fadeUp = keyframes`
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const breathe = keyframes`
+  0%,100% { opacity: 0.08; transform: scale(1); }
+  50% { opacity: 0.18; transform: scale(1.06); }
+`;
+
+const pulseRing = keyframes`
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.4); opacity: 0; }
 `;
 
 // ============================================
@@ -150,20 +165,20 @@ const CloseXIcon = () => (
 );
 
 const EmailIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="4" width="20" height="16" rx="2" />
     <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
   </svg>
 );
 
 const PhoneIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
   </svg>
 );
 
 const WhatsAppIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
   </svg>
 );
@@ -191,31 +206,49 @@ const GlobeIcon = () => (
   </svg>
 );
 
+const EditIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
 // ============================================
 // PREMIUM MODAL
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: 1000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   padding: 20px;
   animation: ${modalBackdrop} 0.28s ease;
+  overflow: hidden;
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
 `;
 
 const ModalContainer = styled.div`
-  max-width: 480px;
+  max-width: ${props => props.settings ? '560px' : '480px'};
   width: 100%;
-  max-height: 86vh;
+  max-height: 90vh;
   background: ${props => props.theme?.colors?.surface || '#0F172A'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  border-radius: 18px;
-  box-shadow: ${props => props.theme?.colors?.shadow || '0 28px 64px rgba(0, 0, 0, 0.55)'};
+  border-radius: 20px;
+  box-shadow: ${props => props.theme?.colors?.shadow || '0 32px 80px rgba(0, 0, 0, 0.6)'};
   animation: ${modalSlideIn} 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
@@ -239,10 +272,21 @@ const ModalContainer = styled.div`
     animation: ${shimmer} 4s ease-in-out infinite;
   }
 
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.02), transparent 70%);
+    pointer-events: none;
+  }
+
   @media (max-width: 480px) {
     max-width: 100%;
     margin: 8px;
-    border-radius: 14px;
+    border-radius: 16px;
     max-height: 92vh;
   }
 `;
@@ -254,6 +298,8 @@ const ModalHeader = styled.div`
   padding: 16px 20px 12px;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 
   .title-group {
     display: flex;
@@ -307,14 +353,14 @@ const ModalHeader = styled.div`
     background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     flex-shrink: 0;
 
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
       background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
-      transform: rotate(90deg);
+      transform: rotate(90deg) scale(1.05);
     }
   }
 
@@ -329,6 +375,8 @@ const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 16px 20px 20px;
+  position: relative;
+  z-index: 1;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
@@ -343,18 +391,18 @@ const ModalBody = styled.div`
 `;
 
 // ============================================
-// SETTINGS - PREMIUM ACCOUNT PROFILE
+// SETTINGS - COMPLETE
 // ============================================
 const SettingsProfile = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
+  gap: 14px;
+  padding: 16px 18px;
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 14px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   margin-bottom: 16px;
-  animation: ${fadeIn} 0.3s ease;
+  animation: ${fadeUp} 0.3s ease;
 
   .profile-avatar {
     width: 56px;
@@ -411,64 +459,354 @@ const SettingsProfile = styled.div`
   }
 `;
 
-const SettingsDivider = styled.div`
-  height: 1px;
-  background: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  margin: 8px 0 12px;
+const SettingsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  animation: ${fadeUp} 0.4s ease;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-const SettingsItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 10px;
-  cursor: pointer;
+const SettingsCard = styled.div`
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 14px;
+  padding: 16px 18px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   transition: all 0.2s ease;
-  background: ${props => props.danger ? 'rgba(239, 68, 68, 0.04)' : 'transparent'};
-  border: 1px solid ${props => props.danger ? 'rgba(239, 68, 68, 0.08)' : 'transparent'};
 
   &:hover {
-    background: ${props => props.danger ? 'rgba(239, 68, 68, 0.08)' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.05)'};
-    border-color: ${props => props.danger ? 'rgba(239, 68, 68, 0.15)' : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-    transform: translateX(2px);
+    border-color: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   }
 
-  .settings-icon {
+  .card-head {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: ${props => props.danger ? 'rgba(239, 68, 68, 0.08)' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
-    color: ${props => props.danger ? '#EF4444' : props.theme?.colors?.accent || '#3B82F6'};
-    flex-shrink: 0;
-  }
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
-  .settings-label {
-    flex: 1;
-    font-size: 12.5px;
-    font-weight: 500;
-    color: ${props => props.danger ? '#EF4444' : props.theme?.colors?.text || '#F8FAFC'};
-  }
-
-  .settings-arrow {
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    opacity: 0.4;
-    font-size: 14px;
+    .icon {
+      font-size: 14px;
+      color: ${props => props.theme?.colors?.textMuted || '#4b5563'};
+    }
   }
 `;
 
+const SettingsField = styled.div`
+  margin-bottom: 12px;
+
+  label {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#475569'};
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .val {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.text || '#e2e8f0'};
+    padding: 6px 10px;
+    background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
+    border-radius: 8px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .age-badge {
+    font-size: 9px;
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.06);
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(34, 197, 94, 0.06);
+    font-weight: 500;
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+
+  input.inp, select.inp {
+    width: 100%;
+    padding: 6px 10px;
+    background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    border-radius: 8px;
+    color: ${props => props.theme?.colors?.text || '#e2e8f0'};
+    font-size: 12px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: ${props => props.theme?.colors?.accent || 'rgba(34, 197, 94, 0.28)'};
+      box-shadow: 0 0 12px ${props => props.theme?.colors?.accentLight || 'rgba(34, 197, 94, 0.05)'};
+      background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.03)'};
+    }
+
+    &::placeholder {
+      color: ${props => props.theme?.colors?.textMuted || '#374151'};
+    }
+
+    &.err {
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+  }
+
+  select.inp {
+    appearance: none;
+    cursor: pointer;
+
+    option {
+      background: ${props => props.theme?.colors?.surface || '#040810'};
+      color: ${props => props.theme?.colors?.text || '#e2e8f0'};
+    }
+  }
+
+  .err-msg {
+    font-size: 9.5px;
+    color: #ef4444;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+`;
+
+const SettingsBtnRow = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+`;
+
+const SettingsBtn = styled.button`
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+
+  &.primary {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #040810;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25);
+    }
+  }
+
+  &.secondary {
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.03)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    color: ${props => props.theme?.colors?.text || '#e2e8f0'};
+
+    &:hover {
+      background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.06)'};
+      transform: translateY(-2px);
+    }
+  }
+
+  &.danger {
+    background: rgba(239, 68, 68, 0.07);
+    border: 1px solid rgba(239, 68, 68, 0.14);
+    color: #ef4444;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.14);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.1);
+    }
+  }
+
+  &.call {
+    background: linear-gradient(135deg, #22c55e, #059669);
+    color: #ffffff;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25);
+    }
+  }
+
+  &.whatsapp {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: #ffffff;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+    }
+  }
+
+  &.admin {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.05));
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    color: #a78bfa;
+
+    &:hover {
+      background: rgba(139, 92, 246, 0.18);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.12);
+    }
+  }
+
+  &.premium {
+    background: linear-gradient(135deg, #818cf8, #6366f1);
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+      animation: ${shimmer} 4s ease-in-out infinite;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  @media (max-width: 480px) {
+    padding: 5px 12px;
+    font-size: 9.5px;
+  }
+`;
+
+const SettingsDangerZone = styled.div`
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.025);
+  border: 1px solid rgba(239, 68, 68, 0.05);
+
+  .dtitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #ef4444;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .ddesc {
+    font-size: 10px;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    margin-bottom: 8px;
+  }
+`;
+
+const SettingsSupport = styled.div`
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(139, 92, 246, 0.03);
+  border: 1px solid rgba(139, 92, 246, 0.08);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(139, 92, 246, 0.15);
+    background: rgba(139, 92, 246, 0.04);
+  }
+
+  .stitle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #a78bfa;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .sdesc {
+    font-size: 10px;
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    margin-bottom: 10px;
+  }
+
+  .support-number {
+    font-size: 14px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.01)'};
+    border-radius: 8px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
+
+    .icon {
+      font-size: 16px;
+      color: ${props => props.theme?.colors?.textMuted || '#4b5563'};
+    }
+  }
+`;
+
+const SettingsContactRow = styled.div`
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+`;
+
+const SettingsSuccess = styled.div`
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 11px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  animation: ${fadeUp} 0.4s ease;
+`;
+
 // ============================================
-// HELP & SUPPORT - PREMIUM
+// HELP & SUPPORT
 // ============================================
 const HelpContactCard = styled.div`
-  padding: 16px;
+  padding: 14px 16px;
   border-radius: 12px;
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   transition: all 0.2s ease;
 
   &:hover {
@@ -489,7 +827,6 @@ const HelpContactCard = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 6px 0;
   }
 
   .contact-icon {
@@ -546,7 +883,7 @@ const HelpQuickAction = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  padding: 10px 14px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1596,6 +1933,18 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // Popup state
   const [popupData, setPopupData] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isSettingsPopup, setIsSettingsPopup] = useState(false);
+
+  // Settings state
+  const [user, setUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [dobError, setDobError] = useState('');
+  const [calculatedAge, setCalculatedAge] = useState(null);
+  const [formData, setFormData] = useState({
+    first_name: '', last_name: '', phone: '',
+    date_of_birth: '', gender: '', email: ''
+  });
 
   // Risk calculator state
   const [calcAccountBalance, setCalcAccountBalance] = useState(10000);
@@ -1604,12 +1953,101 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [calcTakeProfit, setCalcTakeProfit] = useState(150);
   const [calculated, setCalculated] = useState(false);
 
+  // Load user data for settings
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    setUser(userData);
+    const dob = userData.date_of_birth || '';
+    setFormData({
+      first_name: userData.first_name || '',
+      last_name: userData.last_name || '',
+      phone: userData.phone || '',
+      date_of_birth: dob,
+      gender: userData.gender || '',
+      email: userData.email || ''
+    });
+    if (dob) {
+      const age = calculateAge(dob);
+      setCalculatedAge(age);
+    }
+  }, []);
+
+  const calculateAge = (dob) => {
+    if (!dob) return null;
+    const b = new Date(dob), t = new Date();
+    let age = t.getFullYear() - b.getFullYear();
+    const m = t.getMonth() - b.getMonth();
+    if (m < 0 || (m === 0 && t.getDate() < b.getDate())) age--;
+    return age;
+  };
+
+  const getMaxDate = () => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 10);
+    return d.toISOString().split('T')[0];
+  };
+
+  const validateDob = (dob) => {
+    if (!dob) { setDobError(''); setCalculatedAge(null); return true; }
+    const birthDate = new Date(dob);
+    const maxDate = new Date(getMaxDate());
+    if (birthDate > maxDate) {
+      setDobError('You must be at least 10 years old');
+      setCalculatedAge(null);
+      return false;
+    }
+    setCalculatedAge(calculateAge(dob));
+    setDobError('');
+    return true;
+  };
+
+  const handleDobChange = (e) => {
+    const v = e.target.value;
+    setFormData(p => ({ ...p, date_of_birth: v }));
+    validateDob(v);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(p => ({ ...p, [name]: value }));
+  };
+
+  const handleSaveProfile = () => {
+    if (formData.date_of_birth && !validateDob(formData.date_of_birth)) return;
+    const updated = { ...user, ...formData };
+    localStorage.setItem('user', JSON.stringify(updated));
+    setUser(updated);
+    setIsEditing(false);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 3000);
+  };
+
+  const handleDeleteAccount = () => {
+    if (window.confirm('Delete your account? This cannot be undone.')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/login');
+      closePopup();
+    }
+  };
+
+  const handleCallAdmin = () => {
+    window.location.href = 'tel:0704182603';
+  };
+
+  const openWhatsApp = () => {
+    const phone = '254704182603';
+    const msg = encodeURIComponent('Hello, I need assistance with my account.');
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+  };
+
   const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) onClose();
   };
 
-  const openPopup = (data) => {
+  const openPopup = (data, isSettings = false) => {
     setPopupData(data);
+    setIsSettingsPopup(isSettings);
     setIsPopupOpen(true);
   };
 
@@ -1651,10 +2089,18 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       content: (
         <>
           <SettingsProfile>
-            <div className="profile-avatar">TM</div>
+            <div className="profile-avatar">
+              {formData.first_name && formData.last_name 
+                ? `${formData.first_name[0]}${formData.last_name[0]}` 
+                : 'U'}
+            </div>
             <div className="profile-info">
-              <div className="profile-name">Tonny Mutua Kyalo</div>
-              <div className="profile-email">tonnykyalo054@gmail.com</div>
+              <div className="profile-name">
+                {formData.first_name || formData.last_name 
+                  ? `${formData.first_name} ${formData.last_name}`.trim() 
+                  : 'User'}
+              </div>
+              <div className="profile-email">{formData.email || 'No email set'}</div>
               <div className="profile-status">
                 <span className="status-dot" />
                 Active
@@ -1662,34 +2108,193 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SettingsProfile>
 
-          <SettingsItem>
-            <div className="settings-icon"><UserIcon /></div>
-            <span className="settings-label">Profile Information</span>
-            <span className="settings-arrow">›</span>
-          </SettingsItem>
+          {showSuccess && (
+            <SettingsSuccess>
+              <CheckIcon /> Profile updated successfully!
+            </SettingsSuccess>
+          )}
 
-          <SettingsItem>
-            <div className="settings-icon"><GlobeIcon /></div>
-            <span className="settings-label">Language & Region</span>
-            <span className="settings-arrow">›</span>
-          </SettingsItem>
+          <SettingsGrid>
+            <SettingsCard>
+              <div className="card-head">
+                <span className="icon">◈</span> Personal Information
+              </div>
 
-          <SettingsItem>
-            <div className="settings-icon"><BellIcon /></div>
-            <span className="settings-label">Notification Preferences</span>
-            <span className="settings-arrow">›</span>
-          </SettingsItem>
+              {['first_name', 'last_name', 'phone'].map((field) => (
+                <SettingsField key={field}>
+                  <label>{field.replace('_', ' ')}</label>
+                  {isEditing ? (
+                    <input
+                      type={field === 'phone' ? 'tel' : 'text'}
+                      name={field}
+                      className="inp"
+                      value={formData[field]}
+                      onChange={handleInputChange}
+                      placeholder={field.replace('_', ' ')}
+                    />
+                  ) : (
+                    <div className="val">
+                      {formData[field] || 'Not set'}
+                    </div>
+                  )}
+                </SettingsField>
+              ))}
 
-          <SettingsDivider />
+              <SettingsField>
+                <label>Email Address</label>
+                <div className="val" style={{ color: '#64748b' }}>
+                  {formData.email || 'Not set'}
+                </div>
+              </SettingsField>
 
-          <SettingsItem danger>
-            <div className="settings-icon"><LogoutIcon /></div>
-            <span className="settings-label">Logout</span>
-            <span className="settings-arrow">›</span>
-          </SettingsItem>
+              <SettingsField>
+                <label>Date of Birth</label>
+                {isEditing ? (
+                  <>
+                    <input
+                      type="date"
+                      name="date_of_birth"
+                      className={`inp${dobError ? ' err' : ''}`}
+                      value={formData.date_of_birth}
+                      onChange={handleDobChange}
+                      max={getMaxDate()}
+                    />
+                    {dobError && <div className="err-msg">! {dobError}</div>}
+                    {formData.date_of_birth && !dobError && calculatedAge !== null && (
+                      <div style={{ fontSize: '10px', color: '#4ade80', marginTop: '4px' }}>
+                        ✓ Age: <strong>{calculatedAge}</strong> yrs
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="val">
+                    <span>{formData.date_of_birth || 'Not set'}</span>
+                    {formData.date_of_birth && calculatedAge !== null && (
+                      <span className="age-badge">◇ {calculatedAge} yrs</span>
+                    )}
+                  </div>
+                )}
+              </SettingsField>
+
+              <SettingsField>
+                <label>Gender</label>
+                {isEditing ? (
+                  <select
+                    name="gender"
+                    className="inp"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not">Prefer not to say</option>
+                  </select>
+                ) : (
+                  <div className="val">
+                    {formData.gender 
+                      ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) 
+                      : 'Not set'}
+                  </div>
+                )}
+              </SettingsField>
+
+              <SettingsBtnRow>
+                {isEditing ? (
+                  <>
+                    <SettingsBtn className="primary" onClick={handleSaveProfile} disabled={!!dobError}>
+                      <CheckIcon /> Save
+                    </SettingsBtn>
+                    <SettingsBtn
+                      className="secondary"
+                      onClick={() => {
+                        setIsEditing(false);
+                        setDobError('');
+                        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                        setFormData({
+                          first_name: userData.first_name || '',
+                          last_name: userData.last_name || '',
+                          phone: userData.phone || '',
+                          date_of_birth: userData.date_of_birth || '',
+                          gender: userData.gender || '',
+                          email: userData.email || ''
+                        });
+                        if (userData.date_of_birth) {
+                          setCalculatedAge(calculateAge(userData.date_of_birth));
+                        }
+                      }}
+                    >
+                      Cancel
+                    </SettingsBtn>
+                  </>
+                ) : (
+                  <SettingsBtn className="primary" onClick={() => setIsEditing(true)}>
+                    <EditIcon /> Edit Profile
+                  </SettingsBtn>
+                )}
+              </SettingsBtnRow>
+            </SettingsCard>
+
+            <SettingsCard>
+              <div className="card-head">
+                <span className="icon">◈</span> Security & Privacy
+              </div>
+
+              <SettingsField>
+                <label>Password</label>
+                <div className="val" style={{ justifyContent: 'space-between' }}>
+                  <span>••••••••</span>
+                  <SettingsBtn
+                    className="secondary"
+                    style={{ padding: '3px 10px', fontSize: '9px' }}
+                    onClick={() => alert('Password change coming soon.')}
+                  >
+                    Change
+                  </SettingsBtn>
+                </div>
+              </SettingsField>
+
+              <SettingsField>
+                <label>Account Created</label>
+                <div className="val" style={{ color: '#64748b', fontSize: '11px' }}>
+                  {new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </div>
+              </SettingsField>
+
+              <SettingsSupport>
+                <div className="stitle">◇ Need Help?</div>
+                <div className="sdesc">Reach our support team via WhatsApp or call the admin directly.</div>
+                <div className="support-number">
+                  <span className="icon">◈</span>
+                  <span>0704 182 603</span>
+                </div>
+                <SettingsContactRow>
+                  <SettingsBtn className="call" onClick={handleCallAdmin}>
+                    <PhoneIcon /> Call Admin
+                  </SettingsBtn>
+                  <SettingsBtn className="whatsapp" onClick={openWhatsApp}>
+                    <WhatsAppIcon /> WhatsApp
+                  </SettingsBtn>
+                </SettingsContactRow>
+              </SettingsSupport>
+
+              <SettingsDangerZone>
+                <div className="dtitle">! Danger Zone</div>
+                <div className="ddesc">Permanently delete your account and all data. Cannot be undone.</div>
+                <SettingsBtn className="danger" onClick={handleDeleteAccount}>
+                  🗑 Delete Account
+                </SettingsBtn>
+              </SettingsDangerZone>
+            </SettingsCard>
+          </SettingsGrid>
         </>
       )
-    });
+    }, true);
   };
 
   // ===== HELP & SUPPORT HANDLER =====
@@ -1992,7 +2597,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   return (
     <>
       <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
-        <ModalContainer onClick={(e) => e.stopPropagation()}>
+        <ModalContainer settings={isSettingsPopup} onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
             <div className="title-group">
               <span className="title-icon">{popupData?.icon}</span>
