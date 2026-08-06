@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Academy from './Academy';
+import Academy from '../pages/Academy'; // <-- Correct import path
 
 // ============================================
 // KEYFRAMES
