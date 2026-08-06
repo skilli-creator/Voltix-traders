@@ -3,216 +3,283 @@ import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-// ─────────────────────────────────────────────────
-// DESIGN TOKENS
-// ─────────────────────────────────────────────────
-// Base: deep navy #060d1f
-// Surface: #0c1628
-// Card: #0f1e35
-// Border: rgba(56,189,248,0.08) — sky-glass
-// Accent: #38bdf8 (sky-400) + #818cf8 (indigo-400)
-// Success: #22c55e | Danger: #f87171
-// Text: #f1f5f9 / #94a3b8 / #475569
-// Signature: left-edge gradient bar that morphs from accent to indigo per section
-
-// ─────────────────────────────────────────────────
+// ============================================
 // KEYFRAMES
-// ─────────────────────────────────────────────────
-const slideFromLeft = keyframes`
-  from { opacity: 0; transform: translateX(-16px); }
-  to   { opacity: 1; transform: translateX(0); }
+// ============================================
+const slideIn = keyframes`
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
 `;
 
-const fadeUp = keyframes`
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-`;
-
-const modalIn = keyframes`
-  from { opacity: 0; transform: scale(0.94) translateY(32px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0); }
-`;
-
-const backdropIn = keyframes`
+const fadeIn = keyframes`
   from { opacity: 0; }
-  to   { opacity: 1; }
+  to { opacity: 1; }
 `;
 
-const pulseDot = keyframes`
-  0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.5); }
-  50%       { box-shadow: 0 0 0 5px rgba(248, 113, 113, 0);  }
+const pulseGlow = keyframes`
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
+  50% { opacity: 0.85; transform: scale(1.12); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+`;
+
+const modalSlideIn = keyframes`
+  from { opacity: 0; transform: scale(0.94) translateY(24px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+`;
+
+const modalBackdrop = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
 
 const shimmer = keyframes`
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 `;
 
-const slideIn = keyframes`
-  from { opacity: 0; transform: translateX(-12px); }
-  to   { opacity: 1; transform: translateX(0); }
-`;
-
-// ─────────────────────────────────────────────────
-// SVG ICONS — clean, consistent 20×20
-// ─────────────────────────────────────────────────
-const Icon = ({ d, d2, circle, viewBox = "0 0 24 24", poly, line1, line2, rect, path2, path3, path4 }) => (
-  <svg width="17" height="17" viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    {circle && <circle {...circle} />}
-    {rect   && <rect {...rect} />}
-    {d      && <path d={d} />}
-    {d2     && <path d={d2} />}
-    {path2  && <path d={path2} />}
-    {path3  && <path d={path3} />}
-    {path4  && <path d={path4} />}
-    {poly   && <polyline points={poly} />}
-    {line1  && <line {...line1} />}
-    {line2  && <line {...line2} />}
+// ============================================
+// SVG ICONS
+// ============================================
+const BellIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
   </svg>
 );
 
-const BellIcon       = () => <Icon d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" d2="M13.73 21a2 2 0 0 1-3.46 0" />;
-const VoiceIcon      = () => <Icon d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" poly="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />;
-const VoiceOffIcon   = () => <Icon poly="11 5 6 9 2 9 2 15 6 15 11 19 11 5" line1={{x1:23,y1:9,x2:17,y2:15}} line2={{x1:17,y1:9,x2:23,y2:15}} />;
-const AcademyIcon    = () => <Icon d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />;
-const AccountIcon    = () => <Icon d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" circle={{cx:12,cy:7,r:4}} />;
-const CopyIcon       = () => <Icon rect={{x:9,y:9,width:13,height:13,rx:2}} d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />;
-const ManagementIcon = () => <Icon rect={{x:2,y:7,width:20,height:14,rx:2}} d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />;
-const RiskIcon       = () => <Icon d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" d2="M12 8v4M12 16h.01" />;
-const ShieldIcon     = () => <Icon d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />;
-const BookIcon       = () => <Icon d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" d2="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />;
-const TermsIcon      = () => <Icon d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" poly="14 2 14 8 20 8" line1={{x1:16,y1:13,x2:8,y2:13}} line2={{x1:16,y1:17,x2:8,y2:17}} />;
-const SettingsIcon   = () => <Icon circle={{cx:12,cy:12,r:3}} d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />;
-const HelpIcon       = () => <Icon circle={{cx:12,cy:12,r:10}} d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" line1={{x1:12,y1:17,x2:12.01,y2:17}} />;
-const CloseIcon      = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
-const CheckIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
+const VoiceIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
   </svg>
 );
 
-// ─────────────────────────────────────────────────
-// MODAL SYSTEM
-// ─────────────────────────────────────────────────
+const VoiceOffIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <line x1="23" y1="9" x2="17" y2="15" />
+    <line x1="17" y1="9" x2="23" y2="15" />
+  </svg>
+);
+
+const AcademyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  </svg>
+);
+
+const AccountIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const CopyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </svg>
+);
+
+const ManagementIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+  </svg>
+);
+
+const RiskIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M12 8v4" />
+    <path d="M12 16h.01" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+const BookIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+  </svg>
+);
+
+const TermsIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+    <polyline points="10 9 9 9 8 9" />
+  </svg>
+);
+
+const CompanyIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+  </svg>
+);
+
+const SettingsIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />
+  </svg>
+);
+
+const HelpIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+    <line x1="12" y1="17" x2="12.01" y2="17" />
+  </svg>
+);
+
+const CloseXIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+// ============================================
+// PREMIUM MODAL
+// ============================================
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(3, 7, 18, 0.8);
-  backdrop-filter: blur(18px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 1000;
-  display: ${p => p.isOpen ? 'flex' : 'none'};
+  display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: ${backdropIn} 0.25s ease;
+  animation: ${modalBackdrop} 0.28s ease;
 `;
 
-const ModalBox = styled.div`
+const ModalContainer = styled.div`
+  max-width: 480px;
   width: 100%;
-  max-width: 500px;
-  max-height: 82vh;
-  background: #0c1628;
-  border: 1px solid rgba(56, 189, 248, 0.12);
+  max-height: 86vh;
+  background: ${props => props.theme?.colors?.surface || '#0F172A'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   border-radius: 18px;
+  box-shadow: ${props => props.theme?.colors?.shadow || '0 28px 64px rgba(0, 0, 0, 0.55)'};
+  animation: ${modalSlideIn} 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 0.5px rgba(255,255,255,0.04) inset,
-    0 28px 72px rgba(0, 0, 0, 0.7);
-  animation: ${modalIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  overflow: hidden;
 
-  /* SIGNATURE: shimmering gradient top bar */
   &::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 2px;
-    background: linear-gradient(90deg,
-      #38bdf8 0%, #818cf8 50%, #38bdf8 100%
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme?.colors?.accent || '#3B82F6'},
+      transparent
     );
     background-size: 200% 100%;
-    animation: ${shimmer} 4s linear infinite;
-    border-radius: 18px 18px 0 0;
+    animation: ${shimmer} 4s ease-in-out infinite;
   }
 
   @media (max-width: 480px) {
     max-width: 100%;
+    margin: 8px;
     border-radius: 14px;
-    max-height: 88vh;
+    max-height: 92vh;
   }
 `;
 
-const ModalHead = styled.div`
+const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   flex-shrink: 0;
 
-  .mh-left {
+  .title-group {
     display: flex;
     align-items: center;
-    gap: 11px;
+    gap: 10px;
+    min-width: 0;
   }
 
-  .mh-icon {
-    width: 34px; height: 34px;
-    border-radius: 9px;
-    background: rgba(56,189,248,0.08);
-    border: 1px solid rgba(56,189,248,0.15);
-    display: flex; align-items: center; justify-content: center;
-    color: #38bdf8;
+  .title-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     flex-shrink: 0;
   }
 
-  .mh-title {
-    font-size: 14.5px;
+  .title-text {
+    font-size: 15px;
     font-weight: 700;
-    color: #f1f5f9;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .mh-badge {
+  .title-badge {
     font-size: 9px;
     font-weight: 700;
-    padding: 2px 9px;
-    border-radius: 99px;
-    background: rgba(56,189,248,0.08);
-    color: #38bdf8;
-    border: 1px solid rgba(56,189,248,0.2);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    flex-shrink: 0;
   }
 
-  .mh-close {
-    width: 30px; height: 30px;
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
     border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.06);
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     background: transparent;
-    color: #475569;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
     transition: all 0.2s ease;
     flex-shrink: 0;
 
     &:hover {
-      background: rgba(248,113,113,0.08);
-      border-color: rgba(248,113,113,0.25);
-      color: #f87171;
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
       transform: rotate(90deg);
     }
   }
 
   @media (max-width: 480px) {
-    padding: 13px 16px 11px;
-    .mh-title { font-size: 13px; }
+    padding: 12px 14px 10px;
+    .title-text { font-size: 14px; }
+    .title-icon { width: 30px; height: 30px; }
   }
 `;
 
@@ -220,559 +287,124 @@ const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 16px 20px 20px;
-  
-  &::-webkit-scrollbar { width: 3px; }
+
+  &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(56,189,248,0.15);
-    border-radius: 10px;
-  }
-
-  @media (max-width: 480px) { padding: 12px 14px 16px; }
-`;
-
-// ─────────────────────────────────────────────────
-// SIDEBAR SHELL
-// ─────────────────────────────────────────────────
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background: rgba(3, 7, 18, 0.65);
-  backdrop-filter: blur(6px);
-  z-index: 98;
-  opacity: ${p => p.isOpen ? 1 : 0};
-  visibility: ${p => p.isOpen ? 'visible' : 'hidden'};
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  @media (min-width: 769px) { display: none; }
-`;
-
-const SidebarWrap = styled.aside`
-  position: fixed;
-  top: 0; left: 0;
-  width: 268px;
-  height: 100vh;
-  /* Deep navy glass */
-  background: rgba(6, 13, 31, 0.97);
-  border-right: 1px solid rgba(56, 189, 248, 0.09);
-  box-shadow:
-    6px 0 32px rgba(0,0,0,0.45),
-    0 0 0 0.5px rgba(255,255,255,0.03) inset;
-  transform: ${p => p.isOpen ? 'translateX(0)' : 'translateX(-100%)'};
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 99;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
-  /* SIGNATURE: vertical gradient left edge */
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      180deg,
-      transparent    0%,
-      #38bdf8       25%,
-      #818cf8       65%,
-      transparent  100%
-    );
-    opacity: 0.6;
-  }
-
-  @media (max-width: 768px) { width: 280px; }
-  @media (max-width: 480px) { width: 100%; }
-`;
-
-const CloseBtn = styled.button`
-  display: none;
-  position: absolute;
-  top: 12px; right: 12px;
-  z-index: 1;
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.03);
-  color: #475569;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(248,113,113,0.08);
-    border-color: rgba(248,113,113,0.3);
-    color: #f87171;
-  }
-
-  @media (max-width: 768px) {
-    display: ${p => p.isOpen ? 'flex' : 'none'};
-  }
-`;
-
-const SidebarScroll = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0 10px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb {
-    background: rgba(56,189,248,0.1);
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
     border-radius: 99px;
   }
-`;
 
-// ─────────────────────────────────────────────────
-// SIDEBAR HEADER
-// ─────────────────────────────────────────────────
-const SideHead = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 20px 6px 16px 8px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  animation: ${slideFromLeft} 0.35s ease;
-  position: relative;
-`;
-
-const Avatar = styled.div`
-  width: 38px; height: 38px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #1e3a5f 0%, #0f2541 100%);
-  border: 1px solid rgba(56,189,248,0.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: #38bdf8;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-  box-shadow: 0 0 18px rgba(56,189,248,0.1);
-`;
-
-const UserMeta = styled.div`
-  flex: 1;
-  min-width: 0;
-
-  .user-name {
-    font-size: 13px;
-    font-weight: 700;
-    color: #e2e8f0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: -0.1px;
-  }
-
-  .user-email {
-    font-size: 10.5px;
-    color: #334155;
-    margin-top: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-family: 'SF Mono', 'Fira Code', monospace;
+  @media (max-width: 480px) {
+    padding: 12px 14px 16px;
   }
 `;
 
-const StatusDot = styled.span`
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  flex-shrink: 0;
-  box-shadow: 0 0 6px rgba(34,197,94,0.6);
-`;
-
-// ─────────────────────────────────────────────────
-// NAV SECTIONS
-// ─────────────────────────────────────────────────
-const Section = styled.div`
-  margin-top: 20px;
-  animation: ${slideFromLeft} ${p => p.delay || 0.3}s ease;
-`;
-
-const SectionEyebrow = styled.div`
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #1e3a5f;
-  padding: 0 8px;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba(255,255,255,0.04);
-  }
-`;
-
-const NavItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 8px 10px;
-  border-radius: 9px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  position: relative;
-  color: ${p => p.active ? '#38bdf8' : '#475569'};
-  background: ${p => p.active ? 'rgba(56,189,248,0.06)' : 'transparent'};
-  margin-bottom: 1px;
-  font-size: 12.5px;
-  font-weight: ${p => p.active ? '600' : '500'};
-
-  &:hover {
-    background: rgba(56,189,248,0.05);
-    color: #94a3b8;
-    transform: translateX(2px);
-  }
-
-  /* Active left indicator */
-  ${p => p.active && css`
-    &::before {
-      content: '';
-      position: absolute;
-      left: -10px; top: 50%;
-      transform: translateY(-50%);
-      width: 3px; height: 16px;
-      background: linear-gradient(180deg, #38bdf8, #818cf8);
-      border-radius: 0 3px 3px 0;
-    }
-  `}
-
-  .ni-icon {
-    width: 16px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    opacity: ${p => p.active ? 1 : 0.55};
-    transition: opacity 0.18s;
-  }
-
-  &:hover .ni-icon { opacity: 0.8; }
-
-  .ni-label {
-    flex: 1;
-    font-size: 12.5px;
-    font-weight: inherit;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`;
-
-// ─────────────────────────────────────────────────
-// BADGES
-// ─────────────────────────────────────────────────
-const Badge = styled.span`
-  font-size: 8.5px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 99px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  flex-shrink: 0;
-
-  ${p => p.variant === 'accent' && css`
-    background: rgba(56,189,248,0.1);
-    color: #38bdf8;
-    border: 1px solid rgba(56,189,248,0.2);
-  `}
-  ${p => p.variant === 'new' && css`
-    background: rgba(129,140,248,0.1);
-    color: #818cf8;
-    border: 1px solid rgba(129,140,248,0.2);
-  `}
-  ${p => p.variant === 'beta' && css`
-    background: rgba(251,191,36,0.08);
-    color: #fbbf24;
-    border: 1px solid rgba(251,191,36,0.18);
-  `}
-  ${p => p.variant === 'on' && css`
-    background: rgba(34,197,94,0.08);
-    color: #22c55e;
-    border: 1px solid rgba(34,197,94,0.18);
-  `}
-  ${p => p.variant === 'off' && css`
-    background: rgba(248,113,113,0.08);
-    color: #f87171;
-    border: 1px solid rgba(248,113,113,0.18);
-  `}
-  ${p => !p.variant && css`
-    background: rgba(255,255,255,0.04);
-    color: #334155;
-    border: 1px solid rgba(255,255,255,0.06);
-  `}
-`;
-
-const NotifDot = styled.span`
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #f87171;
-  flex-shrink: 0;
-  animation: ${pulseDot} 2s infinite;
-`;
-
-// ─────────────────────────────────────────────────
-// INFO CARDS (Responsible Trading, About)
-// ─────────────────────────────────────────────────
-const InfoCard = styled.div`
-  margin-top: 6px;
-  padding: 11px 13px;
-  background: rgba(15, 30, 53, 0.5);
-  border: 1px solid rgba(56,189,248,0.08);
-  border-radius: 10px;
-  transition: border-color 0.2s ease;
-
-  &:hover {
-    border-color: rgba(56,189,248,0.18);
-  }
-
-  .ic-title {
-    font-size: 11.5px;
-    font-weight: 600;
-    color: #94a3b8;
-    margin-bottom: 7px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    color: #64748b;
-  }
-
-  .ic-item {
-    font-size: 10.5px;
-    color: #334155;
-    padding: 2px 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    line-height: 1.5;
-
-    .bullet { color: #1e3a5f; font-weight: 700; flex-shrink: 0; }
-    .hi { color: #64748b; font-weight: 600; }
-  }
-
-  .ic-link {
-    margin-top: 8px;
-    font-size: 10.5px;
-    color: #38bdf8;
-    cursor: pointer;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    opacity: 0.7;
-    transition: all 0.2s ease;
-
-    &:hover { opacity: 1; gap: 7px; }
-  }
-`;
-
-// ─────────────────────────────────────────────────
-// FEEDBACK
-// ─────────────────────────────────────────────────
-const FeedbackCard = styled.div`
-  margin-top: 6px;
-  padding: 12px 13px;
-  background: rgba(15, 30, 53, 0.5);
-  border: 1px solid rgba(56,189,248,0.08);
-  border-radius: 10px;
-
-  .fb-label {
-    font-size: 10px;
-    font-weight: 600;
-    color: #334155;
-    text-align: center;
-    margin-bottom: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-  }
-
-  .stars {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-    margin-bottom: 7px;
-  }
-
-  .star {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    color: rgba(255,255,255,0.1);
-    transition: all 0.15s ease;
-    display: flex;
-    align-items: center;
-
-    svg { width: 20px; height: 20px; fill: currentColor; }
-    &:hover { transform: scale(1.2); }
-    &.lit { color: #fbbf24; filter: drop-shadow(0 0 5px rgba(251,191,36,0.35)); }
-  }
-
-  .star-label {
-    font-size: 10.5px;
-    text-align: center;
-    color: #334155;
-    margin-bottom: 9px;
-    min-height: 14px;
-    font-weight: 500;
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 60px;
-    padding: 8px 10px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 8px;
-    color: #94a3b8;
-    font-size: 11.5px;
-    font-family: inherit;
-    resize: none;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 9px;
-    box-sizing: border-box;
-
-    &::placeholder { color: #1e3a5f; }
-    &:focus { border-color: rgba(56,189,248,0.25); }
-  }
-
-  .fb-submit {
-    width: 100%;
-    padding: 8px 0;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15));
-    border: 1px solid rgba(56,189,248,0.2);
-    color: #38bdf8;
-    font-size: 11.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: inherit;
-
-    &:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(56,189,248,0.22), rgba(129,140,248,0.22));
-    }
-    &:disabled { opacity: 0.4; cursor: not-allowed; }
-  }
-
-  .fb-status {
-    margin-top: 7px;
-    font-size: 10.5px;
-    text-align: center;
-    color: #22c55e;
-    font-weight: 500;
-  }
-`;
-
-// ─────────────────────────────────────────────────
-// FOOTER
-// ─────────────────────────────────────────────────
-const SideFooter = styled.footer`
-  flex-shrink: 0;
-  padding: 10px 10px;
-  border-top: 1px solid rgba(255,255,255,0.04);
-  background: rgba(3,7,18,0.5);
-  display: flex;
-  gap: 3px;
-`;
-
-const FooterBtn = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  padding: 8px 6px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.18s ease;
-  color: #334155;
-  font-size: 11px;
-  font-weight: 500;
-
-  &:hover {
-    background: rgba(56,189,248,0.05);
-    color: #64748b;
-  }
-
-  .fi { display: flex; align-items: center; justify-content: center; }
-`;
-
-// ─────────────────────────────────────────────────
-// MODAL CONTENT PIECES
-// ─────────────────────────────────────────────────
-
-// — Notifications —
-const NotifItem = styled.div`
+// ============================================
+// NOTIFICATIONS
+// ============================================
+const NotificationItem = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 9px 10px;
-  border-radius: 8px;
-  background: ${p => p.read ? 'transparent' : 'rgba(56,189,248,0.04)'};
-  border: 1px solid ${p => p.read ? 'transparent' : 'rgba(56,189,248,0.1)'};
-  margin-bottom: 4px;
-  transition: background 0.15s;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: ${props =>
+    props.read
+      ? 'transparent'
+      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+  border: 1px solid ${props =>
+    props.read
+      ? 'transparent'
+      : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 6px;
+  transition: background 0.2s ease, border-color 0.2s ease;
 
-  &:hover { background: rgba(255,255,255,0.02); }
-
-  .ni-icon {
-    width: 28px; height: 28px;
-    border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    font-size: 13px;
-    background: ${p => p.type === 'trade' ? 'rgba(34,197,94,0.08)' : 'rgba(56,189,248,0.08)'};
-    color: ${p => p.type === 'trade' ? '#22c55e' : '#38bdf8'};
+  &:hover {
+    background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.04)'};
   }
 
-  .ni-content { flex: 1; min-width: 0; }
-  .ni-title   { font-size: 12px; font-weight: 600; color: #e2e8f0; margin-bottom: 2px; }
-  .ni-desc    { font-size: 11px; color: #475569; line-height: 1.4; font-weight: 400; }
-  .ni-time    { font-size: 9.5px; color: #1e3a5f; margin-top: 3px; font-weight: 400; font-family: monospace; }
-  .ni-dot     { width: 6px; height: 6px; border-radius: 50%; background: #38bdf8; flex-shrink: 0; margin-top: 4px; ${p => p.read && 'display:none;'} }
+  .notif-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: ${props =>
+      props.type === 'trade' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => (props.type === 'trade' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6')};
+  }
+
+  .notif-content { flex: 1; min-width: 0; }
+  .notif-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+  .notif-desc {
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    line-height: 1.45;
+  }
+  .notif-time {
+    font-size: 10px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 3px;
+  }
+  .notif-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    flex-shrink: 0;
+    margin-top: 4px;
+    ${props => props.read && 'display: none;'}
+  }
 `;
 
-// — Voice —
-const VoiceRow = styled.div`
+// ============================================
+// VOICE SETTINGS
+// ============================================
+const VoiceToggleRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 11px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 8px;
-  margin-bottom: 7px;
+  padding: 10px 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 10px;
 
-  .vr-label { font-size: 12px; font-weight: 600; color: #94a3b8; }
-  .vr-right { display: flex; align-items: center; gap: 8px; }
-  .vr-status {
-    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 99px;
-    color: ${p => p.active ? '#22c55e' : '#475569'};
-    background: ${p => p.active ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.02)'};
+  .toggle-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  }
+  .toggle-status {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: ${props => (props.active ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
+    background: ${props =>
+      props.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
   }
 `;
 
-const Toggle = styled.button`
-  width: 36px; height: 20px;
-  border-radius: 10px;
+const ToggleSwitch = styled.button`
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
   border: none;
-  background: ${p => p.on ? 'linear-gradient(135deg, #38bdf8, #818cf8)' : '#1e2d42'};
+  background: ${props =>
+    props.active
+      ? props.theme?.colors?.accent || '#3B82F6'
+      : props.theme?.colors?.scrollbar || '#2a2e3d'};
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.25s ease;
   position: relative;
   flex-shrink: 0;
 
@@ -780,457 +412,1099 @@ const Toggle = styled.button`
     content: '';
     position: absolute;
     top: 2px;
-    left: ${p => p.on ? '18px' : '2px'};
-    width: 16px; height: 16px;
+    left: ${props => (props.active ? '20px' : '2px')};
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background: #fff;
-    transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    background: ${props => props.theme?.colors?.text || '#ffffff'};
+    transition: left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
+
+  &:hover { opacity: 0.9; }
 `;
 
-const VolumeRow = styled.div`
+const VolumeSlider = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 11px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 8px;
-  margin-bottom: 7px;
+  padding: 10px 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 10px;
 
-  .vv-label { font-size: 11px; font-weight: 600; color: #475569; min-width: 24px; }
+  .slider-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    min-width: 28px;
+  }
 
-  input[type="range"] {
+  input[type='range'] {
     flex: 1;
     -webkit-appearance: none;
-    height: 3px;
+    height: 4px;
     border-radius: 2px;
-    background: #1e2d42;
+    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
     outline: none;
+
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 13px; height: 13px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
-      background: #38bdf8;
+      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
       cursor: pointer;
-      box-shadow: 0 0 6px rgba(56,189,248,0.4);
+      border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
     }
-    &:disabled { opacity: 0.3; }
+
+    &:disabled { opacity: 0.4; }
   }
 
-  .vv-val { font-size: 11px; font-weight: 700; color: #64748b; min-width: 28px; text-align: right; font-family: monospace; }
-`;
-
-const VoiceEvent = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 5px 2px;
-  border-bottom: 1px solid rgba(255,255,255,0.02);
-  &:last-child { border-bottom: none; }
-
-  .ve-name {
-    font-size: 11.5px;
-    font-weight: 500;
-    color: #475569;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    .ve-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: ${p => p.on ? '#22c55e' : '#1e2d42'};
-      transition: background 0.2s;
-    }
-  }
-
-  .ve-toggle {
-    font-size: 9px; font-weight: 700;
-    padding: 2px 9px;
-    border-radius: 99px;
-    cursor: pointer;
-    transition: all 0.18s;
-    color: ${p => p.on ? '#22c55e' : '#334155'};
-    background: ${p => p.on ? 'rgba(34,197,94,0.07)' : 'rgba(255,255,255,0.02)'};
-    border: 1px solid ${p => p.on ? 'rgba(34,197,94,0.18)' : 'rgba(255,255,255,0.05)'};
-    &:hover { opacity: 0.7; }
-  }
-`;
-
-// — Account Info —
-const AcctRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  &:last-child { border-bottom: none; }
-
-  .ar-label { font-size: 11px; font-weight: 600; color: #334155; }
-  .ar-val {
-    font-size: 12px; font-weight: 700; color: #94a3b8;
-    display: flex; align-items: center; gap: 7px;
-  }
-  .ar-live {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 11px; font-weight: 700; color: #22c55e;
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.6); }
-  }
-`;
-
-// — Risk Calculator —
-const CalcGroup = styled.div`
-  margin-bottom: 11px;
-
-  .cg-label {
-    font-size: 9.5px;
+  .slider-value {
+    font-size: 12px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #334155;
-    margin-bottom: 5px;
-    display: flex; align-items: center; gap: 6px;
-    .cg-hint { font-size: 9px; font-weight: 400; opacity: 0.5; text-transform: none; }
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    min-width: 28px;
+    text-align: right;
   }
+`;
 
-  .cg-wrap {
+const VoiceEventItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+
+  &:last-child { border-bottom: none; }
+
+  .event-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
+    gap: 8px;
+  }
+
+  .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
+  }
+
+  .event-status {
+    font-size: 9px;
+    font-weight: 700;
+    color: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: ${props =>
+      props.enabled ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)'};
+    transition: opacity 0.2s ease;
+
+    &:hover { opacity: 0.75; }
+  }
+`;
+
+// ============================================
+// ACCOUNT INFO
+// ============================================
+const AccountInfoRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+
+  &:last-child { border-bottom: none; }
+
+  .row-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+  }
+
+  .row-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.success || '#10B981'};
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: ${props => props.theme?.colors?.success || '#10B981'};
+      animation: ${pulseGlow} 2s infinite;
+    }
+  }
+`;
+
+// ============================================
+// RISK CALCULATOR
+// ============================================
+const CalcInputGroup = styled.div`
+  margin-bottom: 12px;
+
+  .calc-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .calc-hint {
+      font-size: 9px;
+      font-weight: 400;
+      opacity: 0.55;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+  }
+
+  .calc-input-wrap {
+    display: flex;
+    align-items: center;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border-radius: 10px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
-    &:focus-within { border-color: rgba(56,189,248,0.3); box-shadow: 0 0 0 3px rgba(56,189,248,0.06); }
+    &:focus-within {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    }
 
-    .cg-pre {
-      padding: 8px 10px;
-      font-size: 11px;
+    .calc-prefix {
+      padding: 9px 11px;
+      font-size: 12px;
       font-weight: 700;
-      color: #334155;
-      background: rgba(255,255,255,0.02);
-      border-right: 1px solid rgba(255,255,255,0.04);
-      min-width: 18px;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.03)'};
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+      min-width: 36px;
       text-align: center;
-      font-family: monospace;
     }
 
     input {
-      flex: 1; padding: 8px 10px;
-      background: transparent; border: none;
-      color: #94a3b8; font-size: 12.5px; font-weight: 600;
-      outline: none; width: 100%; min-width: 0;
-      &::placeholder { color: #1e2d42; font-weight: 400; }
-      &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { -webkit-appearance: none; }
-      &[type="number"] { -moz-appearance: textfield; }
+      flex: 1;
+      padding: 9px 12px;
+      background: transparent;
+      border: none;
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+      width: 100%;
+      min-width: 0;
+
+      &::placeholder {
+        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+        font-weight: 400;
+        opacity: 0.45;
+      }
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &[type='number'] {
+        -moz-appearance: textfield;
+      }
     }
   }
 `;
 
-const CalcGrid = styled.div`
+const CalcResultsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px;
+  gap: 8px;
   margin-top: 8px;
-  @media (max-width: 420px) { grid-template-columns: 1fr 1fr; }
-`;
 
-const CalcBox = styled.div`
-  padding: 9px 10px;
-  border-radius: 8px;
-  text-align: center;
-  background: ${p => p.t === 'risk' ? 'rgba(248,113,113,0.05)' : p.t === 'reward' ? 'rgba(34,197,94,0.05)' : 'rgba(56,189,248,0.05)'};
-  border: 1px solid ${p => p.t === 'risk' ? 'rgba(248,113,113,0.12)' : p.t === 'reward' ? 'rgba(34,197,94,0.12)' : 'rgba(56,189,248,0.12)'};
-
-  .cb-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #334155; margin-bottom: 3px; }
-  .cb-val { font-size: 14px; font-weight: 700; color: ${p => p.t === 'risk' ? '#f87171' : p.t === 'reward' ? '#22c55e' : '#38bdf8'}; }
-  .cb-sub { font-size: 8px; color: #334155; margin-top: 2px; font-weight: 400; }
-`;
-
-const CalcSummary = styled.div`
-  margin-top: 9px;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 8px;
-
-  .cs-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 3px 0;
-    font-size: 11px;
-    font-weight: 600;
-    .cs-label { color: #334155; }
-    .cs-val   { color: #94a3b8; }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
   }
 `;
 
-const CalcRunBtn = styled.button`
+const CalcResultBox = styled.div`
+  padding: 12px 10px;
+  border-radius: 10px;
+  text-align: center;
+  background: ${props =>
+    props.type === 'risk'
+      ? 'rgba(239, 68, 68, 0.08)'
+      : props.type === 'reward'
+      ? 'rgba(16, 185, 129, 0.08)'
+      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+  border: 1px solid ${props =>
+    props.type === 'risk'
+      ? 'rgba(239, 68, 68, 0.14)'
+      : props.type === 'reward'
+      ? 'rgba(16, 185, 129, 0.14)'
+      : props.theme?.colors?.border || 'rgba(59, 130, 246, 0.14)'};
+
+  .result-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 4px;
+  }
+
+  .result-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: ${props =>
+      props.type === 'risk'
+        ? props.theme?.colors?.danger || '#EF4444'
+        : props.type === 'reward'
+        ? props.theme?.colors?.success || '#10B981'
+        : props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  .result-sub {
+    font-size: 9px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 3px;
+    opacity: 0.7;
+  }
+`;
+
+const CalcSummaryBox = styled.div`
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 11px;
+    font-weight: 600;
+
+    .label { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
+    .value { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
+
+    &.risk .value { color: ${props => props.theme?.colors?.danger || '#EF4444'}; }
+    &.reward .value { color: ${props => props.theme?.colors?.success || '#10B981'}; }
+  }
+`;
+
+const CalcButton = styled.button`
   width: 100%;
-  padding: 9px 0;
-  margin-top: 4px;
+  padding: 11px 0;
   border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15));
-  border: 1px solid rgba(56,189,248,0.25);
-  color: #38bdf8;
-  font-size: 12px;
+  border-radius: 10px;
+  background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  color: #ffffff;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: inherit;
+  margin-top: 4px;
 
   &:hover {
-    background: linear-gradient(135deg, rgba(56,189,248,0.22), rgba(129,140,248,0.22));
-    box-shadow: 0 4px 16px rgba(56,189,248,0.1);
+    background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
+    box-shadow: 0 6px 16px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'};
+    transform: translateY(-1px);
+  }
+
+  &:active { transform: translateY(0); }
+`;
+
+// ============================================
+// HOW TO USE / TERMS
+// ============================================
+const StepItem = styled.div`
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+
+  &:last-child { border-bottom: none; }
+
+  .step-number {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  }
+
+  .step-content { flex: 1; min-width: 0; }
+  .step-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+  .step-desc {
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    line-height: 1.5;
   }
 `;
 
-// — How to Use steps —
-const StepRow = styled.div`
-  display: flex;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  &:last-child { border-bottom: none; }
+const TermsSection = styled.div`
+  margin-bottom: 14px;
 
-  .step-num {
-    width: 24px; height: 24px;
-    border-radius: 50%;
-    background: rgba(56,189,248,0.07);
-    border: 1px solid rgba(56,189,248,0.18);
-    color: #38bdf8;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 700;
+  .terms-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 6px;
+  }
+
+  .terms-text {
+    font-size: 11px;
+    line-height: 1.65;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+  }
+
+  .terms-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 11px;
+    line-height: 1.55;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+
+    .bullet-dot {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+  }
+`;
+
+// ============================================
+// SIDEBAR LAYOUT
+// ============================================
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 98;
+  opacity: ${props => (props.isOpen ? 1 : 0)};
+  visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
+
+const SidebarContainer = styled.aside`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 288px;
+  height: 100vh;
+  height: 100dvh;
+  background: ${props =>
+    props.theme?.colors?.sidebarBackground ||
+    props.theme?.colors?.surface ||
+    '#0F172A'};
+  border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
+
+  @media (max-width: 768px) {
+    width: min(300px, 88vw);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
+`;
+
+const CloseButton = styled.button`
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 100;
+  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.06)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+  color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => props.theme?.colors?.text || '#FFFFFF'};
+    border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  @media (max-width: 768px) {
+    display: ${props => (props.isOpen ? 'flex' : 'none')};
+  }
+`;
+
+const SidebarContent = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 18px 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
+    border-radius: 99px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'};
+  }
+`;
+
+const SidebarHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 16px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  animation: ${slideIn} 0.3s ease;
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      ${props => props.theme?.colors?.accent || '#3B82F6'},
+      ${props => props.theme?.colors?.accentHover || '#1D4ED8'}
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.4px;
+    box-shadow: 0 4px 14px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.35)'};
     flex-shrink: 0;
   }
 
-  .step-title { font-size: 12px; font-weight: 600; color: #94a3b8; margin-bottom: 2px; }
-  .step-desc  { font-size: 11px; color: #334155; line-height: 1.5; font-weight: 400; }
-`;
-
-// — Terms —
-const TermsBlk = styled.div`
-  margin-bottom: 12px;
-
-  .tb-title { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 4px; }
-  .tb-text  { font-size: 11px; line-height: 1.7; color: #334155; font-weight: 400; }
-  .tb-bullet {
-    display: flex; align-items: flex-start; gap: 6px;
-    padding: 2px 0; font-size: 11px; line-height: 1.6; color: #334155; font-weight: 400;
-    .tb-dot { color: #1e3a5f; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-    .tb-hi  { color: #64748b; font-weight: 600; }
-    .tb-red { color: #f87171; font-weight: 600; }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .user-email {
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
-// ─────────────────────────────────────────────────
+const NavSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  animation: ${slideIn} 0.35s ease;
+`;
+
+const SectionLabel = styled.div`
+  font-size: 10px;
+  font-weight: 700;
+  color: ${props => props.theme?.colors?.textMuted || '#64748B'};
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  padding: 0 10px;
+  margin-bottom: 4px;
+`;
+
+const NavItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  background: ${props =>
+    props.active
+      ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'
+      : 'transparent'};
+  color: ${props =>
+    props.active
+      ? props.theme?.colors?.accent || '#3B82F6'
+      : props.theme?.colors?.textSecondary || '#CBD5E1'};
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    transform: translateX(2px);
+  }
+
+  ${props =>
+    props.active &&
+    css`
+      font-weight: 600;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 18px;
+        background: ${props.theme?.colors?.accent || '#3B82F6'};
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 0 10px ${props.theme?.colors?.accent || '#3B82F6'};
+      }
+    `}
+
+  .nav-icon {
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover .nav-icon {
+    transform: scale(1.08);
+  }
+
+  .nav-label {
+    flex: 1;
+    font-size: 12.5px;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: ${props =>
+      props.active
+        ? props.theme?.colors?.accent || '#3B82F6'
+        : 'rgba(255, 255, 255, 0.06)'};
+    color: ${props =>
+      props.active ? '#FFFFFF' : props.theme?.colors?.textMuted || '#94A3B8'};
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+
+  .notification-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.danger || '#EF4444'};
+    animation: ${pulseGlow} 2s infinite;
+    flex-shrink: 0;
+  }
+`;
+
+const SideCard = styled.div`
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(15, 23, 42, 0.35)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  animation: ${fadeIn} 0.35s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.35)'};
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    }
+  }
+
+  .card-item {
+    font-size: 10.5px;
+    color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'};
+    padding: 3px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.45;
+
+    .bullet {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .highlight {
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-weight: 600;
+    }
+  }
+
+  .learn-more {
+    margin-top: 10px;
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      gap: 7px;
+      color: ${props => props.theme?.colors?.accentHover || '#60A5FA'};
+    }
+  }
+`;
+
+const FeedbackSection = styled.div`
+  padding: 14px;
+  border-radius: 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(15, 23, 42, 0.35)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  animation: ${fadeIn} 0.35s ease;
+
+  .feedback-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .stars {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    justify-content: center;
+  }
+
+  .star-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.14);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    &:hover {
+      transform: scale(1.18);
+    }
+
+    &.active,
+    &.hover {
+      color: ${props => props.theme?.colors?.warning || '#F59E0B'};
+      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.35));
+    }
+  }
+
+  .star-rating-text {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    min-height: 16px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+  }
+
+  .feedback-textarea {
+    width: 100%;
+    min-height: 68px;
+    padding: 10px 12px;
+    background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.03)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border-radius: 10px;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    font-size: 12px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 10px;
+
+    &::placeholder {
+      color: ${props => props.theme?.colors?.textMuted || '#64748B'};
+    }
+
+    &:focus {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    }
+  }
+
+  .feedback-submit {
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
+      box-shadow: 0 4px 14px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'};
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .feedback-status {
+    margin-top: 8px;
+    font-size: 11px;
+    text-align: center;
+    color: ${props => props.theme?.colors?.success || '#10B981'};
+    font-weight: 500;
+  }
+`;
+
+const SidebarFooter = styled.footer`
+  flex-shrink: 0;
+  padding: 12px 14px;
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  background: ${props =>
+    props.theme?.colors?.sidebarBackground ||
+    props.theme?.colors?.surface ||
+    '#0F172A'};
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .footer-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'};
+    font-size: 12px;
+    font-weight: 500;
+
+    &:hover {
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    }
+
+    .footer-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+`;
+
+
+// ============================================
 // MAIN COMPONENT
-// ─────────────────────────────────────────────────
+// ============================================
+
 const OptionSideBar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState('academy');
-  const [rating, setRating]               = useState(0);
-  const [hoverRating, setHoverRating]     = useState(0);
-  const [feedbackText, setFeedbackText]   = useState('');
-  const [isSubmitting, setIsSubmitting]   = useState(false);
-  const [submitStatus, setSubmitStatus]   = useState('');
-  const [hasNotifs, setHasNotifs]         = useState(true);
-
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState('');
+  const [hasNotifications, setHasNotifications] = useState(true);
+  
+  // Voice states
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [voiceVolume,  setVoiceVolume]  = useState(70);
-  const [voiceEvents,  setVoiceEvents]  = useState({ trade: true, price: true, market: false, system: true });
+  const [voiceVolume, setVoiceVolume] = useState(70);
+  const [voiceEvents, setVoiceEvents] = useState({ trade: true, price: true, market: false, system: true });
+  
+  // Popup state
+  const [popupData, setPopupData] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const [popup,      setPopup]      = useState(null);
-  const [popupOpen,  setPopupOpen]  = useState(false);
+  // Risk calculator state
+  const [calcAccountBalance, setCalcAccountBalance] = useState(10000);
+  const [calcRiskPercent, setCalcRiskPercent] = useState(2);
+  const [calcStopLoss, setCalcStopLoss] = useState(50);
+  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
+  const [calculated, setCalculated] = useState(false);
 
-  const [calcBal,  setCalcBal]  = useState(10000);
-  const [calcRisk, setCalcRisk] = useState(2);
-  const [calcSL,   setCalcSL]   = useState(50);
-  const [calcTP,   setCalcTP]   = useState(150);
-  const [calcDone, setCalcDone] = useState(false);
-
-  const closeMobile = () => { if (window.innerWidth <= 768) onClose(); };
-
-  const openPopup = (data) => { setPopup(data); setPopupOpen(true); };
-  const closePopup = () => {
-    setPopupOpen(false);
-    setTimeout(() => setPopup(null), 300);
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth <= 768) onClose();
   };
 
-  const nav = (item, path) => {
+  const openPopup = (data) => {
+    setPopupData(data);
+    setIsPopupOpen(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    setTimeout(() => setPopupData(null), 300);
+  };
+
+  const handleNavClick = (item, path) => {
     setActiveItem(item);
     if (path) navigate(path);
-    closeMobile();
+    closeSidebarOnMobile();
   };
 
-  // ── Risk maths ──
-  const riskAmt   = calcBal * (calcRisk / 100);
-  const rewardAmt = calcBal * ((calcTP / calcSL) * (calcRisk / 100));
-  const rrRatio   = riskAmt > 0 ? rewardAmt / riskAmt : 0;
-  const posSize   = calcSL  > 0 ? riskAmt / (calcSL / 100) : 0;
+  // ===== RISK CALCULATOR LOGIC =====
+  const calculateRisk = () => {
+    setCalculated(true);
+  };
 
-  // ── Popup openers ──
-  const openNotifications = () => {
+  const getRiskResults = () => {
+    const riskAmount = calcAccountBalance * (calcRiskPercent / 100);
+    const rewardAmount = calcAccountBalance * ((calcTakeProfit / calcStopLoss) * (calcRiskPercent / 100));
+    const riskRewardRatio = riskAmount > 0 ? rewardAmount / riskAmount : 0;
+    const positionSize = calcStopLoss > 0 ? riskAmount / (calcStopLoss / 100) : 0;
+    const maxLoss = riskAmount;
+    const maxProfit = rewardAmount;
+
+    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit };
+  };
+
+  const riskResults = getRiskResults();
+
+  // ===== ALL POPUP HANDLERS =====
+  const handleNotificationsClick = () => {
     setActiveItem('notifications');
-    setHasNotifs(false);
+    setHasNotifications(false);
     openPopup({
       title: 'Notifications',
       icon: <BellIcon />,
-      badge: '2 new',
+      badge: '2 New',
       content: (
         <>
-          {[
-            { read: false, type: 'trade', icon: '📈', title: 'Trade Executed',  desc: 'Buy order #TRX-7841 filled at $12,450.00', time: '2 min ago' },
-            { read: false, type: 'alert', icon: '⚠️', title: 'Market Alert',    desc: 'Volatility 100 (1s) Index hit resistance', time: '15 min ago' },
-            { read: true,  type: 'trade', icon: '📉', title: 'Position Closed', desc: 'Sell order #TRX-7839 closed at $5,670.00',  time: '1 hr ago' },
-            { read: true,  type: 'alert', icon: '🔔', title: 'System Update',   desc: 'New features available in v2.1.0',          time: '3 hr ago' },
-          ].map((n, i) => (
-            <NotifItem key={i} read={n.read} type={n.type}>
-              <div className="ni-icon">{n.icon}</div>
-              <div className="ni-content">
-                <div className="ni-title">{n.title}</div>
-                <div className="ni-desc">{n.desc}</div>
-                <div className="ni-time">{n.time}</div>
-              </div>
-              <div className="ni-dot" />
-            </NotifItem>
-          ))}
+          <NotificationItem read={false} type="trade">
+            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /></svg></div>
+            <div className="notif-content"><div className="notif-title">Trade Executed</div><div className="notif-desc">Buy order #TRX-7841 filled at $12,450.00</div><div className="notif-time">2 min ago</div></div>
+            <div className="notif-dot" />
+          </NotificationItem>
+          <NotificationItem read={false} type="alert">
+            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg></div>
+            <div className="notif-content"><div className="notif-title">Market Alert</div><div className="notif-desc">Volatility 100 (1s) Index reached resistance level</div><div className="notif-time">15 min ago</div></div>
+            <div className="notif-dot" />
+          </NotificationItem>
+          <NotificationItem read={true} type="trade">
+            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /></svg></div>
+            <div className="notif-content"><div className="notif-title">Position Closed</div><div className="notif-desc">Sell order #TRX-7839 closed at $5,670.00</div><div className="notif-time">1 hour ago</div></div>
+          </NotificationItem>
+          <NotificationItem read={true} type="alert">
+            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg></div>
+            <div className="notif-content"><div className="notif-title">System Update</div><div className="notif-desc">New trading features available in version 2.1.0</div><div className="notif-time">3 hours ago</div></div>
+          </NotificationItem>
         </>
       )
     });
   };
 
-  const openVoice = () => {
+  const handleVoiceClick = () => {
     setActiveItem('voice');
     openPopup({
       title: 'Voice Notifications',
       icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />,
-      badge: voiceEnabled ? 'active' : 'muted',
+      badge: voiceEnabled ? 'Active' : 'Muted',
       content: (
         <>
-          <VoiceRow active={voiceEnabled}>
-            <span className="vr-label">Voice announcements</span>
-            <div className="vr-right">
-              <span className="vr-status">{voiceEnabled ? 'On' : 'Off'}</span>
-              <Toggle on={voiceEnabled} onClick={() => setVoiceEnabled(v => !v)} />
+          <VoiceToggleRow active={voiceEnabled}>
+            <span className="toggle-label">Voice Notifications</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
+              <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
             </div>
-          </VoiceRow>
-          <VolumeRow>
-            <span className="vv-label">Vol</span>
-            <input type="range" min="0" max="100" value={voiceVolume}
-              onChange={e => setVoiceVolume(+e.target.value)} disabled={!voiceEnabled} />
-            <span className="vv-val">{voiceVolume}%</span>
-          </VolumeRow>
-          {[
-            { key: 'trade',  label: 'Trade execution' },
-            { key: 'price',  label: 'Price alerts'    },
-            { key: 'market', label: 'Market signals'  },
-            { key: 'system', label: 'System updates'  },
-          ].map(ev => (
-            <VoiceEvent key={ev.key} on={voiceEvents[ev.key]}>
-              <span className="ve-name"><span className="ve-dot" />{ev.label}</span>
-              <span className="ve-toggle"
-                onClick={() => setVoiceEvents(s => ({ ...s, [ev.key]: !s[ev.key] }))}>
-                {voiceEvents[ev.key] ? 'Enabled' : 'Disabled'}
-              </span>
-            </VoiceEvent>
-          ))}
+          </VoiceToggleRow>
+          <VolumeSlider>
+            <span className="slider-label">Vol</span>
+            <input type="range" min="0" max="100" value={voiceVolume} onChange={(e) => setVoiceVolume(parseInt(e.target.value))} disabled={!voiceEnabled} />
+            <span className="slider-value">{voiceVolume}%</span>
+          </VolumeSlider>
+          <VoiceEventItem enabled={voiceEvents.trade}><span className="event-name"><span className="event-dot" />Trade Execution</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>{voiceEvents.trade ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.price}><span className="event-name"><span className="event-dot" />Price Alerts</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>{voiceEvents.price ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.market}><span className="event-name"><span className="event-dot" />Market Signals</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>{voiceEvents.market ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.system}><span className="event-name"><span className="event-dot" />System Updates</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>{voiceEvents.system ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
         </>
       )
     });
   };
 
-  const openAccount = () => {
+  const handleAccountInfoClick = () => {
     setActiveItem('account-info');
     openPopup({
-      title: 'Account information',
+      title: 'Deriv Account Information',
       icon: <AccountIcon />,
       content: (
         <>
-          {[
-            { label: 'Account ID',   val: 'ACC-8472-001' },
-            { label: 'Account type', val: 'Real trading'  },
-            { label: 'Balance',      val: <span style={{ color: '#22c55e' }}>$7,110.00 USD</span> },
-            { label: 'Status',       val: <span className="ar-live"><span className="dot" />Active</span> },
-            { label: 'Joined',       val: 'January 2026' },
-            { label: 'Last login',   val: 'Today, 14:32' },
-          ].map((r, i) => (
-            <AcctRow key={i}>
-              <span className="ar-label">{r.label}</span>
-              <span className="ar-val">{r.val}</span>
-            </AcctRow>
-          ))}
+          <AccountInfoRow><span className="row-label">Account ID</span><span className="row-value">ACC-8472-001</span></AccountInfoRow>
+          <AccountInfoRow><span className="row-label">Account Type</span><span className="row-value">Real Trading</span></AccountInfoRow>
+          <AccountInfoRow><span className="row-label">Balance</span><span className="row-value" style={{ color: '#10B981' }}>$7,110.00 USD</span></AccountInfoRow>
+          <AccountInfoRow><span className="row-label">Status</span><span className="row-value"><span className="status-indicator"><span className="dot" />Active</span></span></AccountInfoRow>
+          <AccountInfoRow><span className="row-label">Joined</span><span className="row-value">January 2026</span></AccountInfoRow>
+          <AccountInfoRow><span className="row-label">Last Login</span><span className="row-value">Today, 14:32</span></AccountInfoRow>
         </>
       )
     });
   };
 
-  const openRiskCalc = () => {
+  const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
-    setCalcDone(false);
+    setCalculated(false);
     openPopup({
-      title: 'Risk calculator',
+      title: 'Risk Calculator',
       icon: <RiskIcon />,
       content: (
         <>
-          <CalcGroup>
-            <span className="cg-label">Account balance <span className="cg-hint">(USD)</span></span>
-            <div className="cg-wrap">
-              <span className="cg-pre">$</span>
-              <input type="number" value={calcBal} onChange={e => setCalcBal(+e.target.value || 0)} step="100" min="0" />
+          <CalcInputGroup>
+            <span className="calc-label">Account Balance <span className="calc-hint">(USD)</span></span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">$</span>
+              <input type="number" value={calcAccountBalance} onChange={(e) => setCalcAccountBalance(parseFloat(e.target.value) || 0)} min="0" step="100" />
             </div>
-          </CalcGroup>
+          </CalcInputGroup>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            <CalcGroup>
-              <span className="cg-label">Risk % <span className="cg-hint">(per trade)</span></span>
-              <div className="cg-wrap">
-                <span className="cg-pre">%</span>
-                <input type="number" value={calcRisk} onChange={e => setCalcRisk(+e.target.value || 0)} step="0.5" min="0" max="100" />
+            <CalcInputGroup>
+              <span className="calc-label">Risk % <span className="calc-hint">(per trade)</span></span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">%</span>
+                <input type="number" value={calcRiskPercent} onChange={(e) => setCalcRiskPercent(parseFloat(e.target.value) || 0)} min="0" max="100" step="0.5" />
               </div>
-            </CalcGroup>
-            <CalcGroup>
-              <span className="cg-label">Stop loss <span className="cg-hint">(pips)</span></span>
-              <div className="cg-wrap">
-                <span className="cg-pre">SL</span>
-                <input type="number" value={calcSL} onChange={e => setCalcSL(+e.target.value || 0)} step="5" min="1" />
+            </CalcInputGroup>
+            <CalcInputGroup>
+              <span className="calc-label">Stop Loss <span className="calc-hint">(pips)</span></span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">SL</span>
+                <input type="number" value={calcStopLoss} onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)} min="1" step="5" />
               </div>
-            </CalcGroup>
+            </CalcInputGroup>
           </div>
-          <CalcGroup>
-            <span className="cg-label">Take profit <span className="cg-hint">(pips)</span></span>
-            <div className="cg-wrap">
-              <span className="cg-pre">TP</span>
-              <input type="number" value={calcTP} onChange={e => setCalcTP(+e.target.value || 0)} step="5" min="1" />
+          <CalcInputGroup>
+            <span className="calc-label">Take Profit <span className="calc-hint">(pips)</span></span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">TP</span>
+              <input type="number" value={calcTakeProfit} onChange={(e) => setCalcTakeProfit(parseFloat(e.target.value) || 0)} min="1" step="5" />
             </div>
-          </CalcGroup>
-          <CalcRunBtn onClick={() => setCalcDone(true)}>Calculate risk</CalcRunBtn>
-          {calcDone && (
+          </CalcInputGroup>
+
+          <CalcButton onClick={calculateRisk}>Calculate Risk</CalcButton>
+
+          {calculated && (
             <>
-              <CalcGrid>
-                <CalcBox t="risk">
-                  <div className="cb-label">Risk</div>
-                  <div className="cb-val">${riskAmt.toFixed(2)}</div>
-                  <div className="cb-sub">{calcRisk}% of bal.</div>
-                </CalcBox>
-                <CalcBox t="reward">
-                  <div className="cb-label">Reward</div>
-                  <div className="cb-val">${rewardAmt.toFixed(2)}</div>
-                  <div className="cb-sub">{((calcTP / calcSL) * calcRisk).toFixed(2)}%</div>
-                </CalcBox>
-                <CalcBox t="ratio">
-                  <div className="cb-label">R:R</div>
-                  <div className="cb-val">1:{rrRatio.toFixed(2)}</div>
-                  <div className="cb-sub">{rrRatio.toFixed(2)}×</div>
-                </CalcBox>
-              </CalcGrid>
-              <CalcSummary>
-                <div className="cs-row"><span className="cs-label">Position size</span><span className="cs-val">{posSize.toFixed(2)} units</span></div>
-                <div className="cs-row"><span className="cs-label">Max loss</span><span className="cs-val" style={{ color: '#f87171' }}>${riskAmt.toFixed(2)}</span></div>
-                <div className="cs-row"><span className="cs-label">Max profit</span><span className="cs-val" style={{ color: '#22c55e' }}>${rewardAmt.toFixed(2)}</span></div>
-              </CalcSummary>
+              <CalcResultsGrid>
+                <CalcResultBox type="risk">
+                  <div className="result-label">Risk Amount</div>
+                  <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
+                  <div className="result-sub">{calcRiskPercent}% of balance</div>
+                </CalcResultBox>
+                <CalcResultBox type="reward">
+                  <div className="result-label">Reward Amount</div>
+                  <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
+                  <div className="result-sub">{((calcTakeProfit / calcStopLoss) * calcRiskPercent).toFixed(2)}%</div>
+                </CalcResultBox>
+                <CalcResultBox type="ratio">
+                  <div className="result-label">Risk/Reward</div>
+                  <div className="result-value">1:{riskResults.riskRewardRatio.toFixed(2)}</div>
+                  <div className="result-sub">{riskResults.riskRewardRatio.toFixed(2)}x</div>
+                </CalcResultBox>
+              </CalcResultsGrid>
+              <CalcSummaryBox>
+                <div className="summary-row"><span className="label">Position Size</span><span className="value">{riskResults.positionSize.toFixed(2)} units</span></div>
+                <div className="summary-row risk"><span className="label">Max Loss</span><span className="value" style={{ color: '#EF4444' }}>${riskResults.maxLoss.toFixed(2)}</span></div>
+                <div className="summary-row reward"><span className="label">Max Profit</span><span className="value" style={{ color: '#10B981' }}>${riskResults.maxProfit.toFixed(2)}</span></div>
+              </CalcSummaryBox>
             </>
           )}
         </>
@@ -1238,255 +1512,214 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     });
   };
 
-  const openHowTo = () => {
+  const handleHowToUseClick = () => {
     setActiveItem('how-to-use');
     openPopup({
-      title: 'How to use this tool',
+      title: 'How to Use This Tool',
       icon: <BookIcon />,
       content: (
         <>
-          {[
-            { n: 1, title: 'Connect your account', desc: 'Link your Deriv account for real-time data and direct trade execution.' },
-            { n: 2, title: 'Select a market',       desc: 'Choose from volatility indices — 1s and standard — to begin trading.' },
-            { n: 3, title: 'Choose your strategy',  desc: 'Switch between manual, auto, and bot-assisted execution modes.' },
-            { n: 4, title: 'Monitor positions',     desc: 'Track open trades, performance metrics, and risk in real time.' },
-            { n: 5, title: 'Customise',             desc: 'Set themes, voice alerts, and display preferences to suit your workflow.' },
-          ].map(s => (
-            <StepRow key={s.n}>
-              <div className="step-num">{s.n}</div>
-              <div>
-                <div className="step-title">{s.title}</div>
-                <div className="step-desc">{s.desc}</div>
-              </div>
-            </StepRow>
-          ))}
+          <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Connect Your Account</div><div className="step-desc">Link your Deriv account to access real-time trading data and execute trades directly.</div></div></StepItem>
+          <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">Choose from multiple volatility indices including 1s and standard options to start trading.</div></div></StepItem>
+          <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Choose Your Strategy</div><div className="step-desc">Select between manual, auto, or bot-assisted trading modes based on your preference.</div></div></StepItem>
+          <StepItem><div className="step-number">4</div><div className="step-content"><div className="step-title">Monitor Your Positions</div><div className="step-desc">Track open positions, view performance metrics, and manage risk in real-time.</div></div></StepItem>
+          <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Customize Experience</div><div className="step-desc">Personalize themes, notification settings, and display preferences to suit your workflow.</div></div></StepItem>
         </>
       )
     });
   };
 
-  const openTerms = () => {
+  const handleTermsClick = () => {
     setActiveItem('terms');
     openPopup({
-      title: 'Terms & conditions',
+      title: 'Terms & Conditions',
       icon: <TermsIcon />,
       badge: 'v2.0',
       content: (
         <>
-          {[
-            { title: '1. Introduction', text: 'Welcome to Voltix Traders. By using this application, you agree to be bound by these Terms.' },
-            { title: '2. Acceptance', bullets: [
-              { t: 'You must be at least', hi: '18 years old', rest: ' to use this app.' },
-              { t: 'You are', hi: 'solely responsible', rest: ' for all trading decisions.' },
-              { t: 'Trading involves', red: 'significant financial risk', rest: '.' },
-            ]},
-            { title: '3. Services', text: 'Voltix Traders provides automated trading, AI analysis, manual trading, bot deployment, and real-time Deriv API market data.' },
-            { title: '4. Account responsibility', text: 'You are fully responsible for all trades executed through the app. We do not store your login credentials.' },
-            { title: '5. Limitation of liability', text: 'Voltix Traders is provided "as is" without warranties. We are not liable for financial losses, technical issues, or damages from use of the app.' },
-            { title: '6. Privacy', text: 'We do not store your Deriv credentials. We collect minimal data for functionality and never sell personal data.' },
-            { title: '7. Contact', text: 'Questions? Reach us at support@voltixtraders.com' },
-          ].map((blk, i) => (
-            <TermsBlk key={i}>
-              <div className="tb-title">{blk.title}</div>
-              {blk.text && <div className="tb-text">{blk.text}</div>}
-              {blk.bullets && blk.bullets.map((b, j) => (
-                <div key={j} className="tb-bullet">
-                  <span className="tb-dot">•</span>
-                  <span>
-                    {b.t}{' '}
-                    {b.hi  && <span className="tb-hi">{b.hi}</span>}
-                    {b.red && <span className="tb-red">{b.red}</span>}
-                    {b.rest}
-                  </span>
-                </div>
-              ))}
-            </TermsBlk>
-          ))}
+          <TermsSection><div className="terms-title">1. Introduction</div><div className="terms-text">Welcome to MyTradeApp. By using our third-party trading application, you agree to these Terms and Conditions.</div></TermsSection>
+          <TermsSection><div className="terms-title">2. Acceptance of Terms</div><div className="terms-text">By accessing or using MyTradeApp, you confirm that you have read, understood, and agree to be bound by these Terms.</div>
+            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must be at least <strong style={{ color: '#F8FAFC' }}>18 years old</strong> to use this App.</span></div>
+            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
+            <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
+          </TermsSection>
+          <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data from Deriv via APIs.</div></TermsSection>
+          <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradeApp does not store your login credentials.</div>
+            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
+            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
+          </TermsSection>
+          <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradeApp provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
+          <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your Deriv or Forex login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
+          <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradeApp operates.</div></TermsSection>
+          <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@mytradeapp.com</strong></div></TermsSection>
         </>
       )
     });
   };
 
-  const submitFeedback = async () => {
-    if (!rating)           { setSubmitStatus('Please select a rating.');    setTimeout(() => setSubmitStatus(''), 3000); return; }
-    if (!feedbackText.trim()) { setSubmitStatus('Please write your feedback.'); setTimeout(() => setSubmitStatus(''), 3000); return; }
+  const handleSubmitFeedback = async () => {
+    if (rating === 0) { setSubmitStatus('Please select a rating'); setTimeout(() => setSubmitStatus(''), 3000); return; }
+    if (!feedbackText.trim()) { setSubmitStatus('Please write your feedback'); setTimeout(() => setSubmitStatus(''), 3000); return; }
     setIsSubmitting(true);
-    setSubmitStatus('Sending…');
-    await new Promise(r => setTimeout(r, 900));
-    setSubmitStatus('Feedback sent — thank you!');
-    setRating(0); setFeedbackText('');
-    setIsSubmitting(false);
-    setTimeout(() => setSubmitStatus(''), 5000);
+    setSubmitStatus('Sending feedback...');
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSubmitStatus('Thank you for your feedback!');
+      setRating(0);
+      setFeedbackText('');
+      setTimeout(() => setSubmitStatus(''), 5000);
+    } catch (error) {
+      setSubmitStatus('Failed to send. Please try again.');
+      setTimeout(() => setSubmitStatus(''), 3000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const ratingLabels = { 1: 'Needs work', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' };
+  const getRatingText = (value) => {
+    const texts = { 1: 'Needs Improvement', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' };
+    return texts[value] || '';
+  };
 
   return (
     <>
-      {/* ── MODAL ── */}
-      <ModalOverlay isOpen={popupOpen} onClick={closePopup}>
-        <ModalBox onClick={e => e.stopPropagation()}>
-          <ModalHead>
-            <div className="mh-left">
-              <span className="mh-icon">{popup?.icon}</span>
-              <span className="mh-title">{popup?.title}</span>
-              {popup?.badge && <span className="mh-badge">{popup.badge}</span>}
+      <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
+        <ModalContainer onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
+            <div className="title-group">
+              <span className="title-icon">{popupData?.icon}</span>
+              <span className="title-text">{popupData?.title}</span>
+              {popupData?.badge && <span className="title-badge">{popupData.badge}</span>}
             </div>
-            <button className="mh-close" onClick={closePopup}><CloseIcon /></button>
-          </ModalHead>
-          <ModalBody>{popup?.content}</ModalBody>
-        </ModalBox>
+            <button className="close-btn" onClick={closePopup}><CloseXIcon /></button>
+          </ModalHeader>
+          <ModalBody>{popupData?.content}</ModalBody>
+        </ModalContainer>
       </ModalOverlay>
 
-      {/* ── OVERLAY ── */}
       <Overlay isOpen={isOpen} onClick={onClose} />
-
-      {/* ── SIDEBAR ── */}
-      <SidebarWrap isOpen={isOpen}>
-        <CloseBtn isOpen={isOpen} onClick={onClose}><CloseIcon /></CloseBtn>
-
-        <SidebarScroll>
-          {/* Header */}
-          <SideHead>
-            <Avatar>MT</Avatar>
-            <UserMeta>
+      <SidebarContainer isOpen={isOpen}>
+        <CloseButton isOpen={isOpen} onClick={onClose}>✕</CloseButton>
+        <SidebarContent>
+          <SidebarHeader>
+            <div className="avatar">MT</div>
+            <div className="user-info">
               <div className="user-name">John Trader</div>
-              <div className="user-email">john@voltixtraders.com</div>
-            </UserMeta>
-            <StatusDot title="Online" />
-          </SideHead>
+              <div className="user-email">john@mytradeapp.com</div>
+            </div>
+          </SidebarHeader>
 
-          {/* Updates */}
-          <Section delay={0.28}>
-            <SectionEyebrow>Updates</SectionEyebrow>
-            <NavItem active={activeItem === 'notifications'} onClick={openNotifications}>
-              <span className="ni-icon"><BellIcon /></span>
-              <span className="ni-label">Notifications</span>
-              {hasNotifs && <NotifDot />}
-              <Badge variant="accent">2</Badge>
+          <NavSection>
+            <SectionLabel>Updates</SectionLabel>
+            <NavItem active={activeItem === 'notifications'} onClick={handleNotificationsClick}>
+              <span className="nav-icon"><BellIcon /></span>
+              <span className="nav-label">Notifications</span>
+              {hasNotifications && <span className="notification-dot" />}
+              <span className="badge">2</span>
             </NavItem>
-            <NavItem active={activeItem === 'voice'} onClick={openVoice}>
-              <span className="ni-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
-              <span className="ni-label">Voice alerts</span>
-              <Badge variant={voiceEnabled ? 'on' : 'off'}>{voiceEnabled ? 'On' : 'Off'}</Badge>
+            <NavItem active={activeItem === 'voice'} onClick={handleVoiceClick}>
+              <span className="nav-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
+              <span className="nav-label">Voice Notifications</span>
+              <span className="badge" style={{ background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)', color: voiceEnabled ? '#10B981' : '#EF4444' }}>{voiceEnabled ? 'On' : 'Off'}</span>
             </NavItem>
-          </Section>
+          </NavSection>
 
-          {/* Learning */}
-          <Section delay={0.32}>
-            <SectionEyebrow>Learning</SectionEyebrow>
-            <NavItem active={activeItem === 'academy'} onClick={() => nav('academy', '/academy')}>
-              <span className="ni-icon"><AcademyIcon /></span>
-              <span className="ni-label">Voltix Academy</span>
-              <Badge variant="new">New</Badge>
+          <NavSection>
+            <SectionLabel>Learning</SectionLabel>
+            <NavItem active={activeItem === 'academy'} onClick={() => handleNavClick('academy', '/academy')}>
+              <span className="nav-icon"><AcademyIcon /></span>
+              <span className="nav-label">MyTradeApp Academy</span>
+              <span className="badge">NEW</span>
             </NavItem>
-          </Section>
+          </NavSection>
 
-          {/* Account */}
-          <Section delay={0.34}>
-            <SectionEyebrow>Account</SectionEyebrow>
-            <NavItem active={activeItem === 'account-info'} onClick={openAccount}>
-              <span className="ni-icon"><AccountIcon /></span>
-              <span className="ni-label">Account info</span>
+          <NavSection>
+            <SectionLabel>Account</SectionLabel>
+            <NavItem active={activeItem === 'account-info'} onClick={handleAccountInfoClick}>
+              <span className="nav-icon"><AccountIcon /></span>
+              <span className="nav-label">Deriv Account Info</span>
             </NavItem>
-          </Section>
+          </NavSection>
 
-          {/* Trading */}
-          <Section delay={0.36}>
-            <SectionEyebrow>Trading</SectionEyebrow>
-            <NavItem active={activeItem === 'copy-trading'} onClick={() => nav('copy-trading', '/copy-trading')}>
-              <span className="ni-icon"><CopyIcon /></span>
-              <span className="ni-label">Copy trading</span>
-              <Badge variant="beta">Beta</Badge>
+          <NavSection>
+            <SectionLabel>Trading</SectionLabel>
+            <NavItem active={activeItem === 'copy-trading'} onClick={() => handleNavClick('copy-trading', '/copy-trading')}>
+              <span className="nav-icon"><CopyIcon /></span>
+              <span className="nav-label">Copy Trading</span>
+              <span className="badge">BETA</span>
             </NavItem>
-            <NavItem active={activeItem === 'account-management'} onClick={() => nav('account-management', '/account-management')}>
-              <span className="ni-icon"><ManagementIcon /></span>
-              <span className="ni-label">Account management</span>
-              <Badge variant="new">New</Badge>
+            <NavItem active={activeItem === 'account-management'} onClick={() => handleNavClick('account-management', '/account-management')}>
+              <span className="nav-icon"><ManagementIcon /></span>
+              <span className="nav-label">Account Management</span>
+              <span className="badge">NEW</span>
             </NavItem>
-            <NavItem active={activeItem === 'risk-calculator'} onClick={openRiskCalc}>
-              <span className="ni-icon"><RiskIcon /></span>
-              <span className="ni-label">Risk calculator</span>
+            <NavItem active={activeItem === 'risk-calculator'} onClick={handleRiskCalculatorClick}>
+              <span className="nav-icon"><RiskIcon /></span>
+              <span className="nav-label">Risk Calculator</span>
             </NavItem>
-          </Section>
+          </NavSection>
 
-          {/* Responsible trading */}
-          <Section delay={0.38}>
-            <SectionEyebrow>Wellness</SectionEyebrow>
-            <InfoCard>
-              <div className="ic-title"><ShieldIcon /> Responsible trading</div>
-              <div className="ic-item"><span className="bullet">•</span><span>Set <span className="hi">deposit limits</span> to control capital exposure.</span></div>
-              <div className="ic-item"><span className="bullet">•</span><span>Take regular <span className="hi">breaks</span> to maintain discipline.</span></div>
-              <div className="ic-item"><span className="bullet">•</span><span>Only trade capital you can afford to lose.</span></div>
-              <div className="ic-link" onClick={() => nav('responsible-trading', '/responsible-trading')}>Learn more →</div>
-            </InfoCard>
-          </Section>
+          <NavSection>
+            <SectionLabel>Wellness</SectionLabel>
+            <SideCard>
+              <div className="card-title"><span className="icon"><ShieldIcon /></span>Responsible Trading</div>
+              <div className="card-item"><span className="bullet">•</span><span>Set <span className="highlight">deposit limits</span> to control your capital budget.</span></div>
+              <div className="card-item"><span className="bullet">•</span><span>Take regular <span className="highlight">trading breaks</span> to maintain discipline.</span></div>
+              <div className="card-item"><span className="bullet">•</span><span>Trade only with risk capital you can afford to lose.</span></div>
+              <div className="learn-more" onClick={() => handleNavClick('responsible-trading', '/responsible-trading')}>Learn more →</div>
+            </SideCard>
+          </NavSection>
 
-          {/* Feedback */}
-          <Section delay={0.40}>
-            <SectionEyebrow>Feedback</SectionEyebrow>
-            <FeedbackCard>
-              <div className="fb-label">Rate your experience</div>
+          <NavSection>
+            <SectionLabel>Feedback</SectionLabel>
+            <FeedbackSection>
+              <div className="feedback-label">Rate your experience</div>
               <div className="stars">
-                {[1,2,3,4,5].map(s => (
-                  <button key={s} type="button"
-                    className={`star ${s <= (hoverRating || rating) ? 'lit' : ''}`}
-                    onClick={() => setRating(s)}
-                    onMouseEnter={() => setHoverRating(s)}
-                    onMouseLeave={() => setHoverRating(0)}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button key={star} type="button" className={`star-btn ${star <= (hoverRating || rating) ? 'active' : ''} ${star <= hoverRating && star > rating ? 'hover' : ''}`} onClick={() => setRating(star)} onMouseEnter={() => setHoverRating(star)} onMouseLeave={() => setHoverRating(0)}>
                     <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
                   </button>
                 ))}
               </div>
-              <div className="star-label">{rating > 0 ? ratingLabels[rating] : 'Tap a star to rate'}</div>
-              <textarea
-                placeholder="Share your thoughts or suggestions…"
-                value={feedbackText}
-                onChange={e => setFeedbackText(e.target.value)}
-                disabled={isSubmitting}
-              />
-              <button className="fb-submit" onClick={submitFeedback} disabled={isSubmitting}>
-                {isSubmitting ? 'Sending…' : 'Submit feedback'}
-              </button>
-              {submitStatus && <div className="fb-status">{submitStatus}</div>}
-            </FeedbackCard>
-          </Section>
+              <div className="star-rating-text">{rating > 0 ? getRatingText(rating) : 'Tap a star to rate'}</div>
+              <textarea className="feedback-textarea" placeholder="Share your feedback or suggestions..." value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} disabled={isSubmitting} />
+              <button className="feedback-submit" onClick={handleSubmitFeedback} disabled={isSubmitting}>{isSubmitting ? 'Sending...' : 'Submit Feedback'}</button>
+              {submitStatus && <div className="feedback-status">{submitStatus}</div>}
+            </FeedbackSection>
+          </NavSection>
 
-          {/* Information */}
-          <Section delay={0.42}>
-            <SectionEyebrow>Information</SectionEyebrow>
-            <NavItem active={activeItem === 'how-to-use'} onClick={openHowTo}>
-              <span className="ni-icon"><BookIcon /></span>
-              <span className="ni-label">How to use</span>
+          <NavSection>
+            <SectionLabel>Information</SectionLabel>
+            <NavItem active={activeItem === 'how-to-use'} onClick={handleHowToUseClick}>
+              <span className="nav-icon"><BookIcon /></span>
+              <span className="nav-label">How to Use</span>
             </NavItem>
-            <NavItem active={activeItem === 'terms'} onClick={openTerms}>
-              <span className="ni-icon"><TermsIcon /></span>
-              <span className="ni-label">Terms & conditions</span>
+            <NavItem active={activeItem === 'terms'} onClick={handleTermsClick}>
+              <span className="nav-icon"><TermsIcon /></span>
+              <span className="nav-label">Terms & Conditions</span>
             </NavItem>
-          </Section>
+          </NavSection>
 
-          {/* Company */}
-          <Section delay={0.44}>
-            <SectionEyebrow>Company</SectionEyebrow>
-            <InfoCard>
-              <div className="ic-title"><ManagementIcon /> About Voltix Traders</div>
-              <div className="ic-item"><span className="bullet">•</span><span>Third-party trading app built on Deriv's platform.</span></div>
-              <div className="ic-item"><span className="bullet">•</span><span>Real-time API market streams, bots, and automated execution.</span></div>
-              <div className="ic-link" onClick={() => nav('about', '/about')}>About us →</div>
-            </InfoCard>
-          </Section>
-        </SidebarScroll>
+          <NavSection>
+            <SectionLabel>Company</SectionLabel>
+            <SideCard>
+              <div className="card-title"><span className="icon"><CompanyIcon /></span>About MyTradeApp</div>
+              <div className="card-item"><span className="bullet">•</span><span>Third-party trading application for Deriv platform.</span></div>
+              <div className="card-item"><span className="bullet">•</span><span>Provides real-time API market streams and automated execution tools.</span></div>
+              <div className="learn-more" onClick={() => handleNavClick('about', '/about')}>About us →</div>
+            </SideCard>
+          </NavSection>
+        </SidebarContent>
 
-        {/* Footer */}
-        <SideFooter>
-          <FooterBtn onClick={() => nav('settings', '/settings')}>
-            <span className="fi"><SettingsIcon /></span> Settings
-          </FooterBtn>
-          <FooterBtn onClick={() => nav('help', '/help')}>
-            <span className="fi"><HelpIcon /></span> Help
-          </FooterBtn>
-        </SideFooter>
-      </SidebarWrap>
+        <SidebarFooter>
+          <div className="footer-item" onClick={() => handleNavClick('settings', '/settings')}>
+            <span className="footer-icon"><SettingsIcon /></span> Settings
+          </div>
+          <div className="footer-item" onClick={() => handleNavClick('help', '/settings')}>
+            <span className="footer-icon"><HelpIcon /></span> Help & Support
+          </div>
+        </SidebarFooter>
+      </SidebarContainer>
     </>
   );
 };
