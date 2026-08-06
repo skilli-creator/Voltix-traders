@@ -155,9 +155,9 @@ const CloseXIcon = () => (
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 1000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
@@ -167,16 +167,14 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  max-width: ${props => (props.$wide ? '560px' : '460px')};
+  max-width: 480px;
   width: 100%;
-  max-height: 88vh;
+  max-height: 86vh;
   background: ${props => props.theme?.colors?.surface || '#0F172A'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
-  border-radius: 20px;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 32px 80px rgba(0, 0, 0, 0.55);
-  animation: ${modalSlideIn} 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  border-radius: 18px;
+  box-shadow: ${props => props.theme?.colors?.shadow || '0 28px 64px rgba(0, 0, 0, 0.55)'};
+  animation: ${modalSlideIn} 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -191,18 +189,18 @@ const ModalContainer = styled.div`
     height: 2px;
     background: linear-gradient(
       90deg,
-      transparent 0%,
-      ${props => props.theme?.colors?.accent || '#3B82F6'} 40%,
-      ${props => props.theme?.colors?.accentHover || '#60A5FA'} 60%,
-      transparent 100%
+      transparent,
+      ${props => props.theme?.colors?.accent || '#3B82F6'},
+      transparent
     );
-    opacity: 0.9;
+    background-size: 200% 100%;
+    animation: ${shimmer} 4s ease-in-out infinite;
   }
 
   @media (max-width: 480px) {
     max-width: 100%;
     margin: 8px;
-    border-radius: 16px;
+    border-radius: 14px;
     max-height: 92vh;
   }
 `;
@@ -211,19 +209,14 @@ const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 20px 14px;
+  padding: 16px 20px 12px;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   flex-shrink: 0;
-  background: linear-gradient(
-    180deg,
-    ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'} 0%,
-    transparent 100%
-  );
 
   .title-group {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     min-width: 0;
   }
 
@@ -231,21 +224,20 @@ const ModalHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.14)'};
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     flex-shrink: 0;
-    box-shadow: 0 4px 12px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.2)'};
   }
 
   .title-text {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -254,11 +246,11 @@ const ModalHeader = styled.div`
   .title-badge {
     font-size: 9px;
     font-weight: 700;
-    padding: 3px 9px;
+    padding: 2px 8px;
     border-radius: 999px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     flex-shrink: 0;
   }
 
@@ -266,35 +258,35 @@ const ModalHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.03)'};
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
-    transition: all 0.22s ease;
+    transition: all 0.2s ease;
     flex-shrink: 0;
 
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
       transform: rotate(90deg);
     }
   }
 
   @media (max-width: 480px) {
-    padding: 14px 14px 12px;
-    .title-text { font-size: 15px; }
-    .title-icon { width: 34px; height: 34px; }
+    padding: 12px 14px 10px;
+    .title-text { font-size: 14px; }
+    .title-icon { width: 30px; height: 30px; }
   }
 `;
 
 const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 18px 20px 22px;
+  padding: 16px 20px 20px;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
@@ -304,7 +296,7 @@ const ModalBody = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 14px 14px 18px;
+    padding: 12px 14px 16px;
   }
 `;
 
@@ -569,23 +561,23 @@ const AccountInfoRow = styled.div`
 // RISK CALCULATOR
 // ============================================
 const CalcInputGroup = styled.div`
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 
   .calc-label {
     font-size: 10px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 7px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 6px;
     text-transform: uppercase;
-    letter-spacing: 0.55px;
+    letter-spacing: 0.5px;
 
     .calc-hint {
       font-size: 9px;
-      font-weight: 500;
-      opacity: 0.6;
+      font-weight: 400;
+      opacity: 0.55;
       text-transform: none;
       letter-spacing: 0;
     }
@@ -594,40 +586,39 @@ const CalcInputGroup = styled.div`
   .calc-input-wrap {
     display: flex;
     align-items: center;
-    background: ${props => props.theme?.colors?.bg || 'rgba(0, 0, 0, 0.25)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
-    border-radius: 12px;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border-radius: 10px;
     overflow: hidden;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus-within {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.15)'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
     }
 
     .calc-prefix {
-      padding: 11px 12px;
+      padding: 9px 11px;
       font-size: 12px;
       font-weight: 700;
       color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-      background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.04)'};
-      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-      min-width: 42px;
+      background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.03)'};
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+      min-width: 36px;
       text-align: center;
     }
 
     input {
       flex: 1;
-      padding: 11px 14px;
+      padding: 9px 12px;
       background: transparent;
       border: none;
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       outline: none;
       width: 100%;
       min-width: 0;
-      font-variant-numeric: tabular-nums;
 
       &::placeholder {
         color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
@@ -648,57 +639,46 @@ const CalcInputGroup = styled.div`
   }
 `;
 
-const CalcGrid2 = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-
-  @media (max-width: 400px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
 const CalcResultsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-top: 4px;
+  gap: 8px;
+  margin-top: 8px;
 
-  @media (max-width: 420px) {
-    grid-template-columns: 1fr;
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
   }
 `;
 
 const CalcResultBox = styled.div`
-  padding: 14px 12px;
-  border-radius: 12px;
+  padding: 12px 10px;
+  border-radius: 10px;
   text-align: center;
   background: ${props =>
     props.type === 'risk'
-      ? 'rgba(239, 68, 68, 0.09)'
+      ? 'rgba(239, 68, 68, 0.08)'
       : props.type === 'reward'
-      ? 'rgba(16, 185, 129, 0.09)'
-      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
+      ? 'rgba(16, 185, 129, 0.08)'
+      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
   border: 1px solid ${props =>
     props.type === 'risk'
-      ? 'rgba(239, 68, 68, 0.2)'
+      ? 'rgba(239, 68, 68, 0.14)'
       : props.type === 'reward'
-      ? 'rgba(16, 185, 129, 0.2)'
-      : props.theme?.colors?.border || 'rgba(59, 130, 246, 0.2)'};
+      ? 'rgba(16, 185, 129, 0.14)'
+      : props.theme?.colors?.border || 'rgba(59, 130, 246, 0.14)'};
 
   .result-label {
     font-size: 9px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .result-value {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    font-variant-numeric: tabular-nums;
     color: ${props =>
       props.type === 'risk'
         ? props.theme?.colors?.danger || '#EF4444'
@@ -708,36 +688,29 @@ const CalcResultBox = styled.div`
   }
 
   .result-sub {
-    font-size: 10px;
+    font-size: 9px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 4px;
-    opacity: 0.8;
+    margin-top: 3px;
+    opacity: 0.7;
   }
 `;
 
 const CalcSummaryBox = styled.div`
-  margin-top: 14px;
-  padding: 14px 16px;
-  background: ${props => props.theme?.colors?.bg || 'rgba(0, 0, 0, 0.22)'};
-  border-radius: 12px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
 
   .summary-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    font-size: 12px;
+    padding: 4px 0;
+    font-size: 11px;
     font-weight: 600;
-    border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
 
-    &:last-child { border-bottom: none; }
-
-    .label { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; font-weight: 500; }
-    .value {
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-variant-numeric: tabular-nums;
-    }
+    .label { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
+    .value { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
 
     &.risk .value { color: ${props => props.theme?.colors?.danger || '#EF4444'}; }
     &.reward .value { color: ${props => props.theme?.colors?.success || '#10B981'}; }
@@ -746,49 +719,24 @@ const CalcSummaryBox = styled.div`
 
 const CalcButton = styled.button`
   width: 100%;
-  padding: 13px 0;
+  padding: 11px 0;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(
-    135deg,
-    ${props => props.theme?.colors?.accent || '#3B82F6'},
-    ${props => props.theme?.colors?.accentHover || '#2563EB'}
-  );
+  border-radius: 10px;
+  background: ${props => props.theme?.colors?.accent || '#3B82F6'};
   color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.22s ease;
-  margin-top: 6px;
-  letter-spacing: 0.2px;
-  box-shadow: 0 6px 18px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.3)'};
+  transition: all 0.2s ease;
+  margin-top: 4px;
 
   &:hover {
+    background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
+    box-shadow: 0 6px 16px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'};
     transform: translateY(-1px);
-    box-shadow: 0 8px 22px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.4)'};
-    filter: brightness(1.05);
   }
 
-  &:active {
-    transform: translateY(0);
-  }
-`;
-
-const CalcHint = styled.p`
-  font-size: 11px;
-  line-height: 1.5;
-  color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-  margin: 0 0 14px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-`;
-
-const CalcDivider = styled.div`
-  height: 1px;
-  background: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  margin: 16px 0;
+  &:active { transform: translateY(0); }
 `;
 
 // ============================================
@@ -1363,12 +1311,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [voiceVolume, setVoiceVolume] = useState(70);
   const [voiceEvents, setVoiceEvents] = useState({ trade: true, price: true, market: false, system: true });
   
+  // Popup state
+  const [popupData, setPopupData] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   // Risk calculator state
   const [calcAccountBalance, setCalcAccountBalance] = useState(10000);
-  const [calcRiskPercent, setCalcRiskPercent] = useState(1);
-  const [calcStopLoss, setCalcStopLoss] = useState(20);
-  const [calcTakeProfit, setCalcTakeProfit] = useState(40);
-  const [calcPipValue, setCalcPipValue] = useState(1);
+  const [calcRiskPercent, setCalcRiskPercent] = useState(2);
+  const [calcStopLoss, setCalcStopLoss] = useState(50);
+  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
   const [calculated, setCalculated] = useState(false);
 
   const closeSidebarOnMobile = () => {
@@ -1382,7 +1333,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const closePopup = () => {
     setIsPopupOpen(false);
-    setTimeout(() => setPopupData(null), 280);
+    setTimeout(() => setPopupData(null), 300);
   };
 
   const handleNavClick = (item, path) => {
@@ -1391,275 +1342,29 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     closeSidebarOnMobile();
   };
 
-  // ===== RISK CALCULATOR (live, correct formulas) =====
-  // Assumes SL/TP are in pips (or points). pipValue = $ per pip per unit/lot.
-  // Risk amount = balance * risk%
-  // Position size (units) = risk amount / (SL pips * $ per pip)
-  // Reward amount = position size * TP pips * $ per pip
-  // R:R = TP / SL
-  const getRiskResults = () => {
-    const balance = Math.max(0, Number(calcAccountBalance) || 0);
-    const riskPct = Math.max(0, Number(calcRiskPercent) || 0);
-    const sl = Math.max(0, Number(calcStopLoss) || 0);
-    const tp = Math.max(0, Number(calcTakeProfit) || 0);
-    const pipVal = Math.max(0.0001, Number(calcPipValue) || 1);
-
-    const riskAmount = balance * (riskPct / 100);
-    const riskPerUnit = sl * pipVal;
-    const positionSize = riskPerUnit > 0 ? riskAmount / riskPerUnit : 0;
-    const rewardAmount = positionSize * tp * pipVal;
-    const riskRewardRatio = sl > 0 ? tp / sl : 0;
-    const maxLoss = riskAmount;
-    const maxProfit = rewardAmount;
-
-    return {
-      riskAmount,
-      rewardAmount,
-      riskRewardRatio,
-      positionSize,
-      maxLoss,
-      maxProfit,
-      riskPerUnit,
-    };
-  };
-
-  const riskResults = getRiskResults();
-
+  // ===== RISK CALCULATOR LOGIC =====
   const calculateRisk = () => {
-    if (calcAccountBalance <= 0 || calcRiskPercent <= 0 || calcStopLoss <= 0) {
-      setCalculated(false);
-      return;
-    }
     setCalculated(true);
   };
 
-  const renderRiskCalculator = () => (
-    <>
-      <CalcHint>
-        Enter your balance and risk %. SL/TP are in pips. Set $ per pip to match your instrument (e.g. 1 for $1/pip on 1 unit).
-      </CalcHint>
+  const getRiskResults = () => {
+    const riskAmount = calcAccountBalance * (calcRiskPercent / 100);
+    const rewardAmount = calcAccountBalance * ((calcTakeProfit / calcStopLoss) * (calcRiskPercent / 100));
+    const riskRewardRatio = riskAmount > 0 ? rewardAmount / riskAmount : 0;
+    const positionSize = calcStopLoss > 0 ? riskAmount / (calcStopLoss / 100) : 0;
+    const maxLoss = riskAmount;
+    const maxProfit = rewardAmount;
 
-      <CalcInputGroup>
-        <span className="calc-label">
-          Account Balance <span className="calc-hint">USD</span>
-        </span>
-        <div className="calc-input-wrap">
-          <span className="calc-prefix">$</span>
-          <input
-            type="number"
-            value={calcAccountBalance}
-            onChange={(e) => {
-              setCalcAccountBalance(parseFloat(e.target.value) || 0);
-              setCalculated(false);
-            }}
-            min="0"
-            step="100"
-          />
-        </div>
-      </CalcInputGroup>
+    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit };
+  };
 
-      <CalcGrid2>
-        <CalcInputGroup>
-          <span className="calc-label">
-            Risk <span className="calc-hint">% of balance</span>
-          </span>
-          <div className="calc-input-wrap">
-            <span className="calc-prefix">%</span>
-            <input
-              type="number"
-              value={calcRiskPercent}
-              onChange={(e) => {
-                setCalcRiskPercent(parseFloat(e.target.value) || 0);
-                setCalculated(false);
-              }}
-              min="0.1"
-              max="100"
-              step="0.1"
-            />
-          </div>
-        </CalcInputGroup>
-        <CalcInputGroup>
-          <span className="calc-label">
-            $ / Pip <span className="calc-hint">per unit</span>
-          </span>
-          <div className="calc-input-wrap">
-            <span className="calc-prefix">$</span>
-            <input
-              type="number"
-              value={calcPipValue}
-              onChange={(e) => {
-                setCalcPipValue(parseFloat(e.target.value) || 0);
-                setCalculated(false);
-              }}
-              min="0.01"
-              step="0.1"
-            />
-          </div>
-        </CalcInputGroup>
-      </CalcGrid2>
-
-      <CalcGrid2>
-        <CalcInputGroup>
-          <span className="calc-label">
-            Stop Loss <span className="calc-hint">pips</span>
-          </span>
-          <div className="calc-input-wrap">
-            <span className="calc-prefix">SL</span>
-            <input
-              type="number"
-              value={calcStopLoss}
-              onChange={(e) => {
-                setCalcStopLoss(parseFloat(e.target.value) || 0);
-                setCalculated(false);
-              }}
-              min="1"
-              step="1"
-            />
-          </div>
-        </CalcInputGroup>
-        <CalcInputGroup>
-          <span className="calc-label">
-            Take Profit <span className="calc-hint">pips</span>
-          </span>
-          <div className="calc-input-wrap">
-            <span className="calc-prefix">TP</span>
-            <input
-              type="number"
-              value={calcTakeProfit}
-              onChange={(e) => {
-                setCalcTakeProfit(parseFloat(e.target.value) || 0);
-                setCalculated(false);
-              }}
-              min="1"
-              step="1"
-            />
-          </div>
-        </CalcInputGroup>
-      </CalcGrid2>
-
-      <CalcButton type="button" onClick={calculateRisk}>
-        Calculate Risk
-      </CalcButton>
-
-      {calculated && (
-        <>
-          <CalcDivider />
-          <CalcResultsGrid>
-            <CalcResultBox type="risk">
-              <div className="result-label">Risk Amount</div>
-              <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
-              <div className="result-sub">{calcRiskPercent}% of balance</div>
-            </CalcResultBox>
-            <CalcResultBox type="reward">
-              <div className="result-label">Reward Amount</div>
-              <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
-              <div className="result-sub">If TP hits</div>
-            </CalcResultBox>
-            <CalcResultBox type="ratio">
-              <div className="result-label">Risk / Reward</div>
-              <div className="result-value">1:{riskResults.riskRewardRatio.toFixed(2)}</div>
-              <div className="result-sub">{riskResults.riskRewardRatio >= 2 ? 'Strong' : riskResults.riskRewardRatio >= 1 ? 'Fair' : 'Weak'}</div>
-            </CalcResultBox>
-          </CalcResultsGrid>
-          <CalcSummaryBox>
-            <div className="summary-row">
-              <span className="label">Position Size</span>
-              <span className="value">{riskResults.positionSize.toFixed(2)} units</span>
-            </div>
-            <div className="summary-row">
-              <span className="label">Risk per unit (SL)</span>
-              <span className="value">${riskResults.riskPerUnit.toFixed(2)}</span>
-            </div>
-            <div className="summary-row risk">
-              <span className="label">Max Loss</span>
-              <span className="value">-${riskResults.maxLoss.toFixed(2)}</span>
-            </div>
-            <div className="summary-row reward">
-              <span className="label">Max Profit</span>
-              <span className="value">+${riskResults.maxProfit.toFixed(2)}</span>
-            </div>
-          </CalcSummaryBox>
-        </>
-      )}
-    </>
-  );
-
-
-  const renderVoiceSettings = () => (
-    <>
-      <VoiceToggleRow active={voiceEnabled}>
-        <span className="toggle-label">Enable Voice Alerts</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span className="toggle-status">{voiceEnabled ? 'ON' : 'OFF'}</span>
-          <ToggleSwitch
-            type="button"
-            active={voiceEnabled}
-            onClick={() => setVoiceEnabled(!voiceEnabled)}
-            aria-label="Toggle voice"
-          />
-        </div>
-      </VoiceToggleRow>
-
-      <VolumeSlider>
-        <span className="slider-label">Vol</span>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={voiceVolume}
-          disabled={!voiceEnabled}
-          onChange={(e) => setVoiceVolume(Number(e.target.value))}
-        />
-        <span className="slider-value">{voiceVolume}</span>
-      </VolumeSlider>
-
-      <div style={{ marginTop: 8 }}>
-        <VoiceEventItem enabled={voiceEvents.trade}>
-          <span className="event-name"><span className="event-dot" />Trade fills</span>
-          <span
-            className="event-status"
-            onClick={() => setVoiceEvents({ ...voiceEvents, trade: !voiceEvents.trade })}
-          >
-            {voiceEvents.trade ? 'Enabled' : 'Disabled'}
-          </span>
-        </VoiceEventItem>
-        <VoiceEventItem enabled={voiceEvents.price}>
-          <span className="event-name"><span className="event-dot" />Price alerts</span>
-          <span
-            className="event-status"
-            onClick={() => setVoiceEvents({ ...voiceEvents, price: !voiceEvents.price })}
-          >
-            {voiceEvents.price ? 'Enabled' : 'Disabled'}
-          </span>
-        </VoiceEventItem>
-        <VoiceEventItem enabled={voiceEvents.market}>
-          <span className="event-name"><span className="event-dot" />Market moves</span>
-          <span
-            className="event-status"
-            onClick={() => setVoiceEvents({ ...voiceEvents, market: !voiceEvents.market })}
-          >
-            {voiceEvents.market ? 'Enabled' : 'Disabled'}
-          </span>
-        </VoiceEventItem>
-        <VoiceEventItem enabled={voiceEvents.system}>
-          <span className="event-name"><span className="event-dot" />System updates</span>
-          <span
-            className="event-status"
-            onClick={() => setVoiceEvents({ ...voiceEvents, system: !voiceEvents.system })}
-          >
-            {voiceEvents.system ? 'Enabled' : 'Disabled'}
-          </span>
-        </VoiceEventItem>
-      </div>
-    </>
-  );
+  const riskResults = getRiskResults();
 
   // ===== ALL POPUP HANDLERS =====
   const handleNotificationsClick = () => {
     setActiveItem('notifications');
     setHasNotifications(false);
     openPopup({
-      type: 'notifications',
       title: 'Notifications',
       icon: <BellIcon />,
       badge: '2 New',
@@ -1677,7 +1382,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </NotificationItem>
           <NotificationItem read={true} type="trade">
             <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" /></svg></div>
-            <div className="notif-content"><div className="notif-title">Position Closed</div><div className="notif-desc">Sell order closed with +$342.50 profit</div><div className="notif-time">1 hour ago</div></div>
+            <div className="notif-content"><div className="notif-title">Position Closed</div><div className="notif-desc">Sell order #TRX-7839 closed at $5,670.00</div><div className="notif-time">1 hour ago</div></div>
+          </NotificationItem>
+          <NotificationItem read={true} type="alert">
+            <div className="notif-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg></div>
+            <div className="notif-content"><div className="notif-title">System Update</div><div className="notif-desc">New trading features available in version 2.1.0</div><div className="notif-time">3 hours ago</div></div>
           </NotificationItem>
         </>
       )
@@ -1687,17 +1396,35 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleVoiceClick = () => {
     setActiveItem('voice');
     openPopup({
-      type: 'voice',
       title: 'Voice Notifications',
       icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />,
-      content: null, // rendered live
+      badge: voiceEnabled ? 'Active' : 'Muted',
+      content: (
+        <>
+          <VoiceToggleRow active={voiceEnabled}>
+            <span className="toggle-label">Voice Notifications</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
+              <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
+            </div>
+          </VoiceToggleRow>
+          <VolumeSlider>
+            <span className="slider-label">Vol</span>
+            <input type="range" min="0" max="100" value={voiceVolume} onChange={(e) => setVoiceVolume(parseInt(e.target.value))} disabled={!voiceEnabled} />
+            <span className="slider-value">{voiceVolume}%</span>
+          </VolumeSlider>
+          <VoiceEventItem enabled={voiceEvents.trade}><span className="event-name"><span className="event-dot" />Trade Execution</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>{voiceEvents.trade ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.price}><span className="event-name"><span className="event-dot" />Price Alerts</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>{voiceEvents.price ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.market}><span className="event-name"><span className="event-dot" />Market Signals</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>{voiceEvents.market ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+          <VoiceEventItem enabled={voiceEvents.system}><span className="event-name"><span className="event-dot" />System Updates</span><span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>{voiceEvents.system ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+        </>
+      )
     });
   };
 
   const handleAccountInfoClick = () => {
     setActiveItem('account-info');
     openPopup({
-      type: 'account',
       title: 'Deriv Account Information',
       icon: <AccountIcon />,
       content: (
@@ -1717,11 +1444,71 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setActiveItem('risk-calculator');
     setCalculated(false);
     openPopup({
-      type: 'risk',
       title: 'Risk Calculator',
       icon: <RiskIcon />,
-      badge: 'Live',
-      content: null,
+      content: (
+        <>
+          <CalcInputGroup>
+            <span className="calc-label">Account Balance <span className="calc-hint">(USD)</span></span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">$</span>
+              <input type="number" value={calcAccountBalance} onChange={(e) => setCalcAccountBalance(parseFloat(e.target.value) || 0)} min="0" step="100" />
+            </div>
+          </CalcInputGroup>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <CalcInputGroup>
+              <span className="calc-label">Risk % <span className="calc-hint">(per trade)</span></span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">%</span>
+                <input type="number" value={calcRiskPercent} onChange={(e) => setCalcRiskPercent(parseFloat(e.target.value) || 0)} min="0" max="100" step="0.5" />
+              </div>
+            </CalcInputGroup>
+            <CalcInputGroup>
+              <span className="calc-label">Stop Loss <span className="calc-hint">(pips)</span></span>
+              <div className="calc-input-wrap">
+                <span className="calc-prefix">SL</span>
+                <input type="number" value={calcStopLoss} onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)} min="1" step="5" />
+              </div>
+            </CalcInputGroup>
+          </div>
+          <CalcInputGroup>
+            <span className="calc-label">Take Profit <span className="calc-hint">(pips)</span></span>
+            <div className="calc-input-wrap">
+              <span className="calc-prefix">TP</span>
+              <input type="number" value={calcTakeProfit} onChange={(e) => setCalcTakeProfit(parseFloat(e.target.value) || 0)} min="1" step="5" />
+            </div>
+          </CalcInputGroup>
+
+          <CalcButton onClick={calculateRisk}>Calculate Risk</CalcButton>
+
+          {calculated && (
+            <>
+              <CalcResultsGrid>
+                <CalcResultBox type="risk">
+                  <div className="result-label">Risk Amount</div>
+                  <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
+                  <div className="result-sub">{calcRiskPercent}% of balance</div>
+                </CalcResultBox>
+                <CalcResultBox type="reward">
+                  <div className="result-label">Reward Amount</div>
+                  <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
+                  <div className="result-sub">{((calcTakeProfit / calcStopLoss) * calcRiskPercent).toFixed(2)}%</div>
+                </CalcResultBox>
+                <CalcResultBox type="ratio">
+                  <div className="result-label">Risk/Reward</div>
+                  <div className="result-value">1:{riskResults.riskRewardRatio.toFixed(2)}</div>
+                  <div className="result-sub">{riskResults.riskRewardRatio.toFixed(2)}x</div>
+                </CalcResultBox>
+              </CalcResultsGrid>
+              <CalcSummaryBox>
+                <div className="summary-row"><span className="label">Position Size</span><span className="value">{riskResults.positionSize.toFixed(2)} units</span></div>
+                <div className="summary-row risk"><span className="label">Max Loss</span><span className="value" style={{ color: '#EF4444' }}>${riskResults.maxLoss.toFixed(2)}</span></div>
+                <div className="summary-row reward"><span className="label">Max Profit</span><span className="value" style={{ color: '#10B981' }}>${riskResults.maxProfit.toFixed(2)}</span></div>
+              </CalcSummaryBox>
+            </>
+          )}
+        </>
+      )
     });
   };
 
@@ -1797,7 +1584,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   return (
     <>
       <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
-        <ModalContainer $wide={popupData?.type === 'risk'} onClick={(e) => e.stopPropagation()}>
+        <ModalContainer onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
             <div className="title-group">
               <span className="title-icon">{popupData?.icon}</span>
@@ -1806,11 +1593,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
             <button className="close-btn" onClick={closePopup}><CloseXIcon /></button>
           </ModalHeader>
-          <ModalBody>
-            {popupData?.type === 'risk' && renderRiskCalculator()}
-            {popupData?.type === 'voice' && renderVoiceSettings()}
-            {popupData?.type !== 'risk' && popupData?.type !== 'voice' && popupData?.content}
-          </ModalBody>
+          <ModalBody>{popupData?.content}</ModalBody>
         </ModalContainer>
       </ModalOverlay>
 
