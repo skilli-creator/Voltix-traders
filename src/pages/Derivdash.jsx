@@ -356,12 +356,7 @@ export const themes = {
 themes.forest = themes.midnight;
 themes.tokyoNight = themes.ocean;
 
-// Safe accessor function to prevent blank screen crashes
-export const getTheme = (themeKey) => {
-  return themes[themeKey] || themes.dark || themes.light;
-};
 
-export default themes;
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
