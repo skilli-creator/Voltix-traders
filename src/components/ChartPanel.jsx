@@ -115,7 +115,7 @@ const SymbolInfo = styled.div`
   .market-selector {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     cursor: pointer;
     color: ${props => props.theme.colors.text};
     font-size: 15px;
@@ -136,6 +136,37 @@ const SymbolInfo = styled.div`
       background: ${props => props.theme.colors.surfaceHover || props.theme.colors.backgroundTertiary};
       border-color: ${props => props.theme.colors.accent};
       box-shadow: 0 0 20px ${props => props.theme.colors.accent + '30'};
+    }
+
+    .selected-candle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 20px;
+      opacity: 0.8;
+      flex-shrink: 0;
+
+      .candle {
+        width: 3px;
+        background: ${props => props.theme.colors.textMuted};
+        position: relative;
+        border-radius: 1px;
+        &::before {
+          content: '';
+          position: absolute;
+          width: 1px;
+          background: inherit;
+          left: 1px;
+          border-radius: 1px;
+        }
+      }
+      .c1 { height: 12px; background: ${props => props.theme.colors.danger}; &::before { height: 18px; top: -3px; } }
+      .c2 { height: 15px; background: ${props => props.theme.colors.success}; &::before { height: 20px; top: -2px; } }
+      .c3 { height: 9px;  background: ${props => props.theme.colors.danger}; &::before { height: 14px; top: -2px; } }
+    }
+
+    .selected-name {
+      white-space: nowrap;
     }
 
     .dropdown-arrow {
@@ -319,6 +350,7 @@ const DropdownItem = styled.div`
     gap: 2px;
     height: 20px;
     opacity: 0.75;
+    flex-shrink: 0;
 
     @media (max-width: 480px) {
       display: none;
@@ -570,6 +602,17 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
     return this;
   };
 }
+
+// ============================================
+// CANDLE ICON COMPONENT
+// ============================================
+const CandleIcon = ({ theme }) => (
+  <div className="selected-candle">
+    <div className="candle c1" />
+    <div className="candle c2" />
+    <div className="candle c3" />
+  </div>
+);
 
 // ============================================
 // MAIN PANEL COMPONENT
@@ -850,6 +893,17 @@ const ChartPanel = () => {
   const maxPct = Math.max(...allPercentages);
   const minPct = Math.min(...allPercentages);
 
+  // Get the candle colors for the selected market
+  const getCandleColors = (market) => {
+    // Use the market's color or fallback to theme accent
+    const baseColor = market.color || theme?.colors?.accent || '#2962ff';
+    return {
+      c1: market.symbol.includes('100') ? theme?.colors?.danger || '#ef4444' : theme?.colors?.danger || '#ef4444',
+      c2: market.symbol.includes('100') ? theme?.colors?.success || '#22c55e' : theme?.colors?.success || '#22c55e',
+      c3: market.symbol.includes('100') ? theme?.colors?.danger || '#ef4444' : theme?.colors?.danger || '#ef4444',
+    };
+  };
+
   return (
     <PanelContainer>
       <Header>
@@ -861,7 +915,13 @@ const ChartPanel = () => {
               isOpen={isDropdownOpen}
               onClick={toggleDropdown}
             >
-              <span>{selectedMarket.name}</span>
+              {/* Candle Icon - Displayed in the field */}
+              <div className="selected-candle">
+                <div className="candle c1" />
+                <div className="candle c2" />
+                <div className="candle c3" />
+              </div>
+              <span className="selected-name">{selectedMarket.name}</span>
               <span className="dropdown-arrow">▾</span>
               
               <DropdownMenu isOpen={isDropdownOpen} onClick={(e) => e.stopPropagation()}>

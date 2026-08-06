@@ -69,7 +69,120 @@ const themes = {
     }
   },
 
-  // === SOLID DARK THEMES ===
+  titaniumLight: {
+    name: 'Titanium Pro (Light)',
+    category: 'light',
+    colors: {
+      bg: '#f3f4f6',
+      surface: '#ffffff',
+      surfaceHover: '#f9fafb',
+      surfaceActive: '#edf0f5',
+      surfaceGlass: 'rgba(255, 255, 255, 0.85)',
+      glassBorder: 'rgba(0, 0, 0, 0.08)',
+      glassBlur: '20px',
+      border: '#e5e7eb',
+      borderMuted: '#f3f4f6',
+      text: '#111827',
+      textSecondary: '#4b5563',
+      textMuted: '#9ca3af',
+      accent: '#4f46e5',
+      accentHover: '#4338ca',
+      accentLight: 'rgba(79, 70, 229, 0.08)',
+      accentMuted: 'rgba(79, 70, 229, 0.18)',
+      success: '#059669',
+      warning: '#d97706',
+      danger: '#dc2626',
+      shadow: '0 20px 30px -10px rgba(0, 0, 0, 0.05)',
+      scrollbar: '#d1d5db',
+    }
+  },
+
+  // === TRADING & FINANCIAL TERMINALS ===
+  bloombergTerminal: {
+    name: 'Bloomberg Pro',
+    category: 'dark',
+    colors: {
+      bg: '#000000',
+      surface: '#0d0d0d',
+      surfaceHover: '#171717',
+      surfaceActive: '#242424',
+      surfaceGlass: 'rgba(13, 13, 13, 0.92)',
+      glassBorder: 'rgba(255, 153, 0, 0.2)',
+      glassBlur: '16px',
+      border: '#1f1f1f',
+      borderMuted: '#121212',
+      text: '#ff9900',
+      textSecondary: '#d1a153',
+      textMuted: '#785e2f',
+      accent: '#ff9900',
+      accentHover: '#ffad33',
+      accentLight: 'rgba(255, 153, 0, 0.1)',
+      accentMuted: 'rgba(255, 153, 0, 0.25)',
+      success: '#00ff66',
+      warning: '#ffcc00',
+      danger: '#ff3333',
+      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.95)',
+      scrollbar: '#262626',
+    }
+  },
+
+  quantOLED: {
+    name: 'Quant Black (OLED)',
+    category: 'dark',
+    colors: {
+      bg: '#000000',
+      surface: '#050505',
+      surfaceHover: '#0d0d0d',
+      surfaceActive: '#171717',
+      surfaceGlass: 'rgba(5, 5, 5, 0.95)',
+      glassBorder: 'rgba(59, 130, 246, 0.2)',
+      glassBlur: '24px',
+      border: '#121212',
+      borderMuted: '#0a0a0a',
+      text: '#ffffff',
+      textSecondary: '#888888',
+      textMuted: '#444444',
+      accent: '#3b82f6',
+      accentHover: '#60a5fa',
+      accentLight: 'rgba(59, 130, 246, 0.12)',
+      accentMuted: 'rgba(59, 130, 246, 0.25)',
+      success: '#00e676',
+      warning: '#ffb300',
+      danger: '#ff1744',
+      shadow: '0 24px 48px -12px rgba(0, 0, 0, 1)',
+      scrollbar: '#1a1a1a',
+    }
+  },
+
+  binanceFutures: {
+    name: 'Futures Dark',
+    category: 'dark',
+    colors: {
+      bg: '#0b0e11',
+      surface: '#181a20',
+      surfaceHover: '#2b313a',
+      surfaceActive: '#363c4e',
+      surfaceGlass: 'rgba(24, 26, 32, 0.9)',
+      glassBorder: 'rgba(240, 185, 11, 0.2)',
+      glassBlur: '20px',
+      border: '#2b313a',
+      borderMuted: '#1e2329',
+      text: '#eaecef',
+      textSecondary: '#848e9c',
+      textMuted: '#474d57',
+      accent: '#f0b90b',
+      accentHover: '#fcd535',
+      accentLight: 'rgba(240, 185, 11, 0.12)',
+      accentMuted: 'rgba(240, 185, 11, 0.25)',
+      success: '#0ecb81',
+      warning: '#f0b90b',
+      danger: '#f6465d',
+      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.85)',
+      scrollbar: '#2b313a',
+    }
+  },
+
+  // === SOLID DARK & IDE THEMES ===
   dark: {
     name: 'Solid Dark',
     category: 'dark',
@@ -236,9 +349,64 @@ const themes = {
       shadow: '0 20px 40px -15px rgba(15, 5, 3, 0.8)',
       scrollbar: '#3a201b',
     }
+  },
+
+  tokyoNight: {
+    name: 'Tokyo Night Prime',
+    category: 'dark',
+    colors: {
+      bg: '#1a1b26',
+      surface: '#24283b',
+      surfaceHover: '#2f354f',
+      surfaceActive: '#3b4263',
+      surfaceGlass: 'rgba(36, 40, 59, 0.88)',
+      glassBorder: 'rgba(122, 162, 247, 0.25)',
+      glassBlur: '20px',
+      border: '#2f354f',
+      borderMuted: '#1f2335',
+      text: '#a9b1d6',
+      textSecondary: '#787c99',
+      textMuted: '#565f89',
+      accent: '#7aa2f7',
+      accentHover: '#bb9af7',
+      accentLight: 'rgba(122, 162, 247, 0.15)',
+      accentMuted: 'rgba(122, 162, 247, 0.3)',
+      success: '#9ece6a',
+      warning: '#e0af68',
+      danger: '#f7768e',
+      shadow: '0 20px 40px -15px rgba(16, 17, 24, 0.9)',
+      scrollbar: '#2f354f',
+    }
+  },
+
+  monacoLuxury: {
+    name: 'Monaco Obsidian',
+    category: 'dark',
+    colors: {
+      bg: '#0a0a0a',
+      surface: '#121212',
+      surfaceHover: '#1a1a1a',
+      surfaceActive: '#262626',
+      surfaceGlass: 'rgba(18, 18, 18, 0.88)',
+      glassBorder: 'rgba(212, 175, 55, 0.25)',
+      glassBlur: '20px',
+      border: '#222222',
+      borderMuted: '#141414',
+      text: '#f5f5f7',
+      textSecondary: '#a1a1a6',
+      textMuted: '#515154',
+      accent: '#d4af37',
+      accentHover: '#e5c158',
+      accentLight: 'rgba(212, 175, 55, 0.12)',
+      accentMuted: 'rgba(212, 175, 55, 0.25)',
+      success: '#2e7d32',
+      warning: '#ed6c02',
+      danger: '#d32f2f',
+      shadow: '0 20px 40px -15px rgba(0, 0, 0, 0.95)',
+      scrollbar: '#2a2a2a',
+    }
   }
 };
-
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
