@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/Academy.jsx
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 
 // ============================================
 // ANIMATIONS
@@ -10,10 +10,93 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const slideIn = keyframes`
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-`;
+// ============================================
+// SVG ICONS
+// ============================================
+const BookOpenIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const ProgressIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+const TargetIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+    <circle cx="12" cy="12" r="2" />
+  </svg>
+);
+
+const TOCIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="8" y1="6" x2="21" y2="6" />
+    <line x1="8" y1="12" x2="21" y2="12" />
+    <line x1="8" y1="18" x2="21" y2="18" />
+    <line x1="3" y1="6" x2="3.01" y2="6" />
+    <line x1="3" y1="12" x2="3.01" y2="12" />
+    <line x1="3" y1="18" x2="3.01" y2="18" />
+  </svg>
+);
+
+const CheckCircleIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="9 12 11 14 15 10" />
+  </svg>
+);
+
+const CircleIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+  </svg>
+);
+
+const TrophyIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M6 9V4h12v5" />
+    <rect x="10" y="13" width="4" height="8" />
+    <path d="M9 21h6" />
+    <circle cx="12" cy="9" r="5" />
+    <path d="M6 9h12" />
+    <path d="M6 9c-1.5 0-3-1.5-3-3V4h3" />
+    <path d="M18 9c1.5 0 3-1.5 3-3V4h-3" />
+  </svg>
+);
+
+const StarIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
+const GraduationIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  </svg>
+);
+
+const GraduationCapIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+    <path d="M2 17l10 5 10-5" />
+    <path d="M2 12l10 5 10-5" />
+  </svg>
+);
 
 // ============================================
 // STYLED COMPONENTS
@@ -23,7 +106,7 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(180deg, #0b0e14 0%, #0f131a 100%);
+  background: ${props => props.theme?.colors?.surface || '#0F172A'};
   padding: 20px;
   overflow-y: auto;
 
@@ -34,38 +117,12 @@ const PageWrapper = styled.div`
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #2a2e3d;
+    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
     border-radius: 4px;
   }
 
   @media (max-width: 768px) {
     padding: 12px;
-  }
-`;
-
-const BackButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  color: #94a3b8;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 8px 0;
-  margin-bottom: 16px;
-  transition: all 0.3s ease;
-  align-self: flex-start;
-
-  &:hover {
-    color: #f1f5f9;
-    transform: translateX(-4px);
-  }
-
-  .arrow {
-    font-size: 18px;
-    line-height: 1;
   }
 `;
 
@@ -78,20 +135,23 @@ const HeroSection = styled.div`
     display: inline-block;
     padding: 4px 16px;
     border-radius: 20px;
-    background: rgba(56, 189, 248, 0.08);
-    border: 1px solid rgba(56, 189, 248, 0.1);
-    color: #38bdf8;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(56, 189, 248, 0.08)'};
+    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(56, 189, 248, 0.1)'};
+    color: ${props => props.theme?.colors?.accent || '#38bdf8'};
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .title {
     font-size: 42px;
     font-weight: 800;
-    color: #f1f5f9;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     line-height: 1.1;
     margin-bottom: 16px;
 
@@ -105,7 +165,7 @@ const HeroSection = styled.div`
 
   .subtitle {
     font-size: 18px;
-    color: #94a3b8;
+    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
     max-width: 650px;
     margin: 0 auto;
     line-height: 1.8;
@@ -123,13 +183,18 @@ const HeroSection = styled.div`
       align-items: center;
       gap: 8px;
       font-size: 13px;
-      color: #64748b;
-      background: rgba(255, 255, 255, 0.02);
+      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+      background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
       padding: 6px 16px;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
-      .icon { font-size: 16px; }
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+      }
     }
   }
 
@@ -149,8 +214,8 @@ const TOCSection = styled.div`
   max-width: 900px;
   margin: 0 auto 40px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.015)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   border-radius: 16px;
   padding: 24px 28px;
   animation: ${fadeIn} 0.7s ease;
@@ -158,13 +223,18 @@ const TOCSection = styled.div`
   .toc-title {
     font-size: 20px;
     font-weight: 700;
-    color: #f1f5f9;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 10px;
 
-    .icon { font-size: 24px; }
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    }
   }
 
   .toc-grid {
@@ -178,25 +248,32 @@ const TOCSection = styled.div`
       gap: 10px;
       padding: 10px 14px;
       border-radius: 8px;
-      color: #94a3b8;
+      color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
       font-size: 13px;
       transition: all 0.2s ease;
       cursor: pointer;
 
       &:hover {
-        background: rgba(56, 189, 248, 0.04);
-        color: #f1f5f9;
+        background: ${props => props.theme?.colors?.accentLight || 'rgba(56, 189, 248, 0.04)'};
+        color: ${props => props.theme?.colors?.text || '#f1f5f9'};
       }
 
       .num {
         font-size: 11px;
         font-weight: 700;
-        color: #38bdf8;
+        color: ${props => props.theme?.colors?.accent || '#38bdf8'};
         min-width: 28px;
       }
 
       .label {
         flex: 1;
+      }
+
+      .status-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
       }
     }
   }
@@ -218,16 +295,16 @@ const LessonContainer = styled.div`
 `;
 
 const LessonCard = styled.div`
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.015)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   border-radius: 16px;
   padding: 28px 30px;
   margin-bottom: 20px;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: rgba(56, 189, 248, 0.06);
-    background: rgba(255, 255, 255, 0.02);
+    border-color: ${props => props.theme?.colors?.accent + '20' || 'rgba(56, 189, 248, 0.06)'};
+    background: ${props => props.theme?.colors?.bgHover || 'rgba(255, 255, 255, 0.02)'};
   }
 
   .lesson-header {
@@ -236,13 +313,13 @@ const LessonCard = styled.div`
     gap: 14px;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
 
     .lesson-number {
       font-size: 12px;
       font-weight: 700;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.08);
+      color: ${props => props.theme?.colors?.accent || '#38bdf8'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(56, 189, 248, 0.08)'};
       padding: 2px 12px;
       border-radius: 20px;
       flex-shrink: 0;
@@ -251,44 +328,59 @@ const LessonCard = styled.div`
     .lesson-title {
       font-size: 20px;
       font-weight: 700;
-      color: #f1f5f9;
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
       flex: 1;
     }
 
     .lesson-duration {
       font-size: 11px;
-      color: #64748b;
-      background: rgba(255, 255, 255, 0.02);
+      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+      background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
       padding: 2px 12px;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
     }
   }
 
   .lesson-content {
-    color: #cbd5e1;
+    color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
     font-size: 15px;
     line-height: 1.9;
 
     h3 {
-      color: #f1f5f9;
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
       font-size: 20px;
       font-weight: 600;
       margin: 28px 0 14px 0;
       padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
     }
 
     h4 {
-      color: #e2e8f0;
+      color: ${props => props.theme?.colors?.text || '#e2e8f0'};
       font-size: 17px;
       font-weight: 600;
       margin: 20px 0 10px 0;
     }
 
     h5 {
-      color: #cbd5e1;
+      color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
       font-size: 15px;
       font-weight: 600;
       margin: 16px 0 8px 0;
@@ -306,8 +398,8 @@ const LessonCard = styled.div`
     }
 
     .highlight-box {
-      background: rgba(56, 189, 248, 0.04);
-      border-left: 3px solid #38bdf8;
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(56, 189, 248, 0.04)'};
+      border-left: 3px solid ${props => props.theme?.colors?.accent || '#38bdf8'};
       padding: 14px 18px;
       border-radius: 6px;
       margin: 14px 0;
@@ -342,15 +434,15 @@ const LessonCard = styled.div`
     }
 
     .code-block {
-      background: rgba(0, 0, 0, 0.3);
+      background: ${props => props.theme?.colors?.surface || 'rgba(0, 0, 0, 0.3)'};
       padding: 12px 16px;
       border-radius: 8px;
       font-family: 'Courier New', monospace;
       font-size: 13px;
-      color: #e2e8f0;
+      color: ${props => props.theme?.colors?.text || '#e2e8f0'};
       overflow-x: auto;
       margin: 10px 0;
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
     }
 
     .key-takeaway {
@@ -385,19 +477,19 @@ const LessonCard = styled.div`
 
       th, td {
         padding: 10px 14px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
+        border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
         text-align: left;
         font-size: 14px;
       }
 
       th {
-        background: rgba(56, 189, 248, 0.04);
-        color: #f1f5f9;
+        background: ${props => props.theme?.colors?.accentLight || 'rgba(56, 189, 248, 0.04)'};
+        color: ${props => props.theme?.colors?.text || '#f1f5f9'};
         font-weight: 600;
       }
 
       td {
-        color: #cbd5e1;
+        color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
       }
     }
   }
@@ -421,8 +513,62 @@ const LessonCard = styled.div`
   }
 `;
 
+const CompletionBanner = styled.div`
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.08);
+  border-radius: 16px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  animation: ${fadeIn} 0.8s ease;
+
+  .trophy-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    color: #fbbf24;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
+  }
+`;
+
+const Footer = styled.div`
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+  text-align: center;
+  font-size: 11px;
+  color: ${props => props.theme?.colors?.textMuted || '#4a4f5e'};
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+
+  .footer-sub {
+    display: block;
+    margin-top: 2px;
+    color: ${props => props.theme?.colors?.textMuted || '#3a4055'};
+  }
+`;
+
 // ============================================
-// COMPLETE 5000+ LINE LESSON DATA
+// LESSON DATA (content remains the same)
 // ============================================
 
 const lessons = [
@@ -438,7 +584,7 @@ const lessons = [
       <p>Trading, in its simplest form, is the act of buying something at a lower price and selling it at a higher price. The difference between the buy price and the sell price is your profit (or loss).</p>
       
       <div class="highlight-box">
-        <strong>💡 Core Concept:</strong>
+        <strong>Core Concept:</strong>
         <br>Trading = Buying Low + Selling High
         <br>or
         <br>Trading = Selling High + Buying Low (when shorting)
@@ -449,7 +595,7 @@ const lessons = [
       <p>Prices move because of supply and demand. Let's understand this with a simple example:</p>
       
       <div class="example-box">
-        <strong>📊 Supply & Demand Example:</strong>
+        <strong>Supply & Demand Example:</strong>
         <br>
         <br>Imagine there are 100 people who want to buy apples, but only 50 apples available.
         <br>• Demand (buyers) = 100
@@ -530,7 +676,7 @@ const lessons = [
       </table>
       
       <div class="highlight-box">
-        <strong>💡 Beginner Tip:</strong> Start with Volatility 10 or 25. They move slowly enough that you can see what's happening and learn without being overwhelmed.
+        <strong>Beginner Tip:</strong> Start with Volatility 10 or 25. They move slowly enough that you can see what's happening and learn without being overwhelmed.
       </div>
       
       <h4>2. Forex (Foreign Exchange)</h4>
@@ -579,7 +725,7 @@ const lessons = [
       <p>Every trade has two possible outcomes: win or lose. The risk is how much you could lose. The reward is how much you could win.</p>
       
       <div class="example-box">
-        <strong>📊 Risk & Reward Example:</strong>
+        <strong>Risk & Reward Example:</strong>
         <br>You place a $10 trade. The payout is $19.20.
         <br>• Risk: $10 (you lose $10 if you're wrong)
         <br>• Reward: $19.20 (you gain $19.20 if you're right)
@@ -589,7 +735,7 @@ const lessons = [
       <p>The <strong>Risk/Reward Ratio</strong> is one of the most important concepts in trading. A ratio of 1:2 means you risk $1 to gain $2. Professional traders aim for at least 1:1.5 or higher.</p>
       
       <div class="warning-box">
-        <strong>⚠️ Critical Concept:</strong>
+        <strong>Critical Concept:</strong>
         <br>You should always know your risk before placing a trade. Never trade without understanding exactly how much you could lose.
       </div>
       
@@ -598,22 +744,22 @@ const lessons = [
       <p>Before you make your first trade, memorize these rules. They'll save you thousands of dollars in losses:</p>
       
       <div class="success-box">
-        <strong>✅ Rule 1: Risk Only 2% Per Trade</strong>
+        <strong>Rule 1: Risk Only 2% Per Trade</strong>
         <br>If you have $100 in your account, risk no more than $2 on any single trade. This ensures you can survive losing streaks.
       </div>
       
       <div class="success-box">
-        <strong>✅ Rule 2: Use a Demo Account First</strong>
+        <strong>Rule 2: Use a Demo Account First</strong>
         <br>Practice until you're consistently profitable with virtual money. This takes 2-4 weeks minimum. Don't rush into real money trading!
       </div>
       
       <div class="success-box">
-        <strong>✅ Rule 3: Learn From Every Trade</strong>
+        <strong>Rule 3: Learn From Every Trade</strong>
         <br>Write down what you did, why you did it, and what happened. This is how you improve. Winners and losers both teach valuable lessons.
       </div>
       
       <div class="key-takeaway">
-        <strong>🎯 Key Takeaway:</strong> Trading is buying low and selling high. Deriv offers many markets including Volatility Indices, Forex, Commodities, and Cryptocurrencies. Always start with a demo account, risk only 2% per trade, and learn from every trade. The journey of a thousand trades begins with a single click!
+        <strong>Key Takeaway:</strong> Trading is buying low and selling high. Deriv offers many markets including Volatility Indices, Forex, Commodities, and Cryptocurrencies. Always start with a demo account, risk only 2% per trade, and learn from every trade. The journey of a thousand trades begins with a single click!
       </div>
     `
   },
@@ -642,7 +788,7 @@ const lessons = [
       <p>Volatility Indices are artificial markets that simulate different levels of volatility. They don't exist in the real world, which makes them perfect for learning because they're predictable.</p>
       
       <div class="highlight-box">
-        <strong>💡 Why Volatility Indices are Great for Beginners:</strong>
+        <strong>Why Volatility Indices are Great for Beginners:</strong>
         <br>1. <strong>Always Open:</strong> Trade 24/7, no market closures
         <br>2. <strong>No News Impact:</strong> News events don't cause sudden moves
         <br>3. <strong>Predictable:</strong> They follow mathematical patterns
@@ -705,7 +851,7 @@ const lessons = [
       </ul>
       
       <div class="warning-box">
-        <strong>⚠️ Important Warning:</strong>
+        <strong>Important Warning:</strong>
         <br>Higher volatility = Higher risk.
         <br>Start with R_10 or R_25. As you gain experience and confidence, you can gradually move to higher volatility levels.
         <br>Never jump straight to R_100 as a beginner!
@@ -719,7 +865,7 @@ const lessons = [
       <p>Forex always involves two currencies. You're buying one currency and selling another at the same time. This is why currencies are always shown in pairs.</p>
       
       <div class="example-box">
-        <strong>📊 Forex Example:</strong>
+        <strong>Forex Example:</strong>
         <br>EUR/USD = 1.1000
         <br>This means: 1 Euro = 1.10 US Dollars
         <br>
@@ -816,7 +962,7 @@ const lessons = [
       </ul>
       
       <div class="highlight-box">
-        <strong>💡 Which Market Should You Choose?</strong>
+        <strong>Which Market Should You Choose?</strong>
         <br>
         <br><strong>If you're a beginner:</strong> Start with Volatility 10 or 25
         <br><strong>If you want real-world trading:</strong> Try Forex
@@ -827,7 +973,7 @@ const lessons = [
       </div>
       
       <div class="key-takeaway">
-        <strong>🎯 Key Takeaway:</strong> Different markets have different characteristics. Volatility Indices are perfect for beginners. Forex offers real-world currency trading. Commodities let you trade physical assets. Cryptocurrencies offer high volatility. Choose ONE market to start with and master it before trying others.
+        <strong>Key Takeaway:</strong> Different markets have different characteristics. Volatility Indices are perfect for beginners. Forex offers real-world currency trading. Commodities let you trade physical assets. Cryptocurrencies offer high volatility. Choose ONE market to start with and master it before trying others.
       </div>
     `
   },
@@ -841,7 +987,7 @@ const lessons = [
       <p>Think of trade types like different games you can play. Each game has different rules, and each has its own strategy. On Deriv, you have four main trade types to choose from.</p>
       
       <div class="highlight-box">
-        <strong>💡 Pro Tip:</strong> Start with just ONE trade type and master it. Most professional traders specialize in one type. Don't try to learn them all at once!
+        <strong>Pro Tip:</strong> Start with just ONE trade type and master it. Most professional traders specialize in one type. Don't try to learn them all at once!
       </div>
       
       <h3>1. Over/Under (The Trend Game)</h3>
@@ -857,7 +1003,7 @@ const lessons = [
       </div>
       
       <div class="example-box">
-        <strong>📊 Example:</strong>
+        <strong>Example:</strong>
         <br>Current price: 8,459
         <br>You think the price will go higher than 8,459.
         <br>You choose: OVER
@@ -876,7 +1022,7 @@ const lessons = [
       
       <h4>When to Choose OVER</h4>
       <div class="success-box">
-        <strong>📈 OVER Signals:</strong>
+        <strong>OVER Signals:</strong>
         <ul>
           <li>Price is going UP (green candles on chart)</li>
           <li>Market is in an uptrend (higher highs, higher lows)</li>
@@ -889,7 +1035,7 @@ const lessons = [
       
       <h4>When to Choose UNDER</h4>
       <div class="warning-box">
-        <strong>📉 UNDER Signals:</strong>
+        <strong>UNDER Signals:</strong>
         <ul>
           <li>Price is going DOWN (red candles on chart)</li>
           <li>Market is in a downtrend (lower highs, lower lows)</li>
@@ -912,7 +1058,7 @@ const lessons = [
       </ul>
       
       <div class="highlight-box">
-        <strong>💡 The 80/20 Rule:</strong>
+        <strong>The 80/20 Rule:</strong>
         <br>80% of your wins will come from following the trend.
         <br>20% will come from reversals.
         <br>Trade WITH the trend, not against it!
@@ -931,15 +1077,15 @@ const lessons = [
       </div>
       
       <div class="example-box">
-        <strong>📊 Example:</strong>
+        <strong>Example:</strong>
         <br>Price: 8,459
         <br>Last digit: 9
         <br>
         <br>You choose: ODD
-        <br>✅ The last digit is 9 → YOU WIN! 🎉
+        <br>✅ The last digit is 9 → YOU WIN!
         <br>
         <br>You choose: EVEN
-        <br>❌ The last digit is 9 → YOU LOSE! 😢
+        <br>❌ The last digit is 9 → YOU LOSE!
       </div>
       
       <h4>Understanding Probability</h4>
@@ -973,7 +1119,7 @@ const lessons = [
       </ul>
       
       <div class="warning-box">
-        <strong>⚠️ Important Warning:</strong>
+        <strong>Important Warning:</strong>
         <br>Even/Odd is random. No strategy can guarantee a win.
         <br>Don't double your stake to "recover" losses.
         <br>Treat it like a game, not a money-making strategy.
@@ -992,7 +1138,7 @@ const lessons = [
       </div>
       
       <div class="example-box">
-        <strong>📊 Example:</strong>
+        <strong>Example:</strong>
         <br>You choose: 5
         <br>
         <br>You predict: MATCHES 5
@@ -1047,7 +1193,7 @@ const lessons = [
       </ul>
       
       <div class="highlight-box">
-        <strong>💡 Pro Tip:</strong>
+        <strong>Pro Tip:</strong>
         <br>Many professional traders use DIFFERS as their "base" strategy.
         <br>90% win rate means you win most of the time.
         <br>Even though the payout is small, consistent wins add up!
@@ -1066,7 +1212,7 @@ const lessons = [
       </div>
       
       <div class="example-box">
-        <strong>📊 Example:</strong>
+        <strong>Example:</strong>
         <br>Current price: 8,459
         <br>You set target: 8,500 (higher)
         <br>
@@ -1089,7 +1235,7 @@ const lessons = [
       </ul>
       
       <div class="key-takeaway">
-        <strong>🎯 Key Takeaway:</strong> Each trade type has its own strategy and risk level. Over/Under is the most popular and beginner-friendly. Even/Odd is simple and 50/50. Matches/Differs offers both high-risk and low-risk options. Touch/No Touch is for advanced traders. Master one trade type before moving to the next!
+        <strong>Key Takeaway:</strong> Each trade type has its own strategy and risk level. Over/Under is the most popular and beginner-friendly. Even/Odd is simple and 50/50. Matches/Differs offers both high-risk and low-risk options. Touch/No Touch is for advanced traders. Master one trade type before moving to the next!
       </div>
     `
   },
@@ -1127,7 +1273,7 @@ const lessons = [
       <p>These are the most popular charts and the ones you'll use most often. Candlesticks show you a lot of information in one visual.</p>
       
       <div class="example-box">
-        <strong>📊 Candlestick Anatomy:</strong>
+        <strong>Candlestick Anatomy:</strong>
         <br>
         <br>🟢 <strong>Green/White Candle:</strong> Price went UP
         <br>• Body: Shows the difference between open and close
@@ -1150,7 +1296,7 @@ const lessons = [
       <h3>The Three Market States</h3>
       
       <div class="highlight-box">
-        <strong>💡 Market States:</strong>
+        <strong>Market States:</strong>
         <br>
         <br>📈 <strong>UPTREND:</strong>
         <br>• Price makes higher highs (each peak is higher)
@@ -1185,7 +1331,7 @@ const lessons = [
       </div>
       
       <div class="example-box">
-        <strong>📊 Support & Resistance Example:</strong>
+        <strong>Support & Resistance Example:</strong>
         <br>
         <br>Resistance: 8,500 (price bounces DOWN from here)
         <br>Current Price: 8,459
@@ -1227,7 +1373,7 @@ const lessons = [
       </ul>
       
       <div class="success-box">
-        <strong>✅ Chart Reading Exercise:</strong>
+        <strong>Chart Reading Exercise:</strong>
         <br>
         <br>1. Open your Deriv chart on Volatility 10
         <br>2. Look at the last 20 candles
@@ -1271,7 +1417,7 @@ const lessons = [
       </ul>
       
       <div class="key-takeaway">
-        <strong>🎯 Key Takeaway:</strong> Charts tell the story of the market. Learn to read candlestick patterns, support/resistance, and trendlines. Master one indicator at a time. Practice reading charts daily and you'll become a skilled analyst!
+        <strong>Key Takeaway:</strong> Charts tell the story of the market. Learn to read candlestick patterns, support/resistance, and trendlines. Master one indicator at a time. Practice reading charts daily and you'll become a skilled analyst!
       </div>
     `
   },
@@ -1285,7 +1431,7 @@ const lessons = [
       <p>Risk management is the single most important skill in trading. It's more important than knowing strategies, reading charts, or understanding markets. Without proper risk management, even the best traders will eventually lose everything.</p>
       
       <div class="highlight-box">
-        <strong>💡 The Golden Rule of Trading:</strong>
+        <strong>The Golden Rule of Trading:</strong>
         <br>Protect your capital first. Make profits second.
         <br>Never risk more than you can afford to lose.
         <br>Always risk 2% or less per trade.
@@ -1299,7 +1445,7 @@ const lessons = [
       <p>This is the most important rule in trading. It will save your account many times over.</p>
       
       <div class="warning-box">
-        <strong>⚠️ The 2% Rule:</strong>
+        <strong>The 2% Rule:</strong>
         <br>Never risk more than 2% of your account on any single trade.
         <br>
         <br>If you have $1,000, risk no more than $20 per trade.
@@ -1312,7 +1458,7 @@ const lessons = [
       <p>Let's understand why this rule is so important with an example:</p>
       
       <div class="example-box">
-        <strong>📊 The Power of 2%:</strong>
+        <strong>The Power of 2%:</strong>
         <br>
         <br><strong>Trader A (No Risk Management):</strong>
         <br>Account: $1,000
@@ -1320,7 +1466,7 @@ const lessons = [
         <br>Account now: $500
         <br>Trade 2: Risk $500 (100%) → LOSS
         <br>Account now: $0
-        <br>Result: BROKE IN 2 TRADES! 😭
+        <br>Result: BROKE IN 2 TRADES!
         <br>
         <br><strong>Trader B (2% Rule):</strong>
         <br>Account: $1,000
@@ -1330,7 +1476,7 @@ const lessons = [
         <br>Account now: $960.40
         <br>Trade 3: Risk $19.20 (2%) → LOSS
         <br>Account now: $941.20
-        <br>Result: AFTER 20 LOSSES IN A ROW → STILL HAS $670! 🎉
+        <br>Result: AFTER 20 LOSSES IN A ROW → STILL HAS $670!
         <br>
         <br>The 2% rule allows you to survive losing streaks!
       </div>
@@ -1340,7 +1486,7 @@ const lessons = [
       <p>Just as important as the 2% rule. This rule prevents you from destroying your account in a single bad day.</p>
       
       <div class="warning-box">
-        <strong>⚠️ The 6% Daily Rule:</strong>
+        <strong>The 6% Daily Rule:</strong>
         <br>If you lose 6% of your account in one day, STOP TRADING.
         <br>
         <br>Account: $1,000
@@ -1366,7 +1512,7 @@ const lessons = [
       </div>
       
       <div class="example-box">
-        <strong>📊 Position Sizing Example:</strong>
+        <strong>Position Sizing Example:</strong>
         <br>Account: $1,000
         <br>Risk: 2% ($20)
         <br>Stop Loss: 5 ticks
@@ -1425,7 +1571,7 @@ const lessons = [
       <h3>Risk Psychology</h3>
       
       <div class="highlight-box">
-        <strong>💡 Understanding Your Mind:</strong>
+        <strong>Understanding Your Mind:</strong>
         <br>
         <br>• <strong>Losses hurt more than wins feel good.</strong> This is human nature. A $20 loss feels worse than a $20 win feels good.
         <br>
@@ -1441,7 +1587,7 @@ const lessons = [
       <h3>Risk Management Checklist</h3>
       
       <div class="success-box">
-        <strong>✅ Before Every Trade:</strong>
+        <strong>Before Every Trade:</strong>
         <br>
         <br>☐ Am I risking 2% or less?
         <br>☐ Have I calculated my position size correctly?
@@ -1467,7 +1613,7 @@ const lessons = [
       </ul>
       
       <div class="key-takeaway">
-        <strong>🎯 Key Takeaway:</strong> Risk management is your most important skill. Follow the 2% rule, the 6% daily rule, and always calculate your position size. Protect your capital first, make profits second. Without proper risk management, you cannot succeed long-term.
+        <strong>Key Takeaway:</strong> Risk management is your most important skill. Follow the 2% rule, the 6% daily rule, and always calculate your position size. Protect your capital first, make profits second. Without proper risk management, you cannot succeed long-term.
       </div>
     `
   },
@@ -1481,11 +1627,11 @@ const lessons = [
       <p>Your mind is the most important part of your trading system. Even with the best strategy, if your psychology is poor, you'll fail. Professional traders spend as much time on psychology as they do on strategy.</p>
       
       <div class="highlight-box">
-        <strong>💡 The Trading Triangle:</strong>
+        <strong>The Trading Triangle:</strong>
         <br>
-        <br>📊 Strategy = 25%
-        <br>💰 Risk Management = 25%
-        <br>🧠 Psychology = 50%
+        <br>Strategy = 25%
+        <br>Risk Management = 25%
+        <br>Psychology = 50%
         <br>
         <br>Your mind is half of your success!
       </div>
@@ -1502,7 +1648,7 @@ const lessons = [
       </ul>
       
       <div class="success-box">
-        <strong>✅ How to Overcome Fear:</strong>
+        <strong>How to Overcome Fear:</strong>
         <br>• Use proper risk management (2% rule)
         <br>• Focus on the process, not the outcome
         <br>• Accept that losses are part of trading
@@ -1520,7 +1666,7 @@ const lessons = [
       </ul>
       
       <div class="warning-box">
-        <strong>⚠️ How to Overcome Greed:</strong>
+        <strong>How to Overcome Greed:</strong>
         <br>• Set realistic daily profit targets
         <br>• Take profits when your target is hit
         <br>• Stick to your position sizing
@@ -1532,7 +1678,7 @@ const lessons = [
       <p>This is the most destructive emotion. It occurs when you lose money and try to "get it back" by taking bigger risks.</p>
       
       <div class="example-box">
-        <strong>📊 Revenge Trading Example:</strong>
+        <strong>Revenge Trading Example:</strong>
         <br>You lose $20 on a trade.
         <br>Your brain says: "I need to get that $20 back!"
         <br>You take a $40 trade to recover it.
@@ -1565,7 +1711,7 @@ const lessons = [
       <p>A trading journal is your most important tool for improving psychology. It helps you identify patterns in your behavior and decision-making.</p>
       
       <div class="example-box">
-        <strong>📊 What to Write in Your Journal:</strong>
+        <strong>What to Write in Your Journal:</strong>
         <br>
         <br><strong>For Each Trade:</strong>
         <br>• Market and trade type
@@ -1587,7 +1733,7 @@ const lessons = [
       <h3>Building Trading Discipline</h3>
       
       <div class="success-box">
-        <strong>✅ Daily Habits of Successful Traders:</strong>
+        <strong>Daily Habits of Successful Traders:</strong>
         <br>
         <br>1. <strong>Prepare:</strong> Review your plan before trading
         <br>2. <strong>Warm Up:</strong> Check markets, get into the right mindset
@@ -1616,7 +1762,7 @@ const lessons = [
       </ul>
       
       <div class="key-takeaway">
-        <strong>🎯 Key Takeaway:</strong> Trading psychology is half of your success. Manage your emotions, keep a journal, and build discipline. Know when to stop and when to trade. Your mind is your greatest asset or your biggest enemy. Master it and you'll master trading.
+        <strong>Key Takeaway:</strong> Trading psychology is half of your success. Manage your emotions, keep a journal, and build discipline. Know when to stop and when to trade. Your mind is your greatest asset or your biggest enemy. Master it and you'll master trading.
       </div>
     `
   }
@@ -1627,12 +1773,7 @@ const lessons = [
 // ============================================
 
 const Academy = () => {
-  const navigate = useNavigate();
   const [completedLessons, setCompletedLessons] = useState([]);
-
-  const handleGoBack = () => {
-    navigate(-1);
-  };
 
   const toggleLesson = (lessonId) => {
     setCompletedLessons(prev => 
@@ -1653,12 +1794,11 @@ const Academy = () => {
 
   return (
     <PageWrapper>
-      <BackButton onClick={handleGoBack}>
-        <span className="arrow">←</span> Back
-      </BackButton>
-
       <HeroSection>
-        <div className="badge">🎓 Complete Course</div>
+        <div className="badge">
+          <GraduationIcon />
+          Complete Course
+        </div>
         <h1 className="title">
           Voltix Traders <span className="gradient">Academy</span>
         </h1>
@@ -1667,22 +1807,40 @@ const Academy = () => {
           Start with lesson 1 and progress through the course at your own pace.
         </p>
         <div className="course-meta">
-          <span className="meta-item"><span className="icon">📚</span> {lessons.length} Lessons</span>
-          <span className="meta-item"><span className="icon">⏱️</span> ~3 Hours Total</span>
-          <span className="meta-item"><span className="icon">📊</span> {progress}% Complete</span>
-          <span className="meta-item"><span className="icon">🎯</span> Beginner to Pro</span>
+          <span className="meta-item">
+            <span className="icon"><BookOpenIcon /></span>
+            {lessons.length} Lessons
+          </span>
+          <span className="meta-item">
+            <span className="icon"><ClockIcon /></span>
+            ~3 Hours Total
+          </span>
+          <span className="meta-item">
+            <span className="icon"><ProgressIcon /></span>
+            {progress}% Complete
+          </span>
+          <span className="meta-item">
+            <span className="icon"><TargetIcon /></span>
+            Beginner to Pro
+          </span>
         </div>
       </HeroSection>
 
       <TOCSection>
-        <div className="toc-title"><span className="icon">📑</span> Table of Contents</div>
+        <div className="toc-title">
+          <span className="icon"><TOCIcon /></span>
+          Table of Contents
+        </div>
         <div className="toc-grid">
           {lessons.map((lesson) => (
             <div key={lesson.id} className="toc-item" onClick={() => scrollToLesson(lesson.id)}>
               <span className="num">{lesson.id}.</span>
               <span className="label">{lesson.title}</span>
-              <span style={{ fontSize: '10px', color: completedLessons.includes(lesson.id) ? '#22c55e' : '#4a4f5e', marginLeft: 'auto' }}>
-                {completedLessons.includes(lesson.id) ? '✅' : '📖'}
+              <span className="status-icon">
+                {completedLessons.includes(lesson.id) 
+                  ? <CheckCircleIcon style={{ color: '#22c55e' }} />
+                  : <CircleIcon style={{ color: '#4a4f5e' }} />
+                }
               </span>
             </div>
           ))}
@@ -1697,12 +1855,15 @@ const Academy = () => {
               <div className="lesson-header">
                 <span className="lesson-number">Lesson {lesson.id}</span>
                 <span className="lesson-title">{lesson.title}</span>
-                <span className="lesson-duration">{lesson.duration}</span>
-                <button onClick={() => toggleLesson(lesson.id)} style={{
-                  background: 'none', border: 'none', color: isCompleted ? '#22c55e' : '#64748b',
-                  fontSize: '20px', cursor: 'pointer', transition: 'all 0.2s ease', padding: '0 4px'
-                }}>
-                  {isCompleted ? '✅' : '○'}
+                <span className="lesson-duration">
+                  <ClockIcon style={{ width: '12px', height: '12px' }} />
+                  {lesson.duration}
+                </span>
+                <button className="toggle-btn" onClick={() => toggleLesson(lesson.id)}>
+                  {isCompleted 
+                    ? <CheckCircleIcon style={{ color: '#22c55e' }} />
+                    : <CircleIcon style={{ color: '#64748b' }} />
+                  }
                 </button>
               </div>
               <div className="lesson-content" dangerouslySetInnerHTML={{ __html: lesson.content }} />
@@ -1712,32 +1873,22 @@ const Academy = () => {
       </LessonContainer>
 
       {progress === 100 && (
-        <div style={{
-          textAlign: 'center', padding: '40px 20px', marginTop: '20px', marginBottom: '20px',
-          background: 'rgba(34, 197, 94, 0.04)', border: '1px solid rgba(34, 197, 94, 0.08)',
-          borderRadius: '16px', maxWidth: '900px', marginLeft: 'auto', marginRight: 'auto', width: '100%',
-          animation: `${fadeIn} 0.8s ease`
-        }}>
-          <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎉🏆🎉</div>
-          <div style={{ fontSize: '24px', fontWeight: 700, color: '#f1f5f9', marginBottom: '6px' }}>
-            Congratulations!
+        <CompletionBanner>
+          <div className="trophy-icon"><TrophyIcon /></div>
+          <div className="title">Congratulations!</div>
+          <div className="subtitle">
+            You've completed all {lessons.length} lessons! You're now ready to start your trading journey with confidence.
           </div>
-          <div style={{ fontSize: '16px', color: '#94a3b8' }}>
-            You've completed all {lessons.length} lessons! You're now ready to start your trading journey with confidence. 🚀
-          </div>
-        </div>
+        </CompletionBanner>
       )}
 
-      <div style={{
-        marginTop: '30px', paddingTop: '20px', borderTop: '1px solid rgba(255, 255, 255, 0.02)',
-        textAlign: 'center', fontSize: '11px', color: '#4a4f5e', maxWidth: '900px',
-        marginLeft: 'auto', marginRight: 'auto', width: '100%'
-      }}>
-        Voltix Traders Academy © 2024 • Learn. Practice. Master.
-        <span style={{ display: 'block', marginTop: '2px', color: '#3a4055' }}>
-          🎓 Every expert was once a beginner. Keep learning!
+      <Footer>
+        Voltix Traders Academy • Learn. Practice. Master.
+        <span className="footer-sub">
+          <GraduationCapIcon style={{ width: '14px', height: '14px', marginRight: '4px' }} />
+          Every expert was once a beginner. Keep learning!
         </span>
-      </div>
+      </Footer>
     </PageWrapper>
   );
 };
