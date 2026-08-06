@@ -41,11 +41,6 @@ const fadeUp = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const breathe = keyframes`
-  0%,100% { opacity: 0.08; transform: scale(1); }
-  50% { opacity: 0.18; transform: scale(1.06); }
-`;
-
 const pulseRing = keyframes`
   0% { transform: scale(1); opacity: 0.6; }
   100% { transform: scale(2.4); opacity: 0; }
@@ -180,21 +175,6 @@ const PhoneIcon = () => (
 const WhatsAppIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-  </svg>
-);
-
-const UserIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
-  </svg>
-);
-
-const LogoutIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-    <polyline points="16 17 21 12 16 7" />
-    <line x1="21" y1="12" x2="9" y2="12" />
   </svg>
 );
 
@@ -757,47 +737,6 @@ const HelpContactCard = styled.div`
       color: #ffffff;
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     }
-  }
-`;
-
-const HelpQuickAction = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-
-  &:hover {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.05)'};
-    border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.15)'};
-    transform: translateX(2px);
-  }
-
-  .action-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
-    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    flex-shrink: 0;
-  }
-
-  .action-text {
-    flex: 1;
-    font-size: 12px;
-    font-weight: 500;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-  }
-
-  .action-arrow {
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    opacity: 0.3;
   }
 `;
 
@@ -2213,11 +2152,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="contact-icon"><EmailIcon /></div>
               <div className="contact-info">
                 <div className="contact-title">Email</div>
-                <div className="contact-value">support@mytradeapp.com</div>
+                <div className="contact-value">tonnykyalo054@gmail.com</div>
               </div>
               <button 
                 className="contact-action"
-                onClick={() => window.location.href = 'mailto:support@mytradeapp.com'}
+                onClick={() => window.location.href = 'mailto:tonnykyalo054@gmail.com'}
               >
                 Send
               </button>
@@ -2257,19 +2196,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </button>
             </div>
           </HelpContactCard>
-
-          <div style={{ marginTop: '8px' }}>
-            <HelpQuickAction>
-              <div className="action-icon"><BookIcon /></div>
-              <span className="action-text">View FAQ & Knowledge Base</span>
-              <span className="action-arrow">›</span>
-            </HelpQuickAction>
-            <HelpQuickAction>
-              <div className="action-icon"><TermsIcon /></div>
-              <span className="action-text">Report an Issue</span>
-              <span className="action-arrow">›</span>
-            </HelpQuickAction>
-          </div>
         </>
       )
     });
