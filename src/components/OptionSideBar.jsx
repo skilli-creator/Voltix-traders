@@ -32,7 +32,7 @@ const pulseGlow = keyframes`
 const modalSlideIn = keyframes`
   from {
     opacity: 0;
-    transform: scale(0.92) translateY(40px);
+    transform: scale(0.95) translateY(30px);
   }
   to {
     opacity: 1;
@@ -169,31 +169,23 @@ const CloseXIcon = () => (
   </svg>
 );
 
-const CheckCircleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-    <polyline points="22 4 12 14.01 9 11.01" />
-  </svg>
-);
-
-const AlertCircleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="8" x2="12" y2="12" />
-    <line x1="12" y1="16" x2="12.01" y2="16" />
+const DollarIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="1" x2="12" y2="23" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
   </svg>
 );
 
 // ============================================
-// PREMIUM MODAL / POPUP - CENTERED
+// PREMIUM MODAL - CENTERED WITH SCROLL
 // ============================================
 
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: 1000;
   display: ${props => props.isOpen ? 'flex' : 'none'};
   align-items: center;
@@ -206,15 +198,15 @@ const ModalContainer = styled.div`
   max-width: 520px;
   width: 100%;
   max-height: 85vh;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme?.colors?.surface || '#0F172A'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   border-radius: 24px;
-  box-shadow: 0 32px 80px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.6)'};
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
   animation: ${modalSlideIn} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
 
   &::before {
     content: '';
@@ -222,7 +214,7 @@ const ModalContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(90deg, 
       ${props => props.theme?.colors?.accent || '#3B82F6'}, 
       ${props => props.theme?.colors?.accent + '60' || '#60A5FA'}, 
@@ -244,30 +236,32 @@ const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 28px 18px 28px;
+  padding: 20px 24px 16px 24px;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   flex-shrink: 0;
+  background: ${props => props.theme?.colors?.surface || '#0F172A'};
 
   .title-group {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
   }
 
   .title-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    flex-shrink: 0;
   }
 
   .title-text {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: -0.3px;
@@ -278,23 +272,23 @@ const ModalHeader = styled.div`
     font-weight: 700;
     padding: 2px 12px;
     border-radius: 20px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.08)'};
+    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.06)'};
   }
 
   .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
     background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
@@ -305,60 +299,61 @@ const ModalHeader = styled.div`
   }
 
   @media (max-width: 480px) {
-    padding: 18px 20px 14px 20px;
-    .title-text { font-size: 16px; }
-    .title-icon { width: 34px; height: 34px; }
+    padding: 16px 18px 12px 18px;
+    .title-text { font-size: 15px; }
+    .title-icon { width: 32px; height: 32px; }
   }
 `;
 
 const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 24px 28px 28px;
+  padding: 20px 24px 24px;
 
   &::-webkit-scrollbar {
     width: 4px;
   }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.08)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.06)'};
     border-radius: 10px;
   }
 
   @media (max-width: 480px) {
-    padding: 16px 18px 20px;
+    padding: 14px 16px 18px;
   }
 `;
 
 // ============================================
-// NOTIFICATIONS COMPONENT
+// NOTIFICATION COMPONENT
 // ============================================
 const NotificationItem = styled.div`
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  padding: 14px 16px;
-  border-radius: 12px;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
   background: ${props => props.read ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.03)'};
   border: 1px solid ${props => props.read ? 'transparent' : props.theme?.colors?.accent + '15' || 'rgba(59, 130, 246, 0.04)'};
-  margin-bottom: 8px;
-  transition: all 0.25s ease;
+  margin-bottom: 6px;
+  transition: all 0.2s ease;
 
   &:hover {
     background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'};
-    border-color: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   }
 
   .notif-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(59, 130, 246, 0.08)'};
     color: ${props => props.type === 'trade' ? '#10B981' : '#3B82F6'};
-    border: 1px solid ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.06)' : 'rgba(59, 130, 246, 0.06)'};
   }
 
   .notif-content {
@@ -367,14 +362,14 @@ const NotificationItem = styled.div`
   }
 
   .notif-title {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .notif-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
     font-weight: 400;
     line-height: 1.5;
@@ -383,58 +378,36 @@ const NotificationItem = styled.div`
   .notif-time {
     font-size: 10px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 4px;
+    margin-top: 2px;
     font-weight: 400;
   }
 
   .notif-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: ${props => props.theme?.colors?.accent || '#3B82F6'};
     flex-shrink: 0;
     margin-top: 4px;
-    box-shadow: 0 0 12px ${props => props.theme?.colors?.accent + '30' || 'rgba(59, 130, 246, 0.1)'};
     ${props => props.read && 'display: none;'}
   }
-
-  @media (max-width: 480px) {
-    padding: 10px 12px;
-    .notif-icon { width: 30px; height: 30px; }
-    .notif-title { font-size: 12px; }
-    .notif-desc { font-size: 11px; }
-  }
 `;
 
 // ============================================
-// VOICE SETTINGS COMPONENT
+// VOICE SETTINGS
 // ============================================
-const VoiceGroup = styled.div`
-  margin-bottom: 20px;
-
-  .group-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 10px;
-    display: block;
-  }
-`;
-
 const VoiceToggleRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   margin-bottom: 10px;
 
   .toggle-label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
   }
@@ -442,58 +415,56 @@ const VoiceToggleRow = styled.div`
   .toggle-status {
     font-size: 10px;
     font-weight: 700;
-    padding: 3px 12px;
-    border-radius: 12px;
+    padding: 2px 10px;
+    border-radius: 10px;
     color: ${props => props.active ? '#10B981' : '#94A3B8'};
-    background: ${props => props.active ? 'rgba(16, 185, 129, 0.06)' : 'rgba(255, 255, 255, 0.03)'};
-    border: 1px solid ${props => props.active ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)'};
+    background: ${props => props.active ? 'rgba(16, 185, 129, 0.06)' : 'rgba(255, 255, 255, 0.02)'};
   }
 `;
 
 const ToggleSwitch = styled.button`
-  width: 48px;
-  height: 28px;
-  border-radius: 14px;
+  width: 44px;
+  height: 26px;
+  border-radius: 13px;
   border: none;
   background: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.scrollbar || '#2a2e3d'};
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.3s ease;
   position: relative;
   flex-shrink: 0;
-  box-shadow: ${props => props.active ? `0 0 20px ${props.theme?.colors?.accent + '30' || 'rgba(59, 130, 246, 0.15)'}` : 'none'};
+  box-shadow: ${props => props.active ? `0 0 16px ${props.theme?.colors?.accent + '25' || 'rgba(59, 130, 246, 0.1)'}` : 'none'};
 
   &::after {
     content: '';
     position: absolute;
-    top: 3px;
-    left: ${props => props.active ? '23px' : '3px'};
+    top: 2px;
+    left: ${props => props.active ? '22px' : '2px'};
     width: 22px;
     height: 22px;
     border-radius: 50%;
     background: ${props => props.theme?.colors?.text || '#ffffff'};
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
-  &:hover {
-    opacity: 0.85;
-  }
+  &:hover { opacity: 0.85; }
 `;
 
 const VolumeSlider = styled.div`
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 10px 14px;
   background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  margin-bottom: 10px;
 
   .slider-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    min-width: 36px;
+    min-width: 32px;
   }
 
   input[type="range"] {
@@ -503,7 +474,6 @@ const VolumeSlider = styled.div`
     border-radius: 2px;
     background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
     outline: none;
-    transition: background 0.2s ease;
 
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -513,24 +483,17 @@ const VolumeSlider = styled.div`
       background: ${props => props.theme?.colors?.accent || '#3B82F6'};
       cursor: pointer;
       border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.05)'};
-      transition: all 0.2s ease;
-
-      &:hover {
-        transform: scale(1.1);
-      }
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
-    &:disabled {
-      opacity: 0.4;
-    }
+    &:disabled { opacity: 0.4; }
   }
 
   .slider-value {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    min-width: 32px;
+    min-width: 28px;
     text-align: right;
   }
 `;
@@ -539,15 +502,13 @@ const VoiceEventItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: 6px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
 
-  &:last-child {
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 
   .event-name {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
     display: flex;
@@ -566,53 +527,54 @@ const VoiceEventItem = styled.div`
     font-size: 10px;
     font-weight: 700;
     color: ${props => props.enabled ? '#10B981' : '#94A3B8'};
-    padding: 2px 10px;
-    border-radius: 10px;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 6px;
     background: ${props => props.enabled ? 'rgba(16, 185, 129, 0.04)' : 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.enabled ? 'rgba(16, 185, 129, 0.06)' : 'rgba(255, 255, 255, 0.03)'};
+    transition: all 0.2s ease;
+
+    &:hover { opacity: 0.7; }
   }
 `;
 
 // ============================================
-// ACCOUNT INFO COMPONENT
+// ACCOUNT INFO
 // ============================================
 const AccountInfoRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
+  padding: 12px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
 
-  &:last-child {
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 
   .row-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
   }
 
   .row-value {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .status-indicator {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: #10B981;
 
     .dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #10B981;
       animation: ${pulseGlow} 2s infinite;
@@ -624,22 +586,25 @@ const AccountInfoRow = styled.div`
 // RISK CALCULATOR - FULLY FUNCTIONAL
 // ============================================
 const CalcInputGroup = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 
   .calc-label {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
     .calc-hint {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 400;
       color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
       opacity: 0.5;
+      text-transform: none;
     }
   }
 
@@ -648,9 +613,9 @@ const CalcInputGroup = styled.div`
     align-items: center;
     background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-    border-radius: 10px;
+    border-radius: 8px;
     overflow: hidden;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
 
     &:focus-within {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
@@ -658,23 +623,23 @@ const CalcInputGroup = styled.div`
     }
 
     .calc-prefix {
-      padding: 10px 14px;
-      font-size: 13px;
+      padding: 8px 12px;
+      font-size: 12px;
       font-weight: 700;
       color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
       background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
-      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
-      min-width: 28px;
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+      min-width: 24px;
       text-align: center;
     }
 
     input {
       flex: 1;
-      padding: 10px 14px;
+      padding: 8px 12px;
       background: transparent;
       border: none;
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       outline: none;
       width: 100%;
@@ -683,7 +648,7 @@ const CalcInputGroup = styled.div`
       &::placeholder {
         color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
         font-weight: 400;
-        opacity: 0.4;
+        opacity: 0.3;
       }
 
       &::-webkit-inner-spin-button,
@@ -696,11 +661,11 @@ const CalcInputGroup = styled.div`
   }
 `;
 
-const CalcResultGrid = styled.div`
+const CalcResultsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-top: 4px;
+  gap: 8px;
+  margin-top: 8px;
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr 1fr;
@@ -708,58 +673,57 @@ const CalcResultGrid = styled.div`
 `;
 
 const CalcResultBox = styled.div`
-  padding: 14px 16px;
-  border-radius: 10px;
+  padding: 12px 14px;
+  border-radius: 8px;
   text-align: center;
   background: ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.04)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.04)' : 'rgba(59, 130, 246, 0.04)'};
-  border: 1px solid ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.08)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(59, 130, 246, 0.08)'};
+  border: 1px solid ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.06)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.06)' : 'rgba(59, 130, 246, 0.06)'};
 
   .result-label {
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 4px;
+    margin-bottom: 2px;
   }
 
   .result-value {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: ${props => props.type === 'risk' ? '#EF4444' : props.type === 'reward' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6'};
   }
 
   .result-sub {
-    font-size: 9px;
+    font-size: 8px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     margin-top: 2px;
     font-weight: 400;
+    opacity: 0.6;
   }
 `;
 
 // ============================================
-// HOW TO USE COMPONENT
+// HOW TO USE
 // ============================================
 const StepItem = styled.div`
   display: flex;
-  gap: 16px;
-  padding: 14px 0;
+  gap: 14px;
+  padding: 12px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
 
-  &:last-child {
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 
   .step-number {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     flex-shrink: 0;
     border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.06)'};
@@ -770,24 +734,56 @@ const StepItem = styled.div`
   }
 
   .step-title {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .step-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
     font-weight: 400;
     line-height: 1.6;
   }
+`;
 
-  @media (max-width: 480px) {
-    gap: 12px;
-    .step-number { width: 28px; height: 28px; font-size: 11px; }
-    .step-title { font-size: 12px; }
-    .step-desc { font-size: 11px; }
+// ============================================
+// TERMS & CONDITIONS CONTENT
+// ============================================
+const TermsSection = styled.div`
+  margin-bottom: 16px;
+
+  .terms-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 6px;
+  }
+
+  .terms-text {
+    font-size: 11px;
+    line-height: 1.8;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+  }
+
+  .terms-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 2px 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+
+    .bullet-dot {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
   }
 `;
 
@@ -798,16 +794,14 @@ const StepItem = styled.div`
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: ${props => props.theme?.colors?.overlay || props.theme?.colors?.shadow || 'rgba(10, 15, 29, 0.7)'};
+  background: ${props => props.theme?.colors?.overlay || 'rgba(10, 15, 29, 0.7)'};
   backdrop-filter: blur(4px);
   z-index: 98;
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 
-  @media (min-width: 769px) {
-    display: none;
-  }
+  @media (min-width: 769px) { display: none; }
 `;
 
 const SidebarContainer = styled.aside`
@@ -816,7 +810,7 @@ const SidebarContainer = styled.aside`
   left: 0;
   width: 280px;
   height: 100vh;
-  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || '#0F172A'};
   border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -826,13 +820,8 @@ const SidebarContainer = styled.aside`
   overflow: hidden;
   box-shadow: 4px 0 24px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.25)'};
 
-  @media (max-width: 768px) {
-    width: 290px;
-  }
-
-  @media (max-width: 480px) {
-    width: 100%;
-  }
+  @media (max-width: 768px) { width: 290px; }
+  @media (max-width: 480px) { width: 100%; }
 `;
 
 const CloseButton = styled.button`
@@ -853,7 +842,7 @@ const CloseButton = styled.button`
   justify-content: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.15)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
     color: ${props => props.theme?.colors?.text || '#FFFFFF'};
     border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
   }
@@ -872,21 +861,14 @@ const SidebarContent = styled.div`
   flex-direction: column;
   gap: 18px;
 
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.15)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
     border-radius: 99px;
   }
-
   &::-webkit-scrollbar-thumb:hover {
-    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.3)'};
+    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'};
   }
 `;
 
@@ -902,9 +884,7 @@ const SidebarHeader = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: ${props =>
-      props.theme?.colors?.gradientPrimary ||
-      `linear-gradient(135deg, ${props.theme?.colors?.accent || '#3B82F6'}, #1D4ED8)`};
+    background: ${props => props.theme?.colors?.gradientPrimary || `linear-gradient(135deg, ${props.theme?.colors?.accent || '#3B82F6'}, #1D4ED8)`};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -966,11 +946,11 @@ const NavItem = styled.div`
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  background: ${props => (props.active ? (props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.12)') : 'transparent')};
+  background: ${props => (props.active ? (props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)') : 'transparent')};
   color: ${props => (props.active ? (props.theme?.colors?.accent || '#3B82F6') : (props.theme?.colors?.textSecondary || '#CBD5E1'))};
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.08)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     transform: translateX(2px);
   }
@@ -1002,9 +982,7 @@ const NavItem = styled.div`
     transition: transform 0.2s ease;
   }
 
-  &:hover .nav-icon {
-    transform: scale(1.1);
-  }
+  &:hover .nav-icon { transform: scale(1.1); }
 
   .nav-label {
     flex: 1;
@@ -1040,14 +1018,14 @@ const NavItem = styled.div`
 const SideCard = styled.div`
   padding: 12px 14px;
   border-radius: 10px;
-  background: ${props => props.theme?.colors?.cardBackground || props.theme?.colors?.surface || props.theme?.colors?.background || 'rgba(15, 23, 42, 0.6)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  background: ${props => props.theme?.colors?.cardBackground || 'rgba(15, 23, 42, 0.4)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   animation: ${fadeIn} 0.4s ease;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}60` : 'rgba(59, 130, 246, 0.4)')};
-    box-shadow: 0 4px 16px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.2)'};
+    border-color: ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}50` : 'rgba(59, 130, 246, 0.3)')};
+    box-shadow: 0 4px 16px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.15)'};
   }
 
   .card-title {
@@ -1059,11 +1037,7 @@ const SideCard = styled.div`
     align-items: center;
     gap: 8px;
 
-    .icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .icon { display: flex; align-items: center; justify-content: center; }
   }
 
   .card-item {
@@ -1096,7 +1070,7 @@ const SideCard = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    transition: gap 0.2s ease, color 0.2s ease;
+    transition: all 0.2s ease;
 
     &:hover {
       gap: 7px;
@@ -1108,8 +1082,8 @@ const SideCard = styled.div`
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 10px;
-  background: ${props => props.theme?.colors?.cardBackground || props.theme?.colors?.surface || props.theme?.colors?.background || 'rgba(15, 23, 42, 0.6)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  background: ${props => props.theme?.colors?.cardBackground || 'rgba(15, 23, 42, 0.4)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   animation: ${fadeIn} 0.4s ease;
 
   .feedback-label {
@@ -1132,8 +1106,8 @@ const FeedbackSection = styled.div`
     border: none;
     padding: 0;
     cursor: pointer;
-    color: ${props => props.theme?.colors?.starInactive || props.theme?.colors?.border || 'rgba(255, 255, 255, 0.15)'};
-    transition: transform 0.15s ease, color 0.15s ease, filter 0.15s ease;
+    color: ${props => props.theme?.colors?.starInactive || 'rgba(255, 255, 255, 0.12)'};
+    transition: all 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1144,14 +1118,12 @@ const FeedbackSection = styled.div`
       fill: currentColor;
     }
 
-    &:hover {
-      transform: scale(1.25);
-    }
+    &:hover { transform: scale(1.2); }
 
     &.active,
     &.hover {
       color: ${props => props.theme?.colors?.starActive || '#F59E0B'};
-      filter: drop-shadow(0 0 6px ${props => (props.theme?.colors?.starActive ? `${props.theme.colors.starActive}80` : 'rgba(245, 158, 11, 0.5)')});
+      filter: drop-shadow(0 0 6px ${props => (props.theme?.colors?.starActive ? `${props.theme.colors.starActive}60` : 'rgba(245, 158, 11, 0.3)')});
     }
   }
 
@@ -1168,24 +1140,22 @@ const FeedbackSection = styled.div`
     width: 100%;
     min-height: 64px;
     padding: 8px 10px;
-    background: ${props => props.theme?.colors?.inputBackground || props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.theme?.colors?.inputBackground || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     border-radius: 6px;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     font-size: 11.5px;
     font-family: inherit;
     resize: none;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
     margin-bottom: 10px;
 
-    &::placeholder {
-      color: ${props => props.theme?.colors?.textMuted || '#64748B'};
-    }
+    &::placeholder { color: ${props => props.theme?.colors?.textMuted || '#64748B'}; }
 
     &:focus {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      box-shadow: 0 0 0 2px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}30` : 'rgba(59, 130, 246, 0.2)')};
+      box-shadow: 0 0 0 2px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}25` : 'rgba(59, 130, 246, 0.1)')};
     }
   }
 
@@ -1203,17 +1173,11 @@ const FeedbackSection = styled.div`
 
     &:hover:not(:disabled) {
       background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
-      box-shadow: 0 4px 12px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
+      box-shadow: 0 4px 12px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}35` : 'rgba(59, 130, 246, 0.15)')};
     }
 
-    &:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    &:active:not(:disabled) { transform: scale(0.98); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 
   .feedback-status {
@@ -1229,7 +1193,7 @@ const SidebarFooter = styled.footer`
   flex-shrink: 0;
   padding: 12px 14px;
   border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme?.colors?.sidebarBackground || '#0F172A'};
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1247,7 +1211,7 @@ const SidebarFooter = styled.footer`
     font-weight: 500;
 
     &:hover {
-      background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.08)'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     }
 
@@ -1274,12 +1238,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [hasNotifications, setHasNotifications] = useState(true);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [voiceVolume, setVoiceVolume] = useState(70);
-  const [voiceEvents, setVoiceEvents] = useState({
-    trade: true,
-    price: true,
-    market: false,
-    system: true
-  });
   
   // Popup states
   const [popupData, setPopupData] = useState(null);
@@ -1287,7 +1245,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   // Risk calculator state
   const [calcStake, setCalcStake] = useState(100);
-  const [calcRisk, setCalcRisk] = useState(2);
+  const [calcRiskPercent, setCalcRiskPercent] = useState(2);
   const [calcStopLoss, setCalcStopLoss] = useState(50);
   const [calcTakeProfit, setCalcTakeProfit] = useState(150);
 
@@ -1313,10 +1271,37 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     closeSidebarOnMobile();
   };
 
-  // Calculate risk values
-  const riskAmount = calcStake * (calcRisk / 100);
-  const rewardAmount = calcStake * ((calcTakeProfit / calcStopLoss) * (calcRisk / 100));
-  const riskRewardRatio = rewardAmount / (riskAmount || 0.01);
+  // ===== RISK CALCULATOR LOGIC =====
+  const calculateRisk = () => {
+    // Risk Amount = Stake × (Risk % / 100)
+    const riskAmount = calcStake * (calcRiskPercent / 100);
+    
+    // Reward Amount = Stake × (Take Profit / Stop Loss) × (Risk % / 100)
+    const rewardAmount = calcStake * ((calcTakeProfit / calcStopLoss) * (calcRiskPercent / 100));
+    
+    // Risk/Reward Ratio = Reward / Risk
+    const riskRewardRatio = riskAmount > 0 ? rewardAmount / riskAmount : 0;
+    
+    // Position Size = Risk Amount / (Stop Loss / 100)
+    const positionSize = calcStopLoss > 0 ? riskAmount / (calcStopLoss / 100) : 0;
+
+    // Max Loss = Risk Amount
+    const maxLoss = riskAmount;
+    
+    // Max Profit = Reward Amount
+    const maxProfit = rewardAmount;
+
+    return {
+      riskAmount,
+      rewardAmount,
+      riskRewardRatio,
+      positionSize,
+      maxLoss,
+      maxProfit
+    };
+  };
+
+  const riskResults = calculateRisk();
 
   // ===== NOTIFICATIONS =====
   const handleNotificationsClick = () => {
@@ -1341,11 +1326,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <NotificationItem key={notif.id} read={notif.read} type={notif.type}>
               <div className="notif-icon">
                 {notif.type === 'trade' ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
                   </svg>
                 ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <line x1="12" y1="8" x2="12" y2="12" />
                     <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -1366,6 +1351,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   };
 
   // ===== VOICE NOTIFICATIONS =====
+  const [voiceEvents, setVoiceEvents] = useState({
+    trade: true,
+    price: true,
+    market: false,
+    system: true
+  });
+
   const handleVoiceClick = () => {
     setActiveItem('voice');
     
@@ -1377,67 +1369,51 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         <>
           <VoiceToggleRow active={voiceEnabled}>
             <span className="toggle-label">Voice Notifications</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
               <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
             </div>
           </VoiceToggleRow>
 
-          <VoiceGroup>
-            <span className="group-label">Volume</span>
-            <VolumeSlider>
-              <span className="slider-label">Vol</span>
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                value={voiceVolume} 
-                onChange={(e) => setVoiceVolume(parseInt(e.target.value))}
-                disabled={!voiceEnabled}
-              />
-              <span className="slider-value">{voiceVolume}%</span>
-            </VolumeSlider>
-          </VoiceGroup>
+          <VolumeSlider>
+            <span className="slider-label">Vol</span>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value={voiceVolume} 
+              onChange={(e) => setVoiceVolume(parseInt(e.target.value))}
+              disabled={!voiceEnabled}
+            />
+            <span className="slider-value">{voiceVolume}%</span>
+          </VolumeSlider>
 
-          <VoiceGroup>
-            <span className="group-label">Notification Events</span>
+          <div style={{ marginTop: '4px' }}>
             <VoiceEventItem enabled={voiceEvents.trade}>
-              <span className="event-name">
-                <span className="event-dot" />
-                Trade Execution
-              </span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})} style={{ cursor: 'pointer' }}>
+              <span className="event-name"><span className="event-dot" />Trade Execution</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>
                 {voiceEvents.trade ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
             <VoiceEventItem enabled={voiceEvents.price}>
-              <span className="event-name">
-                <span className="event-dot" />
-                Price Alerts
-              </span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})} style={{ cursor: 'pointer' }}>
+              <span className="event-name"><span className="event-dot" />Price Alerts</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>
                 {voiceEvents.price ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
             <VoiceEventItem enabled={voiceEvents.market}>
-              <span className="event-name">
-                <span className="event-dot" />
-                Market Signals
-              </span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})} style={{ cursor: 'pointer' }}>
+              <span className="event-name"><span className="event-dot" />Market Signals</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>
                 {voiceEvents.market ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
             <VoiceEventItem enabled={voiceEvents.system}>
-              <span className="event-name">
-                <span className="event-dot" />
-                System Updates
-              </span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})} style={{ cursor: 'pointer' }}>
+              <span className="event-name"><span className="event-dot" />System Updates</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>
                 {voiceEvents.system ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
-          </VoiceGroup>
+          </div>
         </>
       )
     });
@@ -1515,8 +1491,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="calc-prefix">%</span>
               <input 
                 type="number" 
-                value={calcRisk} 
-                onChange={(e) => setCalcRisk(parseFloat(e.target.value) || 0)}
+                value={calcRiskPercent} 
+                onChange={(e) => setCalcRiskPercent(parseFloat(e.target.value) || 0)}
                 min="0"
                 max="100"
                 step="0.5"
@@ -1524,7 +1500,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </CalcInputGroup>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
             <CalcInputGroup>
               <span className="calc-label">Stop Loss <span className="calc-hint">(pips)</span></span>
               <div className="calc-input-wrap">
@@ -1533,7 +1509,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   type="number" 
                   value={calcStopLoss} 
                   onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)}
-                  min="0"
+                  min="1"
                   step="5"
                 />
               </div>
@@ -1547,30 +1523,51 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   type="number" 
                   value={calcTakeProfit} 
                   onChange={(e) => setCalcTakeProfit(parseFloat(e.target.value) || 0)}
-                  min="0"
+                  min="1"
                   step="5"
                 />
               </div>
             </CalcInputGroup>
           </div>
 
-          <CalcResultGrid>
+          <CalcResultsGrid>
             <CalcResultBox type="risk">
               <div className="result-label">Risk Amount</div>
-              <div className="result-value">${riskAmount.toFixed(2)}</div>
-              <div className="result-sub">{calcRisk}% of stake</div>
+              <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
+              <div className="result-sub">{calcRiskPercent}% of stake</div>
             </CalcResultBox>
             <CalcResultBox type="reward">
               <div className="result-label">Reward Amount</div>
-              <div className="result-value">${rewardAmount.toFixed(2)}</div>
-              <div className="result-sub">{((calcTakeProfit / calcStopLoss) * calcRisk).toFixed(2)}% of stake</div>
+              <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
+              <div className="result-sub">{((calcTakeProfit / calcStopLoss) * calcRiskPercent).toFixed(2)}% of stake</div>
             </CalcResultBox>
             <CalcResultBox type="ratio">
               <div className="result-label">Risk/Reward</div>
-              <div className="result-value">1:{riskRewardRatio.toFixed(2)}</div>
-              <div className="result-sub">{riskRewardRatio.toFixed(2)}x reward</div>
+              <div className="result-value">1:{riskResults.riskRewardRatio.toFixed(2)}</div>
+              <div className="result-sub">{riskResults.riskRewardRatio.toFixed(2)}x reward</div>
             </CalcResultBox>
-          </CalcResultGrid>
+          </CalcResultsGrid>
+
+          <div style={{ 
+            marginTop: '12px', 
+            padding: '10px 14px', 
+            background: 'rgba(59, 130, 246, 0.03)',
+            borderRadius: '8px',
+            border: '1px solid rgba(59, 130, 246, 0.06)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '600', padding: '4px 0' }}>
+              <span style={{ color: '#94A3B8' }}>Position Size</span>
+              <span style={{ color: '#F8FAFC' }}>{riskResults.positionSize.toFixed(2)} units</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '600', padding: '4px 0' }}>
+              <span style={{ color: '#94A3B8' }}>Max Loss</span>
+              <span style={{ color: '#EF4444' }}>${riskResults.maxLoss.toFixed(2)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '600', padding: '4px 0' }}>
+              <span style={{ color: '#94A3B8' }}>Max Profit</span>
+              <span style={{ color: '#10B981' }}>${riskResults.maxProfit.toFixed(2)}</span>
+            </div>
+          </div>
         </>
       )
     });
@@ -1602,6 +1599,103 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
             </StepItem>
           ))}
+        </>
+      )
+    });
+  };
+
+  // ===== TERMS & CONDITIONS =====
+  const handleTermsClick = () => {
+    setActiveItem('terms');
+    
+    openPopup({
+      title: 'Terms & Conditions',
+      icon: <TermsIcon />,
+      badge: 'v2.0',
+      content: (
+        <>
+          <TermsSection>
+            <div className="terms-title">1. Introduction</div>
+            <div className="terms-text">
+              Welcome to Voltix Traders. By using our third-party trading application, you agree to 
+              these Terms and Conditions. Please read them carefully before using the App.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">2. Acceptance of Terms</div>
+            <div className="terms-text">
+              By accessing or using Voltix Traders, you confirm that you have read, understood, 
+              and agree to be bound by these Terms.
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You must be at least <strong style={{ color: '#F8FAFC' }}>18 years old</strong> to use this App.</span>
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span>
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span>
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">3. Services Provided</div>
+            <div className="terms-text">
+              Voltix Traders provides automated trading, AI-assisted analysis, manual trading, 
+              bot deployment, and real-time market data from Deriv via APIs.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">4. Account Responsibility</div>
+            <div className="terms-text">
+              You are fully responsible for all trades executed through the App. Voltix Traders 
+              does not store your login credentials.
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span>
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span>
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">5. Limitation of Liability</div>
+            <div className="terms-text">
+              Voltix Traders provides the App "as is" without any warranties. We are not liable 
+              for any financial losses, technical issues, or damages arising from your use of the App.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">6. Privacy Policy</div>
+            <div className="terms-text">
+              We do not store your Deriv or Forex login credentials. We collect minimal data 
+              necessary for app functionality and never sell your personal data.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">7. Governing Law</div>
+            <div className="terms-text">
+              These Terms shall be governed by the laws of the jurisdiction where Voltix Traders 
+              operates. Any disputes shall be resolved in the competent courts of that jurisdiction.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">8. Contact Us</div>
+            <div className="terms-text">
+              For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@voltixtraders.com</strong>
+            </div>
+          </TermsSection>
         </>
       )
     });
@@ -1666,7 +1760,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* PREMIUM CENTERED MODAL */}
+      {/* PREMIUM MODAL */}
       <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
         <ModalContainer onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
@@ -1867,7 +1961,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
             <NavItem 
               active={activeItem === 'terms'}
-              onClick={() => handleNavClick('terms', '/terms')}
+              onClick={handleTermsClick}
             >
               <span className="nav-icon"><TermsIcon /></span>
               <span className="nav-label">Terms & Conditions</span>
