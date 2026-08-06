@@ -2205,11 +2205,6 @@ const BOTS = [
 ];
 
 // ============================================
-// AUTO SWITCH MARKETS CONFIG
-// ============================================
-const AUTO_SWITCH_MODES = ['All Markets', '1s Only', 'Regular Only', 'Sequential'];
-
-// ============================================
 // MAIN COMPONENT
 // ============================================
 
@@ -2244,12 +2239,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
-
-  // === AUTO SWITCH MARKETS STATE ===
-  const [autoSwitchMode, setAutoSwitchMode] = useState('All Markets');
-  const [isAutoSwitchOpen, setIsAutoSwitchOpen] = useState(false);
-  const [autoSwitchInterval, setAutoSwitchInterval] = useState(5);
-  const [isAutoSwitchIntervalOpen, setIsAutoSwitchIntervalOpen] = useState(false);
 
   // === AUTO MODE - DYNAMIC DROPDOWN ===
   const [autoTradeSelection, setAutoTradeSelection] = useState('Even');
@@ -2313,7 +2302,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const martingaleOptions = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
   const durationOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   const growthRateOptions = [1, 2, 3, 4, 5];
-  const intervalOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -2426,21 +2414,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
       console.log(`Growth Rate: ${growthRate}%`);
     }
     console.log(`Auto Mode Selection: ${autoTradeSelection}`);
-    console.log(`Auto Switch Mode: ${autoSwitchMode}`);
-    console.log(`Switch Interval: ${autoSwitchInterval} ticks`);
-    
-    // Filter markets based on auto switch mode
-    let marketsToSwitch = [];
-    if (autoSwitchMode === 'All Markets') {
-      marketsToSwitch = VOLATILITY_MARKETS;
-    } else if (autoSwitchMode === '1s Only') {
-      marketsToSwitch = VOLATILITY_MARKETS.filter(m => m.isOneSec);
-    } else if (autoSwitchMode === 'Regular Only') {
-      marketsToSwitch = VOLATILITY_MARKETS.filter(m => !m.isOneSec);
-    } else if (autoSwitchMode === 'Sequential') {
-      marketsToSwitch = VOLATILITY_MARKETS;
-    }
-    console.log(`Markets to switch: ${marketsToSwitch.length} markets`);
   };
 
   const toggleMartingale = () => setMartingale(!martingale);
@@ -2660,178 +2633,121 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // ===== RENDER AUTO SWITCH MARKETS =====
-  const renderAutoSwitchMarkets = () => {
-    if (tradeMode !== 'auto') return null;
-
-    return (
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '1fr 1fr', 
-        gap: '4px',
-        marginTop: '2px',
-        padding: '4px',
-        background: props => props.theme?.colors?.surface || 'rgba(255,255,255,0.02)',
-        borderRadius: '6px',
-        border: '2px solid',
-        borderColor: props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'
-      }}>
-        <InputGroup>
-          <InputLabel>
-            <span>Switch Mode</span>
-          </InputLabel>
-          <ToggleWrapper>
-            <ToggleLabel>Mode</ToggleLabel>
-            {renderDropdownSelect(
-              AUTO_SWITCH_MODES,
-              autoSwitchMode,
-              setAutoSwitchMode,
-              isAutoSwitchOpen,
-              setIsAutoSwitchOpen
-            )}
-          </ToggleWrapper>
-        </InputGroup>
-
-        <InputGroup>
-          <InputLabel>
-            <span>Interval</span>
-            <span className="suffix">ticks</span>
-          </InputLabel>
-          <ToggleWrapper>
-            <ToggleLabel>Ticks</ToggleLabel>
-            {renderDropdownSelect(
-              intervalOptions,
-              autoSwitchInterval,
-              setAutoSwitchInterval,
-              isAutoSwitchIntervalOpen,
-              setIsAutoSwitchIntervalOpen
-            )}
-          </ToggleWrapper>
-        </InputGroup>
-      </div>
-    );
-  };
-
   const renderInputs = () => {
     const isManual = tradeMode === 'manual';
     const isAuto = tradeMode === 'auto';
     
     return (
-      <>
-        <InputGrid>
-          <div style={{ gridColumn: '1', gridRow: '1' }}>
+      <InputGrid>
+        <div style={{ gridColumn: '1', gridRow: '1' }}>
+          <InputGroup>
+            <InputLabel>
+              <span>Stake</span>
+              <span className="suffix">Min: $0.50</span>
+            </InputLabel>
+            <InputRow>
+              <span className="prefix">$</span>
+              <StyledInput
+                type="number"
+                value={stake}
+                onChange={handleStakeChange}
+                step="0.50"
+                min="0"
+                placeholder="10"
+              />
+            </InputRow>
+          </InputGroup>
+        </div>
+
+        <div style={{ gridColumn: '2', gridRow: '1' }}>
+          {renderBulkTradingToggle()}
+        </div>
+
+        {isManual && tradeType !== 'accumulators' && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
+            {renderDurationDropdown()}
+          </div>
+        )}
+
+        {isManual && tradeType === 'accumulators' && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
+            {renderGrowthRateDropdown()}
+          </div>
+        )}
+
+        {!isManual && (
+          <div style={{ gridColumn: '1', gridRow: '2' }}>
             <InputGroup>
               <InputLabel>
-                <span>Stake</span>
-                <span className="suffix">Min: $0.50</span>
+                <span>Target Profit</span>
+                <span className="optional">Opt.</span>
               </InputLabel>
               <InputRow>
                 <span className="prefix">$</span>
                 <StyledInput
                   type="number"
-                  value={stake}
-                  onChange={handleStakeChange}
-                  step="0.50"
+                  value={targetProfit}
+                  onChange={handleTargetProfitChange}
+                  step="10"
                   min="0"
-                  placeholder="10"
+                  placeholder="200"
                 />
               </InputRow>
             </InputGroup>
           </div>
+        )}
 
-          <div style={{ gridColumn: '2', gridRow: '1' }}>
-            {renderBulkTradingToggle()}
+        {!isManual && (
+          <div style={{ gridColumn: '2', gridRow: '2' }}>
+            {renderMartingaleToggle()}
           </div>
+        )}
 
-          {isManual && tradeType !== 'accumulators' && (
-            <div style={{ gridColumn: '1', gridRow: '2' }}>
-              {renderDurationDropdown()}
-            </div>
-          )}
+        {!isManual && (
+          <div style={{ gridColumn: '1', gridRow: '3' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>Stop Loss</span>
+                <span className="optional">Opt.</span>
+              </InputLabel>
+              <InputRow>
+                <span className="prefix">$</span>
+                <StyledInput
+                  type="number"
+                  value={stopLoss}
+                  onChange={handleStopLossChange}
+                  step="10"
+                  min="0"
+                  placeholder="999"
+                />
+              </InputRow>
+            </InputGroup>
+          </div>
+        )}
 
-          {isManual && tradeType === 'accumulators' && (
-            <div style={{ gridColumn: '1', gridRow: '2' }}>
-              {renderGrowthRateDropdown()}
-            </div>
-          )}
-
-          {!isManual && (
-            <div style={{ gridColumn: '1', gridRow: '2' }}>
-              <InputGroup>
-                <InputLabel>
-                  <span>Target Profit</span>
-                  <span className="optional">Opt.</span>
-                </InputLabel>
-                <InputRow>
-                  <span className="prefix">$</span>
-                  <StyledInput
-                    type="number"
-                    value={targetProfit}
-                    onChange={handleTargetProfitChange}
-                    step="10"
-                    min="0"
-                    placeholder="200"
-                  />
-                </InputRow>
-              </InputGroup>
-            </div>
-          )}
-
-          {!isManual && (
-            <div style={{ gridColumn: '2', gridRow: '2' }}>
-              {renderMartingaleToggle()}
-            </div>
-          )}
-
-          {!isManual && (
-            <div style={{ gridColumn: '1', gridRow: '3' }}>
-              <InputGroup>
-                <InputLabel>
-                  <span>Stop Loss</span>
-                  <span className="optional">Opt.</span>
-                </InputLabel>
-                <InputRow>
-                  <span className="prefix">$</span>
-                  <StyledInput
-                    type="number"
-                    value={stopLoss}
-                    onChange={handleStopLossChange}
-                    step="10"
-                    min="0"
-                    placeholder="999"
-                  />
-                </InputRow>
-              </InputGroup>
-            </div>
-          )}
-
-          {/* R3C2: AUTO MODE DROPDOWN - Only in Auto mode, not for Random or Accumulators */}
-          {isAuto && tradeType !== 'random' && tradeType !== 'accumulators' && (
-            <div style={{ gridColumn: '2', gridRow: '3' }}>
-              <InputGroup>
-                <InputLabel>
-                  <span>{getAutoTradeLabel()}</span>
-                </InputLabel>
-                <ToggleWrapper>
-                  <ToggleLabel>Choose</ToggleLabel>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
-                    {renderDropdownSelect(
-                      getAutoTradeOptions(),
-                      autoTradeSelection,
-                      setAutoTradeSelection,
-                      isAutoTradeOpen,
-                      setIsAutoTradeOpen
-                    )}
-                  </div>
-                </ToggleWrapper>
-              </InputGroup>
-            </div>
-          )}
-        </InputGrid>
-
-        {/* AUTO SWITCH MARKETS - Only in Auto mode */}
-        {renderAutoSwitchMarkets()}
-      </>
+        {/* R3C2: AUTO MODE DROPDOWN - Only in Auto mode, not for Random or Accumulators */}
+        {isAuto && tradeType !== 'random' && tradeType !== 'accumulators' && (
+          <div style={{ gridColumn: '2', gridRow: '3' }}>
+            <InputGroup>
+              <InputLabel>
+                <span>{getAutoTradeLabel()}</span>
+              </InputLabel>
+              <ToggleWrapper>
+                <ToggleLabel>Choose</ToggleLabel>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flex: 1, justifyContent: 'flex-end' }}>
+                  {renderDropdownSelect(
+                    getAutoTradeOptions(),
+                    autoTradeSelection,
+                    setAutoTradeSelection,
+                    isAutoTradeOpen,
+                    setIsAutoTradeOpen
+                  )}
+                </div>
+              </ToggleWrapper>
+            </InputGroup>
+          </div>
+        )}
+      </InputGrid>
     );
   };
 
