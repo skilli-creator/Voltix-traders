@@ -149,6 +149,48 @@ const CloseXIcon = () => (
   </svg>
 );
 
+const EmailIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+  </svg>
+);
+
+const PhoneIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+  </svg>
+);
+
+const WhatsAppIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const LogoutIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
+  </svg>
+);
+
+const GlobeIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+  </svg>
+);
+
 // ============================================
 // PREMIUM MODAL
 // ============================================
@@ -297,6 +339,247 @@ const ModalBody = styled.div`
 
   @media (max-width: 480px) {
     padding: 12px 14px 16px;
+  }
+`;
+
+// ============================================
+// SETTINGS - PREMIUM ACCOUNT PROFILE
+// ============================================
+const SettingsProfile = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 14px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 16px;
+  animation: ${fadeIn} 0.3s ease;
+
+  .profile-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  }
+
+  .profile-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .profile-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    letter-spacing: -0.2px;
+  }
+
+  .profile-email {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
+  }
+
+  .profile-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #10B981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-top: 4px;
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: ${pulseGlow} 2s infinite;
+    }
+  }
+`;
+
+const SettingsDivider = styled.div`
+  height: 1px;
+  background: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin: 8px 0 12px;
+`;
+
+const SettingsItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: ${props => props.danger ? 'rgba(239, 68, 68, 0.04)' : 'transparent'};
+  border: 1px solid ${props => props.danger ? 'rgba(239, 68, 68, 0.08)' : 'transparent'};
+
+  &:hover {
+    background: ${props => props.danger ? 'rgba(239, 68, 68, 0.08)' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.05)'};
+    border-color: ${props => props.danger ? 'rgba(239, 68, 68, 0.15)' : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    transform: translateX(2px);
+  }
+
+  .settings-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: ${props => props.danger ? 'rgba(239, 68, 68, 0.08)' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    color: ${props => props.danger ? '#EF4444' : props.theme?.colors?.accent || '#3B82F6'};
+    flex-shrink: 0;
+  }
+
+  .settings-label {
+    flex: 1;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: ${props => props.danger ? '#EF4444' : props.theme?.colors?.text || '#F8FAFC'};
+  }
+
+  .settings-arrow {
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    opacity: 0.4;
+    font-size: 14px;
+  }
+`;
+
+// ============================================
+// HELP & SUPPORT - PREMIUM
+// ============================================
+const HelpContactCard = styled.div`
+  padding: 16px;
+  border-radius: 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.3)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.02)'};
+  }
+
+  .contact-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 6px;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+  }
+
+  .contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    flex-shrink: 0;
+  }
+
+  .contact-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .contact-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  }
+
+  .contact-value {
+    font-size: 12px;
+    font-weight: 500;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    word-break: break-all;
+  }
+
+  .contact-action {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    background: transparent;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      color: #ffffff;
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    }
+  }
+`;
+
+const HelpQuickAction = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.05)'};
+    border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.15)'};
+    transform: translateX(2px);
+  }
+
+  .action-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    flex-shrink: 0;
+  }
+
+  .action-text {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 500;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  }
+
+  .action-arrow {
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    opacity: 0.3;
   }
 `;
 
@@ -1291,7 +1574,6 @@ const SidebarFooter = styled.footer`
   }
 `;
 
-
 // ============================================
 // MAIN COMPONENT
 // ============================================
@@ -1305,12 +1587,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
-  
+
   // Voice states
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [voiceVolume, setVoiceVolume] = useState(70);
   const [voiceEvents, setVoiceEvents] = useState({ trade: true, price: true, market: false, system: true });
-  
+
   // Popup state
   const [popupData, setPopupData] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -1359,6 +1641,132 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   };
 
   const riskResults = getRiskResults();
+
+  // ===== SETTINGS HANDLER =====
+  const handleSettingsClick = () => {
+    setActiveItem('settings');
+    openPopup({
+      title: 'Account Settings',
+      icon: <SettingsIcon />,
+      content: (
+        <>
+          <SettingsProfile>
+            <div className="profile-avatar">TM</div>
+            <div className="profile-info">
+              <div className="profile-name">Tonny Mutua Kyalo</div>
+              <div className="profile-email">tonnykyalo054@gmail.com</div>
+              <div className="profile-status">
+                <span className="status-dot" />
+                Active
+              </div>
+            </div>
+          </SettingsProfile>
+
+          <SettingsItem>
+            <div className="settings-icon"><UserIcon /></div>
+            <span className="settings-label">Profile Information</span>
+            <span className="settings-arrow">›</span>
+          </SettingsItem>
+
+          <SettingsItem>
+            <div className="settings-icon"><GlobeIcon /></div>
+            <span className="settings-label">Language & Region</span>
+            <span className="settings-arrow">›</span>
+          </SettingsItem>
+
+          <SettingsItem>
+            <div className="settings-icon"><BellIcon /></div>
+            <span className="settings-label">Notification Preferences</span>
+            <span className="settings-arrow">›</span>
+          </SettingsItem>
+
+          <SettingsDivider />
+
+          <SettingsItem danger>
+            <div className="settings-icon"><LogoutIcon /></div>
+            <span className="settings-label">Logout</span>
+            <span className="settings-arrow">›</span>
+          </SettingsItem>
+        </>
+      )
+    });
+  };
+
+  // ===== HELP & SUPPORT HANDLER =====
+  const handleHelpClick = () => {
+    setActiveItem('help');
+    openPopup({
+      title: 'Help & Support',
+      icon: <HelpIcon />,
+      content: (
+        <>
+          <HelpContactCard>
+            <div className="contact-label">📧 Email Support</div>
+            <div className="contact-row">
+              <div className="contact-icon"><EmailIcon /></div>
+              <div className="contact-info">
+                <div className="contact-title">Email</div>
+                <div className="contact-value">support@mytradeapp.com</div>
+              </div>
+              <button 
+                className="contact-action"
+                onClick={() => window.location.href = 'mailto:support@mytradeapp.com'}
+              >
+                Send
+              </button>
+            </div>
+          </HelpContactCard>
+
+          <HelpContactCard>
+            <div className="contact-label">📞 Phone Support</div>
+            <div className="contact-row">
+              <div className="contact-icon"><PhoneIcon /></div>
+              <div className="contact-info">
+                <div className="contact-title">Call Us</div>
+                <div className="contact-value">0704 182 603</div>
+              </div>
+              <button 
+                className="contact-action"
+                onClick={() => window.location.href = 'tel:0704182603'}
+              >
+                Call
+              </button>
+            </div>
+          </HelpContactCard>
+
+          <HelpContactCard>
+            <div className="contact-label">💬 WhatsApp</div>
+            <div className="contact-row">
+              <div className="contact-icon"><WhatsAppIcon /></div>
+              <div className="contact-info">
+                <div className="contact-title">WhatsApp</div>
+                <div className="contact-value">0704 182 603</div>
+              </div>
+              <button 
+                className="contact-action"
+                onClick={() => window.open('https://wa.me/254704182603', '_blank')}
+              >
+                Chat
+              </button>
+            </div>
+          </HelpContactCard>
+
+          <div style={{ marginTop: '8px' }}>
+            <HelpQuickAction>
+              <div className="action-icon"><BookIcon /></div>
+              <span className="action-text">View FAQ & Knowledge Base</span>
+              <span className="action-arrow">›</span>
+            </HelpQuickAction>
+            <HelpQuickAction>
+              <div className="action-icon"><TermsIcon /></div>
+              <span className="action-text">Report an Issue</span>
+              <span className="action-arrow">›</span>
+            </HelpQuickAction>
+          </div>
+        </>
+      )
+    });
+  };
 
   // ===== ALL POPUP HANDLERS =====
   const handleNotificationsClick = () => {
@@ -1712,10 +2120,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         </SidebarContent>
 
         <SidebarFooter>
-          <div className="footer-item" onClick={() => handleNavClick('settings', '/settings')}>
+          <div className="footer-item" onClick={handleSettingsClick}>
             <span className="footer-icon"><SettingsIcon /></span> Settings
           </div>
-          <div className="footer-item" onClick={() => handleNavClick('help', '/settings')}>
+          <div className="footer-item" onClick={handleHelpClick}>
             <span className="footer-icon"><HelpIcon /></span> Help & Support
           </div>
         </SidebarFooter>
