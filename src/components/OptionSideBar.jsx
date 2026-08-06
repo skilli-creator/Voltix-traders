@@ -4,17 +4,11 @@ import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // ============================================
-// KEYFRAMES & MICRO-INTERACTIONS
+// KEYFRAMES - PREMIUM ANIMATIONS
 // ============================================
 const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
 `;
 
 const fadeIn = keyframes`
@@ -35,26 +29,25 @@ const pulseGlow = keyframes`
   }
 `;
 
-const slideInRight = keyframes`
+const modalSlideIn = keyframes`
   from {
     opacity: 0;
-    transform: translateX(60px) scale(0.96);
+    transform: scale(0.95) translateY(30px);
   }
   to {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 `;
 
-const slideOutRight = keyframes`
-  from {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(60px) scale(0.96);
-  }
+const modalBackdrop = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 `;
 
 const pulseVoice = keyframes`
@@ -67,14 +60,14 @@ const pulseVoice = keyframes`
 // ============================================
 
 const BellIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
   </svg>
 );
 
 const VoiceIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
     <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
     <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -82,7 +75,7 @@ const VoiceIcon = () => (
 );
 
 const VoiceOffIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
     <line x1="23" y1="9" x2="17" y2="15" />
     <line x1="17" y1="9" x2="23" y2="15" />
@@ -90,34 +83,34 @@ const VoiceOffIcon = () => (
 );
 
 const AcademyIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
   </svg>
 );
 
 const AccountIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
     <circle cx="12" cy="7" r="4" />
   </svg>
 );
 
 const CopyIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
   </svg>
 );
 
 const ManagementIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
   </svg>
 );
 
 const RiskIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     <path d="M12 8v4" />
     <path d="M12 16h.01" />
@@ -125,20 +118,20 @@ const RiskIcon = () => (
 );
 
 const ShieldIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
   </svg>
 );
 
 const BookIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
   </svg>
 );
 
 const TermsIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <polyline points="14 2 14 8 20 8" />
     <line x1="16" y1="13" x2="8" y2="13" />
@@ -148,21 +141,21 @@ const TermsIcon = () => (
 );
 
 const CompanyIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
   </svg>
 );
 
 const SettingsIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />
   </svg>
 );
 
 const HelpIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
     <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -170,82 +163,83 @@ const HelpIcon = () => (
 );
 
 const CloseXIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
-const CheckIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
-  </svg>
-);
-
-const ArrowRightIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12" />
-    <polyline points="12 5 19 12 12 19" />
-  </svg>
-);
-
-const CalculatorIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="2" width="16" height="20" rx="2" />
-    <line x1="8" y1="6" x2="16" y2="6" />
-    <line x1="16" y1="10" x2="8" y2="10" />
-    <line x1="8" y1="14" x2="16" y2="14" />
-    <line x1="8" y1="18" x2="12" y2="18" />
-  </svg>
-);
-
 const DollarIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="12" y1="1" x2="12" y2="23" />
     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
   </svg>
 );
 
 // ============================================
-// PROFESSIONAL RIGHT-SLIDING POPUP
+// PREMIUM MODAL - CENTERED WITH SCROLL
 // ============================================
 
-const PopupOverlay = styled.div`
+const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   z-index: 1000;
   display: ${props => props.isOpen ? 'flex' : 'none'};
-  justify-content: flex-end;
-  animation: ${fadeIn} 0.3s ease;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: ${modalBackdrop} 0.3s ease;
 `;
 
-const PopupContainer = styled.div`
-  width: 480px;
-  max-width: 90vw;
-  height: 100vh;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
-  border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+const ModalContainer = styled.div`
+  max-width: 520px;
+  width: 100%;
+  max-height: 85vh;
+  background: ${props => props.theme?.colors?.surface || '#0F172A'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  border-radius: 24px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+  animation: ${modalSlideIn} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  box-shadow: -8px 0 40px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.5)'};
-  animation: ${props => props.isClosing ? slideOutRight : slideInRight} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+      ${props => props.theme?.colors?.accent || '#3B82F6'}, 
+      ${props => props.theme?.colors?.accent + '60' || '#60A5FA'}, 
+      ${props => props.theme?.colors?.accent || '#3B82F6'}
+    );
+    background-size: 200% 100%;
+    animation: ${shimmer} 3s ease-in-out infinite;
+  }
 
   @media (max-width: 480px) {
-    width: 100%;
     max-width: 100%;
+    margin: 12px;
+    border-radius: 20px;
+    max-height: 90vh;
   }
 `;
 
-const PopupHeader = styled.div`
+const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  padding: 20px 24px 16px 24px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   flex-shrink: 0;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme?.colors?.surface || '#0F172A'};
 
   .title-group {
     display: flex;
@@ -257,10 +251,16 @@ const PopupHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    flex-shrink: 0;
   }
 
-  .title {
+  .title-text {
     font-size: 17px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
@@ -270,10 +270,11 @@ const PopupHeader = styled.div`
   .title-badge {
     font-size: 10px;
     font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 12px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    padding: 2px 12px;
+    border-radius: 20px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.06)'};
   }
 
   .close-btn {
@@ -283,21 +284,28 @@ const PopupHeader = styled.div`
     width: 34px;
     height: 34px;
     border-radius: 8px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
     background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
 
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+      transform: rotate(90deg);
     }
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 18px 12px 18px;
+    .title-text { font-size: 15px; }
+    .title-icon { width: 32px; height: 32px; }
   }
 `;
 
-const PopupBody = styled.div`
+const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 20px 24px 24px;
@@ -305,14 +313,21 @@ const PopupBody = styled.div`
   &::-webkit-scrollbar {
     width: 4px;
   }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.15)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.06)'};
     border-radius: 10px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px 16px 18px;
   }
 `;
 
 // ============================================
-// NOTIFICATIONS COMPONENT
+// NOTIFICATION COMPONENT
 // ============================================
 const NotificationItem = styled.div`
   display: flex;
@@ -320,9 +335,9 @@ const NotificationItem = styled.div`
   gap: 12px;
   padding: 12px 14px;
   border-radius: 10px;
-  background: ${props => props.read ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
-  border: 1px solid ${props => props.read ? 'transparent' : props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.08)'};
-  margin-bottom: 8px;
+  background: ${props => props.read ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.03)'};
+  border: 1px solid ${props => props.read ? 'transparent' : props.theme?.colors?.accent + '15' || 'rgba(59, 130, 246, 0.04)'};
+  margin-bottom: 6px;
   transition: all 0.2s ease;
 
   &:hover {
@@ -330,14 +345,14 @@ const NotificationItem = styled.div`
   }
 
   .notif-icon {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(59, 130, 246, 0.12)'};
+    background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(59, 130, 246, 0.08)'};
     color: ${props => props.type === 'trade' ? '#10B981' : '#3B82F6'};
   }
 
@@ -347,29 +362,29 @@ const NotificationItem = styled.div`
   }
 
   .notif-title {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .notif-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
     font-weight: 400;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   .notif-time {
     font-size: 10px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 4px;
+    margin-top: 2px;
     font-weight: 400;
   }
 
   .notif-dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: ${props => props.theme?.colors?.accent || '#3B82F6'};
     flex-shrink: 0;
@@ -379,22 +394,8 @@ const NotificationItem = styled.div`
 `;
 
 // ============================================
-// VOICE SETTINGS COMPONENT
+// VOICE SETTINGS
 // ============================================
-const VoiceSettingsGroup = styled.div`
-  margin-bottom: 16px;
-
-  .group-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-    display: block;
-  }
-`;
-
 const VoiceToggleRow = styled.div`
   display: flex;
   align-items: center;
@@ -402,22 +403,22 @@ const VoiceToggleRow = styled.div`
   padding: 10px 14px;
   background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 8px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  margin-bottom: 8px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  margin-bottom: 10px;
 
   .toggle-label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
   }
 
   .toggle-status {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    color: ${props => props.active ? '#10B981' : '#94A3B8'};
     padding: 2px 10px;
-    border-radius: 12px;
-    background: ${props => props.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.05)'};
+    border-radius: 10px;
+    color: ${props => props.active ? '#10B981' : '#94A3B8'};
+    background: ${props => props.active ? 'rgba(16, 185, 129, 0.06)' : 'rgba(255, 255, 255, 0.02)'};
   }
 `;
 
@@ -431,12 +432,13 @@ const ToggleSwitch = styled.button`
   transition: all 0.3s ease;
   position: relative;
   flex-shrink: 0;
+  box-shadow: ${props => props.active ? `0 0 16px ${props.theme?.colors?.accent + '25' || 'rgba(59, 130, 246, 0.1)'}` : 'none'};
 
   &::after {
     content: '';
     position: absolute;
     top: 2px;
-    left: ${props => props.active ? '20px' : '2px'};
+    left: ${props => props.active ? '22px' : '2px'};
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -445,9 +447,7 @@ const ToggleSwitch = styled.button`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
-  &:hover {
-    opacity: 0.9;
-  }
+  &:hover { opacity: 0.85; }
 `;
 
 const VolumeSlider = styled.div`
@@ -457,13 +457,14 @@ const VolumeSlider = styled.div`
   padding: 10px 14px;
   background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 8px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  margin-bottom: 10px;
 
   .slider-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    min-width: 40px;
+    min-width: 32px;
   }
 
   input[type="range"] {
@@ -476,21 +477,23 @@ const VolumeSlider = styled.div`
 
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: ${props => props.theme?.colors?.accent || '#3B82F6'};
       cursor: pointer;
       border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
+
+    &:disabled { opacity: 0.4; }
   }
 
   .slider-value {
     font-size: 12px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    min-width: 30px;
+    min-width: 28px;
     text-align: right;
   }
 `;
@@ -498,78 +501,125 @@ const VolumeSlider = styled.div`
 const VoiceEventItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
   padding: 6px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+
+  &:last-child { border-bottom: none; }
 
   .event-name {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => props.enabled ? '#10B981' : '#94A3B8'};
   }
 
   .event-status {
     font-size: 10px;
     font-weight: 700;
     color: ${props => props.enabled ? '#10B981' : '#94A3B8'};
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: ${props => props.enabled ? 'rgba(16, 185, 129, 0.04)' : 'rgba(255, 255, 255, 0.02)'};
+    transition: all 0.2s ease;
+
+    &:hover { opacity: 0.7; }
   }
 `;
 
 // ============================================
-// ACCOUNT INFO COMPONENT
+// ACCOUNT INFO
 // ============================================
 const AccountInfoRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 12px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
 
-  &:last-child {
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 
   .row-label {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
   }
 
   .row-value {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     display: flex;
     align-items: center;
     gap: 6px;
   }
+
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #10B981;
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: ${pulseGlow} 2s infinite;
+    }
+  }
 `;
 
 // ============================================
-// RISK CALCULATOR COMPONENT
+// RISK CALCULATOR - FULLY FUNCTIONAL
 // ============================================
 const CalcInputGroup = styled.div`
   margin-bottom: 14px;
 
   .calc-label {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 10px;
+    font-weight: 700;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     margin-bottom: 4px;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    .calc-hint {
+      font-size: 9px;
+      font-weight: 400;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      opacity: 0.5;
+      text-transform: none;
+    }
   }
 
   .calc-input-wrap {
     display: flex;
     align-items: center;
     background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
     border-radius: 8px;
     overflow: hidden;
-    transition: border-color 0.2s ease;
+    transition: all 0.3s ease;
 
     &:focus-within {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '15' || 'rgba(59, 130, 246, 0.04)'};
     }
 
     .calc-prefix {
@@ -578,7 +628,9 @@ const CalcInputGroup = styled.div`
       font-weight: 700;
       color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
       background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
-      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+      min-width: 24px;
+      text-align: center;
     }
 
     input {
@@ -591,64 +643,82 @@ const CalcInputGroup = styled.div`
       font-weight: 600;
       outline: none;
       width: 100%;
+      min-width: 0;
 
       &::placeholder {
         color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
         font-weight: 400;
+        opacity: 0.3;
       }
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      &[type="number"] { -moz-appearance: textfield; }
     }
   }
 `;
 
-const CalcResultRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+const CalcResultsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+  }
+`;
+
+const CalcResultBox = styled.div`
+  padding: 12px 14px;
   border-radius: 8px;
-  border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.08)'};
-  margin-bottom: 6px;
+  text-align: center;
+  background: ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.04)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.04)' : 'rgba(59, 130, 246, 0.04)'};
+  border: 1px solid ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.06)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.06)' : 'rgba(59, 130, 246, 0.06)'};
 
   .result-label {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 2px;
   }
 
   .result-value {
     font-size: 14px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    color: ${props => props.type === 'risk' ? '#EF4444' : props.type === 'reward' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6'};
   }
 
-  &.success .result-value {
-    color: #10B981;
-  }
-
-  &.danger .result-value {
-    color: #EF4444;
+  .result-sub {
+    font-size: 8px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
+    font-weight: 400;
+    opacity: 0.6;
   }
 `;
 
 // ============================================
-// HOW TO USE COMPONENT
+// HOW TO USE
 // ============================================
 const StepItem = styled.div`
   display: flex;
   gap: 14px;
   padding: 12px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
 
-  &:last-child {
-    border-bottom: none;
-  }
+  &:last-child { border-bottom: none; }
 
   .step-number {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     display: flex;
     align-items: center;
@@ -656,6 +726,7 @@ const StepItem = styled.div`
     font-size: 12px;
     font-weight: 700;
     flex-shrink: 0;
+    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.06)'};
   }
 
   .step-content {
@@ -663,17 +734,56 @@ const StepItem = styled.div`
   }
 
   .step-title {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .step-desc {
-    font-size: 12px;
+    font-size: 11px;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.6;
+  }
+`;
+
+// ============================================
+// TERMS & CONDITIONS CONTENT
+// ============================================
+const TermsSection = styled.div`
+  margin-bottom: 16px;
+
+  .terms-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 6px;
+  }
+
+  .terms-text {
+    font-size: 11px;
+    line-height: 1.8;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+  }
+
+  .terms-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 2px 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    font-weight: 400;
+
+    .bullet-dot {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
   }
 `;
 
@@ -684,16 +794,14 @@ const StepItem = styled.div`
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: ${props => props.theme?.colors?.overlay || props.theme?.colors?.shadow || 'rgba(10, 15, 29, 0.7)'};
+  background: ${props => props.theme?.colors?.overlay || 'rgba(10, 15, 29, 0.7)'};
   backdrop-filter: blur(4px);
   z-index: 98;
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 
-  @media (min-width: 769px) {
-    display: none;
-  }
+  @media (min-width: 769px) { display: none; }
 `;
 
 const SidebarContainer = styled.aside`
@@ -702,7 +810,7 @@ const SidebarContainer = styled.aside`
   left: 0;
   width: 280px;
   height: 100vh;
-  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || '#0F172A'};
   border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -712,13 +820,8 @@ const SidebarContainer = styled.aside`
   overflow: hidden;
   box-shadow: 4px 0 24px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.25)'};
 
-  @media (max-width: 768px) {
-    width: 290px;
-  }
-
-  @media (max-width: 480px) {
-    width: 100%;
-  }
+  @media (max-width: 768px) { width: 290px; }
+  @media (max-width: 480px) { width: 100%; }
 `;
 
 const CloseButton = styled.button`
@@ -739,7 +842,7 @@ const CloseButton = styled.button`
   justify-content: center;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.15)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
     color: ${props => props.theme?.colors?.text || '#FFFFFF'};
     border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
   }
@@ -758,21 +861,14 @@ const SidebarContent = styled.div`
   flex-direction: column;
   gap: 18px;
 
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.15)'};
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
     border-radius: 99px;
   }
-
   &::-webkit-scrollbar-thumb:hover {
-    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.3)'};
+    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'};
   }
 `;
 
@@ -788,9 +884,7 @@ const SidebarHeader = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: ${props =>
-      props.theme?.colors?.gradientPrimary ||
-      `linear-gradient(135deg, ${props.theme?.colors?.accent || '#3B82F6'}, #1D4ED8)`};
+    background: ${props => props.theme?.colors?.gradientPrimary || `linear-gradient(135deg, ${props.theme?.colors?.accent || '#3B82F6'}, #1D4ED8)`};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -852,11 +946,11 @@ const NavItem = styled.div`
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  background: ${props => (props.active ? (props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.12)') : 'transparent')};
+  background: ${props => (props.active ? (props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)') : 'transparent')};
   color: ${props => (props.active ? (props.theme?.colors?.accent || '#3B82F6') : (props.theme?.colors?.textSecondary || '#CBD5E1'))};
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.08)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     transform: translateX(2px);
   }
@@ -888,9 +982,7 @@ const NavItem = styled.div`
     transition: transform 0.2s ease;
   }
 
-  &:hover .nav-icon {
-    transform: scale(1.1);
-  }
+  &:hover .nav-icon { transform: scale(1.1); }
 
   .nav-label {
     flex: 1;
@@ -926,14 +1018,14 @@ const NavItem = styled.div`
 const SideCard = styled.div`
   padding: 12px 14px;
   border-radius: 10px;
-  background: ${props => props.theme?.colors?.cardBackground || props.theme?.colors?.surface || props.theme?.colors?.background || 'rgba(15, 23, 42, 0.6)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  background: ${props => props.theme?.colors?.cardBackground || 'rgba(15, 23, 42, 0.4)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   animation: ${fadeIn} 0.4s ease;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    border-color: ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}60` : 'rgba(59, 130, 246, 0.4)')};
-    box-shadow: 0 4px 16px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.2)'};
+    border-color: ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}50` : 'rgba(59, 130, 246, 0.3)')};
+    box-shadow: 0 4px 16px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.15)'};
   }
 
   .card-title {
@@ -945,11 +1037,7 @@ const SideCard = styled.div`
     align-items: center;
     gap: 8px;
 
-    .icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    .icon { display: flex; align-items: center; justify-content: center; }
   }
 
   .card-item {
@@ -982,7 +1070,7 @@ const SideCard = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    transition: gap 0.2s ease, color 0.2s ease;
+    transition: all 0.2s ease;
 
     &:hover {
       gap: 7px;
@@ -994,8 +1082,8 @@ const SideCard = styled.div`
 const FeedbackSection = styled.div`
   padding: 14px;
   border-radius: 10px;
-  background: ${props => props.theme?.colors?.cardBackground || props.theme?.colors?.surface || props.theme?.colors?.background || 'rgba(15, 23, 42, 0.6)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  background: ${props => props.theme?.colors?.cardBackground || 'rgba(15, 23, 42, 0.4)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   animation: ${fadeIn} 0.4s ease;
 
   .feedback-label {
@@ -1018,8 +1106,8 @@ const FeedbackSection = styled.div`
     border: none;
     padding: 0;
     cursor: pointer;
-    color: ${props => props.theme?.colors?.starInactive || props.theme?.colors?.border || 'rgba(255, 255, 255, 0.15)'};
-    transition: transform 0.15s ease, color 0.15s ease, filter 0.15s ease;
+    color: ${props => props.theme?.colors?.starInactive || 'rgba(255, 255, 255, 0.12)'};
+    transition: all 0.15s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1030,14 +1118,12 @@ const FeedbackSection = styled.div`
       fill: currentColor;
     }
 
-    &:hover {
-      transform: scale(1.25);
-    }
+    &:hover { transform: scale(1.2); }
 
     &.active,
     &.hover {
       color: ${props => props.theme?.colors?.starActive || '#F59E0B'};
-      filter: drop-shadow(0 0 6px ${props => (props.theme?.colors?.starActive ? `${props.theme.colors.starActive}80` : 'rgba(245, 158, 11, 0.5)')});
+      filter: drop-shadow(0 0 6px ${props => (props.theme?.colors?.starActive ? `${props.theme.colors.starActive}60` : 'rgba(245, 158, 11, 0.3)')});
     }
   }
 
@@ -1054,24 +1140,22 @@ const FeedbackSection = styled.div`
     width: 100%;
     min-height: 64px;
     padding: 8px 10px;
-    background: ${props => props.theme?.colors?.inputBackground || props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+    background: ${props => props.theme?.colors?.inputBackground || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     border-radius: 6px;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     font-size: 11.5px;
     font-family: inherit;
     resize: none;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.2s ease;
     margin-bottom: 10px;
 
-    &::placeholder {
-      color: ${props => props.theme?.colors?.textMuted || '#64748B'};
-    }
+    &::placeholder { color: ${props => props.theme?.colors?.textMuted || '#64748B'}; }
 
     &:focus {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      box-shadow: 0 0 0 2px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}30` : 'rgba(59, 130, 246, 0.2)')};
+      box-shadow: 0 0 0 2px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}25` : 'rgba(59, 130, 246, 0.1)')};
     }
   }
 
@@ -1089,17 +1173,11 @@ const FeedbackSection = styled.div`
 
     &:hover:not(:disabled) {
       background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
-      box-shadow: 0 4px 12px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
+      box-shadow: 0 4px 12px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}35` : 'rgba(59, 130, 246, 0.15)')};
     }
 
-    &:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    &:active:not(:disabled) { transform: scale(0.98); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 
   .feedback-status {
@@ -1115,7 +1193,7 @@ const SidebarFooter = styled.footer`
   flex-shrink: 0;
   padding: 12px 14px;
   border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0F172A'};
+  background: ${props => props.theme?.colors?.sidebarBackground || '#0F172A'};
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -1133,7 +1211,7 @@ const SidebarFooter = styled.footer`
     font-weight: 500;
 
     &:hover {
-      background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(59, 130, 246, 0.08)'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     }
 
@@ -1164,7 +1242,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // Popup states
   const [popupData, setPopupData] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+
+  // Risk calculator state
+  const [calcStake, setCalcStake] = useState(100);
+  const [calcRiskPercent, setCalcRiskPercent] = useState(2);
+  const [calcStopLoss, setCalcStopLoss] = useState(50);
+  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
 
   const closeSidebarOnMobile = () => {
     if (window.innerWidth <= 768) {
@@ -1175,16 +1258,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const openPopup = (data) => {
     setPopupData(data);
     setIsPopupOpen(true);
-    setIsClosing(false);
   };
 
   const closePopup = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsPopupOpen(false);
-      setPopupData(null);
-      setIsClosing(false);
-    }, 350);
+    setIsPopupOpen(false);
+    setTimeout(() => setPopupData(null), 300);
   };
 
   const handleNavClick = (item, path) => {
@@ -1192,6 +1270,38 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     if (path) navigate(path);
     closeSidebarOnMobile();
   };
+
+  // ===== RISK CALCULATOR LOGIC =====
+  const calculateRisk = () => {
+    // Risk Amount = Stake × (Risk % / 100)
+    const riskAmount = calcStake * (calcRiskPercent / 100);
+    
+    // Reward Amount = Stake × (Take Profit / Stop Loss) × (Risk % / 100)
+    const rewardAmount = calcStake * ((calcTakeProfit / calcStopLoss) * (calcRiskPercent / 100));
+    
+    // Risk/Reward Ratio = Reward / Risk
+    const riskRewardRatio = riskAmount > 0 ? rewardAmount / riskAmount : 0;
+    
+    // Position Size = Risk Amount / (Stop Loss / 100)
+    const positionSize = calcStopLoss > 0 ? riskAmount / (calcStopLoss / 100) : 0;
+
+    // Max Loss = Risk Amount
+    const maxLoss = riskAmount;
+    
+    // Max Profit = Reward Amount
+    const maxProfit = rewardAmount;
+
+    return {
+      riskAmount,
+      rewardAmount,
+      riskRewardRatio,
+      positionSize,
+      maxLoss,
+      maxProfit
+    };
+  };
+
+  const riskResults = calculateRisk();
 
   // ===== NOTIFICATIONS =====
   const handleNotificationsClick = () => {
@@ -1203,6 +1313,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       { id: 2, type: 'alert', title: 'Market Alert', desc: 'Volatility 100 (1s) Index reached resistance level', time: '15 min ago', read: false },
       { id: 3, type: 'trade', title: 'Position Closed', desc: 'Sell order #TRX-7839 closed at $5,670.00', time: '1 hour ago', read: true },
       { id: 4, type: 'alert', title: 'System Update', desc: 'New trading features available in version 2.1.0', time: '3 hours ago', read: true },
+      { id: 5, type: 'trade', title: 'Deposit Confirmed', desc: '$10,000.00 deposited to account ACC-8472-001', time: '5 hours ago', read: true },
     ];
 
     openPopup({
@@ -1215,11 +1326,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <NotificationItem key={notif.id} read={notif.read} type={notif.type}>
               <div className="notif-icon">
                 {notif.type === 'trade' ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
                   </svg>
                 ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <line x1="12" y1="8" x2="12" y2="12" />
                     <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -1240,6 +1351,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   };
 
   // ===== VOICE NOTIFICATIONS =====
+  const [voiceEvents, setVoiceEvents] = useState({
+    trade: true,
+    price: true,
+    market: false,
+    system: true
+  });
+
   const handleVoiceClick = () => {
     setActiveItem('voice');
     
@@ -1251,47 +1369,51 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         <>
           <VoiceToggleRow active={voiceEnabled}>
             <span className="toggle-label">Voice Notifications</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
               <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
             </div>
           </VoiceToggleRow>
 
-          <VoiceSettingsGroup>
-            <span className="group-label">Volume</span>
-            <VolumeSlider>
-              <span className="slider-label">Vol</span>
-              <input 
-                type="range" 
-                min="0" 
-                max="100" 
-                value={voiceVolume} 
-                onChange={(e) => setVoiceVolume(parseInt(e.target.value))}
-                disabled={!voiceEnabled}
-              />
-              <span className="slider-value">{voiceVolume}%</span>
-            </VolumeSlider>
-          </VoiceSettingsGroup>
+          <VolumeSlider>
+            <span className="slider-label">Vol</span>
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              value={voiceVolume} 
+              onChange={(e) => setVoiceVolume(parseInt(e.target.value))}
+              disabled={!voiceEnabled}
+            />
+            <span className="slider-value">{voiceVolume}%</span>
+          </VolumeSlider>
 
-          <VoiceSettingsGroup>
-            <span className="group-label">Notification Events</span>
-            <VoiceEventItem enabled={true}>
-              <span className="event-name">Trade Execution</span>
-              <span className="event-status">Enabled</span>
+          <div style={{ marginTop: '4px' }}>
+            <VoiceEventItem enabled={voiceEvents.trade}>
+              <span className="event-name"><span className="event-dot" />Trade Execution</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>
+                {voiceEvents.trade ? 'Enabled' : 'Disabled'}
+              </span>
             </VoiceEventItem>
-            <VoiceEventItem enabled={true}>
-              <span className="event-name">Price Alerts</span>
-              <span className="event-status">Enabled</span>
+            <VoiceEventItem enabled={voiceEvents.price}>
+              <span className="event-name"><span className="event-dot" />Price Alerts</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>
+                {voiceEvents.price ? 'Enabled' : 'Disabled'}
+              </span>
             </VoiceEventItem>
-            <VoiceEventItem enabled={false}>
-              <span className="event-name">Market Signals</span>
-              <span className="event-status">Disabled</span>
+            <VoiceEventItem enabled={voiceEvents.market}>
+              <span className="event-name"><span className="event-dot" />Market Signals</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>
+                {voiceEvents.market ? 'Enabled' : 'Disabled'}
+              </span>
             </VoiceEventItem>
-            <VoiceEventItem enabled={true}>
-              <span className="event-name">System Updates</span>
-              <span className="event-status">Enabled</span>
+            <VoiceEventItem enabled={voiceEvents.system}>
+              <span className="event-name"><span className="event-dot" />System Updates</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>
+                {voiceEvents.system ? 'Enabled' : 'Disabled'}
+              </span>
             </VoiceEventItem>
-          </VoiceSettingsGroup>
+          </div>
         </>
       )
     });
@@ -1311,7 +1433,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <span className="row-value">ACC-8472-001</span>
           </AccountInfoRow>
           <AccountInfoRow>
-            <span className="row-label">Type</span>
+            <span className="row-label">Account Type</span>
             <span className="row-value">Real Trading</span>
           </AccountInfoRow>
           <AccountInfoRow>
@@ -1321,15 +1443,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <AccountInfoRow>
             <span className="row-label">Status</span>
             <span className="row-value">
-              <span style={{ 
-                display: 'inline-block',
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#10B981',
-                marginRight: '6px'
-              }} />
-              Active
+              <span className="status-indicator">
+                <span className="dot" />
+                Active
+              </span>
             </span>
           </AccountInfoRow>
           <AccountInfoRow>
@@ -1346,16 +1463,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   };
 
   // ===== RISK CALCULATOR =====
-  const [calcStake, setCalcStake] = useState(100);
-  const [calcRisk, setCalcRisk] = useState(2);
-  const [calcStopLoss, setCalcStopLoss] = useState(50);
-  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
-
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
-    
-    const riskAmount = calcStake * (calcRisk / 100);
-    const rewardAmount = calcStake * ((calcTakeProfit / calcStopLoss) * (calcRisk / 100));
     
     openPopup({
       title: 'Risk Calculator',
@@ -1363,7 +1472,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       content: (
         <>
           <CalcInputGroup>
-            <span className="calc-label">Stake Amount</span>
+            <span className="calc-label">Stake Amount <span className="calc-hint">(USD)</span></span>
             <div className="calc-input-wrap">
               <span className="calc-prefix">$</span>
               <input 
@@ -1377,13 +1486,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </CalcInputGroup>
 
           <CalcInputGroup>
-            <span className="calc-label">Risk Percentage</span>
+            <span className="calc-label">Risk Percentage <span className="calc-hint">(% of stake)</span></span>
             <div className="calc-input-wrap">
               <span className="calc-prefix">%</span>
               <input 
                 type="number" 
-                value={calcRisk} 
-                onChange={(e) => setCalcRisk(parseFloat(e.target.value) || 0)}
+                value={calcRiskPercent} 
+                onChange={(e) => setCalcRiskPercent(parseFloat(e.target.value) || 0)}
                 min="0"
                 max="100"
                 step="0.5"
@@ -1391,51 +1500,73 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </CalcInputGroup>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
             <CalcInputGroup>
-              <span className="calc-label">Stop Loss</span>
+              <span className="calc-label">Stop Loss <span className="calc-hint">(pips)</span></span>
               <div className="calc-input-wrap">
-                <span className="calc-prefix">$</span>
+                <span className="calc-prefix">SL</span>
                 <input 
                   type="number" 
                   value={calcStopLoss} 
                   onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)}
-                  min="0"
+                  min="1"
                   step="5"
                 />
               </div>
             </CalcInputGroup>
 
             <CalcInputGroup>
-              <span className="calc-label">Take Profit</span>
+              <span className="calc-label">Take Profit <span className="calc-hint">(pips)</span></span>
               <div className="calc-input-wrap">
-                <span className="calc-prefix">$</span>
+                <span className="calc-prefix">TP</span>
                 <input 
                   type="number" 
                   value={calcTakeProfit} 
                   onChange={(e) => setCalcTakeProfit(parseFloat(e.target.value) || 0)}
-                  min="0"
+                  min="1"
                   step="5"
                 />
               </div>
             </CalcInputGroup>
           </div>
 
-          <div style={{ marginTop: '8px' }}>
-            <CalcResultRow>
-              <span className="result-label">Risk Amount</span>
-              <span className="result-value">${riskAmount.toFixed(2)}</span>
-            </CalcResultRow>
-            <CalcResultRow className="success">
-              <span className="result-label">Reward Amount</span>
-              <span className="result-value">${rewardAmount.toFixed(2)}</span>
-            </CalcResultRow>
-            <CalcResultRow>
-              <span className="result-label">Risk/Reward Ratio</span>
-              <span className="result-value">
-                1:{(rewardAmount / (riskAmount || 0.01)).toFixed(2)}
-              </span>
-            </CalcResultRow>
+          <CalcResultsGrid>
+            <CalcResultBox type="risk">
+              <div className="result-label">Risk Amount</div>
+              <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
+              <div className="result-sub">{calcRiskPercent}% of stake</div>
+            </CalcResultBox>
+            <CalcResultBox type="reward">
+              <div className="result-label">Reward Amount</div>
+              <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
+              <div className="result-sub">{((calcTakeProfit / calcStopLoss) * calcRiskPercent).toFixed(2)}% of stake</div>
+            </CalcResultBox>
+            <CalcResultBox type="ratio">
+              <div className="result-label">Risk/Reward</div>
+              <div className="result-value">1:{riskResults.riskRewardRatio.toFixed(2)}</div>
+              <div className="result-sub">{riskResults.riskRewardRatio.toFixed(2)}x reward</div>
+            </CalcResultBox>
+          </CalcResultsGrid>
+
+          <div style={{ 
+            marginTop: '12px', 
+            padding: '10px 14px', 
+            background: 'rgba(59, 130, 246, 0.03)',
+            borderRadius: '8px',
+            border: '1px solid rgba(59, 130, 246, 0.06)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '600', padding: '4px 0' }}>
+              <span style={{ color: '#94A3B8' }}>Position Size</span>
+              <span style={{ color: '#F8FAFC' }}>{riskResults.positionSize.toFixed(2)} units</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '600', padding: '4px 0' }}>
+              <span style={{ color: '#94A3B8' }}>Max Loss</span>
+              <span style={{ color: '#EF4444' }}>${riskResults.maxLoss.toFixed(2)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: '600', padding: '4px 0' }}>
+              <span style={{ color: '#94A3B8' }}>Max Profit</span>
+              <span style={{ color: '#10B981' }}>${riskResults.maxProfit.toFixed(2)}</span>
+            </div>
           </div>
         </>
       )
@@ -1468,6 +1599,103 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
             </StepItem>
           ))}
+        </>
+      )
+    });
+  };
+
+  // ===== TERMS & CONDITIONS =====
+  const handleTermsClick = () => {
+    setActiveItem('terms');
+    
+    openPopup({
+      title: 'Terms & Conditions',
+      icon: <TermsIcon />,
+      badge: 'v2.0',
+      content: (
+        <>
+          <TermsSection>
+            <div className="terms-title">1. Introduction</div>
+            <div className="terms-text">
+              Welcome to Voltix Traders. By using our third-party trading application, you agree to 
+              these Terms and Conditions. Please read them carefully before using the App.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">2. Acceptance of Terms</div>
+            <div className="terms-text">
+              By accessing or using Voltix Traders, you confirm that you have read, understood, 
+              and agree to be bound by these Terms.
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You must be at least <strong style={{ color: '#F8FAFC' }}>18 years old</strong> to use this App.</span>
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span>
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span>
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">3. Services Provided</div>
+            <div className="terms-text">
+              Voltix Traders provides automated trading, AI-assisted analysis, manual trading, 
+              bot deployment, and real-time market data from Deriv via APIs.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">4. Account Responsibility</div>
+            <div className="terms-text">
+              You are fully responsible for all trades executed through the App. Voltix Traders 
+              does not store your login credentials.
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span>
+            </div>
+            <div className="terms-bullet">
+              <span className="bullet-dot">•</span>
+              <span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span>
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">5. Limitation of Liability</div>
+            <div className="terms-text">
+              Voltix Traders provides the App "as is" without any warranties. We are not liable 
+              for any financial losses, technical issues, or damages arising from your use of the App.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">6. Privacy Policy</div>
+            <div className="terms-text">
+              We do not store your Deriv or Forex login credentials. We collect minimal data 
+              necessary for app functionality and never sell your personal data.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">7. Governing Law</div>
+            <div className="terms-text">
+              These Terms shall be governed by the laws of the jurisdiction where Voltix Traders 
+              operates. Any disputes shall be resolved in the competent courts of that jurisdiction.
+            </div>
+          </TermsSection>
+
+          <TermsSection>
+            <div className="terms-title">8. Contact Us</div>
+            <div className="terms-text">
+              For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@voltixtraders.com</strong>
+            </div>
+          </TermsSection>
         </>
       )
     });
@@ -1532,13 +1760,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* PROFESSIONAL RIGHT-SLIDING POPUP */}
-      <PopupOverlay isOpen={isPopupOpen} onClick={closePopup}>
-        <PopupContainer isClosing={isClosing} onClick={(e) => e.stopPropagation()}>
-          <PopupHeader>
+      {/* PREMIUM MODAL */}
+      <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
+        <ModalContainer onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
             <div className="title-group">
               <span className="title-icon">{popupData?.icon}</span>
-              <span className="title">{popupData?.title}</span>
+              <span className="title-text">{popupData?.title}</span>
               {popupData?.badge && (
                 <span className="title-badge">{popupData.badge}</span>
               )}
@@ -1546,12 +1774,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <button className="close-btn" onClick={closePopup}>
               <CloseXIcon />
             </button>
-          </PopupHeader>
-          <PopupBody>
+          </ModalHeader>
+          <ModalBody>
             {popupData?.content}
-          </PopupBody>
-        </PopupContainer>
-      </PopupOverlay>
+          </ModalBody>
+        </ModalContainer>
+      </ModalOverlay>
 
       {/* SIDEBAR */}
       <Overlay isOpen={isOpen} onClick={onClose} />
@@ -1562,7 +1790,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         </CloseButton>
 
         <SidebarContent>
-          {/* USER HEADER */}
           <SidebarHeader>
             <div className="avatar">VT</div>
             <div className="user-info">
@@ -1571,7 +1798,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </SidebarHeader>
 
-          {/* UPDATES SECTION */}
           <NavSection>
             <SectionLabel>Updates</SectionLabel>
             <NavItem 
@@ -1590,7 +1816,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="nav-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
               <span className="nav-label">Voice Notifications</span>
               <span className="badge" style={{ 
-                background: voiceEnabled ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
                 color: voiceEnabled ? '#10B981' : '#EF4444'
               }}>
                 {voiceEnabled ? 'On' : 'Off'}
@@ -1598,7 +1824,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* LEARNING SECTION */}
           <NavSection>
             <SectionLabel>Learning</SectionLabel>
             <NavItem 
@@ -1611,7 +1836,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* ACCOUNT SECTION */}
           <NavSection>
             <SectionLabel>Account</SectionLabel>
             <NavItem 
@@ -1623,7 +1847,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* TRADING SECTION */}
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
             <NavItem 
@@ -1653,7 +1876,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* WELLNESS */}
           <NavSection>
             <SectionLabel>Wellness</SectionLabel>
             <SideCard>
@@ -1682,7 +1904,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </SideCard>
           </NavSection>
 
-          {/* FEEDBACK SECTION */}
           <NavSection>
             <SectionLabel>Feedback</SectionLabel>
             <FeedbackSection>
@@ -1729,7 +1950,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </FeedbackSection>
           </NavSection>
 
-          {/* INFORMATION SECTION */}
           <NavSection>
             <SectionLabel>Information</SectionLabel>
             <NavItem 
@@ -1741,14 +1961,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
             <NavItem 
               active={activeItem === 'terms'}
-              onClick={() => handleNavClick('terms', '/terms')}
+              onClick={handleTermsClick}
             >
               <span className="nav-icon"><TermsIcon /></span>
               <span className="nav-label">Terms & Conditions</span>
             </NavItem>
           </NavSection>
 
-          {/* COMPANY SECTION */}
           <NavSection>
             <SectionLabel>Company</SectionLabel>
             <SideCard>
@@ -1774,7 +1993,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </NavSection>
         </SidebarContent>
 
-        {/* FOOTER */}
         <SidebarFooter>
           <div className="footer-item" onClick={() => handleNavClick('settings', '/settings')}>
             <span className="footer-icon"><SettingsIcon /></span>
