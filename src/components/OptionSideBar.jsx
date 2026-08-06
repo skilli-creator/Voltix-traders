@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 // KEYFRAMES
 // ============================================
 const slideIn = keyframes`
-  from { opacity: 0; transform: translateX(-12px); }
+  from { opacity: 0; transform: translateX(-10px); }
   to { opacity: 1; transform: translateX(0); }
 `;
 
@@ -17,12 +17,12 @@ const fadeIn = keyframes`
 `;
 
 const pulseGlow = keyframes`
-  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 ${props => props.theme?.colors?.danger || '#EF4444'}; }
-  50% { opacity: 0.85; transform: scale(1.15); box-shadow: 0 0 0 6px rgba(0, 0, 0, 0); }
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45); }
+  50% { opacity: 0.85; transform: scale(1.12); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
 `;
 
 const modalSlideIn = keyframes`
-  from { opacity: 0; transform: scale(0.92) translateY(40px); }
+  from { opacity: 0; transform: scale(0.94) translateY(24px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 `;
 
@@ -40,14 +40,14 @@ const shimmer = keyframes`
 // SVG ICONS
 // ============================================
 const BellIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
   </svg>
 );
 
 const VoiceIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
     <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
     <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -55,7 +55,7 @@ const VoiceIcon = () => (
 );
 
 const VoiceOffIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
     <line x1="23" y1="9" x2="17" y2="15" />
     <line x1="17" y1="9" x2="23" y2="15" />
@@ -63,34 +63,34 @@ const VoiceOffIcon = () => (
 );
 
 const AcademyIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
   </svg>
 );
 
 const AccountIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
     <circle cx="12" cy="7" r="4" />
   </svg>
 );
 
 const CopyIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
   </svg>
 );
 
 const ManagementIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
   </svg>
 );
 
 const RiskIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     <path d="M12 8v4" />
     <path d="M12 16h.01" />
@@ -98,20 +98,20 @@ const RiskIcon = () => (
 );
 
 const ShieldIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
   </svg>
 );
 
 const BookIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
   </svg>
 );
 
 const TermsIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <polyline points="14 2 14 8 20 8" />
     <line x1="16" y1="13" x2="8" y2="13" />
@@ -121,21 +121,21 @@ const TermsIcon = () => (
 );
 
 const CompanyIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
   </svg>
 );
 
 const SettingsIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9z" />
   </svg>
 );
 
 const HelpIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
     <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -143,52 +143,38 @@ const HelpIcon = () => (
 );
 
 const CloseXIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18" />
     <line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
-
-const DollarIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="1" x2="12" y2="23" />
-    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
 // ============================================
 // PREMIUM MODAL
 // ============================================
-
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   z-index: 1000;
-  display: ${props => props.isOpen ? 'flex' : 'none'};
+  display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  animation: ${modalBackdrop} 0.3s ease;
+  padding: 20px;
+  animation: ${modalBackdrop} 0.28s ease;
 `;
 
 const ModalContainer = styled.div`
-  max-width: 520px;
+  max-width: 480px;
   width: 100%;
-  max-height: 85vh;
+  max-height: 86vh;
   background: ${props => props.theme?.colors?.surface || '#0F172A'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  border-radius: 20px;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
-  animation: ${modalSlideIn} 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  border-radius: 18px;
+  box-shadow: ${props => props.theme?.colors?.shadow || '0 28px 64px rgba(0, 0, 0, 0.55)'};
+  animation: ${modalSlideIn} 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -200,21 +186,22 @@ const ModalContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, 
-      ${props => props.theme?.colors?.accent || '#3B82F6'}, 
-      ${props => props.theme?.colors?.accent + '60' || '#60A5FA'}, 
-      ${props => props.theme?.colors?.accent || '#3B82F6'}
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${props => props.theme?.colors?.accent || '#3B82F6'},
+      transparent
     );
     background-size: 200% 100%;
-    animation: ${shimmer} 3s ease-in-out infinite;
+    animation: ${shimmer} 4s ease-in-out infinite;
   }
 
   @media (max-width: 480px) {
     max-width: 100%;
-    margin: 12px;
-    border-radius: 16px;
-    max-height: 90vh;
+    margin: 8px;
+    border-radius: 14px;
+    max-height: 92vh;
   }
 `;
 
@@ -222,69 +209,75 @@ const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 22px 14px 22px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   flex-shrink: 0;
 
   .title-group {
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
   }
 
   .title-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     flex-shrink: 0;
   }
 
   .title-text {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .title-badge {
     font-size: 9px;
     font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 12px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.06)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    flex-shrink: 0;
   }
 
   .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 8px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
 
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.04)'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
       transform: rotate(90deg);
     }
   }
 
   @media (max-width: 480px) {
-    padding: 14px 16px 10px 16px;
+    padding: 12px 14px 10px;
     .title-text { font-size: 14px; }
     .title-icon { width: 30px; height: 30px; }
   }
@@ -293,13 +286,13 @@ const ModalHeader = styled.div`
 const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 18px 22px 22px;
+  padding: 16px 20px 20px;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.06)'};
-    border-radius: 10px;
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
+    border-radius: 99px;
   }
 
   @media (max-width: 480px) {
@@ -315,31 +308,61 @@ const NotificationItem = styled.div`
   align-items: flex-start;
   gap: 10px;
   padding: 10px 12px;
-  border-radius: 8px;
-  background: ${props => props.read ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.03)'};
-  border: 1px solid ${props => props.read ? 'transparent' : props.theme?.colors?.accent + '15' || 'rgba(59, 130, 246, 0.04)'};
-  margin-bottom: 4px;
-  transition: all 0.2s ease;
+  border-radius: 10px;
+  background: ${props =>
+    props.read
+      ? 'transparent'
+      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+  border: 1px solid ${props =>
+    props.read
+      ? 'transparent'
+      : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 6px;
+  transition: background 0.2s ease, border-color 0.2s ease;
 
-  &:hover { background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.02)'}; }
+  &:hover {
+    background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.04)'};
+  }
 
   .notif-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(59, 130, 246, 0.08)'};
-    color: ${props => props.type === 'trade' ? '#10B981' : '#3B82F6'};
+    background: ${props =>
+      props.type === 'trade' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => (props.type === 'trade' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6')};
   }
 
   .notif-content { flex: 1; min-width: 0; }
-  .notif-title { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 1px; }
-  .notif-desc { font-size: 11px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; font-weight: 400; line-height: 1.4; }
-  .notif-time { font-size: 10px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; font-weight: 400; }
-  .notif-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => props.theme?.colors?.accent || '#3B82F6'}; flex-shrink: 0; margin-top: 3px; ${props => props.read && 'display: none;'} }
+  .notif-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+  .notif-desc {
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    line-height: 1.45;
+  }
+  .notif-time {
+    font-size: 10px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 3px;
+  }
+  .notif-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    flex-shrink: 0;
+    margin-top: 4px;
+    ${props => props.read && 'display: none;'}
+  }
 `;
 
 // ============================================
@@ -349,24 +372,39 @@ const VoiceToggleRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 6px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-  margin-bottom: 8px;
+  padding: 10px 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 10px;
 
-  .toggle-label { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
-  .toggle-status { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 8px; color: ${props => props.active ? '#10B981' : '#94A3B8'}; background: ${props => props.active ? 'rgba(16, 185, 129, 0.06)' : 'rgba(255, 255, 255, 0.02)'}; }
+  .toggle-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  }
+  .toggle-status {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: ${props => (props.active ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
+    background: ${props =>
+      props.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
+  }
 `;
 
 const ToggleSwitch = styled.button`
-  width: 40px;
+  width: 42px;
   height: 24px;
   border-radius: 12px;
   border: none;
-  background: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.scrollbar || '#2a2e3d'};
+  background: ${props =>
+    props.active
+      ? props.theme?.colors?.accent || '#3B82F6'
+      : props.theme?.colors?.scrollbar || '#2a2e3d'};
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.25s ease;
   position: relative;
   flex-shrink: 0;
 
@@ -374,47 +412,104 @@ const ToggleSwitch = styled.button`
     content: '';
     position: absolute;
     top: 2px;
-    left: ${props => props.active ? '20px' : '2px'};
+    left: ${props => (props.active ? '20px' : '2px')};
     width: 20px;
     height: 20px;
     border-radius: 50%;
     background: ${props => props.theme?.colors?.text || '#ffffff'};
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
-  &:hover { opacity: 0.85; }
+
+  &:hover { opacity: 0.9; }
 `;
 
 const VolumeSlider = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
-  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 6px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-  margin-bottom: 8px;
+  padding: 10px 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  margin-bottom: 10px;
 
-  .slider-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; min-width: 30px; }
-  input[type="range"] {
-    flex: 1; -webkit-appearance: none; height: 3px; border-radius: 2px; background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'}; outline: none;
-    &::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: ${props => props.theme?.colors?.accent || '#3B82F6'}; cursor: pointer; border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'}; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+  .slider-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    min-width: 28px;
+  }
+
+  input[type='range'] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
+    outline: none;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      cursor: pointer;
+      border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
     &:disabled { opacity: 0.4; }
   }
-  .slider-value { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; min-width: 26px; text-align: right; }
+
+  .slider-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    min-width: 28px;
+    text-align: right;
+  }
 `;
 
 const VoiceEventItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
+  padding: 8px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+
   &:last-child { border-bottom: none; }
 
-  .event-name { font-size: 11px; font-weight: 500; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; display: flex; align-items: center; gap: 6px; }
-  .event-dot { width: 5px; height: 5px; border-radius: 50%; background: ${props => props.enabled ? '#10B981' : '#94A3B8'}; }
-  .event-status { font-size: 9px; font-weight: 700; color: ${props => props.enabled ? '#10B981' : '#94A3B8'}; cursor: pointer; padding: 1px 8px; border-radius: 6px; background: ${props => props.enabled ? 'rgba(16, 185, 129, 0.04)' : 'rgba(255, 255, 255, 0.02)'}; transition: all 0.2s ease; &:hover { opacity: 0.7; } }
+  .event-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
+  }
+
+  .event-status {
+    font-size: 9px;
+    font-weight: 700;
+    color: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: ${props =>
+      props.enabled ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)'};
+    transition: opacity 0.2s ease;
+
+    &:hover { opacity: 0.75; }
+  }
 `;
 
 // ============================================
@@ -424,17 +519,46 @@ const AccountInfoRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
+  padding: 11px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+
   &:last-child { border-bottom: none; }
 
-  .row-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
-  .row-value { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; display: flex; align-items: center; gap: 6px; }
-  .status-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: #10B981; .dot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; animation: ${pulseGlow} 2s infinite; } }
+  .row-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+  }
+
+  .row-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.success || '#10B981'};
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: ${props => props.theme?.colors?.success || '#10B981'};
+      animation: ${pulseGlow} 2s infinite;
+    }
+  }
 `;
 
 // ============================================
-// RISK CALCULATOR - FULLY FUNCTIONAL
+// RISK CALCULATOR
 // ============================================
 const CalcInputGroup = styled.div`
   margin-bottom: 12px;
@@ -443,43 +567,50 @@ const CalcInputGroup = styled.div`
     font-size: 10px;
     font-weight: 700;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     gap: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    .calc-hint { font-size: 9px; font-weight: 400; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; opacity: 0.5; text-transform: none; }
+
+    .calc-hint {
+      font-size: 9px;
+      font-weight: 400;
+      opacity: 0.55;
+      text-transform: none;
+      letter-spacing: 0;
+    }
   }
 
   .calc-input-wrap {
     display: flex;
     align-items: center;
-    background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-    border-radius: 8px;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border-radius: 10px;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
     &:focus-within {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accent + '15' || 'rgba(59, 130, 246, 0.04)'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
     }
 
     .calc-prefix {
-      padding: 8px 10px;
+      padding: 9px 11px;
       font-size: 12px;
       font-weight: 700;
       color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-      background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
-      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.02)'};
-      min-width: 20px;
+      background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.03)'};
+      border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+      min-width: 36px;
       text-align: center;
     }
 
     input {
       flex: 1;
-      padding: 8px 10px;
+      padding: 9px 12px;
       background: transparent;
       border: none;
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
@@ -488,9 +619,22 @@ const CalcInputGroup = styled.div`
       outline: none;
       width: 100%;
       min-width: 0;
-      &::placeholder { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; font-weight: 400; opacity: 0.3; }
-      &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-      &[type="number"] { -moz-appearance: textfield; }
+
+      &::placeholder {
+        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+        font-weight: 400;
+        opacity: 0.45;
+      }
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &[type='number'] {
+        -moz-appearance: textfield;
+      }
     }
   }
 `;
@@ -498,59 +642,119 @@ const CalcInputGroup = styled.div`
 const CalcResultsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 6px;
-  margin-top: 6px;
+  gap: 8px;
+  margin-top: 8px;
 
-  @media (max-width: 480px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 1fr;
+  }
 `;
 
 const CalcResultBox = styled.div`
-  padding: 10px 12px;
-  border-radius: 6px;
+  padding: 12px 10px;
+  border-radius: 10px;
   text-align: center;
-  background: ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.04)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.04)' : 'rgba(59, 130, 246, 0.04)'};
-  border: 1px solid ${props => props.type === 'risk' ? 'rgba(239, 68, 68, 0.06)' : props.type === 'reward' ? 'rgba(16, 185, 129, 0.06)' : 'rgba(59, 130, 246, 0.06)'};
+  background: ${props =>
+    props.type === 'risk'
+      ? 'rgba(239, 68, 68, 0.08)'
+      : props.type === 'reward'
+      ? 'rgba(16, 185, 129, 0.08)'
+      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+  border: 1px solid ${props =>
+    props.type === 'risk'
+      ? 'rgba(239, 68, 68, 0.14)'
+      : props.type === 'reward'
+      ? 'rgba(16, 185, 129, 0.14)'
+      : props.theme?.colors?.border || 'rgba(59, 130, 246, 0.14)'};
 
-  .result-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-bottom: 2px; }
-  .result-value { font-size: 14px; font-weight: 700; color: ${props => props.type === 'risk' ? '#EF4444' : props.type === 'reward' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6'}; }
-  .result-sub { font-size: 8px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; font-weight: 400; opacity: 0.6; }
+  .result-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 4px;
+  }
+
+  .result-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: ${props =>
+      props.type === 'risk'
+        ? props.theme?.colors?.danger || '#EF4444'
+        : props.type === 'reward'
+        ? props.theme?.colors?.success || '#10B981'
+        : props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  .result-sub {
+    font-size: 9px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 3px;
+    opacity: 0.7;
+  }
 `;
 
 const CalcSummaryBox = styled.div`
-  margin-top: 10px;
-  padding: 10px 14px;
-  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 8px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
+  border-radius: 10px;
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
 
   .summary-row {
     display: flex;
     justify-content: space-between;
-    padding: 3px 0;
+    padding: 4px 0;
     font-size: 11px;
     font-weight: 600;
+
     .label { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
     .value { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
-    &.risk .value { color: '#EF4444'; }
-    &.reward .value { color: '#10B981'; }
+
+    &.risk .value { color: ${props => props.theme?.colors?.danger || '#EF4444'}; }
+    &.reward .value { color: ${props => props.theme?.colors?.success || '#10B981'}; }
   }
 `;
 
+const CalcButton = styled.button`
+  width: 100%;
+  padding: 11px 0;
+  border: none;
+  border-radius: 10px;
+  background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
+    box-shadow: 0 6px 16px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'};
+    transform: translateY(-1px);
+  }
+
+  &:active { transform: translateY(0); }
+`;
+
 // ============================================
-// HOW TO USE
+// HOW TO USE / TERMS
 // ============================================
 const StepItem = styled.div`
   display: flex;
   gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
+  padding: 12px 0;
+  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+
   &:last-child { border-bottom: none; }
 
   .step-number {
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     display: flex;
     align-items: center;
@@ -558,68 +762,103 @@ const StepItem = styled.div`
     font-size: 11px;
     font-weight: 700;
     flex-shrink: 0;
-    border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(59, 130, 246, 0.06)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   }
 
-  .step-content { flex: 1; }
-  .step-title { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 1px; }
-  .step-desc { font-size: 11px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; font-weight: 400; line-height: 1.5; }
+  .step-content { flex: 1; min-width: 0; }
+  .step-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 2px;
+  }
+  .step-desc {
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    line-height: 1.5;
+  }
 `;
 
-// ============================================
-// TERMS & CONDITIONS
-// ============================================
 const TermsSection = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 
-  .terms-title { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 4px; }
-  .terms-text { font-size: 11px; line-height: 1.7; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; font-weight: 400; }
+  .terms-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 6px;
+  }
+
+  .terms-text {
+    font-size: 11px;
+    line-height: 1.65;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+  }
+
   .terms-bullet {
     display: flex;
     align-items: flex-start;
-    gap: 6px;
-    padding: 2px 0;
+    gap: 8px;
+    padding: 3px 0;
     font-size: 11px;
-    line-height: 1.6;
+    line-height: 1.55;
     color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    font-weight: 400;
-    .bullet-dot { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+
+    .bullet-dot {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
   }
 `;
 
 // ============================================
-// SIDEBAR STYLED COMPONENTS
+// SIDEBAR LAYOUT
 // ============================================
-
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: ${props => props.theme?.colors?.overlay || 'rgba(10, 15, 29, 0.7)'};
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 98;
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  @media (min-width: 769px) { display: none; }
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
 `;
 
 const SidebarContainer = styled.aside`
   position: fixed;
   top: 0;
   left: 0;
-  width: 280px;
+  width: 288px;
   height: 100vh;
-  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || '#0F172A'};
+  height: 100dvh;
+  background: ${props =>
+    props.theme?.colors?.sidebarBackground ||
+    props.theme?.colors?.surface ||
+    '#0F172A'};
   border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 99;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 4px 0 24px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.25)'};
-  @media (max-width: 768px) { width: 290px; }
-  @media (max-width: 480px) { width: 100%; }
+  box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
+
+  @media (max-width: 768px) {
+    width: min(300px, 88vw);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -628,72 +867,101 @@ const CloseButton = styled.button`
   top: 14px;
   right: 14px;
   z-index: 100;
-  background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.05)'};
+  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.06)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
   color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
   width: 32px;
   height: 32px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s ease;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
+
   &:hover {
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
     color: ${props => props.theme?.colors?.text || '#FFFFFF'};
     border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
   }
-  @media (max-width: 768px) { display: ${props => (props.isOpen ? 'flex' : 'none')}; }
+
+  @media (max-width: 768px) {
+    display: ${props => (props.isOpen ? 'flex' : 'none')};
+  }
 `;
 
 const SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 14px;
+  padding: 18px 14px 20px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  &::-webkit-scrollbar { width: 5px; }
+  gap: 18px;
+
+  &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'}; border-radius: 99px; }
-  &::-webkit-scrollbar-thumb:hover { background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'}; }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
+    border-radius: 99px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'};
+  }
 `;
 
 const SidebarHeader = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 10px 16px 10px;
+  padding: 8px 8px 16px;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   animation: ${slideIn} 0.3s ease;
 
   .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: ${props => props.theme?.colors?.gradientPrimary || `linear-gradient(135deg, ${props.theme?.colors?.accent || '#3B82F6'}, #1D4ED8)`};
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      ${props => props.theme?.colors?.accent || '#3B82F6'},
+      ${props => props.theme?.colors?.accentHover || '#1D4ED8'}
+    );
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.buttonText || '#ffffff'};
-    letter-spacing: 0.5px;
-    box-shadow: 0 4px 12px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}40` : 'rgba(59, 130, 246, 0.3)')};
+    color: #ffffff;
+    letter-spacing: 0.4px;
+    box-shadow: 0 4px 14px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.35)'};
     flex-shrink: 0;
   }
 
   .user-info { flex: 1; min-width: 0; }
-  .user-name { font-size: 13.5px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .user-email { font-size: 11px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .user-email {
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const NavSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  animation: ${slideIn} 0.4s ease;
+  gap: 3px;
+  animation: ${slideIn} 0.35s ease;
 `;
 
 const SectionLabel = styled.div`
@@ -701,58 +969,89 @@ const SectionLabel = styled.div`
   font-weight: 700;
   color: ${props => props.theme?.colors?.textMuted || '#64748B'};
   text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 0 8px;
+  letter-spacing: 0.9px;
+  padding: 0 10px;
   margin-bottom: 4px;
 `;
 
 const NavItem = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
   padding: 9px 12px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  background: ${props => (props.active ? (props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)') : 'transparent')};
-  color: ${props => (props.active ? (props.theme?.colors?.accent || '#3B82F6') : (props.theme?.colors?.textSecondary || '#CBD5E1'))};
+  background: ${props =>
+    props.active
+      ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'
+      : 'transparent'};
+  color: ${props =>
+    props.active
+      ? props.theme?.colors?.accent || '#3B82F6'
+      : props.theme?.colors?.textSecondary || '#CBD5E1'};
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     transform: translateX(2px);
   }
 
-  ${props => props.active && css`
-    font-weight: 600;
-    &::before {
-      content: '';
-      position: absolute;
-      left: -14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3.5px;
-      height: 18px;
-      background: ${props.theme?.colors?.accent || '#3B82F6'};
-      border-radius: 0 4px 4px 0;
-      box-shadow: 0 0 10px ${props.theme?.colors?.accent || '#3B82F6'};
-    }
-  `}
+  ${props =>
+    props.active &&
+    css`
+      font-weight: 600;
 
-  .nav-icon { width: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.2s ease; }
-  &:hover .nav-icon { transform: scale(1.1); }
-  .nav-label { flex: 1; font-size: 12.5px; letter-spacing: 0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      &::before {
+        content: '';
+        position: absolute;
+        left: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 18px;
+        background: ${props.theme?.colors?.accent || '#3B82F6'};
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 0 10px ${props.theme?.colors?.accent || '#3B82F6'};
+      }
+    `}
+
+  .nav-icon {
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover .nav-icon {
+    transform: scale(1.08);
+  }
+
+  .nav-label {
+    flex: 1;
+    font-size: 12.5px;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .badge {
     font-size: 9px;
     font-weight: 700;
     padding: 2px 7px;
     border-radius: 6px;
-    background: ${props => (props.active ? (props.theme?.colors?.accent || '#3B82F6') : (props.theme?.colors?.badgeBg || 'rgba(255, 255, 255, 0.06)'))};
-    color: ${props => (props.active ? (props.theme?.colors?.buttonText || '#FFFFFF') : (props.theme?.colors?.textMuted || '#94A3B8'))};
+    background: ${props =>
+      props.active
+        ? props.theme?.colors?.accent || '#3B82F6'
+        : 'rgba(255, 255, 255, 0.06)'};
+    color: ${props =>
+      props.active ? '#FFFFFF' : props.theme?.colors?.textMuted || '#94A3B8'};
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
     flex-shrink: 0;
   }
 
@@ -768,57 +1067,201 @@ const NavItem = styled.div`
 
 const SideCard = styled.div`
   padding: 12px 14px;
-  border-radius: 8px;
-  background: ${props => props.theme?.colors?.cardBackground || 'rgba(15, 23, 42, 0.4)'};
+  border-radius: 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(15, 23, 42, 0.35)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  animation: ${fadeIn} 0.4s ease;
-  transition: all 0.2s ease;
+  animation: ${fadeIn} 0.35s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    border-color: ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}50` : 'rgba(59, 130, 246, 0.3)')};
-    box-shadow: 0 4px 16px ${props => props.theme?.colors?.shadow || 'rgba(0, 0, 0, 0.15)'};
+    border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.35)'};
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
   }
 
-  .card-title { font-size: 11.5px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; .icon { display: flex; align-items: center; justify-content: center; } }
-  .card-item { font-size: 10.5px; color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'}; padding: 3px 0; display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; .bullet { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; font-weight: 700; flex-shrink: 0; } .highlight { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; font-weight: 600; } }
-  .learn-more { margin-top: 8px; font-size: 10.5px; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease; &:hover { gap: 7px; color: ${props => props.theme?.colors?.accentHover || '#60A5FA'}; } }
+  .card-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    }
+  }
+
+  .card-item {
+    font-size: 10.5px;
+    color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'};
+    padding: 3px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.45;
+
+    .bullet {
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .highlight {
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      font-weight: 600;
+    }
+  }
+
+  .learn-more {
+    margin-top: 10px;
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: gap 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      gap: 7px;
+      color: ${props => props.theme?.colors?.accentHover || '#60A5FA'};
+    }
+  }
 `;
 
 const FeedbackSection = styled.div`
   padding: 14px;
-  border-radius: 8px;
-  background: ${props => props.theme?.colors?.cardBackground || 'rgba(15, 23, 42, 0.4)'};
+  border-radius: 12px;
+  background: ${props => props.theme?.colors?.bg || 'rgba(15, 23, 42, 0.35)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  animation: ${fadeIn} 0.4s ease;
+  animation: ${fadeIn} 0.35s ease;
 
-  .feedback-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-bottom: 8px; text-align: center; }
-  .stars { display: flex; gap: 6px; margin-bottom: 8px; justify-content: center; }
+  .feedback-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .stars {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    justify-content: center;
+  }
+
   .star-btn {
-    background: transparent; border: none; padding: 0; cursor: pointer; color: ${props => props.theme?.colors?.starInactive || 'rgba(255, 255, 255, 0.12)'}; transition: all 0.15s ease; display: flex; align-items: center; justify-content: center;
-    svg { width: 20px; height: 20px; fill: currentColor; }
-    &:hover { transform: scale(1.2); }
-    &.active, &.hover { color: ${props => props.theme?.colors?.starActive || '#F59E0B'}; filter: drop-shadow(0 0 6px ${props => (props.theme?.colors?.starActive ? `${props.theme.colors.starActive}60` : 'rgba(245, 158, 11, 0.3)')}); }
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.14);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    &:hover {
+      transform: scale(1.18);
+    }
+
+    &.active,
+    &.hover {
+      color: ${props => props.theme?.colors?.warning || '#F59E0B'};
+      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.35));
+    }
   }
-  .star-rating-text { text-align: center; font-size: 10.5px; font-weight: 600; margin-bottom: 10px; min-height: 16px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; }
+
+  .star-rating-text {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    min-height: 16px;
+    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+  }
+
   .feedback-textarea {
-    width: 100%; min-height: 64px; padding: 8px 10px; background: ${props => props.theme?.colors?.inputBackground || 'rgba(255, 255, 255, 0.02)'}; border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'}; border-radius: 6px; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; font-size: 11.5px; font-family: inherit; resize: none; outline: none; transition: all 0.2s ease; margin-bottom: 10px;
-    &::placeholder { color: ${props => props.theme?.colors?.textMuted || '#64748B'}; }
-    &:focus { border-color: ${props => props.theme?.colors?.accent || '#3B82F6'}; box-shadow: 0 0 0 2px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}25` : 'rgba(59, 130, 246, 0.1)')}; }
+    width: 100%;
+    min-height: 68px;
+    padding: 10px 12px;
+    background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.03)'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+    border-radius: 10px;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    font-size: 12px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 10px;
+
+    &::placeholder {
+      color: ${props => props.theme?.colors?.textMuted || '#64748B'};
+    }
+
+    &:focus {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    }
   }
+
   .feedback-submit {
-    width: 100%; padding: 8px 0; border: none; border-radius: 6px; background: ${props => props.theme?.colors?.accent || '#3B82F6'}; color: ${props => props.theme?.colors?.buttonText || '#ffffff'}; font-size: 11.5px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
-    &:hover:not(:disabled) { background: ${props => props.theme?.colors?.accentHover || '#2563EB'}; box-shadow: 0 4px 12px ${props => (props.theme?.colors?.accent ? `${props.theme.colors.accent}35` : 'rgba(59, 130, 246, 0.15)')}; }
-    &:active:not(:disabled) { transform: scale(0.98); }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
+    width: 100%;
+    padding: 10px 0;
+    border: none;
+    border-radius: 10px;
+    background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
+      box-shadow: 0 4px 14px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'};
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
-  .feedback-status { margin-top: 8px; font-size: 10.5px; text-align: center; color: ${props => props.theme?.colors?.success || '#10B981'}; font-weight: 500; }
+
+  .feedback-status {
+    margin-top: 8px;
+    font-size: 11px;
+    text-align: center;
+    color: ${props => props.theme?.colors?.success || '#10B981'};
+    font-weight: 500;
+  }
 `;
 
 const SidebarFooter = styled.footer`
   flex-shrink: 0;
   padding: 12px 14px;
   border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  background: ${props => props.theme?.colors?.sidebarBackground || '#0F172A'};
+  background: ${props =>
+    props.theme?.colors?.sidebarBackground ||
+    props.theme?.colors?.surface ||
+    '#0F172A'};
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -826,18 +1269,28 @@ const SidebarFooter = styled.footer`
   .footer-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 8px 10px;
-    border-radius: 6px;
+    gap: 11px;
+    padding: 9px 10px;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'};
     font-size: 12px;
     font-weight: 500;
-    &:hover { background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'}; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
-    .footer-icon { display: flex; align-items: center; justify-content: center; }
+
+    &:hover {
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    }
+
+    .footer-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 `;
+
 
 // ============================================
 // MAIN COMPONENT
@@ -1026,19 +1479,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </CalcInputGroup>
 
-          <button onClick={calculateRisk} style={{
-            width: '100%',
-            padding: '10px 0',
-            border: 'none',
-            borderRadius: '8px',
-            background: '#3B82F6',
-            color: '#ffffff',
-            fontSize: '13px',
-            fontWeight: '700',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            marginTop: '4px'
-          }}>Calculate Risk</button>
+          <CalcButton onClick={calculateRisk}>Calculate Risk</CalcButton>
 
           {calculated && (
             <>
