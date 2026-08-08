@@ -799,21 +799,17 @@ const TopPanel = ({
 
   // Exchange rates
   const exchangeRates = {
-    USD: 1, EUR: 0.92, GBP: 0.79, JPY: 149.50, CHF: 0.88,
-    CAD: 1.36, AUD: 1.52, CNY: 7.20, INR: 83.50, BRL: 4.95,
-    ZAR: 18.90, KSh: 150.50, NGN: 1570.00, EGP: 48.50, MAD: 10.10,
-    GHS: 12.30, KES: 150.50, TZS: 2600.00, UGX: 3800.00, RWF: 1300.00,
-    ZMW: 26.50, MXN: 17.80, SGD: 1.35, HKD: 7.82, NZD: 1.64,
-    SEK: 10.50, NOK: 10.60, DKK: 6.90, PLN: 4.10, TRY: 32.50,
-    SAR: 3.75, AED: 3.67, QAR: 3.64, KWD: 0.31, BHD: 0.38,
-    OMR: 0.38, JOD: 0.71, IQD: 1310.00, LYD: 4.85, TND: 3.12,
-    DZD: 134.50, ETB: 56.80,
-  };
+  USD: 1, EUR: 0.93, GBP: 0.80, JPY: 155.00, CHF: 0.89, CAD: 1.37, AUD: 1.55, CNY: 7.25, INR: 83.90, BRL: 5.10,
+  ZAR: 19.20, KSh: 129.00, NGN: 1600.00, EGP: 49.50, MAD: 10.20, GHS: 13.20, KES: 129.00, TZS: 2550.00, UGX: 3850.00, RWF: 1350.00,
+  ZMW: 27.50, MXN: 18.20, SGD: 1.36, HKD: 7.83, NZD: 1.68, SEK: 10.80, NOK: 10.90, DKK: 6.95, PLN: 4.20, TRY: 33.50,
+  SAR: 3.75, AED: 3.67, QAR: 3.64, KWD: 0.31, BHD: 0.38, OMR: 0.38, JOD: 0.71, IQD: 1310.00, LYD: 4.90, TND: 3.15,
+  DZD: 135.50, ETB: 57.50
+};
 
   const getExchangeRate = (currency) => exchangeRates[currency] || 1;
 
   const accountData = {
-    real: { balance: 500.00, label: 'Real' },
+    real: { balance: 100.00, label: 'Real' },
     demo: { balance: 10000.00, label: 'Demo' }
   };
 
