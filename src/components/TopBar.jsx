@@ -100,14 +100,6 @@ const ExitIcon = () => (
   </svg>
 );
 
-// Arrow Right Icon
-const ArrowRightIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12" />
-    <polyline points="12 5 19 12 12 19" />
-  </svg>
-);
-
 // Chevron Down Icon
 const ChevronDownIcon = ({ open }) => (
   <svg 
@@ -133,39 +125,28 @@ const CloseIcon = () => (
   </svg>
 );
 
-// Credit Card Icon
-const CreditCardIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-    <line x1="1" y1="10" x2="23" y2="10" />
-  </svg>
-);
-
-// Bank Icon
-const BankIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="2 10 12 2 22 10" />
-    <rect x="4" y="10" width="16" height="12" />
-    <line x1="10" y1="15" x2="10" y2="19" />
-    <line x1="14" y1="15" x2="14" y2="19" />
-  </svg>
-);
-
-// Crypto Icon
-const CryptoIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M8 8h8" />
-    <path d="M8 12h6" />
-    <path d="M8 16h4" />
-  </svg>
-);
-
-// Mobile Money Icon
+// Mobile Money Icon (M-Pesa/Airtel)
 const MobileMoneyIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="5" y="2" width="14" height="20" rx="2" />
     <line x1="12" y1="18" x2="12.01" y2="18" />
+    <line x1="8" y1="6" x2="16" y2="6" />
+  </svg>
+);
+
+// M-Pesa Icon
+const MPesaIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 8l4 8 4-8" />
+  </svg>
+);
+
+// Airtel Money Icon
+const AirtelIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M7 12l3 3 7-7" />
   </svg>
 );
 
@@ -185,16 +166,21 @@ const CheckIcon = () => (
   </svg>
 );
 
+// Phone Icon
+const PhoneIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+  </svg>
+);
+
 // ============================================
-// FUNDS MODAL COMPONENTS
+// FUNDS MODAL COMPONENTS - Transparent/Glass
 // ============================================
 
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: transparent;
   z-index: 500;
   display: flex;
   align-items: center;
@@ -205,81 +191,83 @@ const ModalOverlay = styled.div`
 
 const ModalCard = styled.div`
   width: 100%;
-  max-width: 540px;
-  max-height: 85vh;
-  background: ${props => props.theme?.colors?.surface || '#0F172A'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-  border-radius: 20px;
-  box-shadow: ${props => props.theme?.colors?.shadow || '0 32px 80px rgba(0,0,0,0.6)'};
+  max-width: 560px;
+  max-height: 90vh;
+  background: ${props => props.theme?.colors?.surface || '#FFFFFF'};
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
   animation: ${slideUp} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, ${props => props.theme?.colors?.accent || '#3B82F6'}, transparent);
-    background-size: 200% 100%;
-    animation: rotateIn 4s ease-in-out infinite;
+  @media (max-width: 480px) {
+    max-width: 100%;
+    margin: 12px;
+    border-radius: 18px;
   }
 `;
 
+// Light theme card header
 const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 22px 14px;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   flex-shrink: 0;
 
   .title-group {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
 
   .title-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
-    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(59, 130, 246, 0.08);
+    color: #3B82F6;
+    border: 1px solid rgba(59, 130, 246, 0.06);
   }
 
   .title-text {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    color: #0F172A;
     letter-spacing: -0.3px;
+  }
+
+  .title-sub {
+    font-size: 12px;
+    font-weight: 400;
+    color: #64748B;
+    margin-top: 1px;
   }
 
   .close-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
     background: transparent;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    color: #94A3B8;
     cursor: pointer;
     transition: all 0.25s ease;
 
     &:hover {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.06)'};
+      border-color: #3B82F6;
+      color: #0F172A;
+      background: rgba(59, 130, 246, 0.04);
       transform: rotate(90deg);
     }
   }
@@ -288,188 +276,102 @@ const ModalHeader = styled.div`
 const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 20px 22px 22px;
+  padding: 20px 24px 24px;
 
   &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.12)'}; border-radius: 10px; }
+  &::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.08); border-radius: 10px; }
   &::-webkit-scrollbar-track { background: transparent; }
 `;
 
 // ============================================
-// FUNDS OVERVIEW
+// KENYA-ONLY DISCLAIMER
 // ============================================
-const OverviewBalance = styled.div`
-  background: ${props => props.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 14px;
-  padding: 18px 20px;
-  margin-bottom: 18px;
-  text-align: center;
+const KenyaDisclaimer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.12);
+  margin-bottom: 16px;
 
-  .label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    font-weight: 600;
+  .disclaimer-icon {
+    font-size: 18px;
+    color: #F59E0B;
+    flex-shrink: 0;
   }
 
-  .balance {
-    font-size: 32px;
-    font-weight: 800;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-top: 4px;
-    font-family: 'Courier New', monospace;
-  }
-
-  .sub {
+  .disclaimer-text {
     font-size: 12px;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    margin-top: 2px;
-  }
-`;
-
-const OverviewStats = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 18px;
-
-  .stat {
-    text-align: center;
-    padding: 12px 8px;
-    border-radius: 10px;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-
-    .stat-value {
-      font-size: 18px;
-      font-weight: 700;
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-family: 'Courier New', monospace;
-    }
-
-    .stat-label {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-      margin-top: 2px;
-    }
-  }
-`;
-
-const RecentTransactions = styled.div`
-  .section-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-  }
-
-  .tx-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 10px;
-    border-radius: 8px;
-    border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.03)'};
-
-    &:last-child { border-bottom: none; }
-
-    .tx-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.06)'};
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    }
-
-    .tx-info {
-      flex: 1;
-      .tx-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      }
-      .tx-date {
-        font-size: 10px;
-        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-      }
-    }
-
-    .tx-amount {
-      font-weight: 700;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-
-      &.positive { color: #22c55e; }
-      &.negative { color: #ef4444; }
-    }
+    font-weight: 500;
+    color: #92400E;
+    line-height: 1.5;
   }
 `;
 
 // ============================================
-// DEPOSIT, WITHDRAW, TRANSFER SHARED COMPONENTS
+// MOBILE MONEY SELECTOR
 // ============================================
-const MethodGrid = styled.div`
+const MobileNetworkSelector = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin: 14px 0;
+  margin-bottom: 16px;
 
-  .method {
+  .network-option {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 14px 10px;
-    border-radius: 10px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-    background: ${props => props.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
+    padding: 16px 10px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(0, 0, 0, 0.06);
+    background: #FAFAFA;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    color: #64748B;
 
     &:hover {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.04)'};
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      border-color: #3B82F6;
+      background: rgba(59, 130, 246, 0.02);
+      color: #0F172A;
       transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     }
 
     &.selected {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      border-color: #3B82F6;
+      background: rgba(59, 130, 246, 0.04);
+      color: #0F172A;
     }
 
-    .method-icon {
+    .network-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3B82F6;
       margin-bottom: 4px;
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     }
 
-    .method-name {
-      font-size: 11px;
-      font-weight: 600;
+    .network-name {
+      font-size: 13px;
+      font-weight: 700;
     }
   }
 `;
 
-const AmountInput = styled.div`
-  margin: 14px 0;
+// ============================================
+// FORM INPUTS
+// ============================================
+const FormGroup = styled.div`
+  margin-bottom: 14px;
 
   label {
     display: block;
     font-size: 11px;
     font-weight: 600;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    color: #64748B;
     margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -478,22 +380,23 @@ const AmountInput = styled.div`
   .input-wrap {
     display: flex;
     align-items: center;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    background: #FAFAFA;
+    border: 1.5px solid rgba(0, 0, 0, 0.06);
     border-radius: 10px;
     padding: 0 14px;
     transition: all 0.2s ease;
 
     &:focus-within {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.1)'};
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+      background: #FFFFFF;
     }
 
-    .currency-symbol {
-      font-size: 16px;
-      font-weight: 700;
-      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-      margin-right: 8px;
+    .prefix {
+      font-size: 14px;
+      font-weight: 600;
+      color: #94A3B8;
+      margin-right: 6px;
     }
 
     input {
@@ -501,37 +404,52 @@ const AmountInput = styled.div`
       padding: 12px 0;
       background: transparent;
       border: none;
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-size: 18px;
-      font-weight: 700;
+      color: #0F172A;
+      font-size: 15px;
+      font-weight: 500;
       outline: none;
-      font-family: 'Courier New', monospace;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
 
       &::placeholder {
-        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+        color: #94A3B8;
         font-weight: 400;
-        opacity: 0.4;
+        opacity: 0.5;
       }
     }
+
+    .suffix {
+      font-size: 12px;
+      font-weight: 500;
+      color: #94A3B8;
+    }
+  }
+
+  .helper-text {
+    font-size: 11px;
+    color: #94A3B8;
+    margin-top: 4px;
   }
 `;
 
+// ============================================
+// ACTION BUTTON
+// ============================================
 const ActionButton = styled.button`
   width: 100%;
-  padding: 12px 0;
+  padding: 14px 0;
   border: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, ${props => props.theme?.colors?.accent || '#3B82F6'}, ${props => props.theme?.colors?.accentHover || '#2563EB'});
-  color: #ffffff;
-  font-size: 14px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: #FFFFFF;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 8px;
+  margin-top: 6px;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.3)'};
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.25);
   }
 
   &:active:not(:disabled) {
@@ -545,41 +463,125 @@ const ActionButton = styled.button`
 `;
 
 // ============================================
-// TRANSFER SPECIFIC
+// OVERVIEW STYLES
 // ============================================
-const TransferToggle = styled.div`
-  display: flex;
-  gap: 8px;
-  margin: 14px 0;
+const OverviewBalance = styled.div`
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  border-radius: 16px;
+  padding: 24px 24px;
+  margin-bottom: 18px;
+  text-align: center;
 
-  .toggle-option {
-    flex: 1;
-    padding: 8px 0;
-    text-align: center;
-    border-radius: 8px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-    background: ${props => props.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
-    cursor: pointer;
-    font-weight: 600;
+  .label {
     font-size: 12px;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+  }
 
-    &.active {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  .balance {
+    font-size: 36px;
+    font-weight: 800;
+    color: #FFFFFF;
+    margin-top: 4px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 2px;
+  }
+`;
+
+const OverviewStats = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+
+  .stat {
+    text-align: center;
+    padding: 14px 8px;
+    border-radius: 12px;
+    background: #FAFAFA;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0F172A;
+      font-family: 'Courier New', monospace;
     }
 
-    &:hover:not(.active) {
-      border-color: ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-      background: ${props => props.theme?.colors?.bgHover || 'rgba(255,255,255,0.03)'};
+    .stat-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+  }
+`;
+
+const RecentTransactions = styled.div`
+  .section-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  .tx-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+
+    &:last-child { border-bottom: none; }
+
+    .tx-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.06);
+      color: #3B82F6;
+    }
+
+    .tx-info {
+      flex: 1;
+      .tx-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0F172A;
+      }
+      .tx-date {
+        font-size: 10px;
+        color: #94A3B8;
+      }
+    }
+
+    .tx-amount {
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+
+      &.positive { color: #22C55E; }
+      &.negative { color: #EF4444; }
     }
   }
 `;
 
 // ============================================
-// HISTORY
+// TRANSACTION HISTORY
 // ============================================
 const HistoryFilter = styled.div`
   display: flex;
@@ -587,25 +589,25 @@ const HistoryFilter = styled.div`
   margin-bottom: 14px;
 
   .filter-btn {
-    padding: 4px 12px;
+    padding: 4px 14px;
     border-radius: 20px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    border: 1px solid rgba(0, 0, 0, 0.06);
     background: transparent;
     font-size: 11px;
     font-weight: 600;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    color: #94A3B8;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &.active {
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      background: rgba(59, 130, 246, 0.08);
+      border-color: #3B82F6;
+      color: #3B82F6;
     }
 
     &:hover:not(.active) {
-      border-color: ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      border-color: rgba(0, 0, 0, 0.12);
+      color: #0F172A;
     }
   }
 `;
@@ -616,7 +618,7 @@ const HistoryList = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 10px 0;
-    border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.03)'};
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 
     &:last-child { border-bottom: none; }
 
@@ -629,22 +631,27 @@ const HistoryList = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         border-radius: 8px;
-        background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.06)'};
-        color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+        background: rgba(59, 130, 246, 0.06);
+        color: #3B82F6;
       }
 
       .h-info {
         .h-name {
           font-size: 13px;
           font-weight: 600;
-          color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+          color: #0F172A;
         }
         .h-date {
           font-size: 10px;
-          color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+          color: #94A3B8;
+        }
+        .h-reference {
+          font-size: 10px;
+          color: #94A3B8;
+          font-family: 'Courier New', monospace;
         }
       }
     }
@@ -654,9 +661,8 @@ const HistoryList = styled.div`
       font-size: 13px;
       font-family: 'Courier New', monospace;
 
-      &.positive { color: #22c55e; }
-      &.negative { color: #ef4444; }
-      &.neutral { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
+      &.positive { color: #22C55E; }
+      &.negative { color: #EF4444; }
     }
   }
 `;
@@ -821,7 +827,7 @@ const DropdownContainer = styled.div`
 `;
 
 // ============================================
-// GLASS DROPDOWN (unchanged)
+// GLASS DROPDOWN
 // ============================================
 const GlassDropdownMenu = styled.div`
   position: absolute;
@@ -861,7 +867,7 @@ const MenuHeader = styled.div`
 `;
 
 // ============================================
-// 1. THEME BUTTON (unchanged)
+// 1. THEME BUTTON
 // ============================================
 const ThemeButton = styled.button`
   display: flex;
@@ -961,7 +967,7 @@ const ThemeOptionItem = styled.div`
 `;
 
 // ============================================
-// 2. FUNDS BUTTON - Updated with Overview option
+// 2. FUNDS BUTTON - No arrow right
 // ============================================
 const FundsButton = styled.button`
   display: flex;
@@ -1023,6 +1029,7 @@ const FundsButton = styled.button`
   }
 `;
 
+// No arrow-right icon in FundsOption
 const FundsOption = styled.div`
   display: flex;
   align-items: center;
@@ -1066,21 +1073,10 @@ const FundsOption = styled.div`
     color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
     font-weight: 400;
   }
-
-  .fund-arrow {
-    opacity: 0.3;
-    transition: all 0.2s ease;
-  }
-
-  &:hover .fund-arrow {
-    opacity: 1;
-    transform: translateX(4px);
-    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-  }
 `;
 
 // ============================================
-// 3. ACCOUNT BADGE (unchanged)
+// 3. ACCOUNT BADGE
 // ============================================
 const COUNTRY_CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
@@ -1269,7 +1265,7 @@ const CurrencyList = styled.div`
 `;
 
 // ============================================
-// 4. EXIT BUTTON (unchanged)
+// 4. EXIT BUTTON
 // ============================================
 const ExitButton = styled.button`
   display: flex;
@@ -1338,10 +1334,12 @@ const TopPanel = ({
   const [currencySearch, setCurrencySearch] = useState('');
   
   // Funds Modal state
-  const [fundModalAction, setFundModalAction] = useState(null); // 'overview', 'deposit', 'withdraw', 'transfer', 'history'
-  const [selectedMethod, setSelectedMethod] = useState('credit');
+  const [fundModalAction, setFundModalAction] = useState(null);
+  const [selectedNetwork, setSelectedNetwork] = useState('mpesa');
   const [amount, setAmount] = useState('');
-  const [transferType, setTransferType] = useState('real-to-demo'); // for transfer
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [transferType, setTransferType] = useState('real-to-demo');
+  const [transactionReference, setTransactionReference] = useState('');
   
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
@@ -1407,22 +1405,55 @@ const TopPanel = ({
     setIsThemeOpen(false);
   };
 
-  // Close modal
   const closeModal = () => setFundModalAction(null);
 
-  // Handle fund action
   const handleFundAction = (action) => {
     setIsFundsOpen(false);
     setFundModalAction(action);
     if (action === 'overview') {
-      // Reset any selection
+      // reset
     } else if (action === 'deposit' || action === 'withdraw') {
-      setSelectedMethod('credit');
+      setSelectedNetwork('mpesa');
       setAmount('');
+      setPhoneNumber('');
+      setTransactionReference('');
     } else if (action === 'transfer') {
       setTransferType('real-to-demo');
       setAmount('');
     }
+  };
+
+  const handleSubmitDeposit = () => {
+    const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+    alert(
+      `Deposit Request\n\n` +
+      `Network: ${networkName}\n` +
+      `Phone: ${phoneNumber}\n` +
+      `Amount: $${amount}\n\n` +
+      `A confirmation SMS will be sent to your phone.\n` +
+      `This service is available in Kenya only.`
+    );
+  };
+
+  const handleSubmitWithdraw = () => {
+    const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+    alert(
+      `Withdrawal Request\n\n` +
+      `Network: ${networkName}\n` +
+      `Phone: ${phoneNumber}\n` +
+      `Amount: $${amount}\n\n` +
+      `Funds will be sent to your mobile wallet within 24 hours.\n` +
+      `This service is available in Kenya only.`
+    );
+  };
+
+  const handleSubmitTransfer = () => {
+    alert(
+      `Transfer Request\n\n` +
+      `Type: ${transferType.replace('-', ' → ')}\n` +
+      `Amount: $${amount}\n\n` +
+      `Transfer initiated successfully.`
+    );
   };
 
   useEffect(() => {
@@ -1443,22 +1474,22 @@ const TopPanel = ({
 
   const activeThemeObj = THEME_OPTIONS.find(t => t.key === currentTheme) || THEME_OPTIONS[0];
 
-  // Funds options including Overview
+  // Funds options - no arrow right
   const fundOptions = [
     { icon: <OverviewIcon />, name: 'Overview', desc: 'View your balance and activity', action: 'overview' },
-    { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds to your account', action: 'deposit' },
-    { icon: <WithdrawIcon />, name: 'Withdraw', desc: 'Request a withdrawal', action: 'withdraw' },
+    { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds via mobile wallet', action: 'deposit' },
+    { icon: <WithdrawIcon />, name: 'Withdraw', desc: 'Withdraw to mobile wallet', action: 'withdraw' },
     { icon: <TransferIcon />, name: 'Transfer', desc: 'Transfer between accounts', action: 'transfer' },
     { icon: <HistoryIcon />, name: 'History', desc: 'View transaction history', action: 'history' },
   ];
 
-  // Generate sample transactions for overview and history
+  // Sample transactions
   const sampleTransactions = [
-    { id: 1, type: 'deposit', name: 'Deposit via Credit Card', date: 'Today, 10:23 AM', amount: 50.00, positive: true },
-    { id: 2, type: 'withdraw', name: 'Withdrawal to Bank', date: 'Yesterday, 3:15 PM', amount: 20.00, positive: false },
-    { id: 3, type: 'transfer', name: 'Transfer to Demo', date: 'Yesterday, 11:00 AM', amount: 10.00, positive: false },
-    { id: 4, type: 'deposit', name: 'Deposit via Crypto', date: 'Aug 5, 9:45 AM', amount: 100.00, positive: true },
-    { id: 5, type: 'withdraw', name: 'Withdrawal to Mobile Money', date: 'Aug 4, 6:20 PM', amount: 30.00, positive: false },
+    { id: 1, type: 'deposit', name: 'Deposit via M-Pesa', date: 'Today, 10:23 AM', amount: 50.00, positive: true, ref: 'MP-2024-00123' },
+    { id: 2, type: 'withdraw', name: 'Withdrawal to M-Pesa', date: 'Yesterday, 3:15 PM', amount: 20.00, positive: false, ref: 'WD-2024-00456' },
+    { id: 3, type: 'transfer', name: 'Transfer to Demo', date: 'Yesterday, 11:00 AM', amount: 10.00, positive: false, ref: 'TF-2024-00789' },
+    { id: 4, type: 'deposit', name: 'Deposit via Airtel Money', date: 'Aug 5, 9:45 AM', amount: 100.00, positive: true, ref: 'AM-2024-00156' },
+    { id: 5, type: 'withdraw', name: 'Withdrawal to Airtel Money', date: 'Aug 4, 6:20 PM', amount: 30.00, positive: false, ref: 'WD-2024-00178' },
   ];
 
   const getHistoryFiltered = (filter = 'all') => {
@@ -1468,6 +1499,8 @@ const TopPanel = ({
 
   // Render modal content based on action
   const renderModalContent = () => {
+    const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+
     switch (fundModalAction) {
       case 'overview':
         return (
@@ -1483,7 +1516,7 @@ const TopPanel = ({
                 <div className="stat-label">Invested</div>
               </div>
               <div className="stat">
-                <div className="stat-value" style={{ color: '#22c55e' }}>+$12.50</div>
+                <div className="stat-value" style={{ color: '#22C55E' }}>+$12.50</div>
                 <div className="stat-label">Profit</div>
               </div>
               <div className="stat">
@@ -1516,44 +1549,80 @@ const TopPanel = ({
       case 'deposit':
         return (
           <>
-            <MethodGrid>
-              {['credit', 'bank', 'crypto', 'mobile'].map(method => (
-                <div 
-                  key={method} 
-                  className={`method ${selectedMethod === method ? 'selected' : ''}`}
-                  onClick={() => setSelectedMethod(method)}
-                >
-                  <div className="method-icon">
-                    {method === 'credit' && <CreditCardIcon />}
-                    {method === 'bank' && <BankIcon />}
-                    {method === 'crypto' && <CryptoIcon />}
-                    {method === 'mobile' && <MobileMoneyIcon />}
-                  </div>
-                  <div className="method-name">
-                    {method === 'credit' && 'Credit Card'}
-                    {method === 'bank' && 'Bank Transfer'}
-                    {method === 'crypto' && 'Cryptocurrency'}
-                    {method === 'mobile' && 'Mobile Money'}
-                  </div>
-                </div>
-              ))}
-            </MethodGrid>
-            <AmountInput>
-              <label>Amount to Deposit</label>
+            <KenyaDisclaimer>
+              <span className="disclaimer-icon">🇰🇪</span>
+              <span className="disclaimer-text">
+                This payment agent operates exclusively in <strong>Kenya</strong>. 
+                Only M-Pesa and Airtel Money mobile wallets are supported.
+              </span>
+            </KenyaDisclaimer>
+
+            <FormGroup>
+              <label>Deposit to Deriv Account</label>
+              <div className="input-wrap" style={{ background: '#F3F4F6' }}>
+                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500', color: '#64748B' }}>Account</span>
+                <input 
+                  type="text" 
+                  value="Deriv Trading Account" 
+                  disabled
+                  style={{ fontWeight: '600', color: '#0F172A', cursor: 'default', opacity: 0.7 }}
+                />
+              </div>
+            </FormGroup>
+
+            <MobileNetworkSelector>
+              <div 
+                className={`network-option ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
+                onClick={() => setSelectedNetwork('mpesa')}
+              >
+                <div className="network-icon"><MPesaIcon /></div>
+                <div className="network-name">M-Pesa</div>
+              </div>
+              <div 
+                className={`network-option ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
+                onClick={() => setSelectedNetwork('airtel')}
+              >
+                <div className="network-icon"><AirtelIcon /></div>
+                <div className="network-name">Airtel Money</div>
+              </div>
+            </MobileNetworkSelector>
+
+            <FormGroup>
+              <label>Phone Number</label>
               <div className="input-wrap">
-                <span className="currency-symbol">$</span>
+                <span className="prefix">+254</span>
+                <input 
+                  type="tel" 
+                  placeholder="7XX XXX XXX" 
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+              <div className="helper-text">Enter your {networkName} registered phone number</div>
+            </FormGroup>
+
+            <FormGroup>
+              <label>Amount (USD)</label>
+              <div className="input-wrap">
+                <span className="prefix">$</span>
                 <input 
                   type="number" 
                   placeholder="0.00" 
-                  value={amount} 
+                  value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   min="1"
                   step="0.01"
                 />
+                <span className="suffix">≈ KES {(parseFloat(amount) * 129).toFixed(0)}</span>
               </div>
-            </AmountInput>
-            <ActionButton onClick={() => alert(`Deposit $${amount} via ${selectedMethod} requested.`)} disabled={!amount || parseFloat(amount) <= 0}>
-              Confirm Deposit
+              <div className="helper-text">Exchange rate: 1 USD = 129 KES</div>
+            </FormGroup>
+
+            <ActionButton 
+              onClick={handleSubmitDeposit} 
+              disabled={!amount || parseFloat(amount) <= 0 || !phoneNumber || phoneNumber.length < 8}
+            >
+              Deposit to Deriv
             </ActionButton>
           </>
         );
@@ -1561,44 +1630,81 @@ const TopPanel = ({
       case 'withdraw':
         return (
           <>
-            <MethodGrid>
-              {['bank', 'mobile', 'crypto', 'credit'].map(method => (
-                <div 
-                  key={method} 
-                  className={`method ${selectedMethod === method ? 'selected' : ''}`}
-                  onClick={() => setSelectedMethod(method)}
-                >
-                  <div className="method-icon">
-                    {method === 'credit' && <CreditCardIcon />}
-                    {method === 'bank' && <BankIcon />}
-                    {method === 'crypto' && <CryptoIcon />}
-                    {method === 'mobile' && <MobileMoneyIcon />}
-                  </div>
-                  <div className="method-name">
-                    {method === 'credit' && 'Credit Card'}
-                    {method === 'bank' && 'Bank Transfer'}
-                    {method === 'crypto' && 'Cryptocurrency'}
-                    {method === 'mobile' && 'Mobile Money'}
-                  </div>
-                </div>
-              ))}
-            </MethodGrid>
-            <AmountInput>
-              <label>Amount to Withdraw</label>
+            <KenyaDisclaimer>
+              <span className="disclaimer-icon">🇰🇪</span>
+              <span className="disclaimer-text">
+                Withdrawals are processed to mobile wallets only. 
+                This service is exclusively available in <strong>Kenya</strong>.
+              </span>
+            </KenyaDisclaimer>
+
+            <FormGroup>
+              <label>Withdraw From</label>
+              <div className="input-wrap" style={{ background: '#F3F4F6' }}>
+                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500', color: '#64748B' }}>Account</span>
+                <input 
+                  type="text" 
+                  value="Deriv Trading Account" 
+                  disabled
+                  style={{ fontWeight: '600', color: '#0F172A', cursor: 'default', opacity: 0.7 }}
+                />
+                <span className="suffix">{getFormattedBalance(currentAccount)}</span>
+              </div>
+            </FormGroup>
+
+            <MobileNetworkSelector>
+              <div 
+                className={`network-option ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
+                onClick={() => setSelectedNetwork('mpesa')}
+              >
+                <div className="network-icon"><MPesaIcon /></div>
+                <div className="network-name">M-Pesa</div>
+              </div>
+              <div 
+                className={`network-option ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
+                onClick={() => setSelectedNetwork('airtel')}
+              >
+                <div className="network-icon"><AirtelIcon /></div>
+                <div className="network-name">Airtel Money</div>
+              </div>
+            </MobileNetworkSelector>
+
+            <FormGroup>
+              <label>Mobile Wallet Number</label>
               <div className="input-wrap">
-                <span className="currency-symbol">$</span>
+                <span className="prefix">+254</span>
+                <input 
+                  type="tel" 
+                  placeholder="7XX XXX XXX" 
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+              <div className="helper-text">Enter your {networkName} wallet phone number</div>
+            </FormGroup>
+
+            <FormGroup>
+              <label>Amount to Withdraw (USD)</label>
+              <div className="input-wrap">
+                <span className="prefix">$</span>
                 <input 
                   type="number" 
                   placeholder="0.00" 
-                  value={amount} 
+                  value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   min="1"
                   step="0.01"
                 />
+                <span className="suffix">≈ KES {(parseFloat(amount) * 129).toFixed(0)}</span>
               </div>
-            </AmountInput>
-            <ActionButton onClick={() => alert(`Withdraw $${amount} via ${selectedMethod} requested.`)} disabled={!amount || parseFloat(amount) <= 0}>
-              Confirm Withdrawal
+              <div className="helper-text">Exchange rate: 1 USD = 129 KES</div>
+            </FormGroup>
+
+            <ActionButton 
+              onClick={handleSubmitWithdraw} 
+              disabled={!amount || parseFloat(amount) <= 0 || !phoneNumber || phoneNumber.length < 8}
+            >
+              Withdraw to Mobile Wallet
             </ActionButton>
           </>
         );
@@ -1606,36 +1712,68 @@ const TopPanel = ({
       case 'transfer':
         return (
           <>
-            <TransferToggle>
-              <div 
-                className={`toggle-option ${transferType === 'real-to-demo' ? 'active' : ''}`}
-                onClick={() => setTransferType('real-to-demo')}
-              >
-                Real → Demo
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div 
+                  style={{
+                    flex: 1,
+                    padding: '10px 0',
+                    textAlign: 'center',
+                    borderRadius: '10px',
+                    border: `1.5px solid ${transferType === 'real-to-demo' ? '#3B82F6' : 'rgba(0,0,0,0.06)'}`,
+                    background: transferType === 'real-to-demo' ? 'rgba(59,130,246,0.04)' : '#FAFAFA',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    fontSize: '13px',
+                    color: transferType === 'real-to-demo' ? '#0F172A' : '#94A3B8',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onClick={() => setTransferType('real-to-demo')}
+                >
+                  Real → Demo
+                </div>
+                <div 
+                  style={{
+                    flex: 1,
+                    padding: '10px 0',
+                    textAlign: 'center',
+                    borderRadius: '10px',
+                    border: `1.5px solid ${transferType === 'demo-to-real' ? '#3B82F6' : 'rgba(0,0,0,0.06)'}`,
+                    background: transferType === 'demo-to-real' ? 'rgba(59,130,246,0.04)' : '#FAFAFA',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    fontSize: '13px',
+                    color: transferType === 'demo-to-real' ? '#0F172A' : '#94A3B8',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onClick={() => setTransferType('demo-to-real')}
+                >
+                  Demo → Real
+                </div>
               </div>
-              <div 
-                className={`toggle-option ${transferType === 'demo-to-real' ? 'active' : ''}`}
-                onClick={() => setTransferType('demo-to-real')}
-              >
-                Demo → Real
-              </div>
-            </TransferToggle>
-            <AmountInput>
+            </div>
+
+            <FormGroup>
               <label>Amount to Transfer</label>
               <div className="input-wrap">
-                <span className="currency-symbol">$</span>
+                <span className="prefix">$</span>
                 <input 
                   type="number" 
                   placeholder="0.00" 
-                  value={amount} 
+                  value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   min="1"
                   step="0.01"
                 />
+                <span className="suffix">Available: {getFormattedBalance(currentAccount)}</span>
               </div>
-            </AmountInput>
-            <ActionButton onClick={() => alert(`Transfer $${amount} from ${transferType.replace('-', ' to ')} requested.`)} disabled={!amount || parseFloat(amount) <= 0}>
-              Confirm Transfer
+            </FormGroup>
+
+            <ActionButton 
+              onClick={handleSubmitTransfer} 
+              disabled={!amount || parseFloat(amount) <= 0}
+            >
+              Transfer Funds
             </ActionButton>
           </>
         );
@@ -1661,6 +1799,7 @@ const TopPanel = ({
                     <div className="h-info">
                       <div className="h-name">{tx.name}</div>
                       <div className="h-date">{tx.date}</div>
+                      <div className="h-reference">Ref: {tx.ref}</div>
                     </div>
                   </div>
                   <div className={`h-amount ${tx.positive ? 'positive' : 'negative'}`}>
@@ -1725,7 +1864,7 @@ const TopPanel = ({
             </GlassDropdownMenu>
           </DropdownContainer>
 
-          {/* 2. FUNDS BUTTON - Updated with Overview */}
+          {/* 2. FUNDS BUTTON */}
           <DropdownContainer ref={fundsRef}>
             <FundsButton onClick={toggleFundsDropdown}>
               <span className="funds-icon-wrapper"><FundsIcon /></span>
@@ -1748,7 +1887,6 @@ const TopPanel = ({
                     <span className="fund-name">{option.name}</span>
                     <span className="fund-desc">{option.desc}</span>
                   </span>
-                  <span className="fund-arrow"><ArrowRightIcon /></span>
                 </FundsOption>
               ))}
             </GlassDropdownMenu>
@@ -1829,7 +1967,7 @@ const TopPanel = ({
         </RightSection>
       </TopBar>
 
-      {/* FUNDS MODAL */}
+      {/* FUNDS MODAL - Transparent background */}
       {fundModalAction && (
         <ModalOverlay onClick={closeModal}>
           <ModalCard onClick={(e) => e.stopPropagation()}>
@@ -1842,13 +1980,18 @@ const TopPanel = ({
                   {fundModalAction === 'transfer' && <TransferIcon />}
                   {fundModalAction === 'history' && <HistoryIcon />}
                 </div>
-                <span className="title-text">
-                  {fundModalAction === 'overview' && 'Funds Overview'}
-                  {fundModalAction === 'deposit' && 'Deposit'}
-                  {fundModalAction === 'withdraw' && 'Withdraw'}
-                  {fundModalAction === 'transfer' && 'Transfer'}
-                  {fundModalAction === 'history' && 'Transaction History'}
-                </span>
+                <div>
+                  <div className="title-text">
+                    {fundModalAction === 'overview' && 'Funds Overview'}
+                    {fundModalAction === 'deposit' && 'Deposit to Deriv'}
+                    {fundModalAction === 'withdraw' && 'Withdraw from Deriv'}
+                    {fundModalAction === 'transfer' && 'Transfer Funds'}
+                    {fundModalAction === 'history' && 'Transaction History'}
+                  </div>
+                  {fundModalAction === 'deposit' && <div className="title-sub">Add funds using mobile money</div>}
+                  {fundModalAction === 'withdraw' && <div className="title-sub">Withdraw to your mobile wallet</div>}
+                  {fundModalAction === 'transfer' && <div className="title-sub">Move funds between accounts</div>}
+                </div>
               </div>
               <button className="close-btn" onClick={closeModal}><CloseIcon /></button>
             </ModalHeader>
