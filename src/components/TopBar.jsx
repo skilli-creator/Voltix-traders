@@ -74,16 +74,6 @@ const WithdrawIcon = () => (
   </svg>
 );
 
-// Transfer Icon
-const TransferIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="17 1 21 5 17 9" />
-    <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-    <polyline points="7 23 3 19 7 15" />
-    <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-  </svg>
-);
-
 // History Icon
 const HistoryIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -166,17 +156,9 @@ const CheckIcon = () => (
   </svg>
 );
 
-// Phone Icon
-const PhoneIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-  </svg>
-);
-
 // ============================================
-// FUNDS MODAL COMPONENTS - Transparent/Glass
+// FUNDS MODAL COMPONENTS – NOW FULLY THEME‑AWARE
 // ============================================
-
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -193,10 +175,10 @@ const ModalCard = styled.div`
   width: 100%;
   max-width: 560px;
   max-height: 90vh;
-  background: ${props => props.theme?.colors?.surface || '#FFFFFF'};
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: ${p => p.theme.colors?.surface || '#0F172A'};
+  border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.08)'};
   border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.02);
+  box-shadow: ${p => p.theme.colors?.shadow || '0 20px 60px rgba(0,0,0,0.4)'};
   animation: ${slideUp} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   display: flex;
@@ -210,13 +192,12 @@ const ModalCard = styled.div`
   }
 `;
 
-// Light theme card header
 const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
   flex-shrink: 0;
 
   .title-group {
@@ -232,22 +213,22 @@ const ModalHeader = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background: rgba(59, 130, 246, 0.08);
-    color: #3B82F6;
-    border: 1px solid rgba(59, 130, 246, 0.06);
+    background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.1)'};
+    color: ${p => p.theme.colors?.accent || '#3B82F6'};
+    border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
   }
 
   .title-text {
     font-size: 18px;
     font-weight: 700;
-    color: #0F172A;
+    color: ${p => p.theme.colors?.text || '#F8FAFC'};
     letter-spacing: -0.3px;
   }
 
   .title-sub {
     font-size: 12px;
     font-weight: 400;
-    color: #64748B;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     margin-top: 1px;
   }
 
@@ -258,16 +239,16 @@ const ModalHeader = styled.div`
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
     background: transparent;
-    color: #94A3B8;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
     transition: all 0.25s ease;
 
     &:hover {
-      border-color: #3B82F6;
-      color: #0F172A;
-      background: rgba(59, 130, 246, 0.04);
+      border-color: ${p => p.theme.colors?.accent || '#3B82F6'};
+      color: ${p => p.theme.colors?.text || '#F8FAFC'};
+      background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.08)'};
       transform: rotate(90deg);
     }
   }
@@ -277,14 +258,18 @@ const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 20px 24px 24px;
+  color: ${p => p.theme.colors?.text || '#F8FAFC'};
 
   &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.08); border-radius: 10px; }
+  &::-webkit-scrollbar-thumb { 
+    background: ${p => p.theme.colors?.scrollbar || 'rgba(255,255,255,0.15)'}; 
+    border-radius: 10px; 
+  }
   &::-webkit-scrollbar-track { background: transparent; }
 `;
 
 // ============================================
-// KENYA-ONLY DISCLAIMER
+// KENYA-ONLY DISCLAIMER (theme‑aware)
 // ============================================
 const KenyaDisclaimer = styled.div`
   display: flex;
@@ -292,26 +277,26 @@ const KenyaDisclaimer = styled.div`
   gap: 8px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(251, 191, 36, 0.08);
-  border: 1px solid rgba(251, 191, 36, 0.12);
+  background: ${p => p.theme.colors?.warningBg || 'rgba(251,191,36,0.1)'};
+  border: 1px solid ${p => p.theme.colors?.warningBorder || 'rgba(251,191,36,0.15)'};
   margin-bottom: 16px;
 
   .disclaimer-icon {
     font-size: 18px;
-    color: #F59E0B;
+    color: ${p => p.theme.colors?.warning || '#F59E0B'};
     flex-shrink: 0;
   }
 
   .disclaimer-text {
     font-size: 12px;
     font-weight: 500;
-    color: #92400E;
+    color: ${p => p.theme.colors?.warningText || '#F8FAFC'};
     line-height: 1.5;
   }
 `;
 
 // ============================================
-// MOBILE MONEY SELECTOR
+// MOBILE MONEY SELECTOR (theme‑aware)
 // ============================================
 const MobileNetworkSelector = styled.div`
   display: grid;
@@ -326,31 +311,31 @@ const MobileNetworkSelector = styled.div`
     justify-content: center;
     padding: 16px 10px;
     border-radius: 12px;
-    border: 1.5px solid rgba(0, 0, 0, 0.06);
-    background: #FAFAFA;
+    border: 1.5px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
+    background: ${p => p.theme.colors?.bg || p.theme.colors?.background || 'rgba(255,255,255,0.02)'};
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #64748B;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
 
     &:hover {
-      border-color: #3B82F6;
-      background: rgba(59, 130, 246, 0.02);
-      color: #0F172A;
+      border-color: ${p => p.theme.colors?.accent || '#3B82F6'};
+      background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.08)'};
+      color: ${p => p.theme.colors?.text || '#F8FAFC'};
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 16px ${p => p.theme.colors?.shadow || 'rgba(0,0,0,0.2)'};
     }
 
     &.selected {
-      border-color: #3B82F6;
-      background: rgba(59, 130, 246, 0.04);
-      color: #0F172A;
+      border-color: ${p => p.theme.colors?.accent || '#3B82F6'};
+      background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.12)'};
+      color: ${p => p.theme.colors?.text || '#F8FAFC'};
     }
 
     .network-icon {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #3B82F6;
+      color: ${p => p.theme.colors?.accent || '#3B82F6'};
       margin-bottom: 4px;
     }
 
@@ -362,7 +347,7 @@ const MobileNetworkSelector = styled.div`
 `;
 
 // ============================================
-// FORM INPUTS
+// FORM INPUTS (theme‑aware)
 // ============================================
 const FormGroup = styled.div`
   margin-bottom: 14px;
@@ -371,7 +356,7 @@ const FormGroup = styled.div`
     display: block;
     font-size: 11px;
     font-weight: 600;
-    color: #64748B;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -380,22 +365,22 @@ const FormGroup = styled.div`
   .input-wrap {
     display: flex;
     align-items: center;
-    background: #FAFAFA;
-    border: 1.5px solid rgba(0, 0, 0, 0.06);
+    background: ${p => p.theme.colors?.inputBg || p.theme.colors?.bg || 'rgba(255,255,255,0.03)'};
+    border: 1.5px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
     border-radius: 10px;
     padding: 0 14px;
     transition: all 0.2s ease;
 
     &:focus-within {
-      border-color: #3B82F6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
-      background: #FFFFFF;
+      border-color: ${p => p.theme.colors?.accent || '#3B82F6'};
+      box-shadow: 0 0 0 3px ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.1)'};
+      background: ${p => p.theme.colors?.inputFocusBg || p.theme.colors?.surface || 'rgba(255,255,255,0.06)'};
     }
 
     .prefix {
       font-size: 14px;
       font-weight: 600;
-      color: #94A3B8;
+      color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
       margin-right: 6px;
     }
 
@@ -404,14 +389,14 @@ const FormGroup = styled.div`
       padding: 12px 0;
       background: transparent;
       border: none;
-      color: #0F172A;
+      color: ${p => p.theme.colors?.text || '#F8FAFC'};
       font-size: 15px;
       font-weight: 500;
       outline: none;
       font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
 
       &::placeholder {
-        color: #94A3B8;
+        color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
         font-weight: 400;
         opacity: 0.5;
       }
@@ -420,27 +405,31 @@ const FormGroup = styled.div`
     .suffix {
       font-size: 12px;
       font-weight: 500;
-      color: #94A3B8;
+      color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     }
   }
 
   .helper-text {
     font-size: 11px;
-    color: #94A3B8;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     margin-top: 4px;
   }
 `;
 
 // ============================================
-// ACTION BUTTON
+// ACTION BUTTON (theme‑aware)
 // ============================================
 const ActionButton = styled.button`
   width: 100%;
   padding: 14px 0;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #3B82F6, #2563EB);
-  color: #FFFFFF;
+  background: linear-gradient(
+    135deg, 
+    ${p => p.theme.colors?.accent || '#3B82F6'}, 
+    ${p => p.theme.colors?.accentHover || '#2563EB'}
+  );
+  color: ${p => p.theme.colors?.buttonText || '#FFFFFF'};
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
@@ -449,7 +438,7 @@ const ActionButton = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 8px 30px ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.25)'};
   }
 
   &:active:not(:disabled) {
@@ -463,10 +452,14 @@ const ActionButton = styled.button`
 `;
 
 // ============================================
-// OVERVIEW STYLES
+// OVERVIEW STYLES (theme‑aware)
 // ============================================
 const OverviewBalance = styled.div`
-  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  background: linear-gradient(
+    135deg, 
+    ${p => p.theme.colors?.accent || '#3B82F6'}, 
+    ${p => p.theme.colors?.accentDark || '#1D4ED8'}
+  );
   border-radius: 16px;
   padding: 24px 24px;
   margin-bottom: 18px;
@@ -505,13 +498,13 @@ const OverviewStats = styled.div`
     text-align: center;
     padding: 14px 8px;
     border-radius: 12px;
-    background: #FAFAFA;
-    border: 1px solid rgba(0, 0, 0, 0.03);
+    background: ${p => p.theme.colors?.bg || p.theme.colors?.background || 'rgba(255,255,255,0.02)'};
+    border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.04)'};
 
     .stat-value {
       font-size: 18px;
       font-weight: 700;
-      color: #0F172A;
+      color: ${p => p.theme.colors?.text || '#F8FAFC'};
       font-family: 'Courier New', monospace;
     }
 
@@ -519,7 +512,7 @@ const OverviewStats = styled.div`
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
-      color: #94A3B8;
+      color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
       margin-top: 2px;
     }
   }
@@ -529,7 +522,7 @@ const RecentTransactions = styled.div`
   .section-title {
     font-size: 12px;
     font-weight: 700;
-    color: #94A3B8;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 10px;
@@ -541,7 +534,7 @@ const RecentTransactions = styled.div`
     gap: 12px;
     padding: 10px 12px;
     border-radius: 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.04)'};
 
     &:last-child { border-bottom: none; }
 
@@ -552,8 +545,8 @@ const RecentTransactions = styled.div`
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      background: rgba(59, 130, 246, 0.06);
-      color: #3B82F6;
+      background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.06)'};
+      color: ${p => p.theme.colors?.accent || '#3B82F6'};
     }
 
     .tx-info {
@@ -561,11 +554,11 @@ const RecentTransactions = styled.div`
       .tx-name {
         font-size: 13px;
         font-weight: 600;
-        color: #0F172A;
+        color: ${p => p.theme.colors?.text || '#F8FAFC'};
       }
       .tx-date {
         font-size: 10px;
-        color: #94A3B8;
+        color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
       }
     }
 
@@ -574,14 +567,14 @@ const RecentTransactions = styled.div`
       font-family: 'Courier New', monospace;
       font-size: 13px;
 
-      &.positive { color: #22C55E; }
-      &.negative { color: #EF4444; }
+      &.positive { color: ${p => p.theme.colors?.success || '#22C55E'}; }
+      &.negative { color: ${p => p.theme.colors?.danger || '#EF4444'}; }
     }
   }
 `;
 
 // ============================================
-// TRANSACTION HISTORY
+// TRANSACTION HISTORY (theme‑aware)
 // ============================================
 const HistoryFilter = styled.div`
   display: flex;
@@ -591,23 +584,23 @@ const HistoryFilter = styled.div`
   .filter-btn {
     padding: 4px 14px;
     border-radius: 20px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
     background: transparent;
     font-size: 11px;
     font-weight: 600;
-    color: #94A3B8;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
     transition: all 0.2s ease;
 
     &.active {
-      background: rgba(59, 130, 246, 0.08);
-      border-color: #3B82F6;
-      color: #3B82F6;
+      background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.12)'};
+      border-color: ${p => p.theme.colors?.accent || '#3B82F6'};
+      color: ${p => p.theme.colors?.accent || '#3B82F6'};
     }
 
     &:hover:not(.active) {
-      border-color: rgba(0, 0, 0, 0.12);
-      color: #0F172A;
+      border-color: ${p => p.theme.colors?.borderHover || 'rgba(255,255,255,0.12)'};
+      color: ${p => p.theme.colors?.text || '#F8FAFC'};
     }
   }
 `;
@@ -618,7 +611,7 @@ const HistoryList = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 10px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.03)'};
 
     &:last-child { border-bottom: none; }
 
@@ -634,23 +627,23 @@ const HistoryList = styled.div`
         width: 34px;
         height: 34px;
         border-radius: 8px;
-        background: rgba(59, 130, 246, 0.06);
-        color: #3B82F6;
+        background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.06)'};
+        color: ${p => p.theme.colors?.accent || '#3B82F6'};
       }
 
       .h-info {
         .h-name {
           font-size: 13px;
           font-weight: 600;
-          color: #0F172A;
+          color: ${p => p.theme.colors?.text || '#F8FAFC'};
         }
         .h-date {
           font-size: 10px;
-          color: #94A3B8;
+          color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
         }
         .h-reference {
           font-size: 10px;
-          color: #94A3B8;
+          color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
           font-family: 'Courier New', monospace;
         }
       }
@@ -661,8 +654,8 @@ const HistoryList = styled.div`
       font-size: 13px;
       font-family: 'Courier New', monospace;
 
-      &.positive { color: #22C55E; }
-      &.negative { color: #EF4444; }
+      &.positive { color: ${p => p.theme.colors?.success || '#22C55E'}; }
+      &.negative { color: ${p => p.theme.colors?.danger || '#EF4444'}; }
     }
   }
 `;
@@ -676,7 +669,7 @@ const TopBar = styled.header`
   justify-content: space-between;
   align-items: center;
   padding: 12px 28px;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#0b0f19'};
+  background: ${props => props.theme?.colors?.surface || '#0b0f19'};
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   position: sticky;
   top: 0;
@@ -728,7 +721,7 @@ const SidebarToggle = styled.button`
   flex-shrink: 0;
 
   &:hover {
-    background: ${props => props.theme?.colors?.accentActive || 'rgba(59,130,246,0.1)'};
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'};
     border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
     box-shadow: 0 0 16px ${props => (props.theme?.colors?.accent || '#3b82f6') + '25'};
   }
@@ -745,7 +738,7 @@ const SidebarToggle = styled.button`
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     &:nth-child(1) {
-      width: ${props => props.isOpen ? '18px' : '18px'};
+      width: 18px;
       transform: ${props => props.isOpen ? 'rotate(45deg) translate(4px, 4.5px)' : 'rotate(0)'};
     }
 
@@ -827,7 +820,7 @@ const DropdownContainer = styled.div`
 `;
 
 // ============================================
-// GLASS DROPDOWN
+// GLASS DROPDOWN – KEPT EXACTLY AS ORIGINAL
 // ============================================
 const GlassDropdownMenu = styled.div`
   position: absolute;
@@ -967,7 +960,7 @@ const ThemeOptionItem = styled.div`
 `;
 
 // ============================================
-// 2. FUNDS BUTTON - No arrow right
+// 2. FUNDS BUTTON
 // ============================================
 const FundsButton = styled.button`
   display: flex;
@@ -1338,8 +1331,6 @@ const TopPanel = ({
   const [selectedNetwork, setSelectedNetwork] = useState('mpesa');
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [transferType, setTransferType] = useState('real-to-demo');
-  const [transactionReference, setTransactionReference] = useState('');
   
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
@@ -1416,10 +1407,6 @@ const TopPanel = ({
       setSelectedNetwork('mpesa');
       setAmount('');
       setPhoneNumber('');
-      setTransactionReference('');
-    } else if (action === 'transfer') {
-      setTransferType('real-to-demo');
-      setAmount('');
     }
   };
 
@@ -1447,15 +1434,6 @@ const TopPanel = ({
     );
   };
 
-  const handleSubmitTransfer = () => {
-    alert(
-      `Transfer Request\n\n` +
-      `Type: ${transferType.replace('-', ' → ')}\n` +
-      `Amount: $${amount}\n\n` +
-      `Transfer initiated successfully.`
-    );
-  };
-
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -1474,28 +1452,21 @@ const TopPanel = ({
 
   const activeThemeObj = THEME_OPTIONS.find(t => t.key === currentTheme) || THEME_OPTIONS[0];
 
-  // Funds options - no arrow right
+  // Funds options - Transfer REMOVED
   const fundOptions = [
     { icon: <OverviewIcon />, name: 'Overview', desc: 'View your balance and activity', action: 'overview' },
     { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds via mobile wallet', action: 'deposit' },
     { icon: <WithdrawIcon />, name: 'Withdraw', desc: 'Withdraw to mobile wallet', action: 'withdraw' },
-    { icon: <TransferIcon />, name: 'Transfer', desc: 'Transfer between accounts', action: 'transfer' },
     { icon: <HistoryIcon />, name: 'History', desc: 'View transaction history', action: 'history' },
   ];
 
-  // Sample transactions
+  // Sample transactions (Transfer removed)
   const sampleTransactions = [
     { id: 1, type: 'deposit', name: 'Deposit via M-Pesa', date: 'Today, 10:23 AM', amount: 50.00, positive: true, ref: 'MP-2024-00123' },
     { id: 2, type: 'withdraw', name: 'Withdrawal to M-Pesa', date: 'Yesterday, 3:15 PM', amount: 20.00, positive: false, ref: 'WD-2024-00456' },
-    { id: 3, type: 'transfer', name: 'Transfer to Demo', date: 'Yesterday, 11:00 AM', amount: 10.00, positive: false, ref: 'TF-2024-00789' },
     { id: 4, type: 'deposit', name: 'Deposit via Airtel Money', date: 'Aug 5, 9:45 AM', amount: 100.00, positive: true, ref: 'AM-2024-00156' },
     { id: 5, type: 'withdraw', name: 'Withdrawal to Airtel Money', date: 'Aug 4, 6:20 PM', amount: 30.00, positive: false, ref: 'WD-2024-00178' },
   ];
-
-  const getHistoryFiltered = (filter = 'all') => {
-    if (filter === 'all') return sampleTransactions;
-    return sampleTransactions.filter(tx => tx.type === filter);
-  };
 
   // Render modal content based on action
   const renderModalContent = () => {
@@ -1531,7 +1502,6 @@ const TopPanel = ({
                   <div className="tx-icon">
                     {tx.type === 'deposit' && <DepositIcon />}
                     {tx.type === 'withdraw' && <WithdrawIcon />}
-                    {tx.type === 'transfer' && <TransferIcon />}
                   </div>
                   <div className="tx-info">
                     <div className="tx-name">{tx.name}</div>
@@ -1559,13 +1529,13 @@ const TopPanel = ({
 
             <FormGroup>
               <label>Deposit to Deriv Account</label>
-              <div className="input-wrap" style={{ background: '#F3F4F6' }}>
-                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500', color: '#64748B' }}>Account</span>
+              <div className="input-wrap">
+                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Account</span>
                 <input 
                   type="text" 
                   value="Deriv Trading Account" 
                   disabled
-                  style={{ fontWeight: '600', color: '#0F172A', cursor: 'default', opacity: 0.7 }}
+                  style={{ fontWeight: '600', opacity: 0.7 }}
                 />
               </div>
             </FormGroup>
@@ -1640,13 +1610,13 @@ const TopPanel = ({
 
             <FormGroup>
               <label>Withdraw From</label>
-              <div className="input-wrap" style={{ background: '#F3F4F6' }}>
-                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500', color: '#64748B' }}>Account</span>
+              <div className="input-wrap">
+                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Account</span>
                 <input 
                   type="text" 
                   value="Deriv Trading Account" 
                   disabled
-                  style={{ fontWeight: '600', color: '#0F172A', cursor: 'default', opacity: 0.7 }}
+                  style={{ fontWeight: '600', opacity: 0.7 }}
                 />
                 <span className="suffix">{getFormattedBalance(currentAccount)}</span>
               </div>
@@ -1709,75 +1679,6 @@ const TopPanel = ({
           </>
         );
 
-      case 'transfer':
-        return (
-          <>
-            <div style={{ marginBottom: '16px' }}>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <div 
-                  style={{
-                    flex: 1,
-                    padding: '10px 0',
-                    textAlign: 'center',
-                    borderRadius: '10px',
-                    border: `1.5px solid ${transferType === 'real-to-demo' ? '#3B82F6' : 'rgba(0,0,0,0.06)'}`,
-                    background: transferType === 'real-to-demo' ? 'rgba(59,130,246,0.04)' : '#FAFAFA',
-                    cursor: 'pointer',
-                    fontWeight: '600',
-                    fontSize: '13px',
-                    color: transferType === 'real-to-demo' ? '#0F172A' : '#94A3B8',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onClick={() => setTransferType('real-to-demo')}
-                >
-                  Real → Demo
-                </div>
-                <div 
-                  style={{
-                    flex: 1,
-                    padding: '10px 0',
-                    textAlign: 'center',
-                    borderRadius: '10px',
-                    border: `1.5px solid ${transferType === 'demo-to-real' ? '#3B82F6' : 'rgba(0,0,0,0.06)'}`,
-                    background: transferType === 'demo-to-real' ? 'rgba(59,130,246,0.04)' : '#FAFAFA',
-                    cursor: 'pointer',
-                    fontWeight: '600',
-                    fontSize: '13px',
-                    color: transferType === 'demo-to-real' ? '#0F172A' : '#94A3B8',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onClick={() => setTransferType('demo-to-real')}
-                >
-                  Demo → Real
-                </div>
-              </div>
-            </div>
-
-            <FormGroup>
-              <label>Amount to Transfer</label>
-              <div className="input-wrap">
-                <span className="prefix">$</span>
-                <input 
-                  type="number" 
-                  placeholder="0.00" 
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  min="1"
-                  step="0.01"
-                />
-                <span className="suffix">Available: {getFormattedBalance(currentAccount)}</span>
-              </div>
-            </FormGroup>
-
-            <ActionButton 
-              onClick={handleSubmitTransfer} 
-              disabled={!amount || parseFloat(amount) <= 0}
-            >
-              Transfer Funds
-            </ActionButton>
-          </>
-        );
-
       case 'history':
         return (
           <>
@@ -1785,7 +1686,6 @@ const TopPanel = ({
               <button className="filter-btn active" onClick={(e) => { e.currentTarget.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.currentTarget.classList.add('active'); }}>All</button>
               <button className="filter-btn" onClick={(e) => { e.currentTarget.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.currentTarget.classList.add('active'); }}>Deposits</button>
               <button className="filter-btn" onClick={(e) => { e.currentTarget.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.currentTarget.classList.add('active'); }}>Withdrawals</button>
-              <button className="filter-btn" onClick={(e) => { e.currentTarget.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.currentTarget.classList.add('active'); }}>Transfers</button>
             </HistoryFilter>
             <HistoryList>
               {sampleTransactions.map(tx => (
@@ -1794,7 +1694,6 @@ const TopPanel = ({
                     <div className="h-icon">
                       {tx.type === 'deposit' && <DepositIcon />}
                       {tx.type === 'withdraw' && <WithdrawIcon />}
-                      {tx.type === 'transfer' && <TransferIcon />}
                     </div>
                     <div className="h-info">
                       <div className="h-name">{tx.name}</div>
@@ -1977,7 +1876,6 @@ const TopPanel = ({
                   {fundModalAction === 'overview' && <OverviewIcon />}
                   {fundModalAction === 'deposit' && <DepositIcon />}
                   {fundModalAction === 'withdraw' && <WithdrawIcon />}
-                  {fundModalAction === 'transfer' && <TransferIcon />}
                   {fundModalAction === 'history' && <HistoryIcon />}
                 </div>
                 <div>
@@ -1985,12 +1883,10 @@ const TopPanel = ({
                     {fundModalAction === 'overview' && 'Funds Overview'}
                     {fundModalAction === 'deposit' && 'Deposit to Deriv'}
                     {fundModalAction === 'withdraw' && 'Withdraw from Deriv'}
-                    {fundModalAction === 'transfer' && 'Transfer Funds'}
                     {fundModalAction === 'history' && 'Transaction History'}
                   </div>
                   {fundModalAction === 'deposit' && <div className="title-sub">Add funds using mobile money</div>}
                   {fundModalAction === 'withdraw' && <div className="title-sub">Withdraw to your mobile wallet</div>}
-                  {fundModalAction === 'transfer' && <div className="title-sub">Move funds between accounts</div>}
                 </div>
               </div>
               <button className="close-btn" onClick={closeModal}><CloseIcon /></button>
