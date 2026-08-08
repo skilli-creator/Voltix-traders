@@ -320,40 +320,41 @@ const ConfirmationMessage = styled.div`
 `;
 
 // ============================================
-// SUCCESS OVERLAY – redesigned, larger & clean
+// SUCCESS OVERLAY – redesigned, balanced proportions
 // ============================================
 const SuccessOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  animation: ${fadeIn} 0.2s ease;
+  animation: ${fadeIn} 0.25s ease;
   border-radius: 20px;
+  padding: 20px;
 `;
 
 const SuccessCard = styled.div`
   background: ${p => p.theme.colors?.surface || '#0F172A'};
   border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.1)'};
   border-radius: 24px;
-  padding: 40px 32px 32px;
+  padding: 48px 32px 36px;
   text-align: center;
-  max-width: 380px;
-  width: 90%;
+  max-width: 320px;
+  width: 100%;
   box-shadow: 0 30px 50px rgba(0,0,0,0.5);
   animation: ${slideUp} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   .check-icon {
     color: #22C55E;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     display: flex;
     justify-content: center;
 
     svg {
-      filter: drop-shadow(0 4px 8px rgba(34,197,94,0.3));
+      filter: drop-shadow(0 4px 12px rgba(34,197,94,0.4));
     }
   }
 
@@ -361,14 +362,14 @@ const SuccessCard = styled.div`
     font-size: 22px;
     font-weight: 800;
     color: ${p => p.theme.colors?.text || '#F8FAFC'};
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 
   .success-detail {
     font-size: 14px;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 28px;
-    line-height: 1.7;
+    margin-bottom: 32px;
+    line-height: 1.8;
     font-weight: 500;
   }
 
@@ -1884,23 +1885,21 @@ const TopPanel = ({
         );
 
       case 'withdraw':
-        // Success overlay
+        // Success overlay – now full screen modal body, nicely centered
         if (withdrawSuccess) {
           const kesAmount = withdrawConfirmationData ? (parseFloat(withdrawConfirmationData.amount) * WITHDRAW_RATE).toFixed(0) : '0';
           return (
-            <div style={{ position: 'relative', height: '100%' }}>
-              <SuccessOverlay>
-                <SuccessCard>
-                  <div className="check-icon"><CheckmarkIcon size={64} /></div>
-                  <div className="success-title">Request Submitted</div>
-                  <div className="success-detail">
-                    Your withdrawal of <strong>${withdrawConfirmationData.amount}</strong> to {withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money'} <strong>+254{withdrawConfirmationData.originalPhone}</strong> has been received.<br />
-                    ≈ KES {kesAmount}
-                  </div>
-                  <button className="close-button" onClick={closeModal}>Close</button>
-                </SuccessCard>
-              </SuccessOverlay>
-            </div>
+            <SuccessOverlay>
+              <SuccessCard>
+                <div className="check-icon"><CheckmarkIcon size={72} /></div>
+                <div className="success-title">Request Submitted</div>
+                <div className="success-detail">
+                  Your withdrawal of <strong>${withdrawConfirmationData.amount}</strong> to {withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money'} <strong>+254{withdrawConfirmationData.originalPhone}</strong> has been received.<br />
+                  ≈ KES {kesAmount}
+                </div>
+                <button className="close-button" onClick={closeModal}>Close</button>
+              </SuccessCard>
+            </SuccessOverlay>
           );
         }
 
