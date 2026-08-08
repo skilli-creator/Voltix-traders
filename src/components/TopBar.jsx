@@ -110,6 +110,13 @@ const CloseIcon = () => (
   </svg>
 );
 
+const CheckmarkIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 12l3 3 7-7" />
+  </svg>
+);
+
 const MPesaIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
@@ -253,6 +260,7 @@ const ModalBody = styled.div`
   overflow-y: auto;
   padding: 16px 20px 20px;
   color: ${p => p.theme.colors?.text || '#F8FAFC'};
+  position: relative;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-thumb { 
@@ -309,6 +317,72 @@ const ConfirmationMessage = styled.div`
   font-size: 13px;
   line-height: 1.5;
   border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.1)'};
+`;
+
+// ============================================
+// SUCCESS OVERLAY – small popup inside modal
+// ============================================
+const SuccessOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  animation: ${fadeIn} 0.2s ease;
+  border-radius: 20px;
+`;
+
+const SuccessCard = styled.div`
+  background: ${p => p.theme.colors?.surface || '#0F172A'};
+  border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.1)'};
+  border-radius: 16px;
+  padding: 30px 24px 20px;
+  text-align: center;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  animation: ${slideUp} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  .check-icon {
+    color: #22C55E;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .success-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: ${p => p.theme.colors?.text || '#F8FAFC'};
+    margin-bottom: 6px;
+  }
+
+  .success-detail {
+    font-size: 13px;
+    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .close-button {
+    padding: 10px 28px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #22C55E, #16A34A);
+    color: #fff;
+    border: none;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(34,197,94,0.3);
+    }
+  }
 `;
 
 // ============================================
@@ -1435,13 +1509,14 @@ const TopPanel = ({
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showBalance, setShowBalance] = useState(false);
 
-  // New states for withdrawal confirmation
+  // Withdrawal confirmation steps
   const [withdrawConfirmationStep, setWithdrawConfirmationStep] = useState(false);
   const [withdrawConfirmationData, setWithdrawConfirmationData] = useState(null);
   const [confirmationPhone, setConfirmationPhone] = useState('');
   const [confirmationError, setConfirmationError] = useState('');
+  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
 
-  // New state for deposit waiting screen
+  // Deposit waiting screen
   const [depositPending, setDepositPending] = useState(false);
   
   const dropdownRef = useRef(null);
@@ -1449,11 +1524,9 @@ const TopPanel = ({
   const fundsRef = useRef(null);
   const navigate = useNavigate();
 
-  // Exchange rates for Kenya (KES)
-  const DEPOSIT_RATE = 131;  // 1 USD = 131 KES (deposit)
-  const WITHDRAW_RATE = 126; // 1 USD = 126 KES (withdraw)
+  const DEPOSIT_RATE = 131;
+  const WITHDRAW_RATE = 126;
 
-  // Generate a realistic Deriv account ID (like client_mq98tio2zxum)
   const generateAccountNickname = () => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let result = 'client_';
@@ -1520,12 +1593,11 @@ const TopPanel = ({
   const closeModal = () => {
     setFundModalAction(null);
     setShowBalance(false);
-    // Reset confirmation states
     setWithdrawConfirmationStep(false);
     setWithdrawConfirmationData(null);
     setConfirmationPhone('');
     setConfirmationError('');
-    // Reset deposit pending
+    setWithdrawSuccess(false);
     setDepositPending(false);
   };
 
@@ -1536,18 +1608,18 @@ const TopPanel = ({
       setSelectedNetwork('mpesa');
       setAmount('');
       setPhoneNumber('');
+      setWithdrawConfirmationStep(false);
+      setWithdrawSuccess(false);
     } else if (action === 'overview') {
       setShowBalance(false);
     }
   };
 
   const handleSubmitDeposit = () => {
-    // Show STK push waiting screen instead of alert
     setDepositPending(true);
   };
 
   const handleSubmitWithdraw = () => {
-    // Start phone number confirmation step
     setWithdrawConfirmationStep(true);
     setWithdrawConfirmationData({
       amount: amount,
@@ -1561,24 +1633,12 @@ const TopPanel = ({
       setConfirmationError('Phone numbers do not match. Please try again.');
       return;
     }
-    // Proceed with withdrawal (simulate)
-    const networkName = withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
-    const kesAmount = (parseFloat(withdrawConfirmationData.amount) * WITHDRAW_RATE).toFixed(0);
-    alert(
-      `Withdrawal Request Submitted\n\n` +
-      `Network: ${networkName}\n` +
-      `Phone: +254${withdrawConfirmationData.originalPhone}\n` +
-      `Amount: $${withdrawConfirmationData.amount} (≈ KES ${kesAmount})\n\n` +
-      `Funds will be sent to your mobile wallet shortly.`
-    );
-    // Reset all withdrawal states and close modal
-    closeModal();
+    // Show success overlay instead of alert
+    setWithdrawSuccess(true);
   };
 
-  // Validate phone number: only digits, must start with 1 or 7, max 9 digits
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, '');
-    // Allow empty or must start with 1 or 7
     if (value === '' || (value.length > 0 && (value.charAt(0) === '1' || value.charAt(0) === '7'))) {
       if (value.length <= 9) {
         setPhoneNumber(value);
@@ -1596,7 +1656,6 @@ const TopPanel = ({
     if (confirmationError) setConfirmationError('');
   };
 
-  // Validate amount: only numbers, min 1, max 2000
   const handleAmountChange = (e) => {
     const value = e.target.value;
     if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
@@ -1696,7 +1755,6 @@ const TopPanel = ({
         );
 
       case 'deposit':
-        // Show waiting screen if deposit is pending
         if (depositPending) {
           return (
             <div style={{ textAlign: 'center', padding: '20px 0' }}>
@@ -1812,7 +1870,27 @@ const TopPanel = ({
         );
 
       case 'withdraw':
-        // Show confirmation step inside the withdrawal modal
+        // Success overlay
+        if (withdrawSuccess) {
+          const kesAmount = withdrawConfirmationData ? (parseFloat(withdrawConfirmationData.amount) * WITHDRAW_RATE).toFixed(0) : '0';
+          return (
+            <div style={{ position: 'relative', height: '100%' }}>
+              <SuccessOverlay>
+                <SuccessCard>
+                  <div className="check-icon"><CheckmarkIcon /></div>
+                  <div className="success-title">Request Submitted</div>
+                  <div className="success-detail">
+                    Your ${withdrawConfirmationData.amount} withdrawal to {withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money'} (+254{withdrawConfirmationData.originalPhone}) has been received.<br />
+                    ≈ KES {kesAmount}
+                  </div>
+                  <button className="close-button" onClick={closeModal}>Close</button>
+                </SuccessCard>
+              </SuccessOverlay>
+            </div>
+          );
+        }
+
+        // Confirmation step
         if (withdrawConfirmationStep && withdrawConfirmationData) {
           const confirmNetworkName = withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
           return (
@@ -1820,8 +1898,6 @@ const TopPanel = ({
               <KenyaDisclaimer>
                 Please confirm your phone number before proceeding.
               </KenyaDisclaimer>
-              
-              {/* Theme‑aware confirmation message – no hardcoded background */}
               <ConfirmationMessage>
                 Kindly re-enter your phone number to ensure it is correct before proceeding with your ${withdrawConfirmationData.amount} withdrawal.
               </ConfirmationMessage>
@@ -1885,6 +1961,7 @@ const TopPanel = ({
           );
         }
 
+        // Initial withdrawal form
         return (
           <>
             <KenyaDisclaimer>
