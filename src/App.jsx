@@ -13,7 +13,6 @@ import Verifyresetcode from './pages/Verifyresetcode';
 import Resetpass from './pages/Resetpass';
 import Marketsdash from './pages/Marketsdash';
 import Derivdash from './pages/Derivdash';
-import PaymentAgentDashboard from './pages/PaymentAgentDashboard';
 
 // Import Components
 import Academy from './pages/Academy';
@@ -35,8 +34,6 @@ const App = () => {
       {/* Dashboard Pages */}
       <Route path="/marketsdash" element={<Marketsdash />} />
       
-      {/* Trading Tools */}
-      <Route path="/payment-dashboard" element={<PaymentAgentDashboard />} />
 
       {/* Deriv Trading Dashboard */}
       <Route path="/derivdash" element={<Derivdash />} />
