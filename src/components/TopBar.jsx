@@ -767,16 +767,14 @@ const ExitButton = styled.button`
 // THEME DEFINITIONS - Premium themes (matching Derivdash)
 // ============================================
 const THEME_OPTIONS = [
-  { key: 'dark', name: 'Solid Dark', color: '#09090b' },
-  { key: 'midnight', name: 'Midnight Indigo', color: '#070a12' },
-  { key: 'ocean', name: 'Deep Ocean', color: '#020d14' },
-  { key: 'cosmic', name: 'Cosmic Violet', color: '#07040d' },
-  { key: 'forest', name: 'Emerald', color: '#040d0a' },
-  { key: 'sunset', name: 'Warm Sunset', color: '#0f0705' },
-  { key: 'light', name: 'Pure White', color: '#f9fafb' },
-  { key: 'minimalWhite', name: 'Minimal White', color: '#f9fafb' },
+  { key: 'white', name: 'White', color: '#f8fafc' },
+  { key: 'dark', name: 'Dark', color: '#09090b' },
+  { key: 'gold', name: 'Gold', color: '#0a0a0a' },
+  { key: 'forest', name: 'Forest', color: '#040d0a' },
+  { key: 'ocean', name: 'Ocean', color: '#020d14' },
+  { key: 'red', name: 'Red', color: '#0f0404' },
+  { key: 'orange', name: 'Orange', color: '#0f0702' },
 ];
-
 // ============================================
 // MAIN COMPONENT
 // ============================================
