@@ -4162,6 +4162,60 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return texts[value] || '';
   };
 
+  // ===== NEW: Export CSV function =====
+  const exportCSV = () => {
+    const headers = ['Date', 'Market', 'Type', 'Direction', 'Stake', 'Payout', 'Result', 'Strategy', 'Mode', 'Notes'];
+    const rows = journalTrades.map(t => [
+      new Date(t.timestamp).toLocaleString(),
+      t.market,
+      t.tradeType,
+      t.direction,
+      t.stake,
+      t.payout,
+      t.result,
+      t.strategy,
+      t.mode,
+      t.notes
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trade_journal_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // ===== NEW: Derived journal data =====
+  const filteredTrades = useMemo(() => {
+    if (filter === 'all') return journalTrades;
+    return journalTrades.filter(t => t.result === filter);
+  }, [journalTrades, filter]);
+
+  const stats = useMemo(() => {
+    const wins = journalTrades.filter(t => t.result === 'win').length;
+    const losses = journalTrades.filter(t => t.result === 'loss').length;
+    const total = wins + losses;
+    const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
+    const totalPnL = journalTrades.reduce((acc, t) => acc + (t.payout || 0) - (t.stake || 0), 0);
+    const best = Math.max(...journalTrades.map(t => (t.payout || 0) - (t.stake || 0)), 0);
+    const worst = Math.min(...journalTrades.map(t => (t.payout || 0) - (t.stake || 0)), 0);
+    return { wins, losses, total, winRate, totalPnL, best, worst };
+  }, [journalTrades]);
+
+  const handleNoteSave = () => {
+    if (noteModal === null) return;
+    const updated = journalTrades.map(t => t.id === noteModal ? { ...t, notes: editNote } : t);
+    setJournalTrades(updated);
+    localStorage.setItem('tradeJournal', JSON.stringify(updated));
+    setNoteModal(null);
+    setEditNote('');
+  };
+
+  // ============================================
+  // RENDER
+  // ============================================
   return (
     <>
       {/* Full Panel (Academy / Journal) */}
