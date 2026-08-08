@@ -31,10 +31,13 @@ const fadeIn = keyframes`
   to { opacity: 1; }
 `;
 
+const spin = keyframes`
+  to { transform: rotate(360deg); }
+`;
+
 // ============================================
 // PROFESSIONAL SVG ICONS
 // ============================================
-
 const ThemeIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="5" />
@@ -330,8 +333,28 @@ const MobileNetworkSelector = styled.div`
       box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
+    /* Selected state: white border + checkmark */
     &.selected {
-      box-shadow: 0 0 0 3px rgba(255,255,255,0.3), 0 8px 24px rgba(0,0,0,0.3);
+      border-color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(255,255,255,0.4), 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    &.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      color: #000;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .network-icon {
@@ -425,6 +448,13 @@ const FormGroup = styled.div`
     font-size: 10px;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     margin-top: 3px;
+  }
+
+  .error-text {
+    font-size: 10px;
+    color: #EF4444;
+    margin-top: 3px;
+    font-weight: 500;
   }
 `;
 
@@ -707,7 +737,6 @@ const HistoryList = styled.div`
 // ============================================
 // CORE CONTAINERS (unchanged)
 // ============================================
-
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -1353,6 +1382,19 @@ const THEME_OPTIONS = [
 ];
 
 // ============================================
+// SPINNER COMPONENT (FOR DEPOSIT WAITING)
+// ============================================
+const Spinner = styled.div`
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: ${spin} 0.8s linear infinite;
+  margin: 0 auto 12px;
+`;
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 
@@ -1375,6 +1417,15 @@ const TopPanel = ({
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showBalance, setShowBalance] = useState(false);
+
+  // New states for withdrawal confirmation
+  const [withdrawConfirmationStep, setWithdrawConfirmationStep] = useState(false);
+  const [withdrawConfirmationData, setWithdrawConfirmationData] = useState(null);
+  const [confirmationPhone, setConfirmationPhone] = useState('');
+  const [confirmationError, setConfirmationError] = useState('');
+
+  // New state for deposit waiting screen
+  const [depositPending, setDepositPending] = useState(false);
   
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
@@ -1452,6 +1503,13 @@ const TopPanel = ({
   const closeModal = () => {
     setFundModalAction(null);
     setShowBalance(false);
+    // Reset confirmation states
+    setWithdrawConfirmationStep(false);
+    setWithdrawConfirmationData(null);
+    setConfirmationPhone('');
+    setConfirmationError('');
+    // Reset deposit pending
+    setDepositPending(false);
   };
 
   const handleFundAction = (action) => {
@@ -1467,41 +1525,58 @@ const TopPanel = ({
   };
 
   const handleSubmitDeposit = () => {
-    const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
-    const kesAmount = (parseFloat(amount) * DEPOSIT_RATE).toFixed(0);
-    alert(
-      `Deposit Request\n\n` +
-      `Network: ${networkName}\n` +
-      `Phone: +254${phoneNumber}\n` +
-      `Amount: $${amount} (≈ KES ${kesAmount})\n\n` +
-      `A confirmation SMS will be sent to your phone.`
-    );
+    // Show STK push waiting screen instead of alert
+    setDepositPending(true);
   };
 
   const handleSubmitWithdraw = () => {
-    const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
-    const kesAmount = (parseFloat(amount) * WITHDRAW_RATE).toFixed(0);
+    // Start phone number confirmation step
+    setWithdrawConfirmationStep(true);
+    setWithdrawConfirmationData({
+      amount: amount,
+      network: selectedNetwork,
+      originalPhone: phoneNumber,
+    });
+  };
+
+  const handleConfirmWithdraw = () => {
+    if (confirmationPhone !== withdrawConfirmationData.originalPhone) {
+      setConfirmationError('Phone numbers do not match. Please try again.');
+      return;
+    }
+    // Proceed with withdrawal (simulate)
+    const networkName = withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+    const kesAmount = (parseFloat(withdrawConfirmationData.amount) * WITHDRAW_RATE).toFixed(0);
     alert(
-      `Withdrawal Request\n\n` +
+      `Withdrawal Request Submitted\n\n` +
       `Network: ${networkName}\n` +
-      `Phone: +254${phoneNumber}\n` +
-      `Amount: $${amount} (≈ KES ${kesAmount})\n\n` +
-      `Funds will be sent to your mobile wallet within 24 hours.`
+      `Phone: +254${withdrawConfirmationData.originalPhone}\n` +
+      `Amount: $${withdrawConfirmationData.amount} (≈ KES ${kesAmount})\n\n` +
+      `Funds will be sent to your mobile wallet shortly.`
     );
+    // Reset all withdrawal states and close modal
+    closeModal();
   };
 
   // Validate phone number: only digits, exactly 9 digits (Kenyan format after +254)
   const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ''); // remove non-digits
+    const value = e.target.value.replace(/\D/g, '');
     if (value.length <= 9) {
       setPhoneNumber(value);
     }
   };
 
+  const handleConfirmationPhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 9) {
+      setConfirmationPhone(value);
+    }
+    if (confirmationError) setConfirmationError('');
+  };
+
   // Validate amount: only numbers, min 1, max 2000
   const handleAmountChange = (e) => {
     const value = e.target.value;
-    // Allow empty or valid number
     if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
       const num = parseFloat(value);
       if (value === '' || (num >= 1 && num <= 2000)) {
@@ -1599,6 +1674,37 @@ const TopPanel = ({
         );
 
       case 'deposit':
+        // Show waiting screen if deposit is pending
+        if (depositPending) {
+          return (
+            <div style={{ textAlign: 'center', padding: '20px 0' }}>
+              <Spinner />
+              <div style={{ 
+                fontSize: '15px', 
+                fontWeight: 600, 
+                marginBottom: '12px',
+                color: '#F8FAFC'
+              }}>
+                Please wait for the payment prompt on your phone and enter your PIN to complete the transaction.
+              </div>
+              <button 
+                onClick={() => setDepositPending(false)}
+                style={{
+                  padding: '8px 20px',
+                  borderRadius: '8px',
+                  background: '#3B82F6',
+                  color: 'white',
+                  border: 'none',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                OK
+              </button>
+            </div>
+          );
+        }
+
         return (
           <>
             <KenyaDisclaimer>
@@ -1684,6 +1790,85 @@ const TopPanel = ({
         );
 
       case 'withdraw':
+        // Show confirmation step inside the withdrawal modal
+        if (withdrawConfirmationStep && withdrawConfirmationData) {
+          const confirmNetworkName = withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+          return (
+            <div>
+              <KenyaDisclaimer>
+                Please confirm your phone number before proceeding.
+              </KenyaDisclaimer>
+              <div style={{ 
+                textAlign: 'center', 
+                marginBottom: '14px',
+                padding: '10px',
+                background: '#f0f9ff',
+                borderRadius: '8px',
+                color: '#1e3a8a',
+                fontWeight: 500,
+                fontSize: '13px'
+              }}>
+                Kindly re-enter your phone number to ensure it is correct before proceeding with your ${withdrawConfirmationData.amount} withdrawal.
+              </div>
+              <FormGroup>
+                <label>Selected Network</label>
+                <div style={{
+                  padding: '12px',
+                  borderRadius: '10px',
+                  background: withdrawConfirmationData.network === 'mpesa' 
+                    ? 'linear-gradient(135deg, #28A745 0%, #20C997 100%)' 
+                    : 'linear-gradient(135deg, #E53935 0%, #FF5252 100%)',
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  fontWeight: 600
+                }}>
+                  <span>{withdrawConfirmationData.network === 'mpesa' ? <MPesaIcon /> : <AirtelIcon />}</span>
+                  {confirmNetworkName}
+                </div>
+              </FormGroup>
+              <FormGroup>
+                <label>Re-enter Phone Number</label>
+                <div className="input-wrap">
+                  <span className="prefix">+254</span>
+                  <input 
+                    type="tel" 
+                    placeholder="7XX XXX XXX" 
+                    value={confirmationPhone}
+                    onChange={handleConfirmationPhoneChange}
+                    maxLength={9}
+                  />
+                </div>
+                <div className="helper-text">Must match the number you entered earlier</div>
+                {confirmationError && <div className="error-text">{confirmationError}</div>}
+              </FormGroup>
+              <ActionButton 
+                onClick={handleConfirmWithdraw}
+                disabled={confirmationPhone.length !== 9}
+              >
+                Confirm Withdrawal
+              </ActionButton>
+              <button 
+                onClick={() => setWithdrawConfirmationStep(false)}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  marginTop: '8px',
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: '10px',
+                  color: '#94A3B8',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                Back
+              </button>
+            </div>
+          );
+        }
+
         return (
           <>
             <KenyaDisclaimer>
