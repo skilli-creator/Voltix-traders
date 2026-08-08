@@ -110,8 +110,8 @@ const CloseIcon = () => (
   </svg>
 );
 
-const CheckmarkIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+const CheckmarkIcon = ({ size = 48 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <path d="M8 12l3 3 7-7" />
   </svg>
@@ -304,7 +304,7 @@ const WalletInfo = styled.div`
 `;
 
 // ============================================
-// CONFIRMATION PROMPT – THEME‑AWARE (no hardcoded colors)
+// CONFIRMATION PROMPT – THEME‑AWARE
 // ============================================
 const ConfirmationMessage = styled.div`
   text-align: center;
@@ -320,7 +320,7 @@ const ConfirmationMessage = styled.div`
 `;
 
 // ============================================
-// SUCCESS OVERLAY – small popup inside modal
+// SUCCESS OVERLAY – redesigned, larger & clean
 // ============================================
 const SuccessOverlay = styled.div`
   position: absolute;
@@ -338,49 +338,55 @@ const SuccessOverlay = styled.div`
 const SuccessCard = styled.div`
   background: ${p => p.theme.colors?.surface || '#0F172A'};
   border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.1)'};
-  border-radius: 16px;
-  padding: 30px 24px 20px;
+  border-radius: 24px;
+  padding: 40px 32px 32px;
   text-align: center;
-  max-width: 320px;
+  max-width: 380px;
   width: 90%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  animation: ${slideUp} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+  animation: ${slideUp} 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   .check-icon {
     color: #22C55E;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     display: flex;
     justify-content: center;
+
+    svg {
+      filter: drop-shadow(0 4px 8px rgba(34,197,94,0.3));
+    }
   }
 
   .success-title {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 800;
     color: ${p => p.theme.colors?.text || '#F8FAFC'};
-    margin-bottom: 6px;
+    margin-bottom: 12px;
   }
 
   .success-detail {
-    font-size: 13px;
+    font-size: 14px;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 20px;
-    line-height: 1.6;
+    margin-bottom: 28px;
+    line-height: 1.7;
+    font-weight: 500;
   }
 
   .close-button {
-    padding: 10px 28px;
-    border-radius: 10px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
     background: linear-gradient(135deg, #22C55E, #16A34A);
     color: #fff;
     border: none;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(34,197,94,0.3);
+      box-shadow: 0 8px 25px rgba(34,197,94,0.4);
     }
   }
 `;
@@ -423,7 +429,6 @@ const MobileNetworkSelector = styled.div`
       box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
-    /* Selected state: white border + checkmark */
     &.selected {
       border-color: #FFFFFF;
       box-shadow: 0 0 15px rgba(255,255,255,0.4), 0 8px 24px rgba(0,0,0,0.3);
@@ -472,7 +477,7 @@ const MobileNetworkSelector = styled.div`
 `;
 
 // ============================================
-// FORM INPUTS (theme‑aware)
+// FORM INPUTS (theme‑aware) – with spinners hidden
 // ============================================
 const FormGroup = styled.div`
   margin-bottom: 12px;
@@ -524,6 +529,16 @@ const FormGroup = styled.div`
         color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
         font-weight: 400;
         opacity: 0.5;
+      }
+
+      /* Hide number input spinners */
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      &[type='number'] {
+        -moz-appearance: textfield;
       }
     }
 
@@ -1633,7 +1648,6 @@ const TopPanel = ({
       setConfirmationError('Phone numbers do not match. Please try again.');
       return;
     }
-    // Show success overlay instead of alert
     setWithdrawSuccess(true);
   };
 
@@ -1877,10 +1891,10 @@ const TopPanel = ({
             <div style={{ position: 'relative', height: '100%' }}>
               <SuccessOverlay>
                 <SuccessCard>
-                  <div className="check-icon"><CheckmarkIcon /></div>
+                  <div className="check-icon"><CheckmarkIcon size={64} /></div>
                   <div className="success-title">Request Submitted</div>
                   <div className="success-detail">
-                    Your ${withdrawConfirmationData.amount} withdrawal to {withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money'} (+254{withdrawConfirmationData.originalPhone}) has been received.<br />
+                    Your withdrawal of <strong>${withdrawConfirmationData.amount}</strong> to {withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money'} <strong>+254{withdrawConfirmationData.originalPhone}</strong> has been received.<br />
                     ≈ KES {kesAmount}
                   </div>
                   <button className="close-button" onClick={closeModal}>Close</button>
