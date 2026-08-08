@@ -1,5 +1,5 @@
 // src/components/OptionSideBar.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Academy from '../pages/Academy'; // <-- Correct import path
@@ -598,6 +598,94 @@ const ModalBody = styled.div`
   @media (max-width: 480px) {
     padding: 12px 14px 16px;
   }
+`;
+
+// ============================================
+// JOURNAL SPECIFIC STYLES (NEW)
+// ============================================
+const JournalContainer = styled.div`
+  display: flex; flex-direction: column; height: 100%;
+  color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+`;
+
+const JournalToolbar = styled.div`
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 0; border-bottom: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+
+  .toolbar-left { display: flex; align-items: center; gap: 12px; }
+  .toolbar-right { display: flex; align-items: center; gap: 12px; }
+`;
+
+const FilterChip = styled.button`
+  padding: 6px 14px; border-radius: 20px;
+  border: 1px solid ${p => p.active ? p.theme?.colors?.accent || '#3B82F6' : 'rgba(255,255,255,0.08)'};
+  background: ${p => p.active ? (p.theme?.colors?.accentLight || 'rgba(59,130,246,0.1)') : 'transparent'};
+  color: ${p => p.active ? p.theme?.colors?.accent || '#3B82F6' : p.theme?.colors?.textSecondary || '#94A3B8'};
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover { border-color: rgba(255,255,255,0.12); color: ${p => p.theme?.colors?.text || '#F8FAFC'}; }
+`;
+
+const JournalButton = styled.button`
+  padding: 7px 16px; border-radius: 8px;
+  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  background: ${p => p.primary ? (p.theme?.colors?.accent || '#3B82F6') : 'transparent'};
+  color: ${p => p.primary ? '#ffffff' : p.theme?.colors?.textSecondary || '#94A3B8'};
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover { border-color: ${p => p.theme?.colors?.accent || '#3B82F6'}; color: ${p => p.theme?.colors?.text || '#F8FAFC'}; }
+`;
+
+const StatsRow = styled.div`
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px; margin-bottom: 20px;
+`;
+
+const StatBox = styled.div`
+  background: ${p => p.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  border-radius: 10px; padding: 12px 14px;
+  text-align: center;
+  .stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.6px; color: ${p => p.theme?.colors?.textMuted || '#64748B'}; margin-bottom: 4px; }
+  .stat-value { font-size: 20px; font-weight: 700; color: ${p => p.color || p.theme?.colors?.text || '#F8FAFC'}; font-family: 'Courier New', monospace; }
+  .stat-sub { font-size: 10px; color: ${p => p.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; }
+`;
+
+const TableContainer = styled.div`
+  flex: 1; overflow-y: auto; border-radius: 10px;
+  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
+  background: ${p => p.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+`;
+
+const JournalTable = styled.table`
+  width: 100%; border-collapse: collapse; font-size: 11px;
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  th { font-weight: 600; color: ${p => p.theme?.colors?.textMuted || '#64748B'}; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; background: ${p => p.theme?.colors?.surface || '#0F172A'}; }
+  td { color: ${p => p.theme?.colors?.textSecondary || '#CBD5E1'}; }
+  .win { color: #10B981; font-weight: 600; }
+  .loss { color: #EF4444; font-weight: 600; }
+  .pending { color: #F59E0B; }
+  .notes-cell { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+`;
+
+const NoteModal = styled.div`
+  position: fixed; inset: 0; background: rgba(0,0,0,0.2); z-index: 3000;
+  display: flex; align-items: center; justify-content: center;
+  animation: ${fadeIn} 0.2s ease;
+`;
+const NoteModalContent = styled.div`
+  background: ${p => p.theme?.colors?.surface || '#0F172A'};
+  border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
+  padding: 24px; width: 90%; max-width: 420px;
+  color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  .title { font-size: 15px; font-weight: 700; }
+  textarea { flex: 1; min-height: 80px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; color: inherit; padding: 12px; font-size: 12px; outline: none; resize: vertical; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; }
 `;
 
 // ============================================
@@ -2747,6 +2835,18 @@ const SidebarFooter = styled.footer`
 `;
 
 // ============================================
+// GLOBAL LOG TRADE FUNCTION (NEW)
+// ============================================
+if (!window.logTrade) {
+  window.logTrade = (trade) => {
+    const journal = JSON.parse(localStorage.getItem('tradeJournal') || '[]');
+    journal.unshift({ ...trade, id: trade.id || Date.now(), notes: trade.notes || '' });
+    localStorage.setItem('tradeJournal', JSON.stringify(journal));
+    window.dispatchEvent(new Event('tradeLogUpdated'));
+  };
+}
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 
@@ -2773,6 +2873,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // Full Panel state
   const [isFullPanelOpen, setIsFullPanelOpen] = useState(false);
   const [fullPanelContent, setFullPanelContent] = useState(null);
+  const [currentPanel, setCurrentPanel] = useState(null); // 'academy' or 'journal'
 
   // Settings state
   const [isEditing, setIsEditing] = useState(false);
@@ -2803,6 +2904,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [copyClients, setCopyClients] = useState([]);
   const [copyShowAddClient, setCopyShowAddClient] = useState(false);
 
+  // ---------- NEW JOURNAL STATE ----------
+  const [journalTrades, setJournalTrades] = useState([]);
+  const [filter, setFilter] = useState('all'); // all, win, loss
+  const [noteModal, setNoteModal] = useState(null);
+  const [editNote, setEditNote] = useState('');
+
   // Load user data for settings
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -2818,6 +2925,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       const age = calculateAge(userData.date_of_birth);
       setCalculatedAge(age);
     }
+  }, []);
+
+  // Load journal on mount and listen for updates
+  useEffect(() => {
+    const loadJournal = () => setJournalTrades(JSON.parse(localStorage.getItem('tradeJournal') || '[]'));
+    loadJournal();
+    window.addEventListener('tradeLogUpdated', loadJournal);
+    return () => window.removeEventListener('tradeLogUpdated', loadJournal);
   }, []);
 
   const calculateAge = (dob) => {
@@ -2903,6 +3018,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const closeFullPanel = () => {
     setIsFullPanelOpen(false);
+    setCurrentPanel(null);
     setTimeout(() => setFullPanelContent(null), 300);
   };
 
@@ -3463,6 +3579,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // ===== ACADEMY HANDLER (Full Panel) =====
   const handleAcademyClick = () => {
     setActiveItem('academy');
+    setCurrentPanel('academy');
     openFullPanel(<Academy />);
   };
 
@@ -3782,34 +3899,82 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     });
   };
 
-  // ===== JOURNAL HANDLER =====
+  // ===== JOURNAL HANDLER (NEW - opens in full panel) =====
   const handleJournalClick = () => {
     setActiveItem('journal');
-    openPopup({
-      title: 'Journal',
-      icon: <JournalIcon />,
-      content: (
-        <div>
-          <div style={{
-            padding: '20px',
-            textAlign: 'center',
-            background: 'rgba(255,255,255,0.02)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.04)'
-          }}>
-            <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}>
-              <JournalIcon />
-            </div>
-            <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>
-              Trading Journal
-            </h3>
-            <p style={{ color: '#94A3B8', fontSize: '13px' }}>
-              Your trading journal entries will appear here.
-            </p>
+    setCurrentPanel('journal');
+    // Build journal content dynamically using current state
+    const journalContent = (
+      <JournalContainer>
+        <JournalToolbar>
+          <div className="toolbar-left">
+            <FilterChip active={filter === 'all'} onClick={() => setFilter('all')}>All Trades</FilterChip>
+            <FilterChip active={filter === 'win'} onClick={() => setFilter('win')}>Wins</FilterChip>
+            <FilterChip active={filter === 'loss'} onClick={() => setFilter('loss')}>Losses</FilterChip>
           </div>
-        </div>
-      )
-    });
+          <div className="toolbar-right">
+            <JournalButton onClick={exportCSV}>Export CSV</JournalButton>
+          </div>
+        </JournalToolbar>
+
+        <StatsRow>
+          <StatBox color="#10B981">
+            <div className="stat-label">Win Rate</div>
+            <div className="stat-value">{stats.winRate}%</div>
+            <div className="stat-sub">{stats.wins}W / {stats.losses}L</div>
+          </StatBox>
+          <StatBox color={stats.totalPnL >= 0 ? '#10B981' : '#EF4444'}>
+            <div className="stat-label">Total P&L</div>
+            <div className="stat-value">{stats.totalPnL >= 0 ? '+' : ''}${Math.abs(stats.totalPnL).toFixed(2)}</div>
+            <div className="stat-sub">Net profit/loss</div>
+          </StatBox>
+          <StatBox color="#10B981">
+            <div className="stat-label">Best Trade</div>
+            <div className="stat-value">+${Math.abs(stats.best).toFixed(2)}</div>
+            <div className="stat-sub">Max profit</div>
+          </StatBox>
+          <StatBox color="#EF4444">
+            <div className="stat-label">Worst Trade</div>
+            <div className="stat-value">-${Math.abs(stats.worst).toFixed(2)}</div>
+            <div className="stat-sub">Max loss</div>
+          </StatBox>
+        </StatsRow>
+
+        <TableContainer>
+          <JournalTable>
+            <thead>
+              <tr>
+                <th>Date</th><th>Market</th><th>Type</th><th>Direction</th>
+                <th>Stake</th><th>Payout</th><th>Result</th>
+                <th>Strategy</th><th>Mode</th><th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTrades.length === 0 ? (
+                <tr><td colSpan={10} style={{ textAlign: 'center', padding: '40px', color: '#64748B' }}>No trades recorded yet.</td></tr>
+              ) : (
+                filteredTrades.map(t => (
+                  <tr key={t.id}>
+                    <td>{new Date(t.timestamp).toLocaleDateString()}<br/><span style={{fontSize:9,color:'#64748B'}}>{new Date(t.timestamp).toLocaleTimeString()}</span></td>
+                    <td>{t.market}</td>
+                    <td>{t.tradeType}</td>
+                    <td>{t.direction}</td>
+                    <td>${t.stake?.toFixed(2) || '0.00'}</td>
+                    <td>${t.payout?.toFixed(2) || '0.00'}</td>
+                    <td className={t.result === 'win' ? 'win' : t.result === 'loss' ? 'loss' : 'pending'}>{t.result}</td>
+                    <td>{t.strategy || '-'}</td>
+                    <td>{t.mode}</td>
+                    <td className="notes-cell" onClick={() => { setNoteModal(t.id); setEditNote(t.notes); }}>{t.notes || 'Add note...'}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </JournalTable>
+        </TableContainer>
+      </JournalContainer>
+    );
+    setFullPanelContent(journalContent);
+    setIsFullPanelOpen(true);
   };
 
   // ===== ALL POPUP HANDLERS =====
@@ -3999,13 +4164,17 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Full Panel - Right Side Slide-in */}
+      {/* Full Panel (Academy / Journal) */}
       <FullPanelOverlay isOpen={isFullPanelOpen} onClick={closeFullPanel}>
         <FullPanelContainer onClick={(e) => e.stopPropagation()}>
           <FullPanelHeader>
             <div className="panel-title-group">
-              <span className="panel-icon"><AcademyIcon /></span>
-              <span className="panel-title">MyTradeApp Academy</span>
+              <span className="panel-icon">
+                {currentPanel === 'journal' ? <JournalIcon /> : <AcademyIcon />}
+              </span>
+              <span className="panel-title">
+                {currentPanel === 'journal' ? 'Trading Journal' : 'MyTradeApp Academy'}
+              </span>
             </div>
             <button className="panel-close-btn" onClick={closeFullPanel}>
               <CloseIcon />
@@ -4017,7 +4186,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         </FullPanelContainer>
       </FullPanelOverlay>
 
-      {/* Small Modal Popups */}
+      {/* Small Modal Popups (unchanged) */}
       <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
         <ModalContainer settings={isSettingsPopup} onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
@@ -4031,6 +4200,20 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <ModalBody>{popupData?.content}</ModalBody>
         </ModalContainer>
       </ModalOverlay>
+
+      {/* Note editing modal (new) */}
+      {noteModal && (
+        <NoteModal onClick={() => setNoteModal(null)}>
+          <NoteModalContent onClick={e => e.stopPropagation()}>
+            <div className="title">Edit Trade Note</div>
+            <textarea value={editNote} onChange={e => setEditNote(e.target.value)} placeholder="Add your observations..." />
+            <div className="actions">
+              <JournalButton onClick={() => setNoteModal(null)}>Cancel</JournalButton>
+              <JournalButton primary onClick={handleNoteSave}>Save</JournalButton>
+            </div>
+          </NoteModalContent>
+        </NoteModal>
+      )}
 
       <Overlay isOpen={isOpen} onClick={onClose} />
       <SidebarContainer isOpen={isOpen}>
