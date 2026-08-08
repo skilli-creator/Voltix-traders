@@ -32,23 +32,116 @@ const fadeIn = keyframes`
 `;
 
 // ============================================
-// PROFESSIONAL SVG ICONS (unchanged)
+// PROFESSIONAL SVG ICONS
 // ============================================
-// ... (all icon components remain identical to original)
 
-const ThemeIcon = () => ( /* ... */ );
-const FundsIcon = () => ( /* ... */ );
-const DepositIcon = () => ( /* ... */ );
-const WithdrawIcon = () => ( /* ... */ );
-const HistoryIcon = () => ( /* ... */ );
-const ExitIcon = () => ( /* ... */ );
-const ChevronDownIcon = ({ open }) => ( /* ... */ );
-const CloseIcon = () => ( /* ... */ );
-const MobileMoneyIcon = () => ( /* ... */ );
-const MPesaIcon = () => ( /* ... */ );
-const AirtelIcon = () => ( /* ... */ );
-const OverviewIcon = () => ( /* ... */ );
-const CheckIcon = () => ( /* ... */ );
+const ThemeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="5" />
+    <line x1="12" y1="1" x2="12" y2="3" />
+    <line x1="12" y1="21" x2="12" y2="23" />
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+    <line x1="1" y1="12" x2="3" y2="12" />
+    <line x1="21" y1="12" x2="23" y2="12" />
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+  </svg>
+);
+
+const FundsIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <line x1="2" y1="10" x2="22" y2="10" />
+  </svg>
+);
+
+const DepositIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+const WithdrawIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+const HistoryIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const ExitIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2v10" />
+    <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+  </svg>
+);
+
+const ChevronDownIcon = ({ open }) => (
+  <svg 
+    width="12" 
+    height="12" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}
+  >
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+const MobileMoneyIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="5" y="2" width="14" height="20" rx="2" />
+    <line x1="12" y1="18" x2="12.01" y2="18" />
+    <line x1="8" y1="6" x2="16" y2="6" />
+  </svg>
+);
+
+const MPesaIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 8l4 8 4-8" />
+  </svg>
+);
+
+const AirtelIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M7 12l3 3 7-7" />
+  </svg>
+);
+
+const OverviewIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2" />
+    <circle cx="12" cy="16" r="5" />
+    <circle cx="12" cy="16" r="2" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
 
 // ============================================
 // THEME‑AWARE MODAL COMPONENTS
@@ -564,6 +657,7 @@ const HistoryList = styled.div`
 // ============================================
 // TOP BAR CONTAINERS
 // ============================================
+
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -720,7 +814,7 @@ const DropdownContainer = styled.div`
 `;
 
 // ============================================
-// IMPROVED GLASS DROPDOWN (now more premium)
+// IMPROVED GLASS DROPDOWN
 // ============================================
 const GlassDropdownMenu = styled.div`
   position: absolute;
@@ -744,7 +838,6 @@ const GlassDropdownMenu = styled.div`
   z-index: 300;
   overflow: hidden;
 
-  /* accent top line */
   &::before {
     content: '';
     position: absolute;
@@ -752,10 +845,12 @@ const GlassDropdownMenu = styled.div`
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg,
+    background: linear-gradient(
+      90deg,
       transparent,
       ${p => p.theme.colors?.accent || '#3B82F6'},
-      transparent);
+      transparent
+    );
     opacity: 0.6;
     border-radius: 18px 18px 0 0;
   }
@@ -779,7 +874,7 @@ const MenuHeader = styled.div`
 `;
 
 // ============================================
-// 1. THEME BUTTON & ITEMS (unchanged but colors themed)
+// 1. THEME BUTTON & ITEMS (unchanged but fully themed)
 // ============================================
 const ThemeButton = styled.button`
   display: flex;
@@ -879,7 +974,7 @@ const ThemeOptionItem = styled.div`
 `;
 
 // ============================================
-// 2. FUNDS BUTTON & OPTIONS (IMPROVED DROPDOWN DESIGN)
+// 2. FUNDS BUTTON & OPTIONS (IMPROVED DESIGN)
 // ============================================
 const FundsButton = styled.button`
   display: flex;
@@ -963,7 +1058,6 @@ const FundsOption = styled.div`
       transform: scale(1.05);
     }
 
-    /* subtle right arrow on hover */
     &::after {
       content: '→';
       position: absolute;
@@ -1006,10 +1100,9 @@ const FundsOption = styled.div`
 `;
 
 // ============================================
-// 3. ACCOUNT BADGE (theme‑aware)
+// 3. ACCOUNT BADGE (themed)
 // ============================================
 const COUNTRY_CURRENCIES = [
-  // (unchanged)
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
   { code: 'EUR', flag: '🇪🇺', name: 'Euro', symbol: '€' },
   { code: 'GBP', flag: '🇬🇧', name: 'British Pound', symbol: '£' },
@@ -1199,7 +1292,7 @@ const CurrencyList = styled.div`
 `;
 
 // ============================================
-// 4. EXIT BUTTON (theme‑aware)
+// 4. EXIT BUTTON (themed)
 // ============================================
 const ExitButton = styled.button`
   display: flex;
@@ -1253,6 +1346,7 @@ const THEME_OPTIONS = [
 // ============================================
 // MAIN COMPONENT
 // ============================================
+
 const TopPanel = ({ 
   isSidebarOpen, 
   onSidebarToggle, 
@@ -1563,7 +1657,7 @@ const TopPanel = ({
         return (
           <>
             <HistoryFilter>
-              <button className="filter-btn active" onClick={(e) => { /* inline filter logic */ }}>All</button>
+              <button className="filter-btn active" onClick={(e) => { /* ... */ }}>All</button>
               <button className="filter-btn" onClick={(e) => { /* ... */ }}>Deposits</button>
               <button className="filter-btn" onClick={(e) => { /* ... */ }}>Withdrawals</button>
             </HistoryFilter>
@@ -1614,7 +1708,7 @@ const TopPanel = ({
         </LeftSection>
 
         <RightSection>
-          {/* THEME */}
+          {/* THEME BUTTON */}
           <DropdownContainer ref={themeRef}>
             <ThemeButton onClick={toggleThemeDropdown} activeColor={activeThemeObj.color}>
               <span className="theme-icon"><ThemeIcon /></span>
@@ -1628,7 +1722,10 @@ const TopPanel = ({
               {THEME_OPTIONS.map((t) => (
                 <ThemeOptionItem
                   key={t.key}
-                  onClick={() => { onThemeChange(t.key); setIsThemeOpen(false); }}
+                  onClick={() => {
+                    if (onThemeChange) onThemeChange(t.key);
+                    setIsThemeOpen(false);
+                  }}
                   className={currentTheme === t.key ? 'active' : ''}
                 >
                   <span className="color-dot" style={{ background: t.color }} />
@@ -1639,7 +1736,7 @@ const TopPanel = ({
             </GlassDropdownMenu>
           </DropdownContainer>
 
-          {/* FUNDS */}
+          {/* FUNDS BUTTON */}
           <DropdownContainer ref={fundsRef}>
             <FundsButton onClick={toggleFundsDropdown}>
               <span className="funds-icon-wrapper"><FundsIcon /></span>
@@ -1664,7 +1761,7 @@ const TopPanel = ({
             </GlassDropdownMenu>
           </DropdownContainer>
 
-          {/* ACCOUNT */}
+          {/* ACCOUNT BADGE */}
           <DropdownContainer ref={dropdownRef}>
             <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
               <span className="flag-badge">{getCurrencyFlag()}</span>
@@ -1708,7 +1805,11 @@ const TopPanel = ({
                     filteredCurrencies.map((curr) => (
                       <CurrencyOptionItem
                         key={curr.code}
-                        onClick={() => { setSelectedCurrency(curr.code); setCurrencySearch(''); setIsDropdownOpen(false); }}
+                        onClick={() => {
+                          setSelectedCurrency(curr.code);
+                          setCurrencySearch('');
+                          setIsDropdownOpen(false);
+                        }}
                         className={selectedCurrency === curr.code ? 'active' : ''}
                       >
                         <span className="flag">{curr.flag}</span>
@@ -1727,7 +1828,7 @@ const TopPanel = ({
             </GlassDropdownMenu>
           </DropdownContainer>
 
-          {/* EXIT */}
+          {/* EXIT BUTTON */}
           <ExitButton onClick={() => navigate('/')}>
             <span className="exit-icon"><ExitIcon /></span>
             <span>Exit</span>
