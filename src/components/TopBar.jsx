@@ -296,6 +296,22 @@ const WalletInfo = styled.div`
 `;
 
 // ============================================
+// CONFIRMATION PROMPT – THEME‑AWARE (no hardcoded colors)
+// ============================================
+const ConfirmationMessage = styled.div`
+  text-align: center;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.1)'};
+  color: ${p => p.theme.colors?.accent || '#3B82F6'};
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.5;
+  border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.1)'};
+`;
+
+// ============================================
 // MOBILE NETWORK SELECTOR – AD-LIKE BOXES
 // ============================================
 const MobileNetworkSelector = styled.div`
@@ -737,6 +753,7 @@ const HistoryList = styled.div`
 // ============================================
 // CORE CONTAINERS (unchanged)
 // ============================================
+
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -1558,18 +1575,23 @@ const TopPanel = ({
     closeModal();
   };
 
-  // Validate phone number: only digits, exactly 9 digits (Kenyan format after +254)
+  // Validate phone number: only digits, must start with 1 or 7, max 9 digits
   const handlePhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, '');
-    if (value.length <= 9) {
-      setPhoneNumber(value);
+    // Allow empty or must start with 1 or 7
+    if (value === '' || (value.length > 0 && (value.charAt(0) === '1' || value.charAt(0) === '7'))) {
+      if (value.length <= 9) {
+        setPhoneNumber(value);
+      }
     }
   };
 
   const handleConfirmationPhoneChange = (e) => {
     const value = e.target.value.replace(/\D/g, '');
-    if (value.length <= 9) {
-      setConfirmationPhone(value);
+    if (value === '' || (value.length > 0 && (value.charAt(0) === '1' || value.charAt(0) === '7'))) {
+      if (value.length <= 9) {
+        setConfirmationPhone(value);
+      }
     }
     if (confirmationError) setConfirmationError('');
   };
@@ -1748,18 +1770,18 @@ const TopPanel = ({
             </MobileNetworkSelector>
 
             <FormGroup>
-              <label>Phone Number</label>
+              <label>Phone Number (starting with 1 or 7)</label>
               <div className="input-wrap">
                 <span className="prefix">+254</span>
                 <input 
                   type="tel" 
-                  placeholder="7XX XXX XXX" 
+                  placeholder="1XX or 7XX XXX XXX" 
                   value={phoneNumber}
                   onChange={handlePhoneChange}
                   maxLength={9}
                 />
               </div>
-              <div className="helper-text">Enter your {networkName} registered phone number (9 digits)</div>
+              <div className="helper-text">Enter your {networkName} phone number (9 digits, must start with 1 or 7)</div>
             </FormGroup>
 
             <FormGroup>
@@ -1798,18 +1820,12 @@ const TopPanel = ({
               <KenyaDisclaimer>
                 Please confirm your phone number before proceeding.
               </KenyaDisclaimer>
-              <div style={{ 
-                textAlign: 'center', 
-                marginBottom: '14px',
-                padding: '10px',
-                background: '#f0f9ff',
-                borderRadius: '8px',
-                color: '#1e3a8a',
-                fontWeight: 500,
-                fontSize: '13px'
-              }}>
+              
+              {/* Theme‑aware confirmation message – no hardcoded background */}
+              <ConfirmationMessage>
                 Kindly re-enter your phone number to ensure it is correct before proceeding with your ${withdrawConfirmationData.amount} withdrawal.
-              </div>
+              </ConfirmationMessage>
+
               <FormGroup>
                 <label>Selected Network</label>
                 <div style={{
@@ -1829,12 +1845,12 @@ const TopPanel = ({
                 </div>
               </FormGroup>
               <FormGroup>
-                <label>Re-enter Phone Number</label>
+                <label>Re-enter Phone Number (starting with 1 or 7)</label>
                 <div className="input-wrap">
                   <span className="prefix">+254</span>
                   <input 
                     type="tel" 
-                    placeholder="7XX XXX XXX" 
+                    placeholder="1XX or 7XX XXX XXX" 
                     value={confirmationPhone}
                     onChange={handleConfirmationPhoneChange}
                     maxLength={9}
@@ -1913,18 +1929,18 @@ const TopPanel = ({
             </MobileNetworkSelector>
 
             <FormGroup>
-              <label>Mobile Wallet Number</label>
+              <label>Mobile Wallet Number (starting with 1 or 7)</label>
               <div className="input-wrap">
                 <span className="prefix">+254</span>
                 <input 
                   type="tel" 
-                  placeholder="7XX XXX XXX" 
+                  placeholder="1XX or 7XX XXX XXX" 
                   value={phoneNumber}
                   onChange={handlePhoneChange}
                   maxLength={9}
                 />
               </div>
-              <div className="helper-text">Enter your {networkName} wallet phone number (9 digits)</div>
+              <div className="helper-text">Enter your {networkName} wallet number (9 digits, starts with 1 or 7)</div>
             </FormGroup>
 
             <FormGroup>
