@@ -35,7 +35,6 @@ const fadeIn = keyframes`
 // PROFESSIONAL SVG ICONS
 // ============================================
 
-// Theme Icon
 const ThemeIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="5" />
@@ -50,7 +49,6 @@ const ThemeIcon = () => (
   </svg>
 );
 
-// Funds Icon (Wallet)
 const FundsIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="5" width="20" height="14" rx="2" />
@@ -58,7 +56,6 @@ const FundsIcon = () => (
   </svg>
 );
 
-// Deposit Icon
 const DepositIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
@@ -66,7 +63,6 @@ const DepositIcon = () => (
   </svg>
 );
 
-// Withdraw Icon
 const WithdrawIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
@@ -74,7 +70,6 @@ const WithdrawIcon = () => (
   </svg>
 );
 
-// History Icon
 const HistoryIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
@@ -82,7 +77,6 @@ const HistoryIcon = () => (
   </svg>
 );
 
-// Exit Icon
 const ExitIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2v10" />
@@ -90,7 +84,6 @@ const ExitIcon = () => (
   </svg>
 );
 
-// Chevron Down Icon
 const ChevronDownIcon = ({ open }) => (
   <svg 
     width="12" 
@@ -107,7 +100,6 @@ const ChevronDownIcon = ({ open }) => (
   </svg>
 );
 
-// Close Icon
 const CloseIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -115,16 +107,6 @@ const CloseIcon = () => (
   </svg>
 );
 
-// Mobile Money Icon (M-Pesa/Airtel)
-const MobileMoneyIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="5" y="2" width="14" height="20" rx="2" />
-    <line x1="12" y1="18" x2="12.01" y2="18" />
-    <line x1="8" y1="6" x2="16" y2="6" />
-  </svg>
-);
-
-// M-Pesa Icon
 const MPesaIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
@@ -132,7 +114,6 @@ const MPesaIcon = () => (
   </svg>
 );
 
-// Airtel Money Icon
 const AirtelIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
@@ -140,7 +121,6 @@ const AirtelIcon = () => (
   </svg>
 );
 
-// Overview Icon
 const OverviewIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2" />
@@ -149,15 +129,27 @@ const OverviewIcon = () => (
   </svg>
 );
 
-// Check Icon
-const CheckIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12" />
+// Eye icon for balance toggle
+const EyeIcon = ({ visible }) => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {visible ? (
+      <>
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ) : (
+      <>
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+        <path d="m14.12 14.12a3 3 0 1 1-4.24-4.24" />
+        <line x1="1" y1="1" x2="23" y2="23" />
+      </>
+    )}
   </svg>
 );
 
 // ============================================
-// FUNDS MODAL COMPONENTS – NOW FULLY THEME‑AWARE
+// FUNDS MODAL COMPONENTS – THEME‑AWARE
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
@@ -173,11 +165,11 @@ const ModalOverlay = styled.div`
 
 const ModalCard = styled.div`
   width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
+  max-width: 440px;
+  max-height: 85vh;
   background: ${p => p.theme.colors?.surface || '#0F172A'};
   border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.08)'};
-  border-radius: 24px;
+  border-radius: 20px;
   box-shadow: ${p => p.theme.colors?.shadow || '0 20px 60px rgba(0,0,0,0.4)'};
   animation: ${slideUp} 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
@@ -188,7 +180,7 @@ const ModalCard = styled.div`
   @media (max-width: 480px) {
     max-width: 100%;
     margin: 12px;
-    border-radius: 18px;
+    border-radius: 16px;
   }
 `;
 
@@ -196,37 +188,37 @@ const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 16px;
+  padding: 16px 20px 12px;
   border-bottom: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
   flex-shrink: 0;
 
   .title-group {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .title-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.1)'};
     color: ${p => p.theme.colors?.accent || '#3B82F6'};
     border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
   }
 
   .title-text {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: ${p => p.theme.colors?.text || '#F8FAFC'};
     letter-spacing: -0.3px;
   }
 
   .title-sub {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 400;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     margin-top: 1px;
@@ -236,9 +228,9 @@ const ModalHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
     background: transparent;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
@@ -257,7 +249,7 @@ const ModalHeader = styled.div`
 const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 20px 24px 24px;
+  padding: 16px 20px 20px;
   color: ${p => p.theme.colors?.text || '#F8FAFC'};
 
   &::-webkit-scrollbar { width: 4px; }
@@ -275,73 +267,88 @@ const KenyaDisclaimer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
   background: ${p => p.theme.colors?.warningBg || 'rgba(251,191,36,0.1)'};
   border: 1px solid ${p => p.theme.colors?.warningBorder || 'rgba(251,191,36,0.15)'};
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 
   .disclaimer-icon {
-    font-size: 18px;
+    font-size: 16px;
     color: ${p => p.theme.colors?.warning || '#F59E0B'};
     flex-shrink: 0;
   }
 
   .disclaimer-text {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     color: ${p => p.theme.colors?.warningText || '#F8FAFC'};
-    line-height: 1.5;
+    line-height: 1.4;
   }
 `;
 
 // ============================================
-// MOBILE MONEY SELECTOR (theme‑aware)
+// MOBILE NETWORK SELECTOR – AD-LIKE COLORFUL BOXES
 // ============================================
 const MobileNetworkSelector = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 
   .network-option {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 16px 10px;
-    border-radius: 12px;
-    border: 1.5px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
-    background: ${p => p.theme.colors?.bg || p.theme.colors?.background || 'rgba(255,255,255,0.02)'};
+    padding: 20px 10px;
+    border-radius: 14px;
+    border: 2px solid transparent;
     cursor: pointer;
-    transition: all 0.2s ease;
-    color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
+    transition: all 0.25s ease;
+    color: #FFFFFF;
+    position: relative;
+    overflow: hidden;
+
+    &.mpesa {
+      background: linear-gradient(135deg, #28A745 0%, #20C997 100%);
+      border-color: #28A745;
+    }
+
+    &.airtel {
+      background: linear-gradient(135deg, #E53935 0%, #FF5252 100%);
+      border-color: #E53935;
+    }
 
     &:hover {
-      border-color: ${p => p.theme.colors?.accent || '#3B82F6'};
-      background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.08)'};
-      color: ${p => p.theme.colors?.text || '#F8FAFC'};
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px ${p => p.theme.colors?.shadow || 'rgba(0,0,0,0.2)'};
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
 
     &.selected {
-      border-color: ${p => p.theme.colors?.accent || '#3B82F6'};
-      background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.12)'};
-      color: ${p => p.theme.colors?.text || '#F8FAFC'};
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.3), 0 8px 24px rgba(0,0,0,0.3);
     }
 
     .network-icon {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: ${p => p.theme.colors?.accent || '#3B82F6'};
-      margin-bottom: 4px;
+      color: #FFFFFF;
+      margin-bottom: 6px;
+      opacity: 0.95;
     }
 
     .network-name {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .network-tagline {
+      font-size: 9px;
+      opacity: 0.85;
+      margin-top: 3px;
+      font-weight: 500;
     }
   }
 `;
@@ -350,14 +357,14 @@ const MobileNetworkSelector = styled.div`
 // FORM INPUTS (theme‑aware)
 // ============================================
 const FormGroup = styled.div`
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 
   label {
     display: block;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -368,7 +375,7 @@ const FormGroup = styled.div`
     background: ${p => p.theme.colors?.inputBg || p.theme.colors?.bg || 'rgba(255,255,255,0.03)'};
     border: 1.5px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
     border-radius: 10px;
-    padding: 0 14px;
+    padding: 0 12px;
     transition: all 0.2s ease;
 
     &:focus-within {
@@ -378,7 +385,7 @@ const FormGroup = styled.div`
     }
 
     .prefix {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
       margin-right: 6px;
@@ -386,11 +393,11 @@ const FormGroup = styled.div`
 
     input {
       flex: 1;
-      padding: 12px 0;
+      padding: 10px 0;
       background: transparent;
       border: none;
       color: ${p => p.theme.colors?.text || '#F8FAFC'};
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
       outline: none;
       font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
@@ -403,16 +410,16 @@ const FormGroup = styled.div`
     }
 
     .suffix {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     }
   }
 
   .helper-text {
-    font-size: 11px;
+    font-size: 10px;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
-    margin-top: 4px;
+    margin-top: 3px;
   }
 `;
 
@@ -421,20 +428,20 @@ const FormGroup = styled.div`
 // ============================================
 const ActionButton = styled.button`
   width: 100%;
-  padding: 14px 0;
+  padding: 12px 0;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   background: linear-gradient(
     135deg, 
     ${p => p.theme.colors?.accent || '#3B82F6'}, 
     ${p => p.theme.colors?.accentHover || '#2563EB'}
   );
   color: ${p => p.theme.colors?.buttonText || '#FFFFFF'};
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 6px;
+  margin-top: 4px;
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
@@ -452,7 +459,7 @@ const ActionButton = styled.button`
 `;
 
 // ============================================
-// OVERVIEW STYLES (theme‑aware)
+// OVERVIEW STYLES (theme‑aware, compact)
 // ============================================
 const OverviewBalance = styled.div`
   background: linear-gradient(
@@ -460,56 +467,80 @@ const OverviewBalance = styled.div`
     ${p => p.theme.colors?.accent || '#3B82F6'}, 
     ${p => p.theme.colors?.accentDark || '#1D4ED8'}
   );
-  border-radius: 16px;
-  padding: 24px 24px;
-  margin-bottom: 18px;
+  border-radius: 14px;
+  padding: 20px 20px;
+  margin-bottom: 14px;
   text-align: center;
 
   .label {
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 600;
   }
 
+  .balance-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
   .balance {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 800;
     color: #FFFFFF;
-    margin-top: 4px;
     font-family: 'Courier New', monospace;
   }
 
+  .eye-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 8px;
+    padding: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #FFFFFF;
+
+    &:hover {
+      background: rgba(255,255,255,0.25);
+    }
+  }
+
   .sub {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-top: 2px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+    margin-top: 4px;
   }
 `;
 
 const OverviewStats = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 18px;
+  gap: 8px;
+  margin-bottom: 14px;
 
   .stat {
     text-align: center;
-    padding: 14px 8px;
-    border-radius: 12px;
+    padding: 12px 6px;
+    border-radius: 10px;
     background: ${p => p.theme.colors?.bg || p.theme.colors?.background || 'rgba(255,255,255,0.02)'};
     border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.04)'};
 
     .stat-value {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: ${p => p.theme.colors?.text || '#F8FAFC'};
       font-family: 'Courier New', monospace;
     }
 
     .stat-label {
-      font-size: 9px;
+      font-size: 8px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
       color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
@@ -520,20 +551,20 @@ const OverviewStats = styled.div`
 
 const RecentTransactions = styled.div`
   .section-title {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .tx-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
-    border-radius: 10px;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
     border-bottom: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.04)'};
 
     &:last-child { border-bottom: none; }
@@ -542,8 +573,8 @@ const RecentTransactions = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       border-radius: 8px;
       background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.06)'};
       color: ${p => p.theme.colors?.accent || '#3B82F6'};
@@ -552,12 +583,12 @@ const RecentTransactions = styled.div`
     .tx-info {
       flex: 1;
       .tx-name {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
         color: ${p => p.theme.colors?.text || '#F8FAFC'};
       }
       .tx-date {
-        font-size: 10px;
+        font-size: 9px;
         color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
       }
     }
@@ -565,7 +596,7 @@ const RecentTransactions = styled.div`
     .tx-amount {
       font-weight: 700;
       font-family: 'Courier New', monospace;
-      font-size: 13px;
+      font-size: 12px;
 
       &.positive { color: ${p => p.theme.colors?.success || '#22C55E'}; }
       &.negative { color: ${p => p.theme.colors?.danger || '#EF4444'}; }
@@ -574,19 +605,19 @@ const RecentTransactions = styled.div`
 `;
 
 // ============================================
-// TRANSACTION HISTORY (theme‑aware)
+// TRANSACTION HISTORY (theme‑aware, compact)
 // ============================================
 const HistoryFilter = styled.div`
   display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 6px;
+  margin-bottom: 12px;
 
   .filter-btn {
-    padding: 4px 14px;
+    padding: 3px 12px;
     border-radius: 20px;
     border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.06)'};
     background: transparent;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 600;
     color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
     cursor: pointer;
@@ -610,7 +641,7 @@ const HistoryList = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 8px 0;
     border-bottom: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.03)'};
 
     &:last-child { border-bottom: none; }
@@ -618,14 +649,14 @@ const HistoryList = styled.div`
     .left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
 
       .h-icon {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 34px;
-        height: 34px;
+        width: 30px;
+        height: 30px;
         border-radius: 8px;
         background: ${p => p.theme.colors?.accentLight || 'rgba(59,130,246,0.06)'};
         color: ${p => p.theme.colors?.accent || '#3B82F6'};
@@ -633,16 +664,16 @@ const HistoryList = styled.div`
 
       .h-info {
         .h-name {
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 600;
           color: ${p => p.theme.colors?.text || '#F8FAFC'};
         }
         .h-date {
-          font-size: 10px;
+          font-size: 9px;
           color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
         }
         .h-reference {
-          font-size: 10px;
+          font-size: 9px;
           color: ${p => p.theme.colors?.textMuted || '#94A3B8'};
           font-family: 'Courier New', monospace;
         }
@@ -651,7 +682,7 @@ const HistoryList = styled.div`
 
     .h-amount {
       font-weight: 700;
-      font-size: 13px;
+      font-size: 12px;
       font-family: 'Courier New', monospace;
 
       &.positive { color: ${p => p.theme.colors?.success || '#22C55E'}; }
@@ -820,7 +851,7 @@ const DropdownContainer = styled.div`
 `;
 
 // ============================================
-// GLASS DROPDOWN – KEPT EXACTLY AS ORIGINAL
+// GLASS DROPDOWN – UNCHANGED
 // ============================================
 const GlassDropdownMenu = styled.div`
   position: absolute;
@@ -860,7 +891,7 @@ const MenuHeader = styled.div`
 `;
 
 // ============================================
-// 1. THEME BUTTON
+// 1. THEME BUTTON – UNCHANGED
 // ============================================
 const ThemeButton = styled.button`
   display: flex;
@@ -960,7 +991,7 @@ const ThemeOptionItem = styled.div`
 `;
 
 // ============================================
-// 2. FUNDS BUTTON
+// 2. FUNDS BUTTON – UNCHANGED
 // ============================================
 const FundsButton = styled.button`
   display: flex;
@@ -1022,7 +1053,6 @@ const FundsButton = styled.button`
   }
 `;
 
-// No arrow-right icon in FundsOption
 const FundsOption = styled.div`
   display: flex;
   align-items: center;
@@ -1069,7 +1099,7 @@ const FundsOption = styled.div`
 `;
 
 // ============================================
-// 3. ACCOUNT BADGE
+// 3. ACCOUNT BADGE – UNCHANGED
 // ============================================
 const COUNTRY_CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
@@ -1258,7 +1288,7 @@ const CurrencyList = styled.div`
 `;
 
 // ============================================
-// 4. EXIT BUTTON
+// 4. EXIT BUTTON – UNCHANGED
 // ============================================
 const ExitButton = styled.button`
   display: flex;
@@ -1331,6 +1361,7 @@ const TopPanel = ({
   const [selectedNetwork, setSelectedNetwork] = useState('mpesa');
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [showBalance, setShowBalance] = useState(false);
   
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
@@ -1349,8 +1380,8 @@ const TopPanel = ({
   const getExchangeRate = (currency) => exchangeRates[currency] || 1;
 
   const accountData = {
-    real: { balance: 100.00, label: 'Real' },
-    demo: { balance: 10000.00, label: 'Demo' }
+    real: { balance: 100.00, label: 'Real', nickname: 'Main Wallet' },
+    demo: { balance: 10000.00, label: 'Demo', nickname: 'Practice Wallet' }
   };
 
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
@@ -1366,6 +1397,12 @@ const TopPanel = ({
     const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
     const symbol = currencyInfo?.symbol || '$';
     return `${symbol} ${formatNumberWithCommas(converted)}`;
+  };
+
+  const getMaskedBalance = (acc) => {
+    const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
+    const symbol = currencyInfo?.symbol || '$';
+    return `${symbol} ****.**`;
   };
 
   const getCurrencyFlag = () => {
@@ -1396,17 +1433,20 @@ const TopPanel = ({
     setIsThemeOpen(false);
   };
 
-  const closeModal = () => setFundModalAction(null);
+  const closeModal = () => {
+    setFundModalAction(null);
+    setShowBalance(false);
+  };
 
   const handleFundAction = (action) => {
     setIsFundsOpen(false);
     setFundModalAction(action);
-    if (action === 'overview') {
-      // reset
-    } else if (action === 'deposit' || action === 'withdraw') {
+    if (action === 'deposit' || action === 'withdraw') {
       setSelectedNetwork('mpesa');
       setAmount('');
       setPhoneNumber('');
+    } else if (action === 'overview') {
+      setShowBalance(false);
     }
   };
 
@@ -1452,7 +1492,6 @@ const TopPanel = ({
 
   const activeThemeObj = THEME_OPTIONS.find(t => t.key === currentTheme) || THEME_OPTIONS[0];
 
-  // Funds options - Transfer REMOVED
   const fundOptions = [
     { icon: <OverviewIcon />, name: 'Overview', desc: 'View your balance and activity', action: 'overview' },
     { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds via mobile wallet', action: 'deposit' },
@@ -1460,7 +1499,6 @@ const TopPanel = ({
     { icon: <HistoryIcon />, name: 'History', desc: 'View transaction history', action: 'history' },
   ];
 
-  // Sample transactions (Transfer removed)
   const sampleTransactions = [
     { id: 1, type: 'deposit', name: 'Deposit via M-Pesa', date: 'Today, 10:23 AM', amount: 50.00, positive: true, ref: 'MP-2024-00123' },
     { id: 2, type: 'withdraw', name: 'Withdrawal to M-Pesa', date: 'Yesterday, 3:15 PM', amount: 20.00, positive: false, ref: 'WD-2024-00456' },
@@ -1477,9 +1515,16 @@ const TopPanel = ({
         return (
           <>
             <OverviewBalance>
-              <div className="label">Total Balance</div>
-              <div className="balance">{getFormattedBalance(currentAccount)}</div>
-              <div className="sub">{currentAccount.label} Account • {selectedCurrency}</div>
+              <div className="label">Deriv {currentAccount.label} Account</div>
+              <div className="balance-row">
+                <div className="balance">
+                  {showBalance ? getFormattedBalance(currentAccount) : getMaskedBalance(currentAccount)}
+                </div>
+                <div className="eye-btn" onClick={() => setShowBalance(!showBalance)}>
+                  <EyeIcon visible={showBalance} />
+                </div>
+              </div>
+              <div className="sub">{currentAccount.nickname} • {selectedCurrency}</div>
             </OverviewBalance>
             <OverviewStats>
               <div className="stat">
@@ -1528,12 +1573,12 @@ const TopPanel = ({
             </KenyaDisclaimer>
 
             <FormGroup>
-              <label>Deposit to Deriv Account</label>
+              <label>Deposit to Deriv Main Wallet</label>
               <div className="input-wrap">
                 <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Account</span>
                 <input 
                   type="text" 
-                  value="Deriv Trading Account" 
+                  value={`Deriv Main Wallet (${currentAccount.nickname})`}
                   disabled
                   style={{ fontWeight: '600', opacity: 0.7 }}
                 />
@@ -1542,18 +1587,20 @@ const TopPanel = ({
 
             <MobileNetworkSelector>
               <div 
-                className={`network-option ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
+                className={`network-option mpesa ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
                 onClick={() => setSelectedNetwork('mpesa')}
               >
                 <div className="network-icon"><MPesaIcon /></div>
                 <div className="network-name">M-Pesa</div>
+                <div className="network-tagline">Fast & Secure</div>
               </div>
               <div 
-                className={`network-option ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
+                className={`network-option airtel ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
                 onClick={() => setSelectedNetwork('airtel')}
               >
                 <div className="network-icon"><AirtelIcon /></div>
                 <div className="network-name">Airtel Money</div>
+                <div className="network-tagline">Instant Transfer</div>
               </div>
             </MobileNetworkSelector>
 
@@ -1609,12 +1656,12 @@ const TopPanel = ({
             </KenyaDisclaimer>
 
             <FormGroup>
-              <label>Withdraw From</label>
+              <label>Withdraw From Deriv Main Wallet</label>
               <div className="input-wrap">
                 <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Account</span>
                 <input 
                   type="text" 
-                  value="Deriv Trading Account" 
+                  value={`Deriv Main Wallet (${currentAccount.nickname})`}
                   disabled
                   style={{ fontWeight: '600', opacity: 0.7 }}
                 />
@@ -1624,18 +1671,20 @@ const TopPanel = ({
 
             <MobileNetworkSelector>
               <div 
-                className={`network-option ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
+                className={`network-option mpesa ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
                 onClick={() => setSelectedNetwork('mpesa')}
               >
                 <div className="network-icon"><MPesaIcon /></div>
                 <div className="network-name">M-Pesa</div>
+                <div className="network-tagline">Fast & Secure</div>
               </div>
               <div 
-                className={`network-option ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
+                className={`network-option airtel ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
                 onClick={() => setSelectedNetwork('airtel')}
               >
                 <div className="network-icon"><AirtelIcon /></div>
                 <div className="network-name">Airtel Money</div>
+                <div className="network-tagline">Instant Transfer</div>
               </div>
             </MobileNetworkSelector>
 
