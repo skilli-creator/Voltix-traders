@@ -129,7 +129,6 @@ const OverviewIcon = () => (
   </svg>
 );
 
-// Eye icon for balance toggle
 const EyeIcon = ({ visible }) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     {visible ? (
@@ -261,7 +260,7 @@ const ModalBody = styled.div`
 `;
 
 // ============================================
-// KENYA-ONLY DISCLAIMER (theme‑aware)
+// KENYA DISCLAIMER – THEME‑AWARE
 // ============================================
 const KenyaDisclaimer = styled.div`
   display: flex;
@@ -272,23 +271,29 @@ const KenyaDisclaimer = styled.div`
   background: ${p => p.theme.colors?.warningBg || 'rgba(251,191,36,0.1)'};
   border: 1px solid ${p => p.theme.colors?.warningBorder || 'rgba(251,191,36,0.15)'};
   margin-bottom: 14px;
-
-  .disclaimer-icon {
-    font-size: 16px;
-    color: ${p => p.theme.colors?.warning || '#F59E0B'};
-    flex-shrink: 0;
-  }
-
-  .disclaimer-text {
-    font-size: 11px;
-    font-weight: 500;
-    color: ${p => p.theme.colors?.warningText || '#F8FAFC'};
-    line-height: 1.4;
-  }
+  font-size: 11px;
+  font-weight: 500;
+  color: ${p => p.theme.colors?.warningText || '#F8FAFC'};
+  line-height: 1.4;
 `;
 
 // ============================================
-// MOBILE NETWORK SELECTOR – AD-LIKE COLORFUL BOXES
+// WALLET TRANSFER INFO – THEME‑AWARE
+// ============================================
+const WalletInfo = styled.div`
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: ${p => p.theme.colors?.infoBg || 'rgba(59,130,246,0.08)'};
+  border: 1px solid ${p => p.theme.colors?.infoBorder || 'rgba(59,130,246,0.12)'};
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 500;
+  color: ${p => p.theme.colors?.infoText || '#93C5FD'};
+  line-height: 1.4;
+`;
+
+// ============================================
+// MOBILE NETWORK SELECTOR – AD-LIKE BOXES
 // ============================================
 const MobileNetworkSelector = styled.div`
   display: grid;
@@ -478,6 +483,14 @@ const OverviewBalance = styled.div`
     letter-spacing: 0.5px;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 600;
+  }
+
+  .nickname {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 8px;
   }
 
   .balance-row {
@@ -1368,20 +1381,25 @@ const TopPanel = ({
   const fundsRef = useRef(null);
   const navigate = useNavigate();
 
-  // Exchange rates
-  const exchangeRates = {
-    USD: 1, EUR: 0.93, GBP: 0.80, JPY: 155.00, CHF: 0.89, CAD: 1.37, AUD: 1.55, CNY: 7.25, INR: 83.90, BRL: 5.10,
-    ZAR: 19.20, KSh: 129.00, NGN: 1600.00, EGP: 49.50, MAD: 10.20, GHS: 13.20, KES: 129.00, TZS: 2550.00, UGX: 3850.00, RWF: 1350.00,
-    ZMW: 27.50, MXN: 18.20, SGD: 1.36, HKD: 7.83, NZD: 1.68, SEK: 10.80, NOK: 10.90, DKK: 6.95, PLN: 4.20, TRY: 33.50,
-    SAR: 3.75, AED: 3.67, QAR: 3.64, KWD: 0.31, BHD: 0.38, OMR: 0.38, JOD: 0.71, IQD: 1310.00, LYD: 4.90, TND: 3.15,
-    DZD: 135.50, ETB: 57.50
+  // Exchange rates for Kenya (KES)
+  const DEPOSIT_RATE = 131;  // 1 USD = 131 KES (deposit)
+  const WITHDRAW_RATE = 126; // 1 USD = 126 KES (withdraw)
+
+  // Generate a realistic Deriv account ID (like client_mq98tio2zxum)
+  const generateAccountNickname = () => {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    let result = 'client_';
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
   };
 
-  const getExchangeRate = (currency) => exchangeRates[currency] || 1;
+  const [accountNickname] = useState(generateAccountNickname());
 
   const accountData = {
-    real: { balance: 100.00, label: 'Real', nickname: 'Main Wallet' },
-    demo: { balance: 10000.00, label: 'Demo', nickname: 'Practice Wallet' }
+    real: { balance: 100.00, label: 'Real' },
+    demo: { balance: 10000.00, label: 'Demo' }
   };
 
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
@@ -1392,11 +1410,9 @@ const TopPanel = ({
   };
 
   const getFormattedBalance = (acc) => {
-    const rate = getExchangeRate(selectedCurrency);
-    const converted = acc.balance * rate;
     const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
     const symbol = currencyInfo?.symbol || '$';
-    return `${symbol} ${formatNumberWithCommas(converted)}`;
+    return `${symbol} ${formatNumberWithCommas(acc.balance)}`;
   };
 
   const getMaskedBalance = (acc) => {
@@ -1452,26 +1468,46 @@ const TopPanel = ({
 
   const handleSubmitDeposit = () => {
     const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+    const kesAmount = (parseFloat(amount) * DEPOSIT_RATE).toFixed(0);
     alert(
       `Deposit Request\n\n` +
       `Network: ${networkName}\n` +
-      `Phone: ${phoneNumber}\n` +
-      `Amount: $${amount}\n\n` +
-      `A confirmation SMS will be sent to your phone.\n` +
-      `This service is available in Kenya only.`
+      `Phone: +254${phoneNumber}\n` +
+      `Amount: $${amount} (≈ KES ${kesAmount})\n\n` +
+      `A confirmation SMS will be sent to your phone.`
     );
   };
 
   const handleSubmitWithdraw = () => {
     const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+    const kesAmount = (parseFloat(amount) * WITHDRAW_RATE).toFixed(0);
     alert(
       `Withdrawal Request\n\n` +
       `Network: ${networkName}\n` +
-      `Phone: ${phoneNumber}\n` +
-      `Amount: $${amount}\n\n` +
-      `Funds will be sent to your mobile wallet within 24 hours.\n` +
-      `This service is available in Kenya only.`
+      `Phone: +254${phoneNumber}\n` +
+      `Amount: $${amount} (≈ KES ${kesAmount})\n\n` +
+      `Funds will be sent to your mobile wallet within 24 hours.`
     );
+  };
+
+  // Validate phone number: only digits, exactly 9 digits (Kenyan format after +254)
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ''); // remove non-digits
+    if (value.length <= 9) {
+      setPhoneNumber(value);
+    }
+  };
+
+  // Validate amount: only numbers, min 1, max 2000
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    // Allow empty or valid number
+    if (value === '' || /^\d*\.?\d{0,2}$/.test(value)) {
+      const num = parseFloat(value);
+      if (value === '' || (num >= 1 && num <= 2000)) {
+        setAmount(value);
+      }
+    }
   };
 
   useEffect(() => {
@@ -1506,16 +1542,17 @@ const TopPanel = ({
     { id: 5, type: 'withdraw', name: 'Withdrawal to Airtel Money', date: 'Aug 4, 6:20 PM', amount: 30.00, positive: false, ref: 'WD-2024-00178' },
   ];
 
-  // Render modal content based on action
   const renderModalContent = () => {
     const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
+    const rate = fundModalAction === 'deposit' ? DEPOSIT_RATE : WITHDRAW_RATE;
 
     switch (fundModalAction) {
       case 'overview':
         return (
           <>
             <OverviewBalance>
-              <div className="label">Deriv {currentAccount.label} Account</div>
+              <div className="label">Deriv Main Wallet</div>
+              <div className="nickname">{accountNickname}</div>
               <div className="balance-row">
                 <div className="balance">
                   {showBalance ? getFormattedBalance(currentAccount) : getMaskedBalance(currentAccount)}
@@ -1524,7 +1561,7 @@ const TopPanel = ({
                   <EyeIcon visible={showBalance} />
                 </div>
               </div>
-              <div className="sub">{currentAccount.nickname} • {selectedCurrency}</div>
+              <div className="sub">{currentAccount.label} Account • {selectedCurrency}</div>
             </OverviewBalance>
             <OverviewStats>
               <div className="stat">
@@ -1565,20 +1602,20 @@ const TopPanel = ({
         return (
           <>
             <KenyaDisclaimer>
-              <span className="disclaimer-icon">🇰🇪</span>
-              <span className="disclaimer-text">
-                This payment agent operates exclusively in <strong>Kenya</strong>. 
-                Only M-Pesa and Airtel Money mobile wallets are supported.
-              </span>
+              This service is available exclusively in Kenya. Only M-Pesa and Airtel Money mobile wallets are supported.
             </KenyaDisclaimer>
 
+            <WalletInfo>
+              If your deposited funds are not visible for trading, kindly log into your Deriv account and transfer them from your main wallet to your Options wallet.
+            </WalletInfo>
+
             <FormGroup>
-              <label>Deposit to Deriv Main Wallet</label>
+              <label>Deposit to</label>
               <div className="input-wrap">
-                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Account</span>
+                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Wallet</span>
                 <input 
                   type="text" 
-                  value={`Deriv Main Wallet (${currentAccount.nickname})`}
+                  value="Deriv Main Wallet"
                   disabled
                   style={{ fontWeight: '600', opacity: 0.7 }}
                 />
@@ -1612,32 +1649,34 @@ const TopPanel = ({
                   type="tel" 
                   placeholder="7XX XXX XXX" 
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={handlePhoneChange}
+                  maxLength={9}
                 />
               </div>
-              <div className="helper-text">Enter your {networkName} registered phone number</div>
+              <div className="helper-text">Enter your {networkName} registered phone number (9 digits)</div>
             </FormGroup>
 
             <FormGroup>
-              <label>Amount (USD)</label>
+              <label>Amount (USD) - Min $1 / Max $2,000</label>
               <div className="input-wrap">
                 <span className="prefix">$</span>
                 <input 
                   type="number" 
                   placeholder="0.00" 
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={handleAmountChange}
                   min="1"
+                  max="2000"
                   step="0.01"
                 />
-                <span className="suffix">≈ KES {(parseFloat(amount) * 129).toFixed(0)}</span>
+                <span className="suffix">≈ KES {(parseFloat(amount || 0) * rate).toFixed(0)}</span>
               </div>
-              <div className="helper-text">Exchange rate: 1 USD = 129 KES</div>
+              <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
 
             <ActionButton 
               onClick={handleSubmitDeposit} 
-              disabled={!amount || parseFloat(amount) <= 0 || !phoneNumber || phoneNumber.length < 8}
+              disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
             >
               Deposit to Deriv
             </ActionButton>
@@ -1648,20 +1687,20 @@ const TopPanel = ({
         return (
           <>
             <KenyaDisclaimer>
-              <span className="disclaimer-icon">🇰🇪</span>
-              <span className="disclaimer-text">
-                Withdrawals are processed to mobile wallets only. 
-                This service is exclusively available in <strong>Kenya</strong>.
-              </span>
+              This service is available exclusively in Kenya. Only M-Pesa and Airtel Money mobile wallets are supported.
             </KenyaDisclaimer>
 
+            <WalletInfo>
+              If your available balance appears incorrect, kindly log into your Deriv account and transfer funds from your Options wallet to your main wallet before proceeding.
+            </WalletInfo>
+
             <FormGroup>
-              <label>Withdraw From Deriv Main Wallet</label>
+              <label>Withdraw From</label>
               <div className="input-wrap">
-                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Account</span>
+                <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Wallet</span>
                 <input 
                   type="text" 
-                  value={`Deriv Main Wallet (${currentAccount.nickname})`}
+                  value="Deriv Main Wallet"
                   disabled
                   style={{ fontWeight: '600', opacity: 0.7 }}
                 />
@@ -1696,32 +1735,34 @@ const TopPanel = ({
                   type="tel" 
                   placeholder="7XX XXX XXX" 
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={handlePhoneChange}
+                  maxLength={9}
                 />
               </div>
-              <div className="helper-text">Enter your {networkName} wallet phone number</div>
+              <div className="helper-text">Enter your {networkName} wallet phone number (9 digits)</div>
             </FormGroup>
 
             <FormGroup>
-              <label>Amount to Withdraw (USD)</label>
+              <label>Amount to Withdraw (USD) - Min $1 / Max $2,000</label>
               <div className="input-wrap">
                 <span className="prefix">$</span>
                 <input 
                   type="number" 
                   placeholder="0.00" 
                   value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={handleAmountChange}
                   min="1"
+                  max="2000"
                   step="0.01"
                 />
-                <span className="suffix">≈ KES {(parseFloat(amount) * 129).toFixed(0)}</span>
+                <span className="suffix">≈ KES {(parseFloat(amount || 0) * rate).toFixed(0)}</span>
               </div>
-              <div className="helper-text">Exchange rate: 1 USD = 129 KES</div>
+              <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
 
             <ActionButton 
               onClick={handleSubmitWithdraw} 
-              disabled={!amount || parseFloat(amount) <= 0 || !phoneNumber || phoneNumber.length < 8}
+              disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
             >
               Withdraw to Mobile Wallet
             </ActionButton>
