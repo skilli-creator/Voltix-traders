@@ -2866,7 +2866,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [voiceEvents, setVoiceEvents] = useState({ trade: true, price: true, market: false, system: true });
 
   // Popup state
-  const [popupData, setPopupData] = useState(null);
+  const [popupType, setPopupType] = useState(null);   // 'settings', 'help', etc.
+  const [popupData, setPopupData] = useState({});
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSettingsPopup, setIsSettingsPopup] = useState(false);
 
@@ -3000,7 +3001,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     if (window.innerWidth <= 768) onClose();
   };
 
-  const openPopup = (data, isSettings = false) => {
+  const openPopup = (type, data = {}, isSettings = false) => {
+    setPopupType(type);
     setPopupData(data);
     setIsSettingsPopup(isSettings);
     setIsPopupOpen(true);
@@ -3008,7 +3010,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const closePopup = () => {
     setIsPopupOpen(false);
-    setTimeout(() => setPopupData(null), 300);
+    setTimeout(() => setPopupType(null), 300);
   };
 
   const openFullPanel = (content) => {
@@ -3138,7 +3140,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return badges[status] || badges.inactive;
   };
 
-  // ===== SETTINGS HANDLER =====
+  // ===== HANDLERS (open popup) =====
   const handleSettingsClick = () => {
     setActiveItem('settings');
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -3157,753 +3159,52 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setShowSuccess(false);
     setDobError('');
 
-    openPopup({
-      title: 'Account Settings',
-      icon: <SettingsIcon />,
-      content: (
-        <>
-          <SettingsProfileCard>
-            <div className="profile-avatar">
-              {formData.first_name && formData.last_name 
-                ? `${formData.first_name[0]}${formData.last_name[0]}`.toUpperCase()
-                : 'T'}
-            </div>
-            <div className="profile-info">
-              <div className="profile-name">
-                {formData.first_name || formData.last_name 
-                  ? `${formData.first_name} ${formData.last_name}`.trim() 
-                  : 'Tonny Mutua Kyalo'}
-              </div>
-              <div className="profile-email">{formData.email || 'tonnykyalo054@gmail.com'}</div>
-              <div className="profile-status">
-                <span className="status-dot" />
-                Active
-              </div>
-            </div>
-          </SettingsProfileCard>
-
-          {showSuccess && (
-            <SettingsSuccess>
-              <CheckIcon /> Profile updated successfully!
-            </SettingsSuccess>
-          )}
-
-          <SettingsGrid>
-            <SettingsCard>
-              <div className="card-head">
-                <span className="icon"><DiamondIcon /></span> Personal Information
-              </div>
-
-              <SettingsField>
-                <label>First Name</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="first_name"
-                    className="inp"
-                    value={formData.first_name}
-                    onChange={handleInputChange}
-                    placeholder="First name"
-                  />
-                ) : (
-                  <div className="val">{formData.first_name || 'Not set'}</div>
-                )}
-              </SettingsField>
-
-              <SettingsField>
-                <label>Last Name</label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    name="last_name"
-                    className="inp"
-                    value={formData.last_name}
-                    onChange={handleInputChange}
-                    placeholder="Last name"
-                  />
-                ) : (
-                  <div className="val">{formData.last_name || 'Not set'}</div>
-                )}
-              </SettingsField>
-
-              <SettingsField>
-                <label>Phone Number</label>
-                {isEditing ? (
-                  <input
-                    type="tel"
-                    name="phone"
-                    className="inp"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Phone number"
-                  />
-                ) : (
-                  <div className="val">{formData.phone || 'Not set'}</div>
-                )}
-              </SettingsField>
-
-              <SettingsField>
-                <label>Email Address</label>
-                <div className="val" style={{ color: '#64748b' }}>
-                  {formData.email || 'Not set'}
-                </div>
-              </SettingsField>
-
-              <SettingsField>
-                <label>Date of Birth</label>
-                {isEditing ? (
-                  <>
-                    <input
-                      type="date"
-                      name="date_of_birth"
-                      className={`inp${dobError ? ' err' : ''}`}
-                      value={formData.date_of_birth}
-                      onChange={handleDobChange}
-                      max={getMaxDate()}
-                    />
-                    {dobError && <div className="err-msg">! {dobError}</div>}
-                    {formData.date_of_birth && !dobError && calculatedAge !== null && (
-                      <div style={{ fontSize: '10px', color: '#4ade80', marginTop: '4px' }}>
-                        ✓ Age: <strong>{calculatedAge}</strong> yrs
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="val">
-                    <span>{formData.date_of_birth || 'Not set'}</span>
-                    {formData.date_of_birth && calculatedAge !== null && (
-                      <span className="age-badge">◇ {calculatedAge} yrs</span>
-                    )}
-                  </div>
-                )}
-              </SettingsField>
-
-              <SettingsField>
-                <label>Gender</label>
-                {isEditing ? (
-                  <select
-                    name="gender"
-                    className="inp"
-                    value={formData.gender}
-                    onChange={handleInputChange}
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    <option value="prefer-not">Prefer not to say</option>
-                  </select>
-                ) : (
-                  <div className="val">
-                    {formData.gender 
-                      ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) 
-                      : 'Not set'}
-                  </div>
-                )}
-              </SettingsField>
-
-              <SettingsBtnRow>
-                {isEditing ? (
-                  <>
-                    <SettingsBtn className="primary" onClick={handleSaveProfile} disabled={!!dobError}>
-                      <CheckIcon /> Save
-                    </SettingsBtn>
-                    <SettingsBtn
-                      className="secondary"
-                      onClick={() => {
-                        setIsEditing(false);
-                        setDobError('');
-                        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                        setFormData({
-                          first_name: userData.first_name || 'Tonny',
-                          last_name: userData.last_name || 'Mutua Kyalo',
-                          phone: userData.phone || '',
-                          date_of_birth: userData.date_of_birth || '',
-                          gender: userData.gender || '',
-                          email: userData.email || 'tonnykyalo054@gmail.com'
-                        });
-                        if (userData.date_of_birth) {
-                          setCalculatedAge(calculateAge(userData.date_of_birth));
-                        }
-                      }}
-                    >
-                      Cancel
-                    </SettingsBtn>
-                  </>
-                ) : (
-                  <SettingsBtn className="primary" onClick={() => setIsEditing(true)}>
-                    <EditIcon /> Edit Profile
-                  </SettingsBtn>
-                )}
-              </SettingsBtnRow>
-            </SettingsCard>
-
-            <SettingsCard>
-              <div className="card-head">
-                <span className="icon"><DiamondIcon /></span> Security & Privacy
-              </div>
-
-              <SettingsField>
-                <label>Password</label>
-                <div className="val" style={{ justifyContent: 'space-between' }}>
-                  <span>••••••••</span>
-                  <SettingsBtn
-                    className="secondary"
-                    style={{ padding: '3px 10px', fontSize: '9px' }}
-                    onClick={() => alert('Password change coming soon.')}
-                  >
-                    Change
-                  </SettingsBtn>
-                </div>
-              </SettingsField>
-
-              <SettingsField>
-                <label>Account Created</label>
-                <div className="val" style={{ color: '#64748b', fontSize: '11px' }}>
-                  {new Date().toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </div>
-              </SettingsField>
-
-              <SettingsDangerZone>
-                <div className="dtitle"><LogoutIcon /> Danger Zone</div>
-                <div className="ddesc">Permanently delete your account and all data. Cannot be undone.</div>
-                <SettingsBtn className="danger" onClick={handleDeleteAccount}>
-                  Delete Account
-                </SettingsBtn>
-              </SettingsDangerZone>
-            </SettingsCard>
-          </SettingsGrid>
-        </>
-      )
-    }, true);
+    openPopup('settings', { title: 'Account Settings', icon: <SettingsIcon /> }, true);
   };
 
-  // ===== HELP & SUPPORT HANDLER =====
   const handleHelpClick = () => {
     setActiveItem('help');
-    openPopup({
-      title: 'Help & Support',
-      icon: <HelpIcon />,
-      content: (
-        <>
-          <HelpContactCard>
-            <div className="contact-label">Email Support</div>
-            <div className="contact-row">
-              <div className="contact-icon"><EmailIcon /></div>
-              <div className="contact-info">
-                <div className="contact-title">Email</div>
-                <div className="contact-value">tonnykyalo054@gmail.com</div>
-              </div>
-              <button 
-                className="contact-action"
-                onClick={() => window.location.href = 'mailto:tonnykyalo054@gmail.com'}
-              >
-                Send
-              </button>
-            </div>
-          </HelpContactCard>
-
-          <HelpContactCard>
-            <div className="contact-label">Phone Support</div>
-            <div className="contact-row">
-              <div className="contact-icon"><PhoneIcon /></div>
-              <div className="contact-info">
-                <div className="contact-title">Call Us</div>
-                <div className="contact-value">0704 182 603</div>
-              </div>
-              <button 
-                className="contact-action"
-                onClick={() => window.location.href = 'tel:0704182603'}
-              >
-                Call
-              </button>
-            </div>
-          </HelpContactCard>
-
-          <HelpContactCard>
-            <div className="contact-label">WhatsApp</div>
-            <div className="contact-row">
-              <div className="contact-icon"><WhatsAppIcon /></div>
-              <div className="contact-info">
-                <div className="contact-title">WhatsApp</div>
-                <div className="contact-value">0704 182 603</div>
-              </div>
-              <button 
-                className="contact-action"
-                onClick={() => window.open('https://wa.me/254704182603', '_blank')}
-              >
-                Chat
-              </button>
-            </div>
-          </HelpContactCard>
-        </>
-      )
-    });
+    openPopup('help', { title: 'Help & Support', icon: <HelpIcon /> });
   };
 
-  // ===== RESPONSIBLE TRADING HANDLER =====
   const handleResponsibleTradingClick = () => {
     setActiveItem('responsible-trading');
-    openPopup({
-      title: 'Responsible Trading',
-      icon: <ShieldIcon />,
-      content: (
-        <ResponsibleTradingContent>
-          <div className="rt-section">
-            <div className="rt-title"><InfoIcon /> What is Responsible Trading?</div>
-            <div className="rt-desc">
-              Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.
-            </div>
-          </div>
-
-          <div className="rt-section">
-            <div className="rt-title"><DiamondIcon /> Key Principles</div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Set <span className="highlight">deposit limits</span> to control your capital budget and prevent overspending.</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Take regular <span className="highlight">trading breaks</span> to maintain discipline and avoid emotional decisions.</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Trade only with <span className="highlight">risk capital</span> — money you can afford to lose without affecting your daily life.</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Use <span className="highlight">stop-loss orders</span> to automatically limit potential losses on each trade.</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Never trade under the influence of <span className="highlight">alcohol or drugs</span> or during emotional distress.</span>
-            </div>
-          </div>
-
-          <div className="rt-section">
-            <div className="rt-title"><InfoIcon /> Warning Signs</div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Chasing losses by increasing trade sizes</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Borrowing money to trade</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Trading with money meant for essential expenses</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Feeling anxious or stressed about trading</span>
-            </div>
-            <div className="rt-bullet">
-              <span className="bullet-dot">•</span>
-              <span>Neglecting work, family, or health for trading</span>
-            </div>
-          </div>
-
-          <div className="rt-tip">
-            <div className="tip-title"><AwardIcon /> Pro Tip</div>
-            <div className="tip-text">
-              Consider using the <strong style={{ color: '#F8FAFC' }}>Risk Calculator</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
-            </div>
-          </div>
-        </ResponsibleTradingContent>
-      )
-    });
+    openPopup('responsible-trading', { title: 'Responsible Trading', icon: <ShieldIcon /> });
   };
 
-  // ===== ABOUT US HANDLER =====
   const handleAboutClick = () => {
     setActiveItem('about');
-    openPopup({
-      title: 'About MyTradeApp',
-      icon: <CompanyIcon />,
-      content: (
-        <AboutContent>
-          <div className="about-logo">
-            <span className="logo-icon"><LogoIcon /></span>
-            <span className="logo-text">MyTradeApp</span>
-          </div>
-
-          <div className="about-section">
-            <div className="about-title"><InfoIcon /> Our Mission</div>
-            <div className="about-desc">
-              MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities for the Deriv platform.
-            </div>
-          </div>
-
-          <div className="about-section">
-            <div className="about-title"><DiamondIcon /> What We Offer</div>
-            <div className="about-features">
-              <div className="about-feature">
-                <div className="feature-icon"><TrendingUpIcon /></div>
-                <div className="feature-name">Real-Time Data</div>
-                <div className="feature-desc">Live market streams</div>
-              </div>
-              <div className="about-feature">
-                <div className="feature-icon"><SettingsIcon /></div>
-                <div className="feature-name">Auto Trading</div>
-                <div className="feature-desc">Automated execution</div>
-              </div>
-              <div className="about-feature">
-                <div className="feature-icon"><ShieldIcon /></div>
-                <div className="feature-name">Risk Management</div>
-                <div className="feature-desc">Smart risk tools</div>
-              </div>
-              <div className="about-feature">
-                <div className="feature-icon"><LockIcon /></div>
-                <div className="feature-name">Secure</div>
-                <div className="feature-desc">Your data is safe</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="about-section">
-            <div className="about-title"><HelpIcon /> Contact Us</div>
-            <div className="about-desc">
-              Have questions or need support? Reach out to us through the <strong style={{ color: '#F8FAFC' }}>Help & Support</strong> section or email us at <strong style={{ color: '#3B82F6' }}>tonnykyalo054@gmail.com</strong>
-            </div>
-          </div>
-        </AboutContent>
-      )
-    });
+    openPopup('about', { title: 'About MyTradeApp', icon: <CompanyIcon /> });
   };
 
-  // ===== ACADEMY HANDLER (Full Panel) =====
   const handleAcademyClick = () => {
     setActiveItem('academy');
     setCurrentPanel('academy');
     openFullPanel(<Academy />);
   };
 
-  // ===== RISK CALCULATOR HANDLER =====
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
     setCalculated(false);
     setCalcAccountBalance('');
-    openPopup({
-      title: 'Risk Calculator',
-      icon: <RiskIcon />,
-      badge: 'Premium',
-      content: (
-        <>
-          <RiskInputGroup>
-            <div className="risk-label">
-              Account Balance <span className="risk-hint">(USD)</span>
-            </div>
-            <div className="risk-input-wrap">
-              <span className="risk-prefix">$</span>
-              <input 
-                type="number" 
-                placeholder="Enter your account balance" 
-                value={calcAccountBalance}
-                onChange={(e) => setCalcAccountBalance(e.target.value)}
-                min="0"
-                step="100"
-              />
-            </div>
-          </RiskInputGroup>
-
-          <RiskCalculateBtn 
-            onClick={calculateRisk}
-            disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}
-          >
-            Calculate Risk
-          </RiskCalculateBtn>
-
-          {calculated && parseFloat(calcAccountBalance) > 0 && (
-            <>
-              <RiskResultsGrid>
-                <RiskResultBox type="stake">
-                  <div className="result-label">Stake Amount</div>
-                  <div className="result-value">${riskResults.stakeAmount.toFixed(2)}</div>
-                  <div className="result-sub">per trade</div>
-                </RiskResultBox>
-                <RiskResultBox type="risk">
-                  <div className="result-label">Risk Amount</div>
-                  <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
-                  <div className="result-sub">{calcRiskPercent}% of balance</div>
-                </RiskResultBox>
-                <RiskResultBox type="reward">
-                  <div className="result-label">Reward Amount</div>
-                  <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
-                  <div className="result-sub">
-                    {((parseFloat(calcTakeProfit) / parseFloat(calcStopLoss)) * parseFloat(calcRiskPercent)).toFixed(2)}%
-                  </div>
-                </RiskResultBox>
-              </RiskResultsGrid>
-
-              <RiskSummaryBox>
-                <div className="summary-row">
-                  <span className="label">Position Size</span>
-                  <span className="value">{riskResults.positionSize.toFixed(2)} units</span>
-                </div>
-                <div className="summary-divider" />
-                <div className="summary-row highlight-risk">
-                  <span className="label">Max Loss</span>
-                  <span className="value">${riskResults.maxLoss.toFixed(2)}</span>
-                </div>
-                <div className="summary-row highlight-reward">
-                  <span className="label">Max Profit</span>
-                  <span className="value">${riskResults.maxProfit.toFixed(2)}</span>
-                </div>
-                <div className="summary-divider" />
-                <div className="summary-row highlight-ratio">
-                  <span className="label">Risk/Reward Ratio</span>
-                  <span className="value">1:{riskResults.riskRewardRatio.toFixed(2)}</span>
-                </div>
-              </RiskSummaryBox>
-            </>
-          )}
-        </>
-      )
-    });
+    openPopup('risk-calculator', { title: 'Risk Calculator', icon: <RiskIcon />, badge: 'Premium' });
   };
 
-  // ===== COPY TRADING HANDLER =====
   const handleCopyTradingClick = () => {
     setActiveItem('copy-trading');
     setCopyShowAddClient(false);
     setCopyConnectionStatus(null);
-    
-    openPopup({
-      title: 'Copy Trading',
-      icon: <CopyTradeIcon />,
-      badge: 'BETA',
-      content: (
-        <CopyTradingWrapper>
-          <CopyHeroSection>
-            <div className="badge">Copy Trading</div>
-            <h1 className="title">
-              Copy <span className="gradient">Trading</span>
-            </h1>
-            <p className="subtitle">
-              Master trader dashboard. Manage your followers and share your trades with them.
-            </p>
-          </CopyHeroSection>
-
-          <MasterTraderCardCompact>
-            <div className="master-header">
-              <div className="master-avatar">VT</div>
-              <div className="master-info">
-                <div className="master-name">John Trader</div>
-                <div className="master-title">
-                  <span className="live-dot" />
-                  Master Trader • Live Copy Trading
-                </div>
-              </div>
-              <span className="master-badge">Active</span>
-            </div>
-            <div className="master-stats">
-              <div className="stat">
-                <div className="stat-value">{copyClients.filter(c => c.status === 'active').length}</div>
-                <div className="stat-label">Active Followers</div>
-              </div>
-              <div className="stat">
-                <div className="stat-value">{copyClients.reduce((sum, c) => sum + c.copiedTrades, 0)}</div>
-                <div className="stat-label">Total Copied Trades</div>
-              </div>
-              <div className="stat">
-                <div className="stat-value" style={{ color: '#22c55e' }}>
-                  ${copyClients.reduce((sum, c) => sum + c.profit, 0).toFixed(2)}
-                </div>
-                <div className="stat-label">Total Follower Profit</div>
-              </div>
-            </div>
-          </MasterTraderCardCompact>
-
-          <ClientsGridCompact>
-            {copyClients.length === 0 ? (
-              <EmptyStateCompact>
-                <div className="empty-icon"><UsersIcon /></div>
-                <div className="empty-title">No Followers Yet</div>
-                <div className="empty-sub">
-                  Click the "Add Client" button below to start adding followers.
-                </div>
-              </EmptyStateCompact>
-            ) : (
-              copyClients.map((client) => {
-                const status = getCopyStatusBadge(client.status);
-                
-                return (
-                  <ClientCardCompact key={client.id} active={client.status === 'active'}>
-                    <div className="client-header">
-                      <div className="client-avatar">{client.avatar}</div>
-                      <div className="client-info">
-                        <div className="client-name">{client.name}</div>
-                        <div className="client-token">{client.token}</div>
-                      </div>
-                      <span className={`status-badge ${status.className}`}>
-                        {status.label}
-                      </span>
-                    </div>
-
-                    <div className="client-details">
-                      <div className="detail">
-                        <div className="detail-value">{client.copiedTrades}</div>
-                        <div className="detail-label">Trades</div>
-                      </div>
-                      <div className="detail">
-                        <div className="detail-value" style={{ color: client.profit > 0 ? '#22c55e' : '#ef4444' }}>
-                          ${client.profit.toFixed(2)}
-                        </div>
-                        <div className="detail-label">Profit</div>
-                      </div>
-                    </div>
-
-                    <div className="client-actions">
-                      {client.status === 'pending' ? (
-                        <>
-                          <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>
-                            Activate
-                          </button>
-                          <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
-                            Remove
-                          </button>
-                        </>
-                      ) : client.status === 'active' ? (
-                        <>
-                          <button className="action-btn view" onClick={() => handleCopyViewClient(client.id)}>
-                            View
-                          </button>
-                          <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
-                            Remove
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>
-                            Reactivate
-                          </button>
-                          <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
-                            Remove
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </ClientCardCompact>
-                );
-              })
-            )}
-
-            {!copyShowAddClient ? (
-              <div style={{ gridColumn: '1 / -1' }}>
-                <AddClientButtonCompact onClick={() => setCopyShowAddClient(true)}>
-                  <span className="icon"><UserPlusIcon /></span>
-                  <span className="text">Add Client</span>
-                  <span className="sub-text">Enter their API token to start copy trading</span>
-                </AddClientButtonCompact>
-              </div>
-            ) : (
-              <div style={{ gridColumn: '1 / -1' }}>
-                <ConnectSectionCompact>
-                  <div className="section-title"><UserPlusIcon /> Add New Client</div>
-                  <div className="section-subtitle">
-                    Enter your client's name and API token to add them
-                  </div>
-
-                  <div className="input-group">
-                    <div className="input-wrapper">
-                      <span className="input-icon"><UserIcon /></span>
-                      <input
-                        type="text"
-                        placeholder="Enter client's name (e.g., John Smith)"
-                        value={copyClientNameInput}
-                        onChange={(e) => setCopyClientNameInput(e.target.value)}
-                      />
-                    </div>
-                    <div className="input-wrapper">
-                      <span className="input-icon"><DiamondIcon /></span>
-                      <input
-                        type="text"
-                        placeholder="Enter client's API token (e.g., 0x7a3f...9b2e)"
-                        value={copyTokenInput}
-                        onChange={(e) => setCopyTokenInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleCopyConnect();
-                        }}
-                      />
-                    </div>
-                    <div className="action-row">
-                      <button 
-                        className="connect-btn" 
-                        onClick={handleCopyConnect}
-                        disabled={copyConnecting || !copyTokenInput.trim() || !copyClientNameInput.trim()}
-                      >
-                        <span className="btn-shimmer" />
-                        {copyConnecting ? 'Adding...' : 'Add Client'}
-                      </button>
-                      <button 
-                        className="cancel-btn" 
-                        onClick={() => {
-                          setCopyShowAddClient(false);
-                          setCopyTokenInput('');
-                          setCopyClientNameInput('');
-                          setCopyConnectionStatus(null);
-                        }}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-
-                  {copyConnectionStatus && (
-                    <div className={`connection-status ${copyConnectionStatus.type}`}>
-                      <span className={`status-dot ${copyConnectionStatus.type === 'success' ? 'green' : copyConnectionStatus.type === 'error' ? 'red' : 'blue'}`} />
-                      {copyConnectionStatus.message}
-                    </div>
-                  )}
-                </ConnectSectionCompact>
-              </div>
-            )}
-          </ClientsGridCompact>
-        </CopyTradingWrapper>
-      )
-    });
+    openPopup('copy-trading', { title: 'Copy Trading', icon: <CopyTradeIcon />, badge: 'BETA' });
   };
 
-  // ===== PERFORMANCE HANDLER =====
   const handlePerformanceClick = () => {
     setActiveItem('performance');
-    openPopup({
-      title: 'Performance',
-      icon: <PerformanceIcon />,
-      content: (
-        <div>
-          <div style={{
-            padding: '20px',
-            textAlign: 'center',
-            background: 'rgba(255,255,255,0.02)',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.04)'
-          }}>
-            <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}>
-              <PerformanceIcon />
-            </div>
-            <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>
-              Trading Performance
-            </h3>
-            <p style={{ color: '#94A3B8', fontSize: '13px' }}>
-              Your trading performance metrics will appear here.
-            </p>
-          </div>
-        </div>
-      )
-    });
+    openPopup('performance', { title: 'Performance', icon: <PerformanceIcon /> });
   };
 
-  // ===== JOURNAL HANDLER (NEW - opens in full panel) =====
   const handleJournalClick = () => {
     setActiveItem('journal');
     setCurrentPanel('journal');
-    // Build journal content dynamically using current state
     const journalContent = (
       <JournalContainer>
         <JournalToolbar>
@@ -3977,165 +3278,838 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setIsFullPanelOpen(true);
   };
 
-  // ===== ALL POPUP HANDLERS =====
   const handleNotificationsClick = () => {
     setActiveItem('notifications');
     setHasNotifications(false);
-    openPopup({
-      title: 'Notifications',
-      icon: <BellIcon />,
-      badge: '2 New',
-      content: (
-        <>
-          <NotificationItem read={false} type="trade">
-            <div className="notif-icon"><TrendingUpIcon /></div>
-            <div className="notif-content">
-              <div className="notif-title">Trade Executed</div>
-              <div className="notif-desc">Buy order #TRX-7841 filled at $12,450.00</div>
-              <div className="notif-time">2 min ago</div>
-            </div>
-            <div className="notif-dot" />
-          </NotificationItem>
-          <NotificationItem read={false} type="alert">
-            <div className="notif-icon"><TrendingDownIcon /></div>
-            <div className="notif-content">
-              <div className="notif-title">Market Alert</div>
-              <div className="notif-desc">Volatility 100 (1s) Index reached resistance level</div>
-              <div className="notif-time">15 min ago</div>
-            </div>
-            <div className="notif-dot" />
-          </NotificationItem>
-          <NotificationItem read={true} type="trade">
-            <div className="notif-icon"><TrendingUpIcon /></div>
-            <div className="notif-content">
-              <div className="notif-title">Position Closed</div>
-              <div className="notif-desc">Sell order #TRX-7839 closed at $5,670.00</div>
-              <div className="notif-time">1 hour ago</div>
-            </div>
-          </NotificationItem>
-          <NotificationItem read={true} type="alert">
-            <div className="notif-icon"><BellIcon /></div>
-            <div className="notif-content">
-              <div className="notif-title">System Update</div>
-              <div className="notif-desc">New trading features available in version 2.1.0</div>
-              <div className="notif-time">3 hours ago</div>
-            </div>
-          </NotificationItem>
-        </>
-      )
-    });
+    openPopup('notifications', { title: 'Notifications', icon: <BellIcon />, badge: '2 New' });
   };
 
   const handleVoiceClick = () => {
     setActiveItem('voice');
-    openPopup({
+    openPopup('voice', {
       title: 'Voice Notifications',
       icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />,
-      badge: voiceEnabled ? 'Active' : 'Muted',
-      content: (
-        <>
-          <VoiceToggleRow active={voiceEnabled}>
-            <span className="toggle-label">Voice Notifications</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
-              <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
-            </div>
-          </VoiceToggleRow>
-          <VolumeSlider>
-            <span className="slider-label">Vol</span>
-            <input type="range" min="0" max="100" value={voiceVolume} onChange={(e) => setVoiceVolume(parseInt(e.target.value))} disabled={!voiceEnabled} />
-            <span className="slider-value">{voiceVolume}%</span>
-          </VolumeSlider>
-          <VoiceEventItem enabled={voiceEvents.trade}>
-            <span className="event-name"><span className="event-dot" />Trade Execution</span>
-            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>
-              {voiceEvents.trade ? 'Enabled' : 'Disabled'}
-            </span>
-          </VoiceEventItem>
-          <VoiceEventItem enabled={voiceEvents.price}>
-            <span className="event-name"><span className="event-dot" />Price Alerts</span>
-            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>
-              {voiceEvents.price ? 'Enabled' : 'Disabled'}
-            </span>
-          </VoiceEventItem>
-          <VoiceEventItem enabled={voiceEvents.market}>
-            <span className="event-name"><span className="event-dot" />Market Signals</span>
-            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>
-              {voiceEvents.market ? 'Enabled' : 'Disabled'}
-            </span>
-          </VoiceEventItem>
-          <VoiceEventItem enabled={voiceEvents.system}>
-            <span className="event-name"><span className="event-dot" />System Updates</span>
-            <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>
-              {voiceEvents.system ? 'Enabled' : 'Disabled'}
-            </span>
-          </VoiceEventItem>
-        </>
-      )
+      badge: voiceEnabled ? 'Active' : 'Muted'
     });
   };
 
   const handleAccountInfoClick = () => {
     setActiveItem('account-info');
-    openPopup({
-      title: 'Deriv Account Information',
-      icon: <AccountIcon />,
-      content: (
-        <>
-          <AccountInfoRow><span className="row-label">Account ID</span><span className="row-value">ACC-8472-001</span></AccountInfoRow>
-          <AccountInfoRow><span className="row-label">Account Type</span><span className="row-value">Real Trading</span></AccountInfoRow>
-          <AccountInfoRow><span className="row-label">Balance</span><span className="row-value" style={{ color: '#10B981' }}>$7,110.00 USD</span></AccountInfoRow>
-          <AccountInfoRow><span className="row-label">Status</span><span className="row-value"><span className="status-indicator"><span className="dot" />Active</span></span></AccountInfoRow>
-          <AccountInfoRow><span className="row-label">Joined</span><span className="row-value">January 2026</span></AccountInfoRow>
-          <AccountInfoRow><span className="row-label">Last Login</span><span className="row-value">Today, 14:32</span></AccountInfoRow>
-        </>
-      )
-    });
+    openPopup('account-info', { title: 'Deriv Account Information', icon: <AccountIcon /> });
   };
 
   const handleHowToUseClick = () => {
     setActiveItem('how-to-use');
-    openPopup({
-      title: 'How to Use This Tool',
-      icon: <BookIcon />,
-      content: (
-        <>
-          <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Connect Your Account</div><div className="step-desc">Link your Deriv account to access real-time trading data and execute trades directly.</div></div></StepItem>
-          <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">Choose from multiple volatility indices including 1s and standard options to start trading.</div></div></StepItem>
-          <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Choose Your Strategy</div><div className="step-desc">Select between manual, auto, or bot-assisted trading modes based on your preference.</div></div></StepItem>
-          <StepItem><div className="step-number">4</div><div className="step-content"><div className="step-title">Monitor Your Positions</div><div className="step-desc">Track open positions, view performance metrics, and manage risk in real-time.</div></div></StepItem>
-          <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Customize Experience</div><div className="step-desc">Personalize themes, notification settings, and display preferences to suit your workflow.</div></div></StepItem>
-        </>
-      )
-    });
+    openPopup('how-to-use', { title: 'How to Use This Tool', icon: <BookIcon /> });
   };
 
   const handleTermsClick = () => {
     setActiveItem('terms');
-    openPopup({
-      title: 'Terms & Conditions',
-      icon: <TermsIcon />,
-      badge: 'v2.0',
-      content: (
-        <>
-          <TermsSection><div className="terms-title">1. Introduction</div><div className="terms-text">Welcome to MyTradeApp. By using our third-party trading application, you agree to these Terms and Conditions.</div></TermsSection>
-          <TermsSection><div className="terms-title">2. Acceptance of Terms</div><div className="terms-text">By accessing or using MyTradeApp, you confirm that you have read, understood, and agree to be bound by these Terms.</div>
-            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must be at least <strong style={{ color: '#F8FAFC' }}>18 years old</strong> to use this App.</span></div>
-            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
-            <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
-          </TermsSection>
-          <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data from Deriv via APIs.</div></TermsSection>
-          <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradeApp does not store your login credentials.</div>
-            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
-            <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
-          </TermsSection>
-          <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradeApp provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
-          <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your Deriv or Forex login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
-          <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradeApp operates.</div></TermsSection>
-          <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@mytradeapp.com</strong></div></TermsSection>
-        </>
-      )
-    });
+    openPopup('terms', { title: 'Terms & Conditions', icon: <TermsIcon />, badge: 'v2.0' });
+  };
+
+  // ===== RENDER POPUP CONTENT based on popupType =====
+  const renderPopupContent = () => {
+    switch (popupType) {
+      case 'settings':
+        return (
+          <>
+            <SettingsProfileCard>
+              <div className="profile-avatar">
+                {formData.first_name && formData.last_name 
+                  ? `${formData.first_name[0]}${formData.last_name[0]}`.toUpperCase()
+                  : 'T'}
+              </div>
+              <div className="profile-info">
+                <div className="profile-name">
+                  {formData.first_name || formData.last_name 
+                    ? `${formData.first_name} ${formData.last_name}`.trim() 
+                    : 'Tonny Mutua Kyalo'}
+                </div>
+                <div className="profile-email">{formData.email || 'tonnykyalo054@gmail.com'}</div>
+                <div className="profile-status">
+                  <span className="status-dot" />
+                  Active
+                </div>
+              </div>
+            </SettingsProfileCard>
+
+            {showSuccess && (
+              <SettingsSuccess>
+                <CheckIcon /> Profile updated successfully!
+              </SettingsSuccess>
+            )}
+
+            <SettingsGrid>
+              <SettingsCard>
+                <div className="card-head">
+                  <span className="icon"><DiamondIcon /></span> Personal Information
+                </div>
+
+                <SettingsField>
+                  <label>First Name</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="first_name"
+                      className="inp"
+                      value={formData.first_name}
+                      onChange={handleInputChange}
+                      placeholder="First name"
+                    />
+                  ) : (
+                    <div className="val">{formData.first_name || 'Not set'}</div>
+                  )}
+                </SettingsField>
+
+                <SettingsField>
+                  <label>Last Name</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="last_name"
+                      className="inp"
+                      value={formData.last_name}
+                      onChange={handleInputChange}
+                      placeholder="Last name"
+                    />
+                  ) : (
+                    <div className="val">{formData.last_name || 'Not set'}</div>
+                  )}
+                </SettingsField>
+
+                <SettingsField>
+                  <label>Phone Number</label>
+                  {isEditing ? (
+                    <input
+                      type="tel"
+                      name="phone"
+                      className="inp"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="Phone number"
+                    />
+                  ) : (
+                    <div className="val">{formData.phone || 'Not set'}</div>
+                  )}
+                </SettingsField>
+
+                <SettingsField>
+                  <label>Email Address</label>
+                  <div className="val" style={{ color: '#64748b' }}>
+                    {formData.email || 'Not set'}
+                  </div>
+                </SettingsField>
+
+                <SettingsField>
+                  <label>Date of Birth</label>
+                  {isEditing ? (
+                    <>
+                      <input
+                        type="date"
+                        name="date_of_birth"
+                        className={`inp${dobError ? ' err' : ''}`}
+                        value={formData.date_of_birth}
+                        onChange={handleDobChange}
+                        max={getMaxDate()}
+                      />
+                      {dobError && <div className="err-msg">! {dobError}</div>}
+                      {formData.date_of_birth && !dobError && calculatedAge !== null && (
+                        <div style={{ fontSize: '10px', color: '#4ade80', marginTop: '4px' }}>
+                          ✓ Age: <strong>{calculatedAge}</strong> yrs
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="val">
+                      <span>{formData.date_of_birth || 'Not set'}</span>
+                      {formData.date_of_birth && calculatedAge !== null && (
+                        <span className="age-badge">◇ {calculatedAge} yrs</span>
+                      )}
+                    </div>
+                  )}
+                </SettingsField>
+
+                <SettingsField>
+                  <label>Gender</label>
+                  {isEditing ? (
+                    <select
+                      name="gender"
+                      className="inp"
+                      value={formData.gender}
+                      onChange={handleInputChange}
+                    >
+                      <option value="">Select gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                      <option value="prefer-not">Prefer not to say</option>
+                    </select>
+                  ) : (
+                    <div className="val">
+                      {formData.gender 
+                        ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) 
+                        : 'Not set'}
+                    </div>
+                  )}
+                </SettingsField>
+
+                <SettingsBtnRow>
+                  {isEditing ? (
+                    <>
+                      <SettingsBtn className="primary" onClick={handleSaveProfile} disabled={!!dobError}>
+                        <CheckIcon /> Save
+                      </SettingsBtn>
+                      <SettingsBtn
+                        className="secondary"
+                        onClick={() => {
+                          setIsEditing(false);
+                          setDobError('');
+                          const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                          setFormData({
+                            first_name: userData.first_name || 'Tonny',
+                            last_name: userData.last_name || 'Mutua Kyalo',
+                            phone: userData.phone || '',
+                            date_of_birth: userData.date_of_birth || '',
+                            gender: userData.gender || '',
+                            email: userData.email || 'tonnykyalo054@gmail.com'
+                          });
+                          if (userData.date_of_birth) {
+                            setCalculatedAge(calculateAge(userData.date_of_birth));
+                          }
+                        }}
+                      >
+                        Cancel
+                      </SettingsBtn>
+                    </>
+                  ) : (
+                    <SettingsBtn className="primary" onClick={() => setIsEditing(true)}>
+                      <EditIcon /> Edit Profile
+                    </SettingsBtn>
+                  )}
+                </SettingsBtnRow>
+              </SettingsCard>
+
+              <SettingsCard>
+                <div className="card-head">
+                  <span className="icon"><DiamondIcon /></span> Security & Privacy
+                </div>
+
+                <SettingsField>
+                  <label>Password</label>
+                  <div className="val" style={{ justifyContent: 'space-between' }}>
+                    <span>••••••••</span>
+                    <SettingsBtn
+                      className="secondary"
+                      style={{ padding: '3px 10px', fontSize: '9px' }}
+                      onClick={() => alert('Password change coming soon.')}
+                    >
+                      Change
+                    </SettingsBtn>
+                  </div>
+                </SettingsField>
+
+                <SettingsField>
+                  <label>Account Created</label>
+                  <div className="val" style={{ color: '#64748b', fontSize: '11px' }}>
+                    {new Date().toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </div>
+                </SettingsField>
+
+                <SettingsDangerZone>
+                  <div className="dtitle"><LogoutIcon /> Danger Zone</div>
+                  <div className="ddesc">Permanently delete your account and all data. Cannot be undone.</div>
+                  <SettingsBtn className="danger" onClick={handleDeleteAccount}>
+                    Delete Account
+                  </SettingsBtn>
+                </SettingsDangerZone>
+              </SettingsCard>
+            </SettingsGrid>
+          </>
+        );
+      case 'help':
+        return (
+          <>
+            <HelpContactCard>
+              <div className="contact-label">Email Support</div>
+              <div className="contact-row">
+                <div className="contact-icon"><EmailIcon /></div>
+                <div className="contact-info">
+                  <div className="contact-title">Email</div>
+                  <div className="contact-value">tonnykyalo054@gmail.com</div>
+                </div>
+                <button 
+                  className="contact-action"
+                  onClick={() => window.location.href = 'mailto:tonnykyalo054@gmail.com'}
+                >
+                  Send
+                </button>
+              </div>
+            </HelpContactCard>
+
+            <HelpContactCard>
+              <div className="contact-label">Phone Support</div>
+              <div className="contact-row">
+                <div className="contact-icon"><PhoneIcon /></div>
+                <div className="contact-info">
+                  <div className="contact-title">Call Us</div>
+                  <div className="contact-value">0704 182 603</div>
+                </div>
+                <button 
+                  className="contact-action"
+                  onClick={() => window.location.href = 'tel:0704182603'}
+                >
+                  Call
+                </button>
+              </div>
+            </HelpContactCard>
+
+            <HelpContactCard>
+              <div className="contact-label">WhatsApp</div>
+              <div className="contact-row">
+                <div className="contact-icon"><WhatsAppIcon /></div>
+                <div className="contact-info">
+                  <div className="contact-title">WhatsApp</div>
+                  <div className="contact-value">0704 182 603</div>
+                </div>
+                <button 
+                  className="contact-action"
+                  onClick={() => window.open('https://wa.me/254704182603', '_blank')}
+                >
+                  Chat
+                </button>
+              </div>
+            </HelpContactCard>
+          </>
+        );
+      case 'responsible-trading':
+        return (
+          <ResponsibleTradingContent>
+            <div className="rt-section">
+              <div className="rt-title"><InfoIcon /> What is Responsible Trading?</div>
+              <div className="rt-desc">
+                Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.
+              </div>
+            </div>
+
+            <div className="rt-section">
+              <div className="rt-title"><DiamondIcon /> Key Principles</div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Set <span className="highlight">deposit limits</span> to control your capital budget and prevent overspending.</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Take regular <span className="highlight">trading breaks</span> to maintain discipline and avoid emotional decisions.</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Trade only with <span className="highlight">risk capital</span> — money you can afford to lose without affecting your daily life.</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Use <span className="highlight">stop-loss orders</span> to automatically limit potential losses on each trade.</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Never trade under the influence of <span className="highlight">alcohol or drugs</span> or during emotional distress.</span>
+              </div>
+            </div>
+
+            <div className="rt-section">
+              <div className="rt-title"><InfoIcon /> Warning Signs</div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Chasing losses by increasing trade sizes</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Borrowing money to trade</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Trading with money meant for essential expenses</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Feeling anxious or stressed about trading</span>
+              </div>
+              <div className="rt-bullet">
+                <span className="bullet-dot">•</span>
+                <span>Neglecting work, family, or health for trading</span>
+              </div>
+            </div>
+
+            <div className="rt-tip">
+              <div className="tip-title"><AwardIcon /> Pro Tip</div>
+              <div className="tip-text">
+                Consider using the <strong style={{ color: '#F8FAFC' }}>Risk Calculator</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
+              </div>
+            </div>
+          </ResponsibleTradingContent>
+        );
+      case 'about':
+        return (
+          <AboutContent>
+            <div className="about-logo">
+              <span className="logo-icon"><LogoIcon /></span>
+              <span className="logo-text">MyTradeApp</span>
+            </div>
+
+            <div className="about-section">
+              <div className="about-title"><InfoIcon /> Our Mission</div>
+              <div className="about-desc">
+                MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities for the Deriv platform.
+              </div>
+            </div>
+
+            <div className="about-section">
+              <div className="about-title"><DiamondIcon /> What We Offer</div>
+              <div className="about-features">
+                <div className="about-feature">
+                  <div className="feature-icon"><TrendingUpIcon /></div>
+                  <div className="feature-name">Real-Time Data</div>
+                  <div className="feature-desc">Live market streams</div>
+                </div>
+                <div className="about-feature">
+                  <div className="feature-icon"><SettingsIcon /></div>
+                  <div className="feature-name">Auto Trading</div>
+                  <div className="feature-desc">Automated execution</div>
+                </div>
+                <div className="about-feature">
+                  <div className="feature-icon"><ShieldIcon /></div>
+                  <div className="feature-name">Risk Management</div>
+                  <div className="feature-desc">Smart risk tools</div>
+                </div>
+                <div className="about-feature">
+                  <div className="feature-icon"><LockIcon /></div>
+                  <div className="feature-name">Secure</div>
+                  <div className="feature-desc">Your data is safe</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="about-section">
+              <div className="about-title"><HelpIcon /> Contact Us</div>
+              <div className="about-desc">
+                Have questions or need support? Reach out to us through the <strong style={{ color: '#F8FAFC' }}>Help & Support</strong> section or email us at <strong style={{ color: '#3B82F6' }}>tonnykyalo054@gmail.com</strong>
+              </div>
+            </div>
+          </AboutContent>
+        );
+      case 'risk-calculator':
+        return (
+          <>
+            <RiskInputGroup>
+              <div className="risk-label">
+                Account Balance <span className="risk-hint">(USD)</span>
+              </div>
+              <div className="risk-input-wrap">
+                <span className="risk-prefix">$</span>
+                <input 
+                  type="number" 
+                  placeholder="Enter your account balance" 
+                  value={calcAccountBalance}
+                  onChange={(e) => setCalcAccountBalance(e.target.value)}
+                  min="0"
+                  step="100"
+                />
+              </div>
+            </RiskInputGroup>
+
+            <RiskCalculateBtn 
+              onClick={calculateRisk}
+              disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}
+            >
+              Calculate Risk
+            </RiskCalculateBtn>
+
+            {calculated && parseFloat(calcAccountBalance) > 0 && (
+              <>
+                <RiskResultsGrid>
+                  <RiskResultBox type="stake">
+                    <div className="result-label">Stake Amount</div>
+                    <div className="result-value">${riskResults.stakeAmount.toFixed(2)}</div>
+                    <div className="result-sub">per trade</div>
+                  </RiskResultBox>
+                  <RiskResultBox type="risk">
+                    <div className="result-label">Risk Amount</div>
+                    <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
+                    <div className="result-sub">{calcRiskPercent}% of balance</div>
+                  </RiskResultBox>
+                  <RiskResultBox type="reward">
+                    <div className="result-label">Reward Amount</div>
+                    <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
+                    <div className="result-sub">
+                      {((parseFloat(calcTakeProfit) / parseFloat(calcStopLoss)) * parseFloat(calcRiskPercent)).toFixed(2)}%
+                    </div>
+                  </RiskResultBox>
+                </RiskResultsGrid>
+
+                <RiskSummaryBox>
+                  <div className="summary-row">
+                    <span className="label">Position Size</span>
+                    <span className="value">{riskResults.positionSize.toFixed(2)} units</span>
+                  </div>
+                  <div className="summary-divider" />
+                  <div className="summary-row highlight-risk">
+                    <span className="label">Max Loss</span>
+                    <span className="value">${riskResults.maxLoss.toFixed(2)}</span>
+                  </div>
+                  <div className="summary-row highlight-reward">
+                    <span className="label">Max Profit</span>
+                    <span className="value">${riskResults.maxProfit.toFixed(2)}</span>
+                  </div>
+                  <div className="summary-divider" />
+                  <div className="summary-row highlight-ratio">
+                    <span className="label">Risk/Reward Ratio</span>
+                    <span className="value">1:{riskResults.riskRewardRatio.toFixed(2)}</span>
+                  </div>
+                </RiskSummaryBox>
+              </>
+            )}
+          </>
+        );
+      case 'copy-trading':
+        return (
+          <CopyTradingWrapper>
+            <CopyHeroSection>
+              <div className="badge">Copy Trading</div>
+              <h1 className="title">
+                Copy <span className="gradient">Trading</span>
+              </h1>
+              <p className="subtitle">
+                Master trader dashboard. Manage your followers and share your trades with them.
+              </p>
+            </CopyHeroSection>
+
+            <MasterTraderCardCompact>
+              <div className="master-header">
+                <div className="master-avatar">VT</div>
+                <div className="master-info">
+                  <div className="master-name">John Trader</div>
+                  <div className="master-title">
+                    <span className="live-dot" />
+                    Master Trader • Live Copy Trading
+                  </div>
+                </div>
+                <span className="master-badge">Active</span>
+              </div>
+              <div className="master-stats">
+                <div className="stat">
+                  <div className="stat-value">{copyClients.filter(c => c.status === 'active').length}</div>
+                  <div className="stat-label">Active Followers</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-value">{copyClients.reduce((sum, c) => sum + c.copiedTrades, 0)}</div>
+                  <div className="stat-label">Total Copied Trades</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-value" style={{ color: '#22c55e' }}>
+                    ${copyClients.reduce((sum, c) => sum + c.profit, 0).toFixed(2)}
+                  </div>
+                  <div className="stat-label">Total Follower Profit</div>
+                </div>
+              </div>
+            </MasterTraderCardCompact>
+
+            <ClientsGridCompact>
+              {copyClients.length === 0 ? (
+                <EmptyStateCompact>
+                  <div className="empty-icon"><UsersIcon /></div>
+                  <div className="empty-title">No Followers Yet</div>
+                  <div className="empty-sub">
+                    Click the "Add Client" button below to start adding followers.
+                  </div>
+                </EmptyStateCompact>
+              ) : (
+                copyClients.map((client) => {
+                  const status = getCopyStatusBadge(client.status);
+                  
+                  return (
+                    <ClientCardCompact key={client.id} active={client.status === 'active'}>
+                      <div className="client-header">
+                        <div className="client-avatar">{client.avatar}</div>
+                        <div className="client-info">
+                          <div className="client-name">{client.name}</div>
+                          <div className="client-token">{client.token}</div>
+                        </div>
+                        <span className={`status-badge ${status.className}`}>
+                          {status.label}
+                        </span>
+                      </div>
+
+                      <div className="client-details">
+                        <div className="detail">
+                          <div className="detail-value">{client.copiedTrades}</div>
+                          <div className="detail-label">Trades</div>
+                        </div>
+                        <div className="detail">
+                          <div className="detail-value" style={{ color: client.profit > 0 ? '#22c55e' : '#ef4444' }}>
+                            ${client.profit.toFixed(2)}
+                          </div>
+                          <div className="detail-label">Profit</div>
+                        </div>
+                      </div>
+
+                      <div className="client-actions">
+                        {client.status === 'pending' ? (
+                          <>
+                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>
+                              Activate
+                            </button>
+                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
+                              Remove
+                            </button>
+                          </>
+                        ) : client.status === 'active' ? (
+                          <>
+                            <button className="action-btn view" onClick={() => handleCopyViewClient(client.id)}>
+                              View
+                            </button>
+                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
+                              Remove
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>
+                              Reactivate
+                            </button>
+                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
+                              Remove
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </ClientCardCompact>
+                  );
+                })
+              )}
+
+              {!copyShowAddClient ? (
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <AddClientButtonCompact onClick={() => setCopyShowAddClient(true)}>
+                    <span className="icon"><UserPlusIcon /></span>
+                    <span className="text">Add Client</span>
+                    <span className="sub-text">Enter their API token to start copy trading</span>
+                  </AddClientButtonCompact>
+                </div>
+              ) : (
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <ConnectSectionCompact>
+                    <div className="section-title"><UserPlusIcon /> Add New Client</div>
+                    <div className="section-subtitle">
+                      Enter your client's name and API token to add them
+                    </div>
+
+                    <div className="input-group">
+                      <div className="input-wrapper">
+                        <span className="input-icon"><UserIcon /></span>
+                        <input
+                          type="text"
+                          placeholder="Enter client's name (e.g., John Smith)"
+                          value={copyClientNameInput}
+                          onChange={(e) => setCopyClientNameInput(e.target.value)}
+                        />
+                      </div>
+                      <div className="input-wrapper">
+                        <span className="input-icon"><DiamondIcon /></span>
+                        <input
+                          type="text"
+                          placeholder="Enter client's API token (e.g., 0x7a3f...9b2e)"
+                          value={copyTokenInput}
+                          onChange={(e) => setCopyTokenInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleCopyConnect();
+                          }}
+                        />
+                      </div>
+                      <div className="action-row">
+                        <button 
+                          className="connect-btn" 
+                          onClick={handleCopyConnect}
+                          disabled={copyConnecting || !copyTokenInput.trim() || !copyClientNameInput.trim()}
+                        >
+                          <span className="btn-shimmer" />
+                          {copyConnecting ? 'Adding...' : 'Add Client'}
+                        </button>
+                        <button 
+                          className="cancel-btn" 
+                          onClick={() => {
+                            setCopyShowAddClient(false);
+                            setCopyTokenInput('');
+                            setCopyClientNameInput('');
+                            setCopyConnectionStatus(null);
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+
+                    {copyConnectionStatus && (
+                      <div className={`connection-status ${copyConnectionStatus.type}`}>
+                        <span className={`status-dot ${copyConnectionStatus.type === 'success' ? 'green' : copyConnectionStatus.type === 'error' ? 'red' : 'blue'}`} />
+                        {copyConnectionStatus.message}
+                      </div>
+                    )}
+                  </ConnectSectionCompact>
+                </div>
+              )}
+            </ClientsGridCompact>
+          </CopyTradingWrapper>
+        );
+      case 'performance':
+        return (
+          <div>
+            <div style={{
+              padding: '20px',
+              textAlign: 'center',
+              background: 'rgba(255,255,255,0.02)',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.04)'
+            }}>
+              <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}>
+                <PerformanceIcon />
+              </div>
+              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>
+                Trading Performance
+              </h3>
+              <p style={{ color: '#94A3B8', fontSize: '13px' }}>
+                Your trading performance metrics will appear here.
+              </p>
+            </div>
+          </div>
+        );
+      case 'notifications':
+        return (
+          <>
+            <NotificationItem read={false} type="trade">
+              <div className="notif-icon"><TrendingUpIcon /></div>
+              <div className="notif-content">
+                <div className="notif-title">Trade Executed</div>
+                <div className="notif-desc">Buy order #TRX-7841 filled at $12,450.00</div>
+                <div className="notif-time">2 min ago</div>
+              </div>
+              <div className="notif-dot" />
+            </NotificationItem>
+            <NotificationItem read={false} type="alert">
+              <div className="notif-icon"><TrendingDownIcon /></div>
+              <div className="notif-content">
+                <div className="notif-title">Market Alert</div>
+                <div className="notif-desc">Volatility 100 (1s) Index reached resistance level</div>
+                <div className="notif-time">15 min ago</div>
+              </div>
+              <div className="notif-dot" />
+            </NotificationItem>
+            <NotificationItem read={true} type="trade">
+              <div className="notif-icon"><TrendingUpIcon /></div>
+              <div className="notif-content">
+                <div className="notif-title">Position Closed</div>
+                <div className="notif-desc">Sell order #TRX-7839 closed at $5,670.00</div>
+                <div className="notif-time">1 hour ago</div>
+              </div>
+            </NotificationItem>
+            <NotificationItem read={true} type="alert">
+              <div className="notif-icon"><BellIcon /></div>
+              <div className="notif-content">
+                <div className="notif-title">System Update</div>
+                <div className="notif-desc">New trading features available in version 2.1.0</div>
+                <div className="notif-time">3 hours ago</div>
+              </div>
+            </NotificationItem>
+          </>
+        );
+      case 'voice':
+        return (
+          <>
+            <VoiceToggleRow active={voiceEnabled}>
+              <span className="toggle-label">Voice Notifications</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
+                <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
+              </div>
+            </VoiceToggleRow>
+            <VolumeSlider>
+              <span className="slider-label">Vol</span>
+              <input type="range" min="0" max="100" value={voiceVolume} onChange={(e) => setVoiceVolume(parseInt(e.target.value))} disabled={!voiceEnabled} />
+              <span className="slider-value">{voiceVolume}%</span>
+            </VolumeSlider>
+            <VoiceEventItem enabled={voiceEvents.trade}>
+              <span className="event-name"><span className="event-dot" />Trade Execution</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>
+                {voiceEvents.trade ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.price}>
+              <span className="event-name"><span className="event-dot" />Price Alerts</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>
+                {voiceEvents.price ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.market}>
+              <span className="event-name"><span className="event-dot" />Market Signals</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>
+                {voiceEvents.market ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.system}>
+              <span className="event-name"><span className="event-dot" />System Updates</span>
+              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>
+                {voiceEvents.system ? 'Enabled' : 'Disabled'}
+              </span>
+            </VoiceEventItem>
+          </>
+        );
+      case 'account-info':
+        return (
+          <>
+            <AccountInfoRow><span className="row-label">Account ID</span><span className="row-value">ACC-8472-001</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Account Type</span><span className="row-value">Real Trading</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Balance</span><span className="row-value" style={{ color: '#10B981' }}>$7,110.00 USD</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Status</span><span className="row-value"><span className="status-indicator"><span className="dot" />Active</span></span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Joined</span><span className="row-value">January 2026</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Last Login</span><span className="row-value">Today, 14:32</span></AccountInfoRow>
+          </>
+        );
+      case 'how-to-use':
+        return (
+          <>
+            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Connect Your Account</div><div className="step-desc">Link your Deriv account to access real-time trading data and execute trades directly.</div></div></StepItem>
+            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">Choose from multiple volatility indices including 1s and standard options to start trading.</div></div></StepItem>
+            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Choose Your Strategy</div><div className="step-desc">Select between manual, auto, or bot-assisted trading modes based on your preference.</div></div></StepItem>
+            <StepItem><div className="step-number">4</div><div className="step-content"><div className="step-title">Monitor Your Positions</div><div className="step-desc">Track open positions, view performance metrics, and manage risk in real-time.</div></div></StepItem>
+            <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Customize Experience</div><div className="step-desc">Personalize themes, notification settings, and display preferences to suit your workflow.</div></div></StepItem>
+          </>
+        );
+      case 'terms':
+        return (
+          <>
+            <TermsSection><div className="terms-title">1. Introduction</div><div className="terms-text">Welcome to MyTradeApp. By using our third-party trading application, you agree to these Terms and Conditions.</div></TermsSection>
+            <TermsSection><div className="terms-title">2. Acceptance of Terms</div><div className="terms-text">By accessing or using MyTradeApp, you confirm that you have read, understood, and agree to be bound by these Terms.</div>
+              <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must be at least <strong style={{ color: '#F8FAFC' }}>18 years old</strong> to use this App.</span></div>
+              <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
+              <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
+            </TermsSection>
+            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data from Deriv via APIs.</div></TermsSection>
+            <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradeApp does not store your login credentials.</div>
+              <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
+              <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
+            </TermsSection>
+            <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradeApp provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
+            <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your Deriv or Forex login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
+            <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradeApp operates.</div></TermsSection>
+            <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@mytradeapp.com</strong></div></TermsSection>
+          </>
+        );
+      default:
+        return null;
+    }
   };
 
   const handleSubmitFeedback = async () => {
@@ -4240,7 +4214,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         </FullPanelContainer>
       </FullPanelOverlay>
 
-      {/* Small Modal Popups (unchanged) */}
+      {/* Small Modal Popups */}
       <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
         <ModalContainer settings={isSettingsPopup} onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
@@ -4251,11 +4225,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
             <button className="close-btn" onClick={closePopup}><CloseXIcon /></button>
           </ModalHeader>
-          <ModalBody>{popupData?.content}</ModalBody>
+          <ModalBody>
+            {renderPopupContent()}
+          </ModalBody>
         </ModalContainer>
       </ModalOverlay>
 
-      {/* Note editing modal (new) */}
+      {/* Note editing modal */}
       {noteModal && (
         <NoteModal onClick={() => setNoteModal(null)}>
           <NoteModalContent onClick={e => e.stopPropagation()}>
