@@ -304,9 +304,7 @@ const CloseIcon = () => (
 const FullPanelOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.25);   /* transparent, no blur */
   z-index: 2000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
@@ -439,9 +437,7 @@ const FullPanelBody = styled.div`
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.15);   /* very light, background visible, no blur */
   z-index: 1000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
