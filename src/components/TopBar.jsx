@@ -767,13 +767,13 @@ const ExitButton = styled.button`
 // THEME DEFINITIONS - Premium themes (matching Derivdash)
 // ============================================
 const THEME_OPTIONS = [
-  { key: 'white', name: 'White', color: '#f8fafc' },
+  { key: 'white', name: 'White', color: '#f4f6f9' },
   { key: 'dark', name: 'Dark', color: '#09090b' },
-  { key: 'gold', name: 'Gold', color: '#0a0a0a' },
-  { key: 'forest', name: 'Forest', color: '#040d0a' },
-  { key: 'ocean', name: 'Ocean', color: '#020d14' },
-  { key: 'red', name: 'Red', color: '#0f0404' },
-  { key: 'orange', name: 'Orange', color: '#0f0702' },
+  { key: 'gold', name: 'Gold', color: '#0b0a08' },
+  { key: 'forest', name: 'Forest', color: '#050c09' },
+  { key: 'ocean', name: 'Ocean', color: '#030b12' },
+  { key: 'red', name: 'Red', color: '#0c0505' },
+  { key: 'orange', name: 'Orange', color: '#0c0703' },
 ];
 // ============================================
 // MAIN COMPONENT
@@ -813,7 +813,7 @@ const TopPanel = ({
   const getExchangeRate = (currency) => exchangeRates[currency] || 1;
 
   const accountData = {
-    real: { balance: 7110.00, label: 'Real' },
+    real: { balance: 500.00, label: 'Real' },
     demo: { balance: 10000.00, label: 'Demo' }
   };
 
