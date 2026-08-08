@@ -1193,13 +1193,13 @@ const RiskCalculateBtn = styled.button`
 
 const RiskResultsGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin-top: 16px;
   animation: ${fadeUp} 0.5s ease;
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -2890,11 +2890,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     email: ''
   });
 
-  // Risk calculator state
+  // Risk calculator state – updated for Deriv
   const [calcAccountBalance, setCalcAccountBalance] = useState('');
   const [calcRiskPercent, setCalcRiskPercent] = useState(2);
-  const [calcStopLoss, setCalcStopLoss] = useState(50);
-  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
+  const [calcPayout, setCalcPayout] = useState(80);
+  const [calcDailyLossLimit, setCalcDailyLossLimit] = useState('');
   const [calculated, setCalculated] = useState(false);
 
   // Copy Trading state
@@ -3038,19 +3038,30 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const getRiskResults = () => {
     const balance = parseFloat(calcAccountBalance) || 0;
-    const riskPercent = parseFloat(calcRiskPercent) || 0;
-    const stopLoss = parseFloat(calcStopLoss) || 1;
-    const takeProfit = parseFloat(calcTakeProfit) || 1;
+    const riskPercent = parseFloat(calcRiskPercent) || 2;
+    const payoutPercent = parseFloat(calcPayout) || 80;
+    const dailyLossLimit = parseFloat(calcDailyLossLimit) || 0;
 
-    const riskAmount = balance * (riskPercent / 100);
-    const rewardAmount = balance * ((takeProfit / stopLoss) * (riskPercent / 100));
-    const riskRewardRatio = riskAmount > 0 ? rewardAmount / riskAmount : 0;
-    const positionSize = stopLoss > 0 ? riskAmount / (stopLoss / 100) : 0;
-    const maxLoss = riskAmount;
-    const maxProfit = rewardAmount;
-    const stakeAmount = riskAmount;
+    const stake = balance * (riskPercent / 100);
+    const potentialProfit = stake * (payoutPercent / 100);
+    const potentialLoss = stake;
+    const riskRewardRatio = payoutPercent / 100; // 1 : x
 
-    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit, stakeAmount, balance };
+    let maxTradesPerDay = 0;
+    if (dailyLossLimit > 0) {
+      const dailyLossAmount = balance * (dailyLossLimit / 100);
+      maxTradesPerDay = Math.floor(dailyLossAmount / stake);
+    }
+
+    return {
+      stake,
+      potentialProfit,
+      potentialLoss,
+      riskRewardRatio,
+      maxTradesPerDay,
+      dailyLossLimit,
+      balance,
+    };
   };
 
   const riskResults = getRiskResults();
@@ -3187,7 +3198,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setActiveItem('risk-calculator');
     setCalculated(false);
     setCalcAccountBalance('');
-    openPopup('risk-calculator', { title: 'Risk Calculator', icon: <RiskIcon />, badge: 'Premium' });
+    setCalcRiskPercent(2);
+    setCalcPayout(80);
+    setCalcDailyLossLimit('');
+    openPopup('risk-calculator', { title: 'Risk Calculator', icon: <RiskIcon />, badge: 'Deriv' });
   };
 
   const handleCopyTradingClick = () => {
@@ -3721,55 +3735,106 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
             </RiskInputGroup>
 
+            <RiskInputGroup>
+              <div className="risk-label">
+                Risk per Trade <span className="risk-hint">(%)</span>
+              </div>
+              <div className="risk-input-wrap">
+                <span className="risk-prefix">%</span>
+                <input 
+                  type="number" 
+                  placeholder="2" 
+                  value={calcRiskPercent}
+                  onChange={(e) => setCalcRiskPercent(e.target.value)}
+                  min="0.1"
+                  max="100"
+                  step="0.1"
+                />
+              </div>
+            </RiskInputGroup>
+
+            <RiskInputGroup>
+              <div className="risk-label">
+                Payout <span className="risk-hint">(%)</span>
+                <span style={{fontSize:'9px',opacity:0.5}}>Typical: 80%</span>
+              </div>
+              <div className="risk-input-wrap">
+                <span className="risk-prefix">%</span>
+                <input 
+                  type="number" 
+                  placeholder="80" 
+                  value={calcPayout}
+                  onChange={(e) => setCalcPayout(e.target.value)}
+                  min="1"
+                  max="1000"
+                  step="0.1"
+                />
+              </div>
+            </RiskInputGroup>
+
+            <RiskInputGroup>
+              <div className="risk-label">
+                Daily Loss Limit <span className="risk-hint">(% of balance, optional)</span>
+              </div>
+              <div className="risk-input-wrap">
+                <span className="risk-prefix">%</span>
+                <input 
+                  type="number" 
+                  placeholder="5" 
+                  value={calcDailyLossLimit}
+                  onChange={(e) => setCalcDailyLossLimit(e.target.value)}
+                  min="0"
+                  max="100"
+                  step="0.5"
+                />
+              </div>
+            </RiskInputGroup>
+
             <RiskCalculateBtn 
               onClick={calculateRisk}
               disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}
             >
-              Calculate Risk
+              Calculate
             </RiskCalculateBtn>
 
             {calculated && parseFloat(calcAccountBalance) > 0 && (
               <>
                 <RiskResultsGrid>
                   <RiskResultBox type="stake">
-                    <div className="result-label">Stake Amount</div>
-                    <div className="result-value">${riskResults.stakeAmount.toFixed(2)}</div>
-                    <div className="result-sub">per trade</div>
-                  </RiskResultBox>
-                  <RiskResultBox type="risk">
-                    <div className="result-label">Risk Amount</div>
-                    <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
-                    <div className="result-sub">{calcRiskPercent}% of balance</div>
+                    <div className="result-label">Stake</div>
+                    <div className="result-value">${riskResults.stake.toFixed(2)}</div>
+                    <div className="result-sub">Risk: {calcRiskPercent}%</div>
                   </RiskResultBox>
                   <RiskResultBox type="reward">
-                    <div className="result-label">Reward Amount</div>
-                    <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
-                    <div className="result-sub">
-                      {((parseFloat(calcTakeProfit) / parseFloat(calcStopLoss)) * parseFloat(calcRiskPercent)).toFixed(2)}%
-                    </div>
+                    <div className="result-label">Potential Profit</div>
+                    <div className="result-value">${riskResults.potentialProfit.toFixed(2)}</div>
+                    <div className="result-sub">{calcPayout}% payout</div>
+                  </RiskResultBox>
+                  <RiskResultBox type="risk">
+                    <div className="result-label">Potential Loss</div>
+                    <div className="result-value">${riskResults.potentialLoss.toFixed(2)}</div>
+                    <div className="result-sub">Full stake</div>
+                  </RiskResultBox>
+                  <RiskResultBox type="ratio">
+                    <div className="result-label">Risk/Reward</div>
+                    <div className="result-value">1:{riskResults.riskRewardRatio.toFixed(2)}</div>
+                    <div className="result-sub">Payout ratio</div>
                   </RiskResultBox>
                 </RiskResultsGrid>
 
-                <RiskSummaryBox>
-                  <div className="summary-row">
-                    <span className="label">Position Size</span>
-                    <span className="value">{riskResults.positionSize.toFixed(2)} units</span>
-                  </div>
-                  <div className="summary-divider" />
-                  <div className="summary-row highlight-risk">
-                    <span className="label">Max Loss</span>
-                    <span className="value">${riskResults.maxLoss.toFixed(2)}</span>
-                  </div>
-                  <div className="summary-row highlight-reward">
-                    <span className="label">Max Profit</span>
-                    <span className="value">${riskResults.maxProfit.toFixed(2)}</span>
-                  </div>
-                  <div className="summary-divider" />
-                  <div className="summary-row highlight-ratio">
-                    <span className="label">Risk/Reward Ratio</span>
-                    <span className="value">1:{riskResults.riskRewardRatio.toFixed(2)}</span>
-                  </div>
-                </RiskSummaryBox>
+                {calcDailyLossLimit && parseFloat(calcDailyLossLimit) > 0 && (
+                  <RiskSummaryBox>
+                    <div className="summary-row highlight-ratio">
+                      <span className="label">Max Trades / Day</span>
+                      <span className="value">{riskResults.maxTradesPerDay}</span>
+                    </div>
+                    <div className="summary-divider" />
+                    <div className="summary-row">
+                      <span className="label">Daily Loss Allowed</span>
+                      <span className="value">${(riskResults.balance * (riskResults.dailyLossLimit / 100)).toFixed(2)}</span>
+                    </div>
+                  </RiskSummaryBox>
+                )}
               </>
             )}
           </>
