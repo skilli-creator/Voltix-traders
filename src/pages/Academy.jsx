@@ -10,6 +10,11 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
+const pulse = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+`;
+
 // ============================================
 // SVG ICONS
 // ============================================
@@ -78,23 +83,32 @@ const TrophyIcon = () => (
   </svg>
 );
 
-const StarIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
-);
-
-const GraduationIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-  </svg>
-);
-
 const GraduationCapIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2L2 7l10 5 10-5-10-5z" />
     <path d="M2 17l10 5 10-5" />
     <path d="M2 12l10 5 10-5" />
+  </svg>
+);
+
+const DerivIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+const ForexIcon = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="2" x2="12" y2="22" />
+    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+  </svg>
+);
+
+const ArrowLeftIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
   </svg>
 );
 
@@ -126,33 +140,41 @@ const PageWrapper = styled.div`
   }
 `;
 
-const HeroSection = styled.div`
+const CourseSelection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 60vh;
+`;
+
+const HeroText = styled.div`
   text-align: center;
-  padding: 40px 20px 50px;
-  animation: ${fadeIn} 0.6s ease;
+  margin-bottom: 60px;
+  animation: ${fadeIn} 0.8s ease;
 
   .badge {
-    display: inline-block;
-    padding: 4px 16px;
-    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 30px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(56, 189, 248, 0.08)'};
     border: 1px solid ${props => props.theme?.colors?.accent + '20' || 'rgba(56, 189, 248, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#38bdf8'};
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    margin-bottom: 16px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    margin-bottom: 24px;
   }
 
   .title {
     font-size: 42px;
     font-weight: 800;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    line-height: 1.1;
+    line-height: 1.2;
     margin-bottom: 16px;
 
     .gradient {
@@ -166,47 +188,131 @@ const HeroSection = styled.div`
   .subtitle {
     font-size: 18px;
     color: ${props => props.theme?.colors?.textSecondary || '#94a3b8'};
-    max-width: 650px;
+    max-width: 600px;
     margin: 0 auto;
     line-height: 1.8;
   }
 
-  .course-meta {
+  @media (max-width: 768px) {
+    .title { font-size: 32px; }
+    .subtitle { font-size: 16px; }
+  }
+`;
+
+const CourseCards = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 900px;
+  width: 100%;
+  animation: ${fadeIn} 1s ease;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CourseCard = styled.div`
+  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.015)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  border-radius: 20px;
+  padding: 40px 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: ${props => props.accent || props.theme?.colors?.accent || '#38bdf8'};
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
+    background: ${props => props.theme?.colors?.bgHover || 'rgba(255, 255, 255, 0.03)'};
+  }
+
+  .icon-wrapper {
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 30px;
-    margin-top: 24px;
-    flex-wrap: wrap;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: ${props => props.accent + '18' || 'rgba(56, 189, 248, 0.12)'};
+    color: ${props => props.accent || props.theme?.colors?.accent || '#38bdf8'};
+    margin-bottom: 24px;
+  }
+
+  .card-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    margin-bottom: 12px;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
+    align-items: center;
 
     .meta-item {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-      background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-
-      .icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-      }
+      gap: 6px;
     }
   }
 
-  @media (max-width: 768px) {
-    padding: 24px 12px 30px;
-    .title { font-size: 28px; }
-    .subtitle { font-size: 15px; }
-    .course-meta { gap: 12px; .meta-item { font-size: 11px; padding: 4px 12px; } }
+  @media (max-width: 480px) {
+    padding: 30px 20px;
+  }
+`;
+
+const CourseHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+
+  .back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+    background: transparent;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      color: ${props => props.theme?.colors?.text || '#fff'};
+      border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    }
   }
 
-  @media (max-width: 480px) {
-    .title { font-size: 24px; }
+  .course-info {
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+      margin: 0;
+    }
+    .course-sub {
+      font-size: 12px;
+      color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+      margin-top: 2px;
+    }
   }
 `;
 
@@ -279,10 +385,8 @@ const TOCSection = styled.div`
   }
 
   @media (max-width: 600px) {
-    padding: 16px 16px;
-    .toc-grid {
-      grid-template-columns: 1fr;
-    }
+    padding: 16px;
+    .toc-grid { grid-template-columns: 1fr; }
     .toc-title { font-size: 17px; }
   }
 `;
@@ -500,30 +604,18 @@ const LessonCard = styled.div`
       .lesson-title { font-size: 17px; }
       .lesson-duration { font-size: 10px; }
     }
-    .lesson-content {
-      font-size: 14px;
-      h3 { font-size: 17px; }
-      h4 { font-size: 15px; }
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: 14px 12px;
-    .lesson-header .lesson-title { font-size: 15px; }
+    .lesson-content { font-size: 14px; h3 { font-size: 17px; } h4 { font-size: 15px; } }
   }
 `;
 
 const CompletionBanner = styled.div`
   text-align: center;
   padding: 40px 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 20px auto;
   background: rgba(34, 197, 94, 0.04);
   border: 1px solid rgba(34, 197, 94, 0.08);
   border-radius: 16px;
   max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
   width: 100%;
   animation: ${fadeIn} 0.8s ease;
 
@@ -559,129 +651,64 @@ const Footer = styled.div`
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-
-  .footer-sub {
-    display: block;
-    margin-top: 2px;
-    color: ${props => props.theme?.colors?.textMuted || '#3a4055'};
-  }
 `;
 
 // ============================================
-// LESSON DATA (content remains the same)
+// COURSE DATA
 // ============================================
 
-const lessons = [
+const derivLessons = [
   {
     id: 1,
     title: "What is Trading?",
     duration: "20 min",
     content: `
       <h3>Welcome to the World of Trading</h3>
-      
       <p>Imagine you're at a local market. You see a farmer selling apples for $1 each. You know that across town, apples are selling for $2 each. You buy 100 apples for $100, take them across town, and sell them for $200. You just made $100 profit! Congratulations - you just traded!</p>
-      
       <p>Trading, in its simplest form, is the act of buying something at a lower price and selling it at a higher price. The difference between the buy price and the sell price is your profit (or loss).</p>
-      
       <div class="highlight-box">
-        <strong>Core Concept:</strong>
-        <br>Trading = Buying Low + Selling High
-        <br>or
-        <br>Trading = Selling High + Buying Low (when shorting)
+        <strong>Core Concept:</strong><br>Trading = Buying Low + Selling High<br>or<br>Trading = Selling High + Buying Low (when shorting)
       </div>
-      
       <h3>What Makes Prices Move?</h3>
-      
       <p>Prices move because of supply and demand. Let's understand this with a simple example:</p>
-      
       <div class="example-box">
-        <strong>Supply & Demand Example:</strong>
-        <br>
-        <br>Imagine there are 100 people who want to buy apples, but only 50 apples available.
-        <br>• Demand (buyers) = 100
-        <br>• Supply (apples) = 50
-        <br>• Result: Price goes UP because more people want apples than apples available.
-        <br>
-        <br>Now imagine there are 50 people who want to buy apples, but 100 apples available.
-        <br>• Demand (buyers) = 50
-        <br>• Supply (apples) = 100
-        <br>• Result: Price goes DOWN because more apples available than people want.
+        <strong>Supply & Demand Example:</strong><br>
+        Imagine 100 people want to buy apples, but only 50 apples available.<br>
+        • Demand = 100, Supply = 50<br>
+        • Result: Price goes UP because more people want apples than are available.<br><br>
+        Now imagine 50 people want to buy apples, but 100 apples available.<br>
+        • Demand = 50, Supply = 100<br>
+        • Result: Price goes DOWN because more apples than people want.
       </div>
-      
-      <p>This is the fundamental law of trading: When demand exceeds supply, prices rise. When supply exceeds demand, prices fall.</p>
-      
       <h3>What is Deriv?</h3>
-      
       <p>Deriv is a leading online trading platform that allows you to trade various financial instruments. It was created to make trading accessible to everyone, from complete beginners to experienced professionals.</p>
-      
       <p>Deriv offers several types of trading accounts:</p>
-      
       <ul>
         <li><strong>Demo Account:</strong> Virtual money for practice (highly recommended for beginners)</li>
         <li><strong>Real Account:</strong> Real money trading</li>
         <li><strong>Deriv X:</strong> Advanced trading platform for experts</li>
         <li><strong>Deriv GO:</strong> Mobile trading app</li>
       </ul>
-      
       <h3>What Can You Trade on Deriv?</h3>
-      
-      <p>Deriv offers a wide variety of markets. Think of them like different "shops" in a shopping mall, each selling different products:</p>
-      
+      <p>Deriv offers a wide variety of markets. Think of them like different "shops" in a mall:</p>
       <h4>1. Volatility Indices (Deriv's Speciality)</h4>
       <p>These are artificial markets created by Deriv using mathematical formulas. They don't exist in the real world, which makes them special:</p>
       <ul>
         <li><strong>No News Impact:</strong> Real-world news doesn't affect them</li>
         <li><strong>Always Open:</strong> Trade 24/7, 365 days a year</li>
         <li><strong>Predictable Movements:</strong> They follow mathematical patterns</li>
-        <li><strong>Leverage Options:</strong> Choose from 10, 25, 50, 75, or 100 volatility</li>
       </ul>
-      
       <table>
-        <tr>
-          <th>Index Name</th>
-          <th>Movement Speed</th>
-          <th>Risk Level</th>
-          <th>Best For</th>
-        </tr>
-        <tr>
-          <td>Volatility 10</td>
-          <td>Slow</td>
-          <td>Very Low</td>
-          <td>Beginners</td>
-        </tr>
-        <tr>
-          <td>Volatility 25</td>
-          <td>Moderate</td>
-          <td>Low</td>
-          <td>Beginners</td>
-        </tr>
-        <tr>
-          <td>Volatility 50</td>
-          <td>Active</td>
-          <td>Medium</td>
-          <td>Intermediate</td>
-        </tr>
-        <tr>
-          <td>Volatility 75</td>
-          <td>Fast</td>
-          <td>High</td>
-          <td>Advanced</td>
-        </tr>
-        <tr>
-          <td>Volatility 100</td>
-          <td>Very Fast</td>
-          <td>Very High</td>
-          <td>Experts</td>
-        </tr>
+        <tr><th>Index Name</th><th>Movement Speed</th><th>Risk Level</th><th>Best For</th></tr>
+        <tr><td>Volatility 10</td><td>Slow</td><td>Very Low</td><td>Beginners</td></tr>
+        <tr><td>Volatility 25</td><td>Moderate</td><td>Low</td><td>Beginners</td></tr>
+        <tr><td>Volatility 50</td><td>Active</td><td>Medium</td><td>Intermediate</td></tr>
+        <tr><td>Volatility 75</td><td>Fast</td><td>High</td><td>Advanced</td></tr>
+        <tr><td>Volatility 100</td><td>Very Fast</td><td>Very High</td><td>Experts</td></tr>
       </table>
-      
-      <div class="highlight-box">
-        <strong>Beginner Tip:</strong> Start with Volatility 10 or 25. They move slowly enough that you can see what's happening and learn without being overwhelmed.
-      </div>
-      
+      <div class="highlight-box"><strong>Beginner Tip:</strong> Start with Volatility 10 or 25. They move slowly enough to learn without being overwhelmed.</div>
       <h4>2. Forex (Foreign Exchange)</h4>
-      <p>Forex involves trading different currencies against each other. For example, trading USD against EUR (US Dollar vs Euro). This is the largest financial market in the world!</p>
-      <p>Common forex pairs include:</p>
+      <p>Forex involves trading different currencies against each other. This is the largest financial market in the world!</p>
       <ul>
         <li><strong>EUR/USD:</strong> Euro vs US Dollar</li>
         <li><strong>GBP/USD:</strong> British Pound vs US Dollar</li>
@@ -689,78 +716,38 @@ const lessons = [
         <li><strong>USD/CHF:</strong> US Dollar vs Swiss Franc</li>
         <li><strong>AUD/USD:</strong> Australian Dollar vs US Dollar</li>
       </ul>
-      
       <h4>3. Commodities</h4>
-      <p>Commodities are physical assets that you can trade. Their prices are influenced by real-world supply and demand, news, and global events.</p>
       <ul>
-        <li><strong>Gold (XAU/USD):</strong> A safe-haven asset, price often rises during uncertainty</li>
-        <li><strong>Silver (XAG/USD):</strong> Both an industrial and precious metal</li>
+        <li><strong>Gold (XAU/USD):</strong> A safe-haven asset</li>
+        <li><strong>Silver (XAG/USD):</strong> Both industrial and precious metal</li>
         <li><strong>Oil (WTI, Brent):</strong> Crude oil, affected by global events</li>
-        <li><strong>Natural Gas:</strong> Used for heating and electricity</li>
       </ul>
-      
       <h4>4. Cryptocurrencies</h4>
-      <p>Digital or virtual currencies that use cryptography for security. They are highly volatile and can move rapidly.</p>
       <ul>
-        <li><strong>Bitcoin (BTC/USD):</strong> The first and most well-known cryptocurrency</li>
-        <li><strong>Ethereum (ETH/USD):</strong> Second largest cryptocurrency</li>
-        <li><strong>Litecoin (LTC/USD):</strong> Lighter version of Bitcoin</li>
-        <li><strong>Ripple (XRP/USD):</strong> Focused on financial institutions</li>
+        <li><strong>Bitcoin (BTC/USD):</strong> The first and most well-known</li>
+        <li><strong>Ethereum (ETH/USD):</strong> Second largest</li>
       </ul>
-      
       <h3>Understanding Your Trading Account</h3>
-      
-      <p>When you trade, you'll see various numbers and terms. Let's break them down:</p>
-      
       <div class="definition-box">
-        <p><span class="term">Balance:</span> The total amount of money in your account.</p>
-        <p><span class="term">Equity:</span> Your current account value including open trades. Balance + P&L (Profit & Loss).</p>
-        <p><span class="term">Free Margin:</span> The money available to open new trades. Equity - Margin.</p>
-        <p><span class="term">Margin:</span> The money required to open a trade.</p>
-        <p><span class="term">Leverage:</span> A loan that lets you trade with more money than you have. Use with caution!</p>
+        <p><span class="term">Balance:</span> Total amount of money in your account.</p>
+        <p><span class="term">Equity:</span> Current account value including open trades.</p>
+        <p><span class="term">Free Margin:</span> Money available to open new trades.</p>
+        <p><span class="term">Margin:</span> Money required to open a trade.</p>
+        <p><span class="term">Leverage:</span> A loan that lets you trade with more money. Use with caution!</p>
       </div>
-      
       <h3>Understanding Risk and Reward</h3>
-      
-      <p>Every trade has two possible outcomes: win or lose. The risk is how much you could lose. The reward is how much you could win.</p>
-      
       <div class="example-box">
-        <strong>Risk & Reward Example:</strong>
-        <br>You place a $10 trade. The payout is $19.20.
-        <br>• Risk: $10 (you lose $10 if you're wrong)
-        <br>• Reward: $19.20 (you gain $19.20 if you're right)
-        <br>• Risk/Reward Ratio: 1:1.92 (for every $1 risked, you could win $1.92)
+        <strong>Risk & Reward Example:</strong><br>
+        You place a $10 trade. Payout is $19.20.<br>
+        • Risk: $10 (you lose $10 if wrong)<br>
+        • Reward: $19.20 (you gain $19.20 if right)<br>
+        • Risk/Reward Ratio: 1:1.92
       </div>
-      
-      <p>The <strong>Risk/Reward Ratio</strong> is one of the most important concepts in trading. A ratio of 1:2 means you risk $1 to gain $2. Professional traders aim for at least 1:1.5 or higher.</p>
-      
-      <div class="warning-box">
-        <strong>Critical Concept:</strong>
-        <br>You should always know your risk before placing a trade. Never trade without understanding exactly how much you could lose.
-      </div>
-      
       <h3>The 3 Golden Rules of Trading</h3>
-      
-      <p>Before you make your first trade, memorize these rules. They'll save you thousands of dollars in losses:</p>
-      
-      <div class="success-box">
-        <strong>Rule 1: Risk Only 2% Per Trade</strong>
-        <br>If you have $100 in your account, risk no more than $2 on any single trade. This ensures you can survive losing streaks.
-      </div>
-      
-      <div class="success-box">
-        <strong>Rule 2: Use a Demo Account First</strong>
-        <br>Practice until you're consistently profitable with virtual money. This takes 2-4 weeks minimum. Don't rush into real money trading!
-      </div>
-      
-      <div class="success-box">
-        <strong>Rule 3: Learn From Every Trade</strong>
-        <br>Write down what you did, why you did it, and what happened. This is how you improve. Winners and losers both teach valuable lessons.
-      </div>
-      
-      <div class="key-takeaway">
-        <strong>Key Takeaway:</strong> Trading is buying low and selling high. Deriv offers many markets including Volatility Indices, Forex, Commodities, and Cryptocurrencies. Always start with a demo account, risk only 2% per trade, and learn from every trade. The journey of a thousand trades begins with a single click!
-      </div>
+      <div class="success-box"><strong>Rule 1: Risk Only 2% Per Trade</strong><br>If you have $100, risk no more than $2 per trade.</div>
+      <div class="success-box"><strong>Rule 2: Use a Demo Account First</strong><br>Practice until consistently profitable with virtual money.</div>
+      <div class="success-box"><strong>Rule 3: Learn From Every Trade</strong><br>Write down what you did, why, and what happened.</div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Trading is buying low and selling high. Start with a demo account, risk only 2% per trade, and learn from every trade.</div>
     `
   },
   {
@@ -769,212 +756,35 @@ const lessons = [
     duration: "25 min",
     content: `
       <h3>What Are Markets?</h3>
-      
-      <p>Think of markets like different departments in a large store. Each department sells different products, has different prices, and operates differently. In trading, each market has its own characteristics, movement patterns, and risk levels.</p>
-      
-      <p>Understanding the market you're trading is crucial. It's like knowing whether you're driving a car, a truck, or a motorcycle - each handles differently!</p>
-      
+      <p>Think of markets like different departments in a store. Each has its own characteristics and risk levels.</p>
       <h3>Volatility Indices - The Beginner's Friend</h3>
-      
-      <p>Volatility Indices are Deriv's signature product and the best place for beginners to start. But what exactly are they?</p>
-      
+      <p>Deriv's signature product, perfect for learning.</p>
       <h4>What is Volatility?</h4>
-      <p>Volatility refers to how much and how quickly the price moves. Think of it like the wind:</p>
       <ul>
         <li><strong>Low Volatility:</strong> Light breeze - slow, gentle movements</li>
         <li><strong>High Volatility:</strong> Strong wind - fast, powerful movements</li>
       </ul>
-      
-      <p>Volatility Indices are artificial markets that simulate different levels of volatility. They don't exist in the real world, which makes them perfect for learning because they're predictable.</p>
-      
-      <div class="highlight-box">
-        <strong>Why Volatility Indices are Great for Beginners:</strong>
-        <br>1. <strong>Always Open:</strong> Trade 24/7, no market closures
-        <br>2. <strong>No News Impact:</strong> News events don't cause sudden moves
-        <br>3. <strong>Predictable:</strong> They follow mathematical patterns
-        <br>4. <strong>Flexible:</strong> You can choose your preferred volatility level
-        <br>5. <strong>Available 365 Days:</strong> No holidays, no weekends off
-      </div>
-      
-      <h3>Understanding Volatility Levels</h3>
-      
-      <p>Deriv offers five volatility indices. Let's understand each one:</p>
-      
-      <h4>Volatility 10 (R_10)</h4>
-      <p>This is the slowest and most beginner-friendly index. Price moves are small and gradual.</p>
-      <ul>
-        <li><strong>Movement:</strong> 50-100 points per minute</li>
-        <li><strong>Risk Level:</strong> Very Low</li>
-        <li><strong>Best For:</strong> Complete beginners learning the platform</li>
-        <li><strong>Recommended Duration:</strong> 1-5 ticks</li>
-        <li><strong>Strategy:</strong> Great for learning to read trends</li>
-      </ul>
-      
-      <h4>Volatility 25 (R_25)</h4>
-      <p>A step up from R_10, with moderate movements that are still beginner-friendly.</p>
-      <ul>
-        <li><strong>Movement:</strong> 100-200 points per minute</li>
-        <li><strong>Risk Level:</strong> Low</li>
-        <li><strong>Best For:</strong> Beginners ready for more action</li>
-        <li><strong>Recommended Duration:</strong> 1-3 ticks</li>
-        <li><strong>Strategy:</strong> Good for trend following</li>
-      </ul>
-      
-      <h4>Volatility 50 (R_50)</h4>
-      <p>Active movements that provide more opportunities but also more risk.</p>
-      <ul>
-        <li><strong>Movement:</strong> 200-300 points per minute</li>
-        <li><strong>Risk Level:</strong> Medium</li>
-        <li><strong>Best For:</strong> Intermediate traders</li>
-        <li><strong>Recommended Duration:</strong> 1-2 ticks</li>
-        <li><strong>Strategy:</strong> Momentum and breakout trading</li>
-      </ul>
-      
-      <h4>Volatility 75 (R_75)</h4>
-      <p>Fast movements that require quick decisions and good risk management.</p>
-      <ul>
-        <li><strong>Movement:</strong> 300-400 points per minute</li>
-        <li><strong>Risk Level:</strong> High</li>
-        <li><strong>Best For:</strong> Advanced traders</li>
-        <li><strong>Recommended Duration:</strong> 1 tick</li>
-        <li><strong>Strategy:</strong> Scalping and momentum</li>
-      </ul>
-      
-      <h4>Volatility 100 (R_100)</h4>
-      <p>The fastest and most volatile index, offering big moves but big risks.</p>
-      <ul>
-        <li><strong>Movement:</strong> 400-500+ points per minute</li>
-        <li><strong>Risk Level:</strong> Very High</li>
-        <li><strong>Best For:</strong> Expert traders</li>
-        <li><strong>Recommended Duration:</strong> 1 tick only</li>
-        <li><strong>Strategy:</strong> Quick scalping</li>
-      </ul>
-      
-      <div class="warning-box">
-        <strong>Important Warning:</strong>
-        <br>Higher volatility = Higher risk.
-        <br>Start with R_10 or R_25. As you gain experience and confidence, you can gradually move to higher volatility levels.
-        <br>Never jump straight to R_100 as a beginner!
-      </div>
-      
+      <div class="highlight-box"><strong>Why Volatility Indices are Great for Beginners:</strong><br>1. Always Open 2. No News Impact 3. Predictable 4. Flexible 5. Available 365 Days</div>
       <h3>Forex Markets</h3>
-      
-      <p>Forex (Foreign Exchange) is the largest financial market in the world. It involves trading currencies against each other.</p>
-      
-      <h4>How Forex Works</h4>
-      <p>Forex always involves two currencies. You're buying one currency and selling another at the same time. This is why currencies are always shown in pairs.</p>
-      
+      <p>Forex always involves two currencies. You're buying one and selling another at the same time.</p>
       <div class="example-box">
-        <strong>Forex Example:</strong>
-        <br>EUR/USD = 1.1000
-        <br>This means: 1 Euro = 1.10 US Dollars
-        <br>
-        <br>If you think the Euro will get stronger against the Dollar, you BUY EUR/USD.
-        <br>If you think the Dollar will get stronger against the Euro, you SELL EUR/USD.
-        <br>
-        <br>If EUR/USD moves from 1.1000 to 1.1050, you make money on a BUY trade.
-        <br>If it moves from 1.1000 to 1.0950, you lose money on a BUY trade.
+        <strong>Forex Example:</strong><br>
+        EUR/USD = 1.1000<br>
+        If you think Euro will get stronger, BUY EUR/USD.<br>
+        If you think Dollar will get stronger, SELL EUR/USD.
       </div>
-      
-      <p>Major Forex Pairs (most traded):</p>
+      <p>Major Forex Pairs:</p>
       <table>
-        <tr>
-          <th>Currency Pair</th>
-          <th>Nickname</th>
-          <th>What It Represents</th>
-        </tr>
-        <tr>
-          <td>EUR/USD</td>
-          <td>"Fiber"</td>
-          <td>Euro vs US Dollar</td>
-        </tr>
-        <tr>
-          <td>GBP/USD</td>
-          <td>"Cable"</td>
-          <td>British Pound vs US Dollar</td>
-        </tr>
-        <tr>
-          <td>USD/JPY</td>
-          <td>"Ninja"</td>
-          <td>US Dollar vs Japanese Yen</td>
-        </tr>
-        <tr>
-          <td>USD/CHF</td>
-          <td>"Swissy"</td>
-          <td>US Dollar vs Swiss Franc</td>
-        </tr>
-        <tr>
-          <td>AUD/USD</td>
-          <td>"Aussie"</td>
-          <td>Australian Dollar vs US Dollar</td>
-        </tr>
+        <tr><th>Pair</th><th>Nickname</th></tr>
+        <tr><td>EUR/USD</td><td>"Fiber"</td></tr>
+        <tr><td>GBP/USD</td><td>"Cable"</td></tr>
+        <tr><td>USD/JPY</td><td>"Ninja"</td></tr>
       </table>
-      
       <h3>Commodity Markets</h3>
-      
-      <p>Commodities are physical assets that you can trade. Their prices are influenced by real-world factors.</p>
-      
-      <h4>Gold (XAU/USD)</h4>
-      <p>Gold is a "safe-haven" asset. When markets are uncertain, people buy gold, which pushes the price up.</p>
-      <ul>
-        <li>Price influenced by: Inflation, global events, central bank policies</li>
-        <li>Often moves inverse to the US Dollar</li>
-        <li>Considered a long-term investment</li>
-        <li>Good for hedging against inflation</li>
-      </ul>
-      
-      <h4>Silver (XAG/USD)</h4>
-      <p>Silver has both precious metal and industrial uses.</p>
-      <ul>
-        <li>Price influenced by: Industrial demand, global economy</li>
-        <li>More volatile than gold</li>
-        <li>Used in electronics, solar panels, jewelry</li>
-      </ul>
-      
-      <h4>Oil (WTI)</h4>
-      <p>Crude oil is one of the most traded commodities globally.</p>
-      <ul>
-        <li>Price influenced by: OPEC decisions, global demand, geopolitical events</li>
-        <li>Very sensitive to world news</li>
-        <li>Two main types: WTI (US) and Brent (International)</li>
-      </ul>
-      
+      <p>Gold, Silver, Oil. Prices influenced by real-world factors.</p>
       <h3>Cryptocurrency Markets</h3>
-      
-      <p>Cryptocurrencies are digital assets that use blockchain technology. They're known for high volatility and 24/7 trading.</p>
-      
-      <h4>Bitcoin (BTC)</h4>
-      <p>Bitcoin is the first and most well-known cryptocurrency.</p>
-      <ul>
-        <li>Limited supply: Only 21 million Bitcoins will ever exist</li>
-        <li>Price influenced by: Adoption, regulation, sentiment</li>
-        <li>Highly volatile (can move 5-10% in a day)</li>
-        <li>Trades 24/7, no market close</li>
-      </ul>
-      
-      <h4>Ethereum (ETH)</h4>
-      <p>Ethereum is more than just a currency - it's a platform for smart contracts.</p>
-      <ul>
-        <li>Second largest cryptocurrency by market cap</li>
-        <li>Used for decentralized applications (dApps)</li>
-        <li>Transitioning to more eco-friendly "proof of stake"</li>
-        <li>Highly volatile</li>
-      </ul>
-      
-      <div class="highlight-box">
-        <strong>Which Market Should You Choose?</strong>
-        <br>
-        <br><strong>If you're a beginner:</strong> Start with Volatility 10 or 25
-        <br><strong>If you want real-world trading:</strong> Try Forex
-        <br><strong>If you want to hedge:</strong> Consider Gold
-        <br><strong>If you want excitement:</strong> Try Cryptocurrencies
-        <br>
-        <br>Remember: Master ONE market first before trying others!
-      </div>
-      
-      <div class="key-takeaway">
-        <strong>Key Takeaway:</strong> Different markets have different characteristics. Volatility Indices are perfect for beginners. Forex offers real-world currency trading. Commodities let you trade physical assets. Cryptocurrencies offer high volatility. Choose ONE market to start with and master it before trying others.
-      </div>
+      <p>Digital assets with 24/7 trading.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Master ONE market first before trying others. Start with Volatility 10 or 25.</div>
     `
   },
   {
@@ -983,260 +793,25 @@ const lessons = [
     duration: "25 min",
     content: `
       <h3>Understanding Trade Types</h3>
-      
-      <p>Think of trade types like different games you can play. Each game has different rules, and each has its own strategy. On Deriv, you have four main trade types to choose from.</p>
-      
-      <div class="highlight-box">
-        <strong>Pro Tip:</strong> Start with just ONE trade type and master it. Most professional traders specialize in one type. Don't try to learn them all at once!
-      </div>
-      
+      <p>Think of trade types like different games you can play. On Deriv, you have four main types.</p>
       <h3>1. Over/Under (The Trend Game)</h3>
-      
-      <p>This is the simplest and most popular trade type on Deriv. It's perfect for beginners!</p>
-      
-      <h4>How It Works</h4>
-      <p>You look at the current price and predict whether the next price will be higher or lower.</p>
-      
-      <div class="definition-box">
-        <p><span class="term">OVER:</span> You predict the price will go UP from where it is now.</p>
-        <p><span class="term">UNDER:</span> You predict the price will go DOWN from where it is now.</p>
-      </div>
-      
-      <div class="example-box">
-        <strong>Example:</strong>
-        <br>Current price: 8,459
-        <br>You think the price will go higher than 8,459.
-        <br>You choose: OVER
-        <br>
-        <br>✅ If the next price is 8,460 or higher → YOU WIN!
-        <br>❌ If the next price is 8,458 or lower → YOU LOSE!
-        <br>
-        <br>OR...
-        <br>
-        <br>You think the price will go lower than 8,459.
-        <br>You choose: UNDER
-        <br>
-        <br>✅ If the next price is 8,458 or lower → YOU WIN!
-        <br>❌ If the next price is 8,460 or higher → YOU LOSE!
-      </div>
-      
-      <h4>When to Choose OVER</h4>
-      <div class="success-box">
-        <strong>OVER Signals:</strong>
-        <ul>
-          <li>Price is going UP (green candles on chart)</li>
-          <li>Market is in an uptrend (higher highs, higher lows)</li>
-          <li>Price bounced off support (a low point)</li>
-          <li>Strong green candle just appeared (momentum)</li>
-          <li>Price is above the moving average</li>
-          <li>Good news about the market</li>
-        </ul>
-      </div>
-      
-      <h4>When to Choose UNDER</h4>
-      <div class="warning-box">
-        <strong>UNDER Signals:</strong>
-        <ul>
-          <li>Price is going DOWN (red candles on chart)</li>
-          <li>Market is in a downtrend (lower highs, lower lows)</li>
-          <li>Price hit resistance (a high point)</li>
-          <li>Strong red candle just appeared (momentum)</li>
-          <li>Price is below the moving average</li>
-          <li>Bad news about the market</li>
-        </ul>
-      </div>
-      
-      <h4>Common Mistakes with Over/Under</h4>
-      <ul>
-        <li><strong>Mistake 1:</strong> Choosing OVER when the chart is going DOWN (trading against the trend)</li>
-        <li><strong>Mistake 2:</strong> Choosing UNDER when the chart is going UP (trading against the trend)</li>
-        <li><strong>Mistake 3:</strong> Not looking at the chart at all (guessing randomly)</li>
-        <li><strong>Mistake 4:</strong> Using too much money (stake too high)</li>
-        <li><strong>Mistake 5:</strong> Trading too often (overtrading)</li>
-        <li><strong>Mistake 6:</strong> Not using stop losses</li>
-        <li><strong>Mistake 7:</strong> Not considering the overall trend</li>
-      </ul>
-      
-      <div class="highlight-box">
-        <strong>The 80/20 Rule:</strong>
-        <br>80% of your wins will come from following the trend.
-        <br>20% will come from reversals.
-        <br>Trade WITH the trend, not against it!
-      </div>
-      
+      <p>Predict whether the next price will be higher or lower.</p>
+      <div class="definition-box"><p><span class="term">OVER:</span> Price will go UP.</p><p><span class="term">UNDER:</span> Price will go DOWN.</p></div>
+      <div class="example-box"><strong>Example:</strong> Current: 8,459. Choose OVER if you think next price will be higher.</div>
+      <h4>When to Choose OVER/UNDER</h4>
+      <p>Trade with the trend: OVER in uptrend, UNDER in downtrend.</p>
       <h3>2. Even/Odd (The Number Game)</h3>
-      
-      <p>This is the simplest trade type, based entirely on luck. It's fun and easy to understand.</p>
-      
-      <h4>How It Works</h4>
-      <p>You look at the last digit of the price and predict whether it will be even or odd.</p>
-      
-      <div class="definition-box">
-        <p><span class="term">EVEN:</span> The last digit will be 0, 2, 4, 6, or 8.</p>
-        <p><span class="term">ODD:</span> The last digit will be 1, 3, 5, 7, or 9.</p>
-      </div>
-      
-      <div class="example-box">
-        <strong>Example:</strong>
-        <br>Price: 8,459
-        <br>Last digit: 9
-        <br>
-        <br>You choose: ODD
-        <br>✅ The last digit is 9 → YOU WIN!
-        <br>
-        <br>You choose: EVEN
-        <br>❌ The last digit is 9 → YOU LOSE!
-      </div>
-      
-      <h4>Understanding Probability</h4>
-      <p>Since there are 5 even numbers and 5 odd numbers, the chance of winning is exactly 50%.</p>
-      
-      <table>
-        <tr>
-          <th>Choice</th>
-          <th>Winning Numbers</th>
-          <th>Chance of Win</th>
-        </tr>
-        <tr>
-          <td>EVEN</td>
-          <td>0, 2, 4, 6, 8</td>
-          <td>50%</td>
-        </tr>
-        <tr>
-          <td>ODD</td>
-          <td>1, 3, 5, 7, 9</td>
-          <td>50%</td>
-        </tr>
-      </table>
-      
-      <h4>Pattern Recognition Tips</h4>
-      <ul>
-        <li>Look at the last 5-10 digits for patterns</li>
-        <li>If the last 3 digits were odd, even might be more likely</li>
-        <li>Don't chase "streaks" - each digit is independent</li>
-        <li>Some traders look for "reversion to the mean" (too many of one type)</li>
-        <li>Remember: It's still 50/50, patterns are not guaranteed</li>
-      </ul>
-      
-      <div class="warning-box">
-        <strong>Important Warning:</strong>
-        <br>Even/Odd is random. No strategy can guarantee a win.
-        <br>Don't double your stake to "recover" losses.
-        <br>Treat it like a game, not a money-making strategy.
-      </div>
-      
+      <p>Predict if last digit will be even or odd. 50% chance each.</p>
       <h3>3. Matches/Differs (The Matching Game)</h3>
-      
-      <p>This is a more advanced trade type that offers both high-risk and low-risk options.</p>
-      
-      <h4>How It Works</h4>
-      <p>You pick a number (0-9) and predict whether the last digit will match your chosen number.</p>
-      
-      <div class="definition-box">
-        <p><span class="term">MATCHES:</span> The last digit will be the SAME as your chosen number.</p>
-        <p><span class="term">DIFFERS:</span> The last digit will be DIFFERENT from your chosen number.</p>
-      </div>
-      
-      <div class="example-box">
-        <strong>Example:</strong>
-        <br>You choose: 5
-        <br>
-        <br>You predict: MATCHES 5
-        <br>✅ If last digit is 5 → YOU WIN!
-        <br>❌ If last digit is any number EXCEPT 5 → YOU LOSE!
-        <br>
-        <br>You predict: DIFFERS 5
-        <br>✅ If last digit is NOT 5 → YOU WIN!
-        <br>❌ If last digit is 5 → YOU LOSE!
-      </div>
-      
-      <h4>Understanding Probability</h4>
-      <p>There are 10 possible digits (0-9).</p>
-      
+      <p>Pick a number (0-9) and predict if the last digit will match or differ.</p>
       <table>
-        <tr>
-          <th>Choice</th>
-          <th>Winning Numbers</th>
-          <th>Chance of Winning</th>
-          <th>Typical Payout</th>
-        </tr>
-        <tr>
-          <td>MATCHES</td>
-          <td>1 specific number</td>
-          <td>10%</td>
-          <td>High (~8x)</td>
-        </tr>
-        <tr>
-          <td>DIFFERS</td>
-          <td>9 numbers (not your choice)</td>
-          <td>90%</td>
-          <td>Low (~1.1x)</td>
-        </tr>
+        <tr><th>Choice</th><th>Winning Numbers</th><th>Probability</th></tr>
+        <tr><td>MATCHES</td><td>1 specific number</td><td>10%</td></tr>
+        <tr><td>DIFFERS</td><td>9 numbers (not your choice)</td><td>90%</td></tr>
       </table>
-      
-      <h4>Strategy for MATCHES</h4>
-      <ul>
-        <li>Use when you feel lucky (it's a gamble)</li>
-        <li>Use small stakes (you'll lose 90% of the time)</li>
-        <li>Look for number patterns</li>
-        <li>Combine with other strategies</li>
-        <li>When you win, the payout is large</li>
-      </ul>
-      
-      <h4>Strategy for DIFFERS</h4>
-      <ul>
-        <li>Use for consistent small wins (wins 90% of the time)</li>
-        <li>Can use larger stakes (less risk)</li>
-        <li>Good for building confidence</li>
-        <li>Small profits add up over time</li>
-        <li>Less exciting but more reliable</li>
-      </ul>
-      
-      <div class="highlight-box">
-        <strong>Pro Tip:</strong>
-        <br>Many professional traders use DIFFERS as their "base" strategy.
-        <br>90% win rate means you win most of the time.
-        <br>Even though the payout is small, consistent wins add up!
-      </div>
-      
       <h3>4. Touch/No Touch (Advanced)</h3>
-      
-      <p>This is an advanced trade type where you predict if the price will touch a specific level.</p>
-      
-      <h4>How It Works</h4>
-      <p>You set a price target (higher or lower) and predict if the price will touch that level before the trade ends.</p>
-      
-      <div class="definition-box">
-        <p><span class="term">TOUCH:</span> You predict the price will HIT your target level.</p>
-        <p><span class="term">NO TOUCH:</span> You predict the price will NOT hit your target level.</p>
-      </div>
-      
-      <div class="example-box">
-        <strong>Example:</strong>
-        <br>Current price: 8,459
-        <br>You set target: 8,500 (higher)
-        <br>
-        <br>TOUCH 8,500: You predict price will go to 8,500
-        <br>✅ If price hits 8,500 → YOU WIN!
-        <br>❌ If price stays below 8,500 → YOU LOSE!
-        <br>
-        <br>NO TOUCH 8,500: You predict price will NOT go to 8,500
-        <br>✅ If price stays below 8,500 → YOU WIN!
-        <br>❌ If price hits 8,500 → YOU LOSE!
-      </div>
-      
-      <h4>Strategy for Touch/No Touch</h4>
-      <ul>
-        <li><strong>TOUCH:</strong> Use during trending markets (high chance of reaching target)</li>
-        <li><strong>NO TOUCH:</strong> Use during sideways markets (unlikely to reach target)</li>
-        <li>Set targets at realistic levels (not too far, not too close)</li>
-        <li>Consider market volatility (more volatile = more likely to touch)</li>
-        <li>Use longer durations for more time to reach the target</li>
-      </ul>
-      
-      <div class="key-takeaway">
-        <strong>Key Takeaway:</strong> Each trade type has its own strategy and risk level. Over/Under is the most popular and beginner-friendly. Even/Odd is simple and 50/50. Matches/Differs offers both high-risk and low-risk options. Touch/No Touch is for advanced traders. Master one trade type before moving to the next!
-      </div>
+      <p>Predict if price will touch a specific level.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Each trade type has its own strategy. Over/Under is the most popular and beginner-friendly.</div>
     `
   },
   {
@@ -1245,180 +820,17 @@ const lessons = [
     duration: "30 min",
     content: `
       <h3>Understanding Charts</h3>
-      
-      <p>Charts are the windows into the market. They show you what's happening with prices, where they've been, and where they might be going. Learning to read charts is one of the most important skills you'll develop as a trader.</p>
-      
-      <p>Think of charts like a map. Just as a map shows you roads, cities, and terrain, a chart shows you price movements, trends, and patterns.</p>
-      
-      <h3>Types of Charts</h3>
-      
-      <h4>1. Line Charts</h4>
-      <p>The simplest type of chart. It connects the closing prices of each period with a line.</p>
-      <ul>
-        <li><strong>Pros:</strong> Clean, easy to read, shows overall trend</li>
-        <li><strong>Cons:</strong> Loses detail, doesn't show price action</li>
-        <li><strong>Best For:</strong> Beginners getting started</li>
-      </ul>
-      
-      <h4>2. Bar Charts</h4>
-      <p>Shows more detail than line charts. Each bar represents one period of trading.</p>
-      <ul>
-        <li><strong>Shows:</strong> Open, High, Low, Close</li>
-        <li><strong>Pros:</strong> More information than line charts</li>
-        <li><strong>Cons:</strong> Less popular than candlesticks</li>
-        <li><strong>Best For:</strong> Traders who want quick price info</li>
-      </ul>
-      
-      <h4>3. Candlestick Charts (Most Important)</h4>
-      <p>These are the most popular charts and the ones you'll use most often. Candlesticks show you a lot of information in one visual.</p>
-      
-      <div class="example-box">
-        <strong>Candlestick Anatomy:</strong>
-        <br>
-        <br>🟢 <strong>Green/White Candle:</strong> Price went UP
-        <br>• Body: Shows the difference between open and close
-        <br>• Upper Wick: Shows the high price
-        <br>• Lower Wick: Shows the low price
-        <br>• Open: Price when the period started
-        <br>• Close: Price when the period ended
-        <br>
-        <br>🔴 <strong>Red/Black Candle:</strong> Price went DOWN
-        <br>• Body: Shows the difference between open and close
-        <br>• Upper Wick: Shows the high price
-        <br>• Lower Wick: Shows the low price
-        <br>• Open: Price when the period started
-        <br>• Close: Price when the period ended
-        <br>
-        <br>The longer the body, the stronger the move.
-        <br>The longer the wicks, the more indecision.
-      </div>
-      
+      <p>Charts are the windows into the market. They show you where prices have been and where they might be going.</p>
+      <h3>Candlestick Charts (Most Important)</h3>
+      <p>Each candle shows open, high, low, close.</p>
+      <div class="example-box"><strong>Candlestick Anatomy:</strong> Green/White = Price went UP. Red/Black = Price went DOWN. Long body = strong move. Long wicks = indecision.</div>
       <h3>The Three Market States</h3>
-      
-      <div class="highlight-box">
-        <strong>Market States:</strong>
-        <br>
-        <br>📈 <strong>UPTREND:</strong>
-        <br>• Price makes higher highs (each peak is higher)
-        <br>• Price makes higher lows (each valley is higher)
-        <br>• More green candles than red
-        <br>• Moving averages point UP
-        <br>• Look for OVER trades
-        <br>
-        <br>📉 <strong>DOWNTREND:</strong>
-        <br>• Price makes lower highs (each peak is lower)
-        <br>• Price makes lower lows (each valley is lower)
-        <br>• More red candles than green
-        <br>• Moving averages point DOWN
-        <br>• Look for UNDER trades
-        <br>
-        <br>➡️ <strong>SIDEWAYS (RANGE):</strong>
-        <br>• Price bounces between two levels
-        <br>• No clear direction
-        <br>• Equal number of green and red candles
-        <br>• Moving averages are flat
-        <br>• Wait for a breakout before trading
-      </div>
-      
-      <h3>Key Chart Patterns</h3>
-      
-      <h4>Support and Resistance</h4>
-      <p>These are crucial concepts that every trader must understand.</p>
-      
-      <div class="definition-box">
-        <p><span class="term">Support:</span> A price level where the market tends to bounce UP. Think of it like a floor - the price usually doesn't go below it.</p>
-        <p><span class="term">Resistance:</span> A price level where the market tends to bounce DOWN. Think of it like a ceiling - the price usually doesn't go above it.</p>
-      </div>
-      
-      <div class="example-box">
-        <strong>Support & Resistance Example:</strong>
-        <br>
-        <br>Resistance: 8,500 (price bounces DOWN from here)
-        <br>Current Price: 8,459
-        <br>Support: 8,400 (price bounces UP from here)
-        <br>
-        <br>At Support (8,400):
-        <br>• Price is likely to bounce UP
-        <br>• Look for OVER trades
-        <br>• Consider taking profit at resistance
-        <br>
-        <br>At Resistance (8,500):
-        <br>• Price is likely to bounce DOWN
-        <br>• Look for UNDER trades
-        <br>• Consider taking profit at support
-        <br>
-        <br>Breakout (above resistance or below support):
-        <br>• Price breaking above resistance = likely to keep going UP
-        <br>• Price breaking below support = likely to keep going DOWN
-        <br>• Trade in the breakout direction
-      </div>
-      
-      <h4>Trendlines</h4>
-      <p>Trendlines are diagonal lines drawn along the peaks or valleys of the price to show the direction of the trend.</p>
-      <ul>
-        <li><strong>Uptrend Line:</strong> Drawn along the lows (valleys) - shows rising trend</li>
-        <li><strong>Downtrend Line:</strong> Drawn along the highs (peaks) - shows falling trend</li>
-        <li><strong>Break of Trendline:</strong> Often signals a trend reversal</li>
-        <li><strong>Bounce from Trendline:</strong> Confirms the trend is continuing</li>
-      </ul>
-      
-      <h4>Common Candlestick Patterns</h4>
-      <ul>
-        <li><strong>Doji:</strong> Small body, long wicks. Shows indecision. Often signals reversal.</li>
-        <li><strong>Hammer:</strong> Small body, long lower wick. Bullish reversal signal.</li>
-        <li><strong>Shooting Star:</strong> Small body, long upper wick. Bearish reversal signal.</li>
-        <li><strong>Engulfing Pattern:</strong> One candle completely covers the previous candle. Strong reversal signal.</li>
-        <li><strong>Three Green Candle:</strong> Three green candles in a row. Shows strong uptrend.</li>
-        <li><strong>Three Red Candle:</strong> Three red candles in a row. Shows strong downtrend.</li>
-      </ul>
-      
-      <div class="success-box">
-        <strong>Chart Reading Exercise:</strong>
-        <br>
-        <br>1. Open your Deriv chart on Volatility 10
-        <br>2. Look at the last 20 candles
-        <br>3. Answer these questions:
-        <br>• What is the trend? (UP, DOWN, or SIDEWAYS?)
-        <br>• Are there more green or red candles?
-        <br>• Where are the support and resistance levels?
-        <br>• Do you see any candlestick patterns?
-        <br>• What would your next trade be? (OVER or UNDER?)
-        <br>
-        <br>Do this for 10 minutes every day. You'll become a chart reading expert!
-      </div>
-      
-      <h3>Technical Indicators (Advanced)</h3>
-      
-      <p>These are mathematical calculations based on price and volume. They help you analyze the market.</p>
-      
-      <h4>Moving Averages (MA)</h4>
-      <p>Calculates the average price over a specific period. Smooths out price data to show the trend.</p>
-      <ul>
-        <li><strong>Simple MA (SMA):</strong> Equal weight to all prices</li>
-        <li><strong>Exponential MA (EMA):</strong> More weight to recent prices</li>
-        <li><strong>Signal:</strong> Price above MA = Uptrend, Price below MA = Downtrend</li>
-      </ul>
-      
-      <h4>Relative Strength Index (RSI)</h4>
-      <p>Measures the speed and change of price movements. Shows if the market is overbought or oversold.</p>
-      <ul>
-        <li><strong>Overbought (RSI > 70):</strong> Price may fall (look for UNDER)</li>
-        <li><strong>Oversold (RSI < 30):</strong> Price may rise (look for OVER)</li>
-        <li><strong>Neutral (RSI between 30-70):</strong> No clear signal</li>
-      </ul>
-      
-      <h4>Moving Average Convergence Divergence (MACD)</h4>
-      <p>Shows the relationship between two moving averages. Helps identify trend direction and momentum.</p>
-      <ul>
-        <li><strong>Line above zero:</strong> Bullish (uptrend)</li>
-        <li><strong>Line below zero:</strong> Bearish (downtrend)</li>
-        <li><strong>Crossing up:</strong> Buy signal (look for OVER)</li>
-        <li><strong>Crossing down:</strong> Sell signal (look for UNDER)</li>
-      </ul>
-      
-      <div class="key-takeaway">
-        <strong>Key Takeaway:</strong> Charts tell the story of the market. Learn to read candlestick patterns, support/resistance, and trendlines. Master one indicator at a time. Practice reading charts daily and you'll become a skilled analyst!
-      </div>
+      <p>📈 Uptrend: higher highs and higher lows. 📉 Downtrend: lower highs and lower lows. ➡️ Sideways: price bounces between two levels.</p>
+      <h3>Support and Resistance</h3>
+      <p>Support: a floor where price tends to bounce up. Resistance: a ceiling where price tends to bounce down.</p>
+      <h3>Technical Indicators</h3>
+      <p>Moving Averages, RSI, MACD.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Learn to read candlestick patterns, support/resistance, and trendlines. Practice daily!</div>
     `
   },
   {
@@ -1427,194 +839,17 @@ const lessons = [
     duration: "25 min",
     content: `
       <h3>Why Risk Management is Everything</h3>
-      
-      <p>Risk management is the single most important skill in trading. It's more important than knowing strategies, reading charts, or understanding markets. Without proper risk management, even the best traders will eventually lose everything.</p>
-      
-      <div class="highlight-box">
-        <strong>The Golden Rule of Trading:</strong>
-        <br>Protect your capital first. Make profits second.
-        <br>Never risk more than you can afford to lose.
-        <br>Always risk 2% or less per trade.
-        <br>This is rule #1. Everything else is secondary.
-      </div>
-      
-      <p>Think of your trading account like your car. You wouldn't drive without a seatbelt, insurance, or safety features. Risk management is the seatbelt of trading - it keeps you safe when things go wrong.</p>
-      
+      <p>Protect your capital first. Make profits second.</p>
       <h3>The 2% Rule (Your Survival Guide)</h3>
-      
-      <p>This is the most important rule in trading. It will save your account many times over.</p>
-      
-      <div class="warning-box">
-        <strong>The 2% Rule:</strong>
-        <br>Never risk more than 2% of your account on any single trade.
-        <br>
-        <br>If you have $1,000, risk no more than $20 per trade.
-        <br>If you have $500, risk no more than $10 per trade.
-        <br>If you have $100, risk no more than $2 per trade.
-        <br>
-        <br>This rule ensures you survive losing streaks and can trade another day.
-      </div>
-      
-      <p>Let's understand why this rule is so important with an example:</p>
-      
-      <div class="example-box">
-        <strong>The Power of 2%:</strong>
-        <br>
-        <br><strong>Trader A (No Risk Management):</strong>
-        <br>Account: $1,000
-        <br>Trade 1: Risk $500 (50%) → LOSS
-        <br>Account now: $500
-        <br>Trade 2: Risk $500 (100%) → LOSS
-        <br>Account now: $0
-        <br>Result: BROKE IN 2 TRADES!
-        <br>
-        <br><strong>Trader B (2% Rule):</strong>
-        <br>Account: $1,000
-        <br>Trade 1: Risk $20 (2%) → LOSS
-        <br>Account now: $980
-        <br>Trade 2: Risk $19.60 (2%) → LOSS
-        <br>Account now: $960.40
-        <br>Trade 3: Risk $19.20 (2%) → LOSS
-        <br>Account now: $941.20
-        <br>Result: AFTER 20 LOSSES IN A ROW → STILL HAS $670!
-        <br>
-        <br>The 2% rule allows you to survive losing streaks!
-      </div>
-      
+      <div class="warning-box"><strong>Never risk more than 2% of your account on any single trade.</strong></div>
+      <div class="example-box"><strong>Account: $1,000.</strong> Risk: $20 per trade. After 20 losses in a row, you still have $670!</div>
       <h3>The 6% Daily Rule</h3>
-      
-      <p>Just as important as the 2% rule. This rule prevents you from destroying your account in a single bad day.</p>
-      
-      <div class="warning-box">
-        <strong>The 6% Daily Rule:</strong>
-        <br>If you lose 6% of your account in one day, STOP TRADING.
-        <br>
-        <br>Account: $1,000
-        <br>6% Daily Loss Limit: $60
-        <br>
-        <br>If you lose $60 in a day, STOP!
-        <br>Come back tomorrow with a fresh start.
-        <br>
-        <br>This rule prevents:
-        <br>• Revenge trading (trying to recover losses)
-        <br>• Emotional trading (making bad decisions under stress)
-        <br>• Account destruction (losing everything)
-        <br>• Overtrading (taking too many trades)
-      </div>
-      
+      <p>If you lose 6% of your account in one day, STOP TRADING.</p>
       <h3>Position Sizing</h3>
-      
-      <p>Position sizing is deciding how much to risk on each trade. It's a crucial skill that combines your account size, risk percentage, and stop loss.</p>
-      
-      <div class="code-block">
-        Position Size Formula:
-        Position Size = (Account Size × Risk %) / (Stop Loss in Ticks)
-      </div>
-      
-      <div class="example-box">
-        <strong>Position Sizing Example:</strong>
-        <br>Account: $1,000
-        <br>Risk: 2% ($20)
-        <br>Stop Loss: 5 ticks
-        <br>
-        <br>Position Size = $20 / 5 = $4 per tick
-        <br>
-        <br>This means you should risk $4 for every 1 tick movement.
-        <br>
-        <br>If you make 5 ticks profit: $4 × 5 = $20 profit (2% return)
-        <br>If you lose 5 ticks: $4 × 5 = $20 loss (2% loss)
-        <br>
-        <br>This ensures each trade risks exactly 2% of your account.
-      </div>
-      
-      <h3>Different Risk Scenarios</h3>
-      
-      <table>
-        <tr>
-          <th>Account Size</th>
-          <th>2% Risk</th>
-          <th>6% Daily Limit</th>
-          <th>Max Trades/Day (2% each)</th>
-        </tr>
-        <tr>
-          <td>$100</td>
-          <td>$2</td>
-          <td>$6</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>$500</td>
-          <td>$10</td>
-          <td>$30</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>$1,000</td>
-          <td>$20</td>
-          <td>$60</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>$5,000</td>
-          <td>$100</td>
-          <td>$300</td>
-          <td>3</td>
-        </tr>
-        <tr>
-          <td>$10,000</td>
-          <td>$200</td>
-          <td>$600</td>
-          <td>3</td>
-        </tr>
-      </table>
-      
+      <p>Deciding how much to risk on each trade.</p>
       <h3>Risk Psychology</h3>
-      
-      <div class="highlight-box">
-        <strong>Understanding Your Mind:</strong>
-        <br>
-        <br>• <strong>Losses hurt more than wins feel good.</strong> This is human nature. A $20 loss feels worse than a $20 win feels good.
-        <br>
-        <br>• <strong>Small losses are okay.</strong> In fact, they're expected. Professional traders lose 40-50% of the time.
-        <br>
-        <br>• <strong>Big losses destroy accounts.</strong> One big loss can undo weeks of progress.
-        <br>
-        <br>• <strong>Revenge trading is the #1 cause of big losses.</strong> Don't try to recover losses by increasing your stake.
-        <br>
-        <br>• <strong>Greed leads to overtrading.</strong> Stick to your plan, don't chase profits.
-      </div>
-      
-      <h3>Risk Management Checklist</h3>
-      
-      <div class="success-box">
-        <strong>Before Every Trade:</strong>
-        <br>
-        <br>☐ Am I risking 2% or less?
-        <br>☐ Have I calculated my position size correctly?
-        <br>☐ Do I have a stop loss in mind?
-        <br>☐ Is my daily loss limit still intact?
-        <br>☐ Am I calm and not emotional?
-        <br>☐ Do I have a clear reason for this trade?
-        <br>
-        <br>If you answer NO to any of these, DON'T TAKE THE TRADE!
-      </div>
-      
-      <h3>Risk Management Mistakes</h3>
-      
-      <ul>
-        <li><strong>Mistake 1:</strong> Risking more than 2% per trade</li>
-        <li><strong>Mistake 2:</strong> Not having a stop loss</li>
-        <li><strong>Mistake 3:</strong> Moving your stop loss (never do this!)</li>
-        <li><strong>Mistake 4:</strong> Overtrading after a loss</li>
-        <li><strong>Mistake 5:</strong> Risking too much on one trade</li>
-        <li><strong>Mistake 6:</strong> Not adjusting position size for different markets</li>
-        <li><strong>Mistake 7:</strong> Trading when emotional</li>
-        <li><strong>Mistake 8:</strong> Not respecting the daily loss limit</li>
-      </ul>
-      
-      <div class="key-takeaway">
-        <strong>Key Takeaway:</strong> Risk management is your most important skill. Follow the 2% rule, the 6% daily rule, and always calculate your position size. Protect your capital first, make profits second. Without proper risk management, you cannot succeed long-term.
-      </div>
+      <p>Losses hurt more than wins feel good. Small losses are okay. Revenge trading is the #1 cause of big losses.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Follow the 2% rule, 6% daily rule, and always calculate your position size. Protect your capital first.</div>
     `
   },
   {
@@ -1623,147 +858,192 @@ const lessons = [
     duration: "20 min",
     content: `
       <h3>Your Mind is Your Most Powerful Trading Tool</h3>
-      
-      <p>Your mind is the most important part of your trading system. Even with the best strategy, if your psychology is poor, you'll fail. Professional traders spend as much time on psychology as they do on strategy.</p>
-      
-      <div class="highlight-box">
-        <strong>The Trading Triangle:</strong>
-        <br>
-        <br>Strategy = 25%
-        <br>Risk Management = 25%
-        <br>Psychology = 50%
-        <br>
-        <br>Your mind is half of your success!
-      </div>
-      
+      <p>Strategy = 25%, Risk Management = 25%, Psychology = 50%.</p>
       <h3>The 5 Psychological Traps</h3>
-      
-      <h4>1. Fear</h4>
-      <p>Fear is the most common emotion in trading. It manifests in many ways:</p>
-      <ul>
-        <li><strong>Fear of losing:</strong> Prevents you from taking good trades</li>
-        <li><strong>Fear of missing out (FOMO):</strong> Causes you to chase trades</li>
-        <li><strong>Fear of winning:</strong> Makes you exit winning trades too early</li>
-        <li><strong>Fear of being wrong:</strong> Makes you hold losing trades too long</li>
-      </ul>
-      
-      <div class="success-box">
-        <strong>How to Overcome Fear:</strong>
-        <br>• Use proper risk management (2% rule)
-        <br>• Focus on the process, not the outcome
-        <br>• Accept that losses are part of trading
-        <br>• Practice on demo account to build confidence
-        <br>• Trust your strategy and system
-      </div>
-      
-      <h4>2. Greed</h4>
-      <p>Greed is just as dangerous as fear. It causes you to:</p>
-      <ul>
-        <li><strong>Overtrade:</strong> Taking too many trades</li>
-        <li><strong>Overrisk:</strong> Risking too much on one trade</li>
-        <li><strong>Chase profits:</strong> Staying in winning trades too long</li>
-        <li><strong>Ignore rules:</strong> Breaking your trading plan</li>
-      </ul>
-      
-      <div class="warning-box">
-        <strong>How to Overcome Greed:</strong>
-        <br>• Set realistic daily profit targets
-        <br>• Take profits when your target is hit
-        <br>• Stick to your position sizing
-        <br>• Remember: The market will still be there tomorrow
-        <br>• Focus on consistency, not size
-      </div>
-      
-      <h4>3. Revenge Trading</h4>
-      <p>This is the most destructive emotion. It occurs when you lose money and try to "get it back" by taking bigger risks.</p>
-      
-      <div class="example-box">
-        <strong>Revenge Trading Example:</strong>
-        <br>You lose $20 on a trade.
-        <br>Your brain says: "I need to get that $20 back!"
-        <br>You take a $40 trade to recover it.
-        <br>You lose again.
-        <br>Now you're down $60.
-        <br>You take a $100 trade...
-        <br>
-        <br>This is a DEATH SPIRAL. Stop it immediately.
-      </div>
-      
-      <h4>4. Overconfidence</h4>
-      <p>After a few wins, traders often become overconfident and start taking unnecessary risks.</p>
-      <ul>
-        <li>You had 5 wins in a row? Great! But don't increase your stake.</li>
-        <li>You've been profitable for a week? Good! But stay disciplined.</li>
-        <li>One good trade doesn't mean you're an expert.</li>
-      </ul>
-      
-      <h4>5. Analysis Paralysis</h4>
-      <p>Overthinking every trade. Analyzing too many indicators. Waiting for the "perfect" setup.</p>
-      <ul>
-        <li>Check 2-3 things (trend, support/resistance, momentum)</li>
-        <li>Make a decision</li>
-        <li>If your setup appears, TAKE THE TRADE</li>
-        <li>If you hesitate, skip it</li>
-      </ul>
-      
+      <p>Fear, Greed, Revenge Trading, Overconfidence, Analysis Paralysis.</p>
       <h3>The Trading Journal</h3>
-      
-      <p>A trading journal is your most important tool for improving psychology. It helps you identify patterns in your behavior and decision-making.</p>
-      
-      <div class="example-box">
-        <strong>What to Write in Your Journal:</strong>
-        <br>
-        <br><strong>For Each Trade:</strong>
-        <br>• Market and trade type
-        <br>• Entry price and exit price
-        <br>• Stake and position size
-        <br>• Win or loss
-        <br>• What was your reasoning?
-        <br>• What were you feeling?
-        <br>• What did you learn?
-        <br>
-        <br><strong>End of Day Review:</strong>
-        <br>• Total trades and win rate
-        <br>• Total profit/loss
-        <br>• What went well?
-        <br>• What needs improvement?
-        <br>• One thing to do differently tomorrow
-      </div>
-      
+      <p>Write down every trade: what, why, feelings, lessons.</p>
       <h3>Building Trading Discipline</h3>
-      
-      <div class="success-box">
-        <strong>Daily Habits of Successful Traders:</strong>
-        <br>
-        <br>1. <strong>Prepare:</strong> Review your plan before trading
-        <br>2. <strong>Warm Up:</strong> Check markets, get into the right mindset
-        <br>3. <strong>Trade Your Plan:</strong> Follow your strategy exactly
-        <br>4. <strong>Take Breaks:</strong> Step away every 2 hours
-        <br>5. <strong>Review:</strong> Journal every trade
-        <br>6. <strong>Learn:</strong> One new thing every day
-        <br>7. <strong>Rest:</strong> Get enough sleep
-        <br>8. <strong>Exercise:</strong> Physical activity helps mental clarity
-        <br>9. <strong>Meditate:</strong> 5-10 minutes of mindfulness
-        <br>10. <strong>Stay Humble:</strong> Markets are always changing
-      </div>
-      
+      <p>Daily habits: prepare, warm up, trade your plan, take breaks, review, learn, rest.</p>
       <h3>The "Stop" Signs</h3>
-      
-      <p>Know when to stop trading. These are clear signals that you need a break:</p>
-      
-      <ul>
-        <li><strong>You feel angry or frustrated</strong> - STOP</li>
-        <li><strong>You've lost 3 trades in a row</strong> - STOP</li>
-        <li><strong>You've reached your daily loss limit</strong> - STOP</li>
-        <li><strong>You can't focus or concentrate</strong> - STOP</li>
-        <li><strong>You're thinking about "recovering" losses</strong> - STOP</li>
-        <li><strong>You haven't slept well</strong> - STOP</li>
-        <li><strong>You're distracted by personal issues</strong> - STOP</li>
-      </ul>
-      
-      <div class="key-takeaway">
-        <strong>Key Takeaway:</strong> Trading psychology is half of your success. Manage your emotions, keep a journal, and build discipline. Know when to stop and when to trade. Your mind is your greatest asset or your biggest enemy. Master it and you'll master trading.
+      <p>Angry? Frustrated? Lost 3 in a row? STOP.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Master your mind to master trading.</div>
+    `
+  }
+];
+
+const forexLessons = [
+  {
+    id: 1,
+    title: "Forex Fundamentals",
+    duration: "20 min",
+    content: `
+      <h3>What is Forex Trading?</h3>
+      <p>Forex (Foreign Exchange) is the global marketplace for trading national currencies. With a daily trading volume exceeding $7 trillion, it's the world's largest financial market.</p>
+      <p>Unlike stocks, forex trading happens 24 hours a day, 5 days a week, across major financial centers: Sydney, Tokyo, London, New York.</p>
+      <h3>How Currency Pairs Work</h3>
+      <p>Forex is always traded in pairs: EUR/USD, GBP/JPY, etc. You buy one currency and sell another simultaneously.</p>
+      <div class="definition-box">
+        <p><span class="term">Base Currency:</span> The first currency in the pair (e.g., EUR in EUR/USD).</p>
+        <p><span class="term">Quote Currency:</span> The second currency (e.g., USD).</p>
+        <p><span class="term">Exchange Rate:</span> How much of the quote currency is needed to buy one unit of the base currency.</p>
       </div>
+      <div class="example-box">
+        <strong>Example:</strong><br>
+        EUR/USD = 1.1000<br>
+        This means 1 Euro = 1.10 US Dollars. If you buy EUR/USD, you're buying Euros and selling Dollars.
+      </div>
+      <h3>Major, Minor, and Exotic Pairs</h3>
+      <ul>
+        <li><strong>Major Pairs:</strong> Always include USD and another major currency (EUR/USD, GBP/USD, USD/JPY). Most liquid.</li>
+        <li><strong>Minor Pairs:</strong> Don't include USD (e.g., EUR/GBP, GBP/JPY).</li>
+        <li><strong>Exotic Pairs:</strong> Major currency + emerging market currency (e.g., USD/TRY, EUR/ZAR). High spreads.</li>
+      </ul>
+      <h3>What Moves Forex Markets?</h3>
+      <ul>
+        <li><strong>Interest Rates:</strong> Higher rates → currency strengthens.</li>
+        <li><strong>Economic Data:</strong> GDP, employment, inflation.</li>
+        <li><strong>Geopolitical Events:</strong> Elections, wars, trade deals.</li>
+        <li><strong>Market Sentiment:</strong> Fear/greed drives price.</li>
+      </ul>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Forex is the largest market in the world. Start with major pairs. Understand what moves currencies.</div>
+    `
+  },
+  {
+    id: 2,
+    title: "Currency Pairs & Quotes",
+    duration: "25 min",
+    content: `
+      <h3>Reading a Forex Quote</h3>
+      <p>A typical quote looks like: GBP/USD 1.3100/1.3102.</p>
+      <ul>
+        <li><strong>Bid:</strong> Price you can sell at (1.3100).</li>
+        <li><strong>Ask:</strong> Price you can buy at (1.3102).</li>
+        <li><strong>Spread:</strong> Difference (0.0002 = 2 pips).</li>
+      </ul>
+      <h3>What is a Pip?</h3>
+      <p>A pip (percentage in point) is the smallest standard price movement. For most pairs, it's the fourth decimal place (0.0001). For JPY pairs, it's the second (0.01).</p>
+      <div class="example-box">
+        <strong>Pip Calculation:</strong><br>
+        EUR/USD moves from 1.1000 to 1.1005 = 5 pips.<br>
+        USD/JPY moves from 110.00 to 110.30 = 30 pips.
+      </div>
+      <h3>Lot Sizes</h3>
+      <ul>
+        <li><strong>Standard Lot:</strong> 100,000 units of base currency.</li>
+        <li><strong>Mini Lot:</strong> 10,000 units.</li>
+        <li><strong>Micro Lot:</strong> 1,000 units.</li>
+      </ul>
+      <p>Most retail traders use mini or micro lots to control risk.</p>
+      <h3>Bid/Ask Spread</h3>
+      <p>The spread is the broker's fee. Lower spread = better for traders. Major pairs usually have spreads of 0-3 pips.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Understand pips and lots. They determine your profit or loss on each trade.</div>
+    `
+  },
+  {
+    id: 3,
+    title: "Technical Analysis",
+    duration: "30 min",
+    content: `
+      <h3>Why Technical Analysis?</h3>
+      <p>Technical analysis uses historical price data to predict future movements. It's especially useful in forex because fundamentals can change slowly but price patterns repeat.</p>
+      <h3>Key Chart Types</h3>
+      <ul>
+        <li><strong>Candlestick Charts:</strong> Most popular, shows open/high/low/close.</li>
+        <li><strong>Line Charts:</strong> Simple, closing prices only.</li>
+        <li><strong>Bar Charts:</strong> OHLC data.</li>
+      </ul>
+      <h3>Important Patterns</h3>
+      <ul>
+        <li><strong>Head and Shoulders:</strong> Trend reversal pattern.</li>
+        <li><strong>Double Top/Bottom:</strong> Strong reversal signals.</li>
+        <li><strong>Triangles:</strong> Consolidation before breakout.</li>
+      </ul>
+      <h3>Indicators</h3>
+      <ul>
+        <li><strong>Moving Averages:</strong> Smooth price to show trend.</li>
+        <li><strong>RSI:</strong> Overbought/oversold (above 70, below 30).</li>
+        <li><strong>Bollinger Bands:</strong> Volatility and potential reversals.</li>
+        <li><strong>MACD:</strong> Momentum and trend strength.</li>
+      </ul>
+      <div class="success-box">
+        <strong>Tip:</strong> Don't overload your chart with indicators. Use 2-3 that you understand well.
+      </div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Technical analysis helps you find high-probability trade setups. Practice reading charts daily.</div>
+    `
+  },
+  {
+    id: 4,
+    title: "Fundamental Analysis",
+    duration: "25 min",
+    content: `
+      <h3>What is Fundamental Analysis?</h3>
+      <p>Fundamental analysis evaluates a currency's value based on economic, political, and social factors. It's about understanding the "why" behind price moves.</p>
+      <h3>Key Economic Indicators</h3>
+      <ul>
+        <li><strong>Interest Rate Decisions:</strong> Central banks set rates. Higher rates attract foreign investment → currency strengthens.</li>
+        <li><strong>Gross Domestic Product (GDP):</strong> Measures economic growth.</li>
+        <li><strong>Employment Data:</strong> Non-farm payrolls (US), unemployment rate.</li>
+        <li><strong>Inflation (CPI):</strong> Rising inflation can lead to rate hikes.</li>
+        <li><strong>Retail Sales:</strong> Consumer spending health.</li>
+      </ul>
+      <h3>Central Banks</h3>
+      <ul>
+        <li><strong>Federal Reserve (Fed):</strong> US central bank.</li>
+        <li><strong>European Central Bank (ECB):</strong> Eurozone.</li>
+        <li><strong>Bank of England (BoE):</strong> UK.</li>
+        <li><strong>Bank of Japan (BoJ):</strong> Japan.</li>
+      </ul>
+      <p>Pay attention to their statements and minutes – they drive forex trends.</p>
+      <h3>Economic Calendar</h3>
+      <p>Use an economic calendar to track upcoming news releases. High-impact events can cause sharp price movements.</p>
+      <div class="warning-box">
+        <strong>Warning:</strong> Trading during major news releases can be risky. Spreads widen and slippage occurs. Beginners should avoid trading 15 minutes before/after high-impact news.
+      </div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Combine technical and fundamental analysis for a complete trading strategy.</div>
+    `
+  },
+  {
+    id: 5,
+    title: "Risk Management in Forex",
+    duration: "25 min",
+    content: `
+      <h3>The Golden Rule</h3>
+      <p>Never risk more than 1-2% of your account on a single trade. This preserves your capital during losing streaks.</p>
+      <h3>Stop Loss & Take Profit</h3>
+      <ul>
+        <li><strong>Stop Loss:</strong> Automatically closes a losing trade at a predetermined level.</li>
+        <li><strong>Take Profit:</strong> Automatically closes a winning trade at your target.</li>
+      </ul>
+      <p>Always use a stop loss. Never move it further from entry – only to lock in profits.</p>
+      <h3>Leverage – Double-Edged Sword</h3>
+      <p>Leverage amplifies both gains and losses. Example: 1:100 leverage means you control $100,000 with only $1,000. A 1% move against you wipes out your capital.</p>
+      <div class="warning-box"><strong>High leverage is dangerous.</strong> Many traders lose money because of excessive leverage. Start with low leverage (1:10 or less).</div>
+      <h3>Risk-Reward Ratio</h3>
+      <p>Aim for a minimum 1:2 ratio: risk 1 to make 2. Even with a 40% win rate, you can be profitable.</p>
+      <h3>Daily Loss Limit</h3>
+      <p>Set a maximum daily loss (e.g., 5% of account). Once hit, stop trading. Revenge trading destroys accounts.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Capital preservation is priority #1. Always use stops, control leverage, and set daily loss limits.</div>
+    `
+  },
+  {
+    id: 6,
+    title: "Forex Trading Strategies",
+    duration: "20 min",
+    content: `
+      <h3>Popular Strategies for Beginners</h3>
+      <h4>1. Trend Following</h4>
+      <p>"The trend is your friend." Buy in an uptrend, sell in a downtrend. Use moving averages to confirm direction.</p>
+      <h4>2. Breakout Trading</h4>
+      <p>Identify key support/resistance levels. Enter when price breaks out with momentum. Confirm with volume or candlestick patterns.</p>
+      <h4>3. Range Trading</h4>
+      <p>When price moves between clear support and resistance, buy at support and sell at resistance. Stop out if the level breaks.</p>
+      <h4>4. News Trading (Advanced)</h4>
+      <p>Trade based on economic news releases. Requires quick execution and understanding of market expectations. Risky for new traders.</p>
+      <div class="highlight-box">
+        <strong>Advice:</strong> Start with trend following. It's simple, effective, and keeps you on the right side of the market.
+      </div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Pick one strategy, master it on a demo account, then trade it consistently. Don't jump between strategies.</div>
     `
   }
 ];
@@ -1773,14 +1053,25 @@ const lessons = [
 // ============================================
 
 const Academy = () => {
-  const [completedLessons, setCompletedLessons] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null); // 'deriv' or 'forex'
+  const [completedLessons, setCompletedLessons] = useState({ deriv: [], forex: [] });
 
-  const toggleLesson = (lessonId) => {
-    setCompletedLessons(prev => 
-      prev.includes(lessonId) 
-        ? prev.filter(id => id !== lessonId)
-        : [...prev, lessonId]
-    );
+  const handleSelectCourse = (course) => {
+    setSelectedCourse(course);
+  };
+
+  const goBack = () => {
+    setSelectedCourse(null);
+  };
+
+  const toggleLessonCompletion = (course, lessonId) => {
+    setCompletedLessons(prev => {
+      const courseLessons = prev[course] || [];
+      const updated = courseLessons.includes(lessonId)
+        ? courseLessons.filter(id => id !== lessonId)
+        : [...courseLessons, lessonId];
+      return { ...prev, [course]: updated };
+    });
   };
 
   const scrollToLesson = (id) => {
@@ -1790,41 +1081,104 @@ const Academy = () => {
     }
   };
 
-  const progress = lessons.length > 0 ? Math.round((completedLessons.length / lessons.length) * 100) : 0;
+  const getCourseData = () => {
+    return selectedCourse === 'deriv' ? derivLessons : forexLessons;
+  };
+
+  const getCourseProgress = () => {
+    const lessons = getCourseData();
+    const completed = completedLessons[selectedCourse]?.length || 0;
+    return Math.round((completed / lessons.length) * 100) || 0;
+  };
+
+  // Course selection screen
+  if (!selectedCourse) {
+    return (
+      <PageWrapper>
+        <CourseSelection>
+          <HeroText>
+            <div className="badge">
+              <GraduationCapIcon />
+              Trading Education
+            </div>
+            <h1 className="title">
+              Welcome to <span className="gradient">MyTradeApp Academy</span>
+            </h1>
+            <p className="subtitle">
+              Master the art of trading with comprehensive courses designed for complete beginners.
+              Choose your path and start learning today.
+            </p>
+          </HeroText>
+
+          <CourseCards>
+            <CourseCard 
+              accent="#ff444f"
+              onClick={() => handleSelectCourse('deriv')}
+            >
+              <div className="icon-wrapper">
+                <DerivIcon />
+              </div>
+              <div className="card-title">Deriv Trading</div>
+              <div className="card-desc">
+                Learn everything about Deriv's platform, volatility indices, trade types, and winning strategies.
+              </div>
+              <div className="card-meta">
+                <span className="meta-item">
+                  <BookOpenIcon style={{width:14,height:14}} /> {derivLessons.length} Lessons
+                </span>
+                <span className="meta-item">
+                  <ClockIcon style={{width:14,height:14}} /> ~3 Hours
+                </span>
+              </div>
+            </CourseCard>
+
+            <CourseCard 
+              accent="#3b82f6"
+              onClick={() => handleSelectCourse('forex')}
+            >
+              <div className="icon-wrapper">
+                <ForexIcon />
+              </div>
+              <div className="card-title">Forex Trading</div>
+              <div className="card-desc">
+                Understand the world's largest financial market. Currency pairs, analysis, and risk management.
+              </div>
+              <div className="card-meta">
+                <span className="meta-item">
+                  <BookOpenIcon style={{width:14,height:14}} /> {forexLessons.length} Lessons
+                </span>
+                <span className="meta-item">
+                  <ClockIcon style={{width:14,height:14}} /> ~3 Hours
+                </span>
+              </div>
+            </CourseCard>
+          </CourseCards>
+        </CourseSelection>
+
+        <Footer>
+          MyTradeApp Academy • Learn. Practice. Master.
+        </Footer>
+      </PageWrapper>
+    );
+  }
+
+  // Course view
+  const lessons = getCourseData();
+  const courseTitle = selectedCourse === 'deriv' ? 'Deriv Trading' : 'Forex Trading';
+  const courseAccent = selectedCourse === 'deriv' ? '#ff444f' : '#3b82f6';
+  const progress = getCourseProgress();
 
   return (
     <PageWrapper>
-      <HeroSection>
-        <div className="badge">
-          <GraduationIcon />
-          Complete Course
+      <CourseHeader>
+        <button className="back-btn" onClick={goBack}>
+          <ArrowLeftIcon />
+        </button>
+        <div className="course-info">
+          <h2>{courseTitle}</h2>
+          <div className="course-sub">{lessons.length} Lessons • {progress}% Complete</div>
         </div>
-        <h1 className="title">
-          MyTradeApp <span className="gradient">Academy</span>
-        </h1>
-        <p className="subtitle">
-          Your complete guide to Deriv trading. From absolute beginner to confident trader.
-          Start with lesson 1 and progress through the course at your own pace.
-        </p>
-        <div className="course-meta">
-          <span className="meta-item">
-            <span className="icon"><BookOpenIcon /></span>
-            {lessons.length} Lessons
-          </span>
-          <span className="meta-item">
-            <span className="icon"><ClockIcon /></span>
-            ~3 Hours Total
-          </span>
-          <span className="meta-item">
-            <span className="icon"><ProgressIcon /></span>
-            {progress}% Complete
-          </span>
-          <span className="meta-item">
-            <span className="icon"><TargetIcon /></span>
-            Beginner to Pro
-          </span>
-        </div>
-      </HeroSection>
+      </CourseHeader>
 
       <TOCSection>
         <div className="toc-title">
@@ -1833,11 +1187,15 @@ const Academy = () => {
         </div>
         <div className="toc-grid">
           {lessons.map((lesson) => (
-            <div key={lesson.id} className="toc-item" onClick={() => scrollToLesson(lesson.id)}>
+            <div 
+              key={lesson.id} 
+              className="toc-item" 
+              onClick={() => scrollToLesson(lesson.id)}
+            >
               <span className="num">{lesson.id}.</span>
               <span className="label">{lesson.title}</span>
               <span className="status-icon">
-                {completedLessons.includes(lesson.id) 
+                {completedLessons[selectedCourse]?.includes(lesson.id) 
                   ? <CheckCircleIcon style={{ color: '#22c55e' }} />
                   : <CircleIcon style={{ color: '#4a4f5e' }} />
                 }
@@ -1849,17 +1207,22 @@ const Academy = () => {
 
       <LessonContainer>
         {lessons.map((lesson) => {
-          const isCompleted = completedLessons.includes(lesson.id);
+          const isCompleted = completedLessons[selectedCourse]?.includes(lesson.id);
           return (
             <LessonCard key={lesson.id} id={`lesson-${lesson.id}`}>
               <div className="lesson-header">
-                <span className="lesson-number">Lesson {lesson.id}</span>
+                <span className="lesson-number" style={{color: courseAccent, background: `${courseAccent}15`}}>
+                  Lesson {lesson.id}
+                </span>
                 <span className="lesson-title">{lesson.title}</span>
                 <span className="lesson-duration">
                   <ClockIcon style={{ width: '12px', height: '12px' }} />
                   {lesson.duration}
                 </span>
-                <button className="toggle-btn" onClick={() => toggleLesson(lesson.id)}>
+                <button 
+                  className="toggle-btn" 
+                  onClick={() => toggleLessonCompletion(selectedCourse, lesson.id)}
+                >
                   {isCompleted 
                     ? <CheckCircleIcon style={{ color: '#22c55e' }} />
                     : <CircleIcon style={{ color: '#64748b' }} />
@@ -1877,17 +1240,13 @@ const Academy = () => {
           <div className="trophy-icon"><TrophyIcon /></div>
           <div className="title">Congratulations!</div>
           <div className="subtitle">
-            You've completed all {lessons.length} lessons! You're now ready to start your trading journey with confidence.
+            You've completed the full {courseTitle} course! You're ready to apply your skills with confidence.
           </div>
         </CompletionBanner>
       )}
 
       <Footer>
         MyTradeApp Academy • Learn. Practice. Master.
-        <span className="footer-sub">
-          <GraduationCapIcon style={{ width: '14px', height: '14px', marginRight: '4px' }} />
-          Every expert was once a beginner. Keep learning!
-        </span>
       </Footer>
     </PageWrapper>
   );
