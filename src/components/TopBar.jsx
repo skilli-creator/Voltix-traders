@@ -124,13 +124,6 @@ const MPesaIcon = () => (
   </svg>
 );
 
-const AirtelIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M7 12l3 3 7-7" />
-  </svg>
-);
-
 const OverviewIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2" />
@@ -271,7 +264,7 @@ const ModalBody = styled.div`
 `;
 
 // ============================================
-// KENYA DISCLAIMER – THEME‑AWARE
+// KENYA DISCLAIMER – THEME‑AWARE (M-PESA ONLY)
 // ============================================
 const KenyaDisclaimer = styled.div`
   display: flex;
@@ -388,91 +381,6 @@ const SuccessCard = styled.div`
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 25px rgba(34,197,94,0.4);
-    }
-  }
-`;
-
-// ============================================
-// MOBILE NETWORK SELECTOR – AD-LIKE BOXES
-// ============================================
-const MobileNetworkSelector = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 14px;
-
-  .network-option {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 10px;
-    border-radius: 14px;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    color: #FFFFFF;
-    position: relative;
-    overflow: hidden;
-
-    &.mpesa {
-      background: linear-gradient(135deg, #28A745 0%, #20C997 100%);
-      border-color: #28A745;
-    }
-
-    &.airtel {
-      background: linear-gradient(135deg, #E53935 0%, #FF5252 100%);
-      border-color: #E53935;
-    }
-
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
-
-    &.selected {
-      border-color: #FFFFFF;
-      box-shadow: 0 0 15px rgba(255,255,255,0.4), 0 8px 24px rgba(0,0,0,0.3);
-    }
-
-    &.selected::after {
-      content: '✓';
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: white;
-      color: #000;
-      font-weight: 700;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    .network-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #FFFFFF;
-      margin-bottom: 6px;
-      opacity: 0.95;
-    }
-
-    .network-name {
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-    }
-
-    .network-tagline {
-      font-size: 9px;
-      opacity: 0.85;
-      margin-top: 3px;
-      font-weight: 500;
     }
   }
 `;
@@ -1057,7 +965,6 @@ const GlassDropdownMenu = styled.div`
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 `;
 
-// Smaller dropdown for platform selector
 const PlatformDropdown = styled(GlassDropdownMenu)`
   min-width: 160px;
   left: 0;
@@ -1263,7 +1170,45 @@ const FundsOption = styled.div`
 // ============================================
 const COUNTRY_CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
-  // ... (same as before, omitted for brevity)
+  { code: 'EUR', flag: '🇪🇺', name: 'Euro', symbol: '€' },
+  { code: 'GBP', flag: '🇬🇧', name: 'British Pound', symbol: '£' },
+  { code: 'JPY', flag: '🇯🇵', name: 'Japanese Yen', symbol: '¥' },
+  { code: 'CHF', flag: '🇨🇭', name: 'Swiss Franc', symbol: 'Fr' },
+  { code: 'CAD', flag: '🇨🇦', name: 'Canadian Dollar', symbol: 'CA$' },
+  { code: 'AUD', flag: '🇦🇺', name: 'Australian Dollar', symbol: 'AU$' },
+  { code: 'CNY', flag: '🇨🇳', name: 'Chinese Yuan', symbol: '¥' },
+  { code: 'INR', flag: '🇮🇳', name: 'Indian Rupee', symbol: '₹' },
+  { code: 'BRL', flag: '🇧🇷', name: 'Brazilian Real', symbol: 'R$' },
+  { code: 'ZAR', flag: '🇿🇦', name: 'South African Rand', symbol: 'R' },
+  { code: 'KSh', flag: '🇰🇪', name: 'Kenyan Shilling', symbol: 'KSh' },
+  { code: 'NGN', flag: '🇳🇬', name: 'Nigerian Naira', symbol: '₦' },
+  { code: 'EGP', flag: '🇪🇬', name: 'Egyptian Pound', symbol: 'E£' },
+  { code: 'MAD', flag: '🇲🇦', name: 'Moroccan Dirham', symbol: 'DH' },
+  { code: 'GHS', flag: '🇬🇭', name: 'Ghanaian Cedi', symbol: 'GH₵' },
+  { code: 'TZS', flag: '🇹🇿', name: 'Tanzanian Shilling', symbol: 'TSh' },
+  { code: 'UGX', flag: '🇺🇬', name: 'Ugandan Shilling', symbol: 'USh' },
+  { code: 'RWF', flag: '🇷🇼', name: 'Rwandan Franc', symbol: 'FRw' },
+  { code: 'ZMW', flag: '🇿🇲', name: 'Zambian Kwacha', symbol: 'ZK' },
+  { code: 'MXN', flag: '🇲🇽', name: 'Mexican Peso', symbol: 'Mex$' },
+  { code: 'SGD', flag: '🇸🇬', name: 'Singapore Dollar', symbol: 'S$' },
+  { code: 'HKD', flag: '🇭🇰', name: 'Hong Kong Dollar', symbol: 'HK$' },
+  { code: 'NZD', flag: '🇳🇿', name: 'New Zealand Dollar', symbol: 'NZ$' },
+  { code: 'SEK', flag: '🇸🇪', name: 'Swedish Krona', symbol: 'kr' },
+  { code: 'NOK', flag: '🇳🇴', name: 'Norwegian Krone', symbol: 'kr' },
+  { code: 'DKK', flag: '🇩🇰', name: 'Danish Krone', symbol: 'kr' },
+  { code: 'PLN', flag: '🇵🇱', name: 'Polish Zloty', symbol: 'zł' },
+  { code: 'TRY', flag: '🇹🇷', name: 'Turkish Lira', symbol: '₺' },
+  { code: 'SAR', flag: '🇸🇦', name: 'Saudi Riyal', symbol: '﷼' },
+  { code: 'AED', flag: '🇦🇪', name: 'UAE Dirham', symbol: 'د.إ' },
+  { code: 'QAR', flag: '🇶🇦', name: 'Qatari Rial', symbol: '﷼' },
+  { code: 'KWD', flag: '🇰🇼', name: 'Kuwaiti Dinar', symbol: 'د.ك' },
+  { code: 'BHD', flag: '🇧🇭', name: 'Bahraini Dinar', symbol: 'د.ب' },
+  { code: 'OMR', flag: '🇴🇲', name: 'Omani Rial', symbol: '﷼' },
+  { code: 'JOD', flag: '🇯🇴', name: 'Jordanian Dinar', symbol: 'د.ا' },
+  { code: 'IQD', flag: '🇮🇶', name: 'Iraqi Dinar', symbol: 'ع.د' },
+  { code: 'LYD', flag: '🇱🇾', name: 'Libyan Dinar', symbol: 'ل.د' },
+  { code: 'TND', flag: '🇹🇳', name: 'Tunisian Dinar', symbol: 'د.ت' },
+  { code: 'DZD', flag: '🇩🇿', name: 'Algerian Dinar', symbol: 'د.ج' },
   { code: 'ETB', flag: '🇪🇹', name: 'Ethiopian Birr', symbol: 'Br' },
 ];
 
@@ -1489,14 +1434,13 @@ const TopPanel = ({
   const [isFundsOpen, setIsFundsOpen] = useState(false);
   const [isPlatformOpen, setIsPlatformOpen] = useState(false);
   const [platform, setPlatform] = useState('deriv');
-  const [connected, setConnected] = useState(true); // or false to test disconnected
+  const [connected, setConnected] = useState(true);
   const [accountType, setAccountType] = useState('real');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [currencySearch, setCurrencySearch] = useState('');
   
   // Funds Modal state
   const [fundModalAction, setFundModalAction] = useState(null);
-  const [selectedNetwork, setSelectedNetwork] = useState('mpesa');
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showBalance, setShowBalance] = useState(false);
@@ -1608,7 +1552,6 @@ const TopPanel = ({
     setIsFundsOpen(false);
     setFundModalAction(action);
     if (action === 'deposit' || action === 'withdraw') {
-      setSelectedNetwork('mpesa');
       setAmount('');
       setPhoneNumber('');
       setWithdrawConfirmationStep(false);
@@ -1626,7 +1569,6 @@ const TopPanel = ({
     setWithdrawConfirmationStep(true);
     setWithdrawConfirmationData({
       amount: amount,
-      network: selectedNetwork,
       originalPhone: phoneNumber,
     });
   };
@@ -1691,20 +1633,17 @@ const TopPanel = ({
 
   const fundOptions = [
     { icon: <OverviewIcon />, name: 'Overview', desc: 'View your balance and activity', action: 'overview' },
-    { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds via mobile wallet', action: 'deposit' },
-    { icon: <WithdrawIcon />, name: 'Withdraw', desc: 'Withdraw to mobile wallet', action: 'withdraw' },
+    { icon: <DepositIcon />, name: 'Deposit', desc: 'Add funds via M‑Pesa', action: 'deposit' },
+    { icon: <WithdrawIcon />, name: 'Withdraw', desc: 'Withdraw to M‑Pesa', action: 'withdraw' },
     { icon: <HistoryIcon />, name: 'History', desc: 'View transaction history', action: 'history' },
   ];
 
   const sampleTransactions = [
     { id: 1, type: 'deposit', name: 'Deposit via M-Pesa', date: 'Today, 10:23 AM', amount: 50.00, positive: true, ref: 'MP-2024-00123' },
     { id: 2, type: 'withdraw', name: 'Withdrawal to M-Pesa', date: 'Yesterday, 3:15 PM', amount: 20.00, positive: false, ref: 'WD-2024-00456' },
-    { id: 4, type: 'deposit', name: 'Deposit via Airtel Money', date: 'Aug 5, 9:45 AM', amount: 100.00, positive: true, ref: 'AM-2024-00156' },
-    { id: 5, type: 'withdraw', name: 'Withdrawal to Airtel Money', date: 'Aug 4, 6:20 PM', amount: 30.00, positive: false, ref: 'WD-2024-00178' },
   ];
 
   const renderModalContent = () => {
-    const networkName = selectedNetwork === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
     const rate = fundModalAction === 'deposit' ? DEPOSIT_RATE : WITHDRAW_RATE;
 
     switch (fundModalAction) {
@@ -1793,7 +1732,7 @@ const TopPanel = ({
         return (
           <>
             <KenyaDisclaimer>
-              This service is available exclusively in Kenya. Only M-Pesa and Airtel Money mobile wallets are supported.
+              This service is available exclusively in Kenya. Only M‑Pesa mobile wallet is supported.
             </KenyaDisclaimer>
 
             <WalletInfo>
@@ -1813,27 +1752,8 @@ const TopPanel = ({
               </div>
             </FormGroup>
 
-            <MobileNetworkSelector>
-              <div 
-                className={`network-option mpesa ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
-                onClick={() => setSelectedNetwork('mpesa')}
-              >
-                <div className="network-icon"><MPesaIcon /></div>
-                <div className="network-name">M-Pesa</div>
-                <div className="network-tagline">Fast & Secure</div>
-              </div>
-              <div 
-                className={`network-option airtel ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
-                onClick={() => setSelectedNetwork('airtel')}
-              >
-                <div className="network-icon"><AirtelIcon /></div>
-                <div className="network-name">Airtel Money</div>
-                <div className="network-tagline">Instant Transfer</div>
-              </div>
-            </MobileNetworkSelector>
-
             <FormGroup>
-              <label>Phone Number (starting with 1 or 7)</label>
+              <label>M‑Pesa Phone Number (starting with 1 or 7)</label>
               <div className="input-wrap">
                 <span className="prefix">+254</span>
                 <input 
@@ -1844,7 +1764,7 @@ const TopPanel = ({
                   maxLength={9}
                 />
               </div>
-              <div className="helper-text">Enter your {networkName} phone number (9 digits, must start with 1 or 7)</div>
+              <div className="helper-text">Enter your M‑Pesa registered phone number (9 digits, must start with 1 or 7)</div>
             </FormGroup>
 
             <FormGroup>
@@ -1883,7 +1803,7 @@ const TopPanel = ({
                 <div className="check-icon"><CheckmarkIcon size={72} /></div>
                 <div className="success-title">Request Submitted</div>
                 <div className="success-detail">
-                  Your withdrawal of <strong>${withdrawConfirmationData.amount}</strong> to {withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money'} <strong>+254{withdrawConfirmationData.originalPhone}</strong> has been received.<br />
+                  Your withdrawal of <strong>${withdrawConfirmationData.amount}</strong> to M‑Pesa <strong>+254{withdrawConfirmationData.originalPhone}</strong> has been received.<br />
                   ≈ KES {kesAmount}
                 </div>
                 <button className="close-button" onClick={closeModal}>Close</button>
@@ -1893,7 +1813,6 @@ const TopPanel = ({
         }
 
         if (withdrawConfirmationStep && withdrawConfirmationData) {
-          const confirmNetworkName = withdrawConfirmationData.network === 'mpesa' ? 'M-Pesa' : 'Airtel Money';
           return (
             <div>
               <KenyaDisclaimer>
@@ -1904,25 +1823,7 @@ const TopPanel = ({
               </ConfirmationMessage>
 
               <FormGroup>
-                <label>Selected Network</label>
-                <div style={{
-                  padding: '12px',
-                  borderRadius: '10px',
-                  background: withdrawConfirmationData.network === 'mpesa' 
-                    ? 'linear-gradient(135deg, #28A745 0%, #20C997 100%)' 
-                    : 'linear-gradient(135deg, #E53935 0%, #FF5252 100%)',
-                  color: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  fontWeight: 600
-                }}>
-                  <span>{withdrawConfirmationData.network === 'mpesa' ? <MPesaIcon /> : <AirtelIcon />}</span>
-                  {confirmNetworkName}
-                </div>
-              </FormGroup>
-              <FormGroup>
-                <label>Re-enter Phone Number (starting with 1 or 7)</label>
+                <label>Re-enter M‑Pesa Phone Number (starting with 1 or 7)</label>
                 <div className="input-wrap">
                   <span className="prefix">+254</span>
                   <input 
@@ -1965,7 +1866,7 @@ const TopPanel = ({
         return (
           <>
             <KenyaDisclaimer>
-              This service is available exclusively in Kenya. Only M-Pesa and Airtel Money mobile wallets are supported.
+              This service is available exclusively in Kenya. Only M‑Pesa mobile wallet is supported.
             </KenyaDisclaimer>
 
             <WalletInfo>
@@ -1986,27 +1887,8 @@ const TopPanel = ({
               </div>
             </FormGroup>
 
-            <MobileNetworkSelector>
-              <div 
-                className={`network-option mpesa ${selectedNetwork === 'mpesa' ? 'selected' : ''}`}
-                onClick={() => setSelectedNetwork('mpesa')}
-              >
-                <div className="network-icon"><MPesaIcon /></div>
-                <div className="network-name">M-Pesa</div>
-                <div className="network-tagline">Fast & Secure</div>
-              </div>
-              <div 
-                className={`network-option airtel ${selectedNetwork === 'airtel' ? 'selected' : ''}`}
-                onClick={() => setSelectedNetwork('airtel')}
-              >
-                <div className="network-icon"><AirtelIcon /></div>
-                <div className="network-name">Airtel Money</div>
-                <div className="network-tagline">Instant Transfer</div>
-              </div>
-            </MobileNetworkSelector>
-
             <FormGroup>
-              <label>Mobile Wallet Number (starting with 1 or 7)</label>
+              <label>M‑Pesa Wallet Number (starting with 1 or 7)</label>
               <div className="input-wrap">
                 <span className="prefix">+254</span>
                 <input 
@@ -2017,7 +1899,7 @@ const TopPanel = ({
                   maxLength={9}
                 />
               </div>
-              <div className="helper-text">Enter your {networkName} wallet number (9 digits, starts with 1 or 7)</div>
+              <div className="helper-text">Enter your M‑Pesa wallet number (9 digits, starts with 1 or 7)</div>
             </FormGroup>
 
             <FormGroup>
@@ -2042,7 +1924,7 @@ const TopPanel = ({
               onClick={handleSubmitWithdraw} 
               disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
             >
-              Withdraw to Mobile Wallet
+              Withdraw to M‑Pesa
             </ActionButton>
           </>
         );
@@ -2271,12 +2153,12 @@ const TopPanel = ({
                 <div>
                   <div className="title-text">
                     {fundModalAction === 'overview' && 'Funds Overview'}
-                    {fundModalAction === 'deposit' && 'Deposit to Deriv'}
-                    {fundModalAction === 'withdraw' && 'Withdraw from Deriv'}
+                    {fundModalAction === 'deposit' && 'Deposit via M‑Pesa'}
+                    {fundModalAction === 'withdraw' && 'Withdraw to M‑Pesa'}
                     {fundModalAction === 'history' && 'Transaction History'}
                   </div>
-                  {fundModalAction === 'deposit' && <div className="title-sub">Add funds using mobile money</div>}
-                  {fundModalAction === 'withdraw' && <div className="title-sub">Withdraw to your mobile wallet</div>}
+                  {fundModalAction === 'deposit' && <div className="title-sub">Add funds using M‑Pesa</div>}
+                  {fundModalAction === 'withdraw' && <div className="title-sub">Withdraw to your M‑Pesa wallet</div>}
                 </div>
               </div>
               <button className="close-btn" onClick={closeModal}><CloseIcon /></button>
