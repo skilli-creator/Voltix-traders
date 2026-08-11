@@ -654,9 +654,8 @@ const Footer = styled.div`
 `;
 
 // ============================================
-// COURSE DATA
+// DERIV COURSE CONTENT (expanded lessons)
 // ============================================
-
 const derivLessons = [
   {
     id: 1,
@@ -869,9 +868,343 @@ const derivLessons = [
       <p>Angry? Frustrated? Lost 3 in a row? STOP.</p>
       <div class="key-takeaway"><strong>Key Takeaway:</strong> Master your mind to master trading.</div>
     `
+  },
+  {
+    id: 7,
+    title: "Technical Indicators Deep Dive",
+    duration: "35 min",
+    content: `
+      <h3>What Are Technical Indicators?</h3>
+      <p>Technical indicators are mathematical calculations based on price, volume, or open interest. They help traders identify trends, momentum, volatility, and potential reversal points.</p>
+      <p>Think of indicators as tools in a toolbox. You don't need to use every tool for every job. Pick a few that work for your strategy.</p>
+      <h4>Categories of Indicators</h4>
+      <ul>
+        <li><strong>Trend Indicators:</strong> Moving Averages, Parabolic SAR. Help identify the direction.</li>
+        <li><strong>Momentum Oscillators:</strong> RSI, Stochastic, MACD. Measure speed of price changes.</li>
+        <li><strong>Volatility Indicators:</strong> Bollinger Bands, Average True Range (ATR). Show how much price moves.</li>
+        <li><strong>Volume Indicators:</strong> On-Balance Volume (OBV), Chaikin Money Flow. Show buying/selling pressure.</li>
+      </ul>
+      <h3>Moving Averages (MA)</h3>
+      <p>A moving average smooths price data to show the underlying trend. It's one of the most popular indicators.</p>
+      <p><strong>Types:</strong></p>
+      <ul>
+        <li><strong>Simple Moving Average (SMA):</strong> Equal weight to all prices in the period.</li>
+        <li><strong>Exponential Moving Average (EMA):</strong> More weight to recent prices, faster to react.</li>
+      </ul>
+      <p><strong>Common periods:</strong> 20 (short-term), 50 (medium-term), 200 (long-term). When a shorter MA crosses above a longer MA, it's a bullish signal (Golden Cross). Below is bearish (Death Cross).</p>
+      <h3>Relative Strength Index (RSI)</h3>
+      <p>RSI measures the magnitude of recent price changes to evaluate overbought or oversold conditions. It ranges from 0 to 100.</p>
+      <ul>
+        <li><strong>Overbought (above 70):</strong> Price may reverse down.</li>
+        <li><strong>Oversold (below 30):</strong> Price may reverse up.</li>
+        <li><strong>Divergence:</strong> Price makes new high but RSI makes lower high → bearish divergence.</li>
+      </ul>
+      <h3>Moving Average Convergence Divergence (MACD)</h3>
+      <p>MACD consists of the MACD line (difference between 12 and 26 EMAs) and a signal line (9 EMA of MACD). The histogram shows the difference.</p>
+      <p><strong>Signals:</strong> MACD line crosses above signal → buy. Below → sell. Also watch for divergences.</p>
+      <h3>Bollinger Bands</h3>
+      <p>Consist of a middle SMA and two standard deviation lines above and below. Price tends to stay within the bands. When bands squeeze, volatility is low and a breakout may be near. When price touches the upper band, it may be overbought; lower band, oversold.</p>
+      <h3>How to Use Indicators Effectively</h3>
+      <div class="highlight-box">
+        <strong>Pro Tips:</strong>
+        <ul>
+          <li>Use 2-3 complementary indicators (e.g., one trend, one momentum).</li>
+          <li>Don't overload your chart – too many indicators cause confusion.</li>
+          <li>Always confirm signals with price action.</li>
+          <li>Practice on a demo account to find the right combination.</li>
+        </ul>
+      </div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Indicators are tools, not crystal balls. Combine them with price action for better decision-making.</div>
+    `
+  },
+  {
+    id: 8,
+    title: "Candlestick Patterns",
+    duration: "30 min",
+    content: `
+      <h3>Why Candlestick Patterns Matter</h3>
+      <p>Candlesticks reveal the psychology of the market. Each candle tells a story about who won the battle between buyers and sellers during that period.</p>
+      <h3>Single Candlestick Patterns</h3>
+      <ul>
+        <li><strong>Doji:</strong> Open and close are nearly equal. Indecision. Could signal reversal.</li>
+        <li><strong>Hammer:</strong> Small body, long lower wick. Appears in downtrend, bullish reversal.</li>
+        <li><strong>Shooting Star:</strong> Small body, long upper wick. Appears in uptrend, bearish reversal.</li>
+        <li><strong>Marubozu:</strong> Full body, no or very short wicks. Strong momentum (bullish if green, bearish if red).</li>
+      </ul>
+      <h3>Two-Candle Patterns</h3>
+      <ul>
+        <li><strong>Bullish Engulfing:</strong> Small red candle followed by large green candle that completely engulfs the red. Strong buy signal.</li>
+        <li><strong>Bearish Engulfing:</strong> Small green followed by large red. Strong sell signal.</li>
+        <li><strong>Tweezer Tops/Bottoms:</strong> Two candles with same high (top) or same low (bottom). Reversal signal.</li>
+      </ul>
+      <h3>Three-Candle Patterns</h3>
+      <ul>
+        <li><strong>Morning Star:</strong> Long red, small body (can be doji), long green. Bullish reversal.</li>
+        <li><strong>Evening Star:</strong> Long green, small body, long red. Bearish reversal.</li>
+        <li><strong>Three White Soldiers:</strong> Three consecutive long green candles with each closing higher. Strong uptrend.</li>
+        <li><strong>Three Black Crows:</strong> Three consecutive long red candles. Strong downtrend.</li>
+      </ul>
+      <h3>How to Trade Candlestick Patterns</h3>
+      <p>Patterns are more reliable when they appear at key support/resistance levels. Always wait for confirmation (e.g., next candle closes beyond pattern) before entering.</p>
+      <div class="warning-box"><strong>Warning:</strong> Candlestick patterns alone are not enough. Combine with trend analysis and indicators.</div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Master a few high-probability patterns and use them to time entries/exits.</div>
+    `
+  },
+  {
+    id: 9,
+    title: "Support and Resistance Mastery",
+    duration: "30 min",
+    content: `
+      <h3>What Are Support and Resistance?</h3>
+      <p>Support is a price level where buying interest is strong enough to prevent the price from falling further. Resistance is where selling pressure overcomes buying pressure, preventing the price from rising.</p>
+      <p>They are the foundation of technical analysis because they represent key zones where traders make decisions.</p>
+      <h3>How to Draw Support/Resistance</h3>
+      <ul>
+        <li>Look for areas where price has reversed multiple times.</li>
+        <li>Use horizontal lines to mark these levels.</li>
+        <li>More touches = stronger level.</li>
+        <li>Previous support can become resistance after a breakdown, and vice versa.</li>
+      </ul>
+      <h3>Dynamic Support/Resistance</h3>
+      <p>Moving averages can act as dynamic support/resistance. In an uptrend, the 50 EMA may serve as support. In a downtrend, it may act as resistance.</p>
+      <h3>Trading Strategies Using S/R</h3>
+      <ul>
+        <li><strong>Bounce:</strong> Buy at support, sell at resistance, with stop just beyond.</li>
+        <li><strong>Breakout:</strong> When price breaks a level decisively, trade in the breakout direction with a stop just inside the level.</li>
+        <li><strong>Retest:</strong> After a breakout, price often returns to test the broken level (now flipped). Enter on the retest.</li>
+      </ul>
+      <div class="example-box">
+        <strong>Example:</strong><br>
+        Support: 8,400. Resistance: 8,500.<br>
+        Price breaks above 8,500 with volume. Then pulls back to 8,500. Enter long at 8,500 with stop at 8,480.
+      </div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Support and resistance are the most important concepts. Mark them on every chart you analyze.</div>
+    `
+  },
+  {
+    id: 10,
+    title: "Developing a Trading Plan",
+    duration: "25 min",
+    content: `
+      <h3>Why You Need a Trading Plan</h3>
+      <p>A trading plan is a written set of rules that defines your trading strategy, risk management, and goals. It removes emotion and ensures consistency.</p>
+      <h3>Components of a Trading Plan</h3>
+      <ul>
+        <li><strong>Market(s):</strong> Which market you will trade (e.g., Volatility 25).</li>
+        <li><strong>Trade Type:</strong> Over/Under, etc.</li>
+        <li><strong>Entry Criteria:</strong> What conditions must be met to enter (e.g., trend, pattern, indicator signal).</li>
+        <li><strong>Exit Criteria:</strong> When to take profit (e.g., target, trailing stop).</li>
+        <li><strong>Risk Management:</strong> Max risk per trade (2%), daily loss limit, max trades per day.</li>
+        <li><strong>Trading Session:</strong> When you will trade (e.g., 9am-11am).</li>
+        <li><strong>Performance Review:</strong> How often you'll review your trades.</li>
+      </ul>
+      <div class="example-box">
+        <strong>Sample Plan:</strong><br>
+        Market: Volatility 25<br>
+        Trade Type: Over/Under, 1-tick duration<br>
+        Entry: When 5 EMA crosses above 20 EMA and price is above 200 EMA (uptrend). Enter OVER.<br>
+        Exit: Automatic at tick end. No early exit.<br>
+        Risk: 2% of account per trade. Max 3 trades per day. Daily loss limit 6%.<br>
+        Review: End of day, journal all trades.
+      </div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Plan your trade and trade your plan. Without a plan, you're gambling.</div>
+    `
+  },
+  {
+    id: 11,
+    title: "Money Management",
+    duration: "20 min",
+    content: `
+      <h3>What is Money Management?</h3>
+      <p>Money management is how you control your capital to minimize losses and maximize gains. It's the backbone of sustainable trading.</p>
+      <h3>Key Principles</h3>
+      <ul>
+        <li><strong>Risk Per Trade:</strong> Never more than 2%. As account grows, absolute dollar risk increases but percentage stays constant.</li>
+        <li><strong>Risk-Reward Ratio:</strong> Aim for at least 1:2. Over time, even a 40% win rate can be profitable.</li>
+        <li><strong>Compound Growth:</strong> Reinvest profits. A 5% monthly return doubles your account in ~14 months.</li>
+        <li><strong>Drawdown Control:</strong> After a losing streak, reduce position size until confidence and performance return.</li>
+      </ul>
+      <table>
+        <tr><th>Account Size</th><th>2% Risk</th><th>Target Monthly Return (5%)</th></tr>
+        <tr><td>$100</td><td>$2</td><td>$5</td></tr>
+        <tr><td>$1,000</td><td>$20</td><td>$50</td></tr>
+        <tr><td>$10,000</td><td>$200</td><td>$500</td></tr>
+      </table>
+      <div class="warning-box"><strong>Never risk more than you can afford to lose. Trading is not a get-rich-quick scheme.</strong></div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Consistent small gains add up. Protect your capital.</div>
+    `
+  },
+  {
+    id: 12,
+    title: "Demo Trading Practice",
+    duration: "15 min",
+    content: `
+      <h3>Why Demo Trading is Crucial</h3>
+      <p>A demo account lets you trade with virtual money in real market conditions. It's your training ground.</p>
+      <h3>How to Use a Demo Account</h3>
+      <ol>
+        <li>Open a free Deriv demo account.</li>
+        <li>Set the virtual balance to the amount you plan to deposit later.</li>
+        <li>Treat it like real money. Follow your trading plan strictly.</li>
+        <li>Track every trade in a journal.</li>
+        <li>Only move to a real account after you've achieved at least 2 weeks of consistent profitability (win rate >55% and positive P&L).</li>
+      </ol>
+      <div class="success-box"><strong>Goal:</strong> Prove your strategy works before risking real capital.</div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Demo trading is the bridge between learning and earning. Don't skip it.</div>
+    `
+  },
+  {
+    id: 13,
+    title: "Real Account Transition",
+    duration: "15 min",
+    content: `
+      <h3>When to Go Real</h3>
+      <p>Only after you've demonstrated discipline and consistent results on demo for at least 4 weeks.</p>
+      <h3>First Real Trade Checklist</h3>
+      <ul>
+        <li>Start with the smallest possible stake.</li>
+        <li>Risk only 1% per trade initially to adjust to the psychological difference.</li>
+        <li>Continue journaling.</li>
+        <li>Stick to your plan – don't let emotions take over.</li>
+      </ul>
+      <p>The biggest difference is the psychological weight of real money. Accept that you may feel fear or greed. Acknowledge and manage it.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Transition slowly. There's no rush.</div>
+    `
+  },
+  {
+    id: 14,
+    title: "Common Trading Mistakes",
+    duration: "20 min",
+    content: `
+      <h3>Mistakes That Destroy Accounts</h3>
+      <ul>
+        <li><strong>No Stop Loss:</strong> One bad trade wipes out gains.</li>
+        <li><strong>Revenge Trading:</strong> Trying to recover losses leads to bigger losses.</li>
+        <li><strong>Overtrading:</strong> Too many trades, no edge.</li>
+        <li><strong>Ignoring the Trend:</strong> Fighting the market.</li>
+        <li><strong>Emotional Trading:</strong> Fear and greed override logic.</li>
+        <li><strong>Position Sizing Too Large:</strong> Risking too much per trade.</li>
+      </ul>
+      <h3>How to Avoid Them</h3>
+      <p>Stick to your plan, keep a journal, and review your trades weekly. If you see patterns of mistakes, take a break.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Learn from mistakes, don't repeat them.</div>
+    `
+  },
+  {
+    id: 15,
+    title: "Advanced Over/Under Strategies",
+    duration: "30 min",
+    content: `
+      <h3>Beyond Basic Over/Under</h3>
+      <p>Once you understand trends, you can refine your entries.</p>
+      <h4>Strategy 1: Moving Average Crossover with Momentum</h4>
+      <p>Use 5 EMA and 20 EMA. When 5 crosses above 20 and RSI > 50, enter OVER on a 1-tick trade. Opposite for UNDER.</p>
+      <h4>Strategy 2: Support/Resistance Bounce</h4>
+      <p>Wait for price to touch a key support level. Look for a bullish candle pattern (hammer, engulfing). Enter OVER. Use tight stops (few ticks).</p>
+      <h4>Strategy 3: Breakout Retest</h4>
+      <p>When price breaks a resistance level, wait for a pullback to that level (now support). Confirm with a bullish candle, then enter OVER.</p>
+      <h4>Strategy 4: News-Free Zones</h4>
+      <p>Volatility indices are unaffected by news, but major forex news can impact trader sentiment. For pure Deriv trading, focus on chart patterns.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Combine multiple confirmations to increase your edge.</div>
+    `
+  },
+  {
+    id: 16,
+    title: "Advanced Matches/Differs Strategies",
+    duration: "25 min",
+    content: `
+      <h3>Matches/Differs Deep Dive</h3>
+      <p>This trade type can be used strategically, not just gambling.</p>
+      <h4>DIFFERS as a Base Strategy</h4>
+      <p>Since DIFFERS has a 90% probability per digit, some traders use it as a compounding strategy. Risk small amounts (1% of account) and aim for many consecutive wins.</p>
+      <div class="warning-box"><strong>Warning:</strong> Even with 90% win rate, a losing streak can happen. Always stick to position sizing.</div>
+      <h4>Number Selection Based on Statistics</h4>
+      <p>After many ticks, digits tend to distribute evenly. If digit "5" has appeared less frequently recently, MATCHES on 5 could be a statistical play, but it's still random.</p>
+      <h4>Combining with Trend</h4>
+      <p>When price is in a strong uptrend, the last digits may follow a pattern (e.g., higher numbers more often). Keep a log to see if there's a bias.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Treat Matches/Differs as a probability game, not a prediction. Manage risk accordingly.</div>
+    `
+  },
+  {
+    id: 17,
+    title: "Introduction to Deriv X",
+    duration: "20 min",
+    content: `
+      <h3>What is Deriv X?</h3>
+      <p>Deriv X is a more advanced trading platform by Deriv. It offers CFDs (Contracts for Difference) on forex, commodities, crypto, and synthetic indices.</p>
+      <p>It's designed for experienced traders who want more control, advanced charting tools, and the ability to set stop-loss/take-profit levels.</p>
+      <h3>Key Features</h3>
+      <ul>
+        <li>Multiple chart types and timeframes.</li>
+        <li>Over 80 indicators.</li>
+        <li>Customizable layouts.</li>
+        <li>Risk management tools.</li>
+        <li>One-click trading.</li>
+      </ul>
+      <p>Start with a demo account on Deriv X to learn the interface before trading real money.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Deriv X is for advanced traders. Master the basics first.</div>
+    `
+  },
+  {
+    id: 18,
+    title: "Using Derivatives for Hedging",
+    duration: "25 min",
+    content: `
+      <h3>What is Hedging?</h3>
+      <p>Hedging is a strategy to reduce risk by taking an offsetting position. For example, if you have a long position in EUR/USD on a standard forex account, you could short a correlated pair on Deriv to reduce exposure.</p>
+      <h3>Hedging with Volatility Indices</h3>
+      <p>Volatility indices are not directly correlated to real-world assets, so they can be used as a hedge when markets are unpredictable. If your main portfolio is stocks, you could trade an index on Deriv during high-volatility periods to protect gains.</p>
+      <h3>Practical Example</h3>
+      <p>You own gold ETF shares. When economic uncertainty rises, gold price may drop due to a strong USD. You could take a short position on XAU/USD on Deriv to offset potential losses.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Hedging can protect your capital, but it's an advanced technique. Learn it thoroughly before applying.</div>
+    `
+  },
+  {
+    id: 19,
+    title: "Trading Journal Best Practices",
+    duration: "20 min",
+    content: `
+      <h3>Why a Journal is Essential</h3>
+      <p>A trading journal helps you identify patterns in your decision-making, both good and bad. It's the single most effective tool for improvement.</p>
+      <h3>What to Record</h3>
+      <ul>
+        <li>Date and time of trade</li>
+        <li>Market and trade type</li>
+        <li>Entry and exit price</li>
+        <li>Stake and P&L</li>
+        <li>Reason for entry (setup, pattern, indicators)</li>
+        <li>Emotions during trade (fear, confidence, doubt)</li>
+        <li>Screenshot of chart at entry</li>
+        <li>What went well / what could be improved</li>
+      </ul>
+      <h3>How to Use the Journal</h3>
+      <p>At the end of each week, review your journal. Look for: winning setups, losing setups, emotional triggers. Adjust your plan based on data.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> A journal turns trading from random chance into a measurable skill.</div>
+    `
+  },
+  {
+    id: 20,
+    title: "The Journey to Consistent Profitability",
+    duration: "20 min",
+    content: `
+      <h3>It's a Marathon, Not a Sprint</h3>
+      <p>Most new traders fail because they expect quick riches. Success in trading takes months or years of practice, discipline, and continuous learning.</p>
+      <h3>Stages of a Trader</h3>
+      <ol>
+        <li><strong>Unconscious Incompetence:</strong> You don't know what you don't know. (Many beginners)</li>
+        <li><strong>Conscious Incompetence:</strong> You realize how much there is to learn.</li>
+        <li><strong>Conscious Competence:</strong> You can trade profitably with effort and focus.</li>
+        <li><strong>Unconscious Competence:</strong> Skills become second nature.</li>
+      </ol>
+      <p>Most profitable traders have been through this journey. Stay humble, keep learning, and never stop improving.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> The path to mastery is long but rewarding. Embrace the journey.</div>
+    `
   }
 ];
 
+// ============================================
+// FOREX COURSE CONTENT (expanded lessons)
+// ============================================
 const forexLessons = [
   {
     id: 1,
@@ -1043,7 +1376,244 @@ const forexLessons = [
       <div class="highlight-box">
         <strong>Advice:</strong> Start with trend following. It's simple, effective, and keeps you on the right side of the market.
       </div>
-      <div class="key-takeaway"><strong>Key Takeaway:</strong> Pick one strategy, master it on a demo account, then trade it consistently. Don't jump between strategies.</div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Pick one strategy, master it on a demo account, then trade it consistently.</div>
+    `
+  },
+  {
+    id: 7,
+    title: "Understanding Leverage and Margin",
+    duration: "20 min",
+    content: `
+      <h3>What is Leverage?</h3>
+      <p>Leverage allows you to control a larger position with a smaller amount of capital. It's expressed as a ratio (e.g., 1:50).</p>
+      <p><strong>Example:</strong> With 1:100 leverage, a $1,000 account can control $100,000 worth of currency.</p>
+      <h3>Margin</h3>
+      <p>Margin is the amount of capital required to open a leveraged position. If you want to trade $100,000 with 1:100 leverage, you need $1,000 margin.</p>
+      <h3>Margin Call</h3>
+      <p>If your position moves against you and your equity falls below the required margin, your broker may issue a margin call, asking you to deposit more funds or close the position. If not met, positions may be automatically liquidated.</p>
+      <div class="warning-box"><strong>Use leverage responsibly.</strong> It magnifies both profits and losses. Many beginners blow their accounts because of excessive leverage.</div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Understand how leverage works before using it. Start with low leverage.</div>
+    `
+  },
+  {
+    id: 8,
+    title: "Order Types",
+    duration: "15 min",
+    content: `
+      <h3>Market Order</h3>
+      <p>Buy or sell immediately at the current market price.</p>
+      <h3>Limit Order</h3>
+      <p>Set a specific price to enter (e.g., buy EUR/USD at 1.1000 when current is 1.1050). Only executes if price reaches that level.</p>
+      <h3>Stop Order</h3>
+      <p>A stop order becomes a market order once a specified price is reached. Often used for stop-loss or entry on breakouts.</p>
+      <h3>Stop-Loss Order</h3>
+      <p>Automatically exits a losing trade at a predetermined price to limit losses.</p>
+      <h3>Take-Profit Order</h3>
+      <p>Automatically exits a winning trade at a target price to lock in profits.</p>
+      <h3>Trailing Stop</h3>
+      <p>A stop-loss that moves with the price as it moves in your favor, locking in more profit.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Use orders to manage trades without constant screen watching.</div>
+    `
+  },
+  {
+    id: 9,
+    title: "Chart Patterns",
+    duration: "25 min",
+    content: `
+      <h3>Continuation Patterns</h3>
+      <ul>
+        <li><strong>Flags and Pennants:</strong> Brief pause during a strong trend, then continuation.</li>
+        <li><strong>Wedges:</strong> Rising wedge (bearish), falling wedge (bullish).</li>
+      </ul>
+      <h3>Reversal Patterns</h3>
+      <ul>
+        <li><strong>Head and Shoulders:</strong> Three peaks, middle highest. Break below neckline signals reversal.</li>
+        <li><strong>Double Top/Bottom:</strong> Two failed attempts to break a level, then reversal.</li>
+        <li><strong>Rounding Bottom:</strong> Slow shift from downtrend to uptrend.</li>
+      </ul>
+      <h3>How to Trade Patterns</h3>
+      <p>Wait for pattern completion and a confirmed breakout. Measure the height of the pattern to set a price target.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Patterns provide a visual map of market psychology. Combine with other tools.</div>
+    `
+  },
+  {
+    id: 10,
+    title: "Fibonacci Trading",
+    duration: "20 min",
+    content: `
+      <h3>What is Fibonacci?</h3>
+      <p>Fibonacci retracements are based on key ratios: 23.6%, 38.2%, 50%, 61.8%, and 78.6%. Traders use them to predict potential support/resistance levels during a pullback.</p>
+      <p>How to draw: In an uptrend, draw from swing low to swing high. The retracement levels show where price might bounce back up.</p>
+      <div class="example-box">
+        <strong>Example:</strong> EUR/USD rallies from 1.1000 to 1.1200. Retracement to 61.8% = 1.1124. If price bounces from that level, it's a potential buy.
+      </div>
+      <h3>Fibonacci Extensions</h3>
+      <p>Used to set profit targets. Common levels: 127.2%, 161.8%.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Fibonacci works well in trending markets when combined with other confirmations.</div>
+    `
+  },
+  {
+    id: 11,
+    title: "Moving Averages and Trends",
+    duration: "20 min",
+    content: `
+      <h3>Using Moving Averages to Define Trend</h3>
+      <p>A simple rule: Price above 200 EMA = long-term uptrend. Below = downtrend.</p>
+      <p>For shorter trends, use 20 and 50 EMAs. When 20 > 50, short-term uptrend.</p>
+      <h3>Moving Average Crossover</h3>
+      <p>When a faster MA crosses above a slower MA, it's a buy signal. Below, sell.</p>
+      <h3>Dynamic Support/Resistance</h3>
+      <p>MAs can act as support in uptrend and resistance in downtrend.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> MAs are foundational. Use them to stay in the direction of the trend.</div>
+    `
+  },
+  {
+    id: 12,
+    title: "Oscillators (RSI, MACD, Stochastics)",
+    duration: "25 min",
+    content: `
+      <h3>RSI (Relative Strength Index)</h3>
+      <p>Measures speed and change of price movements. Ranges 0-100. Above 70 overbought, below 30 oversold.</p>
+      <h3>Stochastic Oscillator</h3>
+      <p>Compares closing price to price range over a period. Overbought >80, oversold <20. Two lines: %K (fast) and %D (slow).</p>
+      <h3>MACD Revisited</h3>
+      <p>Also an oscillator. Crossovers, divergences, and zero-line crossover are signals.</p>
+      <div class="highlight-box">
+        <strong>Divergence:</strong> When price makes a higher high but RSI makes a lower high → bearish divergence. Powerful reversal signal.
+      </div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Oscillators help identify overbought/oversold conditions and potential reversals.</div>
+    `
+  },
+  {
+    id: 13,
+    title: "Bollinger Bands",
+    duration: "15 min",
+    content: `
+      <h3>Components</h3>
+      <p>Middle band = 20-period SMA. Upper and lower bands = 2 standard deviations from middle.</p>
+      <h3>How to Use</h3>
+      <ul>
+        <li>Price touching upper band → overbought (potential sell).</li>
+        <li>Price touching lower band → oversold (potential buy).</li>
+        <li>Band squeeze → low volatility, breakout imminent.</li>
+        <li>Band expansion → high volatility, trend continuation.</li>
+      </ul>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Bollinger Bands are great for volatility analysis and reversal trades in ranging markets.</div>
+    `
+  },
+  {
+    id: 14,
+    title: "Japanese Candlesticks",
+    duration: "20 min",
+    content: `
+      <h3>Recap of Key Patterns</h3>
+      <p>Doji, Hammer, Shooting Star, Engulfing, Morning/Evening Star.</p>
+      <h3>Additional Patterns</h3>
+      <ul>
+        <li><strong>Piercing Line:</strong> Bullish reversal. Red candle, then green opens below previous low and closes above 50% of prior red.</li>
+        <li><strong>Dark Cloud Cover:</strong> Bearish reversal. Green, then red opens above prior high and closes below 50% of prior green.</li>
+      </ul>
+      <p>Context matters: candlestick patterns are more reliable at key S/R levels.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Candlesticks reflect market sentiment. Use them with other analysis.</div>
+    `
+  },
+  {
+    id: 15,
+    title: "Economic Calendar Trading",
+    duration: "20 min",
+    content: `
+      <h3>How to Trade News Events</h3>
+      <p>High-impact news (NFP, interest rate decisions) can cause massive volatility. Some traders avoid it; others trade the spike.</p>
+      <h4>Straddle Strategy</h4>
+      <p>Place a buy stop above resistance and a sell stop below support before news. One order triggers if price breaks out. Risk management is crucial.</p>
+      <h4>Fade the Spike</h4>
+      <p>After an initial spike, price often retraces. Trade in the opposite direction after a reversal pattern.</p>
+      <div class="warning-box"><strong>Not recommended for beginners.</strong> Slippage and whipsaws can cause large losses.</div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Understand the event's expected impact vs actual to trade news effectively.</div>
+    `
+  },
+  {
+    id: 16,
+    title: "Central Bank Policies",
+    duration: "20 min",
+    content: `
+      <h3>Why Central Banks Matter</h3>
+      <p>Central banks control monetary policy. Their decisions on interest rates, quantitative easing, and forward guidance directly affect currency values.</p>
+      <h3>Key Central Banks</h3>
+      <ul>
+        <li><strong>Federal Reserve (Fed):</strong> Dual mandate - maximum employment, stable prices.</li>
+        <li><strong>ECB:</strong> Price stability in Eurozone.</li>
+        <li><strong>BoE:</strong> UK's monetary authority.</li>
+        <li><strong>BoJ:</strong> Known for ultra-loose policy.</li>
+        <li><strong>RBA (Australia), RBNZ (New Zealand), BOC (Canada).</strong></li>
+      </ul>
+      <p>When a central bank is hawkish (signals rate hikes), the currency strengthens. Dovish (rate cuts) weakens it.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Follow central bank announcements to anticipate long-term forex trends.</div>
+    `
+  },
+  {
+    id: 17,
+    title: "Carry Trade Strategy",
+    duration: "15 min",
+    content: `
+      <h3>What is a Carry Trade?</h3>
+      <p>You borrow a currency with a low interest rate and invest in a currency with a high interest rate, profiting from the interest rate differential.</p>
+      <p>Example: Borrow JPY (low rate) to buy AUD (high rate). You earn the interest difference as long as the exchange rate doesn't move against you.</p>
+      <div class="warning-box"><strong>Risk:</strong> Exchange rate volatility can wipe out interest gains. Use stops.</div>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Carry trades work best in stable, trending markets. Monitor central bank rate changes.</div>
+    `
+  },
+  {
+    id: 18,
+    title: "Scalping vs Day Trading vs Swing Trading",
+    duration: "20 min",
+    content: `
+      <h3>Scalping</h3>
+      <p>Very short-term trades (seconds to minutes). High frequency, small profits. Requires low spreads and fast execution. Stressful.</p>
+      <h3>Day Trading</h3>
+      <p>Trades opened and closed within the same day. No overnight positions. Less stress than scalping, but requires focus during session.</p>
+      <h3>Swing Trading</h3>
+      <p>Positions held for days to weeks, capturing larger price swings. Less screen time, but requires patience and wider stops.</p>
+      <h3>Which is Best for You?</h3>
+      <p>Beginners often start with swing trading on higher timeframes (4H, daily) to avoid noise. Day trading is popular for those with more time.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Choose a style that fits your personality, schedule, and risk tolerance.</div>
+    `
+  },
+  {
+    id: 19,
+    title: "Correlation Between Pairs",
+    duration: "15 min",
+    content: `
+      <h3>Positive Correlation</h3>
+      <p>Pairs that move in the same direction. Example: EUR/USD and GBP/USD often move together because both are against USD.</p>
+      <h3>Negative Correlation</h3>
+      <p>Pairs that move opposite. Example: EUR/USD and USD/CHF (strong negative correlation).</p>
+      <p>Understanding correlation helps avoid doubling risk (trading two positively correlated pairs in the same direction) and for hedging.</p>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Always check correlation when trading multiple pairs to manage overall exposure.</div>
+    `
+  },
+  {
+    id: 20,
+    title: "Trading Psychology for Forex",
+    duration: "20 min",
+    content: `
+      <h3>Emotions in Forex</h3>
+      <p>The forex market is 24/5, always moving. This can trigger overtrading and FOMO.</p>
+      <h3>Key Psychological Challenges</h3>
+      <ul>
+        <li><strong>Impatience:</strong> Entering trades before setup is complete.</li>
+        <li><strong>Greed:</strong> Holding too long, not taking profits.</li>
+        <li><strong>Fear:</strong> Closing winning trades too early.</li>
+        <li><strong>Revenge:</strong> After a loss, immediately enter another trade to recover.</li>
+      </ul>
+      <h3>How to Build Mental Fortitude</h3>
+      <ul>
+        <li>Meditate or do deep breathing before trading sessions.</li>
+        <li>Stick to your plan regardless of outcome.</li>
+        <li>Accept losses as part of business.</li>
+        <li>Take regular breaks.</li>
+      </ul>
+      <div class="key-takeaway"><strong>Key Takeaway:</strong> Master your mind, or the market will master you.</div>
     `
   }
 ];
@@ -1120,14 +1690,14 @@ const Academy = () => {
               </div>
               <div className="card-title">Deriv Trading</div>
               <div className="card-desc">
-                Learn everything about Deriv's platform, volatility indices, trade types, and winning strategies.
+                Learn everything about Deriv's platform, volatility indices, trade types, and winning strategies. 20 in-depth lessons.
               </div>
               <div className="card-meta">
                 <span className="meta-item">
-                  <BookOpenIcon style={{width:14,height:14}} /> {derivLessons.length} Lessons
+                  <BookOpenIcon style={{width:14,height:14}} /> 20 Lessons
                 </span>
                 <span className="meta-item">
-                  <ClockIcon style={{width:14,height:14}} /> ~3 Hours
+                  <ClockIcon style={{width:14,height:14}} /> ~10 Hours
                 </span>
               </div>
             </CourseCard>
@@ -1141,14 +1711,14 @@ const Academy = () => {
               </div>
               <div className="card-title">Forex Trading</div>
               <div className="card-desc">
-                Understand the world's largest financial market. Currency pairs, analysis, and risk management.
+                Understand the world's largest financial market. Currency pairs, analysis, risk management, and advanced strategies. 20 comprehensive lessons.
               </div>
               <div className="card-meta">
                 <span className="meta-item">
-                  <BookOpenIcon style={{width:14,height:14}} /> {forexLessons.length} Lessons
+                  <BookOpenIcon style={{width:14,height:14}} /> 20 Lessons
                 </span>
                 <span className="meta-item">
-                  <ClockIcon style={{width:14,height:14}} /> ~3 Hours
+                  <ClockIcon style={{width:14,height:14}} /> ~10 Hours
                 </span>
               </div>
             </CourseCard>
