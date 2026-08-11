@@ -324,47 +324,66 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== CHART OVERLAY: Last 3 digits placed inside chart area (top left) =====
+// ===== CHART OVERLAY: Last 3 digits centered, larger =====
 const ChartDigitsOverlay = styled.div`
   position: absolute;
-  top: 8px;
-  left: 8px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   font-weight: 700;
   font-family: 'Courier New', Courier, monospace;
-  pointer-events: none;  // allow clicks to pass through to canvas
+  pointer-events: none;
   z-index: 5;
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary}ee;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid ${props => props.theme.colors.border};
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4);
 
   .label {
-    font-size: 9px;
+    font-size: 13px;
     color: ${props => props.theme.colors.textMuted};
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-right: 2px;
-    opacity: 0.9;
+    margin-right: 4px;
+    opacity: 0.95;
   }
 
   .digit-box {
-    width: 22px;
-    height: 22px;
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 22px;
     color: ${props => props.theme.colors.text};
-    background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
-    border: 1.5px solid ${props => props.theme.colors.border};
-    border-radius: 4px;
+    background: ${props => props.theme.colors.bg || props.theme.colors.background};
+    border: 2px solid ${props => props.theme.colors.border};
+    border-radius: 8px;
     transition: all 0.15s ease;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 
     &:last-child {
       border-color: ${props => props.theme.colors.accent};
-      box-shadow: 0 0 8px ${props => props.theme.colors.accent + '80'};
+      box-shadow: 0 0 12px ${props => props.theme.colors.accent + '80'};
       color: ${props => props.theme.colors.accent};
+      font-weight: 800;
+    }
+  }
+
+  @media (max-width: 480px) {
+    gap: 5px;
+    padding: 8px 12px;
+    .label { font-size: 11px; }
+    .digit-box {
+      width: 30px;
+      height: 30px;
+      font-size: 18px;
+      border-radius: 6px;
     }
   }
 `;
@@ -530,11 +549,7 @@ const ChartPanel = () => {
         const currentLastDigit = parseInt(priceStr.slice(-1));
         if (!isNaN(currentLastDigit)) {
           setLastDigit(currentLastDigit);
-          // Update recent last digits: shift left and add new digit
-          setRecentLastDigits(prev => {
-            const next = [...prev.slice(1), currentLastDigit];
-            return next;
-          });
+          setRecentLastDigits(prev => [...prev.slice(1), currentLastDigit]);
         }
 
         // Digit stats
@@ -753,7 +768,6 @@ const ChartPanel = () => {
                 ))}
               </DropdownMenu>
             </div>
-            {/* Header digits removed */}
           </div>
 
           <div className="price-row">
@@ -769,7 +783,7 @@ const ChartPanel = () => {
       </Header>
 
       <ChartWrapper onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-        {/* Last 3 digits overlay inside chart area (top left) */}
+        {/* Last 3 digits overlay centered with larger size */}
         <ChartDigitsOverlay>
           <span className="label">Last 3</span>
           {recentLastDigits.map((digit, idx) => (
