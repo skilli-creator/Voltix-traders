@@ -4285,7 +4285,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <SectionLabel>Account</SectionLabel>
             <NavItem active={activeItem === 'account-info'} onClick={handleAccountInfoClick}>
               <span className="nav-icon"><AccountIcon /></span>
-              <span className="nav-label">Deriv Account Info</span>
+              <span className="nav-label">Linked Deriv Account Info</span>
             </NavItem>
           </NavSection>
 

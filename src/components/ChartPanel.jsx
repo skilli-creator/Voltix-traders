@@ -1,5 +1,5 @@
 // src/components/ChartPanel.jsx
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import styled, { keyframes, ThemeContext } from 'styled-components';
 
 // ============================================
@@ -429,6 +429,7 @@ const ChartWrapper = styled.div`
   overflow: hidden;
   z-index: 2;
   transition: background 0.3s ease;
+  cursor: crosshair;
 `;
 
 const ChartCanvas = styled.canvas`
@@ -604,17 +605,6 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 }
 
 // ============================================
-// CANDLE ICON COMPONENT
-// ============================================
-const CandleIcon = ({ theme }) => (
-  <div className="selected-candle">
-    <div className="candle c1" />
-    <div className="candle c2" />
-    <div className="candle c3" />
-  </div>
-);
-
-// ============================================
 // MAIN PANEL COMPONENT
 // ============================================
 const ChartPanel = () => {
@@ -631,6 +621,11 @@ const ChartPanel = () => {
   const [lastDigit, setLastDigit] = useState(5);
   const [movementDirection, setMovementDirection] = useState('down');
   const [currentTime, setCurrentTime] = useState('');
+
+  // Crosshair state
+  const [crosshairData, setCrosshairData] = useState(null);
+  const padRef = useRef({ top: 25, bottom: 35, left: 15, right: 65 });
+  const chartSizeRef = useRef({ chartW: 0, chartH: 0 });
 
   useEffect(() => {
     const updateTime = () => {
@@ -651,6 +646,7 @@ const ChartPanel = () => {
       initialTicks.push({ time: Date.now() - (120 - i) * 1000, price: basePrice });
     }
     setTicks(initialTicks);
+    setCrosshairData(null); // reset crosshair on market change
 
     const interval = setInterval(() => {
       setTicks(prev => {
@@ -695,6 +691,7 @@ const ChartPanel = () => {
     return () => clearInterval(interval);
   }, [selectedMarket]);
 
+  // Canvas drawing effect
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || ticks.length < 2 || !theme) return;
@@ -715,9 +712,6 @@ const ChartPanel = () => {
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    // ============================================
-    // ALL COLORS FROM THEME - NO HARDCODED COLORS
-    // ============================================
     const bgColor = theme.colors.bg || theme.colors.background;
     const textColor = theme.colors.text;
     const textMutedColor = theme.colors.textMuted;
@@ -738,8 +732,6 @@ const ChartPanel = () => {
     };
 
     const rgb = hexToRgb(bgColor);
-    
-    // Background
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
     bgGrad.addColorStop(0, `rgb(${Math.min(rgb.r + 2, 255)}, ${Math.min(rgb.g + 2, 255)}, ${Math.min(rgb.b + 4, 255)})`);
     bgGrad.addColorStop(1, `rgb(${Math.max(rgb.r - 2, 0)}, ${Math.max(rgb.g - 2, 0)}, ${Math.max(rgb.b - 4, 0)})`);
@@ -752,6 +744,10 @@ const ChartPanel = () => {
 
     if (chartW <= 0 || chartH <= 0) return;
 
+    // Store pad and chart dimensions for crosshair calculations
+    padRef.current = pad;
+    chartSizeRef.current = { chartW, chartH };
+
     const prices = ticks.map(t => t.price);
     const minP = Math.min(...prices);
     const maxP = Math.max(...prices);
@@ -763,11 +759,10 @@ const ChartPanel = () => {
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
     const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
 
-    // Grid lines - theme border color
+    // Grid
     const gridColor = hexToRgb(borderColor);
     ctx.strokeStyle = `rgba(${gridColor.r}, ${gridColor.g}, ${gridColor.b}, 0.3)`;
     ctx.lineWidth = 2;
-    
     const gridRows = 5;
     for (let i = 0; i <= gridRows; i++) {
       const y = pad.top + (i / gridRows) * chartH;
@@ -776,7 +771,6 @@ const ChartPanel = () => {
       ctx.lineTo(width - pad.right, y);
       ctx.stroke();
     }
-
     const gridCols = 10;
     for (let i = 0; i <= gridCols; i++) {
       const x = pad.left + (i / gridCols) * chartW;
@@ -786,15 +780,12 @@ const ChartPanel = () => {
       ctx.stroke();
     }
 
-    // LINE COLOR - Use theme accent color
-    const lineColor = accentColor;
-    
+    // Line
     ctx.beginPath();
-    ctx.strokeStyle = lineColor;
+    ctx.strokeStyle = accentColor;
     ctx.lineWidth = 2.2;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-
     for (let i = 0; i < ticks.length; i++) {
       const x = xScale(i);
       const y = yScale(ticks[i].price);
@@ -803,29 +794,27 @@ const ChartPanel = () => {
     }
     ctx.stroke();
 
-    // Fill under the line - theme accent color
+    // Fill
     const lastX = xScale(ticks.length - 1);
     ctx.lineTo(lastX, height - pad.bottom);
     ctx.lineTo(pad.left, height - pad.bottom);
     ctx.closePath();
-
     const fillGrad = ctx.createLinearGradient(0, pad.top, 0, height - pad.bottom);
-    const fillRgb = hexToRgb(lineColor);
+    const fillRgb = hexToRgb(accentColor);
     fillGrad.addColorStop(0, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0.15)`);
     fillGrad.addColorStop(1, `rgba(${fillRgb.r}, ${fillRgb.g}, ${fillRgb.b}, 0)`);
     ctx.fillStyle = fillGrad;
     ctx.fill();
 
-    // Current price dot - theme accent color
+    // Current price dot
     const currentPrice = ticks[ticks.length - 1].price;
     const currentY = yScale(currentPrice);
-
-    ctx.fillStyle = lineColor;
+    ctx.fillStyle = accentColor;
     ctx.beginPath();
     ctx.arc(lastX, currentY, 4.5, 0, Math.PI * 2);
     ctx.fill();
 
-    // Dashed line - theme text color with opacity
+    // Dashed line for current price
     const dashColor = hexToRgb(textColor);
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = `rgba(${dashColor.r}, ${dashColor.g}, ${dashColor.b}, 0.15)`;
@@ -835,27 +824,24 @@ const ChartPanel = () => {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Price badge - theme accent color
+    // Price badge
     const badgeW = 55;
     const badgeH = 20;
-    ctx.fillStyle = lineColor;
+    ctx.fillStyle = accentColor;
     ctx.beginPath();
     ctx.roundRect(width - pad.right + 4, currentY - badgeH / 2, badgeW, badgeH, 4);
     ctx.fill();
-
-    // Badge text - theme background for contrast
     ctx.fillStyle = surfaceColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(currentPrice.toFixed(2), width - pad.right + 4 + badgeW / 2, currentY);
 
-    // Y-axis labels - theme text muted color
+    // Y-axis labels
     ctx.fillStyle = textMutedColor;
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-
     const yTicksCount = 4;
     for (let i = 0; i <= yTicksCount; i++) {
       const targetP = maxPBound - (i / yTicksCount) * range;
@@ -863,25 +849,132 @@ const ChartPanel = () => {
       ctx.fillText(targetP.toFixed(2), width - pad.right + 6, targetY);
     }
 
-    // X-axis labels - theme text muted color
+    // X-axis labels
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = textMutedColor;
     ctx.font = 'bold 10px monospace';
-    
     const sampleTimes = ['08:00', '11:00', '14:00', '17:00', '20:00'];
     sampleTimes.forEach((t, idx) => {
       const posX = pad.left + (idx / (sampleTimes.length - 1)) * chartW;
       ctx.fillText(t, posX, height - pad.bottom + 6);
     });
 
-    // Optional: Draw a subtle border around the chart - theme border color
+    // Border
     const borderRgb = hexToRgb(borderColor);
     ctx.strokeStyle = `rgba(${borderRgb.r}, ${borderRgb.g}, ${borderRgb.b}, 0.2)`;
     ctx.lineWidth = 1;
     ctx.strokeRect(pad.left, pad.top, chartW, chartH);
 
-  }, [ticks, movementDirection, theme]);
+    // ============================================
+    // CROSSHAIR DRAWING
+    // ============================================
+    if (crosshairData && crosshairData.index >= 0) {
+      const { index, price: crossPrice, time } = crosshairData;
+      const cx = xScale(index);
+      const cy = yScale(crossPrice);
+
+      // Dotted vertical line
+      ctx.save();
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(cx, pad.top);
+      ctx.lineTo(cx, height - pad.bottom);
+      ctx.stroke();
+
+      // Dotted horizontal line
+      ctx.beginPath();
+      ctx.moveTo(pad.left, cy);
+      ctx.lineTo(width - pad.right, cy);
+      ctx.stroke();
+      ctx.restore();
+
+      // Tooltip near the intersection
+      const tooltipFont = 'bold 11px monospace';
+      ctx.font = tooltipFont;
+      const priceText = crossPrice.toFixed(2);
+      const timeText = new Date(time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const fullText = `${priceText}  ${timeText}`;
+      const textMetrics = ctx.measureText(fullText);
+      const textWidth = textMetrics.width;
+      const paddingX = 8;
+      const paddingY = 6;
+      const tooltipWidth = textWidth + paddingX * 2;
+      const tooltipHeight = 22;
+
+      let tooltipX = cx + 10;
+      let tooltipY = cy - 30;
+      // Adjust if near right or top edge
+      if (tooltipX + tooltipWidth > width - pad.right) {
+        tooltipX = cx - tooltipWidth - 10;
+      }
+      if (tooltipY < pad.top + 5) {
+        tooltipY = cy + 15;
+      }
+
+      // Draw tooltip background
+      ctx.save();
+      ctx.globalAlpha = 0.95;
+      ctx.fillStyle = surfaceColor;
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 5);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Draw text
+      ctx.save();
+      ctx.fillStyle = textColor;
+      ctx.font = tooltipFont;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      ctx.fillText(fullText, tooltipX + paddingX, tooltipY + tooltipHeight / 2);
+      ctx.restore();
+    }
+
+  }, [ticks, movementDirection, theme, crosshairData]);
+
+  // Mouse event handlers for crosshair
+  const handleMouseMove = useCallback((e) => {
+    const canvas = canvasRef.current;
+    if (!canvas || ticks.length === 0) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / (rect.width * (window.devicePixelRatio || 1)); // Actually we need to map mouse coords to canvas pixel space
+    // Simpler: use clientX/Y relative to canvas element, accounting for dpr.
+    const dpr = window.devicePixelRatio || 1;
+    const mouseX = (e.clientX - rect.left);
+    const mouseY = (e.clientY - rect.top);
+    // canvas.width is in DPI-adjusted pixels, but we're drawing after scaling to dpr.
+    // Since we set canvas.width = width * dpr and then scale, the canvas context coordinates after scale are in CSS pixels.
+    // So we can just use mouseX, mouseY directly (CSS pixels), as the canvas drawing uses CSS pixels after ctx.scale(dpr, dpr).
+    const pad = padRef.current;
+    const { chartW, chartH } = chartSizeRef.current;
+    const relX = mouseX - pad.left;
+    const relY = mouseY - pad.top;
+    if (relX >= 0 && relX <= chartW && relY >= 0 && relY <= chartH) {
+      const idx = Math.round((relX / chartW) * (ticks.length - 1));
+      const clampedIdx = Math.max(0, Math.min(idx, ticks.length - 1));
+      const tick = ticks[clampedIdx];
+      if (tick) {
+        setCrosshairData({
+          index: clampedIdx,
+          price: tick.price,
+          time: tick.time,
+        });
+        return;
+      }
+    }
+    setCrosshairData(null);
+  }, [ticks]);
+
+  const handleMouseLeave = useCallback(() => {
+    setCrosshairData(null);
+  }, []);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const selectMarket = (market) => {
@@ -892,17 +985,6 @@ const ChartPanel = () => {
   const allPercentages = digitStats.map(s => s.pct);
   const maxPct = Math.max(...allPercentages);
   const minPct = Math.min(...allPercentages);
-
-  // Get the candle colors for the selected market
-  const getCandleColors = (market) => {
-    // Use the market's color or fallback to theme accent
-    const baseColor = market.color || theme?.colors?.accent || '#2962ff';
-    return {
-      c1: market.symbol.includes('100') ? theme?.colors?.danger || '#ef4444' : theme?.colors?.danger || '#ef4444',
-      c2: market.symbol.includes('100') ? theme?.colors?.success || '#22c55e' : theme?.colors?.success || '#22c55e',
-      c3: market.symbol.includes('100') ? theme?.colors?.danger || '#ef4444' : theme?.colors?.danger || '#ef4444',
-    };
-  };
 
   return (
     <PanelContainer>
@@ -915,7 +997,6 @@ const ChartPanel = () => {
               isOpen={isDropdownOpen}
               onClick={toggleDropdown}
             >
-              {/* Candle Icon - Displayed in the field */}
               <div className="selected-candle">
                 <div className="candle c1" />
                 <div className="candle c2" />
@@ -966,7 +1047,7 @@ const ChartPanel = () => {
         </LiveIndicator>
       </Header>
 
-      <ChartWrapper>
+      <ChartWrapper onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
         <ChartCanvas ref={canvasRef} />
 
         <DigitStatsContainer>
