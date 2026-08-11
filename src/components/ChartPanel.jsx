@@ -206,7 +206,7 @@ const SymbolInfo = styled.div`
   }
 `;
 
-// New component: shows the last digits of the most recent 3 prices
+// Recent last 3 digits with label
 const RecentDigits = styled.div`
   display: flex;
   align-items: center;
@@ -214,6 +214,21 @@ const RecentDigits = styled.div`
   margin-left: 4px;
   font-weight: 700;
   font-family: 'Courier New', Courier, monospace;
+
+  .label {
+    font-size: 9px;
+    color: ${props => props.theme.colors.textMuted};
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 2px;
+    white-space: nowrap;
+
+    @media (max-width: 480px) {
+      font-size: 7px;
+      margin-right: 0px;
+    }
+  }
 
   .digit-box {
     width: 24px;
@@ -748,8 +763,9 @@ const ChartPanel = () => {
               </DropdownMenu>
             </div>
 
-            {/* Display recent last digits next to market selector */}
+            {/* Last 3 digits with label */}
             <RecentDigits>
+              <span className="label">Last 3:</span>
               {recentLastDigits.map((digit, idx) => (
                 <div key={idx} className="digit-box">
                   {digit !== null ? digit : '-'}
