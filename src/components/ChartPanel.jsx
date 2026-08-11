@@ -230,6 +230,28 @@ const SymbolInfo = styled.div`
   }
 `;
 
+const LastThreeDigits = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
+  border: 2px solid ${props => props.theme.colors.accent};
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-left: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  font-size: 18px;
+  color: ${props => props.theme.colors.text};
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px ${props => props.theme.colors.accent + '40'};
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 1px 6px;
+    margin-left: 4px;
+  }
+`;
+
 const LiveIndicator = styled.div`
   display: flex;
   align-items: center;
@@ -627,6 +649,9 @@ const ChartPanel = () => {
   const padRef = useRef({ top: 25, bottom: 35, left: 15, right: 65 });
   const chartSizeRef = useRef({ chartW: 0, chartH: 0 });
 
+  // Compute last three digits of price for display
+  const lastThreeDigits = price.toFixed(2).replace('.', '').slice(-3);
+
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -646,7 +671,7 @@ const ChartPanel = () => {
       initialTicks.push({ time: Date.now() - (120 - i) * 1000, price: basePrice });
     }
     setTicks(initialTicks);
-    setCrosshairData(null); // reset crosshair on market change
+    setCrosshairData(null);
 
     const interval = setInterval(() => {
       setTicks(prev => {
@@ -717,8 +742,6 @@ const ChartPanel = () => {
     const textMutedColor = theme.colors.textMuted;
     const accentColor = theme.colors.accent;
     const borderColor = theme.colors.border;
-    const dangerColor = theme.colors.danger;
-    const successColor = theme.colors.success;
     const surfaceColor = theme.colors.surface || theme.colors.backgroundSecondary;
 
     const hexToRgb = (hex) => {
@@ -744,7 +767,6 @@ const ChartPanel = () => {
 
     if (chartW <= 0 || chartH <= 0) return;
 
-    // Store pad and chart dimensions for crosshair calculations
     padRef.current = pad;
     chartSizeRef.current = { chartW, chartH };
 
@@ -866,15 +888,12 @@ const ChartPanel = () => {
     ctx.lineWidth = 1;
     ctx.strokeRect(pad.left, pad.top, chartW, chartH);
 
-    // ============================================
-    // CROSSHAIR DRAWING
-    // ============================================
+    // Crosshair
     if (crosshairData && crosshairData.index >= 0) {
       const { index, price: crossPrice, time } = crosshairData;
       const cx = xScale(index);
       const cy = yScale(crossPrice);
 
-      // Dotted vertical line
       ctx.save();
       ctx.setLineDash([4, 6]);
       ctx.strokeStyle = accentColor;
@@ -884,15 +903,12 @@ const ChartPanel = () => {
       ctx.moveTo(cx, pad.top);
       ctx.lineTo(cx, height - pad.bottom);
       ctx.stroke();
-
-      // Dotted horizontal line
       ctx.beginPath();
       ctx.moveTo(pad.left, cy);
       ctx.lineTo(width - pad.right, cy);
       ctx.stroke();
       ctx.restore();
 
-      // Tooltip near the intersection
       const tooltipFont = 'bold 11px monospace';
       ctx.font = tooltipFont;
       const priceText = crossPrice.toFixed(2);
@@ -907,7 +923,6 @@ const ChartPanel = () => {
 
       let tooltipX = cx + 10;
       let tooltipY = cy - 30;
-      // Adjust if near right or top edge
       if (tooltipX + tooltipWidth > width - pad.right) {
         tooltipX = cx - tooltipWidth - 10;
       }
@@ -915,7 +930,6 @@ const ChartPanel = () => {
         tooltipY = cy + 15;
       }
 
-      // Draw tooltip background
       ctx.save();
       ctx.globalAlpha = 0.95;
       ctx.fillStyle = surfaceColor;
@@ -927,7 +941,6 @@ const ChartPanel = () => {
       ctx.stroke();
       ctx.restore();
 
-      // Draw text
       ctx.save();
       ctx.fillStyle = textColor;
       ctx.font = tooltipFont;
@@ -939,19 +952,12 @@ const ChartPanel = () => {
 
   }, [ticks, movementDirection, theme, crosshairData]);
 
-  // Mouse event handlers for crosshair
   const handleMouseMove = useCallback((e) => {
     const canvas = canvasRef.current;
     if (!canvas || ticks.length === 0) return;
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / (rect.width * (window.devicePixelRatio || 1)); // Actually we need to map mouse coords to canvas pixel space
-    // Simpler: use clientX/Y relative to canvas element, accounting for dpr.
-    const dpr = window.devicePixelRatio || 1;
-    const mouseX = (e.clientX - rect.left);
-    const mouseY = (e.clientY - rect.top);
-    // canvas.width is in DPI-adjusted pixels, but we're drawing after scaling to dpr.
-    // Since we set canvas.width = width * dpr and then scale, the canvas context coordinates after scale are in CSS pixels.
-    // So we can just use mouseX, mouseY directly (CSS pixels), as the canvas drawing uses CSS pixels after ctx.scale(dpr, dpr).
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
     const pad = padRef.current;
     const { chartW, chartH } = chartSizeRef.current;
     const relX = mouseX - pad.left;
@@ -1034,6 +1040,7 @@ const ChartPanel = () => {
           </div>
           <div className="price-row">
             <span className="price">{price.toFixed(2)}</span>
+            <LastThreeDigits>{lastThreeDigits}</LastThreeDigits>
             <span className="change">
               {change >= 0 ? '+' : ''}{change.toFixed(2)} ({changePct >= 0 ? '+' : ''}{changePct.toFixed(2)}%)
             </span>
