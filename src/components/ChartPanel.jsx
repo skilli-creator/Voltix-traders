@@ -206,60 +206,6 @@ const SymbolInfo = styled.div`
   }
 `;
 
-// Recent last 3 digits with label
-const RecentDigits = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-left: 4px;
-  font-weight: 700;
-  font-family: 'Courier New', Courier, monospace;
-
-  .label {
-    font-size: 9px;
-    color: ${props => props.theme.colors.textMuted};
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-right: 2px;
-    white-space: nowrap;
-
-    @media (max-width: 480px) {
-      font-size: 7px;
-      margin-right: 0px;
-    }
-  }
-
-  .digit-box {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: ${props => props.theme.colors.text};
-    background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
-    border: 2px solid ${props => props.theme.colors.border};
-    border-radius: 4px;
-    transition: all 0.15s ease;
-
-    &:last-child {
-      border-color: ${props => props.theme.colors.accent};
-      box-shadow: 0 0 10px ${props => props.theme.colors.accent + '80'};
-      color: ${props => props.theme.colors.accent};
-    }
-  }
-
-  @media (max-width: 480px) {
-    gap: 3px;
-    .digit-box {
-      width: 20px;
-      height: 20px;
-      font-size: 12px;
-    }
-  }
-`;
-
 const LiveIndicator = styled.div`
   display: flex;
   align-items: center;
@@ -378,7 +324,52 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== FLOATING DIGIT OVERLAY CONTAINER =====
+// ===== CHART OVERLAY: Last 3 digits placed inside chart area (top left) =====
+const ChartDigitsOverlay = styled.div`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  pointer-events: none;  // allow clicks to pass through to canvas
+  z-index: 5;
+
+  .label {
+    font-size: 9px;
+    color: ${props => props.theme.colors.textMuted};
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 2px;
+    opacity: 0.9;
+  }
+
+  .digit-box {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: ${props => props.theme.colors.text};
+    background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
+    border: 1.5px solid ${props => props.theme.colors.border};
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+
+    &:last-child {
+      border-color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 8px ${props => props.theme.colors.accent + '80'};
+      color: ${props => props.theme.colors.accent};
+    }
+  }
+`;
+
+// ===== FLOATING DIGIT OVERLAY CONTAINER (bottom) =====
 const DigitStatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -762,16 +753,7 @@ const ChartPanel = () => {
                 ))}
               </DropdownMenu>
             </div>
-
-            {/* Last 3 digits with label */}
-            <RecentDigits>
-              <span className="label">Last 3:</span>
-              {recentLastDigits.map((digit, idx) => (
-                <div key={idx} className="digit-box">
-                  {digit !== null ? digit : '-'}
-                </div>
-              ))}
-            </RecentDigits>
+            {/* Header digits removed */}
           </div>
 
           <div className="price-row">
@@ -787,6 +769,16 @@ const ChartPanel = () => {
       </Header>
 
       <ChartWrapper onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+        {/* Last 3 digits overlay inside chart area (top left) */}
+        <ChartDigitsOverlay>
+          <span className="label">Last 3</span>
+          {recentLastDigits.map((digit, idx) => (
+            <div key={idx} className="digit-box">
+              {digit !== null ? digit : '-'}
+            </div>
+          ))}
+        </ChartDigitsOverlay>
+
         <ChartCanvas ref={canvasRef} />
         <DigitStatsContainer>
           {digitStats.map((stat) => {
