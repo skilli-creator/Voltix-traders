@@ -324,7 +324,63 @@ const ChartCanvas = styled.canvas`
   display: block;
 `;
 
-// ===== CHART OVERLAY: Last 3 digits centered, larger =====
+// ===== CHART OVERLAY: Last digits selector =====
+const DigitDisplaySelector = styled.div`
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary}ee;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 20px;
+  padding: 4px;
+  z-index: 6;
+  pointer-events: auto;
+
+  .selector-label {
+    font-size: 10px;
+    color: ${props => props.theme.colors.textMuted};
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 0 4px;
+    white-space: nowrap;
+  }
+
+  .selector-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid ${props => props.theme.colors.border};
+    background: transparent;
+    color: ${props => props.theme.colors.textMuted};
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    padding: 0;
+
+    &:hover {
+      background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
+      color: ${props => props.theme.colors.text};
+    }
+
+    &.active {
+      background: ${props => props.theme.colors.accent};
+      color: ${props => props.theme.colors.buttonText || '#fff'};
+      border-color: ${props => props.theme.colors.accent};
+      box-shadow: 0 0 8px ${props => props.theme.colors.accent + '80'};
+    }
+  }
+`;
+
+// ===== CHART OVERLAY: Last digits display (centered, larger) =====
 const ChartDigitsOverlay = styled.div`
   position: absolute;
   top: 50%;
@@ -494,8 +550,10 @@ const ChartPanel = () => {
   const padRef = useRef({ top: 25, bottom: 35, left: 15, right: 65 });
   const chartSizeRef = useRef({ chartW: 0, chartH: 0 });
 
-  // State for last digits of the last 3 prices
-  const [recentLastDigits, setRecentLastDigits] = useState([null, null, null]);
+  // State for last digits of the last 4 prices (to support display selection)
+  const [recentLastDigits, setRecentLastDigits] = useState([null, null, null, null]);
+  // Number of recent digits to display (1,2,3,4)
+  const [displayCount, setDisplayCount] = useState(3);
 
   useEffect(() => {
     const updateTime = () => {
@@ -518,16 +576,11 @@ const ChartPanel = () => {
     setTicks(initialTicks);
     setCrosshairData(null);
 
-    // Set last digits of last 3 initial ticks
-    if (initialTicks.length >= 3) {
-      const lastThreeTicks = initialTicks.slice(-3);
-      const digits = lastThreeTicks.map(t => parseInt(t.price.toFixed(2).slice(-1)));
-      setRecentLastDigits(digits);
-    } else {
-      const digits = initialTicks.map(t => parseInt(t.price.toFixed(2).slice(-1)));
-      while (digits.length < 3) digits.unshift(null);
-      setRecentLastDigits(digits.slice(0,3));
-    }
+    // Set last digits of last 4 initial ticks
+    const lastFourTicks = initialTicks.slice(-4);
+    const digits = lastFourTicks.map(t => parseInt(t.price.toFixed(2).slice(-1)));
+    while (digits.length < 4) digits.unshift(null);
+    setRecentLastDigits(digits);
 
     const interval = setInterval(() => {
       setTicks(prev => {
@@ -740,6 +793,8 @@ const ChartPanel = () => {
   const allPercentages = digitStats.map(s => s.pct);
   const maxPct = Math.max(...allPercentages), minPct = Math.min(...allPercentages);
 
+  const visibleDigits = recentLastDigits.slice(-displayCount);
+
   return (
     <PanelContainer>
       <Header>
@@ -783,10 +838,24 @@ const ChartPanel = () => {
       </Header>
 
       <ChartWrapper onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-        {/* Last 3 digits overlay centered with larger size */}
+        {/* Selector for number of digits to display */}
+        <DigitDisplaySelector>
+          <span className="selector-label">Show</span>
+          {[1,2,3,4].map(num => (
+            <button
+              key={num}
+              className={`selector-btn ${displayCount === num ? 'active' : ''}`}
+              onClick={() => setDisplayCount(num)}
+            >
+              {num}
+            </button>
+          ))}
+        </DigitDisplaySelector>
+
+        {/* Centered overlay showing last N digits */}
         <ChartDigitsOverlay>
-          <span className="label">Last 3</span>
-          {recentLastDigits.map((digit, idx) => (
+          <span className="label">Last {displayCount}</span>
+          {visibleDigits.map((digit, idx) => (
             <div key={idx} className="digit-box">
               {digit !== null ? digit : '-'}
             </div>
