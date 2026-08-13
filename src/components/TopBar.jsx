@@ -1114,14 +1114,8 @@ const AccountBadge = styled.div`
     box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '15'};
   }
 
-  .flag-badge {
-    font-size: 16px;
-  }
-
-  .balance-display {
-    font-weight: 700;
-  }
-
+  .flag-badge { font-size: 16px; }
+  .balance-display { font-weight: 700; }
   .account-type-badge {
     font-size: 9px;
     font-weight: 700;
@@ -1134,7 +1128,6 @@ const AccountBadge = styled.div`
     border: 1px solid ${props => props.isDemo ? 'rgba(59,130,246,0.2)' : 'rgba(52,211,153,0.2)'};
     margin-left: 4px;
   }
-
   .currency-tag {
     font-size: 9px;
     padding: 2px 6px;
@@ -1143,12 +1136,7 @@ const AccountBadge = styled.div`
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
     font-weight: 800;
   }
-
-  .chevron {
-    display: flex;
-    align-items: center;
-    opacity: 0.6;
-  }
+  .chevron { display: flex; align-items: center; opacity: 0.6; }
 
   @media (max-width: 480px) {
     padding: 5px 10px;
@@ -1205,25 +1193,10 @@ const CurrencyOptionItem = styled.div`
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
-  .flag {
-    font-size: 16px;
-  }
-
-  .code {
-    font-weight: 700;
-    min-width: 30px;
-  }
-
-  .name {
-    flex: 1;
-    font-weight: 500;
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-  }
-
-  .check {
-    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-  }
+  .flag { font-size: 16px; }
+  .code { font-weight: 700; min-width: 30px; }
+  .name { flex: 1; font-weight: 500; font-size: 11px; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; }
+  .check { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
 `;
 
 const CurrencyList = styled.div`
@@ -1292,39 +1265,69 @@ const Spinner = styled.div`
 `;
 
 // ============================================
-// MUSIC PLAYER COMPONENT
+// MUSIC PLAYER COMPONENT (IMPROVED)
 // ============================================
-const MusicPlayerWrapper = styled.div`
+const MusicPlayerContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
+  gap: 10px;
+  background: linear-gradient(135deg, 
+    ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary}, 
+    ${props => props.theme.colors.accentLight || props.theme.colors.accentActive});
   border: 1px solid ${props => props.theme.colors.border};
-  border-radius: 20px;
-  padding: 4px 12px;
-  max-width: 300px;
+  border-radius: 30px;
+  padding: 6px 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+    border-color: ${props => props.theme.colors.accent};
+  }
+
+  .music-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: ${props => props.theme.colors.textMuted};
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .label-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.theme.colors.accent};
+  }
 `;
 
 const PlaylistSelect = styled.select`
   background: transparent;
   border: none;
   color: ${props => props.theme.colors.text};
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   outline: none;
-  padding: 4px 6px;
-  border-radius: 4px;
+  padding: 6px 8px;
+  border-radius: 8px;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='2' fill='none'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 6px center;
-  padding-right: 16px;
-  max-width: 120px;
+  background-position: right 10px center;
+  padding-right: 20px;
+  max-width: 130px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+
+  &:focus {
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.accent + '40'};
+  }
 
   option {
     background: ${props => props.theme.colors.surface};
@@ -1340,8 +1343,8 @@ const MusicControlButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   transition: all 0.2s;
   padding: 0;
@@ -1354,7 +1357,7 @@ const MusicControlButton = styled.button`
 
 const VolumeSlider = styled.input`
   -webkit-appearance: none;
-  width: 60px;
+  width: 70px;
   height: 4px;
   border-radius: 2px;
   background: ${props => props.theme.colors.border};
@@ -1364,21 +1367,40 @@ const VolumeSlider = styled.input`
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: ${props => props.theme.colors.accent};
     cursor: pointer;
-    border: none;
+    border: 2px solid ${props => props.theme.colors.surface};
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
   }
 
   &::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: ${props => props.theme.colors.accent};
     cursor: pointer;
-    border: none;
+    border: 2px solid ${props => props.theme.colors.surface};
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+`;
+
+const CustomUrlInput = styled.input`
+  background: transparent;
+  border: 1px solid ${props => props.theme.colors.border};
+  color: ${props => props.theme.colors.text};
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  max-width: 120px;
+  outline: none;
+  transition: all 0.2s;
+
+  &:focus {
+    border-color: ${props => props.theme.colors.accent};
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.accent + '40'};
   }
 `;
 
@@ -1402,17 +1424,13 @@ const MusicPlayer = () => {
     if (!window.YT) {
       const tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
-      window.onYouTubeIframeAPIReady = () => {
-        createPlayer();
-      };
+      window.onYouTubeIframeAPIReady = () => createPlayer();
       document.head.appendChild(tag);
     } else {
       createPlayer();
     }
     return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-      }
+      if (playerRef.current) playerRef.current.destroy();
     };
   }, []);
 
@@ -1428,12 +1446,8 @@ const MusicPlayer = () => {
           controls: 0,
         },
         events: {
-          onReady: (e) => {
-            e.target.setVolume(volume);
-          },
-          onStateChange: (e) => {
-            setIsPlaying(e.data === window.YT.PlayerState.PLAYING);
-          },
+          onReady: (e) => e.target.setVolume(volume),
+          onStateChange: (e) => setIsPlaying(e.data === window.YT.PlayerState.PLAYING),
         },
       });
     }
@@ -1441,10 +1455,7 @@ const MusicPlayer = () => {
 
   const loadPlaylist = (playlistId) => {
     if (playerRef.current && playlistId) {
-      playerRef.current.loadPlaylist({
-        listType: 'playlist',
-        list: playlistId,
-      });
+      playerRef.current.loadPlaylist({ listType: 'playlist', list: playlistId });
       playerRef.current.setVolume(volume);
     }
   };
@@ -1457,17 +1468,13 @@ const MusicPlayer = () => {
     } else {
       setShowCustomInput(false);
       const playlist = presetPlaylists.find(p => p.id === id);
-      if (playlist && playlist.playlistId) {
-        loadPlaylist(playlist.playlistId);
-      }
+      if (playlist && playlist.playlistId) loadPlaylist(playlist.playlistId);
     }
   };
 
   const handleCustomUrlSubmit = () => {
     const match = customUrl.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) {
-      loadPlaylist(match[1]);
-    }
+    if (match && match[1]) loadPlaylist(match[1]);
   };
 
   const togglePlay = () => {
@@ -1485,36 +1492,27 @@ const MusicPlayer = () => {
   const handleVolumeChange = (e) => {
     const vol = parseInt(e.target.value, 10);
     setVolume(vol);
-    if (playerRef.current) {
-      playerRef.current.setVolume(vol);
-    }
+    if (playerRef.current) playerRef.current.setVolume(vol);
   };
 
   return (
-    <MusicPlayerWrapper>
-      <MusicIcon />
+    <MusicPlayerContainer>
+      <div className="music-label">
+        <span className="label-icon"><MusicIcon /></span>
+        Trading Music
+      </div>
       <PlaylistSelect value={selectedPlaylist} onChange={handlePlaylistChange}>
         {presetPlaylists.map(p => (
           <option key={p.id} value={p.id}>{p.name}</option>
         ))}
       </PlaylistSelect>
       {showCustomInput && (
-        <input
+        <CustomUrlInput
           type="text"
-          placeholder="Paste playlist URL"
+          placeholder="Playlist URL"
           value={customUrl}
           onChange={(e) => setCustomUrl(e.target.value)}
           onBlur={handleCustomUrlSubmit}
-          style={{
-            background: 'transparent',
-            border: '1px solid #3b82f6',
-            color: 'inherit',
-            fontSize: '10px',
-            padding: '2px 4px',
-            borderRadius: '4px',
-            maxWidth: '100px',
-            outline: 'none',
-          }}
         />
       )}
       <MusicControlButton onClick={togglePlay}>
@@ -1523,7 +1521,7 @@ const MusicPlayer = () => {
       <VolumeIcon />
       <VolumeSlider type="range" min="0" max="100" value={volume} onChange={handleVolumeChange} />
       <div ref={playerContainerRef} style={{ display: 'none' }} />
-    </MusicPlayerWrapper>
+    </MusicPlayerContainer>
   );
 };
 
@@ -1546,10 +1544,6 @@ const BrandText = styled.div`
   gap: 2px;
   
   .voltix {
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-  }
-
-  .dot {
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
 `;
@@ -1603,9 +1597,6 @@ const ConnectionStatus = styled.div`
   }
 `;
 
-// ============================================
-// SIDEBAR TOGGLE
-// ============================================
 const SidebarToggle = styled.button`
   display: flex;
   flex-direction: column;
@@ -1643,13 +1634,11 @@ const SidebarToggle = styled.button`
       width: 18px;
       transform: ${props => props.isOpen ? 'rotate(45deg) translate(4px, 4.5px)' : 'rotate(0)'};
     }
-
     &:nth-child(2) {
       width: 14px;
       opacity: ${props => props.isOpen ? '0' : '1'};
       transform: ${props => props.isOpen ? 'scaleX(0)' : 'scaleX(1)'};
     }
-
     &:nth-child(3) {
       width: ${props => props.isOpen ? '18px' : '10px'};
       transform: ${props => props.isOpen ? 'rotate(-45deg) translate(4px, -4.5px)' : 'rotate(0)'};
@@ -1937,25 +1926,12 @@ const TopPanel = ({
           return (
             <div style={{ textAlign: 'center', padding: '20px 0' }}>
               <Spinner />
-              <div style={{ 
-                fontSize: '15px', 
-                fontWeight: 600, 
-                marginBottom: '12px',
-                color: '#F8FAFC'
-              }}>
+              <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: '#F8FAFC' }}>
                 Please wait for the payment prompt on your phone and enter your PIN to complete the transaction.
               </div>
               <button 
                 onClick={() => setDepositPending(false)}
-                style={{
-                  padding: '8px 20px',
-                  borderRadius: '8px',
-                  background: '#3B82F6',
-                  color: 'white',
-                  border: 'none',
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
+                style={{ padding: '8px 20px', borderRadius: '8px', background: '#3B82F6', color: 'white', border: 'none', fontWeight: 600, cursor: 'pointer' }}
               >
                 OK
               </button>
@@ -1965,60 +1941,32 @@ const TopPanel = ({
 
         return (
           <>
-            <KenyaDisclaimer>
-              This service is available exclusively in Kenya. Only M‑Pesa mobile wallet is supported.
-            </KenyaDisclaimer>
-
-            <WalletInfo>
-              If your deposited funds are not visible for trading, kindly log into your Deriv account and transfer them from your main wallet to your Options wallet.
-            </WalletInfo>
-
+            <KenyaDisclaimer>This service is available exclusively in Kenya. Only M‑Pesa mobile wallet is supported.</KenyaDisclaimer>
+            <WalletInfo>If your deposited funds are not visible for trading, kindly log into your Deriv account and transfer them from your main wallet to your Options wallet.</WalletInfo>
             <FormGroup>
               <label>Deposit to</label>
               <div className="input-wrap">
                 <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Wallet</span>
-                <input 
-                  type="text" 
-                  value="Deriv Main Wallet"
-                  disabled
-                  style={{ fontWeight: '600', opacity: 0.7 }}
-                />
+                <input type="text" value="Deriv Main Wallet" disabled style={{ fontWeight: '600', opacity: 0.7 }} />
               </div>
             </FormGroup>
-
             <FormGroup>
               <label>M‑Pesa Phone Number (starting with 1 or 7)</label>
               <div className="input-wrap">
                 <span className="prefix">+254</span>
-                <input 
-                  type="tel" 
-                  placeholder="1XX or 7XX XXX XXX" 
-                  value={phoneNumber}
-                  onChange={handlePhoneChange}
-                  maxLength={9}
-                />
+                <input type="tel" placeholder="1XX or 7XX XXX XXX" value={phoneNumber} onChange={handlePhoneChange} maxLength={9} />
               </div>
               <div className="helper-text">Enter your M‑Pesa registered phone number (9 digits, must start with 1 or 7)</div>
             </FormGroup>
-
             <FormGroup>
               <label>Amount (USD) - Min $1 / Max $2,000</label>
               <div className="input-wrap">
                 <span className="prefix">$</span>
-                <input 
-                  type="number" 
-                  placeholder="0.00" 
-                  value={amount}
-                  onChange={handleAmountChange}
-                  min="1"
-                  max="2000"
-                  step="0.01"
-                />
+                <input type="number" placeholder="0.00" value={amount} onChange={handleAmountChange} min="1" max="2000" step="0.01" />
                 <span className="suffix">≈ KES {(parseFloat(amount || 0) * rate).toFixed(0)}</span>
               </div>
               <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
-
             <ActionButton 
               onClick={handleSubmitDeposit} 
               disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
@@ -2049,47 +1997,25 @@ const TopPanel = ({
         if (withdrawConfirmationStep && withdrawConfirmationData) {
           return (
             <div>
-              <KenyaDisclaimer>
-                Please confirm your phone number before proceeding.
-              </KenyaDisclaimer>
+              <KenyaDisclaimer>Please confirm your phone number before proceeding.</KenyaDisclaimer>
               <ConfirmationMessage>
                 Kindly re-enter your phone number to ensure it is correct before proceeding with your ${withdrawConfirmationData.amount} withdrawal.
               </ConfirmationMessage>
-
               <FormGroup>
                 <label>Re-enter M‑Pesa Phone Number (starting with 1 or 7)</label>
                 <div className="input-wrap">
                   <span className="prefix">+254</span>
-                  <input 
-                    type="tel" 
-                    placeholder="1XX or 7XX XXX XXX" 
-                    value={confirmationPhone}
-                    onChange={handleConfirmationPhoneChange}
-                    maxLength={9}
-                  />
+                  <input type="tel" placeholder="1XX or 7XX XXX XXX" value={confirmationPhone} onChange={handleConfirmationPhoneChange} maxLength={9} />
                 </div>
                 <div className="helper-text">Must match the number you entered earlier</div>
                 {confirmationError && <div className="error-text">{confirmationError}</div>}
               </FormGroup>
-              <ActionButton 
-                onClick={handleConfirmWithdraw}
-                disabled={confirmationPhone.length !== 9}
-              >
+              <ActionButton onClick={handleConfirmWithdraw} disabled={confirmationPhone.length !== 9}>
                 Confirm Withdrawal
               </ActionButton>
               <button 
                 onClick={() => setWithdrawConfirmationStep(false)}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  marginTop: '8px',
-                  background: 'transparent',
-                  border: '1px solid rgba(255,255,255,0.15)',
-                  borderRadius: '10px',
-                  color: '#94A3B8',
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
+                style={{ width: '100%', padding: '10px', marginTop: '8px', background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', color: '#94A3B8', fontWeight: 600, cursor: 'pointer' }}
               >
                 Back
               </button>
@@ -2099,61 +2025,33 @@ const TopPanel = ({
 
         return (
           <>
-            <KenyaDisclaimer>
-              This service is available exclusively in Kenya. Only M‑Pesa mobile wallet is supported.
-            </KenyaDisclaimer>
-
-            <WalletInfo>
-              If your available balance appears incorrect, kindly log into your Deriv account and transfer funds from your Options wallet to your main wallet before proceeding.
-            </WalletInfo>
-
+            <KenyaDisclaimer>This service is available exclusively in Kenya. Only M‑Pesa mobile wallet is supported.</KenyaDisclaimer>
+            <WalletInfo>If your available balance appears incorrect, kindly log into your Deriv account and transfer funds from your Options wallet to your main wallet before proceeding.</WalletInfo>
             <FormGroup>
               <label>Withdraw From</label>
               <div className="input-wrap">
                 <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Wallet</span>
-                <input 
-                  type="text" 
-                  value="Deriv Main Wallet"
-                  disabled
-                  style={{ fontWeight: '600', opacity: 0.7 }}
-                />
+                <input type="text" value="Deriv Main Wallet" disabled style={{ fontWeight: '600', opacity: 0.7 }} />
                 <span className="suffix">{getFormattedBalance(currentAccount)}</span>
               </div>
             </FormGroup>
-
             <FormGroup>
               <label>M‑Pesa Wallet Number (starting with 1 or 7)</label>
               <div className="input-wrap">
                 <span className="prefix">+254</span>
-                <input 
-                  type="tel" 
-                  placeholder="1XX or 7XX XXX XXX" 
-                  value={phoneNumber}
-                  onChange={handlePhoneChange}
-                  maxLength={9}
-                />
+                <input type="tel" placeholder="1XX or 7XX XXX XXX" value={phoneNumber} onChange={handlePhoneChange} maxLength={9} />
               </div>
               <div className="helper-text">Enter your M‑Pesa wallet number (9 digits, starts with 1 or 7)</div>
             </FormGroup>
-
             <FormGroup>
               <label>Amount to Withdraw (USD) - Min $1 / Max $2,000</label>
               <div className="input-wrap">
                 <span className="prefix">$</span>
-                <input 
-                  type="number" 
-                  placeholder="0.00" 
-                  value={amount}
-                  onChange={handleAmountChange}
-                  min="1"
-                  max="2000"
-                  step="0.01"
-                />
+                <input type="number" placeholder="0.00" value={amount} onChange={handleAmountChange} min="1" max="2000" step="0.01" />
                 <span className="suffix">≈ KES {(parseFloat(amount || 0) * rate).toFixed(0)}</span>
               </div>
               <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
-
             <ActionButton 
               onClick={handleSubmitWithdraw} 
               disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
@@ -2167,9 +2065,9 @@ const TopPanel = ({
         return (
           <>
             <HistoryFilter>
-              <button className="filter-btn active" onClick={(e) => { e.currentTarget.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.currentTarget.classList.add('active'); }}>All</button>
-              <button className="filter-btn" onClick={(e) => { e.currentTarget.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.currentTarget.classList.add('active'); }}>Deposits</button>
-              <button className="filter-btn" onClick={(e) => { e.currentTarget.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); e.currentTarget.classList.add('active'); }}>Withdrawals</button>
+              <button className="filter-btn active">All</button>
+              <button className="filter-btn">Deposits</button>
+              <button className="filter-btn">Withdrawals</button>
             </HistoryFilter>
             <HistoryList>
               {sampleTransactions.map(tx => (
@@ -2214,25 +2112,13 @@ const TopPanel = ({
               <span className="voltix">MyTradeApp.</span>
               <DropdownContainer ref={platformRef}>
                 <PlatformSelector onClick={togglePlatformDropdown}>
-                  <span className="deriv" style={{ color: platform === 'deriv' ? '#ff444f' : '#3b82f6' }}>
-                    {platform}
-                  </span>
+                  <span style={{ color: platform === 'deriv' ? '#ff444f' : '#3b82f6' }}>{platform}</span>
                   <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
                 </PlatformSelector>
                 <PlatformDropdown isOpen={isPlatformOpen}>
                   <MenuHeader>Select Platform</MenuHeader>
-                  <div 
-                    style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'deriv' ? '#ff444f' : '#cbd5e1' }}
-                    onClick={() => { setPlatform('deriv'); setIsPlatformOpen(false); }}
-                  >
-                    Deriv
-                  </div>
-                  <div 
-                    style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'forex' ? '#3b82f6' : '#cbd5e1' }}
-                    onClick={() => { setPlatform('forex'); setIsPlatformOpen(false); }}
-                  >
-                    Forex
-                  </div>
+                  <div style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'deriv' ? '#ff444f' : '#cbd5e1' }} onClick={() => { setPlatform('deriv'); setIsPlatformOpen(false); }}>Deriv</div>
+                  <div style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'forex' ? '#3b82f6' : '#cbd5e1' }} onClick={() => { setPlatform('forex'); setIsPlatformOpen(false); }}>Forex</div>
                 </PlatformDropdown>
               </DropdownContainer>
             </BrandText>
@@ -2248,23 +2134,14 @@ const TopPanel = ({
         </CenterSection>
 
         <RightSection>
-          {/* 1. THEME ICON BUTTON */}
           <DropdownContainer ref={themeRef}>
             <IconThemeButton onClick={toggleThemeDropdown}>
               <span className="theme-icon"><ThemeIcon /></span>
             </IconThemeButton>
-
             <GlassDropdownMenu isOpen={isThemeOpen}>
               <MenuHeader>Choose Theme</MenuHeader>
               {THEME_OPTIONS.map((t) => (
-                <ThemeOptionItem
-                  key={t.key}
-                  onClick={() => {
-                    if (onThemeChange) onThemeChange(t.key);
-                    setIsThemeOpen(false);
-                  }}
-                  className={currentTheme === t.key ? 'active' : ''}
-                >
+                <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
                   <span className="color-dot" style={{ background: t.color }} />
                   <span className="theme-label">{t.name}</span>
                   {currentTheme === t.key && <span className="check-mark">✓</span>}
@@ -2273,7 +2150,6 @@ const TopPanel = ({
             </GlassDropdownMenu>
           </DropdownContainer>
 
-          {/* 2. FUNDS BUTTON */}
           <DropdownContainer ref={fundsRef}>
             <FundsButton onClick={toggleFundsDropdown}>
               <span className="funds-icon-wrapper"><FundsIcon /></span>
@@ -2283,14 +2159,10 @@ const TopPanel = ({
               </span>
               <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
             </FundsButton>
-
             <GlassDropdownMenu isOpen={isFundsOpen}>
               <MenuHeader>Funds Management</MenuHeader>
               {fundOptions.map((option, index) => (
-                <FundsOption 
-                  key={index}
-                  onClick={() => handleFundAction(option.action)}
-                >
+                <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
                   <span className="fund-icon">{option.icon}</span>
                   <span className="fund-info">
                     <span className="fund-name">{option.name}</span>
@@ -2301,7 +2173,6 @@ const TopPanel = ({
             </GlassDropdownMenu>
           </DropdownContainer>
 
-          {/* 3. ACCOUNT BADGE */}
           <DropdownContainer ref={dropdownRef}>
             <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
               <span className="flag-badge">{getCurrencyFlag()}</span>
@@ -2310,48 +2181,25 @@ const TopPanel = ({
               <span className="currency-tag">{selectedCurrency}</span>
               <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
             </AccountBadge>
-
             <GlassDropdownMenu isOpen={isDropdownOpen}>
               <MenuHeader>Account</MenuHeader>
-              
-              <ThemeOptionItem
-                onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }}
-                className={accountType === 'real' ? 'active' : ''}
-              >
+              <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
                 <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
                 <span className="theme-label">Real Account</span>
                 <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
               </ThemeOptionItem>
-
-              <ThemeOptionItem
-                onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }}
-                className={accountType === 'demo' ? 'active' : ''}
-              >
+              <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
                 <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
                 <span className="theme-label">Demo Practice</span>
                 <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
               </ThemeOptionItem>
-
               <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
                 <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
-                <SearchInput 
-                  type="text" 
-                  placeholder="Search currency..." 
-                  value={currencySearch}
-                  onChange={(e) => setCurrencySearch(e.target.value)}
-                />
+                <SearchInput type="text" placeholder="Search currency..." value={currencySearch} onChange={(e) => setCurrencySearch(e.target.value)} />
                 <CurrencyList>
                   {filteredCurrencies.length > 0 ? (
                     filteredCurrencies.map((curr) => (
-                      <CurrencyOptionItem
-                        key={curr.code}
-                        onClick={() => {
-                          setSelectedCurrency(curr.code);
-                          setCurrencySearch('');
-                          setIsDropdownOpen(false);
-                        }}
-                        className={selectedCurrency === curr.code ? 'active' : ''}
-                      >
+                      <CurrencyOptionItem key={curr.code} onClick={() => { setSelectedCurrency(curr.code); setCurrencySearch(''); setIsDropdownOpen(false); }} className={selectedCurrency === curr.code ? 'active' : ''}>
                         <span className="flag">{curr.flag}</span>
                         <span className="code">{curr.code}</span>
                         <span className="name">{curr.name}</span>
@@ -2359,16 +2207,13 @@ const TopPanel = ({
                       </CurrencyOptionItem>
                     ))
                   ) : (
-                    <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>
-                      No currencies found
-                    </div>
+                    <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No currencies found</div>
                   )}
                 </CurrencyList>
               </div>
             </GlassDropdownMenu>
           </DropdownContainer>
 
-          {/* 4. EXIT BUTTON */}
           <ExitButton onClick={() => navigate('/')}>
             <span className="exit-icon"><ExitIcon /></span>
             <span>Exit</span>
@@ -2376,7 +2221,6 @@ const TopPanel = ({
         </RightSection>
       </TopBar>
 
-      {/* FUNDS MODAL - Transparent background */}
       {fundModalAction && (
         <ModalOverlay onClick={closeModal}>
           <ModalCard onClick={(e) => e.stopPropagation()}>
