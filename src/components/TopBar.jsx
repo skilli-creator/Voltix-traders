@@ -150,7 +150,6 @@ const EyeIcon = ({ visible }) => (
   </svg>
 );
 
-// Music icons
 const MusicIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 18V5l12-2v13" />
@@ -177,6 +176,13 @@ const VolumeIcon = () => (
     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
     <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
     <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+  </svg>
+);
+
+const SearchIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
   </svg>
 );
 
@@ -1265,7 +1271,7 @@ const Spinner = styled.div`
 `;
 
 // ============================================
-// MUSIC PLAYER COMPONENT (IMPROVED)
+// MUSIC PLAYER (WITH SEARCH)
 // ============================================
 const MusicPlayerContainer = styled.div`
   display: flex;
@@ -1279,6 +1285,7 @@ const MusicPlayerContainer = styled.div`
   padding: 6px 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+  position: relative;
 
   &:hover {
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
@@ -1305,33 +1312,97 @@ const MusicPlayerContainer = styled.div`
   }
 `;
 
-const PlaylistSelect = styled.select`
+const MusicDropdownButton = styled.button`
   background: transparent;
-  border: none;
+  border: 1px solid ${props => props.theme.colors.border};
   color: ${props => props.theme.colors.text};
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   outline: none;
-  padding: 6px 8px;
+  padding: 6px 10px;
   border-radius: 8px;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 20px;
-  max-width: 130px;
-  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 140px;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.accent};
+  }
+`;
+
+const MusicDropdownMenu = styled.div`
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 12px;
+  width: 260px;
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  padding: 12px;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+`;
+
+const MusicSearchInput = styled.input`
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 8px;
+  background: ${props => props.theme.colors.background};
+  color: ${props => props.theme.colors.text};
+  font-size: 12px;
+  margin-bottom: 10px;
+  outline: none;
 
   &:focus {
-    box-shadow: 0 0 0 2px ${props => props.theme.colors.accent + '40'};
+    border-color: ${props => props.theme.colors.accent};
+  }
+`;
+
+const MusicResultItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover {
+    background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
   }
 
-  option {
-    background: ${props => props.theme.colors.surface};
-    color: ${props => props.theme.colors.text};
+  .thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: ${props => props.theme.colors.border};
+    object-fit: cover;
+  }
+
+  .info {
+    flex: 1;
+    .title {
+      font-size: 12px;
+      font-weight: 600;
+      color: ${props => props.theme.colors.text};
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .channel {
+      font-size: 10px;
+      color: ${props => props.theme.colors.textMuted};
+    }
   }
 `;
 
@@ -1387,37 +1458,24 @@ const VolumeSlider = styled.input`
   }
 `;
 
-const CustomUrlInput = styled.input`
-  background: transparent;
-  border: 1px solid ${props => props.theme.colors.border};
-  color: ${props => props.theme.colors.text};
-  font-size: 10px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  max-width: 120px;
-  outline: none;
-  transition: all 0.2s;
-
-  &:focus {
-    border-color: ${props => props.theme.colors.accent};
-    box-shadow: 0 0 0 2px ${props => props.theme.colors.accent + '40'};
-  }
-`;
+const YOUTUBE_API_KEY = 'YOUR_API_KEY_HERE'; // Replace with your actual key
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(50);
-  const [selectedPlaylist, setSelectedPlaylist] = useState('lofi');
-  const [customUrl, setCustomUrl] = useState('');
-  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] = useState('Lo-Fi Beats');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const playerRef = useRef(null);
   const playerContainerRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   const presetPlaylists = [
     { id: 'lofi', name: 'Lo-Fi Beats', playlistId: 'PLzCxunOM5WFJx0D5ZgV5g3L9r4v3Yh7X' },
     { id: 'focus', name: 'Trading Focus', playlistId: 'PL6QREj8j1nYQ0Z4c9f6e3H5E1V2s0R7i' },
     { id: 'ambient', name: 'Ambient', playlistId: 'PL0F1A8D0B2E3F6A2' },
-    { id: 'custom', name: 'Custom URL', playlistId: '' },
   ];
 
   useEffect(() => {
@@ -1440,10 +1498,8 @@ const MusicPlayer = () => {
         height: '0',
         width: '0',
         playerVars: {
-          listType: 'playlist',
-          list: presetPlaylists.find(p => p.id === selectedPlaylist)?.playlistId || '',
-          autoplay: 0,
           controls: 0,
+          autoplay: 0,
         },
         events: {
           onReady: (e) => e.target.setVolume(volume),
@@ -1453,28 +1509,53 @@ const MusicPlayer = () => {
     }
   };
 
-  const loadPlaylist = (playlistId) => {
-    if (playerRef.current && playlistId) {
-      playerRef.current.loadPlaylist({ listType: 'playlist', list: playlistId });
+  const playVideo = (videoId) => {
+    if (playerRef.current) {
+      playerRef.current.loadVideoById(videoId);
       playerRef.current.setVolume(volume);
     }
   };
 
-  const handlePlaylistChange = (e) => {
-    const id = e.target.value;
-    setSelectedPlaylist(id);
-    if (id === 'custom') {
-      setShowCustomInput(true);
-    } else {
-      setShowCustomInput(false);
-      const playlist = presetPlaylists.find(p => p.id === id);
-      if (playlist && playlist.playlistId) loadPlaylist(playlist.playlistId);
+  const playPlaylist = (playlistId) => {
+    if (playerRef.current) {
+      playerRef.current.loadPlaylist({
+        listType: 'playlist',
+        list: playlistId,
+      });
+      playerRef.current.setVolume(volume);
     }
   };
 
-  const handleCustomUrlSubmit = () => {
-    const match = customUrl.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) loadPlaylist(match[1]);
+  const handleSearch = async () => {
+    if (!searchQuery.trim() || YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') return;
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(searchQuery)}&type=video&key=${YOUTUBE_API_KEY}`
+      );
+      const data = await response.json();
+      if (data.items) {
+        setSearchResults(data.items);
+      }
+    } catch (error) {
+      console.error('YouTube search error:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSelectResult = (item) => {
+    playVideo(item.id.videoId);
+    setSelectedPlaylist(item.snippet.title);
+    setIsDropdownOpen(false);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  const handlePresetSelect = (playlist) => {
+    playPlaylist(playlist.playlistId);
+    setSelectedPlaylist(playlist.name);
+    setIsDropdownOpen(false);
   };
 
   const togglePlay = () => {
@@ -1495,26 +1576,88 @@ const MusicPlayer = () => {
     if (playerRef.current) playerRef.current.setVolume(vol);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <MusicPlayerContainer>
       <div className="music-label">
         <span className="label-icon"><MusicIcon /></span>
         Trading Music
       </div>
-      <PlaylistSelect value={selectedPlaylist} onChange={handlePlaylistChange}>
-        {presetPlaylists.map(p => (
-          <option key={p.id} value={p.id}>{p.name}</option>
-        ))}
-      </PlaylistSelect>
-      {showCustomInput && (
-        <CustomUrlInput
-          type="text"
-          placeholder="Playlist URL"
-          value={customUrl}
-          onChange={(e) => setCustomUrl(e.target.value)}
-          onBlur={handleCustomUrlSubmit}
-        />
-      )}
+
+      <div ref={dropdownRef} style={{ position: 'relative' }}>
+        <MusicDropdownButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+          {selectedPlaylist}
+          <ChevronDownIcon open={isDropdownOpen} />
+        </MusicDropdownButton>
+
+        <MusicDropdownMenu isOpen={isDropdownOpen}>
+          <MusicSearchInput
+            type="text"
+            placeholder="Search YouTube..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
+            <button
+              onClick={handleSearch}
+              style={{
+                background: 'transparent',
+                border: '1px solid #3b82f6',
+                color: '#3b82f6',
+                padding: '4px 10px',
+                borderRadius: 6,
+                cursor: 'pointer',
+                fontSize: 11,
+                fontWeight: 600,
+              }}
+            >
+              Search
+            </button>
+          </div>
+
+          <div style={{ marginBottom: 8, fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Presets</div>
+          {presetPlaylists.map(playlist => (
+            <MusicResultItem key={playlist.id} onClick={() => handlePresetSelect(playlist)}>
+              <div className="info">
+                <div className="title">{playlist.name}</div>
+              </div>
+            </MusicResultItem>
+          ))}
+
+          {searchResults.length > 0 && (
+            <>
+              <div style={{ marginTop: 12, marginBottom: 8, fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Search Results</div>
+              {searchResults.map(item => (
+                <MusicResultItem key={item.id.videoId} onClick={() => handleSelectResult(item)}>
+                  <img className="thumb" src={item.snippet.thumbnails.default.url} alt="" />
+                  <div className="info">
+                    <div className="title">{item.snippet.title}</div>
+                    <div className="channel">{item.snippet.channelTitle}</div>
+                  </div>
+                </MusicResultItem>
+              ))}
+            </>
+          )}
+
+          {isSearching && <div style={{ textAlign: 'center', padding: 10, fontSize: 12 }}>Searching...</div>}
+          {!isSearching && searchQuery && searchResults.length === 0 && (
+            <div style={{ textAlign: 'center', padding: 10, fontSize: 12, color: '#94a3b8' }}>
+              No results. Try another query.
+            </div>
+          )}
+        </MusicDropdownMenu>
+      </div>
+
       <MusicControlButton onClick={togglePlay}>
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
       </MusicControlButton>
