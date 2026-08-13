@@ -150,6 +150,36 @@ const EyeIcon = ({ visible }) => (
   </svg>
 );
 
+// Music icons
+const MusicIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 18V5l12-2v13" />
+    <circle cx="6" cy="18" r="3" />
+    <circle cx="18" cy="16" r="3" />
+  </svg>
+);
+
+const PlayIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <polygon points="6 4 20 12 6 20 6 4" />
+  </svg>
+);
+
+const PauseIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <rect x="6" y="4" width="4" height="16" />
+    <rect x="14" y="4" width="4" height="16" />
+  </svg>
+);
+
+const VolumeIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+  </svg>
+);
+
 // ============================================
 // FUNDS MODAL COMPONENTS – THEME‑AWARE
 // ============================================
@@ -263,9 +293,6 @@ const ModalBody = styled.div`
   &::-webkit-scrollbar-track { background: transparent; }
 `;
 
-// ============================================
-// KENYA DISCLAIMER – THEME‑AWARE (M-PESA ONLY)
-// ============================================
 const KenyaDisclaimer = styled.div`
   display: flex;
   align-items: center;
@@ -281,9 +308,6 @@ const KenyaDisclaimer = styled.div`
   line-height: 1.4;
 `;
 
-// ============================================
-// WALLET TRANSFER INFO – THEME‑AWARE
-// ============================================
 const WalletInfo = styled.div`
   padding: 8px 12px;
   border-radius: 8px;
@@ -296,9 +320,6 @@ const WalletInfo = styled.div`
   line-height: 1.4;
 `;
 
-// ============================================
-// CONFIRMATION PROMPT – THEME‑AWARE
-// ============================================
 const ConfirmationMessage = styled.div`
   text-align: center;
   margin-bottom: 14px;
@@ -312,9 +333,6 @@ const ConfirmationMessage = styled.div`
   border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.1)'};
 `;
 
-// ============================================
-// SUCCESS OVERLAY – redesigned, balanced proportions
-// ============================================
 const SuccessOverlay = styled.div`
   position: absolute;
   inset: 0;
@@ -385,9 +403,6 @@ const SuccessCard = styled.div`
   }
 `;
 
-// ============================================
-// FORM INPUTS (theme‑aware) – with spinners hidden
-// ============================================
 const FormGroup = styled.div`
   margin-bottom: 12px;
 
@@ -440,7 +455,6 @@ const FormGroup = styled.div`
         opacity: 0.5;
       }
 
-      /* Hide number input spinners */
       &::-webkit-inner-spin-button,
       &::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -472,9 +486,6 @@ const FormGroup = styled.div`
   }
 `;
 
-// ============================================
-// ACTION BUTTON (theme‑aware)
-// ============================================
 const ActionButton = styled.button`
   width: 100%;
   padding: 12px 0;
@@ -507,9 +518,6 @@ const ActionButton = styled.button`
   }
 `;
 
-// ============================================
-// OVERVIEW STYLES (theme‑aware, compact)
-// ============================================
 const OverviewBalance = styled.div`
   background: linear-gradient(
     135deg, 
@@ -661,9 +669,6 @@ const RecentTransactions = styled.div`
   }
 `;
 
-// ============================================
-// TRANSACTION HISTORY (theme‑aware, compact)
-// ============================================
 const HistoryFilter = styled.div`
   display: flex;
   gap: 6px;
@@ -751,7 +756,6 @@ const HistoryList = styled.div`
 // ============================================
 // CORE CONTAINERS
 // ============================================
-
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -792,130 +796,18 @@ const LeftSection = styled.div`
   }
 `;
 
-const SidebarToggle = styled.button`
+const CenterSection = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  width: 38px;
-  height: 38px;
-  background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 0;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 200px;
 
-  &:hover {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'};
-    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-    box-shadow: 0 0 16px ${props => (props.theme?.colors?.accent || '#3b82f6') + '25'};
-  }
-
-  &:active {
-    transform: scale(0.94);
-  }
-
-  .line {
-    display: block;
-    height: 2px;
-    background: ${props => props.theme?.colors?.text || '#ffffff'};
-    border-radius: 4px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-    &:nth-child(1) {
-      width: 18px;
-      transform: ${props => props.isOpen ? 'rotate(45deg) translate(4px, 4.5px)' : 'rotate(0)'};
-    }
-
-    &:nth-child(2) {
-      width: 14px;
-      opacity: ${props => props.isOpen ? '0' : '1'};
-      transform: ${props => props.isOpen ? 'scaleX(0)' : 'scaleX(1)'};
-    }
-
-    &:nth-child(3) {
-      width: ${props => props.isOpen ? '18px' : '10px'};
-      transform: ${props => props.isOpen ? 'rotate(-45deg) translate(4px, -4.5px)' : 'rotate(0)'};
-    }
-  }
-`;
-
-// ============================================
-// BRAND WITH PLATFORM DROPDOWN & CONNECTION STATUS
-// ============================================
-const BrandContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const BrandText = styled.div`
-  display: flex;
-  align-items: center;
-  font-size: 1.35rem;
-  font-weight: 800;
-  user-select: none;
-  cursor: default;
-  gap: 2px;
-  
-  .voltix {
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-  }
-
-  .dot {
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-  }
-`;
-
-const PlatformSelector = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  background: transparent;
-  border: none;
-  color: #ff444f;
-  font-style: italic;
-  font-weight: 900;
-  font-size: inherit;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s;
-
-  &:hover {
-    opacity: 0.9;
-  }
-
-  .chevron {
-    display: flex;
-    align-items: center;
-    color: inherit;
-    transition: transform 0.2s;
-  }
-`;
-
-const ConnectionStatus = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 3px;
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: ${props => props.connected ? '#10b981' : '#ef4444'};
-    box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'};
-  }
-
-  .status-text {
-    font-size: 10px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+  @media (max-width: 768px) {
+    order: 3;
+    width: 100%;
+    flex: none;
+    justify-content: center;
   }
 `;
 
@@ -928,6 +820,7 @@ const RightSection = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     justify-content: center;
+    order: 2;
   }
 `;
 
@@ -936,9 +829,6 @@ const DropdownContainer = styled.div`
   display: inline-block;
 `;
 
-// ============================================
-// GLASS DROPDOWN
-// ============================================
 const GlassDropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
@@ -982,9 +872,6 @@ const MenuHeader = styled.div`
   margin-bottom: 4px;
 `;
 
-// ============================================
-// ICON-ONLY THEME BUTTON
-// ============================================
 const IconThemeButton = styled.button`
   display: flex;
   align-items: center;
@@ -1057,9 +944,6 @@ const ThemeOptionItem = styled.div`
   }
 `;
 
-// ============================================
-// 2. FUNDS BUTTON
-// ============================================
 const FundsButton = styled.button`
   display: flex;
   align-items: center;
@@ -1165,9 +1049,6 @@ const FundsOption = styled.div`
   }
 `;
 
-// ============================================
-// 3. ACCOUNT BADGE
-// ============================================
 const COUNTRY_CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
   { code: 'EUR', flag: '🇪🇺', name: 'Euro', symbol: '€' },
@@ -1354,9 +1235,6 @@ const CurrencyList = styled.div`
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 `;
 
-// ============================================
-// 4. EXIT BUTTON
-// ============================================
 const ExitButton = styled.button`
   display: flex;
   align-items: center;
@@ -1393,9 +1271,6 @@ const ExitButton = styled.button`
   }
 `;
 
-// ============================================
-// THEME DEFINITIONS
-// ============================================
 const THEME_OPTIONS = [
   { key: 'white', name: 'White', color: '#f4f6f9' },
   { key: 'dark', name: 'Dark', color: '#09090b' },
@@ -1406,9 +1281,6 @@ const THEME_OPTIONS = [
   { key: 'orange', name: 'Orange', color: '#0c0703' },
 ];
 
-// ============================================
-// SPINNER COMPONENT (FOR DEPOSIT WAITING)
-// ============================================
 const Spinner = styled.div`
   width: 24px;
   height: 24px;
@@ -1420,9 +1292,244 @@ const Spinner = styled.div`
 `;
 
 // ============================================
+// MUSIC PLAYER COMPONENT
+// ============================================
+const MusicPlayerWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: 20px;
+  padding: 4px 12px;
+  max-width: 300px;
+  transition: all 0.3s ease;
+`;
+
+const PlaylistSelect = styled.select`
+  background: transparent;
+  border: none;
+  color: ${props => props.theme.colors.text};
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  padding: 4px 6px;
+  border-radius: 4px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2394a3b8' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 16px;
+  max-width: 120px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+
+  option {
+    background: ${props => props.theme.colors.surface};
+    color: ${props => props.theme.colors.text};
+  }
+`;
+
+const MusicControlButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: ${props => props.theme.colors.text};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  padding: 0;
+
+  &:hover {
+    background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
+    color: ${props => props.theme.colors.accent};
+  }
+`;
+
+const VolumeSlider = styled.input`
+  -webkit-appearance: none;
+  width: 60px;
+  height: 4px;
+  border-radius: 2px;
+  background: ${props => props.theme.colors.border};
+  outline: none;
+  cursor: pointer;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: ${props => props.theme.colors.accent};
+    cursor: pointer;
+    border: none;
+  }
+
+  &::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: ${props => props.theme.colors.accent};
+    cursor: pointer;
+    border: none;
+  }
+`;
+
+const MusicPlayer = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(50);
+  const [selectedPlaylist, setSelectedPlaylist] = useState('lofi');
+  const [customUrl, setCustomUrl] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const playerRef = useRef(null);
+  const playerContainerRef = useRef(null);
+
+  const presetPlaylists = [
+    { id: 'lofi', name: 'Lo-Fi Beats', playlistId: 'PLzCxunOM5WFJx0D5ZgV5g3L9r4v3Yh7X' },
+    { id: 'focus', name: 'Trading Focus', playlistId: 'PL6QREj8j1nYQ0Z4c9f6e3H5E1V2s0R7i' },
+    { id: 'ambient', name: 'Ambient', playlistId: 'PL0F1A8D0B2E3F6A2' },
+    { id: 'custom', name: 'Custom URL', playlistId: '' },
+  ];
+
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      window.onYouTubeIframeAPIReady = () => {
+        createPlayer();
+      };
+      document.head.appendChild(tag);
+    } else {
+      createPlayer();
+    }
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy();
+      }
+    };
+  }, []);
+
+  const createPlayer = () => {
+    if (playerContainerRef.current && window.YT && !playerRef.current) {
+      playerRef.current = new window.YT.Player(playerContainerRef.current, {
+        height: '0',
+        width: '0',
+        playerVars: {
+          listType: 'playlist',
+          list: presetPlaylists.find(p => p.id === selectedPlaylist)?.playlistId || '',
+          autoplay: 0,
+          controls: 0,
+        },
+        events: {
+          onReady: (e) => {
+            e.target.setVolume(volume);
+          },
+          onStateChange: (e) => {
+            setIsPlaying(e.data === window.YT.PlayerState.PLAYING);
+          },
+        },
+      });
+    }
+  };
+
+  const loadPlaylist = (playlistId) => {
+    if (playerRef.current && playlistId) {
+      playerRef.current.loadPlaylist({
+        listType: 'playlist',
+        list: playlistId,
+      });
+      playerRef.current.setVolume(volume);
+    }
+  };
+
+  const handlePlaylistChange = (e) => {
+    const id = e.target.value;
+    setSelectedPlaylist(id);
+    if (id === 'custom') {
+      setShowCustomInput(true);
+    } else {
+      setShowCustomInput(false);
+      const playlist = presetPlaylists.find(p => p.id === id);
+      if (playlist && playlist.playlistId) {
+        loadPlaylist(playlist.playlistId);
+      }
+    }
+  };
+
+  const handleCustomUrlSubmit = () => {
+    const match = customUrl.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      loadPlaylist(match[1]);
+    }
+  };
+
+  const togglePlay = () => {
+    if (playerRef.current) {
+      if (isPlaying) {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
+      } else {
+        playerRef.current.playVideo();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  const handleVolumeChange = (e) => {
+    const vol = parseInt(e.target.value, 10);
+    setVolume(vol);
+    if (playerRef.current) {
+      playerRef.current.setVolume(vol);
+    }
+  };
+
+  return (
+    <MusicPlayerWrapper>
+      <MusicIcon />
+      <PlaylistSelect value={selectedPlaylist} onChange={handlePlaylistChange}>
+        {presetPlaylists.map(p => (
+          <option key={p.id} value={p.id}>{p.name}</option>
+        ))}
+      </PlaylistSelect>
+      {showCustomInput && (
+        <input
+          type="text"
+          placeholder="Paste playlist URL"
+          value={customUrl}
+          onChange={(e) => setCustomUrl(e.target.value)}
+          onBlur={handleCustomUrlSubmit}
+          style={{
+            background: 'transparent',
+            border: '1px solid ${props => props.theme.colors.border}',
+            color: 'inherit',
+            fontSize: '10px',
+            padding: '2px 4px',
+            borderRadius: '4px',
+            maxWidth: '100px',
+            outline: 'none',
+          }}
+        />
+      )}
+      <MusicControlButton onClick={togglePlay}>
+        {isPlaying ? <PauseIcon /> : <PlayIcon />}
+      </MusicControlButton>
+      <VolumeIcon />
+      <VolumeSlider type="range" min="0" max="100" value={volume} onChange={handleVolumeChange} />
+      <div ref={playerContainerRef} style={{ display: 'none' }} />
+    </MusicPlayerWrapper>
+  );
+};
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
-
 const TopPanel = ({ 
   isSidebarOpen, 
   onSidebarToggle, 
@@ -1439,20 +1546,17 @@ const TopPanel = ({
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [currencySearch, setCurrencySearch] = useState('');
   
-  // Funds Modal state
   const [fundModalAction, setFundModalAction] = useState(null);
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showBalance, setShowBalance] = useState(false);
 
-  // Withdrawal confirmation steps
   const [withdrawConfirmationStep, setWithdrawConfirmationStep] = useState(false);
   const [withdrawConfirmationData, setWithdrawConfirmationData] = useState(null);
   const [confirmationPhone, setConfirmationPhone] = useState('');
   const [confirmationError, setConfirmationError] = useState('');
   const [withdrawSuccess, setWithdrawSuccess] = useState(false);
 
-  // Deposit waiting screen
   const [depositPending, setDepositPending] = useState(false);
   
   const dropdownRef = useRef(null);
@@ -2008,6 +2112,10 @@ const TopPanel = ({
             </ConnectionStatus>
           </BrandContainer>
         </LeftSection>
+
+        <CenterSection>
+          <MusicPlayer />
+        </CenterSection>
 
         <RightSection>
           {/* 1. THEME ICON BUTTON */}
