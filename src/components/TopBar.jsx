@@ -1507,7 +1507,7 @@ const MusicPlayer = () => {
           onBlur={handleCustomUrlSubmit}
           style={{
             background: 'transparent',
-            border: '1px solid ${props => props.theme.colors.border}',
+            border: '1px solid #3b82f6',
             color: 'inherit',
             fontSize: '10px',
             padding: '2px 4px',
@@ -1526,6 +1526,82 @@ const MusicPlayer = () => {
     </MusicPlayerWrapper>
   );
 };
+
+// ============================================
+// BRAND COMPONENTS
+// ============================================
+const BrandContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const BrandText = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 1.35rem;
+  font-weight: 800;
+  user-select: none;
+  cursor: default;
+  gap: 2px;
+  
+  .voltix {
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+  }
+
+  .dot {
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+  }
+`;
+
+const PlatformSelector = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: none;
+  color: #ff444f;
+  font-style: italic;
+  font-weight: 900;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  .chevron {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    transition: transform 0.2s;
+  }
+`;
+
+const ConnectionStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: ${props => props.connected ? '#10b981' : '#ef4444'};
+    box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'};
+  }
+
+  .status-text {
+    font-size: 10px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+`;
 
 // ============================================
 // MAIN COMPONENT
