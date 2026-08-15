@@ -186,6 +186,19 @@ const SearchIcon = () => (
   </svg>
 );
 
+// New icons for Next and Previous
+const NextIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <polygon points="4 4 18 12 4 20 4 4" />
+  </svg>
+);
+
+const PrevIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+    <polygon points="20 4 6 12 20 20 20 4" />
+  </svg>
+);
+
 // ============================================
 // FUNDS MODAL COMPONENTS – THEME‑AWARE
 // ============================================
@@ -1271,7 +1284,7 @@ const Spinner = styled.div`
 `;
 
 // ============================================
-// MUSIC PLAYER (WITH SEARCH)
+// MUSIC PLAYER (WITH SEARCH, NEXT/BACK)
 // ============================================
 const MusicPlayerContainer = styled.div`
   display: flex;
@@ -1503,7 +1516,14 @@ const MusicPlayer = () => {
         },
         events: {
           onReady: (e) => e.target.setVolume(volume),
-          onStateChange: (e) => setIsPlaying(e.data === window.YT.PlayerState.PLAYING),
+          onStateChange: (e) => {
+            setIsPlaying(e.data === window.YT.PlayerState.PLAYING);
+            // Update title when playing a new video
+            if (e.data === window.YT.PlayerState.PLAYING && playerRef.current && playerRef.current.getVideoData) {
+              const data = playerRef.current.getVideoData();
+              if (data && data.title) setSelectedPlaylist(data.title);
+            }
+          },
         },
       });
     }
@@ -1523,6 +1543,18 @@ const MusicPlayer = () => {
         list: playlistId,
       });
       playerRef.current.setVolume(volume);
+    }
+  };
+
+  const handleNext = () => {
+    if (playerRef.current && playerRef.current.nextVideo) {
+      playerRef.current.nextVideo();
+    }
+  };
+
+  const handlePrev = () => {
+    if (playerRef.current && playerRef.current.previousVideo) {
+      playerRef.current.previousVideo();
     }
   };
 
@@ -1658,9 +1690,17 @@ const MusicPlayer = () => {
         </MusicDropdownMenu>
       </div>
 
-      <MusicControlButton onClick={togglePlay}>
+      {/* Player controls: Previous, Play/Pause, Next */}
+      <MusicControlButton onClick={handlePrev} aria-label="Previous">
+        <PrevIcon />
+      </MusicControlButton>
+      <MusicControlButton onClick={togglePlay} aria-label="Play/Pause">
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
       </MusicControlButton>
+      <MusicControlButton onClick={handleNext} aria-label="Next">
+        <NextIcon />
+      </MusicControlButton>
+
       <VolumeIcon />
       <VolumeSlider type="range" min="0" max="100" value={volume} onChange={handleVolumeChange} />
       <div ref={playerContainerRef} style={{ display: 'none' }} />
