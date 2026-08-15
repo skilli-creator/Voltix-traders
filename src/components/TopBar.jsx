@@ -186,7 +186,6 @@ const SearchIcon = () => (
   </svg>
 );
 
-// New icons for Next and Previous
 const NextIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
     <polygon points="4 4 18 12 4 20 4 4" />
@@ -1284,7 +1283,7 @@ const Spinner = styled.div`
 `;
 
 // ============================================
-// MUSIC PLAYER (WITH SEARCH, NEXT/BACK)
+// MUSIC PLAYER (LOCAL + YOUTUBE SEARCH)
 // ============================================
 const MusicPlayerContainer = styled.div`
   display: flex;
@@ -1338,7 +1337,7 @@ const MusicDropdownButton = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
-  max-width: 140px;
+  max-width: 170px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1356,8 +1355,8 @@ const MusicDropdownMenu = styled.div`
   background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: 12px;
-  width: 260px;
-  max-height: 340px;
+  width: 320px;
+  max-height: 400px;
   overflow-y: auto;
   z-index: 1000;
   box-shadow: 0 20px 50px rgba(0,0,0,0.3);
@@ -1373,7 +1372,7 @@ const MusicSearchInput = styled.input`
   background: ${props => props.theme.colors.background};
   color: ${props => props.theme.colors.text};
   font-size: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   outline: none;
 
   &:focus {
@@ -1385,7 +1384,7 @@ const MusicResultItem = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px;
+  padding: 10px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s;
@@ -1400,6 +1399,19 @@ const MusicResultItem = styled.div`
     border-radius: 6px;
     background: ${props => props.theme.colors.border};
     object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .music-note-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.theme.colors.accent};
+    flex-shrink: 0;
   }
 
   .info {
@@ -1416,6 +1428,11 @@ const MusicResultItem = styled.div`
       font-size: 10px;
       color: ${props => props.theme.colors.textMuted};
     }
+  }
+
+  &.active {
+    background: ${props => props.theme.colors.accentLight || props.theme.colors.accentActive};
+    border-left: 3px solid ${props => props.theme.colors.accent};
   }
 `;
 
@@ -1473,55 +1490,62 @@ const VolumeSlider = styled.input`
 
 const YOUTUBE_API_KEY = 'YOUR_API_KEY_HERE'; // Replace with your actual key
 
+// Import all mp3 files from the music folder
+const musicFiles = import.meta.glob('../assets/music/*.mp3', { eager: true, import: 'default' });
+
+// Create array of local tracks
+const localTracks = Object.entries(musicFiles)
+  .map(([path, url]) => {
+    const fileName = path.split('/').pop() || path;
+    const title = fileName.replace(/\.mp3$/, '');
+    return { title, src: url };
+  })
+  .sort((a, b) => a.title.localeCompare(b.title));
+
 const MusicPlayer = () => {
+  const [currentSource, setCurrentSource] = useState('local'); // 'local' or 'youtube'
+  const [currentLocalIndex, setCurrentLocalIndex] = useState(0);
+  const [currentYoutubeVideoId, setCurrentYoutubeVideoId] = useState(null);
+  const [currentTitle, setCurrentTitle] = useState(localTracks[0]?.title || 'Select Song');
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(50);
-  const [selectedPlaylist, setSelectedPlaylist] = useState('Lo-Fi Beats');
+  const [volume, setVolume] = useState(0.5);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const playerRef = useRef(null);
+  const audioRef = useRef(null);
   const playerContainerRef = useRef(null);
+  const playerRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  const presetPlaylists = [
-    { id: 'lofi', name: 'Lo-Fi Beats', playlistId: 'PLzCxunOM5WFJx0D5ZgV5g3L9r4v3Yh7X' },
-    { id: 'focus', name: 'Trading Focus', playlistId: 'PL6QREj8j1nYQ0Z4c9f6e3H5E1V2s0R7i' },
-    { id: 'ambient', name: 'Ambient', playlistId: 'PL0F1A8D0B2E3F6A2' },
-  ];
-
+  // Initialize YouTube player
   useEffect(() => {
     if (!window.YT) {
       const tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
-      window.onYouTubeIframeAPIReady = () => createPlayer();
+      window.onYouTubeIframeAPIReady = () => createYoutubePlayer();
       document.head.appendChild(tag);
     } else {
-      createPlayer();
+      createYoutubePlayer();
     }
     return () => {
       if (playerRef.current) playerRef.current.destroy();
     };
   }, []);
 
-  const createPlayer = () => {
+  const createYoutubePlayer = () => {
     if (playerContainerRef.current && window.YT && !playerRef.current) {
       playerRef.current = new window.YT.Player(playerContainerRef.current, {
         height: '0',
         width: '0',
-        playerVars: {
-          controls: 0,
-          autoplay: 0,
-        },
+        playerVars: { controls: 0, autoplay: 0 },
         events: {
-          onReady: (e) => e.target.setVolume(volume),
+          onReady: (e) => e.target.setVolume(volume * 100),
           onStateChange: (e) => {
             setIsPlaying(e.data === window.YT.PlayerState.PLAYING);
-            // Update title when playing a new video
-            if (e.data === window.YT.PlayerState.PLAYING && playerRef.current && playerRef.current.getVideoData) {
+            if (e.data === window.YT.PlayerState.PLAYING && playerRef.current) {
               const data = playerRef.current.getVideoData();
-              if (data && data.title) setSelectedPlaylist(data.title);
+              if (data && data.title) setCurrentTitle(data.title);
             }
           },
         },
@@ -1529,69 +1553,63 @@ const MusicPlayer = () => {
     }
   };
 
-  const playVideo = (videoId) => {
+  // Load local track
+  const playLocalTrack = (index) => {
+    if (audioRef.current) {
+      audioRef.current.src = localTracks[index].src;
+      audioRef.current.load();
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    }
+    setCurrentLocalIndex(index);
+    setCurrentTitle(localTracks[index].title);
+    setCurrentSource('local');
+    if (playerRef.current) playerRef.current.pauseVideo();
+  };
+
+  // Play YouTube video
+  const playYoutubeVideo = (videoId, title) => {
     if (playerRef.current) {
       playerRef.current.loadVideoById(videoId);
-      playerRef.current.setVolume(volume);
+      playerRef.current.setVolume(volume * 100);
     }
+    setCurrentYoutubeVideoId(videoId);
+    setCurrentTitle(title);
+    setCurrentSource('youtube');
+    if (audioRef.current) audioRef.current.pause();
+    setIsPlaying(true);
   };
 
-  const playPlaylist = (playlistId) => {
-    if (playerRef.current) {
-      playerRef.current.loadPlaylist({
-        listType: 'playlist',
-        list: playlistId,
-      });
-      playerRef.current.setVolume(volume);
-    }
-  };
-
+  // Next/Prev for local tracks
   const handleNext = () => {
-    if (playerRef.current && playerRef.current.nextVideo) {
+    if (currentSource === 'local') {
+      const nextIndex = (currentLocalIndex + 1) % localTracks.length;
+      playLocalTrack(nextIndex);
+    } else if (playerRef.current) {
       playerRef.current.nextVideo();
     }
   };
 
   const handlePrev = () => {
-    if (playerRef.current && playerRef.current.previousVideo) {
+    if (currentSource === 'local') {
+      const prevIndex = (currentLocalIndex - 1 + localTracks.length) % localTracks.length;
+      playLocalTrack(prevIndex);
+    } else if (playerRef.current) {
       playerRef.current.previousVideo();
     }
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim() || YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') return;
-    setIsSearching(true);
-    try {
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(searchQuery)}&type=video&key=${YOUTUBE_API_KEY}`
-      );
-      const data = await response.json();
-      if (data.items) {
-        setSearchResults(data.items);
-      }
-    } catch (error) {
-      console.error('YouTube search error:', error);
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
-  const handleSelectResult = (item) => {
-    playVideo(item.id.videoId);
-    setSelectedPlaylist(item.snippet.title);
-    setIsDropdownOpen(false);
-    setSearchQuery('');
-    setSearchResults([]);
-  };
-
-  const handlePresetSelect = (playlist) => {
-    playPlaylist(playlist.playlistId);
-    setSelectedPlaylist(playlist.name);
-    setIsDropdownOpen(false);
-  };
-
+  // Toggle play/pause
   const togglePlay = () => {
-    if (playerRef.current) {
+    if (currentSource === 'local') {
+      if (audioRef.current) {
+        if (isPlaying) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        } else {
+          audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+        }
+      }
+    } else if (playerRef.current) {
       if (isPlaying) {
         playerRef.current.pauseVideo();
         setIsPlaying(false);
@@ -1602,12 +1620,32 @@ const MusicPlayer = () => {
     }
   };
 
+  // Volume change
   const handleVolumeChange = (e) => {
-    const vol = parseInt(e.target.value, 10);
+    const vol = parseFloat(e.target.value);
     setVolume(vol);
-    if (playerRef.current) playerRef.current.setVolume(vol);
+    if (audioRef.current) audioRef.current.volume = vol;
+    if (playerRef.current) playerRef.current.setVolume(vol * 100);
   };
 
+  // YouTube search
+  const handleSearch = async () => {
+    if (!searchQuery.trim() || YOUTUBE_API_KEY === 'YOUR_API_KEY_HERE') return;
+    setIsSearching(true);
+    try {
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(searchQuery)}&type=video&key=${YOUTUBE_API_KEY}`
+      );
+      const data = await response.json();
+      if (data.items) setSearchResults(data.items);
+    } catch (error) {
+      console.error('YouTube search error:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -1618,23 +1656,32 @@ const MusicPlayer = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Handle local audio events
+  const handleLocalEnded = () => {
+    handleNext();
+  };
+
   return (
     <MusicPlayerContainer>
       <div className="music-label">
         <span className="label-icon"><MusicIcon /></span>
-        Trading Music
+        MyTradeApp Music
       </div>
 
       <div ref={dropdownRef} style={{ position: 'relative' }}>
         <MusicDropdownButton onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-          {selectedPlaylist}
+          {currentTitle}
           <ChevronDownIcon open={isDropdownOpen} />
         </MusicDropdownButton>
 
         <MusicDropdownMenu isOpen={isDropdownOpen}>
+          {/* Search section */}
+          <div style={{ marginBottom: 8, fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            Search YouTube
+          </div>
           <MusicSearchInput
             type="text"
-            placeholder="Search YouTube..."
+            placeholder="Search songs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -1657,20 +1704,15 @@ const MusicPlayer = () => {
             </button>
           </div>
 
-          <div style={{ marginBottom: 8, fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Presets</div>
-          {presetPlaylists.map(playlist => (
-            <MusicResultItem key={playlist.id} onClick={() => handlePresetSelect(playlist)}>
-              <div className="info">
-                <div className="title">{playlist.name}</div>
-              </div>
-            </MusicResultItem>
-          ))}
+          {isSearching && <div style={{ textAlign: 'center', padding: 10, fontSize: 12 }}>Searching...</div>}
 
           {searchResults.length > 0 && (
             <>
-              <div style={{ marginTop: 12, marginBottom: 8, fontSize: 10, color: '#94a3b8', textTransform: 'uppercase' }}>Search Results</div>
+              <div style={{ marginTop: 8, marginBottom: 8, fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                Results
+              </div>
               {searchResults.map(item => (
-                <MusicResultItem key={item.id.videoId} onClick={() => handleSelectResult(item)}>
+                <MusicResultItem key={item.id.videoId} onClick={() => playYoutubeVideo(item.id.videoId, item.snippet.title)}>
                   <img className="thumb" src={item.snippet.thumbnails.default.url} alt="" />
                   <div className="info">
                     <div className="title">{item.snippet.title}</div>
@@ -1681,16 +1723,31 @@ const MusicPlayer = () => {
             </>
           )}
 
-          {isSearching && <div style={{ textAlign: 'center', padding: 10, fontSize: 12 }}>Searching...</div>}
-          {!isSearching && searchQuery && searchResults.length === 0 && (
-            <div style={{ textAlign: 'center', padding: 10, fontSize: 12, color: '#94a3b8' }}>
-              No results. Try another query.
+          {/* Local favourites */}
+          <div style={{ marginTop: 12, marginBottom: 8, fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            MyTradeApp favourites
+          </div>
+          {localTracks.map((track, index) => (
+            <MusicResultItem
+              key={track.src}
+              className={currentSource === 'local' && index === currentLocalIndex ? 'active' : ''}
+              onClick={() => playLocalTrack(index)}
+            >
+              <div className="music-note-icon"><MusicIcon /></div>
+              <div className="info">
+                <div className="title">{track.title}</div>
+              </div>
+            </MusicResultItem>
+          ))}
+          {localTracks.length === 0 && (
+            <div style={{ padding: 10, textAlign: 'center', fontSize: 12, color: '#94a3b8' }}>
+              No local songs found. Add .mp3 files to src/assets/music/
             </div>
           )}
         </MusicDropdownMenu>
       </div>
 
-      {/* Player controls: Previous, Play/Pause, Next */}
+      {/* Player controls */}
       <MusicControlButton onClick={handlePrev} aria-label="Previous">
         <PrevIcon />
       </MusicControlButton>
@@ -1702,7 +1759,23 @@ const MusicPlayer = () => {
       </MusicControlButton>
 
       <VolumeIcon />
-      <VolumeSlider type="range" min="0" max="100" value={volume} onChange={handleVolumeChange} />
+      <VolumeSlider
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volume}
+        onChange={handleVolumeChange}
+      />
+
+      {/* Hidden audio element for local playback */}
+      <audio
+        ref={audioRef}
+        style={{ display: 'none' }}
+        onEnded={handleLocalEnded}
+      />
+
+      {/* Hidden container for YouTube player */}
       <div ref={playerContainerRef} style={{ display: 'none' }} />
     </MusicPlayerContainer>
   );
