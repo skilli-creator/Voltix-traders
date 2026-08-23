@@ -220,14 +220,14 @@ const PrevIcon = () => (
 );
 
 // ============================================
-// FUNDS MODAL - PREMIUM DESIGN
+// FUNDS MODAL - PREMIUM DESIGN WITH CLEAR TRANSPARENT BACKGROUND
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.12); /* Very light transparent overlay */
+  backdrop-filter: blur(4px); /* Subtle blur for legibility */
+  -webkit-backdrop-filter: blur(4px);
   z-index: 500;
   display: flex;
   align-items: center;
@@ -382,9 +382,9 @@ const ConfirmationMessage = styled.div`
 const SuccessOverlay = styled.div`
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.1); /* Very transparent */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -936,13 +936,13 @@ const GlassDropdownMenu = styled.div`
   max-width: 90vw;
   max-height: 460px;
   overflow-y: auto;
-  background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(15,17,23,0.92)'};
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255,255,255,0.08)'};
+  background: rgba(15, 17, 23, 0.65); /* More transparent */
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255,255,255,0.06)'};
   border-radius: 16px;
   padding: 8px;
-  box-shadow: 0 30px 60px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset;
+  box-shadow: 0 30px 60px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.02) inset;
   opacity: ${props => props.isOpen ? 1 : 0};
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
   transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-8px) scale(0.96)'};
