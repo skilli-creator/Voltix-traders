@@ -2375,6 +2375,7 @@ const TopPanel = ({
                   <MenuHeader>Select Platform</MenuHeader>
                   <div style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'deriv' ? '#ff444f' : '#cbd5e1' }} onClick={() => { setPlatform('deriv'); setIsPlatformOpen(false); }}>Deriv</div>
                   <div style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'forex' ? '#3b82f6' : '#cbd5e1' }} onClick={() => { setPlatform('forex'); setIsPlatformOpen(false); }}>Forex</div>
+                   <div style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'crypto' ? '#ce16cb' : '#3dc01c' }} onClick={() => { setPlatform('crypto'); setIsPlatformOpen(false); }}>Crypto</div>
                 </PlatformDropdown>
               </DropdownContainer>
             </BrandText>
