@@ -117,13 +117,6 @@ const CheckmarkIcon = ({ size = 48 }) => (
   </svg>
 );
 
-const MPesaIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M8 8l4 8 4-8" />
-  </svg>
-);
-
 const OverviewIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2" />
@@ -156,7 +149,7 @@ const EyeIcon = ({ visible }) => (
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: transparent;
   z-index: 500;
   display: flex;
   align-items: center;
@@ -181,9 +174,8 @@ const ModalCard = styled.div`
 
   @media (max-width: 480px) {
     max-width: 100%;
-    margin: 0;
-    border-radius: 20px 20px 0 0;
-    max-height: 92vh;
+    margin: 12px;
+    border-radius: 16px;
   }
 `;
 
@@ -692,7 +684,7 @@ const HistoryList = styled.div`
 `;
 
 // ============================================
-// CORE CONTAINERS — PREMIUM MOBILE LAYOUT
+// CORE CONTAINERS
 // ============================================
 const TopBar = styled.header`
   display: flex;
@@ -711,34 +703,21 @@ const TopBar = styled.header`
 
   @media (max-width: 1024px) {
     padding: 12px 20px;
+    flex-wrap: wrap;
     gap: 12px;
   }
 
-  /* PREMIUM MOBILE LAYOUT */
-  @media (max-width: 900px) {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 14px 16px 12px;
-    gap: 12px;
+  @media (max-width: 768px) {
+    padding: 10px 14px;
     min-height: auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
   }
 
   @media (max-width: 480px) {
-    padding: 12px 14px 10px;
-    gap: 10px;
-  }
-`;
-
-// Mobile header top row (brand + theme)
-const MobileHeaderTop = styled.div`
-  display: contents;
-
-  @media (max-width: 900px) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    gap: 12px;
+    padding: 8px 12px;
+    gap: 6px;
   }
 `;
 
@@ -748,14 +727,14 @@ const LeftSection = styled.div`
   gap: 16px;
   flex-shrink: 0;
 
-  @media (max-width: 900px) {
+  @media (max-width: 768px) {
+    gap: 10px;
     flex: 1;
     min-width: 0;
-    gap: 12px;
   }
 
   @media (max-width: 480px) {
-    gap: 10px;
+    gap: 8px;
   }
 `;
 
@@ -765,33 +744,22 @@ const RightSection = styled.div`
   gap: 10px;
   flex-wrap: wrap;
 
-  /* On mobile: split into two rows.
-     Row 1 = theme icon (moves to top via order).
-     Row 2 = Funds + Account + Exit */
-  @media (max-width: 900px) {
-    width: 100%;
+  @media (max-width: 1024px) {
     gap: 8px;
-    flex-wrap: nowrap;
-    order: 3;
   }
 
-  @media (max-width: 480px) {
+  /* Position buttons to the RIGHT on mobile */
+  @media (max-width: 768px) {
     gap: 6px;
-  }
-`;
-
-// Wrapper to split buttons into theme-only and action-group on mobile
-const ThemeButtonWrapper = styled.div`
-  @media (max-width: 900px) {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    z-index: 5;
+    width: 100%;
+    justify-content: flex-end;
+    order: 2;
+    flex-wrap: nowrap;
   }
 
   @media (max-width: 480px) {
-    top: 12px;
-    right: 14px;
+    gap: 5px;
+    justify-content: flex-end;
   }
 `;
 
@@ -800,6 +768,7 @@ const DropdownContainer = styled.div`
   display: inline-block;
 `;
 
+// Original dropdown style — absolute positioned, right aligned
 const GlassDropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
@@ -824,34 +793,12 @@ const GlassDropdownMenu = styled.div`
 
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
-  @media (max-width: 900px) {
-    position: fixed;
-    top: auto;
-    bottom: 20px;
-    left: 50%;
-    right: auto;
-    transform: ${props => props.isOpen 
-      ? 'translateX(-50%) translateY(0) scale(1)' 
-      : 'translateX(-50%) translateY(10px) scale(0.98)'};
-    min-width: 0;
-    width: calc(100vw - 32px);
-    max-width: 420px;
-    max-height: 65vh;
-    border-radius: 20px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.7);
-  }
 `;
 
 const PlatformDropdown = styled(GlassDropdownMenu)`
   min-width: 160px;
   left: 0;
   right: auto;
-
-  @media (max-width: 900px) {
-    left: 50%;
-    right: auto;
-  }
 `;
 
 const MenuHeader = styled.div`
@@ -869,11 +816,11 @@ const IconThemeButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.05)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.12)'};
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   color: ${props => props.theme?.colors?.text || '#ffffff'};
@@ -895,9 +842,8 @@ const IconThemeButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
+    width: 34px;
+    height: 34px;
   }
 `;
 
@@ -935,31 +881,24 @@ const ThemeOptionItem = styled.div`
   .check-mark { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; font-weight: 700; }
 `;
 
-// Premium "funds" pill button
 const FundsButton = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  padding: 10px 16px;
-  border-radius: 12px;
+  padding: 7px 15px;
+  border-radius: 10px;
   border: 1px solid ${props => props.theme?.colors?.accent || '#3b82f6'};
-  background: linear-gradient(135deg, 
-    ${props => (props.theme?.colors?.accent || '#3b82f6') + '22'} 0%, 
-    ${props => (props.theme?.colors?.accent || '#3b82f6') + '08'} 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
   color: ${props => props.theme?.colors?.text || '#ffffff'};
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
-  white-space: nowrap;
 
   &:hover {
-    background: linear-gradient(135deg, 
-      ${props => (props.theme?.colors?.accent || '#3b82f6') + '35'} 0%, 
-      ${props => (props.theme?.colors?.accent || '#3b82f6') + '15'} 100%);
-    box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '35'};
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
+    box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '30'};
     transform: translateY(-1px);
   }
 
@@ -970,44 +909,34 @@ const FundsButton = styled.button`
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
-  .funds-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#fff'};
+  .funds-content { display: flex; flex-direction: column; line-height: 1.2; }
+  .funds-title { font-size: 12.5px; font-weight: 700; }
+  .funds-sub {
+    font-size: 9px;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-weight: 500;
+    letter-spacing: 0.2px;
   }
 
-  /* On mobile: fill the row and be more prominent */
-  @media (max-width: 900px) {
-    flex: 1;
-    padding: 12px 14px;
-    border-radius: 14px;
-    justify-content: center;
+  .arrow {
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, color 0.3s ease;
+    opacity: 0.8;
+    margin-left: 2px;
+  }
 
-    .funds-icon-wrapper svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .funds-title {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.2px;
-    }
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    .funds-sub { display: none; }
+    .funds-title { font-size: 11px; }
   }
 
   @media (max-width: 480px) {
-    padding: 11px 10px;
-    border-radius: 12px;
-    gap: 6px;
-
-    .funds-icon-wrapper svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    .funds-title {
-      font-size: 12px;
-    }
+    padding: 6px 9px;
+    gap: 5px;
+    .funds-icon-wrapper svg { width: 15px; height: 15px; }
+    .funds-title { font-size: 10.5px; }
   }
 `;
 
@@ -1092,15 +1021,14 @@ const COUNTRY_CURRENCIES = [
   { code: 'ETB', flag: '🇪🇹', name: 'Ethiopian Birr', symbol: 'Br' },
 ];
 
-// Premium account pill
 const AccountBadge = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 14px;
+  padding: 7px 14px;
   background: ${props => props.theme?.colors?.surface || 'rgba(15, 23, 42, 0.6)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
@@ -1108,7 +1036,6 @@ const AccountBadge = styled.div`
   font-weight: 700;
   color: ${props => props.theme?.colors?.text || '#ffffff'};
   flex-shrink: 0;
-  white-space: nowrap;
 
   &:hover {
     background: ${props => props.theme?.colors?.surfaceHover || '#1e293b'};
@@ -1143,32 +1070,23 @@ const AccountBadge = styled.div`
 
   .chevron { display: flex; align-items: center; opacity: 0.6; }
 
-  /* On mobile: fill the row elegantly */
-  @media (max-width: 900px) {
-    flex: 1;
-    justify-content: center;
-    padding: 12px 14px;
-    border-radius: 14px;
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    font-size: 11.5px;
     gap: 6px;
-
-    .flag-badge { font-size: 16px; }
-    .balance-display { font-size: 13px; }
+    .flag-badge { font-size: 14px; }
+    .currency-tag { font-size: 8px; padding: 1px 5px; }
+    .account-type-badge { font-size: 8px; padding: 1px 5px; }
   }
 
   @media (max-width: 480px) {
-    padding: 11px 10px;
-    border-radius: 12px;
-    gap: 4px;
-    font-size: 11.5px;
-
-    .flag-badge { font-size: 14px; }
-    .balance-display { font-size: 12px; }
+    padding: 5px 8px;
+    gap: 5px;
+    font-size: 11px;
+    .flag-badge { font-size: 13px; }
+    .balance-display { font-size: 11px; }
     .currency-tag { display: none; }
-    .account-type-badge { 
-      font-size: 8px; 
-      padding: 1px 5px; 
-      margin-left: 2px;
-    }
+    .account-type-badge { font-size: 7px; padding: 1px 4px; margin-left: 2px; }
     .chevron svg { width: 10px; height: 10px; }
   }
 `;
@@ -1234,14 +1152,12 @@ const CurrencyList = styled.div`
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 `;
 
-// Premium exit button — icon-only on mobile
 const ExitButton = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 6px;
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 7px 14px;
+  border-radius: 10px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
   background: ${props => props.theme?.colors?.surface || 'transparent'};
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
@@ -1261,25 +1177,18 @@ const ExitButton = styled.button`
 
   .exit-icon { width: 16px; height: 16px; transition: stroke 0.3s ease; display: flex; }
 
-  /* On mobile: compact icon-only button */
-  @media (max-width: 900px) {
-    padding: 0;
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
-    flex: 0 0 auto;
-    gap: 0;
-
-    .exit-icon { width: 18px; height: 18px; }
-    > span:not(.exit-icon) { display: none; }
+  @media (max-width: 768px) {
+    padding: 6px 10px;
+    font-size: 11.5px;
+    .exit-icon { width: 14px; height: 14px; }
   }
 
   @media (max-width: 480px) {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-
-    .exit-icon { width: 16px; height: 16px; }
+    padding: 6px 9px;
+    font-size: 10.5px;
+    gap: 4px;
+    span:not(.exit-icon) { display: none; }
+    .exit-icon { width: 15px; height: 15px; }
   }
 `;
 
@@ -1328,11 +1237,11 @@ const BrandText = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 1.05rem;
+    font-size: 1rem;
   }
 `;
 
@@ -1394,11 +1303,11 @@ const SidebarToggle = styled.button`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
@@ -1435,26 +1344,8 @@ const SidebarToggle = styled.button`
   }
 
   @media (max-width: 480px) {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-  }
-`;
-
-// Wrapper for the mobile action row (Funds + Account + Exit)
-const MobileActionRow = styled.div`
-  display: contents;
-
-  @media (max-width: 900px) {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    order: 3;
-  }
-
-  @media (max-width: 480px) {
-    gap: 6px;
+    width: 34px;
+    height: 34px;
   }
 `;
 
@@ -1910,7 +1801,6 @@ const TopPanel = ({
   return (
     <>
       <TopBar>
-        {/* LEFT: Sidebar toggle + Brand */}
         <LeftSection>
           <SidebarToggle isOpen={isSidebarOpen} onClick={onSidebarToggle} aria-label="Toggle sidebar">
             <span className="line" />
@@ -1940,95 +1830,92 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* RIGHT: Theme (top-right on mobile), then Funds + Account + Exit (bottom row on mobile) */}
+        {/* RIGHT SIDE — all buttons aligned to the right */}
         <RightSection>
-          <ThemeButtonWrapper>
-            <DropdownContainer ref={themeRef}>
-              <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
-                <span className="theme-icon"><ThemeIcon /></span>
-              </IconThemeButton>
-              <GlassDropdownMenu isOpen={isThemeOpen}>
-                <MenuHeader>Choose Theme</MenuHeader>
-                {THEME_OPTIONS.map((t) => (
-                  <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
-                    <span className="color-dot" style={{ background: t.color }} />
-                    <span className="theme-label">{t.name}</span>
-                    {currentTheme === t.key && <span className="check-mark">✓</span>}
-                  </ThemeOptionItem>
-                ))}
-              </GlassDropdownMenu>
-            </DropdownContainer>
-          </ThemeButtonWrapper>
+          <DropdownContainer ref={themeRef}>
+            <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
+              <span className="theme-icon"><ThemeIcon /></span>
+            </IconThemeButton>
+            <GlassDropdownMenu isOpen={isThemeOpen}>
+              <MenuHeader>Choose Theme</MenuHeader>
+              {THEME_OPTIONS.map((t) => (
+                <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
+                  <span className="color-dot" style={{ background: t.color }} />
+                  <span className="theme-label">{t.name}</span>
+                  {currentTheme === t.key && <span className="check-mark">✓</span>}
+                </ThemeOptionItem>
+              ))}
+            </GlassDropdownMenu>
+          </DropdownContainer>
 
-          <MobileActionRow>
-            {/* Funds Button */}
-            <DropdownContainer ref={fundsRef} style={{ flex: 'inherit' }}>
-              <FundsButton onClick={toggleFundsDropdown}>
-                <span className="funds-icon-wrapper"><FundsIcon /></span>
+          <DropdownContainer ref={fundsRef}>
+            <FundsButton onClick={toggleFundsDropdown}>
+              <span className="funds-icon-wrapper"><FundsIcon /></span>
+              <span className="funds-content">
                 <span className="funds-title">Funds</span>
-              </FundsButton>
-              <GlassDropdownMenu isOpen={isFundsOpen}>
-                <MenuHeader>Funds Management</MenuHeader>
-                {fundOptions.map((option, index) => (
-                  <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
-                    <span className="fund-icon">{option.icon}</span>
-                    <span className="fund-info">
-                      <span className="fund-name">{option.name}</span>
-                      <span className="fund-desc">{option.desc}</span>
-                    </span>
-                  </FundsOption>
-                ))}
-              </GlassDropdownMenu>
-            </DropdownContainer>
+                <span className="funds-sub">Manage your money</span>
+              </span>
+              <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
+            </FundsButton>
+            <GlassDropdownMenu isOpen={isFundsOpen}>
+              <MenuHeader>Funds Management</MenuHeader>
+              {fundOptions.map((option, index) => (
+                <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
+                  <span className="fund-icon">{option.icon}</span>
+                  <span className="fund-info">
+                    <span className="fund-name">{option.name}</span>
+                    <span className="fund-desc">{option.desc}</span>
+                  </span>
+                </FundsOption>
+              ))}
+            </GlassDropdownMenu>
+          </DropdownContainer>
 
-            {/* Account Badge */}
-            <DropdownContainer ref={dropdownRef} style={{ flex: 'inherit' }}>
-              <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
-                <span className="flag-badge">{getCurrencyFlag()}</span>
-                <span className="balance-display">{getFormattedBalance(currentAccount)}</span>
-                <span className="account-type-badge">{currentAccount.label}</span>
-                <span className="currency-tag">{selectedCurrency}</span>
-                <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
-              </AccountBadge>
-              <GlassDropdownMenu isOpen={isDropdownOpen}>
-                <MenuHeader>Account</MenuHeader>
-                <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
-                  <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
-                  <span className="theme-label">Real Account</span>
-                  <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
-                </ThemeOptionItem>
-                <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
-                  <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
-                  <span className="theme-label">Demo Practice</span>
-                  <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
-                </ThemeOptionItem>
-                <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
-                  <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
-                  <SearchInput type="text" placeholder="Search currency..." value={currencySearch} onChange={(e) => setCurrencySearch(e.target.value)} />
-                  <CurrencyList>
-                    {filteredCurrencies.length > 0 ? (
-                      filteredCurrencies.map((curr) => (
-                        <CurrencyOptionItem key={curr.code} onClick={() => { setSelectedCurrency(curr.code); setCurrencySearch(''); setIsDropdownOpen(false); }} className={selectedCurrency === curr.code ? 'active' : ''}>
-                          <span className="flag">{curr.flag}</span>
-                          <span className="code">{curr.code}</span>
-                          <span className="name">{curr.name}</span>
-                          {selectedCurrency === curr.code && <span className="check">✓</span>}
-                        </CurrencyOptionItem>
-                      ))
-                    ) : (
-                      <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No currencies found</div>
-                    )}
-                  </CurrencyList>
-                </div>
-              </GlassDropdownMenu>
-            </DropdownContainer>
+          <DropdownContainer ref={dropdownRef}>
+            <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
+              <span className="flag-badge">{getCurrencyFlag()}</span>
+              <span className="balance-display">{getFormattedBalance(currentAccount)}</span>
+              <span className="account-type-badge">{currentAccount.label}</span>
+              <span className="currency-tag">{selectedCurrency}</span>
+              <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
+            </AccountBadge>
+            <GlassDropdownMenu isOpen={isDropdownOpen}>
+              <MenuHeader>Account</MenuHeader>
+              <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
+                <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
+                <span className="theme-label">Real Account</span>
+                <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
+              </ThemeOptionItem>
+              <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
+                <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
+                <span className="theme-label">Demo Practice</span>
+                <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
+              </ThemeOptionItem>
+              <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
+                <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
+                <SearchInput type="text" placeholder="Search currency..." value={currencySearch} onChange={(e) => setCurrencySearch(e.target.value)} />
+                <CurrencyList>
+                  {filteredCurrencies.length > 0 ? (
+                    filteredCurrencies.map((curr) => (
+                      <CurrencyOptionItem key={curr.code} onClick={() => { setSelectedCurrency(curr.code); setCurrencySearch(''); setIsDropdownOpen(false); }} className={selectedCurrency === curr.code ? 'active' : ''}>
+                        <span className="flag">{curr.flag}</span>
+                        <span className="code">{curr.code}</span>
+                        <span className="name">{curr.name}</span>
+                        {selectedCurrency === curr.code && <span className="check">✓</span>}
+                      </CurrencyOptionItem>
+                    ))
+                  ) : (
+                    <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No currencies found</div>
+                  )}
+                </CurrencyList>
+              </div>
+            </GlassDropdownMenu>
+          </DropdownContainer>
 
-            {/* Exit Button */}
-            <ExitButton onClick={() => navigate('/')} aria-label="Exit">
-              <span className="exit-icon"><ExitIcon /></span>
-              <span>Exit</span>
-            </ExitButton>
-          </MobileActionRow>
+          <ExitButton onClick={() => navigate('/')} aria-label="Exit">
+            <span className="exit-icon"><ExitIcon /></span>
+            <span>Exit</span>
+          </ExitButton>
         </RightSection>
       </TopBar>
 
