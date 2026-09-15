@@ -684,7 +684,7 @@ const HistoryList = styled.div`
 `;
 
 // ============================================
-// CORE CONTAINERS
+// CORE CONTAINERS — FIXED Z-INDEX
 // ============================================
 const TopBar = styled.header`
   display: flex;
@@ -695,7 +695,8 @@ const TopBar = styled.header`
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   position: sticky;
   top: 0;
-  z-index: 100;
+  /* ✅ LOWERED from 100 to 90 so the sidebar (99) sits above it */
+  z-index: 90;
   min-height: 76px;
   flex-shrink: 0;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -795,13 +796,11 @@ const GlassDropdownMenu = styled.div`
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 `;
 
-// Anchor dropdown to the right (used for account/funds which sit on the right side)
 const RightAnchoredDropdown = styled(GlassDropdownMenu)`
   left: auto;
   right: 0;
 `;
 
-// Theme dropdown — explicitly drops to the right, small width
 const ThemeDropdownMenu = styled(GlassDropdownMenu)`
   left: 0;
   right: auto;
@@ -1844,13 +1843,11 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* RIGHT SIDE — buttons aligned to the right */}
         <RightSection>
           <DropdownContainer ref={themeRef}>
             <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
               <span className="theme-icon"><ThemeIcon /></span>
             </IconThemeButton>
-            {/* Theme dropdown now drops to the RIGHT */}
             <ThemeDropdownMenu isOpen={isThemeOpen}>
               <MenuHeader>Choose Theme</MenuHeader>
               {THEME_OPTIONS.map((t) => (
