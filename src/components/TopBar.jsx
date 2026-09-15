@@ -748,7 +748,6 @@ const RightSection = styled.div`
     gap: 8px;
   }
 
-  /* Position buttons to the RIGHT on mobile */
   @media (max-width: 768px) {
     gap: 6px;
     width: 100%;
@@ -768,11 +767,12 @@ const DropdownContainer = styled.div`
   display: inline-block;
 `;
 
-// Original dropdown style — absolute positioned, right aligned
+// Base dropdown — opens to the RIGHT by default (left: 0)
 const GlassDropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
-  right: 0;
+  left: 0;
+  right: auto;
   min-width: 300px;
   max-width: 90vw;
   max-height: 450px;
@@ -793,6 +793,20 @@ const GlassDropdownMenu = styled.div`
 
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+`;
+
+// Anchor dropdown to the right (used for account/funds which sit on the right side)
+const RightAnchoredDropdown = styled(GlassDropdownMenu)`
+  left: auto;
+  right: 0;
+`;
+
+// Theme dropdown — explicitly drops to the right, small width
+const ThemeDropdownMenu = styled(GlassDropdownMenu)`
+  left: 0;
+  right: auto;
+  min-width: 180px;
+  width: max-content;
 `;
 
 const PlatformDropdown = styled(GlassDropdownMenu)`
@@ -1830,13 +1844,14 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* RIGHT SIDE — all buttons aligned to the right */}
+        {/* RIGHT SIDE — buttons aligned to the right */}
         <RightSection>
           <DropdownContainer ref={themeRef}>
             <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
               <span className="theme-icon"><ThemeIcon /></span>
             </IconThemeButton>
-            <GlassDropdownMenu isOpen={isThemeOpen}>
+            {/* Theme dropdown now drops to the RIGHT */}
+            <ThemeDropdownMenu isOpen={isThemeOpen}>
               <MenuHeader>Choose Theme</MenuHeader>
               {THEME_OPTIONS.map((t) => (
                 <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
@@ -1845,7 +1860,7 @@ const TopPanel = ({
                   {currentTheme === t.key && <span className="check-mark">✓</span>}
                 </ThemeOptionItem>
               ))}
-            </GlassDropdownMenu>
+            </ThemeDropdownMenu>
           </DropdownContainer>
 
           <DropdownContainer ref={fundsRef}>
@@ -1857,7 +1872,7 @@ const TopPanel = ({
               </span>
               <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
             </FundsButton>
-            <GlassDropdownMenu isOpen={isFundsOpen}>
+            <RightAnchoredDropdown isOpen={isFundsOpen}>
               <MenuHeader>Funds Management</MenuHeader>
               {fundOptions.map((option, index) => (
                 <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
@@ -1868,7 +1883,7 @@ const TopPanel = ({
                   </span>
                 </FundsOption>
               ))}
-            </GlassDropdownMenu>
+            </RightAnchoredDropdown>
           </DropdownContainer>
 
           <DropdownContainer ref={dropdownRef}>
@@ -1879,7 +1894,7 @@ const TopPanel = ({
               <span className="currency-tag">{selectedCurrency}</span>
               <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
             </AccountBadge>
-            <GlassDropdownMenu isOpen={isDropdownOpen}>
+            <RightAnchoredDropdown isOpen={isDropdownOpen}>
               <MenuHeader>Account</MenuHeader>
               <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
                 <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
@@ -1909,7 +1924,7 @@ const TopPanel = ({
                   )}
                 </CurrencyList>
               </div>
-            </GlassDropdownMenu>
+            </RightAnchoredDropdown>
           </DropdownContainer>
 
           <ExitButton onClick={() => navigate('/')} aria-label="Exit">
