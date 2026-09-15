@@ -156,7 +156,7 @@ const EyeIcon = ({ visible }) => (
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: transparent;
+  background: rgba(0,0,0,0.4);
   z-index: 500;
   display: flex;
   align-items: center;
@@ -181,9 +181,9 @@ const ModalCard = styled.div`
 
   @media (max-width: 480px) {
     max-width: 100%;
-    margin: 12px;
-    border-radius: 16px;
-    max-height: 90vh;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
   }
 `;
 
@@ -692,7 +692,7 @@ const HistoryList = styled.div`
 `;
 
 // ============================================
-// CORE CONTAINERS — IMPROVED MOBILE LAYOUT
+// CORE CONTAINERS — PREMIUM MOBILE LAYOUT
 // ============================================
 const TopBar = styled.header`
   display: flex;
@@ -708,24 +708,37 @@ const TopBar = styled.header`
   flex-shrink: 0;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-  gap: 12px;
 
   @media (max-width: 1024px) {
     padding: 12px 20px;
-    flex-wrap: wrap;
+    gap: 12px;
   }
 
-  @media (max-width: 768px) {
-    padding: 10px 14px;
+  /* PREMIUM MOBILE LAYOUT */
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px 16px 12px;
+    gap: 12px;
     min-height: auto;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
   }
 
   @media (max-width: 480px) {
-    padding: 8px 10px;
-    gap: 6px;
+    padding: 12px 14px 10px;
+    gap: 10px;
+  }
+`;
+
+// Mobile header top row (brand + theme)
+const MobileHeaderTop = styled.div`
+  display: contents;
+
+  @media (max-width: 900px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
   }
 `;
 
@@ -735,14 +748,14 @@ const LeftSection = styled.div`
   gap: 16px;
   flex-shrink: 0;
 
-  @media (max-width: 768px) {
-    gap: 10px;
+  @media (max-width: 900px) {
     flex: 1;
     min-width: 0;
+    gap: 12px;
   }
 
   @media (max-width: 480px) {
-    gap: 8px;
+    gap: 10px;
   }
 `;
 
@@ -752,20 +765,33 @@ const RightSection = styled.div`
   gap: 10px;
   flex-wrap: wrap;
 
-  @media (max-width: 1024px) {
-    gap: 8px;
-  }
-
-  @media (max-width: 768px) {
-    gap: 6px;
+  /* On mobile: split into two rows.
+     Row 1 = theme icon (moves to top via order).
+     Row 2 = Funds + Account + Exit */
+  @media (max-width: 900px) {
     width: 100%;
-    justify-content: flex-start;
-    order: 2;
+    gap: 8px;
+    flex-wrap: nowrap;
+    order: 3;
   }
 
   @media (max-width: 480px) {
-    gap: 5px;
-    justify-content: space-between;
+    gap: 6px;
+  }
+`;
+
+// Wrapper to split buttons into theme-only and action-group on mobile
+const ThemeButtonWrapper = styled.div`
+  @media (max-width: 900px) {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    z-index: 5;
+  }
+
+  @media (max-width: 480px) {
+    top: 12px;
+    right: 14px;
   }
 `;
 
@@ -799,16 +825,21 @@ const GlassDropdownMenu = styled.div`
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
-  @media (max-width: 480px) {
+  @media (max-width: 900px) {
     position: fixed;
     top: auto;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
+    bottom: 20px;
+    left: 50%;
+    right: auto;
+    transform: ${props => props.isOpen 
+      ? 'translateX(-50%) translateY(0) scale(1)' 
+      : 'translateX(-50%) translateY(10px) scale(0.98)'};
     min-width: 0;
-    max-width: none;
-    max-height: 60vh;
-    border-radius: 16px;
+    width: calc(100vw - 32px);
+    max-width: 420px;
+    max-height: 65vh;
+    border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.7);
   }
 `;
 
@@ -817,9 +848,9 @@ const PlatformDropdown = styled(GlassDropdownMenu)`
   left: 0;
   right: auto;
 
-  @media (max-width: 480px) {
-    left: 10px;
-    right: 10px;
+  @media (max-width: 900px) {
+    left: 50%;
+    right: auto;
   }
 `;
 
@@ -838,11 +869,11 @@ const IconThemeButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.05)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.12)'};
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   color: ${props => props.theme?.colors?.text || '#ffffff'};
@@ -864,8 +895,9 @@ const IconThemeButton = styled.button`
   }
 
   @media (max-width: 480px) {
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
   }
 `;
 
@@ -903,24 +935,31 @@ const ThemeOptionItem = styled.div`
   .check-mark { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; font-weight: 700; }
 `;
 
+// Premium "funds" pill button
 const FundsButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 7px 15px;
-  border-radius: 10px;
+  padding: 10px 16px;
+  border-radius: 12px;
   border: 1px solid ${props => props.theme?.colors?.accent || '#3b82f6'};
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
+  background: linear-gradient(135deg, 
+    ${props => (props.theme?.colors?.accent || '#3b82f6') + '22'} 0%, 
+    ${props => (props.theme?.colors?.accent || '#3b82f6') + '08'} 100%);
   color: ${props => props.theme?.colors?.text || '#ffffff'};
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
+  white-space: nowrap;
 
   &:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.2) 100%);
-    box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '30'};
+    background: linear-gradient(135deg, 
+      ${props => (props.theme?.colors?.accent || '#3b82f6') + '35'} 0%, 
+      ${props => (props.theme?.colors?.accent || '#3b82f6') + '15'} 100%);
+    box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '35'};
     transform: translateY(-1px);
   }
 
@@ -931,33 +970,44 @@ const FundsButton = styled.button`
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
-  .funds-content { display: flex; flex-direction: column; line-height: 1.2; }
-  .funds-title { font-size: 12.5px; font-weight: 700; }
-  .funds-sub {
-    font-size: 9px;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-    font-weight: 500;
-    letter-spacing: 0.2px;
+  .funds-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#fff'};
   }
 
-  .arrow {
-    display: flex;
-    align-items: center;
-    transition: transform 0.3s ease, color 0.3s ease;
-    opacity: 0.8;
-    margin-left: 2px;
-  }
+  /* On mobile: fill the row and be more prominent */
+  @media (max-width: 900px) {
+    flex: 1;
+    padding: 12px 14px;
+    border-radius: 14px;
+    justify-content: center;
 
-  @media (max-width: 768px) {
-    padding: 6px 10px;
-    .funds-sub { display: none; }
-    .funds-title { font-size: 11px; }
+    .funds-icon-wrapper svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .funds-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
   }
 
   @media (max-width: 480px) {
-    padding: 6px 10px;
-    .funds-icon-wrapper svg { width: 16px; height: 16px; }
-    .funds-title { font-size: 10px; }
+    padding: 11px 10px;
+    border-radius: 12px;
+    gap: 6px;
+
+    .funds-icon-wrapper svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .funds-title {
+      font-size: 12px;
+    }
   }
 `;
 
@@ -1042,14 +1092,15 @@ const COUNTRY_CURRENCIES = [
   { code: 'ETB', flag: '🇪🇹', name: 'Ethiopian Birr', symbol: 'Br' },
 ];
 
+// Premium account pill
 const AccountBadge = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 14px;
+  padding: 10px 14px;
   background: ${props => props.theme?.colors?.surface || 'rgba(15, 23, 42, 0.6)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
@@ -1057,6 +1108,7 @@ const AccountBadge = styled.div`
   font-weight: 700;
   color: ${props => props.theme?.colors?.text || '#ffffff'};
   flex-shrink: 0;
+  white-space: nowrap;
 
   &:hover {
     background: ${props => props.theme?.colors?.surfaceHover || '#1e293b'};
@@ -1091,22 +1143,32 @@ const AccountBadge = styled.div`
 
   .chevron { display: flex; align-items: center; opacity: 0.6; }
 
-  @media (max-width: 768px) {
-    padding: 6px 10px;
-    font-size: 11.5px;
-    .flag-badge { font-size: 14px; }
-    .currency-tag { font-size: 8px; padding: 1px 5px; }
-    .account-type-badge { font-size: 8px; padding: 1px 5px; }
+  /* On mobile: fill the row elegantly */
+  @media (max-width: 900px) {
+    flex: 1;
+    justify-content: center;
+    padding: 12px 14px;
+    border-radius: 14px;
+    gap: 6px;
+
+    .flag-badge { font-size: 16px; }
+    .balance-display { font-size: 13px; }
   }
 
   @media (max-width: 480px) {
-    padding: 5px 8px;
-    gap: 5px;
-    font-size: 11px;
-    .flag-badge { font-size: 13px; }
-    .balance-display { font-size: 11px; }
-    .currency-tag { font-size: 7px; padding: 1px 4px; }
-    .account-type-badge { font-size: 7px; padding: 1px 4px; }
+    padding: 11px 10px;
+    border-radius: 12px;
+    gap: 4px;
+    font-size: 11.5px;
+
+    .flag-badge { font-size: 14px; }
+    .balance-display { font-size: 12px; }
+    .currency-tag { display: none; }
+    .account-type-badge { 
+      font-size: 8px; 
+      padding: 1px 5px; 
+      margin-left: 2px;
+    }
     .chevron svg { width: 10px; height: 10px; }
   }
 `;
@@ -1172,12 +1234,14 @@ const CurrencyList = styled.div`
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 `;
 
+// Premium exit button — icon-only on mobile
 const ExitButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 7px 14px;
-  border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
   background: ${props => props.theme?.colors?.surface || 'transparent'};
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
@@ -1195,19 +1259,27 @@ const ExitButton = styled.button`
     .exit-icon { stroke: ${props => props.theme?.colors?.danger || '#ef4444'}; }
   }
 
-  .exit-icon { width: 16px; height: 16px; transition: stroke 0.3s ease; }
+  .exit-icon { width: 16px; height: 16px; transition: stroke 0.3s ease; display: flex; }
 
-  @media (max-width: 768px) {
-    padding: 6px 10px;
-    font-size: 11.5px;
-    .exit-icon { width: 14px; height: 14px; }
+  /* On mobile: compact icon-only button */
+  @media (max-width: 900px) {
+    padding: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    flex: 0 0 auto;
+    gap: 0;
+
+    .exit-icon { width: 18px; height: 18px; }
+    > span:not(.exit-icon) { display: none; }
   }
 
   @media (max-width: 480px) {
-    padding: 5px 9px;
-    font-size: 10.5px;
-    span:not(.exit-icon) { display: none; }
-    .exit-icon { width: 14px; height: 14px; }
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+
+    .exit-icon { width: 16px; height: 16px; }
   }
 `;
 
@@ -1256,11 +1328,11 @@ const BrandText = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
   @media (max-width: 480px) {
-    font-size: 1rem;
+    font-size: 1.05rem;
   }
 `;
 
@@ -1300,6 +1372,7 @@ const ConnectionStatus = styled.div`
     border-radius: 50%;
     background: ${props => props.connected ? '#10b981' : '#ef4444'};
     box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'};
+    animation: ${pulseGlow} 2s ease-in-out infinite;
   }
 
   .status-text {
@@ -1321,11 +1394,11 @@ const SidebarToggle = styled.button`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
@@ -1362,8 +1435,26 @@ const SidebarToggle = styled.button`
   }
 
   @media (max-width: 480px) {
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+`;
+
+// Wrapper for the mobile action row (Funds + Account + Exit)
+const MobileActionRow = styled.div`
+  display: contents;
+
+  @media (max-width: 900px) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    order: 3;
+  }
+
+  @media (max-width: 480px) {
+    gap: 6px;
   }
 `;
 
@@ -1572,8 +1663,6 @@ const TopPanel = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const activeThemeObj = THEME_OPTIONS.find(t => t.key === currentTheme) || THEME_OPTIONS[0];
 
   const fundOptions = [
     { icon: <OverviewIcon />, name: 'Overview', desc: 'View your balance and activity', action: 'overview' },
@@ -1821,6 +1910,7 @@ const TopPanel = ({
   return (
     <>
       <TopBar>
+        {/* LEFT: Sidebar toggle + Brand */}
         <LeftSection>
           <SidebarToggle isOpen={isSidebarOpen} onClick={onSidebarToggle} aria-label="Toggle sidebar">
             <span className="line" />
@@ -1850,95 +1940,95 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
+        {/* RIGHT: Theme (top-right on mobile), then Funds + Account + Exit (bottom row on mobile) */}
         <RightSection>
-          {/* Theme Button */}
-          <DropdownContainer ref={themeRef}>
-            <IconThemeButton onClick={toggleThemeDropdown}>
-              <span className="theme-icon"><ThemeIcon /></span>
-            </IconThemeButton>
-            <GlassDropdownMenu isOpen={isThemeOpen}>
-              <MenuHeader>Choose Theme</MenuHeader>
-              {THEME_OPTIONS.map((t) => (
-                <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
-                  <span className="color-dot" style={{ background: t.color }} />
-                  <span className="theme-label">{t.name}</span>
-                  {currentTheme === t.key && <span className="check-mark">✓</span>}
-                </ThemeOptionItem>
-              ))}
-            </GlassDropdownMenu>
-          </DropdownContainer>
+          <ThemeButtonWrapper>
+            <DropdownContainer ref={themeRef}>
+              <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
+                <span className="theme-icon"><ThemeIcon /></span>
+              </IconThemeButton>
+              <GlassDropdownMenu isOpen={isThemeOpen}>
+                <MenuHeader>Choose Theme</MenuHeader>
+                {THEME_OPTIONS.map((t) => (
+                  <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
+                    <span className="color-dot" style={{ background: t.color }} />
+                    <span className="theme-label">{t.name}</span>
+                    {currentTheme === t.key && <span className="check-mark">✓</span>}
+                  </ThemeOptionItem>
+                ))}
+              </GlassDropdownMenu>
+            </DropdownContainer>
+          </ThemeButtonWrapper>
 
-          {/* Funds Button */}
-          <DropdownContainer ref={fundsRef}>
-            <FundsButton onClick={toggleFundsDropdown}>
-              <span className="funds-icon-wrapper"><FundsIcon /></span>
-              <span className="funds-content">
+          <MobileActionRow>
+            {/* Funds Button */}
+            <DropdownContainer ref={fundsRef} style={{ flex: 'inherit' }}>
+              <FundsButton onClick={toggleFundsDropdown}>
+                <span className="funds-icon-wrapper"><FundsIcon /></span>
                 <span className="funds-title">Funds</span>
-                <span className="funds-sub">Manage your money</span>
-              </span>
-              <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
-            </FundsButton>
-            <GlassDropdownMenu isOpen={isFundsOpen}>
-              <MenuHeader>Funds Management</MenuHeader>
-              {fundOptions.map((option, index) => (
-                <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
-                  <span className="fund-icon">{option.icon}</span>
-                  <span className="fund-info">
-                    <span className="fund-name">{option.name}</span>
-                    <span className="fund-desc">{option.desc}</span>
-                  </span>
-                </FundsOption>
-              ))}
-            </GlassDropdownMenu>
-          </DropdownContainer>
+              </FundsButton>
+              <GlassDropdownMenu isOpen={isFundsOpen}>
+                <MenuHeader>Funds Management</MenuHeader>
+                {fundOptions.map((option, index) => (
+                  <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
+                    <span className="fund-icon">{option.icon}</span>
+                    <span className="fund-info">
+                      <span className="fund-name">{option.name}</span>
+                      <span className="fund-desc">{option.desc}</span>
+                    </span>
+                  </FundsOption>
+                ))}
+              </GlassDropdownMenu>
+            </DropdownContainer>
 
-          {/* Account Badge */}
-          <DropdownContainer ref={dropdownRef}>
-            <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
-              <span className="flag-badge">{getCurrencyFlag()}</span>
-              <span className="balance-display">{getFormattedBalance(currentAccount)}</span>
-              <span className="account-type-badge">{currentAccount.label}</span>
-              <span className="currency-tag">{selectedCurrency}</span>
-              <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
-            </AccountBadge>
-            <GlassDropdownMenu isOpen={isDropdownOpen}>
-              <MenuHeader>Account</MenuHeader>
-              <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
-                <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
-                <span className="theme-label">Real Account</span>
-                <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
-              </ThemeOptionItem>
-              <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
-                <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
-                <span className="theme-label">Demo Practice</span>
-                <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
-              </ThemeOptionItem>
-              <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
-                <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
-                <SearchInput type="text" placeholder="Search currency..." value={currencySearch} onChange={(e) => setCurrencySearch(e.target.value)} />
-                <CurrencyList>
-                  {filteredCurrencies.length > 0 ? (
-                    filteredCurrencies.map((curr) => (
-                      <CurrencyOptionItem key={curr.code} onClick={() => { setSelectedCurrency(curr.code); setCurrencySearch(''); setIsDropdownOpen(false); }} className={selectedCurrency === curr.code ? 'active' : ''}>
-                        <span className="flag">{curr.flag}</span>
-                        <span className="code">{curr.code}</span>
-                        <span className="name">{curr.name}</span>
-                        {selectedCurrency === curr.code && <span className="check">✓</span>}
-                      </CurrencyOptionItem>
-                    ))
-                  ) : (
-                    <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No currencies found</div>
-                  )}
-                </CurrencyList>
-              </div>
-            </GlassDropdownMenu>
-          </DropdownContainer>
+            {/* Account Badge */}
+            <DropdownContainer ref={dropdownRef} style={{ flex: 'inherit' }}>
+              <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
+                <span className="flag-badge">{getCurrencyFlag()}</span>
+                <span className="balance-display">{getFormattedBalance(currentAccount)}</span>
+                <span className="account-type-badge">{currentAccount.label}</span>
+                <span className="currency-tag">{selectedCurrency}</span>
+                <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
+              </AccountBadge>
+              <GlassDropdownMenu isOpen={isDropdownOpen}>
+                <MenuHeader>Account</MenuHeader>
+                <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
+                  <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
+                  <span className="theme-label">Real Account</span>
+                  <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
+                </ThemeOptionItem>
+                <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
+                  <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
+                  <span className="theme-label">Demo Practice</span>
+                  <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
+                </ThemeOptionItem>
+                <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
+                  <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
+                  <SearchInput type="text" placeholder="Search currency..." value={currencySearch} onChange={(e) => setCurrencySearch(e.target.value)} />
+                  <CurrencyList>
+                    {filteredCurrencies.length > 0 ? (
+                      filteredCurrencies.map((curr) => (
+                        <CurrencyOptionItem key={curr.code} onClick={() => { setSelectedCurrency(curr.code); setCurrencySearch(''); setIsDropdownOpen(false); }} className={selectedCurrency === curr.code ? 'active' : ''}>
+                          <span className="flag">{curr.flag}</span>
+                          <span className="code">{curr.code}</span>
+                          <span className="name">{curr.name}</span>
+                          {selectedCurrency === curr.code && <span className="check">✓</span>}
+                        </CurrencyOptionItem>
+                      ))
+                    ) : (
+                      <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No currencies found</div>
+                    )}
+                  </CurrencyList>
+                </div>
+              </GlassDropdownMenu>
+            </DropdownContainer>
 
-          {/* Exit Button */}
-          <ExitButton onClick={() => navigate('/')}>
-            <span className="exit-icon"><ExitIcon /></span>
-            <span>Exit</span>
-          </ExitButton>
+            {/* Exit Button */}
+            <ExitButton onClick={() => navigate('/')} aria-label="Exit">
+              <span className="exit-icon"><ExitIcon /></span>
+              <span>Exit</span>
+            </ExitButton>
+          </MobileActionRow>
         </RightSection>
       </TopBar>
 
