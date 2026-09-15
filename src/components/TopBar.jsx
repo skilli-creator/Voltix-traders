@@ -686,6 +686,9 @@ const HistoryList = styled.div`
 // ============================================
 // CORE CONTAINERS
 // ============================================
+// ✅ TopBar now accepts a `$hidden` prop.
+//    - Desktop: always visible (translateY 0)
+//    - Mobile: slides up when $hidden is true
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -698,8 +701,9 @@ const TopBar = styled.header`
   z-index: 100;
   min-height: 76px;
   flex-shrink: 0;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+  will-change: transform;
 
   @media (max-width: 1024px) {
     padding: 12px 20px;
@@ -707,12 +711,14 @@ const TopBar = styled.header`
     gap: 12px;
   }
 
+  /* Mobile: slide up when hidden (only on mobile) */
   @media (max-width: 768px) {
     padding: 10px 14px;
     min-height: auto;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
+    transform: translateY(${props => (props.$hidden ? '-120%' : '0')});
   }
 
   @media (max-width: 480px) {
@@ -767,7 +773,6 @@ const DropdownContainer = styled.div`
   display: inline-block;
 `;
 
-// Base dropdown — opens to the RIGHT by default (left: 0)
 const GlassDropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
@@ -795,13 +800,11 @@ const GlassDropdownMenu = styled.div`
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 `;
 
-// Anchor dropdown to the right (used for account/funds which sit on the right side)
 const RightAnchoredDropdown = styled(GlassDropdownMenu)`
   left: auto;
   right: 0;
 `;
 
-// Theme dropdown — explicitly drops to the right, small width
 const ThemeDropdownMenu = styled(GlassDropdownMenu)`
   left: 0;
   right: auto;
@@ -1364,6 +1367,68 @@ const SidebarToggle = styled.button`
 `;
 
 // ============================================
+// SCROLL HIDE HOOK (mobile only)
+// ============================================
+// Returns `true` when the user scrolls down (content moves up),
+// Returns `false` when the user scrolls up (content moves down).
+// Only active on mobile (<= 768px). On desktop, always returns false.
+const useHideOnScroll = () => {
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    // Disable behaviour on desktop
+    if (typeof window === 'undefined') return;
+
+    let lastY = window.scrollY;
+    let ticking = false;
+
+    const isMobile = () => window.innerWidth <= 768;
+
+    const onScroll = () => {
+      if (!isMobile()) {
+        if (hidden) setHidden(false);
+        return;
+      }
+
+      if (ticking) return;
+      ticking = true;
+
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const diff = y - lastY;
+
+        // Ignore micro scrolls
+        if (Math.abs(diff) > 6) {
+          if (diff > 0 && y > 60) {
+            // Scrolling DOWN → hide the top bar
+            setHidden(true);
+          } else if (diff < 0) {
+            // Scrolling UP → show the top bar
+            setHidden(false);
+          }
+          lastY = y;
+        }
+        ticking = false;
+      });
+    };
+
+    // Also reset when the window is resized to desktop
+    const onResize = () => {
+      if (!isMobile() && hidden) setHidden(false);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [hidden]);
+
+  return hidden;
+};
+
+// ============================================
 // MAIN COMPONENT
 // ============================================
 const TopPanel = ({ 
@@ -1394,6 +1459,9 @@ const TopPanel = ({
   const [withdrawSuccess, setWithdrawSuccess] = useState(false);
 
   const [depositPending, setDepositPending] = useState(false);
+
+  // ✅ Scroll hide state (mobile only)
+  const hideTopBar = useHideOnScroll();
   
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
@@ -1814,7 +1882,8 @@ const TopPanel = ({
 
   return (
     <>
-      <TopBar>
+      {/* ✅ Pass $hidden to TopBar so mobile slides up on scroll-down */}
+      <TopBar $hidden={hideTopBar}>
         <LeftSection>
           <SidebarToggle isOpen={isSidebarOpen} onClick={onSidebarToggle} aria-label="Toggle sidebar">
             <span className="line" />
@@ -1844,13 +1913,11 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* RIGHT SIDE — buttons aligned to the right */}
         <RightSection>
           <DropdownContainer ref={themeRef}>
             <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
               <span className="theme-icon"><ThemeIcon /></span>
             </IconThemeButton>
-            {/* Theme dropdown now drops to the RIGHT */}
             <ThemeDropdownMenu isOpen={isThemeOpen}>
               <MenuHeader>Choose Theme</MenuHeader>
               {THEME_OPTIONS.map((t) => (
