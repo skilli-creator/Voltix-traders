@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Academy from '../pages/Academy'; // <-- Correct import path
+import Academy from '../pages/Academy';
 
 // ============================================
 // KEYFRAMES
@@ -304,7 +304,7 @@ const CloseIcon = () => (
 const FullPanelOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);   /* transparent, no blur */
+  background: rgba(0, 0, 0, 0.25);
   z-index: 2000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
@@ -437,7 +437,7 @@ const FullPanelBody = styled.div`
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.15);   /* very light, background visible, no blur */
+  background: rgba(0, 0, 0, 0.15);
   z-index: 1000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
@@ -452,7 +452,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  max-width: ${props => props.settings ? '560px' : '480px'};
+  max-width: ${props => (props.settings ? '560px' : '480px')};
   width: 100%;
   max-height: 90vh;
   background: ${props => props.theme?.colors?.surface || '#0F172A'};
@@ -601,91 +601,188 @@ const ModalBody = styled.div`
 `;
 
 // ============================================
-// JOURNAL SPECIFIC STYLES (NEW)
+// JOURNAL SPECIFIC STYLES
 // ============================================
 const JournalContainer = styled.div`
-  display: flex; flex-direction: column; height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   color: ${p => p.theme?.colors?.text || '#F8FAFC'};
 `;
 
 const JournalToolbar = styled.div`
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 0; border-bottom: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
 
   .toolbar-left { display: flex; align-items: center; gap: 12px; }
   .toolbar-right { display: flex; align-items: center; gap: 12px; }
 `;
 
 const FilterChip = styled.button`
-  padding: 6px 14px; border-radius: 20px;
-  border: 1px solid ${p => p.active ? p.theme?.colors?.accent || '#3B82F6' : 'rgba(255,255,255,0.08)'};
-  background: ${p => p.active ? (p.theme?.colors?.accentLight || 'rgba(59,130,246,0.1)') : 'transparent'};
-  color: ${p => p.active ? p.theme?.colors?.accent || '#3B82F6' : p.theme?.colors?.textSecondary || '#94A3B8'};
-  font-size: 11px; font-weight: 600; cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid ${p => (p.active ? p.theme?.colors?.accent || '#3B82F6' : 'rgba(255,255,255,0.08)')};
+  background: ${p => (p.active ? p.theme?.colors?.accentLight || 'rgba(59,130,246,0.1)' : 'transparent')};
+  color: ${p => (p.active ? p.theme?.colors?.accent || '#3B82F6' : p.theme?.colors?.textSecondary || '#94A3B8')};
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.2s ease;
-  &:hover { border-color: rgba(255,255,255,0.12); color: ${p => p.theme?.colors?.text || '#F8FAFC'}; }
+
+  &:hover {
+    border-color: rgba(255,255,255,0.12);
+    color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+  }
 `;
 
 const JournalButton = styled.button`
-  padding: 7px 16px; border-radius: 8px;
+  padding: 7px 16px;
+  border-radius: 8px;
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  background: ${p => p.primary ? (p.theme?.colors?.accent || '#3B82F6') : 'transparent'};
-  color: ${p => p.primary ? '#ffffff' : p.theme?.colors?.textSecondary || '#94A3B8'};
-  font-size: 11px; font-weight: 600; cursor: pointer;
+  background: ${p => (p.primary ? p.theme?.colors?.accent || '#3B82F6' : 'transparent')};
+  color: ${p => (p.primary ? '#ffffff' : p.theme?.colors?.textSecondary || '#94A3B8')};
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
   transition: all 0.2s ease;
-  &:hover { border-color: ${p => p.theme?.colors?.accent || '#3B82F6'}; color: ${p => p.theme?.colors?.text || '#F8FAFC'}; }
+
+  &:hover {
+    border-color: ${p => p.theme?.colors?.accent || '#3B82F6'};
+    color: ${p => (p.primary ? '#ffffff' : p.theme?.colors?.text || '#F8FAFC')};
+  }
 `;
 
 const StatsRow = styled.div`
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 12px; margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 `;
 
 const StatBox = styled.div`
   background: ${p => p.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 10px; padding: 12px 14px;
+  border-radius: 10px;
+  padding: 12px 14px;
   text-align: center;
-  .stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.6px; color: ${p => p.theme?.colors?.textMuted || '#64748B'}; margin-bottom: 4px; }
-  .stat-value { font-size: 20px; font-weight: 700; color: ${p => p.color || p.theme?.colors?.text || '#F8FAFC'}; font-family: 'Courier New', monospace; }
-  .stat-sub { font-size: 10px; color: ${p => p.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; }
+
+  .stat-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: ${p => p.theme?.colors?.textMuted || '#64748B'};
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: ${p => p.color || p.theme?.colors?.text || '#F8FAFC'};
+    font-family: 'Courier New', monospace;
+  }
+  .stat-sub {
+    font-size: 10px;
+    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
+  }
 `;
 
 const TableContainer = styled.div`
-  flex: 1; overflow-y: auto; border-radius: 10px;
+  flex: 1;
+  overflow-y: auto;
+  border-radius: 10px;
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   background: ${p => p.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
+
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
 `;
 
 const JournalTable = styled.table`
-  width: 100%; border-collapse: collapse; font-size: 11px;
-  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.04); }
-  th { font-weight: 600; color: ${p => p.theme?.colors?.textMuted || '#64748B'}; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; background: ${p => p.theme?.colors?.surface || '#0F172A'}; }
-  td { color: ${p => p.theme?.colors?.textSecondary || '#CBD5E1'}; }
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+
+  th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  th {
+    font-weight: 600;
+    color: ${p => p.theme?.colors?.textMuted || '#64748B'};
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    background: ${p => p.theme?.colors?.surface || '#0F172A'};
+  }
+  td {
+    color: ${p => p.theme?.colors?.textSecondary || '#CBD5E1'};
+  }
   .win { color: #10B981; font-weight: 600; }
   .loss { color: #EF4444; font-weight: 600; }
   .pending { color: #F59E0B; }
-  .notes-cell { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  .notes-cell {
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
 `;
 
 const NoteModal = styled.div`
-  position: fixed; inset: 0; background: rgba(0,0,0,0.2); z-index: 3000;
-  display: flex; align-items: center; justify-content: center;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   animation: ${fadeIn} 0.2s ease;
 `;
+
 const NoteModalContent = styled.div`
   background: ${p => p.theme?.colors?.surface || '#0F172A'};
-  border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
-  padding: 24px; width: 90%; max-width: 420px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px;
+  width: 90%;
+  max-width: 420px;
   color: ${p => p.theme?.colors?.text || '#F8FAFC'};
-  display: flex; flex-direction: column; gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   box-shadow: 0 24px 60px rgba(0,0,0,0.6);
-  .title { font-size: 15px; font-weight: 700; }
-  textarea { flex: 1; min-height: 80px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; color: inherit; padding: 12px; font-size: 12px; outline: none; resize: vertical; }
-  .actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+  .title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  textarea {
+    flex: 1;
+    min-height: 80px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    color: inherit;
+    padding: 12px;
+    font-size: 12px;
+    outline: none;
+    resize: vertical;
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
 `;
 
 // ============================================
@@ -717,10 +814,7 @@ const SettingsProfileCard = styled.div`
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
   }
 
-  .profile-info {
-    flex: 1;
-    min-width: 0;
-  }
+  .profile-info { flex: 1; min-width: 0; }
 
   .profile-name {
     font-size: 17px;
@@ -1030,10 +1124,7 @@ const HelpContactCard = styled.div`
     flex-shrink: 0;
   }
 
-  .contact-info {
-    flex: 1;
-    min-width: 0;
-  }
+  .contact-info { flex: 1; min-width: 0; }
 
   .contact-title {
     font-size: 11px;
@@ -1279,17 +1370,9 @@ const RiskSummaryBox = styled.div`
       font-weight: 600;
     }
 
-    &.highlight-risk .value {
-      color: #EF4444;
-    }
-
-    &.highlight-reward .value {
-      color: #10B981;
-    }
-
-    &.highlight-ratio .value {
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    }
+    &.highlight-risk .value { color: #EF4444; }
+    &.highlight-reward .value { color: #10B981; }
+    &.highlight-ratio .value { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; }
   }
 
   .summary-divider {
@@ -1469,7 +1552,7 @@ const ClientsGridCompact = styled.div`
 
 const ClientCardCompact = styled.div`
   background: rgba(255, 255, 255, 0.015);
-  border: 1px solid ${props => props.active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
+  border: 1px solid ${props => (props.active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.04)')};
   border-radius: 12px;
   padding: 12px 12px;
   transition: all 0.3s ease;
@@ -1479,11 +1562,6 @@ const ClientCardCompact = styled.div`
     border-color: rgba(56, 189, 248, 0.06);
     background: rgba(255, 255, 255, 0.02);
   }
-
-  ${props => props.active && `
-    border-color: rgba(34, 197, 94, 0.15);
-    background: rgba(34, 197, 94, 0.02);
-  `}
 
   .client-header {
     display: flex;
@@ -2086,7 +2164,7 @@ const NotificationItem = styled.div`
     background: ${props => props.theme?.colors?.accent || '#3B82F6'};
     flex-shrink: 0;
     margin-top: 4px;
-    ${props => props.read && 'display: none;'}
+    display: ${props => (props.read ? 'none' : 'block')};
   }
 `;
 
@@ -2202,7 +2280,7 @@ const VoiceEventItem = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
   &:last-child { border-bottom: none; }
 
@@ -2245,7 +2323,7 @@ const AccountInfoRow = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 11px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
   &:last-child { border-bottom: none; }
 
@@ -2289,7 +2367,7 @@ const StepItem = styled.div`
   display: flex;
   gap: 12px;
   padding: 12px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255, 255, 255, 0.04)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
   &:last-child { border-bottom: none; }
 
@@ -2357,8 +2435,10 @@ const TermsSection = styled.div`
 `;
 
 // ============================================
-// SIDEBAR LAYOUT
+// SIDEBAR LAYOUT (positioned below the TopBar)
 // ============================================
+const TOPBAR_HEIGHT = '76px';
+
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
@@ -2377,11 +2457,11 @@ const Overlay = styled.div`
 
 const SidebarContainer = styled.aside`
   position: fixed;
-  top: 0;
+  top: ${TOPBAR_HEIGHT};
   left: 0;
   width: 288px;
-  height: 100vh;
-  height: 100dvh;
+  height: calc(100vh - ${TOPBAR_HEIGHT});
+  height: calc(100dvh - ${TOPBAR_HEIGHT});
   background: ${props =>
     props.theme?.colors?.sidebarBackground ||
     props.theme?.colors?.surface ||
@@ -2835,9 +2915,9 @@ const SidebarFooter = styled.footer`
 `;
 
 // ============================================
-// GLOBAL LOG TRADE FUNCTION (NEW)
+// GLOBAL LOG TRADE FUNCTION
 // ============================================
-if (!window.logTrade) {
+if (typeof window !== 'undefined' && !window.logTrade) {
   window.logTrade = (trade) => {
     const journal = JSON.parse(localStorage.getItem('tradeJournal') || '[]');
     journal.unshift({ ...trade, id: trade.id || Date.now(), notes: trade.notes || '' });
@@ -2849,7 +2929,6 @@ if (!window.logTrade) {
 // ============================================
 // MAIN COMPONENT
 // ============================================
-
 const OptionSideBar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [activeItem, setActiveItem] = useState('academy');
@@ -2866,7 +2945,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [voiceEvents, setVoiceEvents] = useState({ trade: true, price: true, market: false, system: true });
 
   // Popup state
-  const [popupType, setPopupType] = useState(null);   // 'settings', 'help', etc.
+  const [popupType, setPopupType] = useState(null);
   const [popupData, setPopupData] = useState({});
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSettingsPopup, setIsSettingsPopup] = useState(false);
@@ -2874,7 +2953,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // Full Panel state
   const [isFullPanelOpen, setIsFullPanelOpen] = useState(false);
   const [fullPanelContent, setFullPanelContent] = useState(null);
-  const [currentPanel, setCurrentPanel] = useState(null); // 'academy' or 'journal'
+  const [currentPanel, setCurrentPanel] = useState(null);
 
   // Settings state
   const [isEditing, setIsEditing] = useState(false);
@@ -2892,9 +2971,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   // Risk calculator state
   const [calcAccountBalance, setCalcAccountBalance] = useState('');
-  const [calcRiskPercent, setCalcRiskPercent] = useState(2);
-  const [calcStopLoss, setCalcStopLoss] = useState(50);
-  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
+  const [calcRiskPercent] = useState(2);
+  const [calcStopLoss] = useState(50);
+  const [calcTakeProfit] = useState(150);
   const [calculated, setCalculated] = useState(false);
 
   // Copy Trading state
@@ -2905,9 +2984,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [copyClients, setCopyClients] = useState([]);
   const [copyShowAddClient, setCopyShowAddClient] = useState(false);
 
-  // ---------- NEW JOURNAL STATE ----------
+  // Journal state
   const [journalTrades, setJournalTrades] = useState([]);
-  const [filter, setFilter] = useState('all'); // all, win, loss
+  const [filter, setFilter] = useState('all');
   const [noteModal, setNoteModal] = useState(null);
   const [editNote, setEditNote] = useState('');
 
@@ -2978,11 +3057,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const handleSaveProfile = () => {
     if (formData.date_of_birth && !validateDob(formData.date_of_birth)) return;
-    
+
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     const updated = { ...userData, ...formData };
     localStorage.setItem('user', JSON.stringify(updated));
-    
+
     setIsEditing(false);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
@@ -3024,12 +3103,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setTimeout(() => setFullPanelContent(null), 300);
   };
 
-  const handleNavClick = (item, path) => {
-    setActiveItem(item);
-    if (path) navigate(path);
-    closeSidebarOnMobile();
-  };
-
   // ===== RISK CALCULATOR LOGIC =====
   const calculateRisk = () => {
     if (!calcAccountBalance || parseFloat(calcAccountBalance) <= 0) return;
@@ -3058,35 +3131,22 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // ===== COPY TRADING LOGIC =====
   const handleCopyConnect = () => {
     if (!copyTokenInput.trim()) {
-      setCopyConnectionStatus({
-        type: 'error',
-        message: 'Please enter a valid API token'
-      });
+      setCopyConnectionStatus({ type: 'error', message: 'Please enter a valid API token' });
       return;
     }
-
     if (!copyClientNameInput.trim()) {
-      setCopyConnectionStatus({
-        type: 'error',
-        message: 'Please enter the client\'s name'
-      });
+      setCopyConnectionStatus({ type: 'error', message: "Please enter the client's name" });
       return;
     }
 
     setCopyConnecting(true);
-    setCopyConnectionStatus({
-      type: 'info',
-      message: 'Adding client...'
-    });
+    setCopyConnectionStatus({ type: 'info', message: 'Adding client...' });
 
     setTimeout(() => {
       const exists = copyClients.some(c => c.token === copyTokenInput.trim());
-      
+
       if (exists) {
-        setCopyConnectionStatus({
-          type: 'error',
-          message: 'This client is already in your list'
-        });
+        setCopyConnectionStatus({ type: 'error', message: 'This client is already in your list' });
         setCopyConnecting(false);
         return;
       }
@@ -3122,14 +3182,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   };
 
   const handleCopyActivateClient = (clientId) => {
-    setCopyClients(prev => prev.map(c => 
+    setCopyClients(prev => prev.map(c =>
       c.id === clientId ? { ...c, status: 'active' } : c
     ));
   };
 
-  const handleCopyViewClient = (clientId) => {
-    // View client details
-  };
+  const handleCopyViewClient = () => {};
 
   const getCopyStatusBadge = (status) => {
     const badges = {
@@ -3140,7 +3198,58 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return badges[status] || badges.inactive;
   };
 
-  // ===== HANDLERS (open popup) =====
+  // ===== EXPORT CSV =====
+  const exportCSV = () => {
+    const headers = ['Date', 'Market', 'Type', 'Direction', 'Stake', 'Payout', 'Result', 'Strategy', 'Mode', 'Notes'];
+    const rows = journalTrades.map(t => [
+      new Date(t.timestamp).toLocaleString(),
+      t.market,
+      t.tradeType,
+      t.direction,
+      t.stake,
+      t.payout,
+      t.result,
+      t.strategy,
+      t.mode,
+      t.notes
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(cell => `"${cell}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `trade_journal_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // ===== DERIVED JOURNAL DATA =====
+  const filteredTrades = useMemo(() => {
+    if (filter === 'all') return journalTrades;
+    return journalTrades.filter(t => t.result === filter);
+  }, [journalTrades, filter]);
+
+  const stats = useMemo(() => {
+    const wins = journalTrades.filter(t => t.result === 'win').length;
+    const losses = journalTrades.filter(t => t.result === 'loss').length;
+    const total = wins + losses;
+    const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
+    const totalPnL = journalTrades.reduce((acc, t) => acc + (t.payout || 0) - (t.stake || 0), 0);
+    const best = journalTrades.length > 0 ? Math.max(...journalTrades.map(t => (t.payout || 0) - (t.stake || 0)), 0) : 0;
+    const worst = journalTrades.length > 0 ? Math.min(...journalTrades.map(t => (t.payout || 0) - (t.stake || 0)), 0) : 0;
+    return { wins, losses, total, winRate, totalPnL, best, worst };
+  }, [journalTrades]);
+
+  const handleNoteSave = () => {
+    if (noteModal === null) return;
+    const updated = journalTrades.map(t => t.id === noteModal ? { ...t, notes: editNote } : t);
+    setJournalTrades(updated);
+    localStorage.setItem('tradeJournal', JSON.stringify(updated));
+    setNoteModal(null);
+    setEditNote('');
+  };
+
+  // ===== HANDLERS =====
   const handleSettingsClick = () => {
     setActiveItem('settings');
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -3256,7 +3365,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               ) : (
                 filteredTrades.map(t => (
                   <tr key={t.id}>
-                    <td>{new Date(t.timestamp).toLocaleDateString()}<br/><span style={{fontSize:9,color:'#64748B'}}>{new Date(t.timestamp).toLocaleTimeString()}</span></td>
+                    <td>
+                      {new Date(t.timestamp).toLocaleDateString()}<br />
+                      <span style={{ fontSize: 9, color: '#64748B' }}>{new Date(t.timestamp).toLocaleTimeString()}</span>
+                    </td>
                     <td>{t.market}</td>
                     <td>{t.tradeType}</td>
                     <td>{t.direction}</td>
@@ -3308,7 +3420,32 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     openPopup('terms', { title: 'Terms & Conditions', icon: <TermsIcon />, badge: 'v2.0' });
   };
 
-  // ===== RENDER POPUP CONTENT based on popupType =====
+  // ===== FEEDBACK =====
+  const handleSubmitFeedback = async () => {
+    if (rating === 0) { setSubmitStatus('Please select a rating'); setTimeout(() => setSubmitStatus(''), 3000); return; }
+    if (!feedbackText.trim()) { setSubmitStatus('Please write your feedback'); setTimeout(() => setSubmitStatus(''), 3000); return; }
+    setIsSubmitting(true);
+    setSubmitStatus('Sending feedback...');
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSubmitStatus('Thank you for your feedback!');
+      setRating(0);
+      setFeedbackText('');
+      setTimeout(() => setSubmitStatus(''), 5000);
+    } catch (error) {
+      setSubmitStatus('Failed to send. Please try again.');
+      setTimeout(() => setSubmitStatus(''), 3000);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const getRatingText = (value) => {
+    const texts = { 1: 'Needs Improvement', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' };
+    return texts[value] || '';
+  };
+
+  // ===== RENDER POPUP CONTENT =====
   const renderPopupContent = () => {
     switch (popupType) {
       case 'settings':
@@ -3316,14 +3453,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <>
             <SettingsProfileCard>
               <div className="profile-avatar">
-                {formData.first_name && formData.last_name 
+                {formData.first_name && formData.last_name
                   ? `${formData.first_name[0]}${formData.last_name[0]}`.toUpperCase()
                   : 'T'}
               </div>
               <div className="profile-info">
                 <div className="profile-name">
-                  {formData.first_name || formData.last_name 
-                    ? `${formData.first_name} ${formData.last_name}`.trim() 
+                  {formData.first_name || formData.last_name
+                    ? `${formData.first_name} ${formData.last_name}`.trim()
                     : 'Tonny Mutua Kyalo'}
                 </div>
                 <div className="profile-email">{formData.email || 'tonnykyalo054@gmail.com'}</div>
@@ -3349,14 +3486,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <SettingsField>
                   <label>First Name</label>
                   {isEditing ? (
-                    <input
-                      type="text"
-                      name="first_name"
-                      className="inp"
-                      value={formData.first_name}
-                      onChange={handleInputChange}
-                      placeholder="First name"
-                    />
+                    <input type="text" name="first_name" className="inp" value={formData.first_name} onChange={handleInputChange} placeholder="First name" />
                   ) : (
                     <div className="val">{formData.first_name || 'Not set'}</div>
                   )}
@@ -3365,14 +3495,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <SettingsField>
                   <label>Last Name</label>
                   {isEditing ? (
-                    <input
-                      type="text"
-                      name="last_name"
-                      className="inp"
-                      value={formData.last_name}
-                      onChange={handleInputChange}
-                      placeholder="Last name"
-                    />
+                    <input type="text" name="last_name" className="inp" value={formData.last_name} onChange={handleInputChange} placeholder="Last name" />
                   ) : (
                     <div className="val">{formData.last_name || 'Not set'}</div>
                   )}
@@ -3381,14 +3504,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <SettingsField>
                   <label>Phone Number</label>
                   {isEditing ? (
-                    <input
-                      type="tel"
-                      name="phone"
-                      className="inp"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="Phone number"
-                    />
+                    <input type="tel" name="phone" className="inp" value={formData.phone} onChange={handleInputChange} placeholder="Phone number" />
                   ) : (
                     <div className="val">{formData.phone || 'Not set'}</div>
                   )}
@@ -3405,14 +3521,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   <label>Date of Birth</label>
                   {isEditing ? (
                     <>
-                      <input
-                        type="date"
-                        name="date_of_birth"
-                        className={`inp${dobError ? ' err' : ''}`}
-                        value={formData.date_of_birth}
-                        onChange={handleDobChange}
-                        max={getMaxDate()}
-                      />
+                      <input type="date" name="date_of_birth" className={`inp${dobError ? ' err' : ''}`} value={formData.date_of_birth} onChange={handleDobChange} max={getMaxDate()} />
                       {dobError && <div className="err-msg">! {dobError}</div>}
                       {formData.date_of_birth && !dobError && calculatedAge !== null && (
                         <div style={{ fontSize: '10px', color: '#4ade80', marginTop: '4px' }}>
@@ -3433,12 +3542,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <SettingsField>
                   <label>Gender</label>
                   {isEditing ? (
-                    <select
-                      name="gender"
-                      className="inp"
-                      value={formData.gender}
-                      onChange={handleInputChange}
-                    >
+                    <select name="gender" className="inp" value={formData.gender} onChange={handleInputChange}>
                       <option value="">Select gender</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
@@ -3447,8 +3551,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                     </select>
                   ) : (
                     <div className="val">
-                      {formData.gender 
-                        ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) 
+                      {formData.gender
+                        ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1)
                         : 'Not set'}
                     </div>
                   )}
@@ -3499,11 +3603,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   <label>Password</label>
                   <div className="val" style={{ justifyContent: 'space-between' }}>
                     <span>••••••••</span>
-                    <SettingsBtn
-                      className="secondary"
-                      style={{ padding: '3px 10px', fontSize: '9px' }}
-                      onClick={() => alert('Password change coming soon.')}
-                    >
+                    <SettingsBtn className="secondary" style={{ padding: '3px 10px', fontSize: '9px' }} onClick={() => alert('Password change coming soon.')}>
                       Change
                     </SettingsBtn>
                   </div>
@@ -3512,11 +3612,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <SettingsField>
                   <label>Account Created</label>
                   <div className="val" style={{ color: '#64748b', fontSize: '11px' }}>
-                    {new Date().toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
+                    {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                   </div>
                 </SettingsField>
 
@@ -3531,6 +3627,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </SettingsGrid>
           </>
         );
+
       case 'help':
         return (
           <>
@@ -3542,12 +3639,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   <div className="contact-title">Email</div>
                   <div className="contact-value">tonnykyalo054@gmail.com</div>
                 </div>
-                <button 
-                  className="contact-action"
-                  onClick={() => window.location.href = 'mailto:tonnykyalo054@gmail.com'}
-                >
-                  Send
-                </button>
+                <button className="contact-action" onClick={() => { window.location.href = 'mailto:tonnykyalo054@gmail.com'; }}>Send</button>
               </div>
             </HelpContactCard>
 
@@ -3559,12 +3651,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   <div className="contact-title">Call Us</div>
                   <div className="contact-value">0704 182 603</div>
                 </div>
-                <button 
-                  className="contact-action"
-                  onClick={() => window.location.href = 'tel:0704182603'}
-                >
-                  Call
-                </button>
+                <button className="contact-action" onClick={() => { window.location.href = 'tel:0704182603'; }}>Call</button>
               </div>
             </HelpContactCard>
 
@@ -3576,16 +3663,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   <div className="contact-title">WhatsApp</div>
                   <div className="contact-value">0704 182 603</div>
                 </div>
-                <button 
-                  className="contact-action"
-                  onClick={() => window.open('https://wa.me/254704182603', '_blank')}
-                >
-                  Chat
-                </button>
+                <button className="contact-action" onClick={() => window.open('https://wa.me/254704182603', '_blank')}>Chat</button>
               </div>
             </HelpContactCard>
           </>
         );
+
       case 'responsible-trading':
         return (
           <ResponsibleTradingContent>
@@ -3598,50 +3681,20 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
             <div className="rt-section">
               <div className="rt-title"><DiamondIcon /> Key Principles</div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Set <span className="highlight">deposit limits</span> to control your capital budget and prevent overspending.</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Take regular <span className="highlight">trading breaks</span> to maintain discipline and avoid emotional decisions.</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Trade only with <span className="highlight">risk capital</span> — money you can afford to lose without affecting your daily life.</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Use <span className="highlight">stop-loss orders</span> to automatically limit potential losses on each trade.</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Never trade under the influence of <span className="highlight">alcohol or drugs</span> or during emotional distress.</span>
-              </div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Set <span className="highlight">deposit limits</span> to control your capital budget and prevent overspending.</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Take regular <span className="highlight">trading breaks</span> to maintain discipline and avoid emotional decisions.</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Trade only with <span className="highlight">risk capital</span> — money you can afford to lose without affecting your daily life.</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Use <span className="highlight">stop-loss orders</span> to automatically limit potential losses on each trade.</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Never trade under the influence of <span className="highlight">alcohol or drugs</span> or during emotional distress.</span></div>
             </div>
 
             <div className="rt-section">
               <div className="rt-title"><InfoIcon /> Warning Signs</div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Chasing losses by increasing trade sizes</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Borrowing money to trade</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Trading with money meant for essential expenses</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Feeling anxious or stressed about trading</span>
-              </div>
-              <div className="rt-bullet">
-                <span className="bullet-dot">•</span>
-                <span>Neglecting work, family, or health for trading</span>
-              </div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Chasing losses by increasing trade sizes</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Borrowing money to trade</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Trading with money meant for essential expenses</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Feeling anxious or stressed about trading</span></div>
+              <div className="rt-bullet"><span className="bullet-dot">•</span><span>Neglecting work, family, or health for trading</span></div>
             </div>
 
             <div className="rt-tip">
@@ -3652,6 +3705,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </ResponsibleTradingContent>
         );
+
       case 'about':
         return (
           <AboutContent>
@@ -3701,6 +3755,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
           </AboutContent>
         );
+
       case 'risk-calculator':
         return (
           <>
@@ -3710,21 +3765,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               </div>
               <div className="risk-input-wrap">
                 <span className="risk-prefix">$</span>
-                <input 
-                  type="number" 
-                  placeholder="Enter your account balance" 
-                  value={calcAccountBalance}
-                  onChange={(e) => setCalcAccountBalance(e.target.value)}
-                  min="0"
-                  step="100"
-                />
+                <input type="number" placeholder="Enter your account balance" value={calcAccountBalance} onChange={(e) => setCalcAccountBalance(e.target.value)} min="0" step="100" />
               </div>
             </RiskInputGroup>
 
-            <RiskCalculateBtn 
-              onClick={calculateRisk}
-              disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}
-            >
+            <RiskCalculateBtn onClick={calculateRisk} disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}>
               Calculate Risk
             </RiskCalculateBtn>
 
@@ -3751,40 +3796,25 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 </RiskResultsGrid>
 
                 <RiskSummaryBox>
-                  <div className="summary-row">
-                    <span className="label">Position Size</span>
-                    <span className="value">{riskResults.positionSize.toFixed(2)} units</span>
-                  </div>
+                  <div className="summary-row"><span className="label">Position Size</span><span className="value">{riskResults.positionSize.toFixed(2)} units</span></div>
                   <div className="summary-divider" />
-                  <div className="summary-row highlight-risk">
-                    <span className="label">Max Loss</span>
-                    <span className="value">${riskResults.maxLoss.toFixed(2)}</span>
-                  </div>
-                  <div className="summary-row highlight-reward">
-                    <span className="label">Max Profit</span>
-                    <span className="value">${riskResults.maxProfit.toFixed(2)}</span>
-                  </div>
+                  <div className="summary-row highlight-risk"><span className="label">Max Loss</span><span className="value">${riskResults.maxLoss.toFixed(2)}</span></div>
+                  <div className="summary-row highlight-reward"><span className="label">Max Profit</span><span className="value">${riskResults.maxProfit.toFixed(2)}</span></div>
                   <div className="summary-divider" />
-                  <div className="summary-row highlight-ratio">
-                    <span className="label">Risk/Reward Ratio</span>
-                    <span className="value">1:{riskResults.riskRewardRatio.toFixed(2)}</span>
-                  </div>
+                  <div className="summary-row highlight-ratio"><span className="label">Risk/Reward Ratio</span><span className="value">1:{riskResults.riskRewardRatio.toFixed(2)}</span></div>
                 </RiskSummaryBox>
               </>
             )}
           </>
         );
+
       case 'copy-trading':
         return (
           <CopyTradingWrapper>
             <CopyHeroSection>
               <div className="badge">Copy Trading</div>
-              <h1 className="title">
-                Copy <span className="gradient">Trading</span>
-              </h1>
-              <p className="subtitle">
-                Master trader dashboard. Manage your followers and share your trades with them.
-              </p>
+              <h1 className="title">Copy <span className="gradient">Trading</span></h1>
+              <p className="subtitle">Master trader dashboard. Manage your followers and share your trades with them.</p>
             </CopyHeroSection>
 
             <MasterTraderCardCompact>
@@ -3792,10 +3822,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <div className="master-avatar">VT</div>
                 <div className="master-info">
                   <div className="master-name">John Trader</div>
-                  <div className="master-title">
-                    <span className="live-dot" />
-                    Master Trader • Live Copy Trading
-                  </div>
+                  <div className="master-title"><span className="live-dot" />Master Trader • Live Copy Trading</div>
                 </div>
                 <span className="master-badge">Active</span>
               </div>
@@ -3822,14 +3849,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <EmptyStateCompact>
                   <div className="empty-icon"><UsersIcon /></div>
                   <div className="empty-title">No Followers Yet</div>
-                  <div className="empty-sub">
-                    Click the "Add Client" button below to start adding followers.
-                  </div>
+                  <div className="empty-sub">Click the "Add Client" button below to start adding followers.</div>
                 </EmptyStateCompact>
               ) : (
                 copyClients.map((client) => {
                   const status = getCopyStatusBadge(client.status);
-                  
                   return (
                     <ClientCardCompact key={client.id} active={client.status === 'active'}>
                       <div className="client-header">
@@ -3838,9 +3862,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                           <div className="client-name">{client.name}</div>
                           <div className="client-token">{client.token}</div>
                         </div>
-                        <span className={`status-badge ${status.className}`}>
-                          {status.label}
-                        </span>
+                        <span className={`status-badge ${status.className}`}>{status.label}</span>
                       </div>
 
                       <div className="client-details">
@@ -3859,30 +3881,18 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                       <div className="client-actions">
                         {client.status === 'pending' ? (
                           <>
-                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>
-                              Activate
-                            </button>
-                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
-                              Remove
-                            </button>
+                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>Activate</button>
+                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
                           </>
                         ) : client.status === 'active' ? (
                           <>
-                            <button className="action-btn view" onClick={() => handleCopyViewClient(client.id)}>
-                              View
-                            </button>
-                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
-                              Remove
-                            </button>
+                            <button className="action-btn view" onClick={() => handleCopyViewClient()}>View</button>
+                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
                           </>
                         ) : (
                           <>
-                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>
-                              Reactivate
-                            </button>
-                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>
-                              Remove
-                            </button>
+                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>Reactivate</button>
+                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
                           </>
                         )}
                       </div>
@@ -3903,9 +3913,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <div style={{ gridColumn: '1 / -1' }}>
                   <ConnectSectionCompact>
                     <div className="section-title"><UserPlusIcon /> Add New Client</div>
-                    <div className="section-subtitle">
-                      Enter your client's name and API token to add them
-                    </div>
+                    <div className="section-subtitle">Enter your client's name and API token to add them</div>
 
                     <div className="input-group">
                       <div className="input-wrapper">
@@ -3924,22 +3932,20 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                           placeholder="Enter client's API token (e.g., 0x7a3f...9b2e)"
                           value={copyTokenInput}
                           onChange={(e) => setCopyTokenInput(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleCopyConnect();
-                          }}
+                          onKeyDown={(e) => { if (e.key === 'Enter') handleCopyConnect(); }}
                         />
                       </div>
                       <div className="action-row">
-                        <button 
-                          className="connect-btn" 
+                        <button
+                          className="connect-btn"
                           onClick={handleCopyConnect}
                           disabled={copyConnecting || !copyTokenInput.trim() || !copyClientNameInput.trim()}
                         >
                           <span className="btn-shimmer" />
                           {copyConnecting ? 'Adding...' : 'Add Client'}
                         </button>
-                        <button 
-                          className="cancel-btn" 
+                        <button
+                          className="cancel-btn"
                           onClick={() => {
                             setCopyShowAddClient(false);
                             setCopyTokenInput('');
@@ -3964,28 +3970,18 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </ClientsGridCompact>
           </CopyTradingWrapper>
         );
+
       case 'performance':
         return (
           <div>
-            <div style={{
-              padding: '20px',
-              textAlign: 'center',
-              background: 'rgba(255,255,255,0.02)',
-              borderRadius: '12px',
-              border: '1px solid rgba(255,255,255,0.04)'
-            }}>
-              <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}>
-                <PerformanceIcon />
-              </div>
-              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>
-                Trading Performance
-              </h3>
-              <p style={{ color: '#94A3B8', fontSize: '13px' }}>
-                Your trading performance metrics will appear here.
-              </p>
+            <div style={{ padding: '20px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
+              <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}><PerformanceIcon /></div>
+              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>Trading Performance</h3>
+              <p style={{ color: '#94A3B8', fontSize: '13px' }}>Your trading performance metrics will appear here.</p>
             </div>
           </div>
         );
+
       case 'notifications':
         return (
           <>
@@ -4025,6 +4021,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NotificationItem>
           </>
         );
+
       case 'voice':
         return (
           <>
@@ -4042,30 +4039,31 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </VolumeSlider>
             <VoiceEventItem enabled={voiceEvents.trade}>
               <span className="event-name"><span className="event-dot" />Trade Execution</span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, trade: !voiceEvents.trade})}>
+              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, trade: !voiceEvents.trade })}>
                 {voiceEvents.trade ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
             <VoiceEventItem enabled={voiceEvents.price}>
               <span className="event-name"><span className="event-dot" />Price Alerts</span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, price: !voiceEvents.price})}>
+              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, price: !voiceEvents.price })}>
                 {voiceEvents.price ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
             <VoiceEventItem enabled={voiceEvents.market}>
               <span className="event-name"><span className="event-dot" />Market Signals</span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, market: !voiceEvents.market})}>
+              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, market: !voiceEvents.market })}>
                 {voiceEvents.market ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
             <VoiceEventItem enabled={voiceEvents.system}>
               <span className="event-name"><span className="event-dot" />System Updates</span>
-              <span className="event-status" onClick={() => setVoiceEvents({...voiceEvents, system: !voiceEvents.system})}>
+              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, system: !voiceEvents.system })}>
                 {voiceEvents.system ? 'Enabled' : 'Disabled'}
               </span>
             </VoiceEventItem>
           </>
         );
+
       case 'account-info':
         return (
           <>
@@ -4077,6 +4075,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <AccountInfoRow><span className="row-label">Last Login</span><span className="row-value">Today, 14:32</span></AccountInfoRow>
           </>
         );
+
       case 'how-to-use':
         return (
           <>
@@ -4087,6 +4086,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Customize Experience</div><div className="step-desc">Personalize themes, notification settings, and display preferences to suit your workflow.</div></div></StepItem>
           </>
         );
+
       case 'terms':
         return (
           <>
@@ -4107,84 +4107,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@mytradeapp.com</strong></div></TermsSection>
           </>
         );
+
       default:
         return null;
     }
-  };
-
-  const handleSubmitFeedback = async () => {
-    if (rating === 0) { setSubmitStatus('Please select a rating'); setTimeout(() => setSubmitStatus(''), 3000); return; }
-    if (!feedbackText.trim()) { setSubmitStatus('Please write your feedback'); setTimeout(() => setSubmitStatus(''), 3000); return; }
-    setIsSubmitting(true);
-    setSubmitStatus('Sending feedback...');
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSubmitStatus('Thank you for your feedback!');
-      setRating(0);
-      setFeedbackText('');
-      setTimeout(() => setSubmitStatus(''), 5000);
-    } catch (error) {
-      setSubmitStatus('Failed to send. Please try again.');
-      setTimeout(() => setSubmitStatus(''), 3000);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const getRatingText = (value) => {
-    const texts = { 1: 'Needs Improvement', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' };
-    return texts[value] || '';
-  };
-
-  // ===== NEW: Export CSV function =====
-  const exportCSV = () => {
-    const headers = ['Date', 'Market', 'Type', 'Direction', 'Stake', 'Payout', 'Result', 'Strategy', 'Mode', 'Notes'];
-    const rows = journalTrades.map(t => [
-      new Date(t.timestamp).toLocaleString(),
-      t.market,
-      t.tradeType,
-      t.direction,
-      t.stake,
-      t.payout,
-      t.result,
-      t.strategy,
-      t.mode,
-      t.notes
-    ]);
-    const csv = [headers, ...rows].map(r => r.map(cell => `"${cell}"`).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `trade_journal_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // ===== NEW: Derived journal data =====
-  const filteredTrades = useMemo(() => {
-    if (filter === 'all') return journalTrades;
-    return journalTrades.filter(t => t.result === filter);
-  }, [journalTrades, filter]);
-
-  const stats = useMemo(() => {
-    const wins = journalTrades.filter(t => t.result === 'win').length;
-    const losses = journalTrades.filter(t => t.result === 'loss').length;
-    const total = wins + losses;
-    const winRate = total > 0 ? ((wins / total) * 100).toFixed(1) : 0;
-    const totalPnL = journalTrades.reduce((acc, t) => acc + (t.payout || 0) - (t.stake || 0), 0);
-    const best = Math.max(...journalTrades.map(t => (t.payout || 0) - (t.stake || 0)), 0);
-    const worst = Math.min(...journalTrades.map(t => (t.payout || 0) - (t.stake || 0)), 0);
-    return { wins, losses, total, winRate, totalPnL, best, worst };
-  }, [journalTrades]);
-
-  const handleNoteSave = () => {
-    if (noteModal === null) return;
-    const updated = journalTrades.map(t => t.id === noteModal ? { ...t, notes: editNote } : t);
-    setJournalTrades(updated);
-    localStorage.setItem('tradeJournal', JSON.stringify(updated));
-    setNoteModal(null);
-    setEditNote('');
   };
 
   // ============================================
@@ -4234,9 +4160,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       {/* Note editing modal */}
       {noteModal && (
         <NoteModal onClick={() => setNoteModal(null)}>
-          <NoteModalContent onClick={e => e.stopPropagation()}>
+          <NoteModalContent onClick={(e) => e.stopPropagation()}>
             <div className="title">Edit Trade Note</div>
-            <textarea value={editNote} onChange={e => setEditNote(e.target.value)} placeholder="Add your observations..." />
+            <textarea
+              value={editNote}
+              onChange={(e) => setEditNote(e.target.value)}
+              placeholder="Add your observations..."
+            />
             <div className="actions">
               <JournalButton onClick={() => setNoteModal(null)}>Cancel</JournalButton>
               <JournalButton primary onClick={handleNoteSave}>Save</JournalButton>
@@ -4268,7 +4198,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <NavItem active={activeItem === 'voice'} onClick={handleVoiceClick}>
               <span className="nav-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
               <span className="nav-label">Voice Notifications</span>
-              <span className="badge" style={{ background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)', color: voiceEnabled ? '#10B981' : '#EF4444' }}>{voiceEnabled ? 'On' : 'Off'}</span>
+              <span
+                className="badge"
+                style={{
+                  background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                  color: voiceEnabled ? '#10B981' : '#EF4444'
+                }}
+              >
+                {voiceEnabled ? 'On' : 'Off'}
+              </span>
             </NavItem>
           </NavSection>
 
@@ -4327,14 +4265,31 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="feedback-label">Rate your experience</div>
               <div className="stars">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} type="button" className={`star-btn ${star <= (hoverRating || rating) ? 'active' : ''} ${star <= hoverRating && star > rating ? 'hover' : ''}`} onClick={() => setRating(star)} onMouseEnter={() => setHoverRating(star)} onMouseLeave={() => setHoverRating(0)}>
-                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+                  <button
+                    key={star}
+                    type="button"
+                    className={`star-btn ${star <= (hoverRating || rating) ? 'active' : ''} ${star <= hoverRating && star > rating ? 'hover' : ''}`}
+                    onClick={() => setRating(star)}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  >
+                    <svg viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
                   </button>
                 ))}
               </div>
               <div className="star-rating-text">{rating > 0 ? getRatingText(rating) : 'Tap a star to rate'}</div>
-              <textarea className="feedback-textarea" placeholder="Share your feedback or suggestions..." value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} disabled={isSubmitting} />
-              <button className="feedback-submit" onClick={handleSubmitFeedback} disabled={isSubmitting}>{isSubmitting ? 'Sending...' : 'Submit Feedback'}</button>
+              <textarea
+                className="feedback-textarea"
+                placeholder="Share your feedback or suggestions..."
+                value={feedbackText}
+                onChange={(e) => setFeedbackText(e.target.value)}
+                disabled={isSubmitting}
+              />
+              <button className="feedback-submit" onClick={handleSubmitFeedback} disabled={isSubmitting}>
+                {isSubmitting ? 'Sending...' : 'Submit Feedback'}
+              </button>
               {submitStatus && <div className="feedback-status">{submitStatus}</div>}
             </FeedbackSection>
           </NavSection>
