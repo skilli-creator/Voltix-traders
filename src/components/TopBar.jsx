@@ -510,6 +510,7 @@ const OverviewBalance = styled.div`
     font-weight: 800;
     color: #FFFFFF;
     font-family: 'Courier New', monospace;
+    word-break: break-all;
   }
 
   .eye-btn {
@@ -552,6 +553,7 @@ const OverviewStats = styled.div`
       font-weight: 700;
       color: ${p => p.theme.colors?.text || '#F8FAFC'};
       font-family: 'Courier New', monospace;
+      word-break: break-all;
     }
 
     .stat-label {
@@ -994,48 +996,13 @@ const FundsOption = styled.div`
   }
 `;
 
-const COUNTRY_CURRENCIES = [
-  { code: 'USD', flag: '🇺🇸', name: 'US Dollar', symbol: '$' },
-  { code: 'EUR', flag: '🇪🇺', name: 'Euro', symbol: '€' },
-  { code: 'GBP', flag: '🇬🇧', name: 'British Pound', symbol: '£' },
-  { code: 'JPY', flag: '🇯🇵', name: 'Japanese Yen', symbol: '¥' },
-  { code: 'CHF', flag: '🇨🇭', name: 'Swiss Franc', symbol: 'Fr' },
-  { code: 'CAD', flag: '🇨🇦', name: 'Canadian Dollar', symbol: 'CA$' },
-  { code: 'AUD', flag: '🇦🇺', name: 'Australian Dollar', symbol: 'AU$' },
-  { code: 'CNY', flag: '🇨🇳', name: 'Chinese Yuan', symbol: '¥' },
-  { code: 'INR', flag: '🇮🇳', name: 'Indian Rupee', symbol: '₹' },
-  { code: 'BRL', flag: '🇧🇷', name: 'Brazilian Real', symbol: 'R$' },
-  { code: 'ZAR', flag: '🇿🇦', name: 'South African Rand', symbol: 'R' },
-  { code: 'KSh', flag: '🇰🇪', name: 'Kenyan Shilling', symbol: 'KSh' },
-  { code: 'NGN', flag: '🇳🇬', name: 'Nigerian Naira', symbol: '₦' },
-  { code: 'EGP', flag: '🇪🇬', name: 'Egyptian Pound', symbol: 'E£' },
-  { code: 'MAD', flag: '🇲🇦', name: 'Moroccan Dirham', symbol: 'DH' },
-  { code: 'GHS', flag: '🇬🇭', name: 'Ghanaian Cedi', symbol: 'GH₵' },
-  { code: 'TZS', flag: '🇹🇿', name: 'Tanzanian Shilling', symbol: 'TSh' },
-  { code: 'UGX', flag: '🇺🇬', name: 'Ugandan Shilling', symbol: 'USh' },
-  { code: 'RWF', flag: '🇷🇼', name: 'Rwandan Franc', symbol: 'FRw' },
-  { code: 'ZMW', flag: '🇿🇲', name: 'Zambian Kwacha', symbol: 'ZK' },
-  { code: 'MXN', flag: '🇲🇽', name: 'Mexican Peso', symbol: 'Mex$' },
-  { code: 'SGD', flag: '🇸🇬', name: 'Singapore Dollar', symbol: 'S$' },
-  { code: 'HKD', flag: '🇭🇰', name: 'Hong Kong Dollar', symbol: 'HK$' },
-  { code: 'NZD', flag: '🇳🇿', name: 'New Zealand Dollar', symbol: 'NZ$' },
-  { code: 'SEK', flag: '🇸🇪', name: 'Swedish Krona', symbol: 'kr' },
-  { code: 'NOK', flag: '🇳🇴', name: 'Norwegian Krone', symbol: 'kr' },
-  { code: 'DKK', flag: '🇩🇰', name: 'Danish Krone', symbol: 'kr' },
-  { code: 'PLN', flag: '🇵🇱', name: 'Polish Zloty', symbol: 'zł' },
-  { code: 'TRY', flag: '🇹🇷', name: 'Turkish Lira', symbol: '₺' },
-  { code: 'SAR', flag: '🇸🇦', name: 'Saudi Riyal', symbol: '﷼' },
-  { code: 'AED', flag: '🇦🇪', name: 'UAE Dirham', symbol: 'د.إ' },
-  { code: 'QAR', flag: '🇶🇦', name: 'Qatari Rial', symbol: '﷼' },
-  { code: 'KWD', flag: '🇰🇼', name: 'Kuwaiti Dinar', symbol: 'د.ك' },
-  { code: 'BHD', flag: '🇧🇭', name: 'Bahraini Dinar', symbol: 'د.ب' },
-  { code: 'OMR', flag: '🇴🇲', name: 'Omani Rial', symbol: '﷼' },
-  { code: 'JOD', flag: '🇯🇴', name: 'Jordanian Dinar', symbol: 'د.ا' },
-  { code: 'IQD', flag: '🇮🇶', name: 'Iraqi Dinar', symbol: 'ع.د' },
-  { code: 'LYD', flag: '🇱🇾', name: 'Libyan Dinar', symbol: 'ل.د' },
-  { code: 'TND', flag: '🇹🇳', name: 'Tunisian Dinar', symbol: 'د.ت' },
-  { code: 'DZD', flag: '🇩🇿', name: 'Algerian Dinar', symbol: 'د.ج' },
-  { code: 'ETB', flag: '🇪🇹', name: 'Ethiopian Birr', symbol: 'Br' },
+// ✅ Display currencies: USD, EUR, KSH, BTC
+//    `rate` is per 1 USD (base). `decimals` controls display precision.
+const DISPLAY_CURRENCIES = [
+  { code: 'USD', flag: '🇺🇸', name: 'US Dollar',       symbol: '$',   rate: 1,        decimals: 2 },
+  { code: 'EUR', flag: '🇪🇺', name: 'Euro',            symbol: '€',   rate: 0.92,     decimals: 2 },
+  { code: 'KSH', flag: '🇰🇪', name: 'Kenyan Shilling', symbol: 'KSh', rate: 131,      decimals: 2 },
+  { code: 'BTC', flag: '₿',  name: 'Bitcoin',          symbol: '₿',   rate: 0.0000154, decimals: 8 },
 ];
 
 const AccountBadge = styled.div`
@@ -1154,8 +1121,8 @@ const CurrencyOptionItem = styled.div`
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
   }
 
-  .flag { font-size: 16px; }
-  .code { font-weight: 700; min-width: 30px; }
+  .flag { font-size: 16px; min-width: 20px; text-align: center; }
+  .code { font-weight: 700; min-width: 34px; }
   .name { flex: 1; font-weight: 500; font-size: 11px; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; }
   .check { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
 `;
@@ -1553,27 +1520,54 @@ const TopPanel = ({
     return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
-  const getFormattedBalance = (acc) => {
-    const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
-    const symbol = currencyInfo?.symbol || '$';
-    return `${symbol} ${formatNumberWithCommas(acc.balance)}`;
+  // ✅ Currency helpers ------------------------------------------------------
+  // Internal account balances are always stored in USD. The helpers below
+  // convert USD → currently selected display currency before formatting.
+
+  const getCurrencyInfo = (code = selectedCurrency) =>
+    DISPLAY_CURRENCIES.find(c => c.code === code) || DISPLAY_CURRENCIES[0];
+
+  // Returns the numeric value after converting from USD to the selected currency.
+  const convertFromUSD = (usdAmount, code = selectedCurrency) => {
+    const info = getCurrencyInfo(code);
+    return usdAmount * info.rate;
   };
 
-  const getMaskedBalance = (acc) => {
-    const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
-    const symbol = currencyInfo?.symbol || '$';
-    return `${symbol} ****.**`;
+  // Formats a raw amount (in the selected currency, not USD) as a string.
+  const formatAmount = (amountInSelectedCurrency, { withSymbol = true, code = selectedCurrency } = {}) => {
+    const info = getCurrencyInfo(code);
+    let fixed = amountInSelectedCurrency.toFixed(info.decimals);
+
+    // Thousands separators only for "normal" currencies (not BTC)
+    if (info.decimals <= 2) {
+      fixed = fixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    return withSymbol ? `${info.symbol} ${fixed}` : fixed;
   };
 
-  const getCurrencyFlag = () => {
-    const currencyInfo = COUNTRY_CURRENCIES.find(c => c.code === selectedCurrency);
-    return currencyInfo?.flag || '🇺🇸';
+  // Converts a USD amount and formats it in the selected currency.
+  const formatFromUSD = (usdAmount, opts) =>
+    formatAmount(convertFromUSD(usdAmount), opts);
+
+  // Kept for backwards compatibility with the previous code paths.
+  const getFormattedBalance = (acc) => formatFromUSD(acc.balance);
+
+  const getMaskedBalance = () => {
+    const info = getCurrencyInfo();
+    // For high-precision currencies (BTC), mask with more dots
+    const mask = info.decimals > 2 ? `${'*'.repeat(1)}.${'*'.repeat(info.decimals)}` : '****.**';
+    return `${info.symbol} ${mask}`;
   };
 
-  const filteredCurrencies = COUNTRY_CURRENCIES.filter(c => 
+  const getCurrencyFlag = () => getCurrencyInfo().flag;
+
+  const filteredCurrencies = DISPLAY_CURRENCIES.filter(c => 
     c.name.toLowerCase().includes(currencySearch.toLowerCase()) ||
     c.code.toLowerCase().includes(currencySearch.toLowerCase())
   );
+
+  // -------------------------------------------------------------------------
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -1702,6 +1696,7 @@ const TopPanel = ({
     { icon: <HistoryIcon />, name: 'History', desc: 'View transaction history', action: 'history' },
   ];
 
+  // Sample transactions stored in USD — will be converted for display.
   const sampleTransactions = [
     { id: 1, type: 'deposit', name: 'Deposit via M-Pesa', date: 'Today, 10:23 AM', amount: 50.00, positive: true, ref: 'MP-2024-00123' },
     { id: 2, type: 'withdraw', name: 'Withdrawal to M-Pesa', date: 'Yesterday, 3:15 PM', amount: 20.00, positive: false, ref: 'WD-2024-00456' },
@@ -1719,7 +1714,7 @@ const TopPanel = ({
               <div className="nickname">{accountNickname}</div>
               <div className="balance-row">
                 <div className="balance">
-                  {showBalance ? getFormattedBalance(currentAccount) : getMaskedBalance(currentAccount)}
+                  {showBalance ? getFormattedBalance(currentAccount) : getMaskedBalance()}
                 </div>
                 <div className="eye-btn" onClick={() => setShowBalance(!showBalance)}>
                   <EyeIcon visible={showBalance} />
@@ -1729,11 +1724,16 @@ const TopPanel = ({
             </OverviewBalance>
             <OverviewStats>
               <div className="stat">
-                <div className="stat-value">{formatNumberWithCommas(parseFloat(currentAccount.balance) * 0.1)}</div>
+                {/* ✅ Converted to the selected display currency */}
+                <div className="stat-value">
+                  {formatFromUSD(parseFloat(currentAccount.balance) * 0.1, { withSymbol: false })}
+                </div>
                 <div className="stat-label">Invested</div>
               </div>
               <div className="stat">
-                <div className="stat-value" style={{ color: '#22C55E' }}>+$12.50</div>
+                <div className="stat-value" style={{ color: '#22C55E' }}>
+                  +{formatFromUSD(12.50)}
+                </div>
                 <div className="stat-label">Profit</div>
               </div>
               <div className="stat">
@@ -1754,7 +1754,7 @@ const TopPanel = ({
                     <div className="tx-date">{tx.date}</div>
                   </div>
                   <div className={`tx-amount ${tx.positive ? 'positive' : 'negative'}`}>
-                    {tx.positive ? '+' : '-'}${tx.amount.toFixed(2)}
+                    {tx.positive ? '+' : '-'}{formatFromUSD(tx.amount)}
                   </div>
                 </div>
               ))}
@@ -1873,6 +1873,7 @@ const TopPanel = ({
               <div className="input-wrap">
                 <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Wallet</span>
                 <input type="text" value="Deriv Main Wallet" disabled style={{ fontWeight: '600', opacity: 0.7 }} />
+                {/* ✅ Shows the balance in the currently selected currency */}
                 <span className="suffix">{getFormattedBalance(currentAccount)}</span>
               </div>
             </FormGroup>
@@ -1924,8 +1925,9 @@ const TopPanel = ({
                       <div className="h-reference">Ref: {tx.ref}</div>
                     </div>
                   </div>
+                  {/* ✅ Converted to the selected display currency */}
                   <div className={`h-amount ${tx.positive ? 'positive' : 'negative'}`}>
-                    {tx.positive ? '+' : '-'}${tx.amount.toFixed(2)}
+                    {tx.positive ? '+' : '-'}{formatFromUSD(tx.amount)}
                   </div>
                 </div>
               ))}
@@ -2048,7 +2050,7 @@ const TopPanel = ({
                 <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
               </ThemeOptionItem>
               <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
-                <MenuHeader style={{ marginBottom: '6px' }}>Currency</MenuHeader>
+                <MenuHeader style={{ marginBottom: '6px' }}>Display Currency</MenuHeader>
                 <SearchInput type="text" placeholder="Search currency..." value={currencySearch} onChange={(e) => setCurrencySearch(e.target.value)} />
                 <CurrencyList>
                   {filteredCurrencies.length > 0 ? (
