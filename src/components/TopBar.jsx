@@ -813,7 +813,7 @@ const ThemeDropdownMenu = styled(GlassDropdownMenu)`
 `;
 
 const PlatformDropdown = styled(GlassDropdownMenu)`
-  min-width: 160px;
+  min-width: 210px;
   left: 0;
   right: auto;
 `;
@@ -1219,6 +1219,12 @@ const THEME_OPTIONS = [
   { key: 'orange', name: 'Orange', color: '#0c0703' },
 ];
 
+// ✅ Platform metadata: colors + definitions used for both the selector and dropdown
+const PLATFORM_OPTIONS = {
+  deriv: { label: 'deriv', color: '#ff444f', definition: 'Synthetic Indices' },
+  forex: { label: 'forex', color: '#3b82f6', definition: 'Currency Pairs' },
+};
+
 const Spinner = styled.div`
   width: 24px;
   height: 24px;
@@ -1268,21 +1274,73 @@ const PlatformSelector = styled.button`
   gap: 4px;
   background: transparent;
   border: none;
-  color: #ff444f;
+  /* ✅ color is now driven by the selected market */
+  color: ${props => props.$color || '#ff444f'};
   font-style: italic;
   font-weight: 900;
   font-size: inherit;
   cursor: pointer;
   padding: 0;
-  transition: color 0.2s;
+  transition: color 0.25s ease;
 
   &:hover { opacity: 0.9; }
 
   .chevron {
     display: flex;
     align-items: center;
+    color: inherit; /* ✅ chevron now always matches the market color */
+    transition: color 0.25s ease;
+  }
+
+  .platform-definition {
+    font-size: 0.6em;
+    font-style: italic;
+    font-weight: 600;
+    opacity: 0.75;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
     color: inherit;
-    transition: transform 0.2s;
+  }
+
+  @media (max-width: 480px) {
+    .platform-definition { display: none; }
+  }
+`;
+
+// ✅ Dropdown item with market-colored dot + muted definition
+const PlatformOptionItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 12px;
+  font-weight: 700;
+  font-style: italic;
+  color: ${props => (props.$active ? props.$color : props.theme?.colors?.textSecondary || '#cbd5e1')};
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
+    color: ${props => props.$color};
+  }
+
+  .platform-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: ${props => props.$color};
+    box-shadow: 0 0 8px ${props => props.$color};
+    flex-shrink: 0;
+  }
+
+  .platform-desc {
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    margin-left: auto;
   }
 `;
 
@@ -1895,14 +1953,30 @@ const TopPanel = ({
             <BrandText>
               <span className="voltix">MyTradeApp.</span>
               <DropdownContainer ref={platformRef}>
-                <PlatformSelector onClick={togglePlatformDropdown}>
-                  <span style={{ color: platform === 'deriv' ? '#ff444f' : '#3b82f6' }}>{platform}</span>
+                <PlatformSelector
+                  onClick={togglePlatformDropdown}
+                  $color={PLATFORM_OPTIONS[platform].color}
+                >
+                  <span>{PLATFORM_OPTIONS[platform].label}</span>
+                  <span className="platform-definition">
+                    ({PLATFORM_OPTIONS[platform].definition})
+                  </span>
                   <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
                 </PlatformSelector>
                 <PlatformDropdown isOpen={isPlatformOpen}>
                   <MenuHeader>Select Platform</MenuHeader>
-                  <div style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'deriv' ? '#ff444f' : '#cbd5e1' }} onClick={() => { setPlatform('deriv'); setIsPlatformOpen(false); }}>Deriv</div>
-                  <div style={{ cursor: 'pointer', padding: '8px 12px', borderRadius: '8px', fontWeight: 600, color: platform === 'forex' ? '#3b82f6' : '#cbd5e1' }} onClick={() => { setPlatform('forex'); setIsPlatformOpen(false); }}>Forex</div>
+                  {Object.entries(PLATFORM_OPTIONS).map(([key, opt]) => (
+                    <PlatformOptionItem
+                      key={key}
+                      $active={platform === key}
+                      $color={opt.color}
+                      onClick={() => { setPlatform(key); setIsPlatformOpen(false); }}
+                    >
+                      <span className="platform-dot" />
+                      <span>{opt.label}</span>
+                      <span className="platform-desc">({opt.definition})</span>
+                    </PlatformOptionItem>
+                  ))}
                 </PlatformDropdown>
               </DropdownContainer>
             </BrandText>
