@@ -1075,35 +1075,11 @@ const AccountBadge = styled.div`
   }
 `;
 
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-  border-radius: 8px;
-  background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
-  color: ${props => props.theme?.colors?.text || '#ffffff'};
-  font-size: 12px;
-  font-weight: 500;
-  outline: none;
-  transition: all 0.2s ease;
-  margin-bottom: 4px;
-
-  &:focus {
-    border-color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-    box-shadow: 0 0 0 3px ${props => (props.theme?.colors?.accent || '#3b82f6') + '15'};
-  }
-
-  &::placeholder {
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    font-weight: 400;
-  }
-`;
-
 const CurrencyOptionItem = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 12px;
+  padding: 9px 12px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -1125,15 +1101,6 @@ const CurrencyOptionItem = styled.div`
   .code { font-weight: 700; min-width: 34px; }
   .name { flex: 1; font-weight: 500; font-size: 11px; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; }
   .check { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
-`;
-
-const CurrencyList = styled.div`
-  max-height: 180px;
-  overflow-y: auto;
-  margin-top: 4px;
-
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 `;
 
 const ExitButton = styled.button`
@@ -1470,7 +1437,6 @@ const TopPanel = ({
   const [connected, setConnected] = useState(true);
   const [accountType, setAccountType] = useState('real');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [currencySearch, setCurrencySearch] = useState('');
   
   const [fundModalAction, setFundModalAction] = useState(null);
   const [amount, setAmount] = useState('');
@@ -1516,10 +1482,6 @@ const TopPanel = ({
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
   const isDemo = accountType === 'demo';
 
-  const formatNumberWithCommas = (number) => {
-    return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  };
-
   // ✅ Currency helpers ------------------------------------------------------
   // Internal account balances are always stored in USD. The helpers below
   // convert USD → currently selected display currency before formatting.
@@ -1561,11 +1523,6 @@ const TopPanel = ({
   };
 
   const getCurrencyFlag = () => getCurrencyInfo().flag;
-
-  const filteredCurrencies = DISPLAY_CURRENCIES.filter(c => 
-    c.name.toLowerCase().includes(currencySearch.toLowerCase()) ||
-    c.code.toLowerCase().includes(currencySearch.toLowerCase())
-  );
 
   // -------------------------------------------------------------------------
 
@@ -2050,22 +2007,19 @@ const TopPanel = ({
                 <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
               </ThemeOptionItem>
               <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
-                <MenuHeader style={{ marginBottom: '6px' }}>Display Currency</MenuHeader>
-                <SearchInput type="text" placeholder="Search currency..." value={currencySearch} onChange={(e) => setCurrencySearch(e.target.value)} />
-                <CurrencyList>
-                  {filteredCurrencies.length > 0 ? (
-                    filteredCurrencies.map((curr) => (
-                      <CurrencyOptionItem key={curr.code} onClick={() => { setSelectedCurrency(curr.code); setCurrencySearch(''); setIsDropdownOpen(false); }} className={selectedCurrency === curr.code ? 'active' : ''}>
-                        <span className="flag">{curr.flag}</span>
-                        <span className="code">{curr.code}</span>
-                        <span className="name">{curr.name}</span>
-                        {selectedCurrency === curr.code && <span className="check">✓</span>}
-                      </CurrencyOptionItem>
-                    ))
-                  ) : (
-                    <div style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontSize: '12px' }}>No currencies found</div>
-                  )}
-                </CurrencyList>
+                <MenuHeader style={{ marginBottom: '6px' }}>Display currency in</MenuHeader>
+                {DISPLAY_CURRENCIES.map((curr) => (
+                  <CurrencyOptionItem
+                    key={curr.code}
+                    onClick={() => { setSelectedCurrency(curr.code); setIsDropdownOpen(false); }}
+                    className={selectedCurrency === curr.code ? 'active' : ''}
+                  >
+                    <span className="flag">{curr.flag}</span>
+                    <span className="code">{curr.code}</span>
+                    <span className="name">{curr.name}</span>
+                    {selectedCurrency === curr.code && <span className="check">✓</span>}
+                  </CurrencyOptionItem>
+                ))}
               </div>
             </RightAnchoredDropdown>
           </DropdownContainer>
