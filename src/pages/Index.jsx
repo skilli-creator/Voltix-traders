@@ -152,7 +152,7 @@ const FormInner = styled.div`
 `;
 
 /* ============================================================
-   BRAND — absolutely positioned top-left of the form side
+   BRAND
    ============================================================ */
 const Brand = styled.div`
   position: absolute;
@@ -240,10 +240,8 @@ const BrandLogoSvg = () => (
       </linearGradient>
     </defs>
 
-    {/* rounded square backdrop */}
     <rect x="0" y="0" width="48" height="48" rx="13" fill="url(#mtBrandBg)" />
 
-    {/* soft inner highlight */}
     <path
       d="M4 15 C4 8 8 4 15 4 L33 4 C40 4 44 8 44 15 L44 33 C44 40 40 44 33 44 L15 44 C8 44 4 40 4 33 Z"
       fill="none"
@@ -252,7 +250,6 @@ const BrandLogoSvg = () => (
       strokeWidth="1"
     />
 
-    {/* ascending chart line ending with an arrowhead */}
     <path
       d="M10 32 L16 23 L22 28 L33 14"
       stroke="url(#mtBrandLine)"
@@ -262,7 +259,6 @@ const BrandLogoSvg = () => (
       fill="none"
     />
 
-    {/* arrowhead */}
     <path
       d="M27 14 L33 14 L33 20"
       stroke="#ffffff"
@@ -272,7 +268,6 @@ const BrandLogoSvg = () => (
       fill="none"
     />
 
-    {/* start-point dot */}
     <circle cx="10" cy="32" r="2" fill="#ffffff" />
   </svg>
 );
@@ -919,19 +914,19 @@ const ModalClose = styled.button`
   svg { width: 18px; height: 18px; }
 `;
 
+/* Modal header icon — dual-tone SVG inside a rounded tile */
 const ModalIcon = styled.div`
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 16px;
   background: ${props => props.bg || theme.colors.accentSoft};
   border: 1px solid ${props => props.border || 'rgba(59, 130, 246, 0.25)'};
-  color: ${props => props.color || '#60a5fa'};
 
-  svg { width: 24px; height: 24px; }
+  svg { width: 30px; height: 30px; display: block; }
 `;
 
 const ModalTitle = styled.h2`
@@ -997,7 +992,9 @@ const LinkButton = styled.button`
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+
+  svg { width: 13px; height: 13px; stroke: currentColor; }
 
   &:hover { text-decoration: underline; }
   &:disabled { opacity: 0.55; cursor: not-allowed; text-decoration: none; }
@@ -1061,12 +1058,12 @@ const SuccessWrap = styled.div`
 `;
 
 const SuccessCircle = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 76px;
+  height: 76px;
   position: relative;
   margin-bottom: 16px;
 
-  svg { width: 100%; height: 100%; }
+  svg { width: 100%; height: 100%; display: block; }
 
   circle {
     stroke: ${theme.colors.success};
@@ -1089,7 +1086,7 @@ const SuccessCircle = styled.div`
 `;
 
 /* ============================================================
-   SVG ICONS
+   SVG ICONS — page
    ============================================================ */
 const EyeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1109,13 +1106,6 @@ const RefreshIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12a9 9 0 1 1-3.1-6.8"/>
     <polyline points="21 3 21 9 15 9"/>
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18"/>
-    <line x1="6" y1="6" x2="18" y2="18"/>
   </svg>
 );
 
@@ -1141,28 +1131,6 @@ const XCircleIcon = () => (
   </svg>
 );
 
-const MailIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="4" width="20" height="16" rx="2"/>
-    <path d="m22 6-10 7L2 6"/>
-  </svg>
-);
-
-const ShieldCheckIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-    <path d="m9 12 2 2 4-4"/>
-  </svg>
-);
-
-const KeyIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="7.5" cy="15.5" r="4.5"/>
-    <path d="m21 2-9.6 9.6"/>
-    <path d="m15.5 7.5 3 3L22 7l-3-3"/>
-  </svg>
-);
-
 const BoltIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
@@ -1179,6 +1147,106 @@ const ChartIcon = () => (
 const ShieldIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+  </svg>
+);
+
+/* ============================================================
+   SVG ICONS — popups (dual-tone: gradient fill + white stroke)
+   ============================================================ */
+
+/* X (close) — bold, filled-circle look */
+const CloseIcon = () => (
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/>
+    <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/>
+  </svg>
+);
+
+/* Envelope with glowing seal — email verification */
+const MailSealIcon = () => (
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="mailGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#60a5fa"/>
+        <stop offset="100%" stopColor="#2563eb"/>
+      </linearGradient>
+    </defs>
+    <rect x="3" y="7" width="26" height="19" rx="4"
+          fill="url(#mailGrad)" opacity="0.18"
+          stroke="url(#mailGrad)" strokeWidth="1.6"/>
+    <path d="M5 10 L16 19 L27 10"
+          fill="none" stroke="url(#mailGrad)" strokeWidth="2"
+          strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="24" cy="8" r="5" fill="#10b981"/>
+    <path d="M21.5 8.2 L23.2 10 L26.5 6.5"
+          fill="none" stroke="#ffffff" strokeWidth="1.8"
+          strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+/* Key with shield halo — forgot password */
+const KeyShieldIcon = () => (
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="keyGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#fbbf24"/>
+        <stop offset="100%" stopColor="#d97706"/>
+      </linearGradient>
+    </defs>
+    <path d="M16 3 L27 8 V15 C27 22 22 26 16 29 C10 26 5 22 5 15 V8 Z"
+          fill="url(#keyGrad)" opacity="0.14"
+          stroke="url(#keyGrad)" strokeWidth="1.6"
+          strokeLinejoin="round"/>
+    <circle cx="13" cy="17" r="3.4"
+            fill="none" stroke="url(#keyGrad)" strokeWidth="2"/>
+    <path d="M16.2 17 L23 17 M21 17 L21 20 M23 17 L23 20"
+          fill="none" stroke="url(#keyGrad)" strokeWidth="2"
+          strokeLinecap="round"/>
+  </svg>
+);
+
+/* Shield with check inside — reset password */
+const ShieldLockIcon = () => (
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#60a5fa"/>
+        <stop offset="100%" stopColor="#2563eb"/>
+      </linearGradient>
+    </defs>
+    <path d="M16 3 L28 8 V16 C28 23 23 27 16 30 C9 27 4 23 4 16 V8 Z"
+          fill="url(#shieldGrad)" opacity="0.16"
+          stroke="url(#shieldGrad)" strokeWidth="1.8"
+          strokeLinejoin="round"/>
+    <rect x="11" y="15" width="10" height="8" rx="1.8"
+          fill="none" stroke="url(#shieldGrad)" strokeWidth="2"/>
+    <path d="M13.5 15 V12.5 a2.5 2.5 0 0 1 5 0 V15"
+          fill="none" stroke="url(#shieldGrad)" strokeWidth="2"
+          strokeLinecap="round"/>
+    <circle cx="16" cy="19" r="1.2" fill="url(#shieldGrad)"/>
+  </svg>
+);
+
+/* Simple check inside circle — for message + requirements */
+const CheckCircleMini = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+
+/* Resend icon — a small circular arrow, used inline in LinkButton */
+const ResendMiniIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12a9 9 0 1 1-3.1-6.8"/>
+    <polyline points="21 3 21 9 15 9"/>
+  </svg>
+);
+
+/* Big animated success SVG (used in every popup success state) */
+const SuccessCircleSvg = () => (
+  <svg viewBox="0 0 62 62" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="31" cy="31" r="28" />
+    <path d="M20 32 l7 7 l15 -15" />
   </svg>
 );
 
@@ -1424,10 +1492,7 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
         {verified ? (
           <SuccessWrap>
             <SuccessCircle>
-              <svg viewBox="0 0 62 62">
-                <circle cx="31" cy="31" r="28" />
-                <path d="M20 32 l7 7 l15 -15" />
-              </svg>
+              <SuccessCircleSvg />
             </SuccessCircle>
             <ModalTitle>Email verified</ModalTitle>
             <ModalSubtitle style={{ marginBottom: 8 }}>
@@ -1442,7 +1507,7 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
         ) : (
           <form onSubmit={handleVerify}>
             <ModalIcon>
-              <MailIcon />
+              <MailSealIcon />
             </ModalIcon>
 
             <ModalTitle>Verify your email</ModalTitle>
@@ -1469,7 +1534,7 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
               )}
 
               <ResendRow style={{ marginTop: 12 }}>
-                <span>Didn&apos;t get the code?</span>
+                <span>Didn't get the code?</span>
                 {resendIn > 0 ? (
                   <span style={{ color: theme.colors.textMuted }}>
                     Resend in {resendIn}s
@@ -1480,7 +1545,8 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
                     onClick={handleResend}
                     disabled={resending}
                   >
-                    {resending ? 'Sending…' : 'Resend code'}
+                    <ResendMiniIcon />
+                    {resending ? 'Sending' : 'Resend code'}
                   </LinkButton>
                 )}
               </ResendRow>
@@ -1501,7 +1567,7 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
 
             <SubmitBtn type="submit" disabled={verifying || code.length !== 6}>
               {verifying && <Spinner />}
-              {verifying ? 'Verifying…' : 'Verify email'}
+              {verifying ? 'Verifying' : 'Verify email'}
             </SubmitBtn>
           </form>
         )}
@@ -1517,12 +1583,14 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
 
   useEffect(() => {
     if (open) {
       setEmail('');
       setError('');
       setSending(false);
+      setSent(false);
     }
   }, [open]);
 
@@ -1549,7 +1617,10 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
 
     setTimeout(() => {
       setSending(false);
-      if (onCodeSent) onCodeSent(trimmed);
+      setSent(true);
+      setTimeout(() => {
+        if (onCodeSent) onCodeSent(trimmed);
+      }, 700);
     }, 1200);
   };
 
@@ -1562,54 +1633,65 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
           <CloseIcon />
         </ModalClose>
 
-        <form onSubmit={handleSubmit}>
-          <ModalIcon
-            bg="rgba(245, 158, 11, 0.12)"
-            border="rgba(245, 158, 11, 0.28)"
-            color={theme.colors.warning}
-          >
-            <KeyIcon />
-          </ModalIcon>
+        {sent ? (
+          <SuccessWrap>
+            <SuccessCircle>
+              <SuccessCircleSvg />
+            </SuccessCircle>
+            <ModalTitle>Code sent</ModalTitle>
+            <ModalSubtitle style={{ marginBottom: 8 }}>
+              Check <strong>{email}</strong> for the reset code.
+            </ModalSubtitle>
+          </SuccessWrap>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <ModalIcon
+              bg="rgba(245, 158, 11, 0.12)"
+              border="rgba(245, 158, 11, 0.28)"
+            >
+              <KeyShieldIcon />
+            </ModalIcon>
 
-          <ModalTitle>Forgot your password?</ModalTitle>
-          <ModalSubtitle>
-            Enter the email tied to your MyTradeApp account and we&apos;ll
-            send you a secure reset code.
-          </ModalSubtitle>
+            <ModalTitle>Forgot your password?</ModalTitle>
+            <ModalSubtitle>
+              Enter the email tied to your MyTradeApp account and we'll
+              send you a secure reset code.
+            </ModalSubtitle>
 
-          <ModalBody>
-            <Field>
-              <Label htmlFor="forgotEmail">Email address</Label>
-              <InputWrap>
-                <Input
-                  id="forgotEmail"
-                  type="email"
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (error) setError('');
-                  }}
-                  error={!!error}
-                  autoFocus
-                />
-              </InputWrap>
-              {error && <ErrorText>{error}</ErrorText>}
-            </Field>
-          </ModalBody>
+            <ModalBody>
+              <Field>
+                <Label htmlFor="forgotEmail">Email address</Label>
+                <InputWrap>
+                  <Input
+                    id="forgotEmail"
+                    type="email"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (error) setError('');
+                    }}
+                    error={!!error}
+                    autoFocus
+                  />
+                </InputWrap>
+                {error && <ErrorText>{error}</ErrorText>}
+              </Field>
+            </ModalBody>
 
-          <SubmitBtn type="submit" disabled={sending}>
-            {sending && <Spinner />}
-            {sending ? 'Sending reset code…' : 'Send reset code'}
-          </SubmitBtn>
+            <SubmitBtn type="submit" disabled={sending}>
+              {sending && <Spinner />}
+              {sending ? 'Sending code' : 'Send reset code'}
+            </SubmitBtn>
 
-          <ModalActions>
-            <SecondaryBtn type="button" onClick={onClose}>
-              Cancel
-            </SecondaryBtn>
-          </ModalActions>
-        </form>
+            <ModalActions>
+              <SecondaryBtn type="button" onClick={onClose}>
+                Cancel
+              </SecondaryBtn>
+            </ModalActions>
+          </form>
+        )}
       </ModalCard>
     </ModalBackdrop>
   );
@@ -1626,6 +1708,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
   const [showCf, setShowCf] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
   const [resendIn, setResendIn] = useState(30);
   const [resending, setResending] = useState(false);
   const [resendNote, setResendNote] = useState('');
@@ -1639,6 +1722,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
       setShowCf(false);
       setErrors({});
       setLoading(false);
+      setDone(false);
       setResendIn(30);
       setResendNote('');
     }
@@ -1692,7 +1776,10 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
 
     setTimeout(() => {
       setLoading(false);
-      if (onResetDone) onResetDone();
+      setDone(true);
+      setTimeout(() => {
+        if (onResetDone) onResetDone();
+      }, 900);
     }, 1400);
   };
 
@@ -1716,151 +1803,164 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
           <CloseIcon />
         </ModalClose>
 
-        <form onSubmit={handleReset}>
-          <ModalIcon>
-            <ShieldCheckIcon />
-          </ModalIcon>
+        {done ? (
+          <SuccessWrap>
+            <SuccessCircle>
+              <SuccessCircleSvg />
+            </SuccessCircle>
+            <ModalTitle>Password updated</ModalTitle>
+            <ModalSubtitle style={{ marginBottom: 8 }}>
+              You can now sign in with your new password.
+            </ModalSubtitle>
+          </SuccessWrap>
+        ) : (
+          <form onSubmit={handleReset}>
+            <ModalIcon>
+              <ShieldLockIcon />
+            </ModalIcon>
 
-          <ModalTitle>Reset your password</ModalTitle>
-          <ModalSubtitle>
-            Enter the 6-digit code sent to <strong>{email || 'your email'}</strong>{' '}
-            and choose a new password.
-          </ModalSubtitle>
+            <ModalTitle>Reset your password</ModalTitle>
+            <ModalSubtitle>
+              Enter the 6-digit code sent to <strong>{email || 'your email'}</strong>{' '}
+              and choose a new password.
+            </ModalSubtitle>
 
-          <ModalBody>
-            <OtpInput
-              value={code}
-              onChange={(v) => {
-                setCode(v);
-                if (errors.code) setErrors((p) => ({ ...p, code: '' }));
-              }}
-              error={!!errors.code}
-              disabled={loading}
-              autoFocus
-            />
-            {errors.code && (
-              <ErrorText style={{ textAlign: 'center', marginTop: 2 }}>
-                {errors.code}
-              </ErrorText>
-            )}
-
-            <ResendRow style={{ marginTop: 12, marginBottom: 16 }}>
-              <span>Didn&apos;t get the code?</span>
-              {resendIn > 0 ? (
-                <span style={{ color: theme.colors.textMuted }}>
-                  Resend in {resendIn}s
-                </span>
-              ) : (
-                <LinkButton
-                  type="button"
-                  onClick={handleResend}
-                  disabled={resending}
-                >
-                  {resending ? 'Sending…' : 'Resend code'}
-                </LinkButton>
-              )}
-            </ResendRow>
-            {resendNote && (
-              <div
-                style={{
-                  marginTop: -8,
-                  marginBottom: 12,
-                  fontSize: 13,
-                  color: theme.colors.success,
-                  textAlign: 'center',
+            <ModalBody>
+              <OtpInput
+                value={code}
+                onChange={(v) => {
+                  setCode(v);
+                  if (errors.code) setErrors((p) => ({ ...p, code: '' }));
                 }}
-              >
-                {resendNote}
-              </div>
-            )}
-
-            <Field>
-              <Label htmlFor="resetPassword">New password</Label>
-              <InputWrap>
-                <Input
-                  id="resetPassword"
-                  type={showPw ? 'text' : 'password'}
-                  placeholder="At least 8 characters"
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (errors.password) setErrors((p) => ({ ...p, password: '' }));
-                  }}
-                  error={!!errors.password}
-                  hasToggle
-                />
-                <ToggleBtn
-                  type="button"
-                  onClick={() => setShowPw((v) => !v)}
-                  aria-label={showPw ? 'Hide password' : 'Show password'}
-                >
-                  {showPw ? <EyeOffIcon /> : <EyeIcon />}
-                </ToggleBtn>
-              </InputWrap>
-              <StrengthText color={strength.color}>{strength.label}</StrengthText>
-              <RequirementsList>
-                <li className={pwChecks.length ? 'met' : 'unmet'}>
-                  <span className="check"><CheckIcon /></span>
-                  8+ characters
-                </li>
-                <li className={pwChecks.upper ? 'met' : 'unmet'}>
-                  <span className="check"><CheckIcon /></span>
-                  Uppercase
-                </li>
-                <li className={pwChecks.number ? 'met' : 'unmet'}>
-                  <span className="check"><CheckIcon /></span>
-                  Number
-                </li>
-                <li className={pwChecks.symbol ? 'met' : 'unmet'}>
-                  <span className="check"><CheckIcon /></span>
-                  Symbol
-                </li>
-              </RequirementsList>
-              {errors.password && (
-                <ErrorText style={{ marginTop: 8 }}>{errors.password}</ErrorText>
+                error={!!errors.code}
+                disabled={loading}
+                autoFocus
+              />
+              {errors.code && (
+                <ErrorText style={{ textAlign: 'center', marginTop: 2 }}>
+                  {errors.code}
+                </ErrorText>
               )}
-            </Field>
 
-            <Field>
-              <Label htmlFor="resetConfirm">Confirm new password</Label>
-              <InputWrap>
-                <Input
-                  id="resetConfirm"
-                  type={showCf ? 'text' : 'password'}
-                  placeholder="Re-enter new password"
-                  autoComplete="new-password"
-                  value={confirm}
-                  onChange={(e) => {
-                    setConfirm(e.target.value);
-                    if (errors.confirm) setErrors((p) => ({ ...p, confirm: '' }));
+              <ResendRow style={{ marginTop: 12, marginBottom: 16 }}>
+                <span>Didn't get the code?</span>
+                {resendIn > 0 ? (
+                  <span style={{ color: theme.colors.textMuted }}>
+                    Resend in {resendIn}s
+                  </span>
+                ) : (
+                  <LinkButton
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resending}
+                  >
+                    <ResendMiniIcon />
+                    {resending ? 'Sending' : 'Resend code'}
+                  </LinkButton>
+                )}
+              </ResendRow>
+              {resendNote && (
+                <div
+                  style={{
+                    marginTop: -8,
+                    marginBottom: 12,
+                    fontSize: 13,
+                    color: theme.colors.success,
+                    textAlign: 'center',
                   }}
-                  error={!!errors.confirm}
-                  hasToggle
-                />
-                <ToggleBtn
-                  type="button"
-                  onClick={() => setShowCf((v) => !v)}
-                  aria-label={showCf ? 'Hide password' : 'Show password'}
                 >
-                  {showCf ? <EyeOffIcon /> : <EyeIcon />}
-                </ToggleBtn>
-              </InputWrap>
-              {errors.confirm && <ErrorText>{errors.confirm}</ErrorText>}
-            </Field>
-          </ModalBody>
+                  {resendNote}
+                </div>
+              )}
 
-          <SubmitBtn type="submit" disabled={loading}>
-            {loading && <Spinner />}
-            {loading ? 'Resetting…' : 'Reset password'}
-          </SubmitBtn>
+              <Field>
+                <Label htmlFor="resetPassword">New password</Label>
+                <InputWrap>
+                  <Input
+                    id="resetPassword"
+                    type={showPw ? 'text' : 'password'}
+                    placeholder="At least 8 characters"
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors((p) => ({ ...p, password: '' }));
+                    }}
+                    error={!!errors.password}
+                    hasToggle
+                  />
+                  <ToggleBtn
+                    type="button"
+                    onClick={() => setShowPw((v) => !v)}
+                    aria-label={showPw ? 'Hide password' : 'Show password'}
+                  >
+                    {showPw ? <EyeOffIcon /> : <EyeIcon />}
+                  </ToggleBtn>
+                </InputWrap>
+                <StrengthText color={strength.color}>{strength.label}</StrengthText>
+                <RequirementsList>
+                  <li className={pwChecks.length ? 'met' : 'unmet'}>
+                    <span className="check"><CheckCircleMini /></span>
+                    8+ characters
+                  </li>
+                  <li className={pwChecks.upper ? 'met' : 'unmet'}>
+                    <span className="check"><CheckCircleMini /></span>
+                    Uppercase
+                  </li>
+                  <li className={pwChecks.number ? 'met' : 'unmet'}>
+                    <span className="check"><CheckCircleMini /></span>
+                    Number
+                  </li>
+                  <li className={pwChecks.symbol ? 'met' : 'unmet'}>
+                    <span className="check"><CheckCircleMini /></span>
+                    Symbol
+                  </li>
+                </RequirementsList>
+                {errors.password && (
+                  <ErrorText style={{ marginTop: 8 }}>{errors.password}</ErrorText>
+                )}
+              </Field>
 
-          <ModalActions>
-            <SecondaryBtn type="button" onClick={onBack}>
-              Back
-            </SecondaryBtn>
-          </ModalActions>
-        </form>
+              <Field>
+                <Label htmlFor="resetConfirm">Confirm new password</Label>
+                <InputWrap>
+                  <Input
+                    id="resetConfirm"
+                    type={showCf ? 'text' : 'password'}
+                    placeholder="Re-enter new password"
+                    autoComplete="new-password"
+                    value={confirm}
+                    onChange={(e) => {
+                      setConfirm(e.target.value);
+                      if (errors.confirm) setErrors((p) => ({ ...p, confirm: '' }));
+                    }}
+                    error={!!errors.confirm}
+                    hasToggle
+                  />
+                  <ToggleBtn
+                    type="button"
+                    onClick={() => setShowCf((v) => !v)}
+                    aria-label={showCf ? 'Hide password' : 'Show password'}
+                  >
+                    {showCf ? <EyeOffIcon /> : <EyeIcon />}
+                  </ToggleBtn>
+                </InputWrap>
+                {errors.confirm && <ErrorText>{errors.confirm}</ErrorText>}
+              </Field>
+            </ModalBody>
+
+            <SubmitBtn type="submit" disabled={loading}>
+              {loading && <Spinner />}
+              {loading ? 'Resetting' : 'Reset password'}
+            </SubmitBtn>
+
+            <ModalActions>
+              <SecondaryBtn type="button" onClick={onBack}>
+                Back
+              </SecondaryBtn>
+            </ModalActions>
+          </form>
+        )}
       </ModalCard>
     </ModalBackdrop>
   );
@@ -2018,7 +2118,7 @@ const SignUp = () => {
     }
 
     setLoading(true);
-    setMessage('Creating your account…');
+    setMessage('Creating your account');
     setMessageKind('info');
 
     setTimeout(() => {
@@ -2041,7 +2141,7 @@ const SignUp = () => {
     if (Object.keys(next).length) return;
 
     setLoading(true);
-    setMessage('Signing you in…');
+    setMessage('Signing you in');
     setMessageKind('info');
 
     setTimeout(() => {
@@ -2072,7 +2172,6 @@ const SignUp = () => {
       <GlobalStyle />
       <Page className="mtapp-signup">
         <FormSide className="form-side">
-          {/* Brand — fixed at top-left of the form side */}
           <Brand>
             <BrandLogo>
               <BrandLogoSvg />
@@ -2100,7 +2199,7 @@ const SignUp = () => {
               <>
                 <Heading>Log in</Heading>
                 <SwitchRow>
-                  Don&apos;t have an account?
+                  Don't have an account?
                   <button type="button" onClick={() => switchMode('signup')}>
                     Sign up
                   </button>
@@ -2170,19 +2269,19 @@ const SignUp = () => {
 
                   <RequirementsList>
                     <li className={passwordChecks.length ? 'met' : 'unmet'}>
-                      <span className="check"><CheckIcon /></span>
+                      <span className="check"><CheckCircleMini /></span>
                       8+ characters
                     </li>
                     <li className={passwordChecks.upper ? 'met' : 'unmet'}>
-                      <span className="check"><CheckIcon /></span>
+                      <span className="check"><CheckCircleMini /></span>
                       Uppercase letter
                     </li>
                     <li className={passwordChecks.number ? 'met' : 'unmet'}>
-                      <span className="check"><CheckIcon /></span>
+                      <span className="check"><CheckCircleMini /></span>
                       Number
                     </li>
                     <li className={passwordChecks.symbol ? 'met' : 'unmet'}>
-                      <span className="check"><CheckIcon /></span>
+                      <span className="check"><CheckCircleMini /></span>
                       Symbol
                     </li>
                   </RequirementsList>
@@ -2276,7 +2375,7 @@ const SignUp = () => {
 
                 <SubmitBtn type="submit" disabled={loading}>
                   {loading && <Spinner />}
-                  {loading ? 'Creating account…' : 'Create account'}
+                  {loading ? 'Creating account' : 'Create account'}
                 </SubmitBtn>
               </form>
             )}
@@ -2342,7 +2441,7 @@ const SignUp = () => {
 
                 <SubmitBtn type="submit" disabled={loading}>
                   {loading && <Spinner />}
-                  {loading ? 'Signing in…' : 'Log in'}
+                  {loading ? 'Signing in' : 'Log in'}
                 </SubmitBtn>
               </form>
             )}
