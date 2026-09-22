@@ -1,4 +1,4 @@
-// src/pages/SignUp.jsx — DARK theme + contained slideshow + marketing panel
+// src/pages/SignUp.jsx — Dark theme + shuffled 11-image slideshow + marketing panel
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -12,16 +12,38 @@ import image2 from '../assets/images/image2.png';
 import image3 from '../assets/images/image3.png';
 import image4 from '../assets/images/image4.png';
 import image5 from '../assets/images/image5.png';
+import image6 from '../assets/images/image6.png';
+import image7 from '../assets/images/image7.png';
+import image8 from '../assets/images/image8.png';
+import image9 from '../assets/images/image9.png';
+import image10 from '../assets/images/image10.png';
+import image11 from '../assets/images/image11.png';
 
 const SLIDES = [
-  { src: image1, alt: 'MyTradeApp trading platform' },
-  { src: image2, alt: 'MyTradeApp live markets' },
-  { src: image3, alt: 'MyTradeApp analytics' },
-  { src: image4, alt: 'MyTradeApp portfolio' },
-  { src: image5, alt: 'MyTradeApp automation' },
+  { src: image1,  alt: 'MyTradeApp trading platform' },
+  { src: image2,  alt: 'MyTradeApp live markets' },
+  { src: image3,  alt: 'MyTradeApp analytics' },
+  { src: image4,  alt: 'MyTradeApp portfolio' },
+  { src: image5,  alt: 'MyTradeApp automation' },
+  { src: image6,  alt: 'MyTradeApp order flow' },
+  { src: image7,  alt: 'MyTradeApp watchlist' },
+  { src: image8,  alt: 'MyTradeApp signals' },
+  { src: image9,  alt: 'MyTradeApp risk tools' },
+  { src: image10, alt: 'MyTradeApp mobile app' },
+  { src: image11, alt: 'MyTradeApp community' },
 ];
 
 const SLIDE_INTERVAL_MS = 5000;
+
+/* Fisher–Yates shuffle — returns a new array in random order. */
+const buildShuffledOrder = (len) => {
+  const arr = Array.from({ length: len }, (_, i) => i);
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
 /* ============================================================
    API CONFIG
@@ -39,7 +61,7 @@ const ENDPOINTS = {
 };
 
 /* ============================================================
-   THEME — DARK (restored)
+   THEME — DARK
    ============================================================ */
 const theme = {
   colors: {
@@ -643,7 +665,6 @@ const AdSide = styled.div`
   background: ${theme.colors.gradientAd};
   padding: 44px 48px 40px;
 
-  /* subtle grid pattern */
   &::before {
     content: '';
     position: absolute;
@@ -657,7 +678,6 @@ const AdSide = styled.div`
     pointer-events: none;
   }
 
-  /* accent glow */
   &::after {
     content: '';
     position: absolute;
@@ -781,6 +801,8 @@ const SlideDots = styled.div`
   align-items: center;
   justify-content: center;
   gap: 6px;
+  flex-wrap: wrap;
+  padding: 0 8px;
 `;
 
 const Dot = styled.button`
@@ -944,36 +966,59 @@ const Testimonial = styled.div`
 `;
 
 /* ============================================================
-   SLIDESHOW COMPONENT
+   SLIDESHOW COMPONENT — shuffled playback
    ============================================================ */
 const Slideshow = () => {
-  const [index, setIndex] = useState(0);
+  const total = SLIDES.length;
+
+  /* `order` is a shuffled list of SLIDES indices.
+     `pos` is the current position within that shuffled list. */
+  const [order, setOrder] = useState(() => buildShuffledOrder(total));
+  const [pos, setPos] = useState(0);
 
   useEffect(() => {
-    if (SLIDES.length <= 1) return undefined;
-    const t = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), SLIDE_INTERVAL_MS);
+    if (total <= 1) return undefined;
+
+    const t = setInterval(() => {
+      setPos((p) => {
+        const next = p + 1;
+
+        /* End of one full pass → reshuffle for the next round. */
+        if (next >= total) {
+          setOrder(buildShuffledOrder(total));
+          return 0;
+        }
+        return next;
+      });
+    }, SLIDE_INTERVAL_MS);
+
     return () => clearInterval(t);
-  }, []);
+  }, [total]);
+
+  /* The SLIDES index currently visible. */
+  const activeSlideIndex = order[pos];
 
   return (
     <SlideshowCard>
       {SLIDES.map((slide, i) => (
-        <SlideLayer key={i} active={i === index}>
+        <SlideLayer key={i} active={i === activeSlideIndex}>
           <img src={slide.src} alt={slide.alt} draggable="false" />
         </SlideLayer>
       ))}
+
       <SlideLabel>
-        Preview · {index + 1} / {SLIDES.length}
+        Preview · {pos + 1} / {total}
       </SlideLabel>
-      {SLIDES.length > 1 && (
+
+      {total > 1 && (
         <SlideDots role="tablist" aria-label="Slideshow navigation">
-          {SLIDES.map((_, i) => (
+          {Array.from({ length: total }).map((_, i) => (
             <Dot
               key={i}
-              active={i === index}
-              onClick={() => setIndex(i)}
+              active={i === pos}
+              onClick={() => setPos(i)}
               aria-label={`Go to slide ${i + 1}`}
-              aria-selected={i === index}
+              aria-selected={i === pos}
               role="tab"
             />
           ))}
@@ -2154,7 +2199,6 @@ const SignUp = () => {
     <>
       <GlobalStyle />
       <Page className="mtapp-signup">
-        {/* ============ LEFT: FORM ============ */}
         <FormSide className="form-side">
           <Brand>
             <BrandLogo><BrandLogoSvg /></BrandLogo>
@@ -2350,7 +2394,6 @@ const SignUp = () => {
           </FormInner>
         </FormSide>
 
-        {/* ============ RIGHT: MARKETING PANEL ============ */}
         <AdSide className="ad-side">
           <AdInner>
             <AdBadge>
@@ -2368,10 +2411,8 @@ const SignUp = () => {
               all in one beautifully simple platform built for serious traders.
             </AdSub>
 
-            {/* Contained slideshow card */}
             <Slideshow />
 
-            {/* Feature highlights */}
             <FeatureGrid>
               <MiniFeature>
                 <div className="icon"><BoltIcon /></div>
@@ -2390,7 +2431,6 @@ const SignUp = () => {
               </MiniFeature>
             </FeatureGrid>
 
-            {/* Stats */}
             <StatsStrip>
               <div className="stat">
                 <div className="value">2.4M+</div>
@@ -2406,7 +2446,6 @@ const SignUp = () => {
               </div>
             </StatsStrip>
 
-            {/* Testimonial */}
             <Testimonial>
               <div className="avatar">AK</div>
               <div className="body">
