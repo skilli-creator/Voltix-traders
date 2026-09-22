@@ -86,11 +86,6 @@ const spinAnim = keyframes`
   to { transform: rotate(360deg); }
 `;
 
-const modalBackdropIn = keyframes`
-  from { opacity: 0; }
-  to   { opacity: 1; }
-`;
-
 const modalPopIn = keyframes`
   0%   { opacity: 0; transform: translateY(16px) scale(0.96); }
   100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -148,11 +143,11 @@ const FormSide = styled.div`
 
 const FormInner = styled.div`
   width: 100%;
-  max-width: 380px;
+  max-width: 420px;
   animation: ${fadeUp} 0.5s ease both;
 
   @media (max-width: 1024px) {
-    max-width: 400px;
+    max-width: 440px;
   }
 `;
 
@@ -162,32 +157,32 @@ const FormInner = styled.div`
 const Brand = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 18px;
+  gap: 10px;
+  margin-bottom: 24px;
 
   @media (max-width: 1024px) {
-    margin-bottom: 14px;
+    margin-bottom: 18px;
   }
 `;
 
 const BrandMark = styled.div`
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   background: ${theme.colors.gradientBtn};
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 18px;
   color: #fff;
-  box-shadow: 0 5px 14px -6px rgba(59, 130, 246, 0.6);
+  box-shadow: 0 6px 16px -6px rgba(59, 130, 246, 0.6);
 `;
 
 const BrandName = styled.span`
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
   color: ${theme.colors.text};
 
   span { color: ${theme.colors.accent}; }
@@ -197,34 +192,33 @@ const BrandName = styled.span`
    HEADING + SWITCH LINK
    ============================================================ */
 const Heading = styled.h1`
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
-  letter-spacing: -0.4px;
-  margin: 0 0 4px;
+  letter-spacing: -0.5px;
+  margin: 0 0 6px;
   color: ${theme.colors.text};
 
   @media (max-width: 480px) {
-    font-size: 18px;
+    font-size: 24px;
   }
 `;
 
 const SwitchRow = styled.p`
-  font-size: 12px;
+  font-size: 14px;
   color: ${theme.colors.textSecondary};
-  margin: 0 0 16px;
-  line-height: 1.4;
+  margin: 0 0 22px;
+  line-height: 1.5;
 
   button {
     background: none;
     border: none;
     padding: 0;
-    margin-left: 3px;
+    margin-left: 4px;
     color: ${theme.colors.accent};
     font-weight: 600;
     font-size: inherit;
     font-family: inherit;
     cursor: pointer;
-    text-decoration: none;
 
     &:hover { text-decoration: underline; }
   }
@@ -234,15 +228,15 @@ const SwitchRow = styled.p`
    FORM ELEMENTS
    ============================================================ */
 const Field = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 16px;
 `;
 
 const Label = styled.label`
   display: block;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: ${theme.colors.textSecondary};
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   letter-spacing: 0.1px;
 `;
 
@@ -254,18 +248,18 @@ const InputWrap = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  padding: 9px 12px;
-  padding-right: ${props => (props.hasToggle ? '38px' : '12px')};
+  padding: 12px 14px;
+  padding-right: ${props => (props.hasToggle ? '44px' : '14px')};
   background: ${theme.colors.surface};
   border: 1px solid ${props => (props.error ? theme.colors.danger : theme.colors.border)};
-  border-radius: 8px;
+  border-radius: 10px;
   color: ${theme.colors.text};
-  font-size: 12.5px;
+  font-size: 14.5px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
-  &::placeholder { color: ${theme.colors.textMuted}; font-size: 12px; }
+  &::placeholder { color: ${theme.colors.textMuted}; font-size: 14px; }
 
   &:focus {
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.borderFocus)};
@@ -276,12 +270,12 @@ const Input = styled.input`
 
 const ToggleBtn = styled.button`
   position: absolute;
-  right: 4px;
+  right: 6px;
   top: 50%;
   transform: translateY(-50%);
   background: transparent;
   border: none;
-  padding: 6px;
+  padding: 8px;
   cursor: pointer;
   color: ${theme.colors.textMuted};
   display: flex;
@@ -289,36 +283,36 @@ const ToggleBtn = styled.button`
   justify-content: center;
   border-radius: 6px;
 
-  svg { width: 15px; height: 15px; }
+  svg { width: 18px; height: 18px; }
   &:hover { color: ${theme.colors.textSecondary}; }
 `;
 
 const ErrorText = styled.span`
   display: block;
-  font-size: 11px;
+  font-size: 13px;
   color: ${theme.colors.danger};
-  margin-top: 4px;
+  margin-top: 6px;
 `;
 
 const CheckLabel = styled.label`
   display: flex;
   align-items: flex-start;
-  gap: 7px;
+  gap: 9px;
   cursor: pointer;
   color: ${theme.colors.textSecondary};
-  font-size: 11.5px;
-  line-height: 1.4;
+  font-size: 13.5px;
+  line-height: 1.5;
   user-select: none;
 
   input {
     appearance: none;
     -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 17px;
+    height: 17px;
     flex-shrink: 0;
     margin-top: 1px;
     border: 1.5px solid ${theme.colors.border};
-    border-radius: 4px;
+    border-radius: 5px;
     background: ${theme.colors.surface};
     cursor: pointer;
     position: relative;
@@ -333,12 +327,12 @@ const CheckLabel = styled.label`
   input:checked::after {
     content: '';
     position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 3px;
-    height: 7px;
+    left: 5px;
+    top: 1.5px;
+    width: 4px;
+    height: 9px;
     border: solid #fff;
-    border-width: 0 1.8px 1.8px 0;
+    border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
 
@@ -354,9 +348,9 @@ const RowBetween = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin: 2px 0 14px;
-  font-size: 11.5px;
+  gap: 12px;
+  margin: 6px 0 20px;
+  font-size: 13.5px;
   flex-wrap: wrap;
 `;
 
@@ -365,9 +359,8 @@ const ForgotLink = styled.button`
   border: none;
   padding: 0;
   color: ${theme.colors.accent};
-  text-decoration: none;
   font-weight: 600;
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-family: inherit;
   cursor: pointer;
 
@@ -376,34 +369,34 @@ const ForgotLink = styled.button`
 
 const SubmitBtn = styled.button`
   width: 100%;
-  padding: 10px 14px;
+  padding: 13px 16px;
   background: ${theme.colors.gradientBtn};
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   letter-spacing: 0.1px;
-  box-shadow: 0 6px 18px -8px rgba(59, 130, 246, 0.7);
+  box-shadow: 0 8px 20px -10px rgba(59, 130, 246, 0.7);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 10px 22px -8px rgba(59, 130, 246, 0.85);
+    box-shadow: 0 12px 26px -10px rgba(59, 130, 246, 0.85);
   }
   &:active:not(:disabled) { transform: translateY(0) scale(0.99); }
   &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 `;
 
 const Spinner = styled.span`
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   border: 2px solid rgba(255, 255, 255, 0.35);
   border-top-color: #fff;
   border-radius: 50%;
@@ -414,8 +407,8 @@ const Spinner = styled.span`
    PASSWORD REQUIREMENTS
    ============================================================ */
 const StrengthText = styled.div`
-  font-size: 10.5px;
-  margin-top: 4px;
+  font-size: 13px;
+  margin-top: 6px;
   color: ${props => props.color || theme.colors.textMuted};
   font-weight: 600;
   transition: color 0.3s ease;
@@ -423,23 +416,23 @@ const StrengthText = styled.div`
 
 const RequirementsList = styled.ul`
   list-style: none;
-  margin: 4px 0 0;
+  margin: 8px 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3px 10px;
+  gap: 6px 14px;
 
   li {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 10.5px;
+    gap: 7px;
+    font-size: 13px;
     font-weight: 500;
     transition: color 0.2s ease;
 
     .check {
-      width: 11px;
-      height: 11px;
+      width: 14px;
+      height: 14px;
       flex-shrink: 0;
       border-radius: 50%;
       border: 1.5px solid currentColor;
@@ -449,8 +442,8 @@ const RequirementsList = styled.ul`
       transition: all 0.2s ease;
 
       svg {
-        width: 7px;
-        height: 7px;
+        width: 9px;
+        height: 9px;
         stroke: currentColor;
         stroke-width: 3;
         fill: none;
@@ -481,15 +474,15 @@ const RequirementsList = styled.ul`
 const CaptchaRow = styled.div`
   display: flex;
   align-items: stretch;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 10px;
 `;
 
 const CaptchaFrame = styled.div`
   flex: 1;
-  height: 52px;
+  height: 64px;
   border: 1px solid ${theme.colors.border};
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   position: relative;
   background: #0f172a;
@@ -498,18 +491,18 @@ const CaptchaFrame = styled.div`
 `;
 
 const RefreshBtn = styled.button`
-  width: 42px;
+  width: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: ${theme.colors.surface};
   border: 1px solid ${theme.colors.border};
-  border-radius: 8px;
+  border-radius: 10px;
   color: ${theme.colors.textSecondary};
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 
-  svg { width: 15px; height: 15px; transition: transform 0.4s ease; }
+  svg { width: 18px; height: 18px; transition: transform 0.4s ease; }
 
   &:hover {
     background: ${theme.colors.surfaceHover};
@@ -523,14 +516,14 @@ const RefreshBtn = styled.button`
    MESSAGE
    ============================================================ */
 const Message = styled.div`
-  margin-top: 10px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 11.5px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13.5px;
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
   background: ${props =>
     props.kind === 'error'
       ? 'rgba(239, 68, 68, 0.08)'
@@ -558,8 +551,8 @@ const Message = styled.div`
     flex-shrink: 0;
 
     svg {
-      width: 13px;
-      height: 13px;
+      width: 16px;
+      height: 16px;
       stroke: currentColor;
       stroke-width: 2.4;
       fill: none;
@@ -693,7 +686,6 @@ const Feature = styled.li`
   background: rgba(30, 41, 59, 0.4);
   border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 12px;
-  backdrop-filter: blur(8px);
   transition: transform 0.2s ease, border-color 0.2s ease;
 
   &:hover {
@@ -723,7 +715,6 @@ const FeatureText = styled.div`
     font-weight: 600;
     color: #e2e8f0;
     margin: 0 0 3px;
-    letter-spacing: -0.1px;
   }
   p {
     font-size: 13px;
@@ -744,7 +735,6 @@ const Stat = styled.div`
   .value {
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: -0.4px;
     color: #f1f5f9;
     margin-bottom: 3px;
   }
@@ -764,7 +754,6 @@ const FloatingTicker = styled.div`
   gap: 10px;
   padding: 10px 14px;
   background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
   border: 1px solid rgba(148, 163, 184, 0.12);
   border-radius: 12px;
   font-size: 12.5px;
@@ -772,26 +761,26 @@ const FloatingTicker = styled.div`
   animation: ${floaty} 4s ease-in-out infinite;
   z-index: 2;
 
-  .sym { color: #94a3b8; font-weight: 600; letter-spacing: 0.3px; }
-  .price { color: #f1f5f9; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sym { color: #94a3b8; font-weight: 600; }
+  .price { color: #f1f5f9; font-weight: 700; }
   .chg { color: ${theme.colors.success}; font-weight: 600; }
 `;
 
 /* ============================================================
    MODAL PRIMITIVES
    ============================================================ */
+
+/* Backdrop is fully transparent — no dim, no blur.
+   The page behind any popup stays completely visible. */
 const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(8, 12, 22, 0.35);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: ${modalBackdropIn} 0.2s ease both;
   overflow-y: auto;
 
   @media (max-width: 480px) {
@@ -803,30 +792,29 @@ const ModalBackdrop = styled.div`
 
 const ModalCard = styled.div`
   width: 100%;
-  max-width: 400px;
-  background: linear-gradient(180deg, #121a2c 0%, #0d1421 100%);
+  max-width: 440px;
+  background: #0d1421;
   border: 1px solid ${theme.colors.border};
   border-radius: 18px;
-  padding: 24px 22px 20px;
+  padding: 28px 26px 24px;
   position: relative;
   box-shadow:
-    0 20px 60px -12px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(59, 130, 246, 0.05),
-    0 0 40px -10px rgba(59, 130, 246, 0.25);
+    0 24px 70px -12px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(59, 130, 246, 0.08);
   animation: ${modalPopIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @media (max-width: 480px) {
-    padding: 20px 16px 16px;
+    padding: 22px 18px 18px;
     border-radius: 16px;
   }
 `;
 
 const ModalClose = styled.button`
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 30px;
-  height: 30px;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   background: transparent;
   border: none;
@@ -842,39 +830,39 @@ const ModalClose = styled.button`
     color: ${theme.colors.text};
   }
 
-  svg { width: 16px; height: 16px; }
+  svg { width: 18px; height: 18px; }
 `;
 
 const ModalIcon = styled.div`
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 14px;
+  margin: 0 auto 16px;
   background: ${props => props.bg || theme.colors.accentSoft};
   border: 1px solid ${props => props.border || 'rgba(59, 130, 246, 0.25)'};
   color: ${props => props.color || '#60a5fa'};
 
-  svg { width: 22px; height: 22px; }
+  svg { width: 24px; height: 24px; }
 `;
 
 const ModalTitle = styled.h2`
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.3px;
   text-align: center;
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   color: ${theme.colors.text};
 `;
 
 const ModalSubtitle = styled.p`
-  font-size: 12px;
-  line-height: 1.55;
+  font-size: 14px;
+  line-height: 1.6;
   text-align: center;
   color: ${theme.colors.textSecondary};
-  margin: 0 0 18px;
+  margin: 0 0 22px;
 
   strong {
     color: ${theme.colors.text};
@@ -883,23 +871,23 @@ const ModalSubtitle = styled.p`
 `;
 
 const ModalBody = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 `;
 
 const ModalActions = styled.div`
   display: flex;
-  gap: 8px;
-  margin-top: 14px;
+  gap: 10px;
+  margin-top: 16px;
 `;
 
 const SecondaryBtn = styled.button`
   flex: 1;
-  padding: 10px 14px;
+  padding: 12px 16px;
   background: transparent;
   border: 1px solid ${theme.colors.border};
-  border-radius: 8px;
+  border-radius: 10px;
   color: ${theme.colors.textSecondary};
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
@@ -918,7 +906,7 @@ const LinkButton = styled.button`
   padding: 0;
   color: ${theme.colors.accent};
   font-weight: 600;
-  font-size: 11.5px;
+  font-size: 13.5px;
   font-family: inherit;
   cursor: pointer;
   display: inline-flex;
@@ -935,21 +923,20 @@ const LinkButton = styled.button`
 const OtpRow = styled.div`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 7px;
-  margin: 4px 0 14px;
+  gap: 8px;
+  margin: 6px 0 16px;
 `;
 
 const OtpBox = styled.input`
   width: 100%;
   aspect-ratio: 1 / 1.15;
   text-align: center;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
   color: ${theme.colors.text};
   background: ${theme.colors.surface};
   border: 1.5px solid ${props => (props.error ? theme.colors.danger : theme.colors.border)};
-  border-radius: 9px;
+  border-radius: 10px;
   outline: none;
   font-family: inherit;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
@@ -964,11 +951,6 @@ const OtpBox = styled.input`
   }
 
   &:disabled { opacity: 0.6; }
-
-  @media (max-width: 400px) {
-    font-size: 16px;
-    border-radius: 8px;
-  }
 `;
 
 const ResendRow = styled.div`
@@ -976,9 +958,9 @@ const ResendRow = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-size: 11.5px;
+  font-size: 13.5px;
   color: ${theme.colors.textMuted};
-  margin-top: 2px;
+  margin-top: 4px;
 `;
 
 /* ============================================================
@@ -993,10 +975,10 @@ const SuccessWrap = styled.div`
 `;
 
 const SuccessCircle = styled.div`
-  width: 62px;
-  height: 62px;
+  width: 70px;
+  height: 70px;
   position: relative;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 
   svg { width: 100%; height: 100%; }
 
@@ -1219,7 +1201,6 @@ const OtpInput = ({ length = 6, value, onChange, error, disabled, autoFocus }) =
 
   useEffect(() => {
     if (autoFocus) focusIndex(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoFocus]);
 
   const handleChange = (i, raw) => {
@@ -1235,8 +1216,7 @@ const OtpInput = ({ length = 6, value, onChange, error, disabled, autoFocus }) =
       next[i + k] = digits[k];
     }
     onChange(next.join('').slice(0, length));
-    const lastIndex = Math.min(i + digits.length, length - 1);
-    focusIndex(lastIndex);
+    focusIndex(Math.min(i + digits.length, length - 1));
   };
 
   const handleKeyDown = (i, e) => {
@@ -1255,8 +1235,7 @@ const OtpInput = ({ length = 6, value, onChange, error, disabled, autoFocus }) =
     e.preventDefault();
     const text = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, length);
     if (!text) return;
-    const next = text.padEnd(length, '').slice(0, length);
-    onChange(next);
+    onChange(text.padEnd(length, '').slice(0, length));
     focusIndex(Math.min(text.length, length - 1));
   };
 
@@ -1365,7 +1344,7 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
               </svg>
             </SuccessCircle>
             <ModalTitle>Email verified</ModalTitle>
-            <ModalSubtitle style={{ marginBottom: 6 }}>
+            <ModalSubtitle style={{ marginBottom: 8 }}>
               Your account is now active. You can start using MyTradeApp.
             </ModalSubtitle>
             <ModalActions style={{ width: '100%' }}>
@@ -1423,8 +1402,8 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
               {resendNote && (
                 <div
                   style={{
-                    marginTop: 8,
-                    fontSize: 11.5,
+                    marginTop: 10,
+                    fontSize: 13,
                     color: theme.colors.success,
                     textAlign: 'center',
                   }}
@@ -1508,8 +1487,8 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
 
           <ModalTitle>Forgot your password?</ModalTitle>
           <ModalSubtitle>
-            No worries — enter the email tied to your MyTradeApp account
-            and we&apos;ll send you a secure reset code.
+            Enter the email tied to your MyTradeApp account and we&apos;ll
+            send you a secure reset code.
           </ModalSubtitle>
 
           <ModalBody>
@@ -1679,7 +1658,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
               </ErrorText>
             )}
 
-            <ResendRow style={{ marginTop: 10, marginBottom: 14 }}>
+            <ResendRow style={{ marginTop: 12, marginBottom: 16 }}>
               <span>Didn&apos;t get the code?</span>
               {resendIn > 0 ? (
                 <span style={{ color: theme.colors.textMuted }}>
@@ -1699,8 +1678,8 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
               <div
                 style={{
                   marginTop: -8,
-                  marginBottom: 10,
-                  fontSize: 11.5,
+                  marginBottom: 12,
+                  fontSize: 13,
                   color: theme.colors.success,
                   textAlign: 'center',
                 }}
@@ -1753,7 +1732,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
                 </li>
               </RequirementsList>
               {errors.password && (
-                <ErrorText style={{ marginTop: 6 }}>{errors.password}</ErrorText>
+                <ErrorText style={{ marginTop: 8 }}>{errors.password}</ErrorText>
               )}
             </Field>
 
@@ -1986,9 +1965,7 @@ const SignUp = () => {
     }, 1500);
   };
 
-  const handleVerified = () => {
-    /* hook for post-verification navigation */
-  };
+  const handleVerified = () => {};
 
   const handleForgotCodeSent = (email) => {
     setForgotModalOpen(false);
@@ -2119,7 +2096,7 @@ const SignUp = () => {
                   </RequirementsList>
 
                   {signupErrors.password && (
-                    <ErrorText style={{ marginTop: 6 }}>{signupErrors.password}</ErrorText>
+                    <ErrorText style={{ marginTop: 8 }}>{signupErrors.password}</ErrorText>
                   )}
                 </Field>
 
@@ -2200,7 +2177,7 @@ const SignUp = () => {
                   </CheckLabel>
                 </RowBetween>
                 {signupErrors.agreed && (
-                  <div style={{ marginTop: -8, marginBottom: 10 }}>
+                  <div style={{ marginTop: -10, marginBottom: 14 }}>
                     <ErrorText>{signupErrors.agreed}</ErrorText>
                   </div>
                 )}
