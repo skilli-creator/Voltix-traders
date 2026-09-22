@@ -267,9 +267,10 @@ const DashboardContainer = styled.div`
   transition: background 0.3s ease;
   font-weight: 700;
 
-  /* PHONE VIEW: the document itself scrolls so mobile browsers collapse
-     their own chrome (address bar / tabs). Our TopBar and bottom tabs
-     remain pinned because they are sticky / fixed. */
+  /* PHONE VIEW
+     The DOCUMENT itself must scroll for the mobile browser to collapse
+     its own tab / address bar. So we drop the fixed height and let the
+     content grow naturally. */
   @media (max-width: 768px) {
     height: auto;
     min-height: 100vh;
@@ -279,9 +280,9 @@ const DashboardContainer = styled.div`
   }
 `;
 
-/* Wraps the TopBar so it can stay pinned to the top on mobile while
-   the page scrolls. When the user scrolls, the browser's own tab bar
-   disappears but our TopBar stays put. */
+/* Wraps TopBar so it stays pinned to the top on mobile while the page
+   scrolls. Combined with document scrolling this is what keeps our bar
+   visible after the browser hides its own chrome. */
 const TopBarStickyWrapper = styled.div`
   position: relative;
   z-index: 40;
@@ -379,8 +380,8 @@ const MobilePanelWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  /* must be visible so its children can grow and let the document scroll */
   overflow: visible;
-  /* ensure each panel fills at least the viewport so document scrolls */
   min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
   min-height: calc(100dvh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
@@ -404,10 +405,9 @@ const PanelContent = styled.div`
   }
 `;
 
-/* FIXED BOTTOM TABS (phone view).
-   position: fixed keeps these pinned to the viewport no matter how
-   far the user scrolls. env(safe-area-inset-bottom) handles phones
-   with a home indicator. */
+/* FIXED BOTTOM TABS (phone view). position: fixed keeps these pinned to
+   the viewport no matter how far the user scrolls. env(safe-area-inset-bottom)
+   handles phones with a home indicator. */
 const MobileTabs = styled.div`
   display: flex;
   align-items: stretch;
@@ -420,7 +420,6 @@ const MobileTabs = styled.div`
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 -6px 20px ${props => props.theme.colors.shadow};
 
-  /* pinned to the very bottom of the viewport */
   position: fixed;
   left: 0;
   right: 0;
@@ -555,28 +554,51 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  /* PHONE VIEW: let the document scroll.
-     This is what allows the mobile browser to collapse its own chrome
-     (address bar / tabs) while our sticky TopBar stays visible. */
+  /* PHONE VIEW: force the whole page (html / body / app root / any
+     descendant) to be part of one single document-level scroll context.
+
+     Mobile browsers auto-hide their tab / address bar ONLY when the
+     window itself scrolls. If any inner element traps the scroll with
+     its own overflow, the browser chrome never collapses. This injected
+     stylesheet neutralizes those traps on mobile so the window scrolls. */
   useEffect(() => {
     if (!isMobile) return undefined;
 
-    const prevBodyOverflow = document.body.style.overflow;
-    const prevHtmlOverflow = document.documentElement.style.overflow;
-    const prevBodyHeight = document.body.style.height;
-    const prevHtmlHeight = document.documentElement.style.height;
+    const STYLE_ID = 'derivdash-mobile-scroll';
+    const existing = document.getElementById(STYLE_ID);
+    if (existing) existing.remove();
 
-    document.body.style.overflow = 'auto';
-    document.documentElement.style.overflow = 'auto';
-    document.body.style.height = 'auto';
-    document.documentElement.style.height = 'auto';
-    document.body.style.webkitOverflowScrolling = 'touch';
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.innerHTML = `
+      html, body {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+        min-height: 100% !important;
+        -webkit-overflow-scrolling: touch !important;
+        overscroll-behavior-y: auto !important;
+      }
+      #root {
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+      }
+      /* Let every panel inside the dashboard flow with the page instead
+         of creating its own inner scroll box, otherwise the browser
+         chrome will not collapse. */
+      #root [data-mobile-scroll-reset],
+      #root [data-mobile-scroll-reset] * {
+        overflow: visible !important;
+        max-height: none !important;
+      }
+    `;
+    document.head.appendChild(style);
 
     return () => {
-      document.body.style.overflow = prevBodyOverflow;
-      document.documentElement.style.overflow = prevHtmlOverflow;
-      document.body.style.height = prevBodyHeight;
-      document.documentElement.style.height = prevHtmlHeight;
+      const el = document.getElementById(STYLE_ID);
+      if (el) el.remove();
     };
   }, [isMobile]);
 
@@ -644,8 +666,12 @@ const Derivdash = () => {
               {panels.map((panel, index) => {
                 const Component = panel.component;
                 return (
-                  <MobilePanelWrapper key={panel.id} active={activeIndex === index}>
-                    <PanelContent>
+                  <MobilePanelWrapper
+                    key={panel.id}
+                    active={activeIndex === index}
+                    data-mobile-scroll-reset
+                  >
+                    <PanelContent data-mobile-scroll-reset>
                       <Component />
                     </PanelContent>
                   </MobilePanelWrapper>
