@@ -9,8 +9,6 @@ import styled, { createGlobalStyle, keyframes } from 'styled-components';
 const theme = {
   colors: {
     bg: '#0a0d14',
-    panel: '#0f1420',
-    panelAlt: '#141b2d',
     surface: '#161d2e',
     surfaceHover: '#1c2438',
     border: '#232c42',
@@ -19,12 +17,10 @@ const theme = {
     textSecondary: '#94a3b8',
     textMuted: '#64748b',
     accent: '#3b82f6',
-    accentHover: '#2563eb',
     accentSoft: 'rgba(59, 130, 246, 0.12)',
     success: '#10b981',
     warning: '#f59e0b',
     danger: '#ef4444',
-    shadow: '0 20px 60px -20px rgba(0, 0, 0, 0.6)',
     shadowSm: '0 4px 14px -4px rgba(0, 0, 0, 0.4)',
     gradientAd: 'linear-gradient(135deg, #1e293b 0%, #0f172a 55%, #020617 100%)',
     gradientBtn: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
@@ -88,58 +84,63 @@ const FormSide = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 48px 40px;
+  padding: 24px 32px;
   position: relative;
   overflow-y: auto;
 
+  /* mobile: align to top with minimal padding so nothing is cut off */
   @media (max-width: 1024px) {
-    padding: 32px 20px 48px;
+    padding: 12px 16px 24px;
     justify-content: flex-start;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 14px 20px;
   }
 `;
 
 const FormInner = styled.div`
   width: 100%;
-  max-width: 440px;
+  max-width: 380px;
   animation: ${fadeUp} 0.5s ease both;
 
   @media (max-width: 1024px) {
-    max-width: 460px;
+    max-width: 400px;
   }
 `;
 
 /* ============================================================
-   BRAND (top of page)
+   BRAND
    ============================================================ */
 const Brand = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 32px;
+  gap: 8px;
+  margin-bottom: 18px;
 
   @media (max-width: 1024px) {
-    margin-bottom: 26px;
+    margin-bottom: 14px;
   }
 `;
 
 const BrandMark = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   background: ${theme.colors.gradientBtn};
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 19px;
+  font-size: 14px;
   color: #fff;
-  box-shadow: 0 6px 18px -6px rgba(59, 130, 246, 0.6);
+  box-shadow: 0 5px 14px -6px rgba(59, 130, 246, 0.6);
 `;
 
 const BrandName = styled.span`
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.2px;
   color: ${theme.colors.text};
 
   span { color: ${theme.colors.accent}; }
@@ -149,28 +150,28 @@ const BrandName = styled.span`
    HEADING + SWITCH LINK
    ============================================================ */
 const Heading = styled.h1`
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.6px;
-  margin: 0 0 8px;
+  letter-spacing: -0.4px;
+  margin: 0 0 4px;
   color: ${theme.colors.text};
 
   @media (max-width: 480px) {
-    font-size: 26px;
+    font-size: 18px;
   }
 `;
 
 const SwitchRow = styled.p`
-  font-size: 13.5px;
+  font-size: 12px;
   color: ${theme.colors.textSecondary};
-  margin: 0 0 28px;
-  line-height: 1.5;
+  margin: 0 0 16px;
+  line-height: 1.4;
 
   button {
     background: none;
     border: none;
     padding: 0;
-    margin-left: 4px;
+    margin-left: 3px;
     color: ${theme.colors.accent};
     font-weight: 600;
     font-size: inherit;
@@ -186,15 +187,15 @@ const SwitchRow = styled.p`
    FORM ELEMENTS
    ============================================================ */
 const Field = styled.div`
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.label`
   display: block;
-  font-size: 12.5px;
+  font-size: 11px;
   font-weight: 600;
   color: ${theme.colors.textSecondary};
-  margin-bottom: 7px;
+  margin-bottom: 4px;
   letter-spacing: 0.1px;
 `;
 
@@ -206,18 +207,18 @@ const InputWrap = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  padding: 12px 14px;
-  padding-right: ${props => (props.hasToggle ? '44px' : '14px')};
+  padding: 9px 12px;
+  padding-right: ${props => (props.hasToggle ? '38px' : '12px')};
   background: ${theme.colors.surface};
   border: 1px solid ${props => (props.error ? theme.colors.danger : theme.colors.border)};
-  border-radius: 10px;
+  border-radius: 8px;
   color: ${theme.colors.text};
-  font-size: 14px;
+  font-size: 12.5px;
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
-  &::placeholder { color: ${theme.colors.textMuted}; }
+  &::placeholder { color: ${theme.colors.textMuted}; font-size: 12px; }
 
   &:focus {
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.borderFocus)};
@@ -228,12 +229,12 @@ const Input = styled.input`
 
 const ToggleBtn = styled.button`
   position: absolute;
-  right: 6px;
+  right: 4px;
   top: 50%;
   transform: translateY(-50%);
   background: transparent;
   border: none;
-  padding: 8px;
+  padding: 6px;
   cursor: pointer;
   color: ${theme.colors.textMuted};
   display: flex;
@@ -241,35 +242,36 @@ const ToggleBtn = styled.button`
   justify-content: center;
   border-radius: 6px;
 
+  svg { width: 15px; height: 15px; }
   &:hover { color: ${theme.colors.textSecondary}; }
 `;
 
 const ErrorText = styled.span`
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   color: ${theme.colors.danger};
-  margin-top: 6px;
+  margin-top: 4px;
 `;
 
 const CheckLabel = styled.label`
   display: flex;
   align-items: flex-start;
-  gap: 9px;
+  gap: 7px;
   cursor: pointer;
   color: ${theme.colors.textSecondary};
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 11.5px;
+  line-height: 1.4;
   user-select: none;
 
   input {
     appearance: none;
     -webkit-appearance: none;
-    width: 17px;
-    height: 17px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
     margin-top: 1px;
     border: 1.5px solid ${theme.colors.border};
-    border-radius: 5px;
+    border-radius: 4px;
     background: ${theme.colors.surface};
     cursor: pointer;
     position: relative;
@@ -284,12 +286,12 @@ const CheckLabel = styled.label`
   input:checked::after {
     content: '';
     position: absolute;
-    left: 5px;
-    top: 1.5px;
-    width: 4px;
-    height: 9px;
+    left: 4px;
+    top: 1px;
+    width: 3px;
+    height: 7px;
     border: solid #fff;
-    border-width: 0 2px 2px 0;
+    border-width: 0 1.8px 1.8px 0;
     transform: rotate(45deg);
   }
 
@@ -305,9 +307,9 @@ const RowBetween = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin: 4px 0 20px;
-  font-size: 13px;
+  gap: 10px;
+  margin: 2px 0 14px;
+  font-size: 11.5px;
   flex-wrap: wrap;
 `;
 
@@ -315,41 +317,41 @@ const ForgotLink = styled.a`
   color: ${theme.colors.accent};
   text-decoration: none;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 11.5px;
 
   &:hover { text-decoration: underline; }
 `;
 
 const SubmitBtn = styled.button`
   width: 100%;
-  padding: 13px 16px;
+  padding: 10px 14px;
   background: ${theme.colors.gradientBtn};
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   color: #fff;
-  font-size: 14.5px;
+  font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
   letter-spacing: 0.1px;
-  box-shadow: 0 8px 22px -10px rgba(59, 130, 246, 0.7);
+  box-shadow: 0 6px 18px -8px rgba(59, 130, 246, 0.7);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 12px 28px -10px rgba(59, 130, 246, 0.85);
+    box-shadow: 0 10px 22px -8px rgba(59, 130, 246, 0.85);
   }
   &:active:not(:disabled) { transform: translateY(0) scale(0.99); }
   &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 `;
 
 const Spinner = styled.span`
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   border: 2px solid rgba(255, 255, 255, 0.35);
   border-top-color: #fff;
   border-radius: 50%;
@@ -357,27 +359,11 @@ const Spinner = styled.span`
 `;
 
 /* ============================================================
-   PASSWORD STRENGTH + REQUIREMENTS
+   PASSWORD REQUIREMENTS (strength bar removed)
    ============================================================ */
-const StrengthMeter = styled.div`
-  height: 3px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 8px;
-`;
-
-const StrengthFill = styled.div`
-  width: ${props => props.width || '0%'};
-  height: 100%;
-  background: ${props => props.color || theme.colors.danger};
-  border-radius: 3px;
-  transition: width 0.3s ease, background 0.3s ease;
-`;
-
 const StrengthText = styled.div`
-  font-size: 11.5px;
-  margin-top: 5px;
+  font-size: 10.5px;
+  margin-top: 4px;
   color: ${props => props.color || theme.colors.textMuted};
   font-weight: 600;
   transition: color 0.3s ease;
@@ -385,30 +371,30 @@ const StrengthText = styled.div`
 
 const RequirementsList = styled.ul`
   list-style: none;
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px 12px;
+  gap: 3px 10px;
 
   li {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 11.5px;
+    gap: 5px;
+    font-size: 10.5px;
     font-weight: 500;
     transition: color 0.2s ease;
 
     .check {
-      width: 13px;
-      height: 13px;
+      width: 11px;
+      height: 11px;
       flex-shrink: 0;
       border-radius: 50%;
       border: 1.5px solid currentColor;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 8px;
+      font-size: 7px;
       font-weight: 800;
       line-height: 1;
       transition: all 0.2s ease;
@@ -430,15 +416,15 @@ const RequirementsList = styled.ul`
 const CaptchaRow = styled.div`
   display: flex;
   align-items: stretch;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
 `;
 
 const CaptchaFrame = styled.div`
   flex: 1;
-  height: 66px;
+  height: 52px;
   border: 1px solid ${theme.colors.border};
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
   background: #0f172a;
@@ -447,18 +433,18 @@ const CaptchaFrame = styled.div`
 `;
 
 const RefreshBtn = styled.button`
-  width: 48px;
+  width: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: ${theme.colors.surface};
   border: 1px solid ${theme.colors.border};
-  border-radius: 10px;
+  border-radius: 8px;
   color: ${theme.colors.textSecondary};
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 
-  svg { width: 18px; height: 18px; transition: transform 0.4s ease; }
+  svg { width: 15px; height: 15px; transition: transform 0.4s ease; }
 
   &:hover {
     background: ${theme.colors.surfaceHover};
@@ -472,14 +458,14 @@ const RefreshBtn = styled.button`
    MESSAGE
    ============================================================ */
 const Message = styled.div`
-  margin-top: 14px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 13px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   background: ${props =>
     props.kind === 'error'
       ? 'rgba(239, 68, 68, 0.08)'
@@ -500,7 +486,7 @@ const Message = styled.div`
         ? 'rgba(16, 185, 129, 0.25)'
         : 'rgba(245, 158, 11, 0.25)'};
 
-  .icon { font-weight: 700; font-size: 14px; }
+  .icon { font-weight: 700; font-size: 13px; }
 `;
 
 /* ============================================================
@@ -716,14 +702,14 @@ const FloatingTicker = styled.div`
    ICONS
    ============================================================ */
 const EyeIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
     <circle cx="12" cy="12" r="3"/>
   </svg>
 );
 
 const EyeOffIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
     <line x1="1" y1="1" x2="23" y2="23"/>
   </svg>
@@ -868,10 +854,9 @@ const CaptchaSvg = ({ captcha }) => {
    MAIN COMPONENT
    ============================================================ */
 const SignUp = () => {
-  /* ---------------- mode ---------------- */
-  const [mode, setMode] = useState('signup'); // 'signup' | 'login'
+  const [mode, setMode] = useState('signup');
 
-  /* ---------------- sign up state ---------------- */
+  /* sign up state */
   const [signupForm, setSignupForm] = useState({
     fullName: '',
     email: '',
@@ -883,22 +868,21 @@ const SignUp = () => {
   const [captchaInput, setCaptchaInput] = useState('');
   const [captchaError, setCaptchaError] = useState('');
 
-  /* ---------------- login state ---------------- */
+  /* login state */
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [loginErrors, setLoginErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
 
-  /* ---------------- captcha ---------------- */
+  /* captcha */
   const [captcha, setCaptcha] = useState(null);
 
-  /* ---------------- shared state ---------------- */
+  /* shared */
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageKind, setMessageKind] = useState('info');
 
-  /* generate a fresh captcha on mount */
   useEffect(() => {
     setCaptcha(buildCaptcha());
   }, []);
@@ -909,7 +893,6 @@ const SignUp = () => {
     setCaptchaError('');
   };
 
-  /* ---------------- helpers ---------------- */
   const clearMessage = () => {
     setMessage('');
     setMessageKind('info');
@@ -939,7 +922,6 @@ const SignUp = () => {
     clearMessage();
   };
 
-  /* password requirements live check */
   const passwordChecks = {
     length: signupForm.password.length >= 8,
     upper: /[A-Z]/.test(signupForm.password),
@@ -947,23 +929,21 @@ const SignUp = () => {
     symbol: /[^A-Za-z0-9]/.test(signupForm.password),
   };
 
-  /* strength meter */
+  /* strength text only (bar removed) */
   const passwordStrength = (() => {
     const pw = signupForm.password;
-    if (!pw) return { score: 0, width: '0%', color: theme.colors.danger, label: 'Enter a strong password' };
+    if (!pw) return { color: theme.colors.textMuted, label: 'Enter a strong password' };
     let score = 0;
     if (pw.length >= 6) score++;
     if (pw.length >= 10) score++;
     if (/[A-Z]/.test(pw)) score++;
     if (/[0-9]/.test(pw)) score++;
     if (/[^A-Za-z0-9]/.test(pw)) score++;
-    const widthMap = ['0%', '20%', '40%', '60%', '80%', '100%'];
     const colorMap = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#2dd4bf'];
     const textMap = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'];
-    return { score, width: widthMap[score], color: colorMap[score], label: textMap[score] };
+    return { color: colorMap[score], label: textMap[score] };
   })();
 
-  /* ---------------- validation ---------------- */
   const validateSignup = () => {
     const next = {};
     const { fullName, email, password, confirmPassword } = signupForm;
@@ -1001,7 +981,6 @@ const SignUp = () => {
     return next;
   };
 
-  /* ---------------- submit ---------------- */
   const handleSignup = async (e) => {
     e.preventDefault();
     const { next, captchaOk } = validateSignup();
@@ -1016,7 +995,6 @@ const SignUp = () => {
     setMessage('Creating your account…');
     setMessageKind('info');
 
-    // TODO: wire up your real sign-up request
     setTimeout(() => {
       setLoading(false);
       setMessage('Account created successfully. Check your email to verify.');
@@ -1037,7 +1015,6 @@ const SignUp = () => {
     setMessage('Signing you in…');
     setMessageKind('info');
 
-    // TODO: wire up your real sign-in request
     setTimeout(() => {
       setLoading(false);
       setMessage('Signed in successfully.');
@@ -1045,14 +1022,10 @@ const SignUp = () => {
     }, 1500);
   };
 
-  /* ============================================================ */
-  /* RENDER                                                        */
-  /* ============================================================ */
   return (
     <>
       <GlobalStyle />
       <Page className="mtapp-signup">
-        {/* =================== LEFT: FORM =================== */}
         <FormSide>
           <FormInner>
             {/* 1. BRAND */}
@@ -1086,7 +1059,7 @@ const SignUp = () => {
               </>
             )}
 
-            {/* =================== SIGN UP FORM =================== */}
+            {/* SIGN UP FORM */}
             {mode === 'signup' && (
               <form onSubmit={handleSignup} noValidate>
                 <Field>
@@ -1143,9 +1116,6 @@ const SignUp = () => {
                     </ToggleBtn>
                   </InputWrap>
 
-                  <StrengthMeter>
-                    <StrengthFill width={passwordStrength.width} color={passwordStrength.color} />
-                  </StrengthMeter>
                   <StrengthText color={passwordStrength.color}>
                     {passwordStrength.label}
                   </StrengthText>
@@ -1170,7 +1140,7 @@ const SignUp = () => {
                   </RequirementsList>
 
                   {signupErrors.password && (
-                    <ErrorText style={{ marginTop: 8 }}>{signupErrors.password}</ErrorText>
+                    <ErrorText style={{ marginTop: 6 }}>{signupErrors.password}</ErrorText>
                   )}
                 </Field>
 
@@ -1200,7 +1170,7 @@ const SignUp = () => {
                   )}
                 </Field>
 
-                {/* ==== CAPTCHA ==== */}
+                {/* CAPTCHA */}
                 <Field>
                   <Label>Security check</Label>
                   <CaptchaRow>
@@ -1252,7 +1222,7 @@ const SignUp = () => {
                   </CheckLabel>
                 </RowBetween>
                 {signupErrors.agreed && (
-                  <div style={{ marginTop: -12, marginBottom: 16 }}>
+                  <div style={{ marginTop: -8, marginBottom: 10 }}>
                     <ErrorText>{signupErrors.agreed}</ErrorText>
                   </div>
                 )}
@@ -1264,7 +1234,7 @@ const SignUp = () => {
               </form>
             )}
 
-            {/* =================== LOGIN FORM =================== */}
+            {/* LOGIN FORM */}
             {mode === 'login' && (
               <form onSubmit={handleLogin} noValidate>
                 <Field>
@@ -1337,7 +1307,7 @@ const SignUp = () => {
           </FormInner>
         </FormSide>
 
-        {/* =================== RIGHT: AD PANEL =================== */}
+        {/* AD PANEL */}
         <AdSide>
           <AdContent>
             <AdBadge>
