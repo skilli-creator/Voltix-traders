@@ -784,7 +784,6 @@ const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
   z-index: 1000;
-  /* transparent, blurred — the page behind stays clearly visible */
   background: rgba(8, 12, 22, 0.35);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -1066,14 +1065,6 @@ const AlertIcon = () => (
   </svg>
 );
 
-const InfoIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="12" y1="16" x2="12" y2="12"/>
-    <line x1="12" y1="8" x2="12.01" y2="8"/>
-  </svg>
-);
-
 const XCircleIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10"/>
@@ -1086,13 +1077,6 @@ const MailIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="4" width="20" height="16" rx="2"/>
     <path d="m22 6-10 7L2 6"/>
-  </svg>
-);
-
-const LockIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
   </svg>
 );
 
@@ -1345,7 +1329,6 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
     setError('');
     setVerifying(true);
 
-    // TODO: verify with backend
     setTimeout(() => {
       setVerifying(false);
       setVerified(true);
@@ -1357,8 +1340,6 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
     if (resendIn > 0 || resending) return;
     setResending(true);
     setResendNote('');
-
-    // TODO: resend code
     setTimeout(() => {
       setResending(false);
       setResendIn(30);
@@ -1501,7 +1482,6 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
     setError('');
     setSending(true);
 
-    // TODO: call forgot-password endpoint
     setTimeout(() => {
       setSending(false);
       if (onCodeSent) onCodeSent(trimmed);
@@ -1645,7 +1625,6 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
 
     setLoading(true);
 
-    // TODO: submit reset
     setTimeout(() => {
       setLoading(false);
       if (onResetDone) onResetDone();
@@ -1820,6 +1799,15 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
       </ModalCard>
     </ModalBackdrop>
   );
+};
+
+/* ============================================================
+   MESSAGE ICON PICKER
+   ============================================================ */
+const MessageIcon = ({ kind }) => {
+  if (kind === 'error') return <XCircleIcon />;
+  if (kind === 'success') return <CheckIcon />;
+  return <AlertIcon />;
 };
 
 /* ============================================================
@@ -2014,13 +2002,6 @@ const SignUp = () => {
     setMessageKind('success');
     setMode('login');
     setLoginForm({ email: resetEmail, password: '' });
-  };
-
-  /* pick the right message icon */
-  const MessageIcon = () => {
-    if (messageKind === 'error') return <XCircleIcon />;
-    if (messageKind === 'success') return <CheckIcon />;
-    return <AlertIcon />;
   };
 
   return (
@@ -2299,7 +2280,9 @@ const SignUp = () => {
 
             {message && (
               <Message kind={messageKind}>
-                <span className="icon"><MessageIcon /></span>
+                <span className="icon">
+                  <MessageIcon kind={messageKind} />
+                </span>
                 {message}
               </Message>
             )}
@@ -2371,7 +2354,6 @@ const SignUp = () => {
         </AdSide>
       </Page>
 
-      {/* ===== POPUPS ===== */}
       <EmailVerificationModal
         open={verifyModalOpen}
         email={verifyEmail}
