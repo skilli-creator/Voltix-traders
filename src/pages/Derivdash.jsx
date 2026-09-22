@@ -1,4 +1,4 @@
-// src/pages/Derivdash.jsx (Swipeable Version with Sidebar)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Sticky Mobile UI)
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
@@ -250,6 +250,9 @@ const panelFadeIn = keyframes`
   to   { opacity: 1; transform: translateY(0); }
 `;
 
+/* Height of the fixed bottom tab bar (used for paddings). */
+const MOBILE_TABS_HEIGHT = '58px';
+
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
@@ -265,14 +268,35 @@ const DashboardContainer = styled.div`
   font-weight: 700;
 
   /* ===== PHONE VIEW =====
-     The document itself scrolls (instead of an inner container) so that
-     mobile browsers collapse their address bar / tabs while scrolling. */
+     The document itself scrolls so mobile browsers collapse their own
+     chrome (address bar / tabs). Our TopBar and bottom tabs remain
+     pinned because they are `sticky`/`fixed`. */
   @media (max-width: 768px) {
     height: auto;
     min-height: 100vh;
     min-height: 100dvh;
     overflow: visible;
     max-width: 100%;
+  }
+`;
+
+/* Wraps the TopBar so it can stay pinned to the top on mobile while
+   the page scrolls. When the user scrolls, the browser's own tab bar
+   disappears but our TopBar stays put. */
+const TopBarStickyWrapper = styled.div`
+  position: relative;
+  z-index: 40;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: ${props => props.theme.colors.bg || props.theme.colors.background};
+    /* subtle divider under our bar so it reads as a header */
+    box-shadow: 0 2px 12px ${props => props.theme.colors.shadow};
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
 `;
 
@@ -346,6 +370,9 @@ const PanelsContainer = styled.div`
   min-width: 0;
   position: relative;
   overflow: visible;
+  /* leave room for the fixed bottom tab bar so nothing is covered */
+  padding-bottom: calc(${MOBILE_TABS_HEIGHT} + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
 `;
 
 const MobilePanelWrapper = styled.div`
@@ -355,9 +382,9 @@ const MobilePanelWrapper = styled.div`
   max-width: 100%;
   min-width: 0;
   overflow: visible;
-  /* guarantee a full screen of room for the panel, but allow it to grow */
-  min-height: calc(100vh - 58px);
-  min-height: calc(100dvh - 58px);
+  /* ensure each panel fills at least the viewport so document scrolls */
+  min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
+  min-height: calc(100dvh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
   box-sizing: border-box;
 `;
@@ -379,22 +406,29 @@ const PanelContent = styled.div`
   }
 `;
 
-/* ===== STICKY BOTTOM TABS (phone view) ===== */
+/* ===== FIXED BOTTOM TABS (phone view) =====
+   `position: fixed` keeps these pinned to the viewport no matter how
+   far the user scrolls. `env(safe-area-inset-bottom)` handles phones
+   with a home indicator. */
 const MobileTabs = styled.div`
-  position: sticky;
-  bottom: 0;
   display: flex;
   align-items: stretch;
   background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   border-top: 2px solid ${props => props.theme.colors.border};
-  flex-shrink: 0;
   padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px)) 8px;
   gap: 4px;
-  z-index: 30;
   font-weight: 700;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 -6px 20px ${props => props.theme.colors.shadow};
+
+  /* pinned to the very bottom of the viewport */
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 50;
 
   @media (max-width: 480px) {
     padding: 3px 4px calc(3px + env(safe-area-inset-bottom, 0px)) 4px;
@@ -504,7 +538,6 @@ const Derivdash = () => {
   const touchEndX = useRef(0);
   const touchEndY = useRef(0);
 
-  // Theme change handler - passed to TopBar
   const handleThemeChange = (themeName) => {
     setCurrentTheme(themeName);
   };
@@ -519,9 +552,9 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  /* ===== PHONE VIEW: unlock document scrolling =====
-     This is what lets the mobile browser hide its tabs / address bar
-     while the user scrolls the page. */
+  /* PHONE VIEW: let the document scroll.
+     This is what allows the mobile browser to collapse its own chrome
+     (address bar / tabs) while our sticky TopBar stays visible. */
   useEffect(() => {
     if (!isMobile) return undefined;
 
@@ -550,7 +583,7 @@ const Derivdash = () => {
   const goToPanel = (index) => {
     if (index === activeIndex) return;
     setActiveIndex(index);
-    // start each panel from the top so the browser chrome can re-hide
+    // start each panel at the top so the browser chrome can re-hide
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -566,8 +599,8 @@ const Derivdash = () => {
     const diffX = touchStartX.current - touchEndX.current;
     const diffY = touchStartY.current - touchEndY.current;
 
-    // Only treat it as a swipe when the gesture is clearly horizontal,
-    // so vertical page scrolling is never hijacked.
+    // only treat it as a swipe when clearly horizontal,
+    // so vertical page scrolling is never hijacked
     if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
       if (diffX > 0 && activeIndex < panels.length - 1) {
         goToPanel(activeIndex + 1);
@@ -580,12 +613,14 @@ const Derivdash = () => {
   return (
     <ThemeProvider theme={themes[currentTheme]}>
       <DashboardContainer>
-        <TopBar
-          isSidebarOpen={isSidebarOpen}
-          onSidebarToggle={toggleSidebar}
-          currentTheme={currentTheme}
-          onThemeChange={handleThemeChange}
-        />
+        <TopBarStickyWrapper>
+          <TopBar
+            isSidebarOpen={isSidebarOpen}
+            onSidebarToggle={toggleSidebar}
+            currentTheme={currentTheme}
+            onThemeChange={handleThemeChange}
+          />
+        </TopBarStickyWrapper>
 
         <OptionSideBar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
@@ -615,22 +650,23 @@ const Derivdash = () => {
                 );
               })}
             </PanelsContainer>
-
-            {/* Sticky bottom tab bar - stays pinned while the page scrolls */}
-            <MobileTabs>
-              {panels.map((panel, index) => (
-                <TabButton
-                  key={panel.id}
-                  active={activeIndex === index}
-                  onClick={() => goToPanel(index)}
-                >
-                  <span className="icon">{panel.icon}</span>
-                  <span className="label">{panel.label}</span>
-                </TabButton>
-              ))}
-            </MobileTabs>
           </MobileLayout>
         </MainContent>
+
+        {/* Fixed bottom tab bar (mobile only). Kept outside MobileLayout
+            so `position: fixed` anchors to the viewport, not a scroll box. */}
+        <MobileTabs>
+          {panels.map((panel, index) => (
+            <TabButton
+              key={panel.id}
+              active={activeIndex === index}
+              onClick={() => goToPanel(index)}
+            >
+              <span className="icon">{panel.icon}</span>
+              <span className="label">{panel.label}</span>
+            </TabButton>
+          ))}
+        </MobileTabs>
       </DashboardContainer>
     </ThemeProvider>
   );
