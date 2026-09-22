@@ -7,12 +7,12 @@ import styled, { createGlobalStyle, keyframes } from 'styled-components';
 /* ============================================================
    SLIDESHOW IMAGES
    ------------------------------------------------------------
-   Put your files at: src/images/image1.jpg and src/images/image2.jpg
-   If your files use a different extension (.png, .webp, .jpeg),
-   just change the string below to match.
+   Files live at: src/assets/images/image1.png and image2.png
+   From this file (src/pages/SignUp.jsx) the path is:
+     ../assets/images/<name>.png
    ============================================================ */
-import image1 from '../images/image1.png';
-import image2 from '../images/image2.png';
+import image1 from '../assets/images/image1.png';
+import image2 from '../assets/images/image2.png';
 
 const SLIDES = [
   { src: image1, alt: 'MyTradeApp trading platform' },
@@ -79,7 +79,6 @@ const GlobalStyle = createGlobalStyle`
     color: ${theme.colors.text};
   }
 
-  /* Desktop: page fits in 100vh, document does NOT scroll. Only FormSide scrolls. */
   html:has(.mtapp-signup),
   body:has(.mtapp-signup) {
     margin: 0;
@@ -87,6 +86,7 @@ const GlobalStyle = createGlobalStyle`
     background: ${theme.colors.bg};
   }
 
+  /* Desktop: page fits in 100vh, document does NOT scroll. Only FormSide scrolls. */
   @media (min-width: 1025px) {
     html:has(.mtapp-signup),
     body:has(.mtapp-signup) {
@@ -748,7 +748,6 @@ const SlideLayer = styled.div`
   }
 `;
 
-/* Subtle dark gradient at bottom so dots stay legible on any image */
 const SlideOverlay = styled.div`
   position: absolute;
   inset: 0;
@@ -758,7 +757,6 @@ const SlideOverlay = styled.div`
   z-index: 1;
 `;
 
-/* Small badge over the top-left of the slideshow */
 const SlideBadge = styled.div`
   position: absolute;
   top: 32px;
