@@ -38,6 +38,34 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Kill the browser's default body/html scroll trap while this page is
+     mounted, so content always starts at the true top of the viewport
+     and nothing sits behind the mobile browser chrome. */
+  html:has(.mtapp-signup),
+  body:has(.mtapp-signup) {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: auto;
+    min-height: 100%;
+    background: ${theme.colors.bg};
+  }
+
+  /* Hide the scrollbar on the sign up form side (the "middle divider"
+     that appeared between the two panels). */
+  .mtapp-signup .form-side,
+  .mtapp-signup .form-side * {
+    scrollbar-width: none;         /* Firefox */
+    -ms-overflow-style: none;      /* IE/Edge */
+  }
+  .mtapp-signup .form-side::-webkit-scrollbar,
+  .mtapp-signup .form-side *::-webkit-scrollbar {
+    display: none;                 /* Chrome/Safari */
+    width: 0;
+    height: 0;
+  }
 `;
 
 /* ============================================================
@@ -73,9 +101,12 @@ const Page = styled.div`
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   background: ${theme.colors.bg};
   color: ${theme.colors.text};
+  align-items: stretch;
 
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
+    min-height: 100dvh;
+    align-items: start;
   }
 `;
 
@@ -86,16 +117,19 @@ const FormSide = styled.div`
   align-items: center;
   padding: 24px 32px;
   position: relative;
-  overflow-y: auto;
+  /* no overflow: auto → no scrollbar in the middle of the page */
+  overflow: visible;
 
-  /* mobile: align to top with minimal padding so nothing is cut off */
   @media (max-width: 1024px) {
-    padding: 12px 16px 24px;
+    /* generous top padding so nothing sits behind the mobile browser
+       chrome (address bar / tabs). 72px clears it on all phones. */
+    padding: 72px 16px 40px;
     justify-content: flex-start;
+    align-items: center;
   }
 
   @media (max-width: 480px) {
-    padding: 8px 14px 20px;
+    padding: 64px 14px 32px;
   }
 `;
 
@@ -359,7 +393,7 @@ const Spinner = styled.span`
 `;
 
 /* ============================================================
-   PASSWORD REQUIREMENTS (strength bar removed)
+   PASSWORD REQUIREMENTS
    ============================================================ */
 const StrengthText = styled.div`
   font-size: 10.5px;
@@ -658,7 +692,7 @@ const StatsRow = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   padding-top: 28px;
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  /* border-top removed – this was the "middle divider" line on the ad side */
 `;
 
 const Stat = styled.div`
@@ -856,7 +890,6 @@ const CaptchaSvg = ({ captcha }) => {
 const SignUp = () => {
   const [mode, setMode] = useState('signup');
 
-  /* sign up state */
   const [signupForm, setSignupForm] = useState({
     fullName: '',
     email: '',
@@ -868,15 +901,12 @@ const SignUp = () => {
   const [captchaInput, setCaptchaInput] = useState('');
   const [captchaError, setCaptchaError] = useState('');
 
-  /* login state */
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [loginErrors, setLoginErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
 
-  /* captcha */
   const [captcha, setCaptcha] = useState(null);
 
-  /* shared */
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -929,7 +959,6 @@ const SignUp = () => {
     symbol: /[^A-Za-z0-9]/.test(signupForm.password),
   };
 
-  /* strength text only (bar removed) */
   const passwordStrength = (() => {
     const pw = signupForm.password;
     if (!pw) return { color: theme.colors.textMuted, label: 'Enter a strong password' };
@@ -1026,9 +1055,8 @@ const SignUp = () => {
     <>
       <GlobalStyle />
       <Page className="mtapp-signup">
-        <FormSide>
+        <FormSide className="form-side">
           <FormInner>
-            {/* 1. BRAND */}
             <Brand>
               <BrandMark>M</BrandMark>
               <BrandName>
@@ -1036,7 +1064,6 @@ const SignUp = () => {
               </BrandName>
             </Brand>
 
-            {/* 2 + 3. HEADING & SWITCH LINK */}
             {mode === 'signup' ? (
               <>
                 <Heading>Sign up</Heading>
@@ -1059,7 +1086,6 @@ const SignUp = () => {
               </>
             )}
 
-            {/* SIGN UP FORM */}
             {mode === 'signup' && (
               <form onSubmit={handleSignup} noValidate>
                 <Field>
@@ -1170,7 +1196,6 @@ const SignUp = () => {
                   )}
                 </Field>
 
-                {/* CAPTCHA */}
                 <Field>
                   <Label>Security check</Label>
                   <CaptchaRow>
@@ -1234,7 +1259,6 @@ const SignUp = () => {
               </form>
             )}
 
-            {/* LOGIN FORM */}
             {mode === 'login' && (
               <form onSubmit={handleLogin} noValidate>
                 <Field>
@@ -1307,7 +1331,6 @@ const SignUp = () => {
           </FormInner>
         </FormSide>
 
-        {/* AD PANEL */}
         <AdSide>
           <AdContent>
             <AdBadge>
