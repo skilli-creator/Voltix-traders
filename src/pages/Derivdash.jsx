@@ -267,10 +267,9 @@ const DashboardContainer = styled.div`
   transition: background 0.3s ease;
   font-weight: 700;
 
-  /* ===== PHONE VIEW =====
-     The document itself scrolls so mobile browsers collapse their own
-     chrome (address bar / tabs). Our TopBar and bottom tabs remain
-     pinned because they are `sticky`/`fixed`. */
+  /* PHONE VIEW: the document itself scrolls so mobile browsers collapse
+     their own chrome (address bar / tabs). Our TopBar and bottom tabs
+     remain pinned because they are sticky / fixed. */
   @media (max-width: 768px) {
     height: auto;
     min-height: 100vh;
@@ -293,7 +292,6 @@ const TopBarStickyWrapper = styled.div`
     top: 0;
     z-index: 40;
     background: ${props => props.theme.colors.bg || props.theme.colors.background};
-    /* subtle divider under our bar so it reads as a header */
     box-shadow: 0 2px 12px ${props => props.theme.colors.shadow};
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
@@ -406,9 +404,9 @@ const PanelContent = styled.div`
   }
 `;
 
-/* ===== FIXED BOTTOM TABS (phone view) =====
-   `position: fixed` keeps these pinned to the viewport no matter how
-   far the user scrolls. `env(safe-area-inset-bottom)` handles phones
+/* FIXED BOTTOM TABS (phone view).
+   position: fixed keeps these pinned to the viewport no matter how
+   far the user scrolls. env(safe-area-inset-bottom) handles phones
    with a home indicator. */
 const MobileTabs = styled.div`
   display: flex;
@@ -433,6 +431,11 @@ const MobileTabs = styled.div`
   @media (max-width: 480px) {
     padding: 3px 4px calc(3px + env(safe-area-inset-bottom, 0px)) 4px;
     gap: 2px;
+  }
+
+  /* never show on desktop */
+  @media (min-width: 769px) {
+    display: none;
   }
 `;
 
@@ -583,7 +586,6 @@ const Derivdash = () => {
   const goToPanel = (index) => {
     if (index === activeIndex) return;
     setActiveIndex(index);
-    // start each panel at the top so the browser chrome can re-hide
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -599,8 +601,8 @@ const Derivdash = () => {
     const diffX = touchStartX.current - touchEndX.current;
     const diffY = touchStartY.current - touchEndY.current;
 
-    // only treat it as a swipe when clearly horizontal,
-    // so vertical page scrolling is never hijacked
+    /* only treat it as a swipe when clearly horizontal,
+       so vertical page scrolling is never hijacked */
     if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
       if (diffX > 0 && activeIndex < panels.length - 1) {
         goToPanel(activeIndex + 1);
@@ -654,7 +656,7 @@ const Derivdash = () => {
         </MainContent>
 
         {/* Fixed bottom tab bar (mobile only). Kept outside MobileLayout
-            so `position: fixed` anchors to the viewport, not a scroll box. */}
+            so position: fixed anchors to the viewport, not a scroll box. */}
         <MobileTabs>
           {panels.map((panel, index) => (
             <TabButton
