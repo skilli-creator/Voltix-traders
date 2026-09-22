@@ -1,7 +1,23 @@
 // src/pages/SignUp.jsx
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
+
+/* ============================================================
+   API CONFIG
+   ============================================================ */
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+const ENDPOINTS = {
+  signup:          `${API_BASE_URL}/auth/signup`,             // POST { first_name, last_name, phone, email, password }
+  login:           `${API_BASE_URL}/auth/login`,              // POST { email, password }
+  verifyEmail:     `${API_BASE_URL}/auth/verify`,             // POST { user_id, code }
+  resendCode:      `${API_BASE_URL}/auth/resend-code`,        // POST { user_id, email }
+  forgotPassword:  `${API_BASE_URL}/auth/forgot-password`,    // POST { email }
+  verifyResetCode: `${API_BASE_URL}/auth/verify-reset-code`,  // POST { email, code }
+  resetPassword:   `${API_BASE_URL}/auth/reset-password`,     // POST { reset_token, new_password, confirm_password }
+};
 
 /* ============================================================
    THEME
@@ -914,7 +930,6 @@ const ModalClose = styled.button`
   svg { width: 18px; height: 18px; }
 `;
 
-/* Modal header icon — dual-tone SVG inside a rounded tile */
 const ModalIcon = styled.div`
   width: 60px;
   height: 60px;
@@ -1151,10 +1166,8 @@ const ShieldIcon = () => (
 );
 
 /* ============================================================
-   SVG ICONS — popups (dual-tone: gradient fill + white stroke)
+   SVG ICONS — popups
    ============================================================ */
-
-/* X (close) — bold, filled-circle look */
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"/>
@@ -1162,7 +1175,6 @@ const CloseIcon = () => (
   </svg>
 );
 
-/* Envelope with glowing seal — email verification */
 const MailSealIcon = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -1184,7 +1196,6 @@ const MailSealIcon = () => (
   </svg>
 );
 
-/* Key with shield halo — forgot password */
 const KeyShieldIcon = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -1205,7 +1216,6 @@ const KeyShieldIcon = () => (
   </svg>
 );
 
-/* Shield with check inside — reset password */
 const ShieldLockIcon = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -1227,14 +1237,12 @@ const ShieldLockIcon = () => (
   </svg>
 );
 
-/* Simple check inside circle — for message + requirements */
 const CheckCircleMini = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12"/>
   </svg>
 );
 
-/* Resend icon — a small circular arrow, used inline in LinkButton */
 const ResendMiniIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M21 12a9 9 0 1 1-3.1-6.8"/>
@@ -1242,7 +1250,6 @@ const ResendMiniIcon = () => (
   </svg>
 );
 
-/* Big animated success SVG (used in every popup success state) */
 const SuccessCircleSvg = () => (
   <svg viewBox="0 0 62 62" xmlns="http://www.w3.org/2000/svg">
     <circle cx="31" cy="31" r="28" />
@@ -1420,7 +1427,7 @@ const OtpInput = ({ length = 6, value, onChange, error, disabled, autoFocus }) =
 /* ============================================================
    MODAL 1 — EMAIL VERIFICATION
    ============================================================ */
-const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
+const EmailVerificationModal = ({ open, email, userId, onClose, onVerified, onContinue }) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [verifying, setVerifying] = useState(false);
@@ -1453,7 +1460,7 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  const handleVerify = (e) => {
+  const handleVerify = async (e) => {
     e?.preventDefault();
     if (code.length !== 6) {
       setError('Please enter all 6 digits.');
@@ -1462,22 +1469,67 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
     setError('');
     setVerifying(true);
 
-    setTimeout(() => {
+    try {
+      const storedUserId = userId || localStorage.getItem('tempUserId');
+      const response = await fetch(ENDPOINTS.verifyEmail, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: storedUserId ? parseInt(storedUserId, 10) : null,
+          code,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.removeItem('tempUserId');
+        localStorage.removeItem('userEmail');
+        setVerifying(false);
+        setVerified(true);
+        if (onVerified) onVerified();
+      } else {
+        setError(data.error || 'Invalid verification code');
+        setVerifying(false);
+        setCode('');
+      }
+    } catch (err) {
+      console.error('Verify error:', err);
+      setError('Cannot connect to server. Please try again.');
       setVerifying(false);
-      setVerified(true);
-      if (onVerified) onVerified();
-    }, 1200);
+    }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (resendIn > 0 || resending) return;
     setResending(true);
     setResendNote('');
-    setTimeout(() => {
+
+    try {
+      const storedUserId = userId || localStorage.getItem('tempUserId');
+      const response = await fetch(ENDPOINTS.resendCode, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: storedUserId ? parseInt(storedUserId, 10) : null,
+          email,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setResendIn(30);
+        setResendNote('A new code has been sent to your email.');
+      } else {
+        setResendNote(data.error || 'Failed to resend code.');
+      }
+    } catch (err) {
+      console.error('Resend error:', err);
+      setResendNote('Cannot connect to server.');
+    } finally {
       setResending(false);
-      setResendIn(30);
-      setResendNote('A new code has been sent to your email.');
-    }, 900);
+    }
   };
 
   if (!open) return null;
@@ -1496,11 +1548,17 @@ const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
             </SuccessCircle>
             <ModalTitle>Email verified</ModalTitle>
             <ModalSubtitle style={{ marginBottom: 8 }}>
-              Your account is now active. You can start using MyTradeApp.
+              Your account is now active. Sign in to continue.
             </ModalSubtitle>
             <ModalActions style={{ width: '100%' }}>
-              <SubmitBtn type="button" onClick={onClose}>
-                Continue to dashboard
+              <SubmitBtn
+                type="button"
+                onClick={() => {
+                  if (onContinue) onContinue();
+                  else onClose();
+                }}
+              >
+                Continue to sign in
               </SubmitBtn>
             </ModalActions>
           </SuccessWrap>
@@ -1601,7 +1659,7 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed) {
@@ -1615,13 +1673,31 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
     setError('');
     setSending(true);
 
-    setTimeout(() => {
+    try {
+      const response = await fetch(ENDPOINTS.forgotPassword, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        sessionStorage.setItem('resetEmail', trimmed);
+        setSending(false);
+        setSent(true);
+        setTimeout(() => {
+          if (onCodeSent) onCodeSent(trimmed);
+        }, 800);
+      } else {
+        setError(data.error || 'Failed to send reset code.');
+        setSending(false);
+      }
+    } catch (err) {
+      console.error('Forgot password error:', err);
+      setError('Cannot connect to server. Please try again.');
       setSending(false);
-      setSent(true);
-      setTimeout(() => {
-        if (onCodeSent) onCodeSent(trimmed);
-      }, 700);
-    }, 1200);
+    }
   };
 
   if (!open) return null;
@@ -1761,7 +1837,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
     return { color: colorMap[score], label: textMap[score] };
   })();
 
-  const handleReset = (e) => {
+  const handleReset = async (e) => {
     e.preventDefault();
     const next = {};
     if (code.length !== 6) next.code = 'Enter the 6-digit code.';
@@ -1774,24 +1850,78 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
 
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      // Step 1: verify reset code -> get reset_token
+      const verifyRes = await fetch(ENDPOINTS.verifyResetCode, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      });
+      const verifyData = await verifyRes.json();
+
+      if (!verifyRes.ok) {
+        setErrors({ code: verifyData.error || 'Invalid verification code.' });
+        setLoading(false);
+        return;
+      }
+
+      const resetToken = verifyData.reset_token;
+      sessionStorage.setItem('resetToken', resetToken);
+
+      // Step 2: submit the new password
+      const resetRes = await fetch(ENDPOINTS.resetPassword, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reset_token: resetToken,
+          new_password: password,
+          confirm_password: confirm,
+        }),
+      });
+      const resetData = await resetRes.json();
+
+      if (resetRes.ok) {
+        sessionStorage.clear();
+        localStorage.removeItem('resetToken');
+        setLoading(false);
+        setDone(true);
+        setTimeout(() => { if (onResetDone) onResetDone(); }, 900);
+      } else {
+        setErrors({ confirm: resetData.error || 'Reset failed.' });
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Reset error:', err);
+      setErrors({ confirm: 'Cannot connect to server. Please try again.' });
       setLoading(false);
-      setDone(true);
-      setTimeout(() => {
-        if (onResetDone) onResetDone();
-      }, 900);
-    }, 1400);
+    }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (resendIn > 0 || resending) return;
     setResending(true);
     setResendNote('');
-    setTimeout(() => {
+
+    try {
+      const response = await fetch(ENDPOINTS.forgotPassword, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        setResendIn(30);
+        setResendNote('A new code has been sent to your email.');
+        setCode('');
+      } else {
+        setResendNote(data.error || 'Failed to resend code.');
+      }
+    } catch (err) {
+      setResendNote('Cannot connect to server.');
+    } finally {
       setResending(false);
-      setResendIn(30);
-      setResendNote('A new code has been sent.');
-    }, 900);
+    }
   };
 
   if (!open) return null;
@@ -1979,8 +2109,10 @@ const MessageIcon = ({ kind }) => {
    MAIN COMPONENT
    ============================================================ */
 const SignUp = () => {
+  const navigate = useNavigate();
   const [mode, setMode] = useState('signup');
 
+  /* ---------- sign up state ---------- */
   const [signupForm, setSignupForm] = useState({
     fullName: '',
     email: '',
@@ -1992,20 +2124,25 @@ const SignUp = () => {
   const [captchaInput, setCaptchaInput] = useState('');
   const [captchaError, setCaptchaError] = useState('');
 
+  /* ---------- login state ---------- */
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [loginErrors, setLoginErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
 
+  /* ---------- captcha ---------- */
   const [captcha, setCaptcha] = useState(null);
 
+  /* ---------- shared ui ---------- */
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageKind, setMessageKind] = useState('info');
 
+  /* ---------- modal state ---------- */
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState('');
+  const [verifyUserId, setVerifyUserId] = useState(null);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
@@ -2107,6 +2244,7 @@ const SignUp = () => {
     return next;
   };
 
+  /* ---------- signup submit ---------- */
   const handleSignup = async (e) => {
     e.preventDefault();
     const { next, captchaOk } = validateSignup();
@@ -2121,19 +2259,54 @@ const SignUp = () => {
     setMessage('Creating your account');
     setMessageKind('info');
 
-    setTimeout(() => {
+    const fullNameTrimmed = signupForm.fullName.trim();
+    const [firstName, ...rest] = fullNameTrimmed.split(/\s+/);
+    const lastName = rest.join(' ') || '';
+
+    try {
+      const response = await fetch(ENDPOINTS.signup, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          phone: '', // no phone field in this form; backend should allow empty
+          email: signupForm.email.trim(),
+          password: signupForm.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 201) {
+        localStorage.setItem('tempUserId', data.user_id);
+        localStorage.setItem('userEmail', signupForm.email.trim());
+
+        setVerifyUserId(data.user_id);
+        setVerifyEmail(signupForm.email.trim());
+        setVerifyModalOpen(true);
+
+        setLoading(false);
+        clearMessage();
+        refreshCaptcha();
+        setSignupForm({ fullName: '', email: '', password: '', confirmPassword: '' });
+        setAgreed(false);
+      } else {
+        setMessage(data.error || 'Registration failed');
+        setMessageKind('error');
+        setLoading(false);
+        refreshCaptcha();
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setMessage('Cannot connect to server.');
+      setMessageKind('error');
       setLoading(false);
-      clearMessage();
-
-      setVerifyEmail(signupForm.email.trim());
-      setVerifyModalOpen(true);
-
       refreshCaptcha();
-      setSignupForm({ fullName: '', email: '', password: '', confirmPassword: '' });
-      setAgreed(false);
-    }, 1500);
+    }
   };
 
+  /* ---------- login submit ---------- */
   const handleLogin = async (e) => {
     e.preventDefault();
     const next = validateLogin();
@@ -2144,14 +2317,69 @@ const SignUp = () => {
     setMessage('Signing you in');
     setMessageKind('info');
 
-    setTimeout(() => {
+    try {
+      const response = await fetch(ENDPOINTS.login, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: loginForm.email.trim(),
+          password: loginForm.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (rememberMe) localStorage.setItem('rememberMe', 'true');
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+        setMessage('Welcome back! Redirecting...');
+        setMessageKind('success');
+        setLoading(false);
+
+        setTimeout(() => {
+          navigate('/marketsdash');
+        }, 1200);
+      } else {
+        const errorMsg = data.error || 'Login failed';
+
+        if (errorMsg.toLowerCase().includes('verify')) {
+          // account exists but isn't verified → open verify modal
+          localStorage.setItem('userEmail', loginForm.email.trim());
+          if (data.user_id) localStorage.setItem('tempUserId', data.user_id);
+
+          setVerifyUserId(data.user_id || null);
+          setVerifyEmail(loginForm.email.trim());
+          setVerifyModalOpen(true);
+          setLoading(false);
+          clearMessage();
+        } else {
+          setMessage(errorMsg);
+          setMessageKind('error');
+          setLoading(false);
+        }
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setMessage('Cannot connect to server.');
+      setMessageKind('error');
       setLoading(false);
-      setMessage('Signed in successfully.');
-      setMessageKind('success');
-    }, 1500);
+    }
   };
 
-  const handleVerified = () => {};
+  /* ---------- modal handlers ---------- */
+  const handleVerified = () => {
+    /* called when verification succeeds — nothing extra needed */
+  };
+
+  const handleVerifyContinue = () => {
+    setVerifyModalOpen(false);
+    setMode('login');
+    setLoginForm({ email: verifyEmail, password: '' });
+    setMessage('Email verified. Please sign in.');
+    setMessageKind('success');
+  };
 
   const handleForgotCodeSent = (email) => {
     setForgotModalOpen(false);
@@ -2525,8 +2753,10 @@ const SignUp = () => {
       <EmailVerificationModal
         open={verifyModalOpen}
         email={verifyEmail}
+        userId={verifyUserId}
         onClose={() => setVerifyModalOpen(false)}
         onVerified={handleVerified}
+        onContinue={handleVerifyContinue}
       />
 
       <ForgotPasswordModal
