@@ -5,7 +5,6 @@ import { Routes, Route } from 'react-router-dom';
 
 // Import Pages ONLY
 import Index from './pages/Index';
-import Marketsdash from './pages/Marketsdash';
 import Derivdash from './pages/Derivdash';
 
 // Import Components
@@ -19,10 +18,7 @@ const App = () => {
       <Route path="/" element={<Index />} />
            <Route path="/academy" element={<Academy />} />
 
-      {/* Dashboard Pages */}
-      <Route path="/marketsdash" element={<Marketsdash />} />
-      
-
+  
       {/* Deriv Trading Dashboard */}
       <Route path="/derivdash" element={<Derivdash />} />
     </Routes>

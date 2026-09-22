@@ -2150,7 +2150,7 @@ const SignUp = () => {
         localStorage.setItem('user', JSON.stringify(data.user));
         setMessage('Welcome back! Redirecting...');
         setMessageKind('success'); setLoading(false);
-        setTimeout(() => { navigate('/marketsdash'); }, 1200);
+        setTimeout(() => { navigate('/Derivdash'); }, 1200);
       } else {
         const errorMsg = data.error || 'Login failed';
         if (errorMsg.toLowerCase().includes('verify')) {
