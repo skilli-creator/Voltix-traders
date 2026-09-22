@@ -126,18 +126,18 @@ const FormSide = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 24px 32px;
+  padding: 96px 32px 40px;
   position: relative;
   overflow: visible;
 
   @media (max-width: 1024px) {
-    padding: 72px 16px 40px;
+    padding: 96px 16px 40px;
     justify-content: flex-start;
     align-items: center;
   }
 
   @media (max-width: 480px) {
-    padding: 64px 14px 32px;
+    padding: 92px 14px 32px;
   }
 `;
 
@@ -152,41 +152,130 @@ const FormInner = styled.div`
 `;
 
 /* ============================================================
-   BRAND
+   BRAND — absolutely positioned top-left of the form side
    ============================================================ */
 const Brand = styled.div`
+  position: absolute;
+  top: 32px;
+  left: 40px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 12px;
+  z-index: 5;
+  animation: ${fadeUp} 0.5s ease both;
 
   @media (max-width: 1024px) {
-    margin-bottom: 18px;
+    top: 20px;
+    left: 20px;
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    top: 16px;
+    left: 16px;
+    gap: 9px;
   }
 `;
 
-const BrandMark = styled.div`
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: ${theme.colors.gradientBtn};
+const BrandLogo = styled.div`
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 8px 18px rgba(59, 130, 246, 0.35));
+
+  svg { display: block; width: 100%; height: 100%; }
+
+  @media (max-width: 480px) {
+    width: 38px;
+    height: 38px;
+  }
+`;
+
+const BrandText = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 18px;
-  color: #fff;
-  box-shadow: 0 6px 16px -6px rgba(59, 130, 246, 0.6);
+  flex-direction: column;
+  line-height: 1.15;
 `;
 
 const BrandName = styled.span`
   font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
   color: ${theme.colors.text};
 
   span { color: ${theme.colors.accent}; }
+
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
 `;
+
+const BrandTag = styled.span`
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: ${theme.colors.textMuted};
+  margin-top: 1px;
+
+  @media (max-width: 480px) {
+    font-size: 9.5px;
+  }
+`;
+
+/* ============================================================
+   BRAND SVG LOGO
+   ============================================================ */
+const BrandLogoSvg = () => (
+  <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="mtBrandBg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#60a5fa" />
+        <stop offset="55%" stopColor="#3b82f6" />
+        <stop offset="100%" stopColor="#1d4ed8" />
+      </linearGradient>
+      <linearGradient id="mtBrandLine" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.75" />
+        <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+      </linearGradient>
+    </defs>
+
+    {/* rounded square backdrop */}
+    <rect x="0" y="0" width="48" height="48" rx="13" fill="url(#mtBrandBg)" />
+
+    {/* soft inner highlight */}
+    <path
+      d="M4 15 C4 8 8 4 15 4 L33 4 C40 4 44 8 44 15 L44 33 C44 40 40 44 33 44 L15 44 C8 44 4 40 4 33 Z"
+      fill="none"
+      stroke="#ffffff"
+      strokeOpacity="0.08"
+      strokeWidth="1"
+    />
+
+    {/* ascending chart line ending with an arrowhead */}
+    <path
+      d="M10 32 L16 23 L22 28 L33 14"
+      stroke="url(#mtBrandLine)"
+      strokeWidth="2.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+
+    {/* arrowhead */}
+    <path
+      d="M27 14 L33 14 L33 20"
+      stroke="#ffffff"
+      strokeWidth="2.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+
+    {/* start-point dot */}
+    <circle cx="10" cy="32" r="2" fill="#ffffff" />
+  </svg>
+);
 
 /* ============================================================
    HEADING + SWITCH LINK
@@ -769,9 +858,6 @@ const FloatingTicker = styled.div`
 /* ============================================================
    MODAL PRIMITIVES
    ============================================================ */
-
-/* Backdrop is fully transparent — no dim, no blur.
-   The page behind any popup stays completely visible. */
 const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
@@ -1986,14 +2072,20 @@ const SignUp = () => {
       <GlobalStyle />
       <Page className="mtapp-signup">
         <FormSide className="form-side">
-          <FormInner>
-            <Brand>
-              <BrandMark>M</BrandMark>
+          {/* Brand — fixed at top-left of the form side */}
+          <Brand>
+            <BrandLogo>
+              <BrandLogoSvg />
+            </BrandLogo>
+            <BrandText>
               <BrandName>
                 My<span>TradeApp</span>
               </BrandName>
-            </Brand>
+              <BrandTag>Markets · Simplified</BrandTag>
+            </BrandText>
+          </Brand>
 
+          <FormInner>
             {mode === 'signup' ? (
               <>
                 <Heading>Sign up</Heading>
