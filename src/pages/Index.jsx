@@ -108,137 +108,77 @@ const FormInner = styled.div`
   }
 `;
 
+/* ============================================================
+   BRAND (top of page)
+   ============================================================ */
 const Brand = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
 
   @media (max-width: 1024px) {
-    margin-bottom: 22px;
+    margin-bottom: 26px;
   }
 `;
 
 const BrandMark = styled.div`
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
   background: ${theme.colors.gradientBtn};
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 19px;
   color: #fff;
   box-shadow: 0 6px 18px -6px rgba(59, 130, 246, 0.6);
 `;
 
 const BrandName = styled.span`
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.3px;
   color: ${theme.colors.text};
 
   span { color: ${theme.colors.accent}; }
 `;
 
 /* ============================================================
-   MODE TABS (Sign Up / Sign In)
+   HEADING + SWITCH LINK
    ============================================================ */
-const ModeTabs = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  background: ${theme.colors.surface};
-  border: 1px solid ${theme.colors.border};
-  border-radius: 12px;
-  margin-bottom: 26px;
-`;
-
-const ModeTab = styled.button`
-  padding: 10px 12px;
-  border: none;
-  background: ${props => (props.active ? theme.colors.gradientBtn : 'transparent')};
-  color: ${props => (props.active ? '#fff' : theme.colors.textSecondary)};
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 9px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-  box-shadow: ${props => (props.active ? '0 6px 16px -8px rgba(59, 130, 246, 0.8)' : 'none')};
-
-  &:hover:not(:disabled) {
-    color: ${props => (props.active ? '#fff' : theme.colors.text)};
-  }
-`;
-
 const Heading = styled.h1`
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.6px;
   margin: 0 0 8px;
   color: ${theme.colors.text};
 
   @media (max-width: 480px) {
-    font-size: 24px;
+    font-size: 26px;
   }
 `;
 
-const Subheading = styled.p`
-  font-size: 14px;
-  color: ${theme.colors.textSecondary};
-  margin: 0 0 22px;
-  line-height: 1.5;
-`;
-
-const SocialRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 20px;
-`;
-
-const SocialButton = styled.button`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 11px 12px;
-  background: ${theme.colors.surface};
-  border: 1px solid ${theme.colors.border};
-  border-radius: 10px;
-  color: ${theme.colors.text};
+const SwitchRow = styled.p`
   font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  -webkit-tap-highlight-color: transparent;
+  color: ${theme.colors.textSecondary};
+  margin: 0 0 28px;
+  line-height: 1.5;
 
-  svg { flex-shrink: 0; }
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 4px;
+    color: ${theme.colors.accent};
+    font-weight: 600;
+    font-size: inherit;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
 
-  &:hover {
-    background: ${theme.colors.surfaceHover};
-    border-color: #334155;
-  }
-  &:active { transform: scale(0.98); }
-`;
-
-const Divider = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0;
-  color: ${theme.colors.textMuted};
-  font-size: 12px;
-  font-weight: 500;
-
-  &::before, &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: ${theme.colors.border};
+    &:hover { text-decoration: underline; }
   }
 `;
 
@@ -775,21 +715,6 @@ const FloatingTicker = styled.div`
 /* ============================================================
    ICONS
    ============================================================ */
-const GoogleIcon = () => (
-  <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true">
-    <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.3-.4-3.5z"/>
-    <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-    <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-7.9l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
-    <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.2 5.2C36.9 40 44 35 44 24c0-1.2-.1-2.3-.4-3.5z"/>
-  </svg>
-);
-
-const AppleIcon = () => (
-  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-  </svg>
-);
-
 const EyeIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -835,11 +760,6 @@ const ChartIcon = () => (
    ============================================================ */
 const randomHsl = (s, l) => `hsl(${Math.floor(Math.random() * 360)}, ${s}%, ${l}%)`;
 
-/**
- * Builds a captcha object with a code (6 digits) and pre-computed
- * random visual attributes for each digit, noise line, and noise dot.
- * Pre-computing keeps the SVG stable across re-renders.
- */
 const buildCaptcha = () => {
   const code = Array.from({ length: 6 }, () =>
     Math.floor(Math.random() * 10)
@@ -875,10 +795,6 @@ const buildCaptcha = () => {
   return { code, seed, chars, lines, dots };
 };
 
-/**
- * Renders a distorted SVG captcha — wavy digits, noise lines & dots,
- * plus a subtle turbulence displacement filter to defeat OCR bots.
- */
 const CaptchaSvg = ({ captcha }) => {
   if (!captcha) return null;
   const { seed, chars, lines, dots } = captcha;
@@ -980,7 +896,7 @@ const SignUp = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [messageKind, setMessageKind] = useState('info'); // 'info' | 'error' | 'success'
+  const [messageKind, setMessageKind] = useState('info');
 
   /* generate a fresh captcha on mount */
   useEffect(() => {
@@ -1031,7 +947,7 @@ const SignUp = () => {
     symbol: /[^A-Za-z0-9]/.test(signupForm.password),
   };
 
-  /* strength meter (0 - 5) */
+  /* strength meter */
   const passwordStrength = (() => {
     const pw = signupForm.password;
     if (!pw) return { score: 0, width: '0%', color: theme.colors.danger, label: 'Enter a strong password' };
@@ -1101,7 +1017,6 @@ const SignUp = () => {
     setMessageKind('info');
 
     // TODO: wire up your real sign-up request
-    // await fetch('/api/auth/signup', { ... });
     setTimeout(() => {
       setLoading(false);
       setMessage('Account created successfully. Check your email to verify.');
@@ -1123,17 +1038,11 @@ const SignUp = () => {
     setMessageKind('info');
 
     // TODO: wire up your real sign-in request
-    // await fetch('/api/auth/signin', { ... });
     setTimeout(() => {
       setLoading(false);
       setMessage('Signed in successfully.');
       setMessageKind('success');
     }, 1500);
-  };
-
-  const handleSocial = (provider) => {
-    // TODO: wire up OAuth
-    // window.location.href = `/api/auth/${provider}`;
   };
 
   /* ============================================================ */
@@ -1146,6 +1055,7 @@ const SignUp = () => {
         {/* =================== LEFT: FORM =================== */}
         <FormSide>
           <FormInner>
+            {/* 1. BRAND */}
             <Brand>
               <BrandMark>M</BrandMark>
               <BrandName>
@@ -1153,48 +1063,28 @@ const SignUp = () => {
               </BrandName>
             </Brand>
 
-            {/* Mode switch */}
-            <ModeTabs role="tablist" aria-label="Authentication mode">
-              <ModeTab
-                type="button"
-                role="tab"
-                aria-selected={mode === 'signup'}
-                active={mode === 'signup'}
-                onClick={() => switchMode('signup')}
-              >
-                Sign up
-              </ModeTab>
-              <ModeTab
-                type="button"
-                role="tab"
-                aria-selected={mode === 'login'}
-                active={mode === 'login'}
-                onClick={() => switchMode('login')}
-              >
-                Sign in
-              </ModeTab>
-            </ModeTabs>
-
-            <Heading>
-              {mode === 'signup' ? 'Create your account' : 'Welcome back'}
-            </Heading>
-            <Subheading>
-              {mode === 'signup'
-                ? 'Join thousands of traders. Start building your portfolio in minutes.'
-                : 'Sign in to access your dashboard, portfolio, and live markets.'}
-            </Subheading>
-
-            {/* Social */}
-            <SocialRow>
-              <SocialButton type="button" onClick={() => handleSocial('google')}>
-                <GoogleIcon /> Google
-              </SocialButton>
-              <SocialButton type="button" onClick={() => handleSocial('apple')}>
-                <AppleIcon /> Apple
-              </SocialButton>
-            </SocialRow>
-
-            <Divider>or continue with email</Divider>
+            {/* 2 + 3. HEADING & SWITCH LINK */}
+            {mode === 'signup' ? (
+              <>
+                <Heading>Sign up</Heading>
+                <SwitchRow>
+                  Already have an account?
+                  <button type="button" onClick={() => switchMode('login')}>
+                    Log in
+                  </button>
+                </SwitchRow>
+              </>
+            ) : (
+              <>
+                <Heading>Log in</Heading>
+                <SwitchRow>
+                  Don&apos;t have an account?
+                  <button type="button" onClick={() => switchMode('signup')}>
+                    Sign up
+                  </button>
+                </SwitchRow>
+              </>
+            )}
 
             {/* =================== SIGN UP FORM =================== */}
             {mode === 'signup' && (
@@ -1431,7 +1321,7 @@ const SignUp = () => {
 
                 <SubmitBtn type="submit" disabled={loading}>
                   {loading && <Spinner />}
-                  {loading ? 'Signing in…' : 'Sign in'}
+                  {loading ? 'Signing in…' : 'Log in'}
                 </SubmitBtn>
               </form>
             )}
