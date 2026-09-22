@@ -1,4 +1,4 @@
-// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Sticky Mobile UI)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fixed TopBar + Sticky Bottom Tabs)
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
@@ -150,11 +150,11 @@ const DashboardContainer = styled.div`
   transition: background 0.3s ease;
   font-weight: 700;
 
-  /* PHONE VIEW
-     Use 100vh (LARGEST viewport) — NOT 100dvh.
-     On mobile 100vh is taller than the visible area, so the page
-     always has overflow to scroll, which is what makes the mobile
-     browser hide its own tab / address bar. */
+  /* PHONE VIEW.
+     min-height: 100vh (LARGEST viewport), NOT 100dvh, so the page always
+     has overflow to scroll — required for the mobile browser to hide its
+     own tab/address bar. padding-top is set inline from the measured
+     TopBar height so content never hides under the fixed TopBar. */
   @media (max-width: 768px) {
     height: auto;
     min-height: 100vh;
@@ -163,17 +163,21 @@ const DashboardContainer = styled.div`
   }
 `;
 
-/* Sticky so it rides with the visual viewport when the browser chrome
-   collapses. `top: 0` (not fixed) is important on iOS Safari. */
+/* Fixed TopBar on mobile: guarantees it stays pinned at the top of the
+   visible viewport regardless of ancestor overflow rules (which is what
+   breaks position: sticky when body has overflow-x: hidden). */
 const TopBarStickyWrapper = styled.div`
   position: relative;
   z-index: 40;
   flex-shrink: 0;
 
   @media (max-width: 768px) {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 40;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 60;
     background: ${props => props.theme.colors.bg || props.theme.colors.background};
     box-shadow: 0 2px 12px ${props => props.theme.colors.shadow};
     backdrop-filter: blur(14px);
@@ -261,9 +265,7 @@ const MobilePanelWrapper = styled.div`
   min-width: 0;
   overflow: visible;
 
-  /* KEY: 100vh (largest viewport), NOT 100dvh. This guarantees the panel
-     is taller than the visible area so the document always has scroll
-     room — which is what lets the mobile browser hide its own chrome. */
+  /* 100vh again (largest viewport) to guarantee document scroll room. */
   min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
   box-sizing: border-box;
@@ -345,9 +347,7 @@ const TabButton = styled.button`
     font-weight: 700;
   }
 
-  &:hover {
-    background: ${props => props.theme.colors.accentLight};
-  }
+  &:hover { background: ${props => props.theme.colors.accentLight}; }
 
   @media (max-width: 480px) {
     padding: 6px 2px;
@@ -386,7 +386,9 @@ const Derivdash = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const [currentTheme, setCurrentTheme] = useState('dark');
+  const [topBarHeight, setTopBarHeight] = useState(0);
 
+  const topBarRef = useRef(null);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const touchEndX = useRef(0);
@@ -404,9 +406,34 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  /* Measure TopBar height so DashboardContainer can offset its content
+     by exactly that amount on mobile (fixed TopBar doesn't take layout
+     space on its own). */
+  useEffect(() => {
+    if (!isMobile) return undefined;
+    const el = topBarRef.current;
+    if (!el) return undefined;
+
+    const update = () => setTopBarHeight(el.offsetHeight);
+    update();
+
+    let ro;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(update);
+      ro.observe(el);
+    } else {
+      window.addEventListener('resize', update);
+    }
+
+    return () => {
+      if (ro) ro.disconnect();
+      else window.removeEventListener('resize', update);
+    };
+  }, [isMobile]);
+
   /* Mobile: unclamp html/body/#root so the DOCUMENT owns the scroll.
-     Without this, an ancestor with overflow:hidden or height:100vh
-     swallows the scroll and the mobile browser chrome never hides. */
+     Use min-height: 100vh (LARGEST viewport) — NOT 100dvh — so the page
+     always has scroll room and the mobile browser hides its own chrome. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const STYLE_ID = 'derivdash-mobile-scroll';
@@ -419,7 +446,6 @@ const Derivdash = () => {
         overflow-x: hidden !important;
         overflow-y: auto !important;
         height: auto !important;
-        /* force document to be taller than the visible viewport */
         min-height: 100vh !important;
         -webkit-overflow-scrolling: touch !important;
         overscroll-behavior-y: auto !important;
@@ -461,8 +487,10 @@ const Derivdash = () => {
 
   return (
     <ThemeProvider theme={themes[currentTheme]}>
-      <DashboardContainer>
-        <TopBarStickyWrapper>
+      <DashboardContainer
+        style={isMobile ? { paddingTop: topBarHeight ? `${topBarHeight}px` : undefined } : undefined}
+      >
+        <TopBarStickyWrapper ref={topBarRef}>
           <TopBar
             isSidebarOpen={isSidebarOpen}
             onSidebarToggle={toggleSidebar}
