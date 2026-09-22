@@ -2232,7 +2232,7 @@ const SignUp = () => {
                 <Field>
                   <Label htmlFor="fullName">Full name</Label>
                   <InputWrap>
-                    <Input id="fullName" type="text" placeholder="Jane Doe" autoComplete="name"
+                    <Input id="fullName" type="text" placeholder="Tonny Kyalo" autoComplete="name"
                       value={signupForm.fullName} onChange={updateSignup('fullName')}
                       error={!!signupErrors.fullName} />
                   </InputWrap>
