@@ -86,7 +86,6 @@ const spinAnim = keyframes`
   to { transform: rotate(360deg); }
 `;
 
-/* modal animations */
 const modalBackdropIn = keyframes`
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -447,15 +446,28 @@ const RequirementsList = styled.ul`
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 7px;
-      font-weight: 800;
-      line-height: 1;
       transition: all 0.2s ease;
+
+      svg {
+        width: 7px;
+        height: 7px;
+        stroke: currentColor;
+        stroke-width: 3;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
     }
 
     &.met {
       color: ${theme.colors.success};
-      .check { background: ${theme.colors.success}; border-color: ${theme.colors.success}; color: #fff; }
+      .check {
+        background: ${theme.colors.success};
+        border-color: ${theme.colors.success};
+        svg { stroke: #fff; opacity: 1; }
+      }
     }
     &.unmet {
       color: ${theme.colors.textMuted};
@@ -539,7 +551,22 @@ const Message = styled.div`
         ? 'rgba(16, 185, 129, 0.25)'
         : 'rgba(245, 158, 11, 0.25)'};
 
-  .icon { font-weight: 700; font-size: 13px; }
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+  }
 `;
 
 /* ============================================================
@@ -757,9 +784,10 @@ const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(2, 6, 16, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  /* transparent, blurred — the page behind stays clearly visible */
+  background: rgba(8, 12, 22, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -941,7 +969,6 @@ const OtpBox = styled.input`
   @media (max-width: 400px) {
     font-size: 16px;
     border-radius: 8px;
-    gap: 5px;
   }
 `;
 
@@ -956,7 +983,7 @@ const ResendRow = styled.div`
 `;
 
 /* ============================================================
-   SUCCESS STATE (verification success)
+   SUCCESS STATE
    ============================================================ */
 const SuccessWrap = styled.div`
   display: flex;
@@ -995,7 +1022,7 @@ const SuccessCircle = styled.div`
 `;
 
 /* ============================================================
-   ICONS
+   SVG ICONS
    ============================================================ */
 const EyeIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1022,6 +1049,36 @@ const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <line x1="18" y1="6" x2="6" y2="18"/>
     <line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>
+);
+
+const AlertIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="8" x2="12" y2="13"/>
+    <line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+);
+
+const InfoIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="12" y1="16" x2="12" y2="12"/>
+    <line x1="12" y1="8" x2="12.01" y2="8"/>
+  </svg>
+);
+
+const XCircleIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="15" y1="9" x2="9" y2="15"/>
+    <line x1="9" y1="9" x2="15" y2="15"/>
   </svg>
 );
 
@@ -1246,12 +1303,7 @@ const OtpInput = ({ length = 6, value, onChange, error, disabled, autoFocus }) =
 /* ============================================================
    MODAL 1 — EMAIL VERIFICATION
    ============================================================ */
-const EmailVerificationModal = ({
-  open,
-  email,
-  onClose,
-  onVerified,
-}) => {
+const EmailVerificationModal = ({ open, email, onClose, onVerified }) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [verifying, setVerifying] = useState(false);
@@ -1260,7 +1312,6 @@ const EmailVerificationModal = ({
   const [resending, setResending] = useState(false);
   const [resendNote, setResendNote] = useState('');
 
-  /* reset state every time the modal opens */
   useEffect(() => {
     if (open) {
       setCode('');
@@ -1272,14 +1323,12 @@ const EmailVerificationModal = ({
     }
   }, [open]);
 
-  /* resend countdown */
   useEffect(() => {
     if (!open || resendIn <= 0) return undefined;
     const t = setTimeout(() => setResendIn((s) => s - 1), 1000);
     return () => clearTimeout(t);
   }, [open, resendIn]);
 
-  /* esc to close */
   useEffect(() => {
     if (!open) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -1296,9 +1345,7 @@ const EmailVerificationModal = ({
     setError('');
     setVerifying(true);
 
-    // TODO: verify with your backend:
-    // const res = await fetch('/api/auth/verify', { method: 'POST', body: JSON.stringify({ email, code }) });
-
+    // TODO: verify with backend
     setTimeout(() => {
       setVerifying(false);
       setVerified(true);
@@ -1418,7 +1465,7 @@ const EmailVerificationModal = ({
 };
 
 /* ============================================================
-   MODAL 2 — FORGOT PASSWORD (email step)
+   MODAL 2 — FORGOT PASSWORD
    ============================================================ */
 const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
   const [email, setEmail] = useState('');
@@ -1454,9 +1501,7 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
     setError('');
     setSending(true);
 
-    // TODO: call your forgot-password endpoint
-    // await fetch('/api/auth/forgot', { method: 'POST', body: JSON.stringify({ email: trimmed }) });
-
+    // TODO: call forgot-password endpoint
     setTimeout(() => {
       setSending(false);
       if (onCodeSent) onCodeSent(trimmed);
@@ -1526,7 +1571,7 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
 };
 
 /* ============================================================
-   MODAL 3 — RESET PASSWORD (code + new password)
+   MODAL 3 — RESET PASSWORD
    ============================================================ */
 const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
   const [code, setCode] = useState('');
@@ -1600,9 +1645,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
 
     setLoading(true);
 
-    // TODO: submit reset:
-    // await fetch('/api/auth/reset', { method: 'POST', body: JSON.stringify({ email, code, password }) });
-
+    // TODO: submit reset
     setTimeout(() => {
       setLoading(false);
       if (onResetDone) onResetDone();
@@ -1714,19 +1757,19 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
               <StrengthText color={strength.color}>{strength.label}</StrengthText>
               <RequirementsList>
                 <li className={pwChecks.length ? 'met' : 'unmet'}>
-                  <span className="check">{pwChecks.length ? '✓' : ''}</span>
+                  <span className="check"><CheckIcon /></span>
                   8+ characters
                 </li>
                 <li className={pwChecks.upper ? 'met' : 'unmet'}>
-                  <span className="check">{pwChecks.upper ? '✓' : ''}</span>
+                  <span className="check"><CheckIcon /></span>
                   Uppercase
                 </li>
                 <li className={pwChecks.number ? 'met' : 'unmet'}>
-                  <span className="check">{pwChecks.number ? '✓' : ''}</span>
+                  <span className="check"><CheckIcon /></span>
                   Number
                 </li>
                 <li className={pwChecks.symbol ? 'met' : 'unmet'}>
-                  <span className="check">{pwChecks.symbol ? '✓' : ''}</span>
+                  <span className="check"><CheckIcon /></span>
                   Symbol
                 </li>
               </RequirementsList>
@@ -1808,7 +1851,6 @@ const SignUp = () => {
   const [message, setMessage] = useState('');
   const [messageKind, setMessageKind] = useState('info');
 
-  /* ---- modal state ---- */
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState('');
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
@@ -1926,12 +1968,10 @@ const SignUp = () => {
     setMessage('Creating your account…');
     setMessageKind('info');
 
-    // TODO: real signup request
     setTimeout(() => {
       setLoading(false);
       clearMessage();
 
-      /* open the email-verification modal */
       setVerifyEmail(signupForm.email.trim());
       setVerifyModalOpen(true);
 
@@ -1958,10 +1998,8 @@ const SignUp = () => {
     }, 1500);
   };
 
-  /* ===== modal handlers ===== */
   const handleVerified = () => {
-    // optional: auto-close after a delay, navigate, etc.
-    // setTimeout(onClose...)
+    /* hook for post-verification navigation */
   };
 
   const handleForgotCodeSent = (email) => {
@@ -1976,6 +2014,13 @@ const SignUp = () => {
     setMessageKind('success');
     setMode('login');
     setLoginForm({ email: resetEmail, password: '' });
+  };
+
+  /* pick the right message icon */
+  const MessageIcon = () => {
+    if (messageKind === 'error') return <XCircleIcon />;
+    if (messageKind === 'success') return <CheckIcon />;
+    return <AlertIcon />;
   };
 
   return (
@@ -2075,19 +2120,19 @@ const SignUp = () => {
 
                   <RequirementsList>
                     <li className={passwordChecks.length ? 'met' : 'unmet'}>
-                      <span className="check">{passwordChecks.length ? '✓' : ''}</span>
+                      <span className="check"><CheckIcon /></span>
                       8+ characters
                     </li>
                     <li className={passwordChecks.upper ? 'met' : 'unmet'}>
-                      <span className="check">{passwordChecks.upper ? '✓' : ''}</span>
+                      <span className="check"><CheckIcon /></span>
                       Uppercase letter
                     </li>
                     <li className={passwordChecks.number ? 'met' : 'unmet'}>
-                      <span className="check">{passwordChecks.number ? '✓' : ''}</span>
+                      <span className="check"><CheckIcon /></span>
                       Number
                     </li>
                     <li className={passwordChecks.symbol ? 'met' : 'unmet'}>
-                      <span className="check">{passwordChecks.symbol ? '✓' : ''}</span>
+                      <span className="check"><CheckIcon /></span>
                       Symbol
                     </li>
                   </RequirementsList>
@@ -2254,9 +2299,7 @@ const SignUp = () => {
 
             {message && (
               <Message kind={messageKind}>
-                <span className="icon">
-                  {messageKind === 'error' ? '✗' : messageKind === 'success' ? '✓' : '!'}
-                </span>
+                <span className="icon"><MessageIcon /></span>
                 {message}
               </Message>
             )}
