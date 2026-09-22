@@ -1,4 +1,4 @@
-// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Sticky TopBar + Sticky Bottom Tabs)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fixed TopBar + Sticky Bottom Tabs)
 
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
@@ -136,6 +136,7 @@ const panelFadeIn = keyframes`
 `;
 
 const MOBILE_TABS_HEIGHT = '58px';
+const MOBILE_SCROLL_BUFFER = '48px'; // extra scroll room so scrollY never clamps
 
 const DashboardContainer = styled.div`
   display: flex;
@@ -152,25 +153,28 @@ const DashboardContainer = styled.div`
 
   @media (max-width: 768px) {
     height: auto;
-    min-height: 100vh;      /* LARGEST viewport -> guarantees scroll room */
+    min-height: 100vh;
     overflow: visible;
     max-width: 100%;
   }
 `;
 
-/* STICKY TopBar on mobile.
-   It works now because body no longer has overflow-x: hidden (which used to
-   turn body into a scroll container and break sticky).
-   IMPORTANT: no backdrop-filter here — some mobile browsers handle it
-   badly with sticky. We use a solid themed background instead. */
+/* FIXED TopBar on mobile.
+   - Uses position: fixed (immune to ancestor overflow/scroll-container traps).
+   - No backdrop-filter: on iOS Safari, backdrop-filter on the element
+     itself forces it onto its own compositing layer and causes the
+     "blank during scroll" flicker. Solid themed background instead.
+   - will-change + translateZ(0): force its own GPU layer, which prevents
+     the browser from re-painting it on every scroll frame (the other
+     cause of the flicker).
+   - No top/left/right transition, no animation: nothing to re-trigger. */
 const TopBarStickyWrapper = styled.div`
   position: relative;
   z-index: 40;
   flex-shrink: 0;
 
   @media (max-width: 768px) {
-    position: -webkit-sticky;
-    position: sticky;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -178,6 +182,11 @@ const TopBarStickyWrapper = styled.div`
     z-index: 60;
     background: ${props => props.theme.colors.bg || props.theme.colors.background};
     box-shadow: 0 2px 12px ${props => props.theme.colors.shadow};
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 `;
 
@@ -249,7 +258,10 @@ const PanelsContainer = styled.div`
   min-width: 0;
   position: relative;
   overflow: visible;
-  padding-bottom: calc(${MOBILE_TABS_HEIGHT} + env(safe-area-inset-bottom, 0px));
+  /* tabs height + an extra buffer guarantees positive scroll room in
+     every chrome state (visible or hidden), so scrollY never clamps
+     and the fixed TopBar never re-anchors mid-transition. */
+  padding-bottom: calc(${MOBILE_TABS_HEIGHT} + ${MOBILE_SCROLL_BUFFER} + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 `;
 
@@ -261,7 +273,8 @@ const MobilePanelWrapper = styled.div`
   min-width: 0;
   overflow: visible;
 
-  /* 100vh = largest viewport -> always enough content to scroll */
+  /* 100vh = LARGEST viewport on mobile, so panels are always taller than
+     the currently visible viewport -> always scroll room -> chrome hides. */
   min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
   box-sizing: border-box;
@@ -380,7 +393,9 @@ const Derivdash = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
   const [currentTheme, setCurrentTheme] = useState('dark');
+  const [topBarHeight, setTopBarHeight] = useState(0);
 
+  const topBarRef = useRef(null);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const touchEndX = useRef(0);
@@ -398,26 +413,51 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  /* Mobile: only override html and app-root wrappers.
-     DO NOT touch body's overflow-x — setting it to hidden makes body a
-     scroll container and breaks position: sticky on descendants. */
+  /* Measure TopBar height so we can pad the top of DashboardContainer
+     exactly, since the fixed TopBar takes no layout space on its own.
+     ResizeObserver keeps the spacer in sync with any TopBar height
+     change (orientation, longer title, etc.). */
   useEffect(() => {
     if (!isMobile) return undefined;
+    const el = topBarRef.current;
+    if (!el) return undefined;
 
+    const update = () => setTopBarHeight(el.offsetHeight);
+    update();
+
+    let ro;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(update);
+      ro.observe(el);
+    } else {
+      window.addEventListener('resize', update);
+    }
+
+    return () => {
+      if (ro) ro.disconnect();
+      else window.removeEventListener('resize', update);
+    };
+  }, [isMobile]);
+
+  /* Mobile: html owns the vertical scroll. body stays a normal block
+     (overflow: visible) so fixed positioning and inner layout are stable.
+     min-height: 100vh on the mount points forces the document to be
+     taller than the visible viewport -> the browser can hide its own
+     address bar / tabs when the user scrolls. */
+  useEffect(() => {
+    if (!isMobile) return undefined;
     const STYLE_ID = 'derivdash-mobile-scroll';
     document.getElementById(STYLE_ID)?.remove();
 
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.innerHTML = `
-      /* html owns the vertical scroll; html's overflow-x applies to the viewport */
       html {
         height: auto !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch !important;
       }
-      /* body stays a normal block — critical for sticky positioning */
       body {
         overflow: visible !important;
         height: auto !important;
@@ -460,8 +500,10 @@ const Derivdash = () => {
 
   return (
     <ThemeProvider theme={themes[currentTheme]}>
-      <DashboardContainer>
-        <TopBarStickyWrapper>
+      <DashboardContainer
+        style={isMobile ? { paddingTop: topBarHeight ? `${topBarHeight}px` : undefined } : undefined}
+      >
+        <TopBarStickyWrapper ref={topBarRef}>
           <TopBar
             isSidebarOpen={isSidebarOpen}
             onSidebarToggle={toggleSidebar}
