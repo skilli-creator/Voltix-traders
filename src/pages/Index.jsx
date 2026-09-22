@@ -1,4 +1,4 @@
-// src/pages/SignUp.jsx — White theme
+// src/pages/SignUp.jsx
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,45 +10,35 @@ import styled, { createGlobalStyle, keyframes } from 'styled-components';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const ENDPOINTS = {
-  signup:          `${API_BASE_URL}/auth/signup`,
-  login:           `${API_BASE_URL}/auth/login`,
-  verifyEmail:     `${API_BASE_URL}/auth/verify`,
-  resendCode:      `${API_BASE_URL}/auth/resend-code`,
-  forgotPassword:  `${API_BASE_URL}/auth/forgot-password`,
-  verifyResetCode: `${API_BASE_URL}/auth/verify-reset-code`,
-  resetPassword:   `${API_BASE_URL}/auth/reset-password`,
+  signup:          `${API_BASE_URL}/auth/signup`,             // POST { first_name, last_name, phone, email, password }
+  login:           `${API_BASE_URL}/auth/login`,              // POST { email, password }
+  verifyEmail:     `${API_BASE_URL}/auth/verify`,             // POST { user_id, code }
+  resendCode:      `${API_BASE_URL}/auth/resend-code`,        // POST { user_id, email }
+  forgotPassword:  `${API_BASE_URL}/auth/forgot-password`,    // POST { email }
+  verifyResetCode: `${API_BASE_URL}/auth/verify-reset-code`,  // POST { email, code }
+  resetPassword:   `${API_BASE_URL}/auth/reset-password`,     // POST { reset_token, new_password, confirm_password }
 };
 
 /* ============================================================
-   THEME — LIGHT
+   THEME
    ============================================================ */
 const theme = {
   colors: {
-    bg: '#f4f6f9',
-    bgSoft: '#eef2f7',
-    surface: '#ffffff',
-    surfaceHover: '#f1f5f9',
-    surfaceActive: '#e2e8f0',
-    border: '#e2e8f0',
-    borderStrong: '#cbd5e1',
-    borderFocus: '#2563eb',
-    text: '#0f172a',
-    textSecondary: '#475569',
-    textMuted: '#94a3b8',
-    accent: '#2563eb',
-    accentHover: '#1d4ed8',
-    accentSoft: 'rgba(37, 99, 235, 0.08)',
-    accentLine: 'rgba(37, 99, 235, 0.22)',
-    success: '#059669',
-    successSoft: 'rgba(5, 150, 105, 0.08)',
-    warning: '#d97706',
-    warningSoft: 'rgba(217, 119, 6, 0.08)',
-    danger: '#dc2626',
-    dangerSoft: 'rgba(220, 38, 38, 0.08)',
-    shadowSm: '0 4px 14px -6px rgba(15, 23, 42, 0.12)',
-    shadowMd: '0 10px 30px -12px rgba(15, 23, 42, 0.16)',
-    shadowLg: '0 24px 60px -20px rgba(15, 23, 42, 0.22)',
-    gradientAd: 'linear-gradient(135deg, #dbeafe 0%, #eff6ff 45%, #f8fafc 100%)',
+    bg: '#0a0d14',
+    surface: '#161d2e',
+    surfaceHover: '#1c2438',
+    border: '#232c42',
+    borderFocus: '#3b82f6',
+    text: '#f8fafc',
+    textSecondary: '#94a3b8',
+    textMuted: '#64748b',
+    accent: '#3b82f6',
+    accentSoft: 'rgba(59, 130, 246, 0.12)',
+    success: '#10b981',
+    warning: '#f59e0b',
+    danger: '#ef4444',
+    shadowSm: '0 4px 14px -4px rgba(0, 0, 0, 0.4)',
+    gradientAd: 'linear-gradient(135deg, #1e293b 0%, #0f172a 55%, #020617 100%)',
     gradientBtn: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
   },
 };
@@ -63,7 +53,6 @@ const GlobalStyle = createGlobalStyle`
       Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: ${theme.colors.text};
   }
 
   html:has(.mtapp-signup),
@@ -208,7 +197,7 @@ const BrandLogo = styled.div`
   width: 42px;
   height: 42px;
   flex-shrink: 0;
-  filter: drop-shadow(0 8px 18px rgba(37, 99, 235, 0.28));
+  filter: drop-shadow(0 8px 18px rgba(59, 130, 246, 0.35));
 
   svg { display: block; width: 100%; height: 100%; }
 
@@ -369,14 +358,13 @@ const Input = styled.input`
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 
   &::placeholder { color: ${theme.colors.textMuted}; font-size: 14px; }
 
   &:focus {
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.borderFocus)};
     box-shadow: 0 0 0 3px
-      ${props => (props.error ? 'rgba(220, 38, 38, 0.15)' : 'rgba(37, 99, 235, 0.15)')};
+      ${props => (props.error ? 'rgba(239, 68, 68, 0.15)' : 'rgba(59, 130, 246, 0.15)')};
   }
 `;
 
@@ -423,7 +411,7 @@ const CheckLabel = styled.label`
     height: 17px;
     flex-shrink: 0;
     margin-top: 1px;
-    border: 1.5px solid ${theme.colors.borderStrong};
+    border: 1.5px solid ${theme.colors.border};
     border-radius: 5px;
     background: ${theme.colors.surface};
     cursor: pointer;
@@ -490,7 +478,7 @@ const SubmitBtn = styled.button`
   font-weight: 600;
   cursor: pointer;
   letter-spacing: 0.1px;
-  box-shadow: 0 8px 22px -10px rgba(37, 99, 235, 0.55);
+  box-shadow: 0 8px 20px -10px rgba(59, 130, 246, 0.7);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   display: flex;
@@ -500,7 +488,7 @@ const SubmitBtn = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 12px 28px -10px rgba(37, 99, 235, 0.7);
+    box-shadow: 0 12px 26px -10px rgba(59, 130, 246, 0.85);
   }
   &:active:not(:disabled) { transform: translateY(0) scale(0.99); }
   &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
@@ -509,7 +497,7 @@ const SubmitBtn = styled.button`
 const Spinner = styled.span`
   width: 15px;
   height: 15px;
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.35);
   border-top-color: #fff;
   border-radius: 50%;
   animation: ${spinAnim} 0.7s linear infinite;
@@ -598,7 +586,6 @@ const CaptchaFrame = styled.div`
   overflow: hidden;
   position: relative;
   background: #0f172a;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 
   svg { display: block; width: 100%; height: 100%; }
 `;
@@ -613,14 +600,13 @@ const RefreshBtn = styled.button`
   border-radius: 10px;
   color: ${theme.colors.textSecondary};
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 
   svg { width: 18px; height: 18px; transition: transform 0.4s ease; }
 
   &:hover {
     background: ${theme.colors.surfaceHover};
     color: ${theme.colors.text};
-    border-color: ${theme.colors.borderStrong};
   }
   &:hover svg { transform: rotate(180deg); }
   &:active { transform: scale(0.96); }
@@ -640,10 +626,10 @@ const Message = styled.div`
   gap: 9px;
   background: ${props =>
     props.kind === 'error'
-      ? theme.colors.dangerSoft
+      ? 'rgba(239, 68, 68, 0.08)'
       : props.kind === 'success'
-      ? theme.colors.successSoft
-      : theme.colors.warningSoft};
+      ? 'rgba(16, 185, 129, 0.08)'
+      : 'rgba(245, 158, 11, 0.08)'};
   color: ${props =>
     props.kind === 'error'
       ? theme.colors.danger
@@ -653,10 +639,10 @@ const Message = styled.div`
   border: 1px solid
     ${props =>
       props.kind === 'error'
-        ? 'rgba(220, 38, 38, 0.2)'
+        ? 'rgba(239, 68, 68, 0.25)'
         : props.kind === 'success'
-        ? 'rgba(5, 150, 105, 0.2)'
-        : 'rgba(217, 119, 6, 0.2)'};
+        ? 'rgba(16, 185, 129, 0.25)'
+        : 'rgba(245, 158, 11, 0.25)'};
 
   .icon {
     display: flex;
@@ -677,7 +663,7 @@ const Message = styled.div`
 `;
 
 /* ============================================================
-   AD PANEL (light)
+   AD PANEL
    ============================================================ */
 const AdSide = styled.div`
   position: relative;
@@ -693,11 +679,11 @@ const AdSide = styled.div`
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+      linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
     background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
-    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
     pointer-events: none;
   }
 
@@ -709,7 +695,7 @@ const AdSide = styled.div`
     width: 420px;
     height: 420px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 65%);
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 65%);
     pointer-events: none;
   }
 
@@ -732,21 +718,20 @@ const AdBadge = styled.div`
   gap: 8px;
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid ${theme.colors.accentLine};
-  color: ${theme.colors.accent};
+  background: ${theme.colors.accentSoft};
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2px;
   margin-bottom: 22px;
-  backdrop-filter: blur(6px);
 
   .dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: ${theme.colors.success};
-    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.18);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     position: relative;
 
     &::after {
@@ -763,13 +748,13 @@ const AdBadge = styled.div`
 const AdHeading = styled.h2`
   font-size: 40px;
   line-height: 1.1;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -1px;
   margin: 0 0 16px;
-  color: ${theme.colors.text};
+  color: #f8fafc;
 
   span {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -790,7 +775,7 @@ const FeatureList = styled.ul`
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 `;
 
 const Feature = styled.li`
@@ -798,16 +783,14 @@ const Feature = styled.li`
   align-items: flex-start;
   gap: 14px;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(37, 99, 235, 0.12);
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(148, 163, 184, 0.1);
   border-radius: 12px;
-  backdrop-filter: blur(8px);
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease;
 
   &:hover {
     transform: translateX(4px);
-    border-color: rgba(37, 99, 235, 0.35);
-    box-shadow: 0 8px 20px -12px rgba(37, 99, 235, 0.4);
+    border-color: rgba(59, 130, 246, 0.35);
   }
 `;
 
@@ -817,11 +800,11 @@ const FeatureIcon = styled.div`
   height: 36px;
   border-radius: 9px;
   background: ${theme.colors.accentSoft};
-  border: 1px solid ${theme.colors.accentLine};
+  border: 1px solid rgba(59, 130, 246, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${theme.colors.accent};
+  color: #60a5fa;
 
   svg { width: 18px; height: 18px; }
 `;
@@ -829,8 +812,8 @@ const FeatureIcon = styled.div`
 const FeatureText = styled.div`
   h4 {
     font-size: 14px;
-    font-weight: 700;
-    color: ${theme.colors.text};
+    font-weight: 600;
+    color: #e2e8f0;
     margin: 0 0 3px;
   }
   p {
@@ -851,15 +834,14 @@ const StatsRow = styled.div`
 const Stat = styled.div`
   .value {
     font-size: 22px;
-    font-weight: 800;
-    color: ${theme.colors.text};
+    font-weight: 700;
+    color: #f1f5f9;
     margin-bottom: 3px;
-    letter-spacing: -0.3px;
   }
   .label {
     font-size: 12px;
     color: ${theme.colors.textMuted};
-    font-weight: 600;
+    font-weight: 500;
   }
 `;
 
@@ -871,16 +853,16 @@ const FloatingTicker = styled.div`
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid ${theme.colors.border};
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.12);
   border-radius: 12px;
   font-size: 12.5px;
-  box-shadow: ${theme.colors.shadowMd};
+  box-shadow: ${theme.colors.shadowSm};
   animation: ${floaty} 4s ease-in-out infinite;
   z-index: 2;
 
-  .sym { color: ${theme.colors.textMuted}; font-weight: 600; }
-  .price { color: ${theme.colors.text}; font-weight: 700; }
+  .sym { color: #94a3b8; font-weight: 600; }
+  .price { color: #f1f5f9; font-weight: 700; }
   .chg { color: ${theme.colors.success}; font-weight: 600; }
 `;
 
@@ -908,14 +890,14 @@ const ModalBackdrop = styled.div`
 const ModalCard = styled.div`
   width: 100%;
   max-width: 440px;
-  background: #ffffff;
+  background: #0d1421;
   border: 1px solid ${theme.colors.border};
   border-radius: 18px;
   padding: 28px 26px 24px;
   position: relative;
   box-shadow:
-    0 24px 70px -12px rgba(15, 23, 42, 0.28),
-    0 0 0 1px rgba(37, 99, 235, 0.05);
+    0 24px 70px -12px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(59, 130, 246, 0.08);
   animation: ${modalPopIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @media (max-width: 480px) {
@@ -941,7 +923,7 @@ const ModalClose = styled.button`
   transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: ${theme.colors.surfaceHover};
+    background: rgba(255, 255, 255, 0.05);
     color: ${theme.colors.text};
   }
 
@@ -957,7 +939,7 @@ const ModalIcon = styled.div`
   justify-content: center;
   margin: 0 auto 16px;
   background: ${props => props.bg || theme.colors.accentSoft};
-  border: 1px solid ${props => props.border || theme.colors.accentLine};
+  border: 1px solid ${props => props.border || 'rgba(59, 130, 246, 0.25)'};
 
   svg { width: 30px; height: 30px; display: block; }
 `;
@@ -980,7 +962,7 @@ const ModalSubtitle = styled.p`
 
   strong {
     color: ${theme.colors.text};
-    font-weight: 700;
+    font-weight: 600;
   }
 `;
 
@@ -1010,7 +992,7 @@ const SecondaryBtn = styled.button`
   &:hover {
     background: ${theme.colors.surfaceHover};
     color: ${theme.colors.text};
-    border-color: ${theme.colors.borderStrong};
+    border-color: #334155;
   }
 `;
 
@@ -1058,13 +1040,12 @@ const OtpBox = styled.input`
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   padding: 0;
   caret-color: ${theme.colors.accent};
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 
   &:focus {
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.accent)};
-    background: #ffffff;
+    background: ${theme.colors.surfaceHover};
     box-shadow: 0 0 0 3px
-      ${props => (props.error ? 'rgba(220, 38, 38, 0.15)' : 'rgba(37, 99, 235, 0.18)')};
+      ${props => (props.error ? 'rgba(239, 68, 68, 0.15)' : 'rgba(59, 130, 246, 0.18)')};
   }
 
   &:disabled { opacity: 0.6; }
@@ -1203,7 +1184,7 @@ const MailSealIcon = () => (
       </linearGradient>
     </defs>
     <rect x="3" y="7" width="26" height="19" rx="4"
-          fill="url(#mailGrad)" opacity="0.16"
+          fill="url(#mailGrad)" opacity="0.18"
           stroke="url(#mailGrad)" strokeWidth="1.6"/>
     <path d="M5 10 L16 19 L27 10"
           fill="none" stroke="url(#mailGrad)" strokeWidth="2"
@@ -1244,7 +1225,7 @@ const ShieldLockIcon = () => (
       </linearGradient>
     </defs>
     <path d="M16 3 L28 8 V16 C28 23 23 27 16 30 C9 27 4 23 4 16 V8 Z"
-          fill="url(#shieldGrad)" opacity="0.14"
+          fill="url(#shieldGrad)" opacity="0.16"
           stroke="url(#shieldGrad)" strokeWidth="1.8"
           strokeLinejoin="round"/>
     <rect x="11" y="15" width="10" height="8" rx="1.8"
@@ -1741,8 +1722,8 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
         ) : (
           <form onSubmit={handleSubmit}>
             <ModalIcon
-              bg="rgba(217, 119, 6, 0.1)"
-              border="rgba(217, 119, 6, 0.25)"
+              bg="rgba(245, 158, 11, 0.12)"
+              border="rgba(245, 158, 11, 0.28)"
             >
               <KeyShieldIcon />
             </ModalIcon>
@@ -1851,7 +1832,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
     if (/[A-Z]/.test(password)) score++;
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
-    const colorMap = ['#dc2626', '#f97316', '#eab308', '#22c55e', '#22c55e', '#0d9488'];
+    const colorMap = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#2dd4bf'];
     const textMap = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'];
     return { color: colorMap[score], label: textMap[score] };
   })();
@@ -1870,6 +1851,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
     setLoading(true);
 
     try {
+      // Step 1: verify reset code -> get reset_token
       const verifyRes = await fetch(ENDPOINTS.verifyResetCode, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1886,6 +1868,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
       const resetToken = verifyData.reset_token;
       sessionStorage.setItem('resetToken', resetToken);
 
+      // Step 2: submit the new password
       const resetRes = await fetch(ENDPOINTS.resetPassword, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2219,7 +2202,7 @@ const SignUp = () => {
     if (/[A-Z]/.test(pw)) score++;
     if (/[0-9]/.test(pw)) score++;
     if (/[^A-Za-z0-9]/.test(pw)) score++;
-    const colorMap = ['#dc2626', '#f97316', '#eab308', '#22c55e', '#22c55e', '#0d9488'];
+    const colorMap = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#2dd4bf'];
     const textMap = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'];
     return { color: colorMap[score], label: textMap[score] };
   })();
@@ -2261,6 +2244,7 @@ const SignUp = () => {
     return next;
   };
 
+  /* ---------- signup submit ---------- */
   const handleSignup = async (e) => {
     e.preventDefault();
     const { next, captchaOk } = validateSignup();
@@ -2286,7 +2270,7 @@ const SignUp = () => {
         body: JSON.stringify({
           first_name: firstName,
           last_name: lastName,
-          phone: '',
+          phone: '', // no phone field in this form; backend should allow empty
           email: signupForm.email.trim(),
           password: signupForm.password,
         }),
@@ -2322,6 +2306,7 @@ const SignUp = () => {
     }
   };
 
+  /* ---------- login submit ---------- */
   const handleLogin = async (e) => {
     e.preventDefault();
     const next = validateLogin();
@@ -2360,6 +2345,7 @@ const SignUp = () => {
         const errorMsg = data.error || 'Login failed';
 
         if (errorMsg.toLowerCase().includes('verify')) {
+          // account exists but isn't verified → open verify modal
           localStorage.setItem('userEmail', loginForm.email.trim());
           if (data.user_id) localStorage.setItem('tempUserId', data.user_id);
 
@@ -2382,7 +2368,10 @@ const SignUp = () => {
     }
   };
 
-  const handleVerified = () => {};
+  /* ---------- modal handlers ---------- */
+  const handleVerified = () => {
+    /* called when verification succeeds — nothing extra needed */
+  };
 
   const handleVerifyContinue = () => {
     setVerifyModalOpen(false);
