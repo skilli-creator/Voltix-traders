@@ -1,7 +1,7 @@
-// src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fullscreen)
+// src/pages/Derivdash.jsx (Swipeable Version with Sidebar)
 
 import React, { useState, useRef, useEffect } from 'react';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider, keyframes } from 'styled-components';
 import TopBar from '../components/TopBar';
 import OptionSideBar from '../components/OptionSideBar';
 import LeftPanel from '../components/LeftPanel';
@@ -243,12 +243,18 @@ const themes = {
     },
   },
 };
+
+// ===== ANIMATIONS =====
+const panelFadeIn = keyframes`
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+`;
+
 // ===== STYLED COMPONENTS - ALL THEME BASED =====
 const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  height: ${props => props.isFullscreen ? '100dvh' : '100vh'};
   background: ${props => props.theme.colors.bg || props.theme.colors.background};
   overflow: hidden;
   position: relative;
@@ -257,15 +263,17 @@ const DashboardContainer = styled.div`
   box-sizing: border-box;
   transition: background 0.3s ease;
   font-weight: 700;
-  
-  ${props => props.isFullscreen && `
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9999;
-  `}
+
+  /* ===== PHONE VIEW =====
+     The document itself scrolls (instead of an inner container) so that
+     mobile browsers collapse their address bar / tabs while scrolling. */
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible;
+    max-width: 100%;
+  }
 `;
 
 const MainContent = styled.div`
@@ -276,10 +284,11 @@ const MainContent = styled.div`
   max-width: 100%;
   min-width: 0;
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: ${props => props.isSidebarOpen && props.isDesktop ? '280px' : '0'};
+  margin-left: ${props => (props.isSidebarOpen && props.isDesktop ? '280px' : '0')};
 
   @media (max-width: 768px) {
     margin-left: 0;
+    overflow: visible;
   }
 `;
 
@@ -303,7 +312,7 @@ const PanelWrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  
+
   & > * {
     flex: 1;
     width: 100% !important;
@@ -318,7 +327,6 @@ const MobileLayout = styled.div`
   display: none;
   flex: 1;
   flex-direction: column;
-  overflow: hidden;
   position: relative;
   width: 100%;
   max-width: 100%;
@@ -326,63 +334,70 @@ const MobileLayout = styled.div`
 
   @media (max-width: 768px) {
     display: flex;
+    overflow: visible;
   }
 `;
 
 const PanelsContainer = styled.div`
-  display: flex;
+  display: block;
   flex: 1;
-  overflow: hidden;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   position: relative;
+  overflow: visible;
 `;
 
 const MobilePanelWrapper = styled.div`
-  flex: 0 0 100%;
-  min-width: 0;
-  height: 100%;
-  overflow-y: auto;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateX(-${props => props.index * 100}%);
-  display: flex;
+  display: ${props => (props.active ? 'flex' : 'none')};
   flex-direction: column;
-
-  &::-webkit-scrollbar {
-    width: 2px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme.colors.scrollbar};
-    border-radius: 2px;
-  }
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: visible;
+  /* guarantee a full screen of room for the panel, but allow it to grow */
+  min-height: calc(100vh - 58px);
+  min-height: calc(100dvh - 58px);
+  animation: ${panelFadeIn} 0.25s ease both;
+  box-sizing: border-box;
 `;
 
 const PanelContent = styled.div`
   flex: 1;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-width: 0;
   width: 100%;
   max-width: 100%;
+  overflow: visible;
+
+  & > * {
+    flex: 1 1 auto;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
 `;
 
+/* ===== STICKY BOTTOM TABS (phone view) ===== */
 const MobileTabs = styled.div`
+  position: sticky;
+  bottom: 0;
   display: flex;
+  align-items: stretch;
   background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
   border-top: 2px solid ${props => props.theme.colors.border};
   flex-shrink: 0;
-  padding: 4px 8px;
+  padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px)) 8px;
   gap: 4px;
-  z-index: 10;
+  z-index: 30;
   font-weight: 700;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 -6px 20px ${props => props.theme.colors.shadow};
 
   @media (max-width: 480px) {
-    padding: 3px 4px;
+    padding: 3px 4px calc(3px + env(safe-area-inset-bottom, 0px)) 4px;
     gap: 2px;
   }
 `;
@@ -391,8 +406,8 @@ const TabButton = styled.button`
   flex: 1;
   padding: 8px 4px;
   border: 2px solid transparent;
-  background: ${props => props.active ? props.theme.colors.accentLight : 'transparent'};
-  color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textSecondary};
+  background: ${props => (props.active ? props.theme.colors.accentLight : 'transparent')};
+  color: ${props => (props.active ? props.theme.colors.accent : props.theme.colors.textSecondary)};
   border-radius: 8px;
   font-size: 10px;
   font-weight: 700;
@@ -402,14 +417,15 @@ const TabButton = styled.button`
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  -webkit-tap-highlight-color: transparent;
 
   .icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.textSecondary};
+    color: ${props => (props.active ? props.theme.colors.accent : props.theme.colors.textSecondary)};
     transition: color 0.2s ease;
-    
+
     svg {
       stroke: currentColor;
       transition: stroke 0.2s ease;
@@ -425,138 +441,24 @@ const TabButton = styled.button`
 
   &:hover {
     background: ${props => props.theme.colors.accentLight};
-    border-color: ${props => props.active ? props.theme.colors.accent : 'transparent'};
-    
+    border-color: ${props => (props.active ? props.theme.colors.accent : 'transparent')};
+
     .icon {
-      color: ${props => props.active ? props.theme.colors.accent : props.theme.colors.text};
+      color: ${props => (props.active ? props.theme.colors.accent : props.theme.colors.text)};
     }
   }
 
   @media (max-width: 480px) {
     padding: 6px 2px;
+
     .label {
       font-size: 7px;
     }
+
     .icon svg {
       width: 18px;
       height: 18px;
     }
-  }
-`;
-
-// ===== FLOATING BUTTONS CONTAINER =====
-const FloatingButtonsContainer = styled.div`
-  position: fixed;
-  bottom: ${props => props.isMobile ? '80px' : '24px'};
-  right: ${props => props.isMobile ? '12px' : '24px'};
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-
-  @media (max-width: 480px) {
-    bottom: 72px;
-    right: 10px;
-    gap: 8px;
-  }
-
-  @media (min-width: 769px) {
-    bottom: 24px;
-    right: 24px;
-    gap: 12px;
-  }
-`;
-
-// ===== FULLSCREEN BUTTON =====
-const FullscreenButton = styled.button`
-  width: ${props => props.isMobile ? '44px' : '48px'};
-  height: ${props => props.isMobile ? '44px' : '48px'};
-  border-radius: 50%;
-  border: 2px solid ${props => props.theme.colors.border};
-  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
-  color: ${props => props.theme.colors.textSecondary};
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  box-shadow: 0 4px 20px ${props => props.theme.colors.shadow};
-  position: relative;
-  font-weight: 700;
-
-  &:hover {
-    background: ${props => props.theme.colors.accentLight};
-    border-color: ${props => props.theme.colors.accent};
-    color: ${props => props.theme.colors.accent};
-    transform: scale(1.05);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  svg {
-    width: ${props => props.isMobile ? '18px' : '22px'};
-    height: ${props => props.isMobile ? '18px' : '22px'};
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  @media (max-width: 480px) {
-    width: 40px;
-    height: 40px;
-    
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-`;
-
-// ===== TOOLTIP =====
-const Tooltip = styled.span`
-  position: absolute;
-  right: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
-  color: ${props => props.theme.colors.text};
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  white-space: nowrap;
-  letter-spacing: 0.3px;
-  border: 2px solid ${props => props.theme.colors.border};
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s ease;
-  pointer-events: none;
-  font-weight: 700;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    transform: translateY(-50%);
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
-    border-left: 5px solid ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
-  }
-
-  ${props => props.show && `
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-50%) translateX(-4px);
-  `}
-
-  @media (max-width: 768px) {
-    display: none;
   }
 `;
 
@@ -581,24 +483,6 @@ const PositionsIcon = () => (
   </svg>
 );
 
-const FullscreenEnterIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="15 3 21 3 21 9" />
-    <polyline points="9 21 3 21 3 15" />
-    <line x1="21" y1="3" x2="14" y2="10" />
-    <line x1="3" y1="21" x2="10" y2="14" />
-  </svg>
-);
-
-const FullscreenExitIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="4 14 10 14 10 20" />
-    <polyline points="20 10 14 10 14 4" />
-    <line x1="10" y1="14" x2="3" y2="21" />
-    <line x1="14" y1="10" x2="21" y2="3" />
-  </svg>
-);
-
 const panels = [
   { id: 'chart', label: 'Chart', icon: <ChartIcon />, component: ChartPanel },
   { id: 'trade', label: 'Trade', icon: <TradeIcon />, component: RightPanel },
@@ -613,11 +497,12 @@ const Derivdash = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState('dark'); // Theme state managed here
+  const [currentTheme, setCurrentTheme] = useState('dark');
+
   const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
   const touchEndX = useRef(0);
-  const containerRef = useRef(null);
+  const touchEndY = useRef(0);
 
   // Theme change handler - passed to TopBar
   const handleThemeChange = (themeName) => {
@@ -634,137 +519,75 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  /* ===== PHONE VIEW: unlock document scrolling =====
+     This is what lets the mobile browser hide its tabs / address bar
+     while the user scrolls the page. */
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      const isFs = document.fullscreenElement !== null;
-      setIsFullscreen(isFs);
-    };
+    if (!isMobile) return undefined;
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyHeight = document.body.style.height;
+    const prevHtmlHeight = document.documentElement.style.height;
+
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+    document.documentElement.style.height = 'auto';
+    document.body.style.webkitOverflowScrolling = 'touch';
 
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.height = prevBodyHeight;
+      document.documentElement.style.height = prevHtmlHeight;
     };
-  }, []);
+  }, [isMobile]);
 
-  // Auto-fullscreen for phone/tablet devices
-  useEffect(() => {
-    const autoFullscreen = async () => {
-      if (window.innerWidth <= 1024 && !document.fullscreenElement) {
-        try {
-          const element = document.documentElement;
-          if (element.requestFullscreen) {
-            await element.requestFullscreen();
-          } else if (element.webkitRequestFullscreen) {
-            await element.webkitRequestFullscreen();
-          } else if (element.mozRequestFullScreen) {
-            await element.mozRequestFullScreen();
-          } else if (element.msRequestFullscreen) {
-            await element.msRequestFullscreen();
-          }
-          setIsFullscreen(true);
-        } catch (error) {
-          console.log('Auto-fullscreen not supported or blocked');
-        }
-      }
-    };
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const closeSidebar = () => setIsSidebarOpen(false);
 
-    autoFullscreen();
-
-    const handleOrientationChange = () => {
-      if (window.innerWidth <= 1024 && !document.fullscreenElement) {
-        autoFullscreen();
-      }
-    };
-
-    window.addEventListener('resize', handleOrientationChange);
-    window.addEventListener('orientationchange', handleOrientationChange);
-
-    return () => {
-      window.removeEventListener('resize', handleOrientationChange);
-      window.removeEventListener('orientationchange', handleOrientationChange);
-    };
-  }, []);
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const closeSidebar = () => {
-    setIsSidebarOpen(false);
+  const goToPanel = (index) => {
+    if (index === activeIndex) return;
+    setActiveIndex(index);
+    // start each panel from the top so the browser chrome can re-hide
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].screenX;
+    touchStartY.current = e.changedTouches[0].screenY;
   };
 
   const handleTouchEnd = (e) => {
     touchEndX.current = e.changedTouches[0].screenX;
-    const diff = touchStartX.current - touchEndX.current;
-    
-    if (Math.abs(diff) > 50) {
-      if (diff > 0 && activeIndex < panels.length - 1) {
-        setActiveIndex(activeIndex + 1);
-      } else if (diff < 0 && activeIndex > 0) {
-        setActiveIndex(activeIndex - 1);
-      }
-    }
-  };
+    touchEndY.current = e.changedTouches[0].screenY;
 
-  const toggleFullscreen = async () => {
-    try {
-      if (!document.fullscreenElement) {
-        const element = document.documentElement;
-        if (element.requestFullscreen) {
-          await element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-          await element.webkitRequestFullscreen();
-        } else if (element.mozRequestFullScreen) {
-          await element.mozRequestFullScreen();
-        } else if (element.msRequestFullscreen) {
-          await element.msRequestFullscreen();
-        }
-        setIsFullscreen(true);
-      } else {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          await document.webkitExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-          await document.mozCancelFullScreen();
-        } else if (document.msExitFullscreen) {
-          await document.msExitFullscreen();
-        }
-        setIsFullscreen(false);
+    const diffX = touchStartX.current - touchEndX.current;
+    const diffY = touchStartY.current - touchEndY.current;
+
+    // Only treat it as a swipe when the gesture is clearly horizontal,
+    // so vertical page scrolling is never hijacked.
+    if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+      if (diffX > 0 && activeIndex < panels.length - 1) {
+        goToPanel(activeIndex + 1);
+      } else if (diffX < 0 && activeIndex > 0) {
+        goToPanel(activeIndex - 1);
       }
-    } catch (error) {
-      console.error('Fullscreen error:', error);
     }
   };
 
   return (
     <ThemeProvider theme={themes[currentTheme]}>
-      <DashboardContainer 
-        ref={containerRef}
-        isFullscreen={isFullscreen}
-      >
-        <TopBar 
-          isSidebarOpen={isSidebarOpen} 
+      <DashboardContainer>
+        <TopBar
+          isSidebarOpen={isSidebarOpen}
           onSidebarToggle={toggleSidebar}
-          currentTheme={currentTheme}        // Pass current theme to TopBar
-          onThemeChange={handleThemeChange}  // Pass theme change handler
+          currentTheme={currentTheme}
+          onThemeChange={handleThemeChange}
         />
 
-        <OptionSideBar 
-          isOpen={isSidebarOpen} 
-          onClose={closeSidebar} 
-        />
+        <OptionSideBar isOpen={isSidebarOpen} onClose={closeSidebar} />
 
         <MainContent isSidebarOpen={isSidebarOpen} isDesktop={isDesktop}>
           <DesktopLayout>
@@ -780,17 +603,11 @@ const Derivdash = () => {
           </DesktopLayout>
 
           <MobileLayout>
-            <PanelsContainer
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
+            <PanelsContainer onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
               {panels.map((panel, index) => {
                 const Component = panel.component;
                 return (
-                  <MobilePanelWrapper
-                    key={panel.id}
-                    index={activeIndex}
-                  >
+                  <MobilePanelWrapper key={panel.id} active={activeIndex === index}>
                     <PanelContent>
                       <Component />
                     </PanelContent>
@@ -799,12 +616,13 @@ const Derivdash = () => {
               })}
             </PanelsContainer>
 
+            {/* Sticky bottom tab bar - stays pinned while the page scrolls */}
             <MobileTabs>
               {panels.map((panel, index) => (
                 <TabButton
                   key={panel.id}
                   active={activeIndex === index}
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => goToPanel(index)}
                 >
                   <span className="icon">{panel.icon}</span>
                   <span className="label">{panel.label}</span>
@@ -813,18 +631,6 @@ const Derivdash = () => {
             </MobileTabs>
           </MobileLayout>
         </MainContent>
-
-        {/* Floating Buttons - Only Fullscreen */}
-        <FloatingButtonsContainer isMobile={isMobile}>
-          <FullscreenButton 
-            onClick={toggleFullscreen}
-            isFullscreen={isFullscreen}
-            isMobile={isMobile}
-            aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-          >
-            {isFullscreen ? <FullscreenExitIcon /> : <FullscreenEnterIcon />}
-          </FullscreenButton>
-        </FloatingButtonsContainer>
       </DashboardContainer>
     </ThemeProvider>
   );
