@@ -1,6 +1,6 @@
 // src/pages/SignUp.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 
 /* ============================================================
@@ -39,9 +39,6 @@ const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Kill the browser's default body/html scroll trap while this page is
-     mounted, so content always starts at the true top of the viewport
-     and nothing sits behind the mobile browser chrome. */
   html:has(.mtapp-signup),
   body:has(.mtapp-signup) {
     margin: 0;
@@ -53,16 +50,14 @@ const GlobalStyle = createGlobalStyle`
     background: ${theme.colors.bg};
   }
 
-  /* Hide the scrollbar on the sign up form side (the "middle divider"
-     that appeared between the two panels). */
   .mtapp-signup .form-side,
   .mtapp-signup .form-side * {
-    scrollbar-width: none;         /* Firefox */
-    -ms-overflow-style: none;      /* IE/Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
   .mtapp-signup .form-side::-webkit-scrollbar,
   .mtapp-signup .form-side *::-webkit-scrollbar {
-    display: none;                 /* Chrome/Safari */
+    display: none;
     width: 0;
     height: 0;
   }
@@ -91,6 +86,28 @@ const spinAnim = keyframes`
   to { transform: rotate(360deg); }
 `;
 
+/* modal animations */
+const modalBackdropIn = keyframes`
+  from { opacity: 0; }
+  to   { opacity: 1; }
+`;
+
+const modalPopIn = keyframes`
+  0%   { opacity: 0; transform: translateY(16px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+`;
+
+const checkPop = keyframes`
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+`;
+
+const drawRing = keyframes`
+  from { stroke-dashoffset: 200; }
+  to   { stroke-dashoffset: 0; }
+`;
+
 /* ============================================================
    LAYOUT
    ============================================================ */
@@ -117,12 +134,9 @@ const FormSide = styled.div`
   align-items: center;
   padding: 24px 32px;
   position: relative;
-  /* no overflow: auto → no scrollbar in the middle of the page */
   overflow: visible;
 
   @media (max-width: 1024px) {
-    /* generous top padding so nothing sits behind the mobile browser
-       chrome (address bar / tabs). 72px clears it on all phones. */
     padding: 72px 16px 40px;
     justify-content: flex-start;
     align-items: center;
@@ -347,11 +361,16 @@ const RowBetween = styled.div`
   flex-wrap: wrap;
 `;
 
-const ForgotLink = styled.a`
+const ForgotLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
   color: ${theme.colors.accent};
   text-decoration: none;
   font-weight: 600;
   font-size: 11.5px;
+  font-family: inherit;
+  cursor: pointer;
 
   &:hover { text-decoration: underline; }
 `;
@@ -524,7 +543,7 @@ const Message = styled.div`
 `;
 
 /* ============================================================
-   AD PANEL (right)
+   AD PANEL
    ============================================================ */
 const AdSide = styled.div`
   position: relative;
@@ -692,7 +711,6 @@ const StatsRow = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   padding-top: 28px;
-  /* border-top removed – this was the "middle divider" line on the ad side */
 `;
 
 const Stat = styled.div`
@@ -733,6 +751,250 @@ const FloatingTicker = styled.div`
 `;
 
 /* ============================================================
+   MODAL PRIMITIVES
+   ============================================================ */
+const ModalBackdrop = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(2, 6, 16, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ${modalBackdropIn} 0.2s ease both;
+  overflow-y: auto;
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+`;
+
+const ModalCard = styled.div`
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(180deg, #121a2c 0%, #0d1421 100%);
+  border: 1px solid ${theme.colors.border};
+  border-radius: 18px;
+  padding: 24px 22px 20px;
+  position: relative;
+  box-shadow:
+    0 20px 60px -12px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(59, 130, 246, 0.05),
+    0 0 40px -10px rgba(59, 130, 246, 0.25);
+  animation: ${modalPopIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @media (max-width: 480px) {
+    padding: 20px 16px 16px;
+    border-radius: 16px;
+  }
+`;
+
+const ModalClose = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: ${theme.colors.textMuted};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: ${theme.colors.text};
+  }
+
+  svg { width: 16px; height: 16px; }
+`;
+
+const ModalIcon = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  background: ${props => props.bg || theme.colors.accentSoft};
+  border: 1px solid ${props => props.border || 'rgba(59, 130, 246, 0.25)'};
+  color: ${props => props.color || '#60a5fa'};
+
+  svg { width: 22px; height: 22px; }
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  text-align: center;
+  margin: 0 0 6px;
+  color: ${theme.colors.text};
+`;
+
+const ModalSubtitle = styled.p`
+  font-size: 12px;
+  line-height: 1.55;
+  text-align: center;
+  color: ${theme.colors.textSecondary};
+  margin: 0 0 18px;
+
+  strong {
+    color: ${theme.colors.text};
+    font-weight: 600;
+  }
+`;
+
+const ModalBody = styled.div`
+  margin-bottom: 12px;
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+`;
+
+const SecondaryBtn = styled.button`
+  flex: 1;
+  padding: 10px 14px;
+  background: transparent;
+  border: 1px solid ${theme.colors.border};
+  border-radius: 8px;
+  color: ${theme.colors.textSecondary};
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+
+  &:hover {
+    background: ${theme.colors.surfaceHover};
+    color: ${theme.colors.text};
+    border-color: #334155;
+  }
+`;
+
+const LinkButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  color: ${theme.colors.accent};
+  font-weight: 600;
+  font-size: 11.5px;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover { text-decoration: underline; }
+  &:disabled { opacity: 0.55; cursor: not-allowed; text-decoration: none; }
+`;
+
+/* ============================================================
+   OTP INPUT
+   ============================================================ */
+const OtpRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 7px;
+  margin: 4px 0 14px;
+`;
+
+const OtpBox = styled.input`
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: ${theme.colors.text};
+  background: ${theme.colors.surface};
+  border: 1.5px solid ${props => (props.error ? theme.colors.danger : theme.colors.border)};
+  border-radius: 9px;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  padding: 0;
+  caret-color: ${theme.colors.accent};
+
+  &:focus {
+    border-color: ${props => (props.error ? theme.colors.danger : theme.colors.accent)};
+    background: ${theme.colors.surfaceHover};
+    box-shadow: 0 0 0 3px
+      ${props => (props.error ? 'rgba(239, 68, 68, 0.15)' : 'rgba(59, 130, 246, 0.18)')};
+  }
+
+  &:disabled { opacity: 0.6; }
+
+  @media (max-width: 400px) {
+    font-size: 16px;
+    border-radius: 8px;
+    gap: 5px;
+  }
+`;
+
+const ResendRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  color: ${theme.colors.textMuted};
+  margin-top: 2px;
+`;
+
+/* ============================================================
+   SUCCESS STATE (verification success)
+   ============================================================ */
+const SuccessWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4px 0 2px;
+`;
+
+const SuccessCircle = styled.div`
+  width: 62px;
+  height: 62px;
+  position: relative;
+  margin-bottom: 14px;
+
+  svg { width: 100%; height: 100%; }
+
+  circle {
+    stroke: ${theme.colors.success};
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 200;
+    animation: ${drawRing} 0.7s ease-out forwards;
+  }
+
+  path {
+    stroke: ${theme.colors.success};
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: ${checkPop} 0.5s ease-out 0.4s forwards;
+  }
+`;
+
+/* ============================================================
    ICONS
    ============================================================ */
 const EyeIcon = () => (
@@ -756,15 +1018,45 @@ const RefreshIcon = () => (
   </svg>
 );
 
-const BoltIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+const CloseIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
   </svg>
 );
 
-const ShieldIcon = () => (
+const MailIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2"/>
+    <path d="m22 6-10 7L2 6"/>
+  </svg>
+);
+
+const LockIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </svg>
+);
+
+const ShieldCheckIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    <path d="m9 12 2 2 4-4"/>
+  </svg>
+);
+
+const KeyIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="7.5" cy="15.5" r="4.5"/>
+    <path d="m21 2-9.6 9.6"/>
+    <path d="m15.5 7.5 3 3L22 7l-3-3"/>
+  </svg>
+);
+
+const BoltIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
   </svg>
 );
 
@@ -772,6 +1064,12 @@ const ChartIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 3v18h18"/>
     <path d="m19 9-5 5-4-4-3 3"/>
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
   </svg>
 );
 
@@ -845,42 +1143,639 @@ const CaptchaSvg = ({ captcha }) => {
       </defs>
 
       <rect width="200" height="66" fill={`url(#captchaBg-${seed})`} />
-
       {dots.map((d, i) => (
         <circle key={`dot-${i}`} cx={d.cx} cy={d.cy} r={d.r} fill={d.color} opacity="0.55" />
       ))}
-
       {lines.map((l, i) => (
-        <line
-          key={`line-${i}`}
-          x1={l.x1}
-          y1={l.y1}
-          x2={l.x2}
-          y2={l.y2}
-          stroke={l.color}
-          strokeWidth="1.4"
-          opacity="0.55"
-        />
+        <line key={`line-${i}`} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
+          stroke={l.color} strokeWidth="1.4" opacity="0.55" />
       ))}
-
       <g filter={`url(#captchaWarp-${seed})`}>
         {chars.map((c, i) => (
-          <text
-            key={`ch-${i}`}
-            x={c.x}
-            y={c.y}
-            fontSize={c.fontSize}
-            fontWeight={c.fontWeight}
-            fill={c.color}
+          <text key={`ch-${i}`} x={c.x} y={c.y}
+            fontSize={c.fontSize} fontWeight={c.fontWeight} fill={c.color}
             fontFamily="'Courier New', 'Lucida Console', monospace"
             transform={`rotate(${c.rotate} ${c.x} ${c.y})`}
-            style={{ userSelect: 'none', pointerEvents: 'none' }}
-          >
+            style={{ userSelect: 'none', pointerEvents: 'none' }}>
             {c.ch}
           </text>
         ))}
       </g>
     </svg>
+  );
+};
+
+/* ============================================================
+   OTP INPUT COMPONENT
+   ============================================================ */
+const OtpInput = ({ length = 6, value, onChange, error, disabled, autoFocus }) => {
+  const inputsRef = useRef([]);
+
+  const focusIndex = (i) => {
+    const el = inputsRef.current[i];
+    if (el) el.focus();
+  };
+
+  useEffect(() => {
+    if (autoFocus) focusIndex(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoFocus]);
+
+  const handleChange = (i, raw) => {
+    const digits = raw.replace(/\D/g, '');
+    if (!digits) {
+      const next = value.split('');
+      next[i] = '';
+      onChange(next.join(''));
+      return;
+    }
+    const next = value.split('');
+    for (let k = 0; k < digits.length && i + k < length; k++) {
+      next[i + k] = digits[k];
+    }
+    onChange(next.join('').slice(0, length));
+    const lastIndex = Math.min(i + digits.length, length - 1);
+    focusIndex(lastIndex);
+  };
+
+  const handleKeyDown = (i, e) => {
+    if (e.key === 'Backspace' && !value[i] && i > 0) {
+      const next = value.split('');
+      next[i - 1] = '';
+      onChange(next.join(''));
+      focusIndex(i - 1);
+      e.preventDefault();
+    }
+    if (e.key === 'ArrowLeft' && i > 0) focusIndex(i - 1);
+    if (e.key === 'ArrowRight' && i < length - 1) focusIndex(i + 1);
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, length);
+    if (!text) return;
+    const next = text.padEnd(length, '').slice(0, length);
+    onChange(next);
+    focusIndex(Math.min(text.length, length - 1));
+  };
+
+  return (
+    <OtpRow>
+      {Array.from({ length }).map((_, i) => (
+        <OtpBox
+          key={i}
+          ref={(el) => (inputsRef.current[i] = el)}
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={length}
+          value={value[i] || ''}
+          disabled={disabled}
+          error={error}
+          aria-label={`Digit ${i + 1}`}
+          onChange={(e) => handleChange(i, e.target.value)}
+          onKeyDown={(e) => handleKeyDown(i, e)}
+          onPaste={handlePaste}
+          onFocus={(e) => e.target.select()}
+        />
+      ))}
+    </OtpRow>
+  );
+};
+
+/* ============================================================
+   MODAL 1 — EMAIL VERIFICATION
+   ============================================================ */
+const EmailVerificationModal = ({
+  open,
+  email,
+  onClose,
+  onVerified,
+}) => {
+  const [code, setCode] = useState('');
+  const [error, setError] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const [verified, setVerified] = useState(false);
+  const [resendIn, setResendIn] = useState(0);
+  const [resending, setResending] = useState(false);
+  const [resendNote, setResendNote] = useState('');
+
+  /* reset state every time the modal opens */
+  useEffect(() => {
+    if (open) {
+      setCode('');
+      setError('');
+      setVerifying(false);
+      setVerified(false);
+      setResendIn(30);
+      setResendNote('');
+    }
+  }, [open]);
+
+  /* resend countdown */
+  useEffect(() => {
+    if (!open || resendIn <= 0) return undefined;
+    const t = setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [open, resendIn]);
+
+  /* esc to close */
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  const handleVerify = (e) => {
+    e?.preventDefault();
+    if (code.length !== 6) {
+      setError('Please enter all 6 digits.');
+      return;
+    }
+    setError('');
+    setVerifying(true);
+
+    // TODO: verify with your backend:
+    // const res = await fetch('/api/auth/verify', { method: 'POST', body: JSON.stringify({ email, code }) });
+
+    setTimeout(() => {
+      setVerifying(false);
+      setVerified(true);
+      if (onVerified) onVerified();
+    }, 1200);
+  };
+
+  const handleResend = () => {
+    if (resendIn > 0 || resending) return;
+    setResending(true);
+    setResendNote('');
+
+    // TODO: resend code
+    setTimeout(() => {
+      setResending(false);
+      setResendIn(30);
+      setResendNote('A new code has been sent to your email.');
+    }, 900);
+  };
+
+  if (!open) return null;
+
+  return (
+    <ModalBackdrop onClick={onClose}>
+      <ModalCard onClick={(e) => e.stopPropagation()}>
+        <ModalClose onClick={onClose} aria-label="Close">
+          <CloseIcon />
+        </ModalClose>
+
+        {verified ? (
+          <SuccessWrap>
+            <SuccessCircle>
+              <svg viewBox="0 0 62 62">
+                <circle cx="31" cy="31" r="28" />
+                <path d="M20 32 l7 7 l15 -15" />
+              </svg>
+            </SuccessCircle>
+            <ModalTitle>Email verified</ModalTitle>
+            <ModalSubtitle style={{ marginBottom: 6 }}>
+              Your account is now active. You can start using MyTradeApp.
+            </ModalSubtitle>
+            <ModalActions style={{ width: '100%' }}>
+              <SubmitBtn type="button" onClick={onClose}>
+                Continue to dashboard
+              </SubmitBtn>
+            </ModalActions>
+          </SuccessWrap>
+        ) : (
+          <form onSubmit={handleVerify}>
+            <ModalIcon>
+              <MailIcon />
+            </ModalIcon>
+
+            <ModalTitle>Verify your email</ModalTitle>
+            <ModalSubtitle>
+              We sent a 6-digit code to <strong>{email || 'your email'}</strong>.
+              <br />Enter it below to activate your account.
+            </ModalSubtitle>
+
+            <ModalBody>
+              <OtpInput
+                value={code}
+                onChange={(v) => {
+                  setCode(v);
+                  if (error) setError('');
+                }}
+                error={!!error}
+                disabled={verifying}
+                autoFocus
+              />
+              {error && (
+                <ErrorText style={{ textAlign: 'center', marginTop: 2 }}>
+                  {error}
+                </ErrorText>
+              )}
+
+              <ResendRow style={{ marginTop: 12 }}>
+                <span>Didn&apos;t get the code?</span>
+                {resendIn > 0 ? (
+                  <span style={{ color: theme.colors.textMuted }}>
+                    Resend in {resendIn}s
+                  </span>
+                ) : (
+                  <LinkButton
+                    type="button"
+                    onClick={handleResend}
+                    disabled={resending}
+                  >
+                    {resending ? 'Sending…' : 'Resend code'}
+                  </LinkButton>
+                )}
+              </ResendRow>
+
+              {resendNote && (
+                <div
+                  style={{
+                    marginTop: 8,
+                    fontSize: 11.5,
+                    color: theme.colors.success,
+                    textAlign: 'center',
+                  }}
+                >
+                  {resendNote}
+                </div>
+              )}
+            </ModalBody>
+
+            <SubmitBtn type="submit" disabled={verifying || code.length !== 6}>
+              {verifying && <Spinner />}
+              {verifying ? 'Verifying…' : 'Verify email'}
+            </SubmitBtn>
+          </form>
+        )}
+      </ModalCard>
+    </ModalBackdrop>
+  );
+};
+
+/* ============================================================
+   MODAL 2 — FORGOT PASSWORD (email step)
+   ============================================================ */
+const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setEmail('');
+      setError('');
+      setSending(false);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed) {
+      setError('Please enter your email address.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError('Enter a valid email address.');
+      return;
+    }
+    setError('');
+    setSending(true);
+
+    // TODO: call your forgot-password endpoint
+    // await fetch('/api/auth/forgot', { method: 'POST', body: JSON.stringify({ email: trimmed }) });
+
+    setTimeout(() => {
+      setSending(false);
+      if (onCodeSent) onCodeSent(trimmed);
+    }, 1200);
+  };
+
+  if (!open) return null;
+
+  return (
+    <ModalBackdrop onClick={onClose}>
+      <ModalCard onClick={(e) => e.stopPropagation()}>
+        <ModalClose onClick={onClose} aria-label="Close">
+          <CloseIcon />
+        </ModalClose>
+
+        <form onSubmit={handleSubmit}>
+          <ModalIcon
+            bg="rgba(245, 158, 11, 0.12)"
+            border="rgba(245, 158, 11, 0.28)"
+            color={theme.colors.warning}
+          >
+            <KeyIcon />
+          </ModalIcon>
+
+          <ModalTitle>Forgot your password?</ModalTitle>
+          <ModalSubtitle>
+            No worries — enter the email tied to your MyTradeApp account
+            and we&apos;ll send you a secure reset code.
+          </ModalSubtitle>
+
+          <ModalBody>
+            <Field>
+              <Label htmlFor="forgotEmail">Email address</Label>
+              <InputWrap>
+                <Input
+                  id="forgotEmail"
+                  type="email"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError('');
+                  }}
+                  error={!!error}
+                  autoFocus
+                />
+              </InputWrap>
+              {error && <ErrorText>{error}</ErrorText>}
+            </Field>
+          </ModalBody>
+
+          <SubmitBtn type="submit" disabled={sending}>
+            {sending && <Spinner />}
+            {sending ? 'Sending reset code…' : 'Send reset code'}
+          </SubmitBtn>
+
+          <ModalActions>
+            <SecondaryBtn type="button" onClick={onClose}>
+              Cancel
+            </SecondaryBtn>
+          </ModalActions>
+        </form>
+      </ModalCard>
+    </ModalBackdrop>
+  );
+};
+
+/* ============================================================
+   MODAL 3 — RESET PASSWORD (code + new password)
+   ============================================================ */
+const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
+  const [code, setCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [showCf, setShowCf] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [resendIn, setResendIn] = useState(30);
+  const [resending, setResending] = useState(false);
+  const [resendNote, setResendNote] = useState('');
+
+  useEffect(() => {
+    if (open) {
+      setCode('');
+      setPassword('');
+      setConfirm('');
+      setShowPw(false);
+      setShowCf(false);
+      setErrors({});
+      setLoading(false);
+      setResendIn(30);
+      setResendNote('');
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || resendIn <= 0) return undefined;
+    const t = setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [open, resendIn]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  const pwChecks = {
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    number: /[0-9]/.test(password),
+    symbol: /[^A-Za-z0-9]/.test(password),
+  };
+
+  const strength = (() => {
+    if (!password) return { color: theme.colors.textMuted, label: 'Enter a strong password' };
+    let score = 0;
+    if (password.length >= 6) score++;
+    if (password.length >= 10) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    const colorMap = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#2dd4bf'];
+    const textMap = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'];
+    return { color: colorMap[score], label: textMap[score] };
+  })();
+
+  const handleReset = (e) => {
+    e.preventDefault();
+    const next = {};
+    if (code.length !== 6) next.code = 'Enter the 6-digit code.';
+    if (!pwChecks.length) next.password = 'Password must be at least 8 characters.';
+    else if (!pwChecks.upper && !pwChecks.number && !pwChecks.symbol)
+      next.password = 'Include uppercase letters, numbers, or symbols.';
+    if (password !== confirm) next.confirm = 'Passwords do not match.';
+    setErrors(next);
+    if (Object.keys(next).length) return;
+
+    setLoading(true);
+
+    // TODO: submit reset:
+    // await fetch('/api/auth/reset', { method: 'POST', body: JSON.stringify({ email, code, password }) });
+
+    setTimeout(() => {
+      setLoading(false);
+      if (onResetDone) onResetDone();
+    }, 1400);
+  };
+
+  const handleResend = () => {
+    if (resendIn > 0 || resending) return;
+    setResending(true);
+    setResendNote('');
+    setTimeout(() => {
+      setResending(false);
+      setResendIn(30);
+      setResendNote('A new code has been sent.');
+    }, 900);
+  };
+
+  if (!open) return null;
+
+  return (
+    <ModalBackdrop onClick={onClose}>
+      <ModalCard onClick={(e) => e.stopPropagation()}>
+        <ModalClose onClick={onClose} aria-label="Close">
+          <CloseIcon />
+        </ModalClose>
+
+        <form onSubmit={handleReset}>
+          <ModalIcon>
+            <ShieldCheckIcon />
+          </ModalIcon>
+
+          <ModalTitle>Reset your password</ModalTitle>
+          <ModalSubtitle>
+            Enter the 6-digit code sent to <strong>{email || 'your email'}</strong>{' '}
+            and choose a new password.
+          </ModalSubtitle>
+
+          <ModalBody>
+            <OtpInput
+              value={code}
+              onChange={(v) => {
+                setCode(v);
+                if (errors.code) setErrors((p) => ({ ...p, code: '' }));
+              }}
+              error={!!errors.code}
+              disabled={loading}
+              autoFocus
+            />
+            {errors.code && (
+              <ErrorText style={{ textAlign: 'center', marginTop: 2 }}>
+                {errors.code}
+              </ErrorText>
+            )}
+
+            <ResendRow style={{ marginTop: 10, marginBottom: 14 }}>
+              <span>Didn&apos;t get the code?</span>
+              {resendIn > 0 ? (
+                <span style={{ color: theme.colors.textMuted }}>
+                  Resend in {resendIn}s
+                </span>
+              ) : (
+                <LinkButton
+                  type="button"
+                  onClick={handleResend}
+                  disabled={resending}
+                >
+                  {resending ? 'Sending…' : 'Resend code'}
+                </LinkButton>
+              )}
+            </ResendRow>
+            {resendNote && (
+              <div
+                style={{
+                  marginTop: -8,
+                  marginBottom: 10,
+                  fontSize: 11.5,
+                  color: theme.colors.success,
+                  textAlign: 'center',
+                }}
+              >
+                {resendNote}
+              </div>
+            )}
+
+            <Field>
+              <Label htmlFor="resetPassword">New password</Label>
+              <InputWrap>
+                <Input
+                  id="resetPassword"
+                  type={showPw ? 'text' : 'password'}
+                  placeholder="At least 8 characters"
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) setErrors((p) => ({ ...p, password: '' }));
+                  }}
+                  error={!!errors.password}
+                  hasToggle
+                />
+                <ToggleBtn
+                  type="button"
+                  onClick={() => setShowPw((v) => !v)}
+                  aria-label={showPw ? 'Hide password' : 'Show password'}
+                >
+                  {showPw ? <EyeOffIcon /> : <EyeIcon />}
+                </ToggleBtn>
+              </InputWrap>
+              <StrengthText color={strength.color}>{strength.label}</StrengthText>
+              <RequirementsList>
+                <li className={pwChecks.length ? 'met' : 'unmet'}>
+                  <span className="check">{pwChecks.length ? '✓' : ''}</span>
+                  8+ characters
+                </li>
+                <li className={pwChecks.upper ? 'met' : 'unmet'}>
+                  <span className="check">{pwChecks.upper ? '✓' : ''}</span>
+                  Uppercase
+                </li>
+                <li className={pwChecks.number ? 'met' : 'unmet'}>
+                  <span className="check">{pwChecks.number ? '✓' : ''}</span>
+                  Number
+                </li>
+                <li className={pwChecks.symbol ? 'met' : 'unmet'}>
+                  <span className="check">{pwChecks.symbol ? '✓' : ''}</span>
+                  Symbol
+                </li>
+              </RequirementsList>
+              {errors.password && (
+                <ErrorText style={{ marginTop: 6 }}>{errors.password}</ErrorText>
+              )}
+            </Field>
+
+            <Field>
+              <Label htmlFor="resetConfirm">Confirm new password</Label>
+              <InputWrap>
+                <Input
+                  id="resetConfirm"
+                  type={showCf ? 'text' : 'password'}
+                  placeholder="Re-enter new password"
+                  autoComplete="new-password"
+                  value={confirm}
+                  onChange={(e) => {
+                    setConfirm(e.target.value);
+                    if (errors.confirm) setErrors((p) => ({ ...p, confirm: '' }));
+                  }}
+                  error={!!errors.confirm}
+                  hasToggle
+                />
+                <ToggleBtn
+                  type="button"
+                  onClick={() => setShowCf((v) => !v)}
+                  aria-label={showCf ? 'Hide password' : 'Show password'}
+                >
+                  {showCf ? <EyeOffIcon /> : <EyeIcon />}
+                </ToggleBtn>
+              </InputWrap>
+              {errors.confirm && <ErrorText>{errors.confirm}</ErrorText>}
+            </Field>
+          </ModalBody>
+
+          <SubmitBtn type="submit" disabled={loading}>
+            {loading && <Spinner />}
+            {loading ? 'Resetting…' : 'Reset password'}
+          </SubmitBtn>
+
+          <ModalActions>
+            <SecondaryBtn type="button" onClick={onBack}>
+              Back
+            </SecondaryBtn>
+          </ModalActions>
+        </form>
+      </ModalCard>
+    </ModalBackdrop>
   );
 };
 
@@ -912,6 +1807,13 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageKind, setMessageKind] = useState('info');
+
+  /* ---- modal state ---- */
+  const [verifyModalOpen, setVerifyModalOpen] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState('');
+  const [forgotModalOpen, setForgotModalOpen] = useState(false);
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
 
   useEffect(() => {
     setCaptcha(buildCaptcha());
@@ -1024,10 +1926,15 @@ const SignUp = () => {
     setMessage('Creating your account…');
     setMessageKind('info');
 
+    // TODO: real signup request
     setTimeout(() => {
       setLoading(false);
-      setMessage('Account created successfully. Check your email to verify.');
-      setMessageKind('success');
+      clearMessage();
+
+      /* open the email-verification modal */
+      setVerifyEmail(signupForm.email.trim());
+      setVerifyModalOpen(true);
+
       refreshCaptcha();
       setSignupForm({ fullName: '', email: '', password: '', confirmPassword: '' });
       setAgreed(false);
@@ -1049,6 +1956,26 @@ const SignUp = () => {
       setMessage('Signed in successfully.');
       setMessageKind('success');
     }, 1500);
+  };
+
+  /* ===== modal handlers ===== */
+  const handleVerified = () => {
+    // optional: auto-close after a delay, navigate, etc.
+    // setTimeout(onClose...)
+  };
+
+  const handleForgotCodeSent = (email) => {
+    setForgotModalOpen(false);
+    setResetEmail(email);
+    setResetModalOpen(true);
+  };
+
+  const handleResetDone = () => {
+    setResetModalOpen(false);
+    setMessage('Password updated. You can now log in with your new password.');
+    setMessageKind('success');
+    setMode('login');
+    setLoginForm({ email: resetEmail, password: '' });
   };
 
   return (
@@ -1310,7 +2237,12 @@ const SignUp = () => {
                     />
                     <span>Keep me signed in</span>
                   </CheckLabel>
-                  <ForgotLink href="/forgot-password">Forgot password?</ForgotLink>
+                  <ForgotLink
+                    type="button"
+                    onClick={() => setForgotModalOpen(true)}
+                  >
+                    Forgot password?
+                  </ForgotLink>
                 </RowBetween>
 
                 <SubmitBtn type="submit" disabled={loading}>
@@ -1395,6 +2327,31 @@ const SignUp = () => {
           </FloatingTicker>
         </AdSide>
       </Page>
+
+      {/* ===== POPUPS ===== */}
+      <EmailVerificationModal
+        open={verifyModalOpen}
+        email={verifyEmail}
+        onClose={() => setVerifyModalOpen(false)}
+        onVerified={handleVerified}
+      />
+
+      <ForgotPasswordModal
+        open={forgotModalOpen}
+        onClose={() => setForgotModalOpen(false)}
+        onCodeSent={handleForgotCodeSent}
+      />
+
+      <ResetPasswordModal
+        open={resetModalOpen}
+        email={resetEmail}
+        onClose={() => setResetModalOpen(false)}
+        onResetDone={handleResetDone}
+        onBack={() => {
+          setResetModalOpen(false);
+          setForgotModalOpen(true);
+        }}
+      />
     </>
   );
 };
