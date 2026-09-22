@@ -1,8 +1,25 @@
-// src/pages/SignUp.jsx
+// src/pages/SignUp.jsx — White theme + scrollable form side + image slideshow
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
+
+/* ============================================================
+   SLIDESHOW IMAGES
+   ------------------------------------------------------------
+   Put your files at: src/images/image1.jpg and src/images/image2.jpg
+   If your files use a different extension (.png, .webp, .jpeg),
+   just change the string below to match.
+   ============================================================ */
+import image1 from '../images/image1.png';
+import image2 from '../images/image2.png';
+
+const SLIDES = [
+  { src: image1, alt: 'MyTradeApp trading platform' },
+  { src: image2, alt: 'MyTradeApp live markets' },
+];
+
+const SLIDE_INTERVAL_MS = 5500;
 
 /* ============================================================
    API CONFIG
@@ -10,35 +27,41 @@ import styled, { createGlobalStyle, keyframes } from 'styled-components';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 const ENDPOINTS = {
-  signup:          `${API_BASE_URL}/auth/signup`,             // POST { first_name, last_name, phone, email, password }
-  login:           `${API_BASE_URL}/auth/login`,              // POST { email, password }
-  verifyEmail:     `${API_BASE_URL}/auth/verify`,             // POST { user_id, code }
-  resendCode:      `${API_BASE_URL}/auth/resend-code`,        // POST { user_id, email }
-  forgotPassword:  `${API_BASE_URL}/auth/forgot-password`,    // POST { email }
-  verifyResetCode: `${API_BASE_URL}/auth/verify-reset-code`,  // POST { email, code }
-  resetPassword:   `${API_BASE_URL}/auth/reset-password`,     // POST { reset_token, new_password, confirm_password }
+  signup:          `${API_BASE_URL}/auth/signup`,
+  login:           `${API_BASE_URL}/auth/login`,
+  verifyEmail:     `${API_BASE_URL}/auth/verify`,
+  resendCode:      `${API_BASE_URL}/auth/resend-code`,
+  forgotPassword:  `${API_BASE_URL}/auth/forgot-password`,
+  verifyResetCode: `${API_BASE_URL}/auth/verify-reset-code`,
+  resetPassword:   `${API_BASE_URL}/auth/reset-password`,
 };
 
 /* ============================================================
-   THEME
+   THEME — LIGHT
    ============================================================ */
 const theme = {
   colors: {
-    bg: '#0a0d14',
-    surface: '#161d2e',
-    surfaceHover: '#1c2438',
-    border: '#232c42',
-    borderFocus: '#3b82f6',
-    text: '#f8fafc',
-    textSecondary: '#94a3b8',
-    textMuted: '#64748b',
-    accent: '#3b82f6',
-    accentSoft: 'rgba(59, 130, 246, 0.12)',
-    success: '#10b981',
-    warning: '#f59e0b',
-    danger: '#ef4444',
-    shadowSm: '0 4px 14px -4px rgba(0, 0, 0, 0.4)',
-    gradientAd: 'linear-gradient(135deg, #1e293b 0%, #0f172a 55%, #020617 100%)',
+    bg: '#f4f6f9',
+    surface: '#ffffff',
+    surfaceHover: '#f1f5f9',
+    border: '#e2e8f0',
+    borderStrong: '#cbd5e1',
+    borderFocus: '#2563eb',
+    text: '#0f172a',
+    textSecondary: '#475569',
+    textMuted: '#94a3b8',
+    accent: '#2563eb',
+    accentSoft: 'rgba(37, 99, 235, 0.08)',
+    accentLine: 'rgba(37, 99, 235, 0.22)',
+    success: '#059669',
+    successSoft: 'rgba(5, 150, 105, 0.08)',
+    warning: '#d97706',
+    warningSoft: 'rgba(217, 119, 6, 0.08)',
+    danger: '#dc2626',
+    dangerSoft: 'rgba(220, 38, 38, 0.08)',
+    shadowSm: '0 4px 14px -6px rgba(15, 23, 42, 0.12)',
+    shadowMd: '0 10px 30px -12px rgba(15, 23, 42, 0.16)',
+    shadowLg: '0 24px 60px -20px rgba(15, 23, 42, 0.22)',
     gradientBtn: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
   },
 };
@@ -53,19 +76,37 @@ const GlobalStyle = createGlobalStyle`
       Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: ${theme.colors.text};
   }
 
+  /* Desktop: page fits in 100vh, document does NOT scroll. Only FormSide scrolls. */
   html:has(.mtapp-signup),
   body:has(.mtapp-signup) {
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: auto;
-    min-height: 100%;
     background: ${theme.colors.bg};
   }
 
+  @media (min-width: 1025px) {
+    html:has(.mtapp-signup),
+    body:has(.mtapp-signup) {
+      height: 100vh;
+      overflow: hidden;
+    }
+  }
+
+  /* Mobile: let the document scroll so the browser chrome hides on scroll. */
+  @media (max-width: 1024px) {
+    html:has(.mtapp-signup),
+    body:has(.mtapp-signup) {
+      height: auto;
+      min-height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
+
+  /* Hide the scrollbar on the form side (cleaner look). */
   .mtapp-signup .form-side,
   .mtapp-signup .form-side * {
     scrollbar-width: none;
@@ -85,11 +126,6 @@ const GlobalStyle = createGlobalStyle`
 const fadeUp = keyframes`
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
-`;
-
-const floaty = keyframes`
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-8px); }
 `;
 
 const pulseRing = keyframes`
@@ -122,34 +158,47 @@ const drawRing = keyframes`
    LAYOUT
    ============================================================ */
 const Page = styled.div`
-  min-height: 100vh;
-  min-height: 100dvh;
+  /* Desktop: fixed height, no page scroll. Only FormSide scrolls. */
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   background: ${theme.colors.bg};
   color: ${theme.colors.text};
   align-items: stretch;
 
+  /* Mobile: let document scroll, ad side hidden */
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+    height: auto;
     min-height: 100dvh;
+    overflow: visible;
+    grid-template-columns: 1fr;
     align-items: start;
   }
 `;
 
+/* ============================================================
+   FORM SIDE — scrollable on desktop, doc-scroll on mobile
+   ============================================================ */
 const FormSide = styled.div`
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 96px 32px 40px;
-  position: relative;
-  overflow: visible;
+  justify-content: flex-start;
+  padding: 96px 32px 64px;
+  background: ${theme.colors.bg};
 
   @media (max-width: 1024px) {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
     padding: 96px 16px 40px;
-    justify-content: flex-start;
-    align-items: center;
   }
 
   @media (max-width: 480px) {
@@ -160,10 +209,12 @@ const FormSide = styled.div`
 const FormInner = styled.div`
   width: 100%;
   max-width: 420px;
+  margin: auto 0;
   animation: ${fadeUp} 0.5s ease both;
 
   @media (max-width: 1024px) {
     max-width: 440px;
+    margin: 0 auto;
   }
 `;
 
@@ -197,7 +248,7 @@ const BrandLogo = styled.div`
   width: 42px;
   height: 42px;
   flex-shrink: 0;
-  filter: drop-shadow(0 8px 18px rgba(59, 130, 246, 0.35));
+  filter: drop-shadow(0 8px 18px rgba(37, 99, 235, 0.28));
 
   svg { display: block; width: 100%; height: 100%; }
 
@@ -358,13 +409,14 @@ const Input = styled.input`
   font-family: inherit;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 
   &::placeholder { color: ${theme.colors.textMuted}; font-size: 14px; }
 
   &:focus {
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.borderFocus)};
     box-shadow: 0 0 0 3px
-      ${props => (props.error ? 'rgba(239, 68, 68, 0.15)' : 'rgba(59, 130, 246, 0.15)')};
+      ${props => (props.error ? 'rgba(220, 38, 38, 0.15)' : 'rgba(37, 99, 235, 0.15)')};
   }
 `;
 
@@ -411,7 +463,7 @@ const CheckLabel = styled.label`
     height: 17px;
     flex-shrink: 0;
     margin-top: 1px;
-    border: 1.5px solid ${theme.colors.border};
+    border: 1.5px solid ${theme.colors.borderStrong};
     border-radius: 5px;
     background: ${theme.colors.surface};
     cursor: pointer;
@@ -478,7 +530,7 @@ const SubmitBtn = styled.button`
   font-weight: 600;
   cursor: pointer;
   letter-spacing: 0.1px;
-  box-shadow: 0 8px 20px -10px rgba(59, 130, 246, 0.7);
+  box-shadow: 0 8px 22px -10px rgba(37, 99, 235, 0.55);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   display: flex;
@@ -488,7 +540,7 @@ const SubmitBtn = styled.button`
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 12px 26px -10px rgba(59, 130, 246, 0.85);
+    box-shadow: 0 12px 28px -10px rgba(37, 99, 235, 0.7);
   }
   &:active:not(:disabled) { transform: translateY(0) scale(0.99); }
   &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
@@ -497,7 +549,7 @@ const SubmitBtn = styled.button`
 const Spinner = styled.span`
   width: 15px;
   height: 15px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-top-color: #fff;
   border-radius: 50%;
   animation: ${spinAnim} 0.7s linear infinite;
@@ -586,6 +638,7 @@ const CaptchaFrame = styled.div`
   overflow: hidden;
   position: relative;
   background: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 
   svg { display: block; width: 100%; height: 100%; }
 `;
@@ -600,13 +653,14 @@ const RefreshBtn = styled.button`
   border-radius: 10px;
   color: ${theme.colors.textSecondary};
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
   svg { width: 18px; height: 18px; transition: transform 0.4s ease; }
 
   &:hover {
     background: ${theme.colors.surfaceHover};
     color: ${theme.colors.text};
+    border-color: ${theme.colors.borderStrong};
   }
   &:hover svg { transform: rotate(180deg); }
   &:active { transform: scale(0.96); }
@@ -626,10 +680,10 @@ const Message = styled.div`
   gap: 9px;
   background: ${props =>
     props.kind === 'error'
-      ? 'rgba(239, 68, 68, 0.08)'
+      ? theme.colors.dangerSoft
       : props.kind === 'success'
-      ? 'rgba(16, 185, 129, 0.08)'
-      : 'rgba(245, 158, 11, 0.08)'};
+      ? theme.colors.successSoft
+      : theme.colors.warningSoft};
   color: ${props =>
     props.kind === 'error'
       ? theme.colors.danger
@@ -639,10 +693,10 @@ const Message = styled.div`
   border: 1px solid
     ${props =>
       props.kind === 'error'
-        ? 'rgba(239, 68, 68, 0.25)'
+        ? 'rgba(220, 38, 38, 0.2)'
         : props.kind === 'success'
-        ? 'rgba(16, 185, 129, 0.25)'
-        : 'rgba(245, 158, 11, 0.25)'};
+        ? 'rgba(5, 150, 105, 0.2)'
+        : 'rgba(217, 119, 6, 0.2)'};
 
   .icon {
     display: flex;
@@ -663,75 +717,74 @@ const Message = styled.div`
 `;
 
 /* ============================================================
-   AD PANEL
+   AD SIDE — full-bleed slideshow, never scrolls
    ============================================================ */
 const AdSide = styled.div`
   position: relative;
-  background: ${theme.colors.gradientAd};
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 56px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-    pointer-events: none;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: -140px;
-    right: -140px;
-    width: 420px;
-    height: 420px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 65%);
-    pointer-events: none;
-  }
+  background: #0f172a;
 
   @media (max-width: 1024px) {
     display: none;
   }
 `;
 
-const AdContent = styled.div`
-  position: relative;
-  z-index: 1;
-  max-width: 520px;
-  width: 100%;
-  animation: ${fadeUp} 0.7s ease 0.1s both;
+const SlideLayer = styled.div`
+  position: absolute;
+  inset: 0;
+  opacity: ${props => (props.active ? 1 : 0)};
+  transition: opacity 1.4s ease-in-out;
+  will-change: opacity;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+  }
 `;
 
-const AdBadge = styled.div`
+/* Subtle dark gradient at bottom so dots stay legible on any image */
+const SlideOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(2, 6, 23, 0.05) 0%, transparent 30%, transparent 60%, rgba(2, 6, 23, 0.45) 100%);
+  z-index: 1;
+`;
+
+/* Small badge over the top-left of the slideshow */
+const SlideBadge = styled.div`
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 999px;
-  background: ${theme.colors.accentSoft};
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  color: #93c5fd;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(37, 99, 235, 0.22);
+  color: ${theme.colors.accent};
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2px;
-  margin-bottom: 22px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px -12px rgba(15, 23, 42, 0.35);
 
   .dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
     background: ${theme.colors.success};
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.18);
     position: relative;
 
     &::after {
@@ -745,126 +798,78 @@ const AdBadge = styled.div`
   }
 `;
 
-const AdHeading = styled.h2`
-  font-size: 40px;
-  line-height: 1.1;
-  font-weight: 700;
-  letter-spacing: -1px;
-  margin: 0 0 16px;
-  color: #f8fafc;
-
-  span {
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-`;
-
-const AdSub = styled.p`
-  font-size: 15.5px;
-  line-height: 1.65;
-  color: ${theme.colors.textSecondary};
-  margin: 0 0 36px;
-  max-width: 460px;
-`;
-
-const FeatureList = styled.ul`
-  list-style: none;
-  margin: 0 0 40px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
-
-const Feature = styled.li`
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 14px 16px;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid rgba(148, 163, 184, 0.1);
-  border-radius: 12px;
-  transition: transform 0.2s ease, border-color 0.2s ease;
-
-  &:hover {
-    transform: translateX(4px);
-    border-color: rgba(59, 130, 246, 0.35);
-  }
-`;
-
-const FeatureIcon = styled.div`
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: ${theme.colors.accentSoft};
-  border: 1px solid rgba(59, 130, 246, 0.25);
+const DotsRow = styled.div`
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  right: 0;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #60a5fa;
-
-  svg { width: 18px; height: 18px; }
+  gap: 8px;
 `;
 
-const FeatureText = styled.div`
-  h4 {
-    font-size: 14px;
-    font-weight: 600;
-    color: #e2e8f0;
-    margin: 0 0 3px;
-  }
-  p {
-    font-size: 13px;
-    color: ${theme.colors.textSecondary};
-    margin: 0;
-    line-height: 1.5;
-  }
+const Dot = styled.button`
+  width: ${props => (props.active ? '26px' : '8px')};
+  height: 8px;
+  border-radius: 999px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: ${props => (props.active ? '#ffffff' : 'rgba(255, 255, 255, 0.45)')};
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: width 0.35s ease, background 0.35s ease, opacity 0.35s ease;
+
+  &:hover { background: rgba(255, 255, 255, 0.85); }
 `;
 
-const StatsRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  padding-top: 28px;
-`;
+/* ============================================================
+   SLIDESHOW COMPONENT
+   ============================================================ */
+const Slideshow = () => {
+  const [index, setIndex] = useState(0);
 
-const Stat = styled.div`
-  .value {
-    font-size: 22px;
-    font-weight: 700;
-    color: #f1f5f9;
-    margin-bottom: 3px;
-  }
-  .label {
-    font-size: 12px;
-    color: ${theme.colors.textMuted};
-    font-weight: 500;
-  }
-`;
+  useEffect(() => {
+    if (SLIDES.length <= 1) return undefined;
+    const t = setInterval(() => {
+      setIndex((i) => (i + 1) % SLIDES.length);
+    }, SLIDE_INTERVAL_MS);
+    return () => clearInterval(t);
+  }, []);
 
-const FloatingTicker = styled.div`
-  position: absolute;
-  bottom: 44px;
-  right: 56px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 12px;
-  font-size: 12.5px;
-  box-shadow: ${theme.colors.shadowSm};
-  animation: ${floaty} 4s ease-in-out infinite;
-  z-index: 2;
+  return (
+    <>
+      {SLIDES.map((slide, i) => (
+        <SlideLayer key={i} active={i === index}>
+          <img src={slide.src} alt={slide.alt} draggable="false" />
+        </SlideLayer>
+      ))}
 
-  .sym { color: #94a3b8; font-weight: 600; }
-  .price { color: #f1f5f9; font-weight: 700; }
-  .chg { color: ${theme.colors.success}; font-weight: 600; }
-`;
+      <SlideOverlay />
+
+      <SlideBadge>
+        <span className="dot" />
+        Live markets · 0% commission on your first 30 days
+      </SlideBadge>
+
+      {SLIDES.length > 1 && (
+        <DotsRow role="tablist" aria-label="Slideshow navigation">
+          {SLIDES.map((_, i) => (
+            <Dot
+              key={i}
+              active={i === index}
+              onClick={() => setIndex(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              aria-selected={i === index}
+              role="tab"
+            />
+          ))}
+        </DotsRow>
+      )}
+    </>
+  );
+};
 
 /* ============================================================
    MODAL PRIMITIVES
@@ -890,14 +895,14 @@ const ModalBackdrop = styled.div`
 const ModalCard = styled.div`
   width: 100%;
   max-width: 440px;
-  background: #0d1421;
+  background: #ffffff;
   border: 1px solid ${theme.colors.border};
   border-radius: 18px;
   padding: 28px 26px 24px;
   position: relative;
   box-shadow:
-    0 24px 70px -12px rgba(0, 0, 0, 0.85),
-    0 0 0 1px rgba(59, 130, 246, 0.08);
+    0 24px 70px -12px rgba(15, 23, 42, 0.28),
+    0 0 0 1px rgba(37, 99, 235, 0.05);
   animation: ${modalPopIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @media (max-width: 480px) {
@@ -923,7 +928,7 @@ const ModalClose = styled.button`
   transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: ${theme.colors.surfaceHover};
     color: ${theme.colors.text};
   }
 
@@ -939,7 +944,7 @@ const ModalIcon = styled.div`
   justify-content: center;
   margin: 0 auto 16px;
   background: ${props => props.bg || theme.colors.accentSoft};
-  border: 1px solid ${props => props.border || 'rgba(59, 130, 246, 0.25)'};
+  border: 1px solid ${props => props.border || theme.colors.accentLine};
 
   svg { width: 30px; height: 30px; display: block; }
 `;
@@ -962,7 +967,7 @@ const ModalSubtitle = styled.p`
 
   strong {
     color: ${theme.colors.text};
-    font-weight: 600;
+    font-weight: 700;
   }
 `;
 
@@ -992,7 +997,7 @@ const SecondaryBtn = styled.button`
   &:hover {
     background: ${theme.colors.surfaceHover};
     color: ${theme.colors.text};
-    border-color: #334155;
+    border-color: ${theme.colors.borderStrong};
   }
 `;
 
@@ -1040,12 +1045,13 @@ const OtpBox = styled.input`
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   padding: 0;
   caret-color: ${theme.colors.accent};
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
 
   &:focus {
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.accent)};
-    background: ${theme.colors.surfaceHover};
+    background: #ffffff;
     box-shadow: 0 0 0 3px
-      ${props => (props.error ? 'rgba(239, 68, 68, 0.15)' : 'rgba(59, 130, 246, 0.18)')};
+      ${props => (props.error ? 'rgba(220, 38, 38, 0.15)' : 'rgba(37, 99, 235, 0.18)')};
   }
 
   &:disabled { opacity: 0.6; }
@@ -1146,25 +1152,6 @@ const XCircleIcon = () => (
   </svg>
 );
 
-const BoltIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-  </svg>
-);
-
-const ChartIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 3v18h18"/>
-    <path d="m19 9-5 5-4-4-3 3"/>
-  </svg>
-);
-
-const ShieldIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-  </svg>
-);
-
 /* ============================================================
    SVG ICONS — popups
    ============================================================ */
@@ -1184,7 +1171,7 @@ const MailSealIcon = () => (
       </linearGradient>
     </defs>
     <rect x="3" y="7" width="26" height="19" rx="4"
-          fill="url(#mailGrad)" opacity="0.18"
+          fill="url(#mailGrad)" opacity="0.16"
           stroke="url(#mailGrad)" strokeWidth="1.6"/>
     <path d="M5 10 L16 19 L27 10"
           fill="none" stroke="url(#mailGrad)" strokeWidth="2"
@@ -1225,7 +1212,7 @@ const ShieldLockIcon = () => (
       </linearGradient>
     </defs>
     <path d="M16 3 L28 8 V16 C28 23 23 27 16 30 C9 27 4 23 4 16 V8 Z"
-          fill="url(#shieldGrad)" opacity="0.16"
+          fill="url(#shieldGrad)" opacity="0.14"
           stroke="url(#shieldGrad)" strokeWidth="1.8"
           strokeLinejoin="round"/>
     <rect x="11" y="15" width="10" height="8" rx="1.8"
@@ -1722,8 +1709,8 @@ const ForgotPasswordModal = ({ open, onClose, onCodeSent }) => {
         ) : (
           <form onSubmit={handleSubmit}>
             <ModalIcon
-              bg="rgba(245, 158, 11, 0.12)"
-              border="rgba(245, 158, 11, 0.28)"
+              bg="rgba(217, 119, 6, 0.1)"
+              border="rgba(217, 119, 6, 0.25)"
             >
               <KeyShieldIcon />
             </ModalIcon>
@@ -1832,7 +1819,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
     if (/[A-Z]/.test(password)) score++;
     if (/[0-9]/.test(password)) score++;
     if (/[^A-Za-z0-9]/.test(password)) score++;
-    const colorMap = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#2dd4bf'];
+    const colorMap = ['#dc2626', '#f97316', '#eab308', '#22c55e', '#22c55e', '#0d9488'];
     const textMap = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'];
     return { color: colorMap[score], label: textMap[score] };
   })();
@@ -1851,7 +1838,6 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
     setLoading(true);
 
     try {
-      // Step 1: verify reset code -> get reset_token
       const verifyRes = await fetch(ENDPOINTS.verifyResetCode, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1868,7 +1854,6 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
       const resetToken = verifyData.reset_token;
       sessionStorage.setItem('resetToken', resetToken);
 
-      // Step 2: submit the new password
       const resetRes = await fetch(ENDPOINTS.resetPassword, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -2202,7 +2187,7 @@ const SignUp = () => {
     if (/[A-Z]/.test(pw)) score++;
     if (/[0-9]/.test(pw)) score++;
     if (/[^A-Za-z0-9]/.test(pw)) score++;
-    const colorMap = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#2dd4bf'];
+    const colorMap = ['#dc2626', '#f97316', '#eab308', '#22c55e', '#22c55e', '#0d9488'];
     const textMap = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong', 'Very strong'];
     return { color: colorMap[score], label: textMap[score] };
   })();
@@ -2244,7 +2229,6 @@ const SignUp = () => {
     return next;
   };
 
-  /* ---------- signup submit ---------- */
   const handleSignup = async (e) => {
     e.preventDefault();
     const { next, captchaOk } = validateSignup();
@@ -2270,7 +2254,7 @@ const SignUp = () => {
         body: JSON.stringify({
           first_name: firstName,
           last_name: lastName,
-          phone: '', // no phone field in this form; backend should allow empty
+          phone: '',
           email: signupForm.email.trim(),
           password: signupForm.password,
         }),
@@ -2306,7 +2290,6 @@ const SignUp = () => {
     }
   };
 
-  /* ---------- login submit ---------- */
   const handleLogin = async (e) => {
     e.preventDefault();
     const next = validateLogin();
@@ -2345,7 +2328,6 @@ const SignUp = () => {
         const errorMsg = data.error || 'Login failed';
 
         if (errorMsg.toLowerCase().includes('verify')) {
-          // account exists but isn't verified → open verify modal
           localStorage.setItem('userEmail', loginForm.email.trim());
           if (data.user_id) localStorage.setItem('tempUserId', data.user_id);
 
@@ -2368,10 +2350,7 @@ const SignUp = () => {
     }
   };
 
-  /* ---------- modal handlers ---------- */
-  const handleVerified = () => {
-    /* called when verification succeeds — nothing extra needed */
-  };
+  const handleVerified = () => {};
 
   const handleVerifyContinue = () => {
     setVerifyModalOpen(false);
@@ -2685,68 +2664,9 @@ const SignUp = () => {
           </FormInner>
         </FormSide>
 
-        <AdSide>
-          <AdContent>
-            <AdBadge>
-              <span className="dot" />
-              Live markets · 0% commission on your first 30 days
-            </AdBadge>
-
-            <AdHeading>
-              Trade smarter.<br />
-              Grow <span>faster</span>.
-            </AdHeading>
-
-            <AdSub>
-              Real-time data, pro-grade charting, and instant order execution —
-              all in one beautifully simple platform built for serious traders.
-            </AdSub>
-
-            <FeatureList>
-              <Feature>
-                <FeatureIcon><BoltIcon /></FeatureIcon>
-                <FeatureText>
-                  <h4>Lightning-fast execution</h4>
-                  <p>Sub-second order routing across global markets with zero slippage on liquid pairs.</p>
-                </FeatureText>
-              </Feature>
-              <Feature>
-                <FeatureIcon><ChartIcon /></FeatureIcon>
-                <FeatureText>
-                  <h4>Pro charting & analytics</h4>
-                  <p>50+ indicators, multi-timeframe overlays, and drawing tools used by professionals.</p>
-                </FeatureText>
-              </Feature>
-              <Feature>
-                <FeatureIcon><ShieldIcon /></FeatureIcon>
-                <FeatureText>
-                  <h4>Bank-grade security</h4>
-                  <p>256-bit encryption, 2FA, and segregated accounts — your capital stays protected.</p>
-                </FeatureText>
-              </Feature>
-            </FeatureList>
-
-            <StatsRow>
-              <Stat>
-                <div className="value">2.4M+</div>
-                <div className="label">Active traders</div>
-              </Stat>
-              <Stat>
-                <div className="value">$18B</div>
-                <div className="label">Monthly volume</div>
-              </Stat>
-              <Stat>
-                <div className="value">99.99%</div>
-                <div className="label">Uptime SLA</div>
-              </Stat>
-            </StatsRow>
-          </AdContent>
-
-          <FloatingTicker>
-            <span className="sym">BTC/USD</span>
-            <span className="price">67,842.10</span>
-            <span className="chg">+2.41%</span>
-          </FloatingTicker>
+        {/* ============ AD SIDE — image slideshow, never scrolls ============ */}
+        <AdSide aria-label="Promotional slideshow">
+          <Slideshow />
         </AdSide>
       </Page>
 
