@@ -971,8 +971,6 @@ const Testimonial = styled.div`
 const Slideshow = () => {
   const total = SLIDES.length;
 
-  /* `order` is a shuffled list of SLIDES indices.
-     `pos` is the current position within that shuffled list. */
   const [order, setOrder] = useState(() => buildShuffledOrder(total));
   const [pos, setPos] = useState(0);
 
@@ -982,8 +980,6 @@ const Slideshow = () => {
     const t = setInterval(() => {
       setPos((p) => {
         const next = p + 1;
-
-        /* End of one full pass → reshuffle for the next round. */
         if (next >= total) {
           setOrder(buildShuffledOrder(total));
           return 0;
@@ -995,7 +991,6 @@ const Slideshow = () => {
     return () => clearInterval(t);
   }, [total]);
 
-  /* The SLIDES index currently visible. */
   const activeSlideIndex = order[pos];
 
   return (
@@ -1822,7 +1817,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
       }
     } catch (err) {
       console.error('Reset error:', err);
-      setErrors({ confirm: 'Cannot connect to server. Please check your network and  try again.' });
+      setErrors({ confirm: 'Cannot connect to server. Please check your network and try again.' });
       setLoading(false);
     }
   };
@@ -1965,7 +1960,7 @@ const SignUp = () => {
   const [mode, setMode] = useState('signup');
 
   const [signupForm, setSignupForm] = useState({
-    fullName: '', email: '', password: '', confirmPassword: '',
+    fullName: '', email: '', phone: '', password: '', confirmPassword: '',
   });
   const [signupErrors, setSignupErrors] = useState({});
   const [agreed, setAgreed] = useState(false);
@@ -2043,9 +2038,14 @@ const SignUp = () => {
     return { color: colorMap[score], label: textMap[score] };
   })();
 
+  const validatePhone = (phone) => {
+    const digits = phone.replace(/\D/g, '');
+    return digits.length >= 8 && digits.length <= 15;
+  };
+
   const validateSignup = () => {
     const next = {};
-    const { fullName, email, password, confirmPassword } = signupForm;
+    const { fullName, email, phone, password, confirmPassword } = signupForm;
 
     if (!fullName.trim()) next.fullName = 'Please enter your full name.';
     else if (fullName.trim().length < 2) next.fullName = 'Name must be at least 2 characters.';
@@ -2053,6 +2053,10 @@ const SignUp = () => {
     if (!email.trim()) next.email = 'Please enter your email.';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
       next.email = 'Enter a valid email address.';
+
+    if (!phone.trim()) next.phone = 'Please enter your phone number.';
+    else if (!validatePhone(phone.trim()))
+      next.phone = 'Enter a valid phone with country code (e.g. +254...).';
 
     if (!password) next.password = 'Please create a password.';
     else if (!passwordChecks.length) next.password = 'Password must be at least 8 characters.';
@@ -2102,8 +2106,11 @@ const SignUp = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: firstName, last_name: lastName, phone: '',
-          email: signupForm.email.trim(), password: signupForm.password,
+          first_name: firstName,
+          last_name: lastName,
+          phone: signupForm.phone.trim(),
+          email: signupForm.email.trim(),
+          password: signupForm.password,
         }),
       });
       const data = await response.json();
@@ -2114,7 +2121,7 @@ const SignUp = () => {
         setVerifyEmail(signupForm.email.trim());
         setVerifyModalOpen(true);
         setLoading(false); clearMessage(); refreshCaptcha();
-        setSignupForm({ fullName: '', email: '', password: '', confirmPassword: '' });
+        setSignupForm({ fullName: '', email: '', phone: '', password: '', confirmPassword: '' });
         setAgreed(false);
       } else {
         setMessage(data.error || 'Registration failed');
@@ -2250,6 +2257,16 @@ const SignUp = () => {
                 </Field>
 
                 <Field>
+                  <Label htmlFor="signupPhone">Phone number</Label>
+                  <InputWrap>
+                    <Input id="signupPhone" type="tel" placeholder="+254 712 345 678"
+                      autoComplete="tel" value={signupForm.phone}
+                      onChange={updateSignup('phone')} error={!!signupErrors.phone} />
+                  </InputWrap>
+                  {signupErrors.phone && <ErrorText>{signupErrors.phone}</ErrorText>}
+                </Field>
+
+                <Field>
                   <Label htmlFor="signupPassword">Password</Label>
                   <InputWrap>
                     <Input id="signupPassword" type={showPassword ? 'text' : 'password'}
@@ -2325,7 +2342,7 @@ const SignUp = () => {
                         if (signupErrors.agreed) setSignupErrors((p) => ({ ...p, agreed: '' }));
                       }} />
                     <span>
-                      I agree to the <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.
+                      I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.
                     </span>
                   </CheckLabel>
                 </RowBetween>
