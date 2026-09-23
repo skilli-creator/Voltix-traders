@@ -1,4 +1,4 @@
-// src/pages/SignUp.jsx — Dark theme + shuffled 11-image slideshow + marketing panel
+// src/pages/SignUp.jsx — Gold theme + M-mark logo + shuffled 11-image slideshow + marketing panel
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -61,32 +61,38 @@ const ENDPOINTS = {
 };
 
 /* ============================================================
-   THEME — DARK
+   THEME — DARK GOLD
    ============================================================ */
 const theme = {
   colors: {
-    bg: '#0a0d14',
-    surface: '#161d2e',
-    surfaceHover: '#1c2438',
-    border: '#232c42',
-    borderFocus: '#3b82f6',
-    text: '#f8fafc',
-    textSecondary: '#94a3b8',
-    textMuted: '#64748b',
-    accent: '#3b82f6',
-    accentSoft: 'rgba(59, 130, 246, 0.12)',
-    accentLine: 'rgba(59, 130, 246, 0.25)',
+    bg: '#0c0a06',
+    surface: '#1a150d',
+    surfaceHover: '#241d12',
+    border: '#332a1b',
+    borderFocus: '#d4af37',
+    text: '#faf6ec',
+    textSecondary: '#b3a486',
+    textMuted: '#7c7057',
+
+    accent: '#d4af37',
+    accentSoft: 'rgba(212, 175, 55, 0.12)',
+    accentLine: 'rgba(212, 175, 55, 0.28)',
+    goldLight: '#f7e08a',
+    onGold: '#1a1408',
+
     success: '#10b981',
     successSoft: 'rgba(16, 185, 129, 0.1)',
     warning: '#f59e0b',
     warningSoft: 'rgba(245, 158, 11, 0.1)',
     danger: '#ef4444',
     dangerSoft: 'rgba(239, 68, 68, 0.1)',
-    shadowSm: '0 4px 14px -4px rgba(0, 0, 0, 0.4)',
-    shadowMd: '0 12px 32px -12px rgba(0, 0, 0, 0.55)',
-    shadowLg: '0 24px 60px -20px rgba(0, 0, 0, 0.75)',
-    gradientAd: 'linear-gradient(135deg, #1e293b 0%, #0f172a 55%, #020617 100%)',
-    gradientBtn: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+
+    shadowSm: '0 4px 14px -4px rgba(0, 0, 0, 0.5)',
+    shadowMd: '0 12px 32px -12px rgba(0, 0, 0, 0.6)',
+    shadowLg: '0 24px 60px -20px rgba(0, 0, 0, 0.8)',
+
+    gradientAd: 'linear-gradient(135deg, #241b0d 0%, #140f07 55%, #050402 100%)',
+    gradientBtn: 'linear-gradient(135deg, #f7e08a 0%, #d4af37 48%, #a97b12 100%)',
   },
 };
 
@@ -260,7 +266,7 @@ const BrandLogo = styled.div`
   width: 42px;
   height: 42px;
   flex-shrink: 0;
-  filter: drop-shadow(0 8px 18px rgba(59, 130, 246, 0.4));
+  filter: drop-shadow(0 8px 18px rgba(212, 175, 55, 0.45));
 
   svg { display: block; width: 100%; height: 100%; }
   @media (max-width: 480px) { width: 38px; height: 38px; }
@@ -292,29 +298,41 @@ const BrandTag = styled.span`
 `;
 
 /* ============================================================
-   BRAND SVG LOGO
+   BRAND SVG LOGO — the letter "M"
    ============================================================ */
 const BrandLogoSvg = () => (
   <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
       <linearGradient id="mtBrandBg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#60a5fa" />
-        <stop offset="55%" stopColor="#3b82f6" />
-        <stop offset="100%" stopColor="#1d4ed8" />
+        <stop offset="0%" stopColor="#fbeaa4" />
+        <stop offset="42%" stopColor="#e6c356" />
+        <stop offset="78%" stopColor="#c99a24" />
+        <stop offset="100%" stopColor="#96690c" />
       </linearGradient>
-      <linearGradient id="mtBrandLine" x1="0%" y1="100%" x2="100%" y2="0%">
-        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.75" />
-        <stop offset="100%" stopColor="#ffffff" stopOpacity="1" />
+      <linearGradient id="mtBrandM" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#241b08" />
+        <stop offset="100%" stopColor="#3d2d0a" />
       </linearGradient>
     </defs>
+
+    {/* Rounded gold tile */}
     <rect x="0" y="0" width="48" height="48" rx="13" fill="url(#mtBrandBg)" />
-    <path d="M4 15 C4 8 8 4 15 4 L33 4 C40 4 44 8 44 15 L44 33 C44 40 40 44 33 44 L15 44 C8 44 4 40 4 33 Z"
-      fill="none" stroke="#ffffff" strokeOpacity="0.08" strokeWidth="1" />
-    <path d="M10 32 L16 23 L22 28 L33 14" stroke="url(#mtBrandLine)" strokeWidth="2.8"
-      strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    <path d="M27 14 L33 14 L33 20" stroke="#ffffff" strokeWidth="2.8"
-      strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    <circle cx="10" cy="32" r="2" fill="#ffffff" />
+
+    {/* Inner highlight ring */}
+    <path
+      d="M4 15 C4 8 8 4 15 4 L33 4 C40 4 44 8 44 15 L44 33 C44 40 40 44 33 44 L15 44 C8 44 4 40 4 33 Z"
+      fill="none" stroke="#ffffff" strokeOpacity="0.28" strokeWidth="1"
+    />
+
+    {/* The letter M */}
+    <path
+      d="M13.5 34.5 V15.5 L24 28.8 L34.5 15.5 V34.5"
+      fill="none"
+      stroke="url(#mtBrandM)"
+      strokeWidth="4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -388,7 +406,7 @@ const Input = styled.input`
   &:focus {
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.borderFocus)};
     box-shadow: 0 0 0 3px
-      ${props => (props.error ? 'rgba(239, 68, 68, 0.18)' : 'rgba(59, 130, 246, 0.18)')};
+      ${props => (props.error ? 'rgba(239, 68, 68, 0.18)' : 'rgba(212, 175, 55, 0.18)')};
   }
 `;
 
@@ -452,7 +470,7 @@ const CheckLabel = styled.label`
     top: 1.5px;
     width: 4px;
     height: 9px;
-    border: solid #fff;
+    border: solid ${theme.colors.onGold};
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
   }
@@ -489,12 +507,12 @@ const SubmitBtn = styled.button`
   background: ${theme.colors.gradientBtn};
   border: none;
   border-radius: 10px;
-  color: #fff;
+  color: ${theme.colors.onGold};
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   letter-spacing: 0.1px;
-  box-shadow: 0 8px 22px -10px rgba(59, 130, 246, 0.7);
+  box-shadow: 0 8px 22px -10px rgba(212, 175, 55, 0.75);
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   display: flex;
@@ -502,7 +520,7 @@ const SubmitBtn = styled.button`
   justify-content: center;
   gap: 8px;
 
-  &:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 28px -10px rgba(59, 130, 246, 0.85); }
+  &:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 28px -10px rgba(212, 175, 55, 0.9); }
   &:active:not(:disabled) { transform: translateY(0) scale(0.99); }
   &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 `;
@@ -510,8 +528,8 @@ const SubmitBtn = styled.button`
 const Spinner = styled.span`
   width: 15px;
   height: 15px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-top-color: #fff;
+  border: 2px solid rgba(26, 20, 8, 0.3);
+  border-top-color: ${theme.colors.onGold};
   border-radius: 50%;
   animation: ${spinAnim} 0.7s linear infinite;
 `;
@@ -596,7 +614,7 @@ const CaptchaFrame = styled.div`
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  background: #0f172a;
+  background: #14100a;
   svg { display: block; width: 100%; height: 100%; }
 `;
 
@@ -613,7 +631,7 @@ const RefreshBtn = styled.button`
   transition: background 0.15s ease, color 0.15s ease;
 
   svg { width: 18px; height: 18px; transition: transform 0.4s ease; }
-  &:hover { background: ${theme.colors.surfaceHover}; color: ${theme.colors.text}; }
+  &:hover { background: ${theme.colors.surfaceHover}; color: ${theme.colors.accent}; }
   &:hover svg { transform: rotate(180deg); }
   &:active { transform: scale(0.96); }
 `;
@@ -670,8 +688,8 @@ const AdSide = styled.div`
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+      linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
     background-size: 44px 44px;
     mask-image: radial-gradient(ellipse at center, #000 25%, transparent 80%);
     -webkit-mask-image: radial-gradient(ellipse at center, #000 25%, transparent 80%);
@@ -686,7 +704,7 @@ const AdSide = styled.div`
     width: 460px;
     height: 460px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 65%);
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.32) 0%, transparent 65%);
     pointer-events: none;
   }
 
@@ -710,7 +728,7 @@ const AdBadge = styled.div`
   border-radius: 999px;
   background: ${theme.colors.accentSoft};
   border: 1px solid ${theme.colors.accentLine};
-  color: #93c5fd;
+  color: ${theme.colors.goldLight};
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -740,10 +758,10 @@ const AdHeading = styled.h2`
   font-weight: 700;
   letter-spacing: -1px;
   margin: 0 0 12px;
-  color: #f8fafc;
+  color: #fbf7ec;
 
   span {
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #fbeaa4 0%, #d4af37 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -766,12 +784,12 @@ const SlideshowCard = styled.div`
   max-height: 240px;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  border: 1px solid rgba(212, 175, 55, 0.18);
   box-shadow:
-    0 20px 40px -22px rgba(0, 0, 0, 0.85),
-    0 0 0 1px rgba(59, 130, 246, 0.06);
+    0 20px 40px -22px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(212, 175, 55, 0.08);
   margin-bottom: 20px;
-  background: #0f172a;
+  background: #140f07;
 `;
 
 const SlideLayer = styled.div`
@@ -812,10 +830,10 @@ const Dot = styled.button`
   border: none;
   padding: 0;
   cursor: pointer;
-  background: ${props => (props.active ? '#ffffff' : 'rgba(255, 255, 255, 0.45)')};
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  background: ${props => (props.active ? '#f7e08a' : 'rgba(255, 255, 255, 0.45)')};
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   transition: width 0.35s ease, background 0.35s ease;
-  &:hover { background: rgba(255, 255, 255, 0.85); }
+  &:hover { background: rgba(255, 255, 255, 0.9); }
 `;
 
 const SlideLabel = styled.div`
@@ -825,9 +843,9 @@ const SlideLabel = styled.div`
   z-index: 3;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  color: #cbd5e1;
+  background: rgba(20, 15, 7, 0.78);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #e4d7b4;
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.4px;
@@ -849,14 +867,14 @@ const MiniFeature = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 12px 12px 13px;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(45, 36, 20, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.12);
   border-radius: 12px;
   transition: transform 0.2s ease, border-color 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
-    border-color: rgba(59, 130, 246, 0.35);
+    border-color: rgba(212, 175, 55, 0.4);
   }
 
   .icon {
@@ -868,14 +886,14 @@ const MiniFeature = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #60a5fa;
+    color: ${theme.colors.goldLight};
     svg { width: 14px; height: 14px; }
   }
 
   h5 {
     font-size: 12px;
     font-weight: 700;
-    color: #e2e8f0;
+    color: #ece3cd;
     margin: 0;
     letter-spacing: -0.1px;
   }
@@ -894,8 +912,8 @@ const StatsStrip = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   padding: 14px 16px;
-  background: rgba(30, 41, 59, 0.45);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: rgba(45, 36, 20, 0.45);
+  border: 1px solid rgba(212, 175, 55, 0.12);
   border-radius: 14px;
   margin-bottom: 16px;
 
@@ -908,7 +926,7 @@ const StatsStrip = styled.div`
       font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.4px;
-      color: #f1f5f9;
+      color: ${theme.colors.goldLight};
     }
     .label {
       font-size: 10.5px;
@@ -925,8 +943,8 @@ const Testimonial = styled.div`
   display: flex;
   gap: 12px;
   padding: 14px 16px;
-  background: rgba(15, 23, 42, 0.55);
-  border: 1px solid rgba(148, 163, 184, 0.08);
+  background: rgba(20, 15, 7, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.12);
   border-left: 2px solid ${theme.colors.accent};
   border-radius: 12px;
 
@@ -935,13 +953,13 @@ const Testimonial = styled.div`
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #f7e08a 0%, #c99a24 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 13px;
     font-weight: 800;
-    color: #fff;
+    color: ${theme.colors.onGold};
     letter-spacing: 0.3px;
   }
 
@@ -950,7 +968,7 @@ const Testimonial = styled.div`
 
     .quote {
       font-size: 12.5px;
-      color: #cbd5e1;
+      color: #ded2b6;
       line-height: 1.55;
       margin: 0 0 6px;
       font-style: italic;
@@ -961,7 +979,7 @@ const Testimonial = styled.div`
       color: ${theme.colors.textMuted};
       font-weight: 600;
     }
-    .who strong { color: #e2e8f0; font-weight: 700; }
+    .who strong { color: #ece3cd; font-weight: 700; }
   }
 `;
 
@@ -1043,14 +1061,14 @@ const ModalBackdrop = styled.div`
 const ModalCard = styled.div`
   width: 100%;
   max-width: 440px;
-  background: #0d1421;
+  background: #120e07;
   border: 1px solid ${theme.colors.border};
   border-radius: 18px;
   padding: 28px 26px 24px;
   position: relative;
   box-shadow:
-    0 24px 70px -12px rgba(0, 0, 0, 0.85),
-    0 0 0 1px rgba(59, 130, 246, 0.08);
+    0 24px 70px -12px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(212, 175, 55, 0.1);
   animation: ${modalPopIn} 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @media (max-width: 480px) { padding: 22px 18px 18px; border-radius: 16px; }
@@ -1072,7 +1090,7 @@ const ModalClose = styled.button`
   justify-content: center;
   transition: background 0.15s ease, color 0.15s ease;
 
-  &:hover { background: rgba(255, 255, 255, 0.05); color: ${theme.colors.text}; }
+  &:hover { background: rgba(212, 175, 55, 0.08); color: ${theme.colors.text}; }
   svg { width: 18px; height: 18px; }
 `;
 
@@ -1128,7 +1146,7 @@ const SecondaryBtn = styled.button`
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   font-family: inherit;
 
-  &:hover { background: ${theme.colors.surfaceHover}; color: ${theme.colors.text}; border-color: #334155; }
+  &:hover { background: ${theme.colors.surfaceHover}; color: ${theme.colors.text}; border-color: #4a3c22; }
 `;
 
 const LinkButton = styled.button`
@@ -1178,7 +1196,7 @@ const OtpBox = styled.input`
     border-color: ${props => (props.error ? theme.colors.danger : theme.colors.accent)};
     background: ${theme.colors.surfaceHover};
     box-shadow: 0 0 0 3px
-      ${props => (props.error ? 'rgba(239, 68, 68, 0.18)' : 'rgba(59, 130, 246, 0.18)')};
+      ${props => (props.error ? 'rgba(239, 68, 68, 0.18)' : 'rgba(212, 175, 55, 0.18)')};
   }
   &:disabled { opacity: 0.6; }
 `;
@@ -1306,7 +1324,7 @@ const MailSealIcon = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="mailGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#60a5fa" /><stop offset="100%" stopColor="#2563eb" />
+        <stop offset="0%" stopColor="#f7e08a" /><stop offset="100%" stopColor="#c99a24" />
       </linearGradient>
     </defs>
     <rect x="3" y="7" width="26" height="19" rx="4" fill="url(#mailGrad)" opacity="0.16" stroke="url(#mailGrad)" strokeWidth="1.6" />
@@ -1333,7 +1351,7 @@ const ShieldLockIcon = () => (
   <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="shieldGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stopColor="#60a5fa" /><stop offset="100%" stopColor="#2563eb" />
+        <stop offset="0%" stopColor="#f7e08a" /><stop offset="100%" stopColor="#c99a24" />
       </linearGradient>
     </defs>
     <path d="M16 3 L28 8 V16 C28 23 23 27 16 30 C9 27 4 23 4 16 V8 Z" fill="url(#shieldGrad)" opacity="0.14" stroke="url(#shieldGrad)" strokeWidth="1.8" strokeLinejoin="round" />
@@ -1398,7 +1416,7 @@ const CaptchaSvg = ({ captcha }) => {
     <svg viewBox="0 0 200 66" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id={`captchaBg-${seed}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#0b1224" /><stop offset="100%" stopColor="#172033" />
+          <stop offset="0%" stopColor="#120e08" /><stop offset="100%" stopColor="#241b0e" />
         </linearGradient>
         <filter id={`captchaWarp-${seed}`} x="-10%" y="-10%" width="120%" height="120%">
           <feTurbulence type="turbulence" baseFrequency="0.02 0.05" numOctaves="2" seed={seed % 100} result="turbulence" />
