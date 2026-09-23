@@ -1,4 +1,4 @@
-// src/pages/SignUp.jsx — Gold theme + M-mark logo + shuffled 11-image slideshow + marketing panel
+// src/pages/SignUp.jsx — Gold theme + M-with-crossline logo + shuffled 32-image slideshow + marketing panel
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,27 @@ import image8 from '../assets/images/image8.png';
 import image9 from '../assets/images/image9.png';
 import image10 from '../assets/images/image10.png';
 import image11 from '../assets/images/image11.png';
+import image12 from '../assets/images/image12.png';
+import image13 from '../assets/images/image13.png';
+import image14 from '../assets/images/image14.png';
+import image15 from '../assets/images/image15.png';
+import image16 from '../assets/images/image16.png';
+import image17 from '../assets/images/image17.png';
+import image18 from '../assets/images/image18.png';
+import image19 from '../assets/images/image19.png';
+import image20 from '../assets/images/image20.png';
+import image21 from '../assets/images/image21.png';
+import image22 from '../assets/images/image22.png';
+import image23 from '../assets/images/image23.png';
+import image24 from '../assets/images/image24.png';
+import image25 from '../assets/images/image25.png';
+import image26 from '../assets/images/image26.png';
+import image27 from '../assets/images/image27.png';
+import image28 from '../assets/images/image28.png';
+import image29 from '../assets/images/image29.png';
+import image30 from '../assets/images/image30.png';
+import image31 from '../assets/images/image31.png';
+import image32 from '../assets/images/image32.png';
 
 const SLIDES = [
   { src: image1,  alt: 'MyTradeApp trading platform' },
@@ -31,6 +52,27 @@ const SLIDES = [
   { src: image9,  alt: 'MyTradeApp risk tools' },
   { src: image10, alt: 'MyTradeApp mobile app' },
   { src: image11, alt: 'MyTradeApp community' },
+  { src: image12, alt: 'MyTradeApp charting' },
+  { src: image13, alt: 'MyTradeApp indicators' },
+  { src: image14, alt: 'MyTradeApp depth of market' },
+  { src: image15, alt: 'MyTradeApp execution' },
+  { src: image16, alt: 'MyTradeApp backtesting' },
+  { src: image17, alt: 'MyTradeApp strategy builder' },
+  { src: image18, alt: 'MyTradeApp performance' },
+  { src: image19, alt: 'MyTradeApp alerts' },
+  { src: image20, alt: 'MyTradeApp news feed' },
+  { src: image21, alt: 'MyTradeApp sentiment' },
+  { src: image22, alt: 'MyTradeApp calendar' },
+  { src: image23, alt: 'MyTradeApp screener' },
+  { src: image24, alt: 'MyTradeApp reports' },
+  { src: image25, alt: 'MyTradeApp wallet' },
+  { src: image26, alt: 'MyTradeApp deposits' },
+  { src: image27, alt: 'MyTradeApp withdrawals' },
+  { src: image28, alt: 'MyTradeApp security center' },
+  { src: image29, alt: 'MyTradeApp account settings' },
+  { src: image30, alt: 'MyTradeApp desktop terminal' },
+  { src: image31, alt: 'MyTradeApp dark mode' },
+  { src: image32, alt: 'MyTradeApp trader dashboard' },
 ];
 
 const SLIDE_INTERVAL_MS = 5000;
@@ -298,40 +340,41 @@ const BrandTag = styled.span`
 `;
 
 /* ============================================================
-   BRAND SVG LOGO — the letter "M"
+   BRAND SVG LOGO — letter "M" with a crossline
    ============================================================ */
 const BrandLogoSvg = () => (
   <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
-      <linearGradient id="mtBrandBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <linearGradient id="mtBrandGold" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#fbeaa4" />
         <stop offset="42%" stopColor="#e6c356" />
         <stop offset="78%" stopColor="#c99a24" />
         <stop offset="100%" stopColor="#96690c" />
       </linearGradient>
-      <linearGradient id="mtBrandM" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#241b08" />
-        <stop offset="100%" stopColor="#3d2d0a" />
+      <linearGradient id="mtBrandCross" x1="0%" y1="100%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#f7e08a" />
+        <stop offset="100%" stopColor="#c99a24" />
       </linearGradient>
     </defs>
 
-    {/* Rounded gold tile */}
-    <rect x="0" y="0" width="48" height="48" rx="13" fill="url(#mtBrandBg)" />
-
-    {/* Inner highlight ring */}
-    <path
-      d="M4 15 C4 8 8 4 15 4 L33 4 C40 4 44 8 44 15 L44 33 C44 40 40 44 33 44 L15 44 C8 44 4 40 4 33 Z"
-      fill="none" stroke="#ffffff" strokeOpacity="0.28" strokeWidth="1"
-    />
-
     {/* The letter M */}
     <path
-      d="M13.5 34.5 V15.5 L24 28.8 L34.5 15.5 V34.5"
+      d="M14 36 V12 L24 26 L34 12 V36"
       fill="none"
-      stroke="url(#mtBrandM)"
+      stroke="url(#mtBrandGold)"
       strokeWidth="4"
       strokeLinecap="round"
       strokeLinejoin="round"
+    />
+
+    {/* Crossline — dynamic diagonal slash through the M */}
+    <line
+      x1="8" y1="38"
+      x2="40" y2="10"
+      stroke="url(#mtBrandCross)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      opacity="0.9"
     />
   </svg>
 );
@@ -818,13 +861,13 @@ const SlideDots = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
   padding: 0 8px;
 `;
 
 const Dot = styled.button`
-  width: ${props => (props.active ? '22px' : '6px')};
+  width: ${props => (props.active ? '20px' : '6px')};
   height: 6px;
   border-radius: 999px;
   border: none;
