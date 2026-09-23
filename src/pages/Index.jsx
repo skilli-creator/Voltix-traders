@@ -1822,7 +1822,7 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
       }
     } catch (err) {
       console.error('Reset error:', err);
-      setErrors({ confirm: 'Cannot connect to server. Please try again.' });
+      setErrors({ confirm: 'Cannot connect to server. Please check your network and  try again.' });
       setLoading(false);
     }
   };
