@@ -19,26 +19,7 @@ import image9 from '../assets/images/image9.png';
 import image10 from '../assets/images/image10.png';
 import image11 from '../assets/images/image11.png';
 import image12 from '../assets/images/image12.png';
-import image13 from '../assets/images/image13.png';
-import image14 from '../assets/images/image14.png';
-import image15 from '../assets/images/image15.png';
-import image16 from '../assets/images/image16.png';
-import image17 from '../assets/images/image17.png';
-import image18 from '../assets/images/image18.png';
-import image19 from '../assets/images/image19.png';
-import image20 from '../assets/images/image20.png';
-import image21 from '../assets/images/image21.png';
-import image22 from '../assets/images/image22.png';
-import image23 from '../assets/images/image23.png';
-import image24 from '../assets/images/image24.png';
-import image25 from '../assets/images/image25.png';
-import image26 from '../assets/images/image26.png';
-import image27 from '../assets/images/image27.png';
-import image28 from '../assets/images/image28.png';
-import image29 from '../assets/images/image29.png';
-import image30 from '../assets/images/image30.png';
-import image31 from '../assets/images/image31.png';
-import image32 from '../assets/images/image32.png';
+
 
 const SLIDES = [
   { src: image1,  alt: 'MyTradeApp trading platform' },
@@ -53,26 +34,7 @@ const SLIDES = [
   { src: image10, alt: 'MyTradeApp mobile app' },
   { src: image11, alt: 'MyTradeApp community' },
   { src: image12, alt: 'MyTradeApp charting' },
-  { src: image13, alt: 'MyTradeApp indicators' },
-  { src: image14, alt: 'MyTradeApp depth of market' },
-  { src: image15, alt: 'MyTradeApp execution' },
-  { src: image16, alt: 'MyTradeApp backtesting' },
-  { src: image17, alt: 'MyTradeApp strategy builder' },
-  { src: image18, alt: 'MyTradeApp performance' },
-  { src: image19, alt: 'MyTradeApp alerts' },
-  { src: image20, alt: 'MyTradeApp news feed' },
-  { src: image21, alt: 'MyTradeApp sentiment' },
-  { src: image22, alt: 'MyTradeApp calendar' },
-  { src: image23, alt: 'MyTradeApp screener' },
-  { src: image24, alt: 'MyTradeApp reports' },
-  { src: image25, alt: 'MyTradeApp wallet' },
-  { src: image26, alt: 'MyTradeApp deposits' },
-  { src: image27, alt: 'MyTradeApp withdrawals' },
-  { src: image28, alt: 'MyTradeApp security center' },
-  { src: image29, alt: 'MyTradeApp account settings' },
-  { src: image30, alt: 'MyTradeApp desktop terminal' },
-  { src: image31, alt: 'MyTradeApp dark mode' },
-  { src: image32, alt: 'MyTradeApp trader dashboard' },
+  
 ];
 
 const SLIDE_INTERVAL_MS = 5000;
