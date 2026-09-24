@@ -446,6 +446,60 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  /* ==================================================================
+     BROWSER TAB / CHROME COLOR — matches the active theme.
+
+     The mobile browser's URL bar / toolbar color is controlled by
+     `<meta name="theme-color">`. On desktop it also influences the
+     "tab strip" color in some browsers (Chrome on Android, Safari on
+     iOS 15+, Edge on Android).
+
+     We keep the meta tag in sync with `currentTheme`:
+       • `<meta name="theme-color">`  → the TopBar's surface color,
+         which is what the user sees at the top of the viewport.
+       • `<meta name="color-scheme">` → light/dark, so form controls
+         and the OS scrollbar respect the theme.
+       • `documentElement.style.backgroundColor` → matches `bg` so the
+         rubber-band overscroll area (visible on iOS/Android when you
+         scroll past the top or bottom) doesn't flash the default
+         white/black.
+
+     The tags are created if missing, updated if present. Because the
+     effect re-runs whenever `currentTheme` changes, switching themes
+     in the TopBar instantly re-colors the browser chrome.
+     ================================================================== */
+  useEffect(() => {
+    const themeObj = themes[currentTheme] || themes.dark;
+    const colors = themeObj.colors || {};
+    const surface = colors.surface || colors.bg || '#0b0a08';
+    const bg = colors.bg || surface;
+    const scheme = themeObj.category === 'light' ? 'light' : 'dark';
+
+    // --- theme-color ---
+    let metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (!metaTheme) {
+      metaTheme = document.createElement('meta');
+      metaTheme.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaTheme);
+    }
+    metaTheme.setAttribute('content', surface);
+
+    // --- color-scheme ---
+    let metaScheme = document.querySelector('meta[name="color-scheme"]');
+    if (!metaScheme) {
+      metaScheme = document.createElement('meta');
+      metaScheme.setAttribute('name', 'color-scheme');
+      document.head.appendChild(metaScheme);
+    }
+    metaScheme.setAttribute('content', scheme);
+
+    // --- overscroll / rubber-band background ---
+    document.documentElement.style.backgroundColor = bg;
+    if (document.body) document.body.style.backgroundColor = bg;
+
+    return () => {};
+  }, [currentTheme]);
+
   /* Measure the REAL TopBar height so we can pad the top of
      DashboardContainer exactly. On mobile the wrapper is position:fixed
      and the <TopBar> inside it is ALSO position:fixed — so the wrapper's
