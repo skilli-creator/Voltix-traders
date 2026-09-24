@@ -688,14 +688,10 @@ const HistoryList = styled.div`
 // ============================================
 // CORE CONTAINERS
 // ============================================
-// ✅ TopBar behaviour:
-//    - Desktop: always sticky at the top of the page flow.
-//    - Mobile (<= 768px): `position: fixed` so it always pins to the very
-//      top of the phone's viewport (covering the browser chrome / tab strip),
-//      and slides up out of view on scroll-down via transform.
-//    - `env(safe-area-inset-top)` makes it extend up into the notch area.
-//    - A sibling spacer (rendered below) reserves the same height so the page
-//      content isn't hidden behind the fixed bar.
+// Desktop: sticky at the top of the page flow.
+// Mobile:  fixed at the very top of the phone's viewport so it always
+//          covers the browser-tab / notch strip. The companion
+//          `TopBarSpacer` below reserves its height.
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -708,9 +704,7 @@ const TopBar = styled.header`
   z-index: 200;
   min-height: 76px;
   flex-shrink: 0;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-  will-change: transform;
 
   @media (max-width: 1024px) {
     padding: 12px 20px;
@@ -718,23 +712,18 @@ const TopBar = styled.header`
     gap: 12px;
   }
 
-  /* Mobile: fixed at the very top of the viewport, slides up when hidden */
+  /* Mobile: pin to the very top of the viewport */
   @media (max-width: 768px) {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    /* Extend up into the phone notch / browser-chrome area */
     padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
     min-height: auto;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
-    transform: translateY(${props => (props.$hidden ? '-120%' : '0')});
     z-index: 200;
-    /* Ensure the bar visually "covers" the top strip even when the
-       browser URL bar is showing */
-    will-change: transform;
   }
 
   @media (max-width: 480px) {
@@ -743,16 +732,13 @@ const TopBar = styled.header`
   }
 `;
 
-// ✅ Spacer that reserves space for the fixed mobile bar so the page
-//    content sits below it rather than underneath it.
-//    Hidden on desktop (where the bar is in normal flow via sticky).
+// Reserves space for the fixed mobile bar so page content is not hidden.
+// Hidden on desktop (where the bar is in normal flow via sticky).
 const TopBarSpacer = styled.div`
   display: none;
 
   @media (max-width: 768px) {
     display: block;
-    /* Approx mobile bar height — matches the padding + content.
-       Bump this if your mobile bar wraps to a taller layout. */
     height: 96px;
   }
 
@@ -1028,8 +1014,6 @@ const FundsOption = styled.div`
   }
 `;
 
-// ✅ Display currencies: USD, EUR, KSH, BTC
-//    `rate` is per 1 USD (base). `decimals` controls display precision.
 const DISPLAY_CURRENCIES = [
   { code: 'USD', flag: '🇺🇸', name: 'US Dollar',       symbol: '$',   rate: 1,        decimals: 2 },
   { code: 'EUR', flag: '🇪🇺', name: 'Euro',            symbol: '€',   rate: 0.92,     decimals: 2 },
@@ -1185,7 +1169,6 @@ const THEME_OPTIONS = [
   { key: 'orange', name: 'Orange', color: '#0c0703' },
 ];
 
-// ✅ Platform metadata: colors + definitions used for both the selector and dropdown
 const PLATFORM_OPTIONS = {
   deriv: { label: 'deriv', color: '#ff444f', definition: 'Synthetic Indices' },
   forex: { label: 'forex', color: '#3b82f6', definition: 'Currency Pairs' },
@@ -1240,7 +1223,6 @@ const PlatformSelector = styled.button`
   gap: 4px;
   background: transparent;
   border: none;
-  /* ✅ color is now driven by the selected market */
   color: ${props => props.$color || '#ff444f'};
   font-style: italic;
   font-weight: 900;
@@ -1254,7 +1236,7 @@ const PlatformSelector = styled.button`
   .chevron {
     display: flex;
     align-items: center;
-    color: inherit; /* ✅ chevron now always matches the market color */
+    color: inherit;
     transition: color 0.25s ease;
   }
 
@@ -1273,7 +1255,6 @@ const PlatformSelector = styled.button`
   }
 `;
 
-// ✅ Dropdown item with market-colored dot + muted definition
 const PlatformOptionItem = styled.div`
   display: flex;
   align-items: center;
@@ -1391,68 +1372,6 @@ const SidebarToggle = styled.button`
 `;
 
 // ============================================
-// SCROLL HIDE HOOK (mobile only)
-// ============================================
-// Returns `true` when the user scrolls down (content moves up),
-// Returns `false` when the user scrolls up (content moves down).
-// Only active on mobile (<= 768px). On desktop, always returns false.
-const useHideOnScroll = () => {
-  const [hidden, setHidden] = useState(false);
-
-  useEffect(() => {
-    // Disable behaviour on desktop
-    if (typeof window === 'undefined') return;
-
-    let lastY = window.scrollY;
-    let ticking = false;
-
-    const isMobile = () => window.innerWidth <= 768;
-
-    const onScroll = () => {
-      if (!isMobile()) {
-        if (hidden) setHidden(false);
-        return;
-      }
-
-      if (ticking) return;
-      ticking = true;
-
-      requestAnimationFrame(() => {
-        const y = window.scrollY;
-        const diff = y - lastY;
-
-        // Ignore micro scrolls
-        if (Math.abs(diff) > 6) {
-          if (diff > 0 && y > 60) {
-            // Scrolling DOWN → hide the top bar
-            setHidden(true);
-          } else if (diff < 0) {
-            // Scrolling UP → show the top bar
-            setHidden(false);
-          }
-          lastY = y;
-        }
-        ticking = false;
-      });
-    };
-
-    // Also reset when the window is resized to desktop
-    const onResize = () => {
-      if (!isMobile() && hidden) setHidden(false);
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onResize);
-    };
-  }, [hidden]);
-
-  return hidden;
-};
-
-// ============================================
 // MAIN COMPONENT
 // ============================================
 const TopPanel = ({ 
@@ -1483,9 +1402,6 @@ const TopPanel = ({
 
   const [depositPending, setDepositPending] = useState(false);
 
-  // ✅ Scroll hide state (mobile only)
-  const hideTopBar = useHideOnScroll();
-  
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
   const fundsRef = useRef(null);
@@ -1515,24 +1431,18 @@ const TopPanel = ({
   const isDemo = accountType === 'demo';
 
   // ✅ Currency helpers ------------------------------------------------------
-  // Internal account balances are always stored in USD. The helpers below
-  // convert USD → currently selected display currency before formatting.
-
   const getCurrencyInfo = (code = selectedCurrency) =>
     DISPLAY_CURRENCIES.find(c => c.code === code) || DISPLAY_CURRENCIES[0];
 
-  // Returns the numeric value after converting from USD to the selected currency.
   const convertFromUSD = (usdAmount, code = selectedCurrency) => {
     const info = getCurrencyInfo(code);
     return usdAmount * info.rate;
   };
 
-  // Formats a raw amount (in the selected currency, not USD) as a string.
   const formatAmount = (amountInSelectedCurrency, { withSymbol = true, code = selectedCurrency } = {}) => {
     const info = getCurrencyInfo(code);
     let fixed = amountInSelectedCurrency.toFixed(info.decimals);
 
-    // Thousands separators only for "normal" currencies (not BTC)
     if (info.decimals <= 2) {
       fixed = fixed.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
@@ -1540,16 +1450,13 @@ const TopPanel = ({
     return withSymbol ? `${info.symbol} ${fixed}` : fixed;
   };
 
-  // Converts a USD amount and formats it in the selected currency.
   const formatFromUSD = (usdAmount, opts) =>
     formatAmount(convertFromUSD(usdAmount), opts);
 
-  // Kept for backwards compatibility with the previous code paths.
   const getFormattedBalance = (acc) => formatFromUSD(acc.balance);
 
   const getMaskedBalance = () => {
     const info = getCurrencyInfo();
-    // For high-precision currencies (BTC), mask with more dots
     const mask = info.decimals > 2 ? `${'*'.repeat(1)}.${'*'.repeat(info.decimals)}` : '****.**';
     return `${info.symbol} ${mask}`;
   };
@@ -1685,7 +1592,6 @@ const TopPanel = ({
     { icon: <HistoryIcon />, name: 'History', desc: 'View transaction history', action: 'history' },
   ];
 
-  // Sample transactions stored in USD — will be converted for display.
   const sampleTransactions = [
     { id: 1, type: 'deposit', name: 'Deposit via M-Pesa', date: 'Today, 10:23 AM', amount: 50.00, positive: true, ref: 'MP-2024-00123' },
     { id: 2, type: 'withdraw', name: 'Withdrawal to M-Pesa', date: 'Yesterday, 3:15 PM', amount: 20.00, positive: false, ref: 'WD-2024-00456' },
@@ -1713,7 +1619,6 @@ const TopPanel = ({
             </OverviewBalance>
             <OverviewStats>
               <div className="stat">
-                {/* ✅ Converted to the selected display currency */}
                 <div className="stat-value">
                   {formatFromUSD(parseFloat(currentAccount.balance) * 0.1, { withSymbol: false })}
                 </div>
@@ -1862,7 +1767,6 @@ const TopPanel = ({
               <div className="input-wrap">
                 <span className="prefix" style={{ fontSize: '11px', fontWeight: '500' }}>Wallet</span>
                 <input type="text" value="Deriv Main Wallet" disabled style={{ fontWeight: '600', opacity: 0.7 }} />
-                {/* ✅ Shows the balance in the currently selected currency */}
                 <span className="suffix">{getFormattedBalance(currentAccount)}</span>
               </div>
             </FormGroup>
@@ -1914,7 +1818,6 @@ const TopPanel = ({
                       <div className="h-reference">Ref: {tx.ref}</div>
                     </div>
                   </div>
-                  {/* ✅ Converted to the selected display currency */}
                   <div className={`h-amount ${tx.positive ? 'positive' : 'negative'}`}>
                     {tx.positive ? '+' : '-'}{formatFromUSD(tx.amount)}
                   </div>
@@ -1931,8 +1834,7 @@ const TopPanel = ({
 
   return (
     <>
-      {/* ✅ Pass $hidden to TopBar so mobile slides up on scroll-down */}
-      <TopBar $hidden={hideTopBar}>
+      <TopBar>
         <LeftSection>
           <SidebarToggle isOpen={isSidebarOpen} onClick={onSidebarToggle} aria-label="Toggle sidebar">
             <span className="line" />
@@ -2063,7 +1965,7 @@ const TopPanel = ({
         </RightSection>
       </TopBar>
 
-      {/* ✅ Spacer only renders on mobile — reserves space below the fixed bar */}
+      {/* Spacer only renders on mobile — reserves space below the fixed bar */}
       <TopBarSpacer />
 
       {fundModalAction && (
