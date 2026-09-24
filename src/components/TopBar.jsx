@@ -734,6 +734,7 @@ const TopBar = styled.header`
       pointer-events: none;
       transition: none !important;
 
+      /* Hide the RightSection — 2nd direct child of the header. */
       & > *:nth-of-type(2) {
         opacity: 0;
         visibility: hidden;
@@ -742,6 +743,8 @@ const TopBar = styled.header`
         animation: none !important;
       }
 
+      /* Inside the LeftSection (1st direct child), hide everything
+         except the toggle. */
       & > *:nth-of-type(1) > *:not(.sidebar-toggle) {
         opacity: 0;
         visibility: hidden;
@@ -750,6 +753,7 @@ const TopBar = styled.header`
         animation: none !important;
       }
 
+      /* Keep the toggle and its contents fully visible / interactive. */
       & .sidebar-toggle,
       & .sidebar-toggle * {
         opacity: 1;
@@ -822,7 +826,7 @@ const DropdownContainer = styled.div`
             16px on each side, plus a max-height cap with vertical
             scroll. Because the trigger button sits in the right-aligned
             RightSection, the button's right edge is at most ~14px from
-            the viewport right edge — so anchoring the dropdown to the
+            the viewport right edge - so anchoring the dropdown to the
             button's right edge and capping its width automatically
             keeps it fully on-screen at every phone width. */
 const GlassDropdownMenu = styled.div`
@@ -846,9 +850,9 @@ const GlassDropdownMenu = styled.div`
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 300;
   /* Vertical scroll when content overflows; horizontal clipped to keep
-     the rounded corners clean. (Previously this was a single
-     `overflow: hidden` which silently disabled the earlier
-     `overflow-y: auto` and stopped tall dropdowns from scrolling.) */
+     the rounded corners clean. Previously this was a single
+     "overflow: hidden" which silently disabled the earlier
+     "overflow-y: auto" and stopped tall dropdowns from scrolling. */
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -883,7 +887,7 @@ const ThemeDropdownMenu = styled(GlassDropdownMenu)`
   @media (max-width: 768px) {
     min-width: 0;
     width: auto;
-    /* Left-anchored to a mid-screen trigger — cap so the right edge
+    /* Left-anchored to a mid-screen trigger - cap so the right edge
        never clips on small phones. */
     max-width: calc(100vw - 32px);
   }
