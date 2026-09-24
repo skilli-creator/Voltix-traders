@@ -2435,10 +2435,15 @@ const TermsSection = styled.div`
 `;
 
 // ============================================
-// SIDEBAR LAYOUT (positioned below the TopBar)
+// SIDEBAR LAYOUT (FULL PAGE — covers the TopBar)
 // ============================================
-const TOPBAR_HEIGHT = '76px';
-
+// The sidebar now covers the ENTIRE viewport, including the TopBar.
+// It is anchored to inset: 0 (top/right/bottom/left = 0) and sits above
+// the TopBar's own stacking context with z-index: 250 so nothing from
+// the TopBar leaks through. The single visible control is the exit
+// button in the top-left corner (styled like the TopBar's hamburger
+// so it looks like the same control stayed visible while everything
+// else was covered).
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
@@ -2447,67 +2452,66 @@ const Overlay = styled.div`
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
   transition: opacity 0.28s ease, visibility 0.28s ease;
-
-  @media (min-width: 769px) {
-    display: none;
-  }
+  pointer-events: ${props => (props.isOpen ? 'auto' : 'none')};
 `;
 
 const SidebarContainer = styled.aside`
   position: fixed;
-  top: ${TOPBAR_HEIGHT};
-  left: 0;
-  width: 288px;
-  height: calc(100vh - ${TOPBAR_HEIGHT});
-  height: calc(100dvh - ${TOPBAR_HEIGHT});
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   background: ${props =>
     props.theme?.colors?.sidebarBackground ||
     props.theme?.colors?.surface ||
     '#0F172A'};
-  border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 99;
+  z-index: 250; /* above TopBar (200), above Overlay (98) */
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
-
-  @media (max-width: 768px) {
-    width: min(300px, 88vw);
-  }
-
-  @media (max-width: 480px) {
-    width: 100%;
-  }
+  box-sizing: border-box;
 `;
 
 const CloseButton = styled.button`
-  display: none;
+  display: ${props => (props.isOpen ? 'flex' : 'none')};
   position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 100;
-  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.06)'};
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 14px;
+  z-index: 260; /* above the sidebar container */
+  background: ${props => props.theme?.colors?.background || 'rgba(255, 255, 255, 0.04)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
-  color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-  width: 32px;
-  height: 32px;
+  color: ${props => props.theme?.colors?.text || '#FFFFFF'};
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 0;
+  line-height: 1;
 
   &:hover {
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
-    color: ${props => props.theme?.colors?.text || '#FFFFFF'};
     border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    box-shadow: 0 0 16px ${props => (props.theme?.colors?.accent || '#3B82F6') + '25'};
   }
 
-  @media (max-width: 768px) {
-    display: ${props => (props.isOpen ? 'flex' : 'none')};
+  &:active {
+    transform: scale(0.94);
+  }
+
+  @media (max-width: 480px) {
+    width: 34px;
+    height: 34px;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    left: 12px;
+    font-size: 15px;
   }
 `;
 
@@ -2515,7 +2519,8 @@ const SidebarContent = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 18px 14px 20px;
+  /* top padding clears the fixed exit button in the top-left corner */
+  padding: 68px 14px 20px;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -2528,6 +2533,10 @@ const SidebarContent = styled.div`
   }
   &::-webkit-scrollbar-thumb:hover {
     background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'};
+  }
+
+  @media (max-width: 480px) {
+    padding: 60px 14px 16px;
   }
 `;
 
@@ -2877,7 +2886,7 @@ const FeedbackSection = styled.div`
 
 const SidebarFooter = styled.footer`
   flex-shrink: 0;
-  padding: 12px 14px;
+  padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   background: ${props =>
     props.theme?.colors?.sidebarBackground ||
@@ -4197,7 +4206,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
       <Overlay isOpen={isOpen} onClick={onClose} />
       <SidebarContainer isOpen={isOpen}>
-        <CloseButton isOpen={isOpen} onClick={onClose}>✕</CloseButton>
+        <CloseButton isOpen={isOpen} onClick={onClose} aria-label="Close sidebar">✕</CloseButton>
         <SidebarContent>
           <SidebarHeader>
             <div className="avatar">MT</div>
