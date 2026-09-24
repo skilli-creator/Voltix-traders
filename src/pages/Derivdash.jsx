@@ -258,9 +258,8 @@ const PanelsContainer = styled.div`
   min-width: 0;
   position: relative;
   overflow: visible;
-  /* tabs height + an extra buffer guarantees positive scroll room in
-     every chrome state (visible or hidden), so scrollY never clamps
-     and the fixed TopBar never re-anchors mid-transition. */
+  /* Reserve space for the fixed bottom tab bar plus a small buffer so
+     the last panel's content is never hidden behind the tabs. */
   padding-bottom: calc(${MOBILE_TABS_HEIGHT} + ${MOBILE_SCROLL_BUFFER} + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 `;
@@ -273,8 +272,8 @@ const MobilePanelWrapper = styled.div`
   min-width: 0;
   overflow: visible;
 
-  /* 100vh = LARGEST viewport on mobile, so panels are always taller than
-     the currently visible viewport -> always scroll room -> chrome hides. */
+  /* Each panel fills at least the visible viewport (minus the tab bar)
+     so the layout doesn't collapse on short content. */
   min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
   box-sizing: border-box;
@@ -666,11 +665,16 @@ const Derivdash = () => {
     };
   }, [isMobile]);
 
-  /* Mobile: html owns the vertical scroll. body stays a normal block
-     (overflow: visible) so fixed positioning and inner layout are stable.
-     min-height: 100vh on the mount points forces the document to be
-     taller than the visible viewport -> the browser can hide its own
-     address bar / tabs when the user scrolls. */
+  /* Mobile: html owns the vertical scroll, so fixed-position children
+     (TopBar, MobileTabs) anchor to the correct visual reference and
+     inner layouts stay stable. body remains a normal block.
+
+     We deliberately do NOT force a minimum height on the mount points
+     (`min-height: 100vh` on body / #root / #__next) — that was a trick
+     to make the page always taller than the viewport so the browser
+     would collapse its own address bar / tabs on scroll. Without it,
+     the page only scrolls when there is real content to scroll, and
+     the browser chrome stays visible. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const STYLE_ID = 'derivdash-mobile-scroll';
@@ -687,12 +691,10 @@ const Derivdash = () => {
       body {
         overflow: visible !important;
         height: auto !important;
-        min-height: 100vh !important;
       }
       #root, #app, #__next {
         overflow: visible !important;
         height: auto !important;
-        min-height: 100vh !important;
       }
     `;
     document.head.appendChild(style);
