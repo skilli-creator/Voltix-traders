@@ -392,7 +392,7 @@ const Derivdash = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
-  const [currentTheme, setCurrentTheme] = useState('dark');
+  const [currentTheme, setCurrentTheme] = useState('gold');
   const [topBarHeight, setTopBarHeight] = useState(0);
 
   const topBarRef = useRef(null);
