@@ -159,15 +159,14 @@ const DashboardContainer = styled.div`
   }
 `;
 
-/* FIXED TopBar on mobile.
+/* FIXED TopBar wrapper on mobile.
    - Uses position: fixed (immune to ancestor overflow/scroll-container traps).
-   - No backdrop-filter: on iOS Safari, backdrop-filter on the element
-     itself forces it onto its own compositing layer and causes the
-     "blank during scroll" flicker. Solid themed background instead.
-   - will-change + translateZ(0): force its own GPU layer, which prevents
-     the browser from re-painting it on every scroll frame (the other
-     cause of the flicker).
-   - No top/left/right transition, no animation: nothing to re-trigger. */
+   - No backdrop-filter (avoids iOS repaint flicker on scroll).
+   - will-change + translateZ(0) keeps the bar on its own compositor layer.
+   - z-index is elevated to 250 when the sidebar is open so its children
+     (the sidebar toggle and the Exit button) can render ABOVE the
+     full-screen sidebar (z-index 99). Otherwise it stays at 60 so it
+     sits below modals and the sidebar backdrop when closed. */
 const TopBarStickyWrapper = styled.div`
   position: relative;
   z-index: 40;
@@ -179,9 +178,13 @@ const TopBarStickyWrapper = styled.div`
     left: 0;
     right: 0;
     width: 100%;
-    z-index: 60;
-    background: ${props => props.theme.colors.bg || props.theme.colors.background};
-    box-shadow: 0 2px 12px ${props => props.theme.colors.shadow};
+    z-index: ${props => (props.$isSidebarOpen ? 250 : 60)};
+    background: ${props =>
+      props.$isSidebarOpen
+        ? 'transparent'
+        : props.theme.colors.bg || props.theme.colors.background};
+    box-shadow: ${props =>
+      props.$isSidebarOpen ? 'none' : `0 2px 12px ${props.theme.colors.shadow}`};
     will-change: transform;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -258,8 +261,6 @@ const PanelsContainer = styled.div`
   min-width: 0;
   position: relative;
   overflow: visible;
-  /* Reserve space for the fixed bottom tab bar plus a small buffer so
-     the last panel's content is never hidden behind the tabs. */
   padding-bottom: calc(${MOBILE_TABS_HEIGHT} + ${MOBILE_SCROLL_BUFFER} + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 `;
@@ -272,8 +273,6 @@ const MobilePanelWrapper = styled.div`
   min-width: 0;
   overflow: visible;
 
-  /* Each panel fills at least the visible viewport (minus the tab bar)
-     so the layout doesn't collapse on short content. */
   min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
   box-sizing: border-box;
@@ -296,29 +295,6 @@ const PanelContent = styled.div`
   }
 `;
 
-/* Sticky bottom tab bar.
-   ------------------------------------------------------------------
-   We position this with `top: 0; left: 0; right: 0` (anchored to the
-   TOP of the LAYOUT viewport) and then use JavaScript to translate it
-   to the bottom of the VISUAL viewport on every frame via
-   `window.visualViewport`.
-
-   Why not just `bottom: 0`?
-   `position: fixed; bottom: 0` anchors to the layout viewport, which
-   does NOT track the collapsing/expanding URL bar on iOS Safari and
-   Android Chrome. The layout and visual viewports diverge during the
-   address-bar animation, and the bar appears to "slide away" with the
-   URL bar. Tracking the visual viewport is the only reliable fix.
-
-   Notes on the CSS below:
-   - `contain: layout style` (NOT `paint`) — `paint` would clip the
-     bar's own `box-shadow` because paint containment clips the element
-     to its border box. `layout style` gives us the isolation we want
-     without harming the shadow.
-   - `transform: translate3d(0, calc(100vh - 100%), 0)` is only the
-     first-paint fallback. JS overwrites it synchronously via
-     `useLayoutEffect`, before the browser paints.
-   ------------------------------------------------------------------ */
 const MobileTabs = styled.div`
   display: flex;
   align-items: stretch;
@@ -336,8 +312,6 @@ const MobileTabs = styled.div`
   width: 100%;
   z-index: 55;
 
-  /* Initial position — puts it near the viewport bottom on first paint.
-     JS overrides this with the exact visual-viewport position. */
   transform: translate3d(0, calc(100vh - 100%), 0);
   will-change: transform;
   -webkit-backface-visibility: hidden;
@@ -445,66 +419,8 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  /* ==================================================================
-     BROWSER TAB / CHROME COLOR — matches the active theme.
-
-     The mobile browser's URL bar / toolbar color is controlled by
-     `<meta name="theme-color">`. On desktop it also influences the
-     "tab strip" color in some browsers (Chrome on Android, Safari on
-     iOS 15+, Edge on Android).
-
-     We keep the meta tag in sync with `currentTheme`:
-       • `<meta name="theme-color">`  → the TopBar's surface color,
-         which is what the user sees at the top of the viewport.
-       • `<meta name="color-scheme">` → light/dark, so form controls
-         and the OS scrollbar respect the theme.
-       • `documentElement.style.backgroundColor` → matches `bg` so the
-         rubber-band overscroll area (visible on iOS/Android when you
-         scroll past the top or bottom) doesn't flash the default
-         white/black.
-
-     The tags are created if missing, updated if present. Because the
-     effect re-runs whenever `currentTheme` changes, switching themes
-     in the TopBar instantly re-colors the browser chrome.
-     ================================================================== */
-  useEffect(() => {
-    const themeObj = themes[currentTheme] || themes.dark;
-    const colors = themeObj.colors || {};
-    const surface = colors.surface || colors.bg || '#0b0a08';
-    const bg = colors.bg || surface;
-    const scheme = themeObj.category === 'light' ? 'light' : 'dark';
-
-    // --- theme-color ---
-    let metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (!metaTheme) {
-      metaTheme = document.createElement('meta');
-      metaTheme.setAttribute('name', 'theme-color');
-      document.head.appendChild(metaTheme);
-    }
-    metaTheme.setAttribute('content', surface);
-
-    // --- color-scheme ---
-    let metaScheme = document.querySelector('meta[name="color-scheme"]');
-    if (!metaScheme) {
-      metaScheme = document.createElement('meta');
-      metaScheme.setAttribute('name', 'color-scheme');
-      document.head.appendChild(metaScheme);
-    }
-    metaScheme.setAttribute('content', scheme);
-
-    // --- overscroll / rubber-band background ---
-    document.documentElement.style.backgroundColor = bg;
-    if (document.body) document.body.style.backgroundColor = bg;
-
-    return () => {};
-  }, [currentTheme]);
-
   /* Measure the REAL TopBar height so we can pad the top of
-     DashboardContainer exactly. On mobile the wrapper is position:fixed
-     and the <TopBar> inside it is ALSO position:fixed — so the wrapper's
-     own offsetHeight only reflects the hard-coded TopBarSpacer (~96px),
-     which under-measures the wrapped bar and clips the tops of panels.
-     Query the actual <header> element and measure it directly. */
+     DashboardContainer exactly. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const el = topBarRef.current;
@@ -532,47 +448,9 @@ const Derivdash = () => {
     };
   }, [isMobile]);
 
-  /* ==================================================================
-     THE FIX: pin the bottom tab bar to the VISUAL viewport.
-
-     On mobile, `position: fixed; bottom: 0` anchors to the LAYOUT
-     viewport, not the visual viewport. When iOS Safari or Android Chrome
-     collapses / expands its URL bar, the two viewports diverge and the
-     bar appears to "slide away" or momentarily vanish.
-
-     We anchor the bar to the TOP of the layout viewport in CSS
-     (`top: 0; left: 0; right: 0`), and then continuously translate it
-     down so its bottom edge lines up with the bottom of the visual
-     viewport:
-
-       y = visualViewport.offsetTop
-         + visualViewport.height
-         - tabsHeight
-
-     Anti-shake measures:
-
-     • `tabsHeight` is measured ONCE and only re-measured on real
-       resize / orientation-change events, NOT every frame. Reading
-       `offsetHeight` inside the rAF loop forces a synchronous layout
-       pass and is a common source of frame-to-frame jitter.
-
-     • The rounded `y` value is compared against the last written value
-       and the write is SKIPPED when unchanged. Writing the same
-       transform every frame wakes the compositor for nothing and can
-       cause a subtle 1-pixel shimmer.
-
-     • A 2-pixel deadband is applied. `visualViewport.offsetTop` on iOS
-       reports fractional values that can oscillate around a .5 boundary
-       during the URL-bar animation; without a deadband, `Math.round`
-       flips between N and N+1 every other frame and you see a visible
-       shake.
-
-     • `useLayoutEffect` (not `useEffect`) so the first paint is already
-       at the correct position — no flash at the CSS fallback.
-     ================================================================== */
+  /* Pin the bottom tab bar to the VISUAL viewport (see earlier notes). */
   useLayoutEffect(() => {
     if (!isMobile) {
-      // Reset any transform when switching back to desktop.
       const el = tabsRef.current;
       if (el) el.style.transform = '';
       return undefined;
@@ -588,7 +466,6 @@ const Derivdash = () => {
     let disposed = false;
 
     const measure = () => {
-      // Read height once per measure pass — never inside the rAF loop.
       tabsHeight = el.offsetHeight || 58;
     };
 
@@ -602,10 +479,6 @@ const Derivdash = () => {
 
       const targetY = Math.round(rawY);
 
-      // Deadband: ignore sub-pixel jitter. 2 px swallows the iOS
-      // .5-boundary oscillation completely while still allowing the
-      // URL-bar animation (~60 px over ~18 frames ≈ 3.3 px/frame)
-      // to look smooth.
       if (!Number.isNaN(lastY) && Math.abs(targetY - lastY) < 2) return;
 
       lastY = targetY;
@@ -619,26 +492,20 @@ const Derivdash = () => {
 
     const remeasureAndSchedule = () => {
       measure();
-      lastY = Number.NaN; // force a fresh write after re-measure
+      lastY = Number.NaN;
       schedule();
     };
 
-    // Initial measure + synchronous first position.
     measure();
     apply();
 
     if (vv) {
       vv.addEventListener('resize', remeasureAndSchedule);
-      // `scroll` fires during keyboard-driven visual-viewport panning.
-      // It does not fire for regular document scroll, so this listener
-      // is cheap — but we still dedupe in `apply`.
       vv.addEventListener('scroll', schedule);
     }
     window.addEventListener('resize', remeasureAndSchedule);
     window.addEventListener('orientationchange', remeasureAndSchedule);
 
-    // Watch the tab bar itself in case its height changes without a
-    // window resize (font loading, safe-area changes, etc.).
     let ro;
     if (typeof ResizeObserver !== 'undefined') {
       ro = new ResizeObserver(() => {
@@ -665,16 +532,7 @@ const Derivdash = () => {
     };
   }, [isMobile]);
 
-  /* Mobile: html owns the vertical scroll, so fixed-position children
-     (TopBar, MobileTabs) anchor to the correct visual reference and
-     inner layouts stay stable. body remains a normal block.
-
-     We deliberately do NOT force a minimum height on the mount points
-     (`min-height: 100vh` on body / #root / #__next) — that was a trick
-     to make the page always taller than the viewport so the browser
-     would collapse its own address bar / tabs on scroll. Without it,
-     the page only scrolls when there is real content to scroll, and
-     the browser chrome stays visible. */
+  /* Mobile scroll setup. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const STYLE_ID = 'derivdash-mobile-scroll';
@@ -691,10 +549,12 @@ const Derivdash = () => {
       body {
         overflow: visible !important;
         height: auto !important;
+        min-height: 100vh !important;
       }
       #root, #app, #__next {
         overflow: visible !important;
         height: auto !important;
+        min-height: 100vh !important;
       }
     `;
     document.head.appendChild(style);
@@ -731,7 +591,9 @@ const Derivdash = () => {
       <DashboardContainer
         style={isMobile ? { paddingTop: topBarHeight ? `${topBarHeight}px` : undefined } : undefined}
       >
-        <TopBarStickyWrapper ref={topBarRef}>
+        {/* ✅ $isSidebarOpen lets the wrapper elevate its z-index above
+             the sidebar so the toggle + Exit button stay visible. */}
+        <TopBarStickyWrapper ref={topBarRef} $isSidebarOpen={isSidebarOpen}>
           <TopBar
             isSidebarOpen={isSidebarOpen}
             onSidebarToggle={toggleSidebar}
