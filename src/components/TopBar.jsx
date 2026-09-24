@@ -689,9 +689,18 @@ const HistoryList = styled.div`
 // CORE CONTAINERS
 // ============================================
 // Desktop: sticky at the top of the page flow.
-// Mobile:  fixed at the very top of the phone's viewport so it always
-//          covers the browser-tab / notch strip. The companion
-//          `TopBarSpacer` below reserves its height.
+// Mobile:  the parent wrapper (TopBarStickyWrapper in Derivdash.jsx)
+//          is what pins to the viewport top. THIS header itself is
+//          position: static on mobile so it flows inside that wrapper,
+//          which lets Derivdash measure the real rendered height and
+//          pad the dashboard correctly.
+//
+// When the sidebar is open on mobile, the .sidebar-open class is
+// applied. The whole strip becomes transparent and its contents are
+// hidden, except for two floating controls that stay on top of the
+// full-screen sidebar:
+//   • the sidebar toggle (which acts as ✕ to close the sidebar)
+//   • the ExitButton (which navigates to '/')
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -712,38 +721,45 @@ const TopBar = styled.header`
     gap: 12px;
   }
 
-  /* Mobile: pin to the very top of the viewport */
   @media (max-width: 768px) {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    position: static;
     padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
     min-height: auto;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
-    z-index: 200;
+
+    /* ---- sidebar-open overlay state ---- */
+    &.sidebar-open {
+      background: transparent;
+      border-bottom-color: transparent;
+      box-shadow: none;
+      pointer-events: none;
+
+      /* Hide every descendant... */
+      & * {
+        visibility: hidden;
+      }
+
+      /* ...then re-show only the toggle and the exit button (plus
+         their inner spans/svgs). */
+      & .sidebar-toggle,
+      & .sidebar-toggle *,
+      & .exit-button,
+      & .exit-button * {
+        visibility: visible;
+      }
+
+      & .sidebar-toggle,
+      & .exit-button {
+        pointer-events: auto;
+      }
+    }
   }
 
   @media (max-width: 480px) {
     padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px;
     gap: 6px;
-  }
-`;
-
-// Reserves space for the fixed mobile bar so page content is not hidden.
-// Hidden on desktop (where the bar is in normal flow via sticky).
-const TopBarSpacer = styled.div`
-  display: none;
-
-  @media (max-width: 768px) {
-    display: block;
-    height: 96px;
-  }
-
-  @media (max-width: 480px) {
-    height: 90px;
   }
 `;
 
@@ -1377,7 +1393,7 @@ const SidebarToggle = styled.button`
 const TopPanel = ({ 
   isSidebarOpen, 
   onSidebarToggle, 
-  currentTheme = 'gold',   // ✅ default theme is now gold
+  currentTheme = 'gold',
   onThemeChange
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -1834,9 +1850,14 @@ const TopPanel = ({
 
   return (
     <>
-      <TopBar>
-        <LeftSection>
-          <SidebarToggle isOpen={isSidebarOpen} onClick={onSidebarToggle} aria-label="Toggle sidebar">
+      <TopBar className={isSidebarOpen ? 'sidebar-open' : ''}>
+        <LeftSection className="left-section">
+          <SidebarToggle
+            isOpen={isSidebarOpen}
+            onClick={onSidebarToggle}
+            className="sidebar-toggle"
+            aria-label="Toggle sidebar"
+          >
             <span className="line" />
             <span className="line" />
             <span className="line" />
@@ -1958,15 +1979,16 @@ const TopPanel = ({
             </RightAnchoredDropdown>
           </DropdownContainer>
 
-          <ExitButton onClick={() => navigate('/')} aria-label="Exit">
+          <ExitButton
+            className="exit-button"
+            onClick={() => navigate('/')}
+            aria-label="Exit"
+          >
             <span className="exit-icon"><ExitIcon /></span>
             <span>Exit</span>
           </ExitButton>
         </RightSection>
       </TopBar>
-
-      {/* Spacer only renders on mobile — reserves space below the fixed bar */}
-      <TopBarSpacer />
 
       {fundModalAction && (
         <ModalOverlay onClick={closeModal}>
