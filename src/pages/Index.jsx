@@ -657,7 +657,7 @@ const RefreshBtn = styled.button`
 `;
 
 /* ============================================================
-   MESSAGE
+   MESSAGE — with gold variant + optional hidden icon
    ============================================================ */
 const Message = styled.div`
   margin-top: 14px;
@@ -671,15 +671,18 @@ const Message = styled.div`
   background: ${props =>
     props.kind === 'error' ? theme.colors.dangerSoft
     : props.kind === 'success' ? theme.colors.successSoft
+    : props.kind === 'gold' ? theme.colors.accentSoft
     : theme.colors.warningSoft};
   color: ${props =>
     props.kind === 'error' ? theme.colors.danger
     : props.kind === 'success' ? theme.colors.success
+    : props.kind === 'gold' ? theme.colors.goldLight
     : theme.colors.warning};
   border: 1px solid
     ${props =>
       props.kind === 'error' ? 'rgba(239, 68, 68, 0.25)'
       : props.kind === 'success' ? 'rgba(16, 185, 129, 0.25)'
+      : props.kind === 'gold' ? theme.colors.accentLine
       : 'rgba(245, 158, 11, 0.25)'};
 
   .icon {
@@ -2183,9 +2186,10 @@ const TermsModal = ({ open, onClose }) => {
 };
 
 /* ============================================================
-   MESSAGE ICON PICKER
+   MESSAGE ICON PICKER — gold variant renders no icon
    ============================================================ */
 const MessageIcon = ({ kind }) => {
+  if (kind === 'gold') return null;
   if (kind === 'error') return <XCircleIcon />;
   if (kind === 'success') return <CheckIcon />;
   return <AlertIcon />;
@@ -2381,7 +2385,7 @@ const SignUp = () => {
     if (Object.keys(next).length) return;
 
     setLoading(true);
-    setMessage('Signing you in'); setMessageKind('info');
+    setMessage('Signing you in'); setMessageKind('gold');
 
     try {
       const response = await fetch(ENDPOINTS.login, {
@@ -2396,7 +2400,7 @@ const SignUp = () => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         setMessage('Welcome back! Redirecting...');
-        setMessageKind('success'); setLoading(false);
+        setMessageKind('gold'); setLoading(false);
         setTimeout(() => { navigate('/Derivdash'); }, 1200);
       } else {
         const errorMsg = data.error || 'Login failed';
@@ -2425,7 +2429,7 @@ const SignUp = () => {
     setMode('login');
     setLoginForm({ email: verifyEmail, password: '' });
     setMessage('Email verified. Please sign in.');
-    setMessageKind('success');
+    setMessageKind('gold');
   };
 
   const handleForgotCodeSent = (email) => {
@@ -2437,7 +2441,7 @@ const SignUp = () => {
   const handleResetDone = () => {
     setResetModalOpen(false);
     setMessage('Password updated. You can now log in with your new password.');
-    setMessageKind('success');
+    setMessageKind('gold');
     setMode('login');
     setLoginForm({ email: resetEmail, password: '' });
   };
@@ -2647,7 +2651,9 @@ const SignUp = () => {
 
             {message && (
               <Message kind={messageKind}>
-                <span className="icon"><MessageIcon kind={messageKind} /></span>
+                {messageKind !== 'gold' && (
+                  <span className="icon"><MessageIcon kind={messageKind} /></span>
+                )}
                 {message}
               </Message>
             )}
