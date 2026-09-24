@@ -50,6 +50,16 @@ const PanelContainer = styled.div`
   z-index: 1;
   transition: all 0.3s ease;
   font-weight: 700;
+
+  /* On mobile the TopBar is position: fixed and its own padding
+     includes env(safe-area-inset-top). The parent (Derivdash) only
+     reserves a fixed ~96px, so on notched phones the top of this
+     panel would sit under the bar. Mirror the same inset here so
+     the header + chart top always clear it. On non-notched devices
+     env() = 0 and this is a no-op. */
+  @media (max-width: 768px) {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
 `;
 
 const Header = styled.div`
