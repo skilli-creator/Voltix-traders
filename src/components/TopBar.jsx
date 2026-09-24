@@ -688,9 +688,14 @@ const HistoryList = styled.div`
 // ============================================
 // CORE CONTAINERS
 // ============================================
-// ✅ TopBar now accepts a `$hidden` prop.
-//    - Desktop: always visible (translateY 0)
-//    - Mobile: slides up when $hidden is true
+// ✅ TopBar behaviour:
+//    - Desktop: always sticky at the top of the page flow.
+//    - Mobile (<= 768px): `position: fixed` so it always pins to the very
+//      top of the phone's viewport (covering the browser chrome / tab strip),
+//      and slides up out of view on scroll-down via transform.
+//    - `env(safe-area-inset-top)` makes it extend up into the notch area.
+//    - A sibling spacer (rendered below) reserves the same height so the page
+//      content isn't hidden behind the fixed bar.
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -700,7 +705,7 @@ const TopBar = styled.header`
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 200;
   min-height: 76px;
   flex-shrink: 0;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -713,19 +718,46 @@ const TopBar = styled.header`
     gap: 12px;
   }
 
-  /* Mobile: slide up when hidden (only on mobile) */
+  /* Mobile: fixed at the very top of the viewport, slides up when hidden */
   @media (max-width: 768px) {
-    padding: 10px 14px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    /* Extend up into the phone notch / browser-chrome area */
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
     min-height: auto;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
     transform: translateY(${props => (props.$hidden ? '-120%' : '0')});
+    z-index: 200;
+    /* Ensure the bar visually "covers" the top strip even when the
+       browser URL bar is showing */
+    will-change: transform;
   }
 
   @media (max-width: 480px) {
-    padding: 8px 12px;
+    padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px;
     gap: 6px;
+  }
+`;
+
+// ✅ Spacer that reserves space for the fixed mobile bar so the page
+//    content sits below it rather than underneath it.
+//    Hidden on desktop (where the bar is in normal flow via sticky).
+const TopBarSpacer = styled.div`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    /* Approx mobile bar height — matches the padding + content.
+       Bump this if your mobile bar wraps to a taller layout. */
+    height: 96px;
+  }
+
+  @media (max-width: 480px) {
+    height: 90px;
   }
 `;
 
@@ -1426,7 +1458,7 @@ const useHideOnScroll = () => {
 const TopPanel = ({ 
   isSidebarOpen, 
   onSidebarToggle, 
-  currentTheme = 'dark', 
+  currentTheme = 'gold',   // ✅ default theme is now gold
   onThemeChange
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -2030,6 +2062,9 @@ const TopPanel = ({
           </ExitButton>
         </RightSection>
       </TopBar>
+
+      {/* ✅ Spacer only renders on mobile — reserves space below the fixed bar */}
+      <TopBarSpacer />
 
       {fundModalAction && (
         <ModalOverlay onClick={closeModal}>
