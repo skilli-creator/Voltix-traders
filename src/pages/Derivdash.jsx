@@ -160,13 +160,13 @@ const DashboardContainer = styled.div`
 `;
 
 /* FIXED TopBar wrapper on mobile.
-   - Uses position: fixed (immune to ancestor overflow/scroll-container traps).
+   - position: fixed so it's immune to ancestor overflow traps.
    - No backdrop-filter (avoids iOS repaint flicker on scroll).
-   - will-change + translateZ(0) keeps the bar on its own compositor layer.
-   - z-index is elevated to 250 when the sidebar is open so its children
-     (the sidebar toggle and the Exit button) can render ABOVE the
-     full-screen sidebar (z-index 99). Otherwise it stays at 60 so it
-     sits below modals and the sidebar backdrop when closed. */
+   - will-change + translateZ(0) keeps it on its own compositor layer.
+   - z-index is ELEVATED to 250 when the sidebar is open, so the
+     toggle and the Exit button inside TopBar.jsx can render above the
+     full-screen sidebar (which has z-index 99). When closed it stays
+     at 60 so it sits below modals and the sidebar backdrop. */
 const TopBarStickyWrapper = styled.div`
   position: relative;
   z-index: 40;
@@ -419,8 +419,35 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  /* Measure the REAL TopBar height so we can pad the top of
-     DashboardContainer exactly. */
+  useEffect(() => {
+    const themeObj = themes[currentTheme] || themes.dark;
+    const colors = themeObj.colors || {};
+    const surface = colors.surface || colors.bg || '#0b0a08';
+    const bg = colors.bg || surface;
+    const scheme = themeObj.category === 'light' ? 'light' : 'dark';
+
+    let metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (!metaTheme) {
+      metaTheme = document.createElement('meta');
+      metaTheme.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaTheme);
+    }
+    metaTheme.setAttribute('content', surface);
+
+    let metaScheme = document.querySelector('meta[name="color-scheme"]');
+    if (!metaScheme) {
+      metaScheme = document.createElement('meta');
+      metaScheme.setAttribute('name', 'color-scheme');
+      document.head.appendChild(metaScheme);
+    }
+    metaScheme.setAttribute('content', scheme);
+
+    document.documentElement.style.backgroundColor = bg;
+    if (document.body) document.body.style.backgroundColor = bg;
+
+    return () => {};
+  }, [currentTheme]);
+
   useEffect(() => {
     if (!isMobile) return undefined;
     const el = topBarRef.current;
@@ -448,7 +475,6 @@ const Derivdash = () => {
     };
   }, [isMobile]);
 
-  /* Pin the bottom tab bar to the VISUAL viewport (see earlier notes). */
   useLayoutEffect(() => {
     if (!isMobile) {
       const el = tabsRef.current;
@@ -532,7 +558,6 @@ const Derivdash = () => {
     };
   }, [isMobile]);
 
-  /* Mobile scroll setup. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const STYLE_ID = 'derivdash-mobile-scroll';
@@ -549,12 +574,10 @@ const Derivdash = () => {
       body {
         overflow: visible !important;
         height: auto !important;
-        min-height: 100vh !important;
       }
       #root, #app, #__next {
         overflow: visible !important;
         height: auto !important;
-        min-height: 100vh !important;
       }
     `;
     document.head.appendChild(style);
@@ -591,8 +614,9 @@ const Derivdash = () => {
       <DashboardContainer
         style={isMobile ? { paddingTop: topBarHeight ? `${topBarHeight}px` : undefined } : undefined}
       >
-        {/* ✅ $isSidebarOpen lets the wrapper elevate its z-index above
-             the sidebar so the toggle + Exit button stay visible. */}
+        {/* ✅ $isSidebarOpen lets the wrapper elevate its z-index to 250
+             when the sidebar is open, so the toggle and Exit button
+             inside TopBar.jsx render above the full-screen sidebar. */}
         <TopBarStickyWrapper ref={topBarRef} $isSidebarOpen={isSidebarOpen}>
           <TopBar
             isSidebarOpen={isSidebarOpen}
