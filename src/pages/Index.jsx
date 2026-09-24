@@ -1,7 +1,7 @@
 // src/pages/SignUp.jsx — Gold theme + M-with-crossline logo + shuffled 32-image slideshow + marketing panel
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 
 /* ============================================================
@@ -480,8 +480,23 @@ const CheckLabel = styled.label`
     transform: rotate(45deg);
   }
 
-  a { color: ${theme.colors.accent}; text-decoration: none; font-weight: 600; }
-  a:hover { text-decoration: underline; }
+  a,
+  button {
+    color: ${theme.colors.accent};
+    text-decoration: none;
+    font-weight: 600;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    cursor: pointer;
+    display: inline;
+  }
+  a:hover,
+  button:hover { text-decoration: underline; }
 `;
 
 const RowBetween = styled.div`
@@ -1065,7 +1080,7 @@ const ModalBackdrop = styled.div`
 
 const ModalCard = styled.div`
   width: 100%;
-  max-width: 440px;
+  max-width: ${props => (props.wide ? '540px' : '440px')};
   background: #120e07;
   border: 1px solid ${theme.colors.border};
   border-radius: 18px;
@@ -1094,6 +1109,7 @@ const ModalClose = styled.button`
   align-items: center;
   justify-content: center;
   transition: background 0.15s ease, color 0.15s ease;
+  z-index: 2;
 
   &:hover { background: rgba(212, 175, 55, 0.08); color: ${theme.colors.text}; }
   svg { width: 18px; height: 18px; }
@@ -1169,6 +1185,69 @@ const LinkButton = styled.button`
   svg { width: 13px; height: 13px; stroke: currentColor; }
   &:hover { text-decoration: underline; }
   &:disabled { opacity: 0.55; cursor: not-allowed; text-decoration: none; }
+`;
+
+/* ============================================================
+   TERMS & CONDITIONS — scrollable body + typography
+   ============================================================ */
+const TermsScroll = styled.div`
+  max-height: 44vh;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin: 0 0 4px;
+  text-align: left;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(212, 175, 55, 0.28) transparent;
+
+  &::-webkit-scrollbar { width: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.28);
+    border-radius: 99px;
+  }
+  &::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.45); }
+
+  @media (max-width: 480px) { max-height: 56vh; }
+`;
+
+const TermsSection = styled.div`
+  margin-bottom: 16px;
+  &:last-child { margin-bottom: 0; }
+`;
+
+const TermsTitle = styled.h3`
+  font-size: 13.5px;
+  font-weight: 700;
+  color: ${theme.colors.goldLight};
+  margin: 0 0 6px;
+  letter-spacing: -0.1px;
+`;
+
+const TermsText = styled.p`
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: ${theme.colors.textSecondary};
+  margin: 0;
+  strong { color: ${theme.colors.text}; font-weight: 600; }
+`;
+
+const TermsBullet = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: ${theme.colors.textSecondary};
+
+  .dot {
+    color: ${theme.colors.accent};
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  strong { color: ${theme.colors.text}; font-weight: 600; }
 `;
 
 /* ============================================================
@@ -1363,6 +1442,24 @@ const ShieldLockIcon = () => (
     <rect x="11" y="15" width="10" height="8" rx="1.8" fill="none" stroke="url(#shieldGrad)" strokeWidth="2" />
     <path d="M13.5 15 V12.5 a2.5 2.5 0 0 1 5 0 V15" fill="none" stroke="url(#shieldGrad)" strokeWidth="2" strokeLinecap="round" />
     <circle cx="16" cy="19" r="1.2" fill="url(#shieldGrad)" />
+  </svg>
+);
+
+const TermsDocIcon = () => (
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="termsGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#f7e08a" /><stop offset="100%" stopColor="#c99a24" />
+      </linearGradient>
+    </defs>
+    <path
+      d="M8 3 H20 L26 9 V27 a2 2 0 0 1 -2 2 H8 a2 2 0 0 1 -2 -2 V5 a2 2 0 0 1 2 -2 Z"
+      fill="url(#termsGrad)" opacity="0.14" stroke="url(#termsGrad)" strokeWidth="1.8" strokeLinejoin="round"
+    />
+    <path d="M20 3 V9 H26" fill="none" stroke="url(#termsGrad)" strokeWidth="1.8" strokeLinejoin="round" />
+    <line x1="11" y1="14" x2="23" y2="14" stroke="url(#termsGrad)" strokeWidth="1.8" strokeLinecap="round" />
+    <line x1="11" y1="18" x2="23" y2="18" stroke="url(#termsGrad)" strokeWidth="1.8" strokeLinecap="round" />
+    <line x1="11" y1="22" x2="19" y2="22" stroke="url(#termsGrad)" strokeWidth="1.8" strokeLinecap="round" />
   </svg>
 );
 
@@ -1967,6 +2064,125 @@ const ResetPasswordModal = ({ open, email, onClose, onResetDone, onBack }) => {
 };
 
 /* ============================================================
+   MODAL 4 — TERMS & CONDITIONS (popup on this page)
+   ============================================================ */
+const TermsModal = ({ open, onClose }) => {
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <ModalBackdrop onClick={onClose}>
+      <ModalCard wide onClick={(e) => e.stopPropagation()}>
+        <ModalClose onClick={onClose} aria-label="Close"><CloseIcon /></ModalClose>
+
+        <ModalIcon><TermsDocIcon /></ModalIcon>
+        <ModalTitle>Terms &amp; Conditions</ModalTitle>
+        <ModalSubtitle style={{ marginBottom: 16 }}>
+          Please read these terms carefully before creating your account.
+        </ModalSubtitle>
+
+        <TermsScroll>
+          <TermsSection>
+            <TermsTitle>1. Introduction</TermsTitle>
+            <TermsText>
+              Welcome to MyTradeApp. By using our third-party trading application,
+              you agree to these Terms and Conditions.
+            </TermsText>
+          </TermsSection>
+
+          <TermsSection>
+            <TermsTitle>2. Acceptance of Terms</TermsTitle>
+            <TermsText>
+              By accessing or using MyTradeApp, you confirm that you have read,
+              understood, and agree to be bound by these Terms.
+            </TermsText>
+            <TermsBullet>
+              <span className="dot">•</span>
+              <span>You must be at least <strong>18 years old</strong> to use this App.</span>
+            </TermsBullet>
+            <TermsBullet>
+              <span className="dot">•</span>
+              <span>You are <strong>solely responsible</strong> for all trading decisions.</span>
+            </TermsBullet>
+            <TermsBullet>
+              <span className="dot">•</span>
+              <span>Trading involves <strong>significant financial risk</strong>.</span>
+            </TermsBullet>
+          </TermsSection>
+
+          <TermsSection>
+            <TermsTitle>3. Services Provided</TermsTitle>
+            <TermsText>
+              MyTradeApp provides automated trading, AI-assisted analysis, manual
+              trading, bot deployment, and real-time market data from Deriv via APIs.
+            </TermsText>
+          </TermsSection>
+
+          <TermsSection>
+            <TermsTitle>4. Account Responsibility</TermsTitle>
+            <TermsText>
+              You are fully responsible for all trades executed through the App.
+              MyTradeApp does not store your login credentials.
+            </TermsText>
+            <TermsBullet>
+              <span className="dot">•</span>
+              <span>You must <strong>not share</strong> your trading credentials.</span>
+            </TermsBullet>
+            <TermsBullet>
+              <span className="dot">•</span>
+              <span>You are responsible for <strong>all financial losses</strong>.</span>
+            </TermsBullet>
+          </TermsSection>
+
+          <TermsSection>
+            <TermsTitle>5. Limitation of Liability</TermsTitle>
+            <TermsText>
+              MyTradeApp provides the App "as is" without any warranties. We are not
+              liable for any financial losses, technical issues, or damages arising
+              from your use of the App.
+            </TermsText>
+          </TermsSection>
+
+          <TermsSection>
+            <TermsTitle>6. Privacy Policy</TermsTitle>
+            <TermsText>
+              We do not store your Deriv or Forex login credentials. We collect
+              minimal data necessary for app functionality and never sell your
+              personal data.
+            </TermsText>
+          </TermsSection>
+
+          <TermsSection>
+            <TermsTitle>7. Governing Law</TermsTitle>
+            <TermsText>
+              These Terms shall be governed by the laws of the jurisdiction where
+              MyTradeApp operates.
+            </TermsText>
+          </TermsSection>
+
+          <TermsSection>
+            <TermsTitle>8. Contact Us</TermsTitle>
+            <TermsText>
+              For questions or concerns, contact us at <strong>support@mytradeapp.com</strong>
+            </TermsText>
+          </TermsSection>
+        </TermsScroll>
+
+        <ModalActions>
+          <SubmitBtn type="button" onClick={onClose}>I understand</SubmitBtn>
+        </ModalActions>
+      </ModalCard>
+    </ModalBackdrop>
+  );
+};
+
+/* ============================================================
    MESSAGE ICON PICKER
    ============================================================ */
 const MessageIcon = ({ kind }) => {
@@ -2008,6 +2224,7 @@ const SignUp = () => {
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [termsModalOpen, setTermsModalOpen] = useState(false);
 
   useEffect(() => { setCaptcha(buildCaptcha()); }, []);
 
@@ -2366,7 +2583,9 @@ const SignUp = () => {
                       }} />
                     <span>
                       I agree to the{' '}
-                      <Link to="/Derivdash?open=terms">Terms and Conditions</Link>.
+                      <button type="button" onClick={() => setTermsModalOpen(true)}>
+                        Terms and Conditions
+                      </button>.
                     </span>
                   </CheckLabel>
                 </RowBetween>
@@ -2527,6 +2746,11 @@ const SignUp = () => {
           setResetModalOpen(false);
           setForgotModalOpen(true);
         }}
+      />
+
+      <TermsModal
+        open={termsModalOpen}
+        onClose={() => setTermsModalOpen(false)}
       />
     </>
   );
