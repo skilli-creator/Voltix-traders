@@ -297,6 +297,16 @@ const PanelContent = styled.div`
   }
 `;
 
+/* Sticky bottom tab bar.
+   - position: fixed pins it to the bottom of the viewport on mobile.
+   - will-change + translateZ(0) + backface-visibility: force it onto its
+     own GPU layer so iOS Safari stops dropping/re-painting it during
+     scroll (the "the tabs are trying to hide" flicker). Same trick used
+     on TopBarStickyWrapper.
+   - No transition / animation on the element itself — nothing to
+     re-trigger, nothing to interpolate, nothing to briefly disappear.
+   - z-index 55 keeps it above panel stacking contexts but below the
+     fixed TopBar (60) and the sidebar / modals (98+). */
 const MobileTabs = styled.div`
   display: flex;
   align-items: stretch;
@@ -312,7 +322,16 @@ const MobileTabs = styled.div`
   right: 0;
   bottom: 0;
   width: 100%;
-  z-index: 50;
+  z-index: 55;
+
+  /* ---- anti-hide / anti-flicker ---- */
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000px;
+  perspective: 1000px;
 
   @media (max-width: 480px) {
     padding: 3px 4px calc(3px + env(safe-area-inset-bottom, 0px)) 4px;
