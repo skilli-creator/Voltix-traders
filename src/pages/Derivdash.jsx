@@ -1,6 +1,6 @@
 // src/pages/Derivdash.jsx (Swipeable Version with Sidebar + Fixed TopBar + Sticky Bottom Tabs)
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import styled, { ThemeProvider, keyframes } from 'styled-components';
 import TopBar from '../components/TopBar';
 import OptionSideBar from '../components/OptionSideBar';
@@ -311,7 +311,14 @@ const PanelContent = styled.div`
    address-bar animation, and the bar appears to "slide away" with the
    URL bar. Tracking the visual viewport is the only reliable fix.
 
-   CSS below just provides a sane initial position; JS refines it.
+   Notes on the CSS below:
+   - `contain: layout style` (NOT `paint`) — `paint` would clip the
+     bar's own `box-shadow` because paint containment clips the element
+     to its border box. `layout style` gives us the isolation we want
+     without harming the shadow.
+   - `transform: translate3d(0, calc(100vh - 100%), 0)` is only the
+     first-paint fallback. JS overwrites it synchronously via
+     `useLayoutEffect`, before the browser paints.
    ------------------------------------------------------------------ */
 const MobileTabs = styled.div`
   display: flex;
@@ -336,7 +343,7 @@ const MobileTabs = styled.div`
   will-change: transform;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  contain: layout style paint;
+  contain: layout style;
   isolation: isolate;
 
   @media (max-width: 480px) {
@@ -489,11 +496,28 @@ const Derivdash = () => {
          + visualViewport.height
          - tabsHeight
 
-     We listen to `visualViewport`'s `resize` and `scroll` events — both
-     fire on every frame during the URL-bar animation — so the bar stays
-     locked to the visible bottom edge at all times.
+     Anti-shake measures:
+
+     • `tabsHeight` is measured ONCE and only re-measured on real
+       resize / orientation-change events, NOT every frame. Reading
+       `offsetHeight` inside the rAF loop forces a synchronous layout
+       pass and is a common source of frame-to-frame jitter.
+
+     • The rounded `y` value is compared against the last written value
+       and the write is SKIPPED when unchanged. Writing the same
+       transform every frame wakes the compositor for nothing and can
+       cause a subtle 1-pixel shimmer.
+
+     • A 2-pixel deadband is applied. `visualViewport.offsetTop` on iOS
+       reports fractional values that can oscillate around a .5 boundary
+       during the URL-bar animation; without a deadband, `Math.round`
+       flips between N and N+1 every other frame and you see a visible
+       shake.
+
+     • `useLayoutEffect` (not `useEffect`) so the first paint is already
+       at the correct position — no flash at the CSS fallback.
      ================================================================== */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isMobile) {
       // Reset any transform when switching back to desktop.
       const el = tabsRef.current;
@@ -506,43 +530,85 @@ const Derivdash = () => {
 
     const vv = typeof window !== 'undefined' ? window.visualViewport : null;
     let raf = 0;
+    let lastY = Number.NaN;
+    let tabsHeight = 0;
+    let disposed = false;
+
+    const measure = () => {
+      // Read height once per measure pass — never inside the rAF loop.
+      tabsHeight = el.offsetHeight || 58;
+    };
 
     const apply = () => {
       raf = 0;
-      const tabsHeight = el.offsetHeight || 58;
-      let y;
-      if (vv) {
-        y = vv.offsetTop + vv.height - tabsHeight;
-      } else {
-        // Fallback for browsers without visualViewport.
-        y = window.innerHeight - tabsHeight;
-      }
-      el.style.transform = `translate3d(0, ${Math.round(y)}px, 0)`;
+      if (disposed) return;
+
+      const rawY = vv
+        ? vv.offsetTop + vv.height - tabsHeight
+        : window.innerHeight - tabsHeight;
+
+      const targetY = Math.round(rawY);
+
+      // Deadband: ignore sub-pixel jitter. 2 px swallows the iOS
+      // .5-boundary oscillation completely while still allowing the
+      // URL-bar animation (~60 px over ~18 frames ≈ 3.3 px/frame)
+      // to look smooth.
+      if (!Number.isNaN(lastY) && Math.abs(targetY - lastY) < 2) return;
+
+      lastY = targetY;
+      el.style.transform = `translate3d(0, ${targetY}px, 0)`;
     };
 
     const schedule = () => {
-      if (raf) return;
+      if (raf || disposed) return;
       raf = requestAnimationFrame(apply);
     };
 
-    // Position immediately on mount.
+    const remeasureAndSchedule = () => {
+      measure();
+      lastY = Number.NaN; // force a fresh write after re-measure
+      schedule();
+    };
+
+    // Initial measure + synchronous first position.
+    measure();
     apply();
 
     if (vv) {
-      vv.addEventListener('resize', schedule);
+      vv.addEventListener('resize', remeasureAndSchedule);
+      // `scroll` fires during keyboard-driven visual-viewport panning.
+      // It does not fire for regular document scroll, so this listener
+      // is cheap — but we still dedupe in `apply`.
       vv.addEventListener('scroll', schedule);
     }
-    window.addEventListener('resize', schedule);
-    window.addEventListener('orientationchange', schedule);
+    window.addEventListener('resize', remeasureAndSchedule);
+    window.addEventListener('orientationchange', remeasureAndSchedule);
+
+    // Watch the tab bar itself in case its height changes without a
+    // window resize (font loading, safe-area changes, etc.).
+    let ro;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => {
+        const h = el.offsetHeight || 58;
+        if (h !== tabsHeight) {
+          tabsHeight = h;
+          lastY = Number.NaN;
+          schedule();
+        }
+      });
+      ro.observe(el);
+    }
 
     return () => {
+      disposed = true;
       if (raf) cancelAnimationFrame(raf);
       if (vv) {
-        vv.removeEventListener('resize', schedule);
+        vv.removeEventListener('resize', remeasureAndSchedule);
         vv.removeEventListener('scroll', schedule);
       }
-      window.removeEventListener('resize', schedule);
-      window.removeEventListener('orientationchange', schedule);
+      window.removeEventListener('resize', remeasureAndSchedule);
+      window.removeEventListener('orientationchange', remeasureAndSchedule);
+      if (ro) ro.disconnect();
     };
   }, [isMobile]);
 
