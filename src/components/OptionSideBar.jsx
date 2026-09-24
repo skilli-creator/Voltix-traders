@@ -2435,15 +2435,29 @@ const TermsSection = styled.div`
 `;
 
 // ============================================
-// SIDEBAR LAYOUT (FULL PAGE — starts below the TopBar)
+// SIDEBAR LAYOUT (positioned below the TopBar)
 // ============================================
 const TOPBAR_HEIGHT = '76px';
+
+const Overlay = styled.div`
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 98;
+  opacity: ${props => (props.isOpen ? 1 : 0)};
+  visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+`;
 
 const SidebarContainer = styled.aside`
   position: fixed;
   top: ${TOPBAR_HEIGHT};
   left: 0;
-  width: 100%;
+  width: 288px;
   height: calc(100vh - ${TOPBAR_HEIGHT});
   height: calc(100dvh - ${TOPBAR_HEIGHT});
   background: ${props =>
@@ -2458,7 +2472,43 @@ const SidebarContainer = styled.aside`
   flex-direction: column;
   overflow: hidden;
   box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
-  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    width: min(300px, 88vw);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
+`;
+
+const CloseButton = styled.button`
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 100;
+  background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.06)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.1)'};
+  color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
+    color: ${props => props.theme?.colors?.text || '#FFFFFF'};
+    border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  }
+
+  @media (max-width: 768px) {
+    display: ${props => (props.isOpen ? 'flex' : 'none')};
+  }
 `;
 
 const SidebarContent = styled.div`
@@ -4145,9 +4195,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         </NoteModal>
       )}
 
-      {/* Full-page sidebar — opens from the TopBar hamburger,
-          closes only via the same hamburger (now shown as ✕) */}
+      <Overlay isOpen={isOpen} onClick={onClose} />
       <SidebarContainer isOpen={isOpen}>
+        <CloseButton isOpen={isOpen} onClick={onClose}>✕</CloseButton>
         <SidebarContent>
           <SidebarHeader>
             <div className="avatar">MT</div>
