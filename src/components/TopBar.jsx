@@ -696,11 +696,9 @@ const HistoryList = styled.div`
 //          pad the dashboard correctly.
 //
 // When the sidebar is open on mobile, the .sidebar-open class is
-// applied. The whole strip becomes transparent and its contents are
-// hidden, except for two floating controls that stay on top of the
-// full-screen sidebar:
-//   • the sidebar toggle (which acts as ✕ to close the sidebar)
-//   • the ExitButton (which navigates to '/')
+// applied. The whole strip becomes transparent and everything inside
+// is hidden EXCEPT the sidebar toggle (which acts as ✕ to close the
+// sidebar). The dashboard Exit button is intentionally left hidden.
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -741,17 +739,14 @@ const TopBar = styled.header`
         visibility: hidden;
       }
 
-      /* ...then re-show only the toggle and the exit button (plus
-         their inner spans/svgs). */
+      /* ...then re-show ONLY the sidebar toggle (which acts as ✕ and
+         closes the sidebar). The dashboard Exit button is left hidden. */
       & .sidebar-toggle,
-      & .sidebar-toggle *,
-      & .exit-button,
-      & .exit-button * {
+      & .sidebar-toggle * {
         visibility: visible;
       }
 
-      & .sidebar-toggle,
-      & .exit-button {
+      & .sidebar-toggle {
         pointer-events: auto;
       }
     }
