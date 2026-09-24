@@ -154,6 +154,7 @@ const DashboardContainer = styled.div`
   @media (max-width: 768px) {
     height: auto;
     min-height: 100vh;
+    min-height: 100dvh;
     overflow: visible;
     max-width: 100%;
   }
@@ -273,9 +274,10 @@ const MobilePanelWrapper = styled.div`
   min-width: 0;
   overflow: visible;
 
-  /* 100vh = LARGEST viewport on mobile, so panels are always taller than
-     the currently visible viewport -> always scroll room -> chrome hides. */
+  /* 100vh/100dvh = LARGEST viewport on mobile, so panels are always taller
+     than the currently visible viewport -> always scroll room -> chrome hides. */
   min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
+  min-height: calc(100dvh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
   box-sizing: border-box;
 `;
@@ -298,15 +300,26 @@ const PanelContent = styled.div`
 `;
 
 /* Sticky bottom tab bar.
-   - position: fixed pins it to the bottom of the viewport on mobile.
-   - will-change + translateZ(0) + backface-visibility: force it onto its
-     own GPU layer so iOS Safari stops dropping/re-painting it during
-     scroll (the "the tabs are trying to hide" flicker). Same trick used
-     on TopBarStickyWrapper.
-   - No transition / animation on the element itself — nothing to
-     re-trigger, nothing to interpolate, nothing to briefly disappear.
-   - z-index 55 keeps it above panel stacking contexts but below the
-     fixed TopBar (60) and the sidebar / modals (98+). */
+   The elements that used to make it flicker / momentarily disappear on
+   iOS & Android while scrolling:
+
+   1. `-webkit-overflow-scrolling: touch` on `html` (removed from the
+      injected styles below). It put the whole document on a separate
+      compositing scroll layer, which historically breaks `position:
+      fixed` descendants on iOS.
+
+   2. `100vh` heights (now `100vh` + `100dvh` fallback). `100vh` on
+      mobile is the *large* viewport (URL bar hidden). When the URL bar
+      is showing, layout and rendered viewport disagree, so fixed
+      elements can momentarily lag behind the URL bar animation.
+
+   3. Missing `contain` and a "weak" GPU hint. `contain: layout style
+      paint` tells the browser the tab bar lays out and paints
+      independently of everything else, so it never has to be recomputed
+      or repainted during scroll. `translate3d(0,0,0)` promotes it to
+      its own compositor layer, and `will-change: transform` keeps it
+      there across frames.
+*/
 const MobileTabs = styled.div`
   display: flex;
   align-items: stretch;
@@ -318,20 +331,18 @@ const MobileTabs = styled.div`
   box-shadow: 0 -6px 20px ${props => props.theme.colors.shadow};
 
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: auto 0 0 0;
   width: 100%;
   z-index: 55;
 
-  /* ---- anti-hide / anti-flicker ---- */
+  /* ---- lock the tab bar to the visual viewport ---- */
   will-change: transform;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  -webkit-perspective: 1000px;
-  perspective: 1000px;
+  contain: layout style paint;
+  isolation: isolate;
 
   @media (max-width: 480px) {
     padding: 3px 4px calc(3px + env(safe-area-inset-bottom, 0px)) 4px;
@@ -467,9 +478,15 @@ const Derivdash = () => {
 
   /* Mobile: html owns the vertical scroll. body stays a normal block
      (overflow: visible) so fixed positioning and inner layout are stable.
-     min-height: 100vh on the mount points forces the document to be
-     taller than the visible viewport -> the browser can hide its own
-     address bar / tabs when the user scrolls. */
+     min-height: 100vh / 100dvh on the mount points forces the document
+     to be taller than the visible viewport, so the browser can hide its
+     own address bar / tabs when the user scrolls.
+
+     IMPORTANT: we deliberately do NOT set `-webkit-overflow-scrolling:
+     touch` here. That deprecated property breaks `position: fixed`
+     descendants on iOS by moving the scroll onto a separate compositing
+     layer. Modern iOS (15+) has smooth momentum scrolling on `overflow:
+     auto` by default, so the hint is unnecessary. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const STYLE_ID = 'derivdash-mobile-scroll';
@@ -482,17 +499,18 @@ const Derivdash = () => {
         height: auto !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
       }
       body {
         overflow: visible !important;
         height: auto !important;
         min-height: 100vh !important;
+        min-height: 100dvh !important;
       }
       #root, #app, #__next {
         overflow: visible !important;
         height: auto !important;
         min-height: 100vh !important;
+        min-height: 100dvh !important;
       }
     `;
     document.head.appendChild(style);
