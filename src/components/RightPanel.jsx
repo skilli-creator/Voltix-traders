@@ -1188,7 +1188,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               </AITradeTypeDropdown>
             </AISelectWrapper>
             <AIScanButton disabled>
-              <span className="scan-text">Ask Dola<span className="coming-soon-badge">Coming Soon</span></span>
+              <span className="scan-text">Analyze<span className="coming-soon-badge">Coming Soon</span></span>
             </AIScanButton>
           </AIScannerInputs>
         </AIAnalysisPanel>

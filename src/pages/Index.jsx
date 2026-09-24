@@ -2664,7 +2664,7 @@ const SignUp = () => {
           <AdInner>
             <AdBadge>
               <span className="dot" />
-              Live markets · 0% commission on your first 30 days
+              Live execution · 0% fees on your first 30 days
             </AdBadge>
 
             <AdHeading>
@@ -2688,7 +2688,7 @@ const SignUp = () => {
               <MiniFeature>
                 <div className="icon"><ChartIcon /></div>
                 <h5>Pro analytics</h5>
-                <p>50+ indicators & tools</p>
+                <p>AI Bots & tools</p>
               </MiniFeature>
               <MiniFeature>
                 <div className="icon"><ShieldIcon /></div>
