@@ -19,7 +19,7 @@ const VOLATILITY_MARKETS = [
 ];
 
 // ============================================
-// OTHER TRADERS DATA (extended with accumulators)
+// OTHER TRADERS DATA
 // ============================================
 const INITIAL_OTHER_TRADERS_DATA = [
   { id: 1, traderName: "David Ndung'u", strategy: "Over 1", type: "overunder" },
@@ -372,12 +372,12 @@ const ModalButton = styled.button`
 // ============================================
 const AIButtonContainer = styled.div`
   position: fixed;
-  bottom: ${props => (props.isMobile ? '200px' : '200px')};
+  bottom: ${props => (props.isMobile ? '200px' : '70px')};
   right: ${props => (props.isMobile ? '12px' : '24px')};
   z-index: 1000;
   display: flex; flex-direction: column; align-items: center;
   @media (max-width: 480px) { bottom: 190px; right: 10px; }
-  @media (min-width: 769px) { bottom: 200px; right: 24px; }
+  @media (min-width: 769px) { bottom: 70px; right: 24px; }
 `;
 const AIFloatingButton = styled.button`
   width: ${props => (props.isMobile ? '52px' : '58px')};
@@ -406,7 +406,7 @@ const AIFloatingButton = styled.button`
 
 const AIAnalysisPanel = styled.div`
   position: fixed;
-  bottom: ${props => (props.isMobile ? '270px' : '270px')};
+  bottom: ${props => (props.isMobile ? '270px' : '140px')};
   right: ${props => (props.isMobile ? '8px' : '24px')};
   width: ${props => (props.isMobile ? '240px' : '300px')};
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.98)'};
@@ -430,6 +430,12 @@ const AIAnalysisPanel = styled.div`
     padding: 12px 14px;
     max-height: calc(100vh - 310px);
     max-height: calc(100dvh - 310px);
+  }
+  @media (min-width: 769px) {
+    bottom: 140px;
+    right: 24px;
+    max-height: calc(100vh - 220px);
+    max-height: calc(100dvh - 220px);
   }
 `;
 
@@ -572,7 +578,7 @@ const AIScanButton = styled.button`
   }
 `;
 
-// Digit stats, grid, buttons... (kept identical to original)
+// Digit stats, grid, buttons
 const DigitStatsContainer = styled.div`
   display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 3px 1px; gap: 2px; font-weight: 700;
   @media (min-width: 769px) { display: none; }
