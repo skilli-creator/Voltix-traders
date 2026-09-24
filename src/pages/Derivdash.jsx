@@ -154,7 +154,6 @@ const DashboardContainer = styled.div`
   @media (max-width: 768px) {
     height: auto;
     min-height: 100vh;
-    min-height: 100dvh;
     overflow: visible;
     max-width: 100%;
   }
@@ -274,10 +273,9 @@ const MobilePanelWrapper = styled.div`
   min-width: 0;
   overflow: visible;
 
-  /* 100vh/100dvh = LARGEST viewport on mobile, so panels are always taller
-     than the currently visible viewport -> always scroll room -> chrome hides. */
+  /* 100vh = LARGEST viewport on mobile, so panels are always taller than
+     the currently visible viewport -> always scroll room -> chrome hides. */
   min-height: calc(100vh - ${MOBILE_TABS_HEIGHT});
-  min-height: calc(100dvh - ${MOBILE_TABS_HEIGHT});
   animation: ${panelFadeIn} 0.25s ease both;
   box-sizing: border-box;
 `;
@@ -300,26 +298,21 @@ const PanelContent = styled.div`
 `;
 
 /* Sticky bottom tab bar.
-   The elements that used to make it flicker / momentarily disappear on
-   iOS & Android while scrolling:
+   ------------------------------------------------------------------
+   We position this with `top: 0; left: 0; right: 0` (anchored to the
+   TOP of the LAYOUT viewport) and then use JavaScript to translate it
+   to the bottom of the VISUAL viewport on every frame via
+   `window.visualViewport`.
 
-   1. `-webkit-overflow-scrolling: touch` on `html` (removed from the
-      injected styles below). It put the whole document on a separate
-      compositing scroll layer, which historically breaks `position:
-      fixed` descendants on iOS.
+   Why not just `bottom: 0`?
+   `position: fixed; bottom: 0` anchors to the layout viewport, which
+   does NOT track the collapsing/expanding URL bar on iOS Safari and
+   Android Chrome. The layout and visual viewports diverge during the
+   address-bar animation, and the bar appears to "slide away" with the
+   URL bar. Tracking the visual viewport is the only reliable fix.
 
-   2. `100vh` heights (now `100vh` + `100dvh` fallback). `100vh` on
-      mobile is the *large* viewport (URL bar hidden). When the URL bar
-      is showing, layout and rendered viewport disagree, so fixed
-      elements can momentarily lag behind the URL bar animation.
-
-   3. Missing `contain` and a "weak" GPU hint. `contain: layout style
-      paint` tells the browser the tab bar lays out and paints
-      independently of everything else, so it never has to be recomputed
-      or repainted during scroll. `translate3d(0,0,0)` promotes it to
-      its own compositor layer, and `will-change: transform` keeps it
-      there across frames.
-*/
+   CSS below just provides a sane initial position; JS refines it.
+   ------------------------------------------------------------------ */
 const MobileTabs = styled.div`
   display: flex;
   align-items: stretch;
@@ -331,14 +324,16 @@ const MobileTabs = styled.div`
   box-shadow: 0 -6px 20px ${props => props.theme.colors.shadow};
 
   position: fixed;
-  inset: auto 0 0 0;
+  top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   z-index: 55;
 
-  /* ---- lock the tab bar to the visual viewport ---- */
+  /* Initial position — puts it near the viewport bottom on first paint.
+     JS overrides this with the exact visual-viewport position. */
+  transform: translate3d(0, calc(100vh - 100%), 0);
   will-change: transform;
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   contain: layout style paint;
@@ -426,6 +421,7 @@ const Derivdash = () => {
   const [topBarHeight, setTopBarHeight] = useState(0);
 
   const topBarRef = useRef(null);
+  const tabsRef = useRef(null);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
   const touchEndX = useRef(0);
@@ -476,17 +472,85 @@ const Derivdash = () => {
     };
   }, [isMobile]);
 
+  /* ==================================================================
+     THE FIX: pin the bottom tab bar to the VISUAL viewport.
+
+     On mobile, `position: fixed; bottom: 0` anchors to the LAYOUT
+     viewport, not the visual viewport. When iOS Safari or Android Chrome
+     collapses / expands its URL bar, the two viewports diverge and the
+     bar appears to "slide away" or momentarily vanish.
+
+     We anchor the bar to the TOP of the layout viewport in CSS
+     (`top: 0; left: 0; right: 0`), and then continuously translate it
+     down so its bottom edge lines up with the bottom of the visual
+     viewport:
+
+       y = visualViewport.offsetTop
+         + visualViewport.height
+         - tabsHeight
+
+     We listen to `visualViewport`'s `resize` and `scroll` events — both
+     fire on every frame during the URL-bar animation — so the bar stays
+     locked to the visible bottom edge at all times.
+     ================================================================== */
+  useEffect(() => {
+    if (!isMobile) {
+      // Reset any transform when switching back to desktop.
+      const el = tabsRef.current;
+      if (el) el.style.transform = '';
+      return undefined;
+    }
+
+    const el = tabsRef.current;
+    if (!el) return undefined;
+
+    const vv = typeof window !== 'undefined' ? window.visualViewport : null;
+    let raf = 0;
+
+    const apply = () => {
+      raf = 0;
+      const tabsHeight = el.offsetHeight || 58;
+      let y;
+      if (vv) {
+        y = vv.offsetTop + vv.height - tabsHeight;
+      } else {
+        // Fallback for browsers without visualViewport.
+        y = window.innerHeight - tabsHeight;
+      }
+      el.style.transform = `translate3d(0, ${Math.round(y)}px, 0)`;
+    };
+
+    const schedule = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(apply);
+    };
+
+    // Position immediately on mount.
+    apply();
+
+    if (vv) {
+      vv.addEventListener('resize', schedule);
+      vv.addEventListener('scroll', schedule);
+    }
+    window.addEventListener('resize', schedule);
+    window.addEventListener('orientationchange', schedule);
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      if (vv) {
+        vv.removeEventListener('resize', schedule);
+        vv.removeEventListener('scroll', schedule);
+      }
+      window.removeEventListener('resize', schedule);
+      window.removeEventListener('orientationchange', schedule);
+    };
+  }, [isMobile]);
+
   /* Mobile: html owns the vertical scroll. body stays a normal block
      (overflow: visible) so fixed positioning and inner layout are stable.
-     min-height: 100vh / 100dvh on the mount points forces the document
-     to be taller than the visible viewport, so the browser can hide its
-     own address bar / tabs when the user scrolls.
-
-     IMPORTANT: we deliberately do NOT set `-webkit-overflow-scrolling:
-     touch` here. That deprecated property breaks `position: fixed`
-     descendants on iOS by moving the scroll onto a separate compositing
-     layer. Modern iOS (15+) has smooth momentum scrolling on `overflow:
-     auto` by default, so the hint is unnecessary. */
+     min-height: 100vh on the mount points forces the document to be
+     taller than the visible viewport -> the browser can hide its own
+     address bar / tabs when the user scrolls. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const STYLE_ID = 'derivdash-mobile-scroll';
@@ -504,13 +568,11 @@ const Derivdash = () => {
         overflow: visible !important;
         height: auto !important;
         min-height: 100vh !important;
-        min-height: 100dvh !important;
       }
       #root, #app, #__next {
         overflow: visible !important;
         height: auto !important;
         min-height: 100vh !important;
-        min-height: 100dvh !important;
       }
     `;
     document.head.appendChild(style);
@@ -579,7 +641,7 @@ const Derivdash = () => {
           </MobileLayout>
         </MainContent>
 
-        <MobileTabs>
+        <MobileTabs ref={tabsRef}>
           {panels.map((panel, index) => (
             <TabButton key={panel.id} active={activeIndex === index} onClick={() => goToPanel(index)}>
               <span className="icon">{panel.icon}</span>
