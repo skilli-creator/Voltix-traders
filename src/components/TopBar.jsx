@@ -691,14 +691,13 @@ const HistoryList = styled.div`
 // Desktop: sticky at the top of the page flow.
 // Mobile:  the parent wrapper (TopBarStickyWrapper in Derivdash.jsx)
 //          is what pins to the viewport top. THIS header itself is
-//          position: static on mobile so it flows inside that wrapper,
-//          which lets Derivdash measure the real rendered height and
-//          pad the dashboard correctly.
+//          position: static on mobile so it flows inside that wrapper.
 //
 // When the sidebar is open on mobile, the .sidebar-open class is
-// applied. The whole strip becomes transparent and everything inside
-// is hidden EXCEPT the sidebar toggle (which acts as ✕ to close the
-// sidebar). The dashboard Exit button is intentionally left hidden.
+// applied. Everything inside the header is hidden EXCEPT the sidebar
+// toggle. We use explicit child selectors + opacity: 0 + transition/
+// animation: none so there is zero ambiguity and no compositor can
+// display stale pixels for even a single frame.
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -733,17 +732,33 @@ const TopBar = styled.header`
       border-bottom-color: transparent;
       box-shadow: none;
       pointer-events: none;
+      transition: none !important;
 
-      /* Hide every descendant... */
-      & * {
+      /* Hide the RightSection — 2nd direct child of the header. */
+      & > *:nth-of-type(2) {
+        opacity: 0;
         visibility: hidden;
+        pointer-events: none;
+        transition: none !important;
+        animation: none !important;
       }
 
-      /* ...then re-show ONLY the sidebar toggle (which acts as ✕ and
-         closes the sidebar). The dashboard Exit button is left hidden. */
+      /* Inside the LeftSection (1st direct child), hide everything
+         except the toggle. */
+      & > *:nth-of-type(1) > *:not(.sidebar-toggle) {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: none !important;
+        animation: none !important;
+      }
+
+      /* Keep the toggle and its contents fully visible / interactive. */
       & .sidebar-toggle,
       & .sidebar-toggle * {
+        opacity: 1;
         visibility: visible;
+        transition: none !important;
       }
 
       & .sidebar-toggle {
