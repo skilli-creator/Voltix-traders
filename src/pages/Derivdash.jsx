@@ -162,11 +162,14 @@ const DashboardContainer = styled.div`
 /* FIXED TopBar wrapper on mobile.
    - position: fixed so it's immune to ancestor overflow traps.
    - No backdrop-filter (avoids iOS repaint flicker on scroll).
-   - will-change + translateZ(0) keeps it on its own compositor layer.
    - z-index is ELEVATED to 250 when the sidebar is open, so the
-     toggle and the Exit button inside TopBar.jsx can render above the
-     full-screen sidebar (which has z-index 99). When closed it stays
-     at 60 so it sits below modals and the sidebar backdrop. */
+     toggle inside TopBar.jsx renders above the full-screen sidebar
+     (which has z-index 99). When closed it stays at 60.
+   - When the sidebar is open we DROP the compositor hints
+     (`will-change`, `translateZ`). If they stay, the browser can
+     display a stale backing-store frame — with all the old, visible
+     TopBar buttons — for several seconds on slow devices. Disabling
+     them forces a fresh rasterize the instant the class flips. */
 const TopBarStickyWrapper = styled.div`
   position: relative;
   z-index: 40;
@@ -185,9 +188,9 @@ const TopBarStickyWrapper = styled.div`
         : props.theme.colors.bg || props.theme.colors.background};
     box-shadow: ${props =>
       props.$isSidebarOpen ? 'none' : `0 2px 12px ${props.theme.colors.shadow}`};
-    will-change: transform;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    will-change: ${props => (props.$isSidebarOpen ? 'auto' : 'transform')};
+    transform: ${props => (props.$isSidebarOpen ? 'none' : 'translateZ(0)')};
+    -webkit-transform: ${props => (props.$isSidebarOpen ? 'none' : 'translateZ(0)')};
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }
@@ -614,9 +617,6 @@ const Derivdash = () => {
       <DashboardContainer
         style={isMobile ? { paddingTop: topBarHeight ? `${topBarHeight}px` : undefined } : undefined}
       >
-        {/* ✅ $isSidebarOpen lets the wrapper elevate its z-index to 250
-             when the sidebar is open, so the toggle and Exit button
-             inside TopBar.jsx render above the full-screen sidebar. */}
         <TopBarStickyWrapper ref={topBarRef} $isSidebarOpen={isSidebarOpen}>
           <TopBar
             isSidebarOpen={isSidebarOpen}
