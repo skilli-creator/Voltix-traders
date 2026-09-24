@@ -734,7 +734,6 @@ const TopBar = styled.header`
       pointer-events: none;
       transition: none !important;
 
-      /* Hide the RightSection — 2nd direct child of the header. */
       & > *:nth-of-type(2) {
         opacity: 0;
         visibility: hidden;
@@ -743,8 +742,6 @@ const TopBar = styled.header`
         animation: none !important;
       }
 
-      /* Inside the LeftSection (1st direct child), hide everything
-         except the toggle. */
       & > *:nth-of-type(1) > *:not(.sidebar-toggle) {
         opacity: 0;
         visibility: hidden;
@@ -753,7 +750,6 @@ const TopBar = styled.header`
         animation: none !important;
       }
 
-      /* Keep the toggle and its contents fully visible / interactive. */
       & .sidebar-toggle,
       & .sidebar-toggle * {
         opacity: 1;
@@ -819,6 +815,16 @@ const DropdownContainer = styled.div`
   display: inline-block;
 `;
 
+/* Base dropdown styling.
+
+   Desktop: min-width 300px, opens under the trigger.
+   Mobile:  shrink-to-fit content and never exceed the viewport minus
+            16px on each side, plus a max-height cap with vertical
+            scroll. Because the trigger button sits in the right-aligned
+            RightSection, the button's right edge is at most ~14px from
+            the viewport right edge — so anchoring the dropdown to the
+            button's right edge and capping its width automatically
+            keeps it fully on-screen at every phone width. */
 const GlassDropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
@@ -827,7 +833,6 @@ const GlassDropdownMenu = styled.div`
   min-width: 300px;
   max-width: 90vw;
   max-height: 450px;
-  overflow-y: auto;
   background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(15,17,23,0.94)'};
   backdrop-filter: blur(24px) saturate(190%);
   -webkit-backdrop-filter: blur(24px) saturate(190%);
@@ -840,10 +845,28 @@ const GlassDropdownMenu = styled.div`
   transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)'};
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 300;
-  overflow: hidden;
+  /* Vertical scroll when content overflows; horizontal clipped to keep
+     the rounded corners clean. (Previously this was a single
+     `overflow: hidden` which silently disabled the earlier
+     `overflow-y: auto` and stopped tall dropdowns from scrolling.) */
+  overflow-x: hidden;
+  overflow-y: auto;
 
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+  @media (max-width: 768px) {
+    /* Shrink-to-fit + cap at viewport minus 32px of total margin. */
+    min-width: 0;
+    max-width: calc(100vw - 32px);
+    /* Cap the height so the dropdown always fits between the top of
+       the viewport and the bottom of the screen. The 140px leaves
+       room for the topbar + a 10px gap under the trigger. */
+    max-height: calc(100vh - 140px);
+    max-height: calc(100dvh - 140px);
+    padding: 6px;
+    border-radius: 12px;
+  }
 `;
 
 const RightAnchoredDropdown = styled(GlassDropdownMenu)`
@@ -856,12 +879,25 @@ const ThemeDropdownMenu = styled(GlassDropdownMenu)`
   right: auto;
   min-width: 180px;
   width: max-content;
+
+  @media (max-width: 768px) {
+    min-width: 0;
+    width: auto;
+    /* Left-anchored to a mid-screen trigger — cap so the right edge
+       never clips on small phones. */
+    max-width: calc(100vw - 32px);
+  }
 `;
 
 const PlatformDropdown = styled(GlassDropdownMenu)`
   min-width: 210px;
   left: 0;
   right: auto;
+
+  @media (max-width: 768px) {
+    min-width: 0;
+    max-width: calc(100vw - 32px);
+  }
 `;
 
 const MenuHeader = styled.div`
@@ -873,6 +909,26 @@ const MenuHeader = styled.div`
   color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
   margin-bottom: 4px;
+
+  @media (max-width: 768px) {
+    padding: 4px 8px 6px;
+    font-size: 9.5px;
+    letter-spacing: 0.6px;
+    margin-bottom: 3px;
+  }
+`;
+
+/* Section separator used inside the Account dropdown to divide the
+   account list from the currency list. */
+const DropdownSection = styled.div`
+  padding: 8px 0 0;
+  margin-top: 4px;
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+
+  @media (max-width: 768px) {
+    padding: 6px 0 0;
+    margin-top: 3px;
+  }
 `;
 
 const IconThemeButton = styled.button`
@@ -942,6 +998,12 @@ const ThemeOptionItem = styled.div`
 
   .theme-label { flex: 1; }
   .check-mark { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; font-weight: 700; }
+
+  @media (max-width: 768px) {
+    padding: 8px 10px;
+    gap: 9px;
+    font-size: 12px;
+  }
 `;
 
 const FundsButton = styled.button`
@@ -1029,14 +1091,50 @@ const FundsOption = styled.div`
     border-radius: 8px;
     background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
     color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    flex-shrink: 0;
   }
 
-  .fund-info { flex: 1; display: flex; flex-direction: column; }
+  .fund-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
   .fund-name { font-weight: 700; }
   .fund-desc {
     font-size: 11px;
     color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
     font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px 10px;
+    gap: 10px;
+
+    .fund-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      svg { width: 15px; height: 15px; }
+    }
+    .fund-name { font-size: 12.5px; }
+    .fund-desc { font-size: 10.5px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 9px 8px;
+    gap: 9px;
+
+    .fund-icon {
+      width: 28px;
+      height: 28px;
+      svg { width: 14px; height: 14px; }
+    }
+    .fund-name { font-size: 12px; }
+    .fund-desc { font-size: 10px; }
   }
 `;
 
@@ -1141,8 +1239,32 @@ const CurrencyOptionItem = styled.div`
 
   .flag { font-size: 16px; min-width: 20px; text-align: center; }
   .code { font-weight: 700; min-width: 34px; }
-  .name { flex: 1; font-weight: 500; font-size: 11px; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; }
-  .check { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
+  .name {
+    flex: 1;
+    font-weight: 500;
+    font-size: 11px;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .check { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; flex-shrink: 0; }
+
+  @media (max-width: 768px) {
+    padding: 9px 10px;
+    gap: 8px;
+    .flag { font-size: 15px; min-width: 18px; }
+    .code { min-width: 32px; font-size: 11.5px; }
+    .name { font-size: 10.5px; }
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 8px;
+    gap: 7px;
+    .flag { font-size: 14px; min-width: 16px; }
+    .code { min-width: 30px; font-size: 11px; }
+    .name { font-size: 10px; }
+  }
 `;
 
 const ExitButton = styled.button`
@@ -1314,6 +1436,12 @@ const PlatformOptionItem = styled.div`
     font-weight: 500;
     color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
     margin-left: auto;
+  }
+
+  @media (max-width: 768px) {
+    padding: 9px 10px;
+    gap: 9px;
+    .platform-desc { font-size: 9.5px; }
   }
 `;
 
@@ -1971,7 +2099,7 @@ const TopPanel = ({
                 <span className="theme-label">Demo Practice</span>
                 <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
               </ThemeOptionItem>
-              <div style={{ padding: '8px 0', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '4px' }}>
+              <DropdownSection>
                 <MenuHeader style={{ marginBottom: '6px' }}>Display currency in</MenuHeader>
                 {DISPLAY_CURRENCIES.map((curr) => (
                   <CurrencyOptionItem
@@ -1985,7 +2113,7 @@ const TopPanel = ({
                     {selectedCurrency === curr.code && <span className="check">✓</span>}
                   </CurrencyOptionItem>
                 ))}
-              </div>
+              </DropdownSection>
             </RightAnchoredDropdown>
           </DropdownContainer>
 
