@@ -2673,7 +2673,7 @@ const SignUp = () => {
             </AdHeading>
 
             <AdSub>
-              Real-time data, pro-grade charting, and instant order execution —
+              Win more on Deriv and forex with powerful tools on MyTradeApp —
               all in one beautifully simple platform built for serious traders.
             </AdSub>
 
