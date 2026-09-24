@@ -1,5 +1,6 @@
 // src/components/TopBar.jsx
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -2132,7 +2133,7 @@ const TopPanel = ({
         </RightSection>
       </TopBar>
 
-      {fundModalAction && (
+      {fundModalAction && createPortal(
         <ModalOverlay onClick={closeModal}>
           <ModalCard onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
@@ -2160,7 +2161,8 @@ const TopPanel = ({
               {renderModalContent()}
             </ModalBody>
           </ModalCard>
-        </ModalOverlay>
+        </ModalOverlay>,
+        document.body
       )}
     </>
   );
