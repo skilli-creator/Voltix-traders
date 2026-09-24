@@ -146,6 +146,9 @@ const EyeIcon = ({ visible }) => (
 // ============================================
 // FUNDS MODAL COMPONENTS
 // ============================================
+// ✅ Scrollable overlay. On mobile we switch to `align-items: flex-start`
+//    and add top padding so the modal sits BELOW the fixed TopBar + phone
+//    safe-area. Overflow-y lets the whole modal scroll when it's tall.
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -156,12 +159,25 @@ const ModalOverlay = styled.div`
   justify-content: center;
   padding: 20px;
   animation: ${fadeIn} 0.25s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: 768px) {
+    align-items: flex-start;
+    /* 88px ≈ fixed TopBar height; safe-area pushes below the notch */
+    padding: calc(88px + env(safe-area-inset-top, 0px)) 12px 24px;
+  }
+
+  @media (max-width: 480px) {
+    padding: calc(84px + env(safe-area-inset-top, 0px)) 10px 20px;
+  }
 `;
 
 const ModalCard = styled.div`
   width: 100%;
   max-width: 440px;
   max-height: 85vh;
+  margin: auto;
   background: ${p => p.theme.colors?.surface || '#0F172A'};
   border: 1px solid ${p => p.theme.colors?.border || 'rgba(255,255,255,0.08)'};
   border-radius: 20px;
@@ -171,11 +187,18 @@ const ModalCard = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    /* Let the overlay scroll instead of clipping the card */
+    max-height: none;
+    margin: 0;
+  }
 
   @media (max-width: 480px) {
     max-width: 100%;
-    margin: 12px;
     border-radius: 16px;
+    margin: 0;
   }
 `;
 
@@ -688,10 +711,6 @@ const HistoryList = styled.div`
 // ============================================
 // CORE CONTAINERS
 // ============================================
-// Desktop: sticky at the top of the page flow.
-// Mobile:  fixed at the very top of the phone's viewport so it always
-//          covers the browser-tab / notch strip. The companion
-//          `TopBarSpacer` below reserves its height.
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -712,7 +731,6 @@ const TopBar = styled.header`
     gap: 12px;
   }
 
-  /* Mobile: pin to the very top of the viewport */
   @media (max-width: 768px) {
     position: fixed;
     top: 0;
@@ -732,8 +750,6 @@ const TopBar = styled.header`
   }
 `;
 
-// Reserves space for the fixed mobile bar so page content is not hidden.
-// Hidden on desktop (where the bar is in normal flow via sticky).
 const TopBarSpacer = styled.div`
   display: none;
 
@@ -1377,7 +1393,7 @@ const SidebarToggle = styled.button`
 const TopPanel = ({ 
   isSidebarOpen, 
   onSidebarToggle, 
-  currentTheme = 'gold',   // ✅ default theme is now gold
+  currentTheme = 'gold',   // default theme is now gold
   onThemeChange
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -1430,7 +1446,6 @@ const TopPanel = ({
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
   const isDemo = accountType === 'demo';
 
-  // ✅ Currency helpers ------------------------------------------------------
   const getCurrencyInfo = (code = selectedCurrency) =>
     DISPLAY_CURRENCIES.find(c => c.code === code) || DISPLAY_CURRENCIES[0];
 
@@ -1462,8 +1477,6 @@ const TopPanel = ({
   };
 
   const getCurrencyFlag = () => getCurrencyInfo().flag;
-
-  // -------------------------------------------------------------------------
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
