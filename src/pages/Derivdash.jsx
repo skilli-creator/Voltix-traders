@@ -413,22 +413,29 @@ const Derivdash = () => {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  /* Measure TopBar height so we can pad the top of DashboardContainer
-     exactly, since the fixed TopBar takes no layout space on its own.
-     ResizeObserver keeps the spacer in sync with any TopBar height
-     change (orientation, longer title, etc.). */
+  /* Measure the REAL TopBar height so we can pad the top of
+     DashboardContainer exactly. On mobile the wrapper is position:fixed
+     and the <TopBar> inside it is ALSO position:fixed — so the wrapper's
+     own offsetHeight only reflects the hard-coded TopBarSpacer (~96px),
+     which under-measures the wrapped bar and clips the tops of panels.
+     Query the actual <header> element and measure it directly. */
   useEffect(() => {
     if (!isMobile) return undefined;
     const el = topBarRef.current;
     if (!el) return undefined;
 
-    const update = () => setTopBarHeight(el.offsetHeight);
+    const update = () => {
+      const header = el.querySelector('header');
+      setTopBarHeight(header ? header.offsetHeight : el.offsetHeight);
+    };
     update();
 
     let ro;
     if (typeof ResizeObserver !== 'undefined') {
       ro = new ResizeObserver(update);
       ro.observe(el);
+      const header = el.querySelector('header');
+      if (header) ro.observe(header);
     } else {
       window.addEventListener('resize', update);
     }
