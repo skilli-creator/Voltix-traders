@@ -1,7 +1,7 @@
 // src/components/OptionSideBar.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Academy from '../pages/Academy';
 
 // ============================================
@@ -2931,6 +2931,7 @@ if (typeof window !== 'undefined' && !window.logTrade) {
 // ============================================
 const OptionSideBar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeItem, setActiveItem] = useState('academy');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -3014,6 +3015,27 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     window.addEventListener('tradeLogUpdated', loadJournal);
     return () => window.removeEventListener('tradeLogUpdated', loadJournal);
   }, []);
+
+  // Auto-open a panel/popup when navigated in with ?open=<key>
+  useEffect(() => {
+    const open = searchParams.get('open');
+    if (!open) return;
+
+    if (open === 'terms') {
+      setActiveItem('terms');
+      openPopup('terms', {
+        title: 'Terms & Conditions',
+        icon: <TermsIcon />,
+        badge: 'v2.0',
+      });
+    }
+
+    // Strip the query param so refresh / back-nav doesn't re-open the popup
+    const next = new URLSearchParams(searchParams);
+    next.delete('open');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const calculateAge = (dob) => {
     if (!dob) return null;
