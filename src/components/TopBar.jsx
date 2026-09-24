@@ -689,19 +689,9 @@ const HistoryList = styled.div`
 // CORE CONTAINERS
 // ============================================
 // Desktop: sticky at the top of the page flow.
-// Mobile:  on mobile the parent wrapper (TopBarStickyWrapper in
-//          Derivdash.jsx) is the one that is `position: fixed` and
-//          pins to the top of the viewport. THIS header itself is
-//          set to `position: static` on mobile so it flows normally
-//          inside that fixed wrapper. Result: the wrapper's height
-//          now equals the header's real rendered height (including
-//          when it wraps into two rows and when safe-area-inset is
-//          applied), so `DashboardContainer`'s top padding — which
-//          Derivdash measures from the wrapper — is always correct.
-//          Previously the header was ALSO `position: fixed`, which
-//          took it out of flow; the wrapper's height then came only
-//          from a hard-coded 96px spacer, which under-measured the
-//          real wrapped bar and clipped the tops of panels.
+// Mobile:  fixed at the very top of the phone's viewport so it always
+//          covers the browser-tab / notch strip. The companion
+//          `TopBarSpacer` below reserves its height.
 const TopBar = styled.header`
   display: flex;
   justify-content: space-between;
@@ -722,22 +712,38 @@ const TopBar = styled.header`
     gap: 12px;
   }
 
-  /* Mobile: flow normally inside the already-fixed parent wrapper.
-     The wrapper pins itself to the viewport top; this header just
-     occupies space inside it and gives the wrapper its natural
-     content height. */
+  /* Mobile: pin to the very top of the viewport */
   @media (max-width: 768px) {
-    position: static;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
     min-height: auto;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
+    z-index: 200;
   }
 
   @media (max-width: 480px) {
     padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px;
     gap: 6px;
+  }
+`;
+
+// Reserves space for the fixed mobile bar so page content is not hidden.
+// Hidden on desktop (where the bar is in normal flow via sticky).
+const TopBarSpacer = styled.div`
+  display: none;
+
+  @media (max-width: 768px) {
+    display: block;
+    height: 96px;
+  }
+
+  @media (max-width: 480px) {
+    height: 90px;
   }
 `;
 
@@ -1958,6 +1964,9 @@ const TopPanel = ({
           </ExitButton>
         </RightSection>
       </TopBar>
+
+      {/* Spacer only renders on mobile — reserves space below the fixed bar */}
+      <TopBarSpacer />
 
       {fundModalAction && (
         <ModalOverlay onClick={closeModal}>
