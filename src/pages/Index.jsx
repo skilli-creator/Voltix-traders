@@ -1,7 +1,7 @@
 // src/pages/SignUp.jsx — Gold theme + M-with-crossline logo + shuffled 32-image slideshow + marketing panel
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import styled, { createGlobalStyle, keyframes } from 'styled-components';
 
 /* ============================================================
@@ -2365,7 +2365,8 @@ const SignUp = () => {
                         if (signupErrors.agreed) setSignupErrors((p) => ({ ...p, agreed: '' }));
                       }} />
                     <span>
-                      I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.
+                      I agree to the{' '}
+                      <Link to="/Derivdash?open=terms">Terms and Conditions</Link>.
                     </span>
                   </CheckLabel>
                 </RowBetween>
