@@ -42,7 +42,6 @@ const INITIAL_OTHER_TRADERS_DATA = [
   { id: 18, traderName: "George Kamau", strategy: "Odd", type: "evenodd" },
   { id: 19, traderName: "Lucy Akinyi", strategy: "Even", type: "evenodd" },
   { id: 20, traderName: "Lucy Akinyi", strategy: "Odd", type: "evenodd" },
-  // Accumulators
   { id: 21, traderName: "Michael Njoroge", strategy: "Rise", type: "accumulators" },
   { id: 22, traderName: "Michael Njoroge", strategy: "Fall", type: "accumulators" },
   { id: 23, traderName: "Faith Chebet", strategy: "Rise 3", type: "accumulators" },
@@ -70,7 +69,7 @@ const floatPulse = keyframes`
 `;
 
 // ============================================
-// STYLED COMPONENTS – FULL & COMPLETE
+// STYLED COMPONENTS
 // ============================================
 const PanelContainer = styled.div`
   width: 290px; min-width: 290px;
@@ -332,9 +331,6 @@ const SearchInput = styled.input`
   &:focus { border-color: ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.25)'}; }
 `;
 
-// ============================================
-// NEW: Wider dropdown for Other Traders & Modal
-// ============================================
 const WideDropdownSelectMenu = styled(DropdownSelectMenu)`
   min-width: 220px;
   max-width: 260px;
@@ -372,11 +368,8 @@ const ModalButton = styled.button`
 `;
 
 // ============================================
-// AI SCANNER STYLES
+// DOLA STYLES
 // ============================================
-// AI button now sits slightly higher — right around the trade placement
-// buttons area at the bottom of the panel — so it feels part of the
-// trading workflow rather than floating far above it.
 const AIButtonContainer = styled.div`
   position: fixed;
   bottom: ${props => (props.isMobile ? '200px' : '200px')};
@@ -387,37 +380,33 @@ const AIButtonContainer = styled.div`
   @media (min-width: 769px) { bottom: 200px; right: 24px; }
 `;
 const AIFloatingButton = styled.button`
-  width: ${props => (props.isMobile ? '44px' : '48px')};
-  height: ${props => (props.isMobile ? '44px' : '48px')};
+  width: ${props => (props.isMobile ? '52px' : '58px')};
+  height: ${props => (props.isMobile ? '52px' : '58px')};
   border-radius: 50%; border: none;
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
   color: ${props => props.theme?.colors?.text || 'white'};
-  font-size: ${props => (props.isMobile ? '11px' : '14px')};
-  font-weight: 700; cursor: pointer;
-  box-shadow: 0 2px 20px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
-  transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-direction: column;
+  font-size: ${props => (props.isMobile ? '13px' : '15px')};
+  font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 24px ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.35)'};
+  transition: all 0.3s ease;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
   animation: ${floatPulse} 3s ease-in-out infinite;
+  letter-spacing: 0.4px;
   &:hover {
-    transform: scale(1.05) translateY(-3px);
-    box-shadow: 0 4px 30px ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.3)'};
+    transform: scale(1.06) translateY(-3px);
+    box-shadow: 0 6px 34px ${props => props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.45)'};
   }
   &:active { transform: scale(0.95); }
-  .ai-label {
-    font-size: ${props => (props.isMobile ? '5px' : '6px')};
-    text-transform: uppercase; letter-spacing: 0.5px;
-    opacity: 0.8; margin-top: 1px; font-weight: 700;
+  .dola-label {
+    font-size: ${props => (props.isMobile ? '9px' : '10px')};
+    text-transform: uppercase; letter-spacing: 1px;
+    opacity: 0.95; margin-top: 1px; font-weight: 800;
   }
 `;
 
-// AI panel: opens above the button. `overflow: visible` is critical —
-// without it, the absolutely-positioned market / trade-type dropdowns
-// inside would get clipped by the panel's own scroll container and
-// appear to "hide inside the form". max-height is capped so the panel
-// itself never grows beyond the available viewport space, but the
-// dropdowns can still extend slightly past the panel's visual bounds.
 const AIAnalysisPanel = styled.div`
   position: fixed;
-  bottom: ${props => (props.isMobile ? '260px' : '260px')};
+  bottom: ${props => (props.isMobile ? '270px' : '270px')};
   right: ${props => (props.isMobile ? '8px' : '24px')};
   width: ${props => (props.isMobile ? '240px' : '300px')};
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.98)'};
@@ -430,18 +419,17 @@ const AIAnalysisPanel = styled.div`
   box-shadow: 0 20px 60px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.55)'};
   animation: ${fadeIn} 0.3s ease;
   display: ${props => props.isOpen ? 'block' : 'none'};
-  /* Critical: allow the inner dropdowns to escape the panel boundary. */
   overflow: visible;
-  max-height: calc(100vh - 320px);
-  max-height: calc(100dvh - 320px);
+  max-height: calc(100vh - 330px);
+  max-height: calc(100dvh - 330px);
   font-weight: 700;
   @media (max-width: 480px) {
     width: 220px;
     right: 8px;
-    bottom: 250px;
+    bottom: 260px;
     padding: 12px 14px;
-    max-height: calc(100vh - 300px);
-    max-height: calc(100dvh - 300px);
+    max-height: calc(100vh - 310px);
+    max-height: calc(100dvh - 310px);
   }
 `;
 
@@ -451,18 +439,19 @@ const AIAnalysisHeader = styled.div`
   border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   font-weight: 700;
   .title {
-    font-size: ${props => (props.isMobile ? '12px' : '13px')};
-    font-weight: 700; color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    display: flex; align-items: center; gap: 8px;
+    font-size: ${props => (props.isMobile ? '13px' : '14px')};
+    font-weight: 800; color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    display: flex; align-items: center; gap: 8px; letter-spacing: 0.3px;
   }
   .title-icon {
-    width: ${props => (props.isMobile ? '24px' : '28px')};
-    height: ${props => (props.isMobile ? '24px' : '28px')};
-    border-radius: 6px;
+    width: ${props => (props.isMobile ? '26px' : '30px')};
+    height: ${props => (props.isMobile ? '26px' : '30px')};
+    border-radius: 50%;
     background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
     display: flex; align-items: center; justify-content: center;
-    font-size: ${props => (props.isMobile ? '10px' : '12px')};
-    font-weight: 700; color: ${props => props.theme?.colors?.text || 'white'};
+    font-size: ${props => (props.isMobile ? '11px' : '12px')};
+    font-weight: 800; color: ${props => props.theme?.colors?.text || 'white'};
+    box-shadow: 0 2px 12px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.25)'};
   }
   .close-btn {
     background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
@@ -478,8 +467,8 @@ const AIAnalysisHeader = styled.div`
   }
   @media (max-width: 480px) {
     margin-bottom: 10px; padding-bottom: 8px;
-    .title { font-size: 11px; }
-    .title-icon { width: 22px; height: 22px; font-size: 9px; }
+    .title { font-size: 12px; }
+    .title-icon { width: 22px; height: 22px; font-size: 10px; }
     .close-btn { width: 22px; height: 22px; font-size: 10px; }
   }
 `;
@@ -496,88 +485,12 @@ const AISelectWrapper = styled.div`
     font-weight: 700; letter-spacing: 0.5px;
   }
 `;
-const AIDropdown = styled.div`
-  position: relative; width: 100%;
-`;
-const AIDropdownButton = styled.div`
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 10px;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.isOpen ? (props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)') : (props.theme?.colors?.border || 'rgba(255,255,255,0.06)')};
-  border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-weight: 700;
-  &:hover {
-    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
-    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
-  }
-  .left { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; }
-  .ai-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'}; flex-shrink: 0; }
-  .ai-selected-text {
-    font-size: 11px; font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .arrow {
-    font-size: 8px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
-    transition: transform 0.2s ease;
-    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
-    flex-shrink: 0; margin-left: 6px;
-  }
-  @media (max-width: 480px) {
-    padding: 7px 9px;
-    .ai-selected-text { font-size: 10px; }
-    .ai-dot { width: 5px; height: 5px; }
-  }
-`;
-// Dropdown menus inside the AI panel get a very high z-index so they
-// always render above sibling content regardless of stacking order,
-// and no clipping applies because the panel uses overflow: visible.
-const AIDropdownMenu = styled.div`
-  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 8px; overflow: hidden;
-  z-index: 1100;
-  display: ${props => props.isOpen ? 'block' : 'none'};
-  animation: ${slideDown} 0.2s ease;
-  box-shadow: 0 12px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.5)'};
-  max-height: 200px; overflow-y: auto; font-weight: 700;
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'}; border-radius: 4px; }
-  @media (max-width: 480px) { max-height: 160px; }
-`;
-const AIDropdownItem = styled.div`
-  padding: 7px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-  color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-  background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
-  transition: all 0.15s ease;
-  border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
-  font-weight: 700;
-  &:last-child { border-bottom: none; }
-  &:hover {
-    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-  }
-  .left { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; }
-  .ai-item-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'}; flex-shrink: 0; }
-  .ai-item-name {
-    font-size: 11px; font-weight: 700;
-    color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .ai-check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 12px; opacity: ${props => props.active ? 1 : 0}; flex-shrink: 0; margin-left: 6px; }
-  @media (max-width: 480px) {
-    padding: 6px 8px;
-    .ai-item-name { font-size: 10px; }
-    .ai-item-dot { width: 5px; height: 5px; }
-    .ai-check { font-size: 10px; }
-  }
-`;
 const AITradeTypeDropdown = styled.div`
   position: relative; width: 100%;
 `;
 const AITradeTypeButton = styled.div`
   display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
   border: 2px solid ${props => props.isOpen ? (props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)') : (props.theme?.colors?.border || 'rgba(255,255,255,0.06)')};
   border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-weight: 700;
@@ -586,19 +499,19 @@ const AITradeTypeButton = styled.div`
     border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
   }
   .ai-type-selected {
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#f1f5f9'};
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .arrow {
-    font-size: 8px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
+    font-size: 9px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
     transition: transform 0.2s ease;
     transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
     flex-shrink: 0; margin-left: 6px;
   }
   @media (max-width: 480px) {
-    padding: 7px 9px;
-    .ai-type-selected { font-size: 10px; }
+    padding: 8px 10px;
+    .ai-type-selected { font-size: 11px; }
   }
 `;
 const AITradeTypeMenu = styled.div`
@@ -616,7 +529,7 @@ const AITradeTypeMenu = styled.div`
   @media (max-width: 480px) { max-height: 160px; }
 `;
 const AITradeTypeItem = styled.div`
-  padding: 7px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
   transition: all 0.15s ease;
@@ -628,22 +541,22 @@ const AITradeTypeItem = styled.div`
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
   .ai-type-name {
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   }
-  .ai-check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 12px; opacity: ${props => props.active ? 1 : 0}; flex-shrink: 0; margin-left: 6px; }
+  .ai-check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 13px; opacity: ${props => props.active ? 1 : 0}; flex-shrink: 0; margin-left: 6px; }
   @media (max-width: 480px) {
-    padding: 6px 8px;
-    .ai-type-name { font-size: 10px; }
-    .ai-check { font-size: 10px; }
+    padding: 7px 10px;
+    .ai-type-name { font-size: 11px; }
+    .ai-check { font-size: 11px; }
   }
 `;
 const AIScanButton = styled.button`
-  width: 100%; padding: 10px 0; border-radius: 8px;
+  width: 100%; padding: 11px 0; border-radius: 8px;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.03)'};
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-  font-size: 11px; font-weight: 700;
+  font-size: 12px; font-weight: 700;
   cursor: not-allowed; transition: all 0.3s ease; opacity: 0.6;
   letter-spacing: 0.3px; position: relative; overflow: hidden;
   .scan-text { display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -654,7 +567,7 @@ const AIScanButton = styled.button`
     font-weight: 700;
   }
   @media (max-width: 480px) {
-    font-size: 10px; padding: 8px 0;
+    font-size: 11px; padding: 9px 0;
     .coming-soon-badge { font-size: 5px; padding: 1px 5px; }
   }
 `;
@@ -821,28 +734,23 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   const [growthRate, setGrowthRate] = useState(1);
 
   const [isDurationDropdownOpen, setIsDurationDropdownOpen] = useState(false);
-  const [isAIOpen, setIsAIOpen] = useState(false);
-  const [aiMarket, setAiMarket] = useState(VOLATILITY_MARKETS[0].symbol);
-  const [aiTradeType, setAiTradeType] = useState('overunder');
-  const [isAIMarketDropdownOpen, setIsAIMarketDropdownOpen] = useState(false);
-  const [isAITradeTypeDropdownOpen, setIsAITradeTypeDropdownOpen] = useState(false);
+  const [isDolaOpen, setIsDolaOpen] = useState(false);
+  const [dolaTradeType, setDolaTradeType] = useState('overunder');
+  const [isDolaTradeTypeDropdownOpen, setIsDolaTradeTypeDropdownOpen] = useState(false);
   const [isBulkDropdownOpen, setIsBulkDropdownOpen] = useState(false);
   const [isMartingaleDropdownOpen, setIsMartingaleDropdownOpen] = useState(false);
   const [isGrowthRateDropdownOpen, setIsGrowthRateDropdownOpen] = useState(false);
   const [isMarketDropdownOpen, setIsMarketDropdownOpen] = useState(false);
   const [localSelectedMarket, setLocalSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
 
-  // Auto switch & strategies
   const [autoSwitchMarkets, setAutoSwitchMarkets] = useState(false);
-  const [activeStrategy, setActiveStrategy] = useState('none'); // 'none', 'myApp', 'other'
+  const [activeStrategy, setActiveStrategy] = useState('none');
   const [myTradeAppStrategy, setMyTradeAppStrategy] = useState('Even');
   const [isMyTradeAppDropdownOpen, setIsMyTradeAppDropdownOpen] = useState(false);
   const [otherTradersStrategy, setOtherTradersStrategy] = useState('');
   const [isOtherTradersDropdownOpen, setIsOtherTradersDropdownOpen] = useState(false);
   const [otherTradersSearch, setOtherTradersSearch] = useState('');
-  // State for dynamic other traders data (so we can add custom strategies)
   const [otherTradersData, setOtherTradersData] = useState(INITIAL_OTHER_TRADERS_DATA);
-  // Strategy builder modal
   const [showStrategyBuilder, setShowStrategyBuilder] = useState(false);
   const [newTraderName, setNewTraderName] = useState('');
   const [newStrategy, setNewStrategy] = useState('');
@@ -960,16 +868,13 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
   const toggleMartingale = () => setMartingale(!martingale);
   const toggleBulkTrading = () => setBulkTrading(!bulkTrading);
-  const toggleAI = () => setIsAIOpen(!isAIOpen);
+  const toggleDola = () => setIsDolaOpen(!isDolaOpen);
 
   const handleMarketSelect = (market) => { setLocalSelectedMarket(market); setIsMarketDropdownOpen(false); if (onMarketChange) onMarketChange(market); };
   const toggleMarketDropdown = () => setIsMarketDropdownOpen(!isMarketDropdownOpen);
-  const handleAIMarketSelect = (market) => { setAiMarket(market.symbol); setIsAIMarketDropdownOpen(false); };
-  const toggleAIMarketDropdown = () => setIsAIMarketDropdownOpen(!isAIMarketDropdownOpen);
-  const getSelectedAIMarket = () => VOLATILITY_MARKETS.find(m => m.symbol === aiMarket) || VOLATILITY_MARKETS[0];
-  const handleAITradeTypeSelect = (typeId) => { setAiTradeType(typeId); setIsAITradeTypeDropdownOpen(false); };
-  const toggleAITradeTypeDropdown = () => setIsAITradeTypeDropdownOpen(!isAITradeTypeDropdownOpen);
-  const getSelectedAITradeType = () => tradeTypes.find(t => t.id === aiTradeType) || tradeTypes[0];
+  const handleDolaTradeTypeSelect = (typeId) => { setDolaTradeType(typeId); setIsDolaTradeTypeDropdownOpen(false); };
+  const toggleDolaTradeTypeDropdown = () => setIsDolaTradeTypeDropdownOpen(!isDolaTradeTypeDropdownOpen);
+  const getSelectedDolaTradeType = () => tradeTypes.find(t => t.id === dolaTradeType) || tradeTypes[0];
 
   const allPercentages = digitStats.map(s => s.pct);
   const maxPct = Math.max(...allPercentages);
@@ -1233,71 +1138,41 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  const renderAIScanner = () => {
-    const selectedAIMarket = getSelectedAIMarket();
-    const selectedAITradeType = getSelectedAITradeType();
+  const renderDola = () => {
+    const selectedDolaTradeType = getSelectedDolaTradeType();
     return (
       <>
         <AIButtonContainer isMobile={isPhone}>
-          <AIFloatingButton onClick={toggleAI} isMobile={isPhone}>
-            <span>AI</span>
-            <span className="ai-label">Analyze</span>
+          <AIFloatingButton onClick={toggleDola} isMobile={isPhone}>
+            <span>Dola</span>
+            <span className="dola-label">Analyze</span>
           </AIFloatingButton>
         </AIButtonContainer>
-        <AIAnalysisPanel isOpen={isAIOpen} isMobile={isPhone}>
+        <AIAnalysisPanel isOpen={isDolaOpen} isMobile={isPhone}>
           <AIAnalysisHeader isMobile={isPhone}>
-            <div className="title"><span className="title-icon">AI</span>Market Scanner</div>
-            <button className="close-btn" onClick={toggleAI}>✕</button>
+            <div className="title">
+              <span className="title-icon">D</span>
+              Dola
+            </div>
+            <button className="close-btn" onClick={toggleDola}>✕</button>
           </AIAnalysisHeader>
           <AIScannerInputs>
-            <AISelectWrapper>
-              <span className="label">Select Market</span>
-              <AIDropdown>
-                <AIDropdownButton
-                  isOpen={isAIMarketDropdownOpen}
-                  onClick={toggleAIMarketDropdown}
-                  color={selectedAIMarket.color}
-                >
-                  <div className="left">
-                    <span className="ai-dot" />
-                    <span className="ai-selected-text">{selectedAIMarket.name}</span>
-                  </div>
-                  <span className="arrow">▾</span>
-                </AIDropdownButton>
-                <AIDropdownMenu isOpen={isAIMarketDropdownOpen}>
-                  {VOLATILITY_MARKETS.map((market) => (
-                    <AIDropdownItem
-                      key={market.symbol}
-                      active={aiMarket === market.symbol}
-                      color={market.color}
-                      onClick={() => handleAIMarketSelect(market)}
-                    >
-                      <div className="left">
-                        <span className="ai-item-dot" />
-                        <span className="ai-item-name">{market.name}</span>
-                      </div>
-                      <span className="ai-check">✓</span>
-                    </AIDropdownItem>
-                  ))}
-                </AIDropdownMenu>
-              </AIDropdown>
-            </AISelectWrapper>
             <AISelectWrapper>
               <span className="label">Trade Type</span>
               <AITradeTypeDropdown>
                 <AITradeTypeButton
-                  isOpen={isAITradeTypeDropdownOpen}
-                  onClick={toggleAITradeTypeDropdown}
+                  isOpen={isDolaTradeTypeDropdownOpen}
+                  onClick={toggleDolaTradeTypeDropdown}
                 >
-                  <span className="ai-type-selected">{selectedAITradeType.label}</span>
+                  <span className="ai-type-selected">{selectedDolaTradeType.label}</span>
                   <span className="arrow">▾</span>
                 </AITradeTypeButton>
-                <AITradeTypeMenu isOpen={isAITradeTypeDropdownOpen}>
+                <AITradeTypeMenu isOpen={isDolaTradeTypeDropdownOpen}>
                   {tradeTypes.map((type) => (
                     <AITradeTypeItem
                       key={type.id}
-                      active={aiTradeType === type.id}
-                      onClick={() => handleAITradeTypeSelect(type.id)}
+                      active={dolaTradeType === type.id}
+                      onClick={() => handleDolaTradeTypeSelect(type.id)}
                     >
                       <span className="ai-type-name">{type.label}</span>
                       <span className="ai-check">✓</span>
@@ -1307,7 +1182,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
               </AITradeTypeDropdown>
             </AISelectWrapper>
             <AIScanButton disabled>
-              <span className="scan-text">Scan Market<span className="coming-soon-badge">Coming Soon</span></span>
+              <span className="scan-text">Ask Dola<span className="coming-soon-badge">Coming Soon</span></span>
             </AIScanButton>
           </AIScannerInputs>
         </AIAnalysisPanel>
@@ -1445,9 +1320,9 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     return null;
   };
 
-  const renderAIFloatingButton = () => {
+  const renderDolaFloatingButton = () => {
     if (tradeMode !== 'manual') return null;
-    return renderAIScanner();
+    return renderDola();
   };
 
   return (
@@ -1508,7 +1383,7 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
 
       {tradeMode === 'use-bots' ? renderRunButton(!selectedBot) : tradeMode === 'auto' ? renderRunButton(false) : null}
 
-      {renderAIFloatingButton()}
+      {renderDolaFloatingButton()}
       {renderStrategyBuilderModal()}
     </PanelContainer>
   );
