@@ -304,7 +304,7 @@ const CloseIcon = () => (
 const FullPanelOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: transparent;
   z-index: 2000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
@@ -437,7 +437,7 @@ const FullPanelBody = styled.div`
 const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.15);
+  background: transparent;
   z-index: 1000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
   align-items: center;
@@ -741,7 +741,7 @@ const JournalTable = styled.table`
 const NoteModal = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.2);
+  background: transparent;
   z-index: 3000;
   display: flex;
   align-items: center;
@@ -2442,9 +2442,7 @@ const TOPBAR_HEIGHT = '76px';
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: transparent;
   z-index: 98;
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
