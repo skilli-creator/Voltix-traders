@@ -372,127 +372,291 @@ const ModalButton = styled.button`
 `;
 
 // ============================================
-// AI SCANNER STYLES (identical to previous)
+// AI SCANNER STYLES
 // ============================================
+// AI button now sits slightly higher — right around the trade placement
+// buttons area at the bottom of the panel — so it feels part of the
+// trading workflow rather than floating far above it.
 const AIButtonContainer = styled.div`
-  position: fixed; bottom: ${props => props.isMobile ? '140px' : '140px'}; right: ${props => props.isMobile ? '12px' : '24px'};
-  z-index: 50; display: flex; flex-direction: column; align-items: center;
-  @media (max-width: 480px) { bottom: 120px; right: 10px; }
-  @media (min-width: 769px) { bottom: 140px; right: 24px; }
+  position: fixed;
+  bottom: ${props => (props.isMobile ? '200px' : '200px')};
+  right: ${props => (props.isMobile ? '12px' : '24px')};
+  z-index: 1000;
+  display: flex; flex-direction: column; align-items: center;
+  @media (max-width: 480px) { bottom: 190px; right: 10px; }
+  @media (min-width: 769px) { bottom: 200px; right: 24px; }
 `;
 const AIFloatingButton = styled.button`
-  width: ${props => props.isMobile ? '44px' : '48px'}; height: ${props => props.isMobile ? '44px' : '48px'};
+  width: ${props => (props.isMobile ? '44px' : '48px')};
+  height: ${props => (props.isMobile ? '44px' : '48px')};
   border-radius: 50%; border: none;
   background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
-  color: ${props => props.theme?.colors?.text || 'white'}; font-size: ${props => props.isMobile ? '11px' : '14px'};
+  color: ${props => props.theme?.colors?.text || 'white'};
+  font-size: ${props => (props.isMobile ? '11px' : '14px')};
   font-weight: 700; cursor: pointer;
   box-shadow: 0 2px 20px ${props => props.theme?.colors?.accent + '40' || 'rgba(41,98,255,0.2)'};
   transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; flex-direction: column;
   animation: ${floatPulse} 3s ease-in-out infinite;
-  &:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 4px 30px ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.3)'}; }
+  &:hover {
+    transform: scale(1.05) translateY(-3px);
+    box-shadow: 0 4px 30px ${props => props.theme?.colors?.accent + '50' || 'rgba(41,98,255,0.3)'};
+  }
   &:active { transform: scale(0.95); }
-  .ai-label { font-size: ${props => props.isMobile ? '5px' : '6px'}; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; margin-top: 1px; font-weight: 700; }
+  .ai-label {
+    font-size: ${props => (props.isMobile ? '5px' : '6px')};
+    text-transform: uppercase; letter-spacing: 0.5px;
+    opacity: 0.8; margin-top: 1px; font-weight: 700;
+  }
 `;
+
+// AI panel: opens above the button. `overflow: visible` is critical —
+// without it, the absolutely-positioned market / trade-type dropdowns
+// inside would get clipped by the panel's own scroll container and
+// appear to "hide inside the form". max-height is capped so the panel
+// itself never grows beyond the available viewport space, but the
+// dropdowns can still extend slightly past the panel's visual bounds.
 const AIAnalysisPanel = styled.div`
-  position: fixed; bottom: ${props => props.isMobile ? '180px' : '160px'}; right: ${props => props.isMobile ? '8px' : '24px'};
-  width: ${props => props.isMobile ? '220px' : '280px'}; max-height: ${props => props.isMobile ? '340px' : '400px'};
-  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.96)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 12px; padding: ${props => props.isMobile ? '14px 16px' : '16px 20px'};
-  z-index: 51; box-shadow: 0 12px 48px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
-  animation: ${fadeIn} 0.3s ease; display: ${props => props.isOpen ? 'block' : 'none'}; overflow-y: auto; font-weight: 700;
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'}; border-radius: 4px; }
-  @media (max-width: 480px) { width: 200px; right: 8px; bottom: 130px; max-height: 300px; padding: 12px 14px; }
+  position: fixed;
+  bottom: ${props => (props.isMobile ? '260px' : '260px')};
+  right: ${props => (props.isMobile ? '8px' : '24px')};
+  width: ${props => (props.isMobile ? '240px' : '300px')};
+  background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.98)'};
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border-radius: 14px;
+  padding: ${props => (props.isMobile ? '14px 16px' : '18px 20px')};
+  z-index: 1000;
+  box-shadow: 0 20px 60px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.55)'};
+  animation: ${fadeIn} 0.3s ease;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  /* Critical: allow the inner dropdowns to escape the panel boundary. */
+  overflow: visible;
+  max-height: calc(100vh - 320px);
+  max-height: calc(100dvh - 320px);
+  font-weight: 700;
+  @media (max-width: 480px) {
+    width: 220px;
+    right: 8px;
+    bottom: 250px;
+    padding: 12px 14px;
+    max-height: calc(100vh - 300px);
+    max-height: calc(100dvh - 300px);
+  }
 `;
+
 const AIAnalysisHeader = styled.div`
-  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px;
-  border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'}; font-weight: 700;
-  .title { font-size: ${props => props.isMobile ? '11px' : '13px'}; font-weight: 700; color: ${props => props.theme?.colors?.text || '#f1f5f9'}; display: flex; align-items: center; gap: 8px; }
-  .title-icon { width: ${props => props.isMobile ? '24px' : '28px'}; height: ${props => props.isMobile ? '24px' : '28px'}; border-radius: 6px; background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`}; display: flex; align-items: center; justify-content: center; font-size: ${props => props.isMobile ? '10px' : '12px'}; font-weight: 700; color: ${props => props.theme?.colors?.text || 'white'}; }
-  .close-btn { background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'}; border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'}; color: ${props => props.theme?.colors?.textMuted || '#64748b'}; width: 26px; height: 26px; border-radius: 50%; font-size: 12px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; font-weight: 700;
-    &:hover { background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.04)'}; color: ${props => props.theme?.colors?.text || '#f1f5f9'}; } }
-  @media (max-width: 480px) { margin-bottom: 8px; padding-bottom: 6px; .title { font-size: 10px; } .title-icon { width: 20px; height: 20px; font-size: 9px; } .close-btn { width: 22px; height: 22px; font-size: 10px; } }
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  font-weight: 700;
+  .title {
+    font-size: ${props => (props.isMobile ? '12px' : '13px')};
+    font-weight: 700; color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    display: flex; align-items: center; gap: 8px;
+  }
+  .title-icon {
+    width: ${props => (props.isMobile ? '24px' : '28px')};
+    height: ${props => (props.isMobile ? '24px' : '28px')};
+    border-radius: 6px;
+    background: ${props => `linear-gradient(135deg, ${props.theme?.colors?.accent || '#2962ff'}, ${props.theme?.colors?.accent + 'dd' || '#818cf8'})`};
+    display: flex; align-items: center; justify-content: center;
+    font-size: ${props => (props.isMobile ? '10px' : '12px')};
+    font-weight: 700; color: ${props => props.theme?.colors?.text || 'white'};
+  }
+  .close-btn {
+    background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
+    border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+    width: 26px; height: 26px; border-radius: 50%; font-size: 12px;
+    cursor: pointer; transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: center; font-weight: 700;
+    &:hover {
+      background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.04)'};
+      color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    }
+  }
+  @media (max-width: 480px) {
+    margin-bottom: 10px; padding-bottom: 8px;
+    .title { font-size: 11px; }
+    .title-icon { width: 22px; height: 22px; font-size: 9px; }
+    .close-btn { width: 22px; height: 22px; font-size: 10px; }
+  }
 `;
-const AIScannerInputs = styled.div` display: flex; flex-direction: column; gap: 6px; margin-bottom: 0; font-weight: 700; `;
-const AISelectWrapper = styled.div` display: flex; flex-direction: column; gap: 3px; font-weight: 700; .label { font-size: 8px; text-transform: uppercase; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; font-weight: 700; letter-spacing: 0.5px; } `;
-const AIDropdown = styled.div` position: relative; width: 100%; `;
+
+const AIScannerInputs = styled.div`
+  display: flex; flex-direction: column; gap: 10px;
+  font-weight: 700;
+`;
+const AISelectWrapper = styled.div`
+  display: flex; flex-direction: column; gap: 4px; font-weight: 700;
+  .label {
+    font-size: 8px; text-transform: uppercase;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    font-weight: 700; letter-spacing: 0.5px;
+  }
+`;
+const AIDropdown = styled.div`
+  position: relative; width: 100%;
+`;
 const AIDropdownButton = styled.div`
-  display: flex; align-items: center; justify-content: space-between; padding: 6px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-weight: 700;
-  &:hover { background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'}; border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'}; }
+  border: 2px solid ${props => props.isOpen ? (props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)') : (props.theme?.colors?.border || 'rgba(255,255,255,0.06)')};
+  border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-weight: 700;
+  &:hover {
+    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
+    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
+  }
   .left { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; }
   .ai-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'}; flex-shrink: 0; }
-  .ai-selected-text { font-size: 11px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#f1f5f9'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .arrow { font-size: 8px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; transition: transform 0.2s ease; transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'}; flex-shrink: 0; margin-left: 6px; }
-  @media (max-width: 480px) { padding: 5px 8px; .ai-selected-text { font-size: 10px; } .ai-dot { width: 5px; height: 5px; } }
+  .ai-selected-text {
+    font-size: 11px; font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .arrow {
+    font-size: 8px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
+    transition: transform 0.2s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    flex-shrink: 0; margin-left: 6px;
+  }
+  @media (max-width: 480px) {
+    padding: 7px 9px;
+    .ai-selected-text { font-size: 10px; }
+    .ai-dot { width: 5px; height: 5px; }
+  }
 `;
+// Dropdown menus inside the AI panel get a very high z-index so they
+// always render above sibling content regardless of stacking order,
+// and no clipping applies because the panel uses overflow: visible.
 const AIDropdownMenu = styled.div`
-  position: absolute; top: calc(100% + 3px); left: 0; right: 0;
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 6px; overflow: hidden; z-index: 100; display: ${props => props.isOpen ? 'block' : 'none'};
-  animation: ${slideDown} 0.2s ease; box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
-  max-height: 180px; overflow-y: auto; font-weight: 700;
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border-radius: 8px; overflow: hidden;
+  z-index: 1100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  animation: ${slideDown} 0.2s ease;
+  box-shadow: 0 12px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.5)'};
+  max-height: 200px; overflow-y: auto; font-weight: 700;
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'}; border-radius: 4px; }
-  @media (max-width: 480px) { max-height: 140px; }
+  @media (max-width: 480px) { max-height: 160px; }
 `;
 const AIDropdownItem = styled.div`
-  padding: 6px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
-  transition: all 0.15s ease; border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'}; font-weight: 700;
-  &:hover { background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'}; color: ${props => props.theme?.colors?.text || '#ffffff'}; }
+  transition: all 0.15s ease;
+  border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  font-weight: 700;
+  &:last-child { border-bottom: none; }
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+  }
   .left { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; }
   .ai-item-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => props.color || props.theme?.colors?.accent || '#2962ff'}; flex-shrink: 0; }
-  .ai-item-name { font-size: 11px; font-weight: 700; color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ai-item-name {
+    font-size: 11px; font-weight: 700;
+    color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
   .ai-check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 12px; opacity: ${props => props.active ? 1 : 0}; flex-shrink: 0; margin-left: 6px; }
-  @media (max-width: 480px) { padding: 5px 8px; .ai-item-name { font-size: 10px; } .ai-item-dot { width: 5px; height: 5px; } .ai-check { font-size: 10px; } }
+  @media (max-width: 480px) {
+    padding: 6px 8px;
+    .ai-item-name { font-size: 10px; }
+    .ai-item-dot { width: 5px; height: 5px; }
+    .ai-check { font-size: 10px; }
+  }
 `;
-const AITradeTypeDropdown = styled.div` position: relative; width: 100%; `;
+const AITradeTypeDropdown = styled.div`
+  position: relative; width: 100%;
+`;
 const AITradeTypeButton = styled.div`
-  display: flex; align-items: center; justify-content: space-between; padding: 6px 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.02)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-weight: 700;
-  &:hover { background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'}; border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'}; }
-  .ai-type-selected { font-size: 11px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#f1f5f9'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .arrow { font-size: 8px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'}; transition: transform 0.2s ease; transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'}; flex-shrink: 0; margin-left: 6px; }
-  @media (max-width: 480px) { padding: 5px 8px; .ai-type-selected { font-size: 10px; } }
+  border: 2px solid ${props => props.isOpen ? (props.theme?.colors?.accent + '60' || 'rgba(41,98,255,0.3)') : (props.theme?.colors?.border || 'rgba(255,255,255,0.06)')};
+  border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-weight: 700;
+  &:hover {
+    background: ${props => props.theme?.colors?.surfaceHover || props.theme?.colors?.backgroundTertiary || 'rgba(255,255,255,0.04)'};
+    border-color: ${props => props.theme?.colors?.accent + '30' || 'rgba(41,98,255,0.15)'};
+  }
+  .ai-type-selected {
+    font-size: 11px; font-weight: 700;
+    color: ${props => props.theme?.colors?.text || '#f1f5f9'};
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .arrow {
+    font-size: 8px; color: ${props => props.theme?.colors?.textMuted || '#5a6070'};
+    transition: transform 0.2s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    flex-shrink: 0; margin-left: 6px;
+  }
+  @media (max-width: 480px) {
+    padding: 7px 9px;
+    .ai-type-selected { font-size: 10px; }
+  }
 `;
 const AITradeTypeMenu = styled.div`
-  position: absolute; top: calc(100% + 3px); left: 0; right: 0;
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || '#111622'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 6px; overflow: hidden; z-index: 100; display: ${props => props.isOpen ? 'block' : 'none'};
-  animation: ${slideDown} 0.2s ease; box-shadow: 0 8px 24px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.4)'};
-  max-height: 150px; overflow-y: auto; font-weight: 700;
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border-radius: 8px; overflow: hidden;
+  z-index: 1100;
+  display: ${props => props.isOpen ? 'block' : 'none'};
+  animation: ${slideDown} 0.2s ease;
+  box-shadow: 0 12px 32px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.5)'};
+  max-height: 200px; overflow-y: auto; font-weight: 700;
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'}; border-radius: 4px; }
-  @media (max-width: 480px) { max-height: 120px; }
+  @media (max-width: 480px) { max-height: 160px; }
 `;
 const AITradeTypeItem = styled.div`
-  padding: 6px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 10px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
   color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
   background: ${props => props.active ? props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)' : 'transparent'};
-  transition: all 0.15s ease; border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'}; font-weight: 700;
-  &:hover { background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'}; color: ${props => props.theme?.colors?.text || '#ffffff'}; }
-  .ai-type-name { font-size: 11px; font-weight: 700; color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'}; }
+  transition: all 0.15s ease;
+  border-bottom: 2px solid ${props => props.theme?.colors?.border + '30' || 'rgba(255,255,255,0.02)'};
+  font-weight: 700;
+  &:last-child { border-bottom: none; }
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(255,255,255,0.03)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+  }
+  .ai-type-name {
+    font-size: 11px; font-weight: 700;
+    color: ${props => props.active ? props.theme?.colors?.text || '#ffffff' : props.theme?.colors?.textMuted || '#94a3b8'};
+  }
   .ai-check { color: ${props => props.theme?.colors?.accent || '#2962ff'}; font-size: 12px; opacity: ${props => props.active ? 1 : 0}; flex-shrink: 0; margin-left: 6px; }
-  @media (max-width: 480px) { padding: 5px 8px; .ai-type-name { font-size: 10px; } .ai-check { font-size: 10px; } }
+  @media (max-width: 480px) {
+    padding: 6px 8px;
+    .ai-type-name { font-size: 10px; }
+    .ai-check { font-size: 10px; }
+  }
 `;
 const AIScanButton = styled.button`
-  width: 100%; padding: 8px 0; border: none; border-radius: 6px;
+  width: 100%; padding: 10px 0; border-radius: 8px;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(255,255,255,0.03)'};
-  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  color: ${props => props.theme?.colors?.textMuted || '#64748b'}; font-size: 11px; font-weight: 700;
-  cursor: not-allowed; transition: all 0.3s ease; opacity: 0.5; margin-top: 2px; letter-spacing: 0.3px; position: relative; overflow: hidden;
+  border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  color: ${props => props.theme?.colors?.textMuted || '#64748b'};
+  font-size: 11px; font-weight: 700;
+  cursor: not-allowed; transition: all 0.3s ease; opacity: 0.6;
+  letter-spacing: 0.3px; position: relative; overflow: hidden;
   .scan-text { display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .coming-soon-badge { font-size: 6px; text-transform: uppercase; padding: 1px 6px; border-radius: 8px; background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'}; color: ${props => props.theme?.colors?.accent || '#38bdf8'}; font-weight: 700; }
-  @media (max-width: 480px) { font-size: 10px; padding: 6px 0; .coming-soon-badge { font-size: 5px; padding: 1px 5px; } }
+  .coming-soon-badge {
+    font-size: 6px; text-transform: uppercase; padding: 1px 6px; border-radius: 8px;
+    background: ${props => props.theme?.colors?.accentLight || props.theme?.colors?.accentActive || 'rgba(41,98,255,0.06)'};
+    color: ${props => props.theme?.colors?.accent || '#38bdf8'};
+    font-weight: 700;
+  }
+  @media (max-width: 480px) {
+    font-size: 10px; padding: 8px 0;
+    .coming-soon-badge { font-size: 5px; padding: 1px 5px; }
+  }
 `;
 
 // Digit stats, grid, buttons... (kept identical to original)
@@ -692,7 +856,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
   }, [tradeType]);
 
   const filteredOtherTraders = useMemo(() => {
-    const allowedTypes = ['overunder', 'matches', 'evenodd', 'accumulators'];
     let filtered = otherTradersData.filter(t => t.type === tradeType);
     if (otherTradersSearch.trim()) {
       const lower = otherTradersSearch.toLowerCase();
@@ -932,7 +1095,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     );
   };
 
-  // Updated Other Traders Strategies with wider dropdown, "Add your strategy", search, and modal
   const renderOtherTradersStrategies = () => {
     const isActive = activeStrategy === 'other';
     const displayValue = otherTradersStrategy || 'Select a trader';
@@ -957,7 +1119,6 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
                 <span className="dropdown-arrow">▾</span>
               </DropdownSelectButton>
               <WideDropdownSelectMenu isOpen={isOtherTradersDropdownOpen} dropUp={true}>
-                {/* "Add your strategy" item */}
                 <DropdownSelectItem
                   onClick={() => {
                     setIsOtherTradersDropdownOpen(false);
@@ -1028,12 +1189,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             </InputGroup>
           </div>
         )}
-        {/* R3C2: Auto Switch Markets - visible in Auto and Bots modes */}
         {(isAuto || isBots) && (
           <div style={{ gridColumn: '2', gridRow: '3' }}>{renderAutoSwitchMarkets()}</div>
         )}
 
-        {/* R4 & R5: Strategies - only in Auto mode */}
         {isAuto && (
           <>
             <div style={{ gridColumn: '1 / -1', gridRow: '4' }}>{renderMyTradeAppStrategies()}</div>
@@ -1080,7 +1239,10 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
     return (
       <>
         <AIButtonContainer isMobile={isPhone}>
-          <AIFloatingButton onClick={toggleAI} isMobile={isPhone}><span>AI</span><span className="ai-label">Analyze</span></AIFloatingButton>
+          <AIFloatingButton onClick={toggleAI} isMobile={isPhone}>
+            <span>AI</span>
+            <span className="ai-label">Analyze</span>
+          </AIFloatingButton>
         </AIButtonContainer>
         <AIAnalysisPanel isOpen={isAIOpen} isMobile={isPhone}>
           <AIAnalysisHeader isMobile={isPhone}>
@@ -1091,14 +1253,29 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             <AISelectWrapper>
               <span className="label">Select Market</span>
               <AIDropdown>
-                <AIDropdownButton isOpen={isAIMarketDropdownOpen} onClick={toggleAIMarketDropdown} color={selectedAIMarket.color}>
-                  <div className="left"><span className="ai-dot" /><span className="ai-selected-text">{selectedAIMarket.name}</span></div>
+                <AIDropdownButton
+                  isOpen={isAIMarketDropdownOpen}
+                  onClick={toggleAIMarketDropdown}
+                  color={selectedAIMarket.color}
+                >
+                  <div className="left">
+                    <span className="ai-dot" />
+                    <span className="ai-selected-text">{selectedAIMarket.name}</span>
+                  </div>
                   <span className="arrow">▾</span>
                 </AIDropdownButton>
                 <AIDropdownMenu isOpen={isAIMarketDropdownOpen}>
                   {VOLATILITY_MARKETS.map((market) => (
-                    <AIDropdownItem key={market.symbol} active={aiMarket === market.symbol} color={market.color} onClick={() => handleAIMarketSelect(market)}>
-                      <div className="left"><span className="ai-item-dot" /><span className="ai-item-name">{market.name}</span></div>
+                    <AIDropdownItem
+                      key={market.symbol}
+                      active={aiMarket === market.symbol}
+                      color={market.color}
+                      onClick={() => handleAIMarketSelect(market)}
+                    >
+                      <div className="left">
+                        <span className="ai-item-dot" />
+                        <span className="ai-item-name">{market.name}</span>
+                      </div>
                       <span className="ai-check">✓</span>
                     </AIDropdownItem>
                   ))}
@@ -1108,13 +1285,20 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
             <AISelectWrapper>
               <span className="label">Trade Type</span>
               <AITradeTypeDropdown>
-                <AITradeTypeButton isOpen={isAITradeTypeDropdownOpen} onClick={toggleAITradeTypeDropdown}>
+                <AITradeTypeButton
+                  isOpen={isAITradeTypeDropdownOpen}
+                  onClick={toggleAITradeTypeDropdown}
+                >
                   <span className="ai-type-selected">{selectedAITradeType.label}</span>
                   <span className="arrow">▾</span>
                 </AITradeTypeButton>
                 <AITradeTypeMenu isOpen={isAITradeTypeDropdownOpen}>
                   {tradeTypes.map((type) => (
-                    <AITradeTypeItem key={type.id} active={aiTradeType === type.id} onClick={() => handleAITradeTypeSelect(type.id)}>
+                    <AITradeTypeItem
+                      key={type.id}
+                      active={aiTradeType === type.id}
+                      onClick={() => handleAITradeTypeSelect(type.id)}
+                    >
                       <span className="ai-type-name">{type.label}</span>
                       <span className="ai-check">✓</span>
                     </AITradeTypeItem>
