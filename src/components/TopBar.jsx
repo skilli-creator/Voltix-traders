@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
+import SideOptionsBar from './SideOptionsBar';
 
 // ============================================
 // ANIMATION KEYFRAMES
@@ -2152,9 +2153,9 @@ const TopPanel = ({
   return (
     <>
       <TopBar className={isSidebarOpen && showSidebarToggle ? 'sidebar-open' : ''}>
-        {/* ✅ On forex: only nav buttons, theme & exit.
-            On other routes: full chrome (sidebar toggle, brand, platform switcher,
-            funds, account badge, exit). */}
+        {/* ✅ Forex: only nav buttons + theme + exit.
+            ✅ Deriv (and other routes): site name + platform switcher + SideOptionsBar
+               + theme + funds + account badge + exit (full chrome retained). */}
         {isForex ? (
           <>
             <NavSection aria-label="Forex navigation">
@@ -2254,6 +2255,9 @@ const TopPanel = ({
                 </ConnectionStatus>
               </BrandContainer>
             </LeftSection>
+
+            {/* ✅ Deriv side-options bar (buttons from SideOptionsBar.jsx) */}
+            {isDeriv && <SideOptionsBar />}
 
             <RightSection>
               <DropdownContainer ref={themeRef}>
