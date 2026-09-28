@@ -215,7 +215,7 @@ export default function ForexDash() {
 
   const view = urlView || 'home';
 
-  // ✅ Sidebar state
+  // ✅ Sidebar state — drives OptionSideBar's `isOpen` prop
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [strength, setStrength] = useState(createInitialStrength);
@@ -347,14 +347,6 @@ export default function ForexDash() {
         .forex-content{padding:24px 26px 60px;flex:1;max-width:1600px;margin:0 auto;width:100%}
         @media (max-width:768px){ .forex-content{padding:18px 14px 80px} }
 
-        /* ---- Sidebar backdrop ---- */
-        .sidebar-backdrop{
-          position:fixed;inset:0;background:rgba(0,0,0,0.55);
-          backdrop-filter:blur(2px);z-index:400;
-          animation:sidebarFade .2s ease;
-        }
-        @keyframes sidebarFade{from{opacity:0}to{opacity:1}}
-
         /* ---- Cards ---- */
         .card{background:linear-gradient(180deg,#0f1829 0%,#0d1524 100%);border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden}
         .card-head{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--border-soft)}
@@ -437,13 +429,11 @@ export default function ForexDash() {
           onThemeChange={() => {}}
         />
 
-        {/* ✅ Drawer — uses your OptionSideBar component */}
-        {sidebarOpen && (
-          <>
-            <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
-            <OptionSideBar onClose={() => setSidebarOpen(false)} />
-          </>
-        )}
+        {/* ✅ OptionSideBar stays mounted; visibility is controlled by `isOpen` */}
+        <OptionSideBar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
 
         <div className="forex-content">
           {view === 'home' && (
