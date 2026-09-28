@@ -8,7 +8,7 @@ import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
 
 /* =========================================================
-   SHARED CONSTANTS (exported for components)
+   SHARED CONSTANTS
    ========================================================= */
 export const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'NZD', 'CAD'];
 
@@ -33,7 +33,7 @@ export const INSTRUMENTS = [...PAIRS, 'XAUUSD'];
 export const WATCHLIST = ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'XAUUSD'];
 
 /* =========================================================
-   SHARED HELPERS (exported for components)
+   SHARED HELPERS
    ========================================================= */
 export const fmt = (n, d = 2) =>
   Number(n).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -89,7 +89,7 @@ export const totalPL = (positions, pairs, strength) =>
   positions.reduce((s, p) => s + positionPL(p, pairs, strength), 0);
 
 /* =========================================================
-   SHARED UI PRIMITIVES (exported for components)
+   SHARED UI PRIMITIVES
    ========================================================= */
 export const Sparkline = ({ values, w = 100, h = 30, color = '#00d68f' }) => {
   if (!values || values.length < 2) return null;
@@ -151,7 +151,7 @@ export const StatCard = ({ label, value, sub, accent, icon, valueClass = '' }) =
 );
 
 /* =========================================================
-   INTERNAL INITIAL DATA CREATORS
+   INITIAL DATA
    ========================================================= */
 const createInitialStrength = () => {
   const init = {};
@@ -206,24 +206,16 @@ const createInitialEquityHistory = (balance) => {
 };
 
 /* =========================================================
-   VIEW META
-   ========================================================= */
-const VIEW_META = {
-  home:     ['Dashboard',               'Live market overview & account summary'],
-  lot:      ['Lot Size Calculator',     'Risk-based position sizing across all instruments'],
-  strength: ['Currency Strength Meter', 'Relative strength of the 8 major currencies'],
-  bots:     ['Trading Bots',            'Automated strategies running on your account'],
-};
-
-/* =========================================================
-   MAIN PAGE
+   PAGE
    ========================================================= */
 export default function ForexDash() {
   const { view: urlView } = useParams();
   const navigate = useNavigate();
 
-  // Derive current view from URL — '/forexdash' = home, '/forexdash/lot' = lot, etc.
-  const view = urlView && VIEW_META[urlView] ? urlView : 'home';
+  const view = urlView || 'home';
+
+  // ✅ Sidebar state — this is what TopPanel needs to render the ☰ button
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [strength, setStrength] = useState(createInitialStrength);
   const [pairs, setPairs] = useState(() => createInitialPairs(strength));
@@ -237,7 +229,7 @@ export default function ForexDash() {
   const [bots, setBots] = useState(createInitialBots);
   const [selectedPair, setSelectedPair] = useState('EURUSD');
 
-  /* ---- Market simulation: strength walk ---- */
+  // Market simulation: strength walk
   useEffect(() => {
     const id = setInterval(() => {
       setStrength((prev) => {
@@ -251,7 +243,7 @@ export default function ForexDash() {
     return () => clearInterval(id);
   }, []);
 
-  /* ---- Reprice instruments when strength changes ---- */
+  // Reprice instruments
   useEffect(() => {
     setPairs((prev) => {
       const next = { ...prev };
@@ -271,7 +263,7 @@ export default function ForexDash() {
     });
   }, [strength]);
 
-  /* ---- Equity history tracking ---- */
+  // Equity history
   useEffect(() => {
     const pl = totalPL(positions, pairs, strength);
     const equity = account.balance + pl;
@@ -282,7 +274,7 @@ export default function ForexDash() {
     });
   }, [positions, pairs, strength, account.balance]);
 
-  /* ---- Bot performance simulation ---- */
+  // Bot simulation
   useEffect(() => {
     const id = setInterval(() => {
       setBots((prev) =>
@@ -299,7 +291,6 @@ export default function ForexDash() {
     return () => clearInterval(id);
   }, []);
 
-  /* ---- Callbacks ---- */
   const onTrade = useCallback((sym) => {
     setSelectedPair(sym);
     navigate('/forexdash/lot');
@@ -316,8 +307,6 @@ export default function ForexDash() {
   const onViewChange = useCallback((v) => {
     navigate(v === 'home' ? '/forexdash' : `/forexdash/${v}`);
   }, [navigate]);
-
-  const equity = account.balance + totalPL(positions, pairs, strength);
 
   return (
     <>
@@ -432,8 +421,13 @@ export default function ForexDash() {
       `}</style>
 
       <div className="forex-page">
-        {/* TopBar handles the whole chrome: brand, platform switcher, nav buttons, actions */}
-        <TopPanel />
+        {/* ✅ Pass both props so the ☰ button appears on forex */}
+        <TopPanel
+          isSidebarOpen={sidebarOpen}
+          onSidebarToggle={() => setSidebarOpen((v) => !v)}
+          currentTheme="gold"
+          onThemeChange={() => {}}
+        />
 
         <div className="forex-content">
           {view === 'home' && (
