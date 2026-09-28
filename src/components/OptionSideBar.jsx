@@ -2435,14 +2435,16 @@ const TermsSection = styled.div`
 `;
 
 // ============================================
-// SIDEBAR LAYOUT (Full page on mobile)
+// SIDEBAR LAYOUT
 // ============================================
 const TOPBAR_HEIGHT = '76px';
 
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  background: transparent;
+  background: rgba(2, 6, 18, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 98;
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
@@ -2473,15 +2475,19 @@ const SidebarContainer = styled.aside`
   overflow: hidden;
   box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
 
-  /* On mobile the sidebar goes FULL SCREEN — from the very top of the
-     viewport (behind the TopBar area) down to the bottom. The TopBar
-     itself sits above this with a transparent background so only its
-     toggle button stays visible/interactive. */
+  /* ── Mobile: proper side-sheet drawer, not full screen ── */
   @media (max-width: 768px) {
     top: 0;
-    width: 100%;
+    width: min(85vw, 340px);
     height: 100vh;
     height: 100dvh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 16px 0 48px rgba(0, 0, 0, 0.55);
+  }
+
+  @media (max-width: 380px) {
+    width: 88vw;
   }
 `;
 
@@ -2494,10 +2500,9 @@ const SidebarContent = styled.div`
   flex-direction: column;
   gap: 18px;
 
-  /* Make room for the TopBar toggle button which now floats above
-     the very top of the sidebar on mobile. */
+  /* Give the notch room without pushing the whole drawer down */
   @media (max-width: 768px) {
-    padding-top: calc(60px + env(safe-area-inset-top, 0px));
+    padding-top: calc(18px + env(safe-area-inset-top, 0px));
   }
 
   &::-webkit-scrollbar { width: 4px; }
@@ -2555,6 +2560,32 @@ const SidebarHeader = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .close-btn-mobile {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+    background: transparent;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
+      transform: rotate(90deg);
+    }
+
+    @media (max-width: 768px) {
+      display: flex;
+    }
   }
 `;
 
@@ -4177,9 +4208,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
       <Overlay isOpen={isOpen} onClick={onClose} />
 
-      {/* The sidebar is FULL SCREEN on mobile. Its internal CloseButton
-          was removed — the TopBar's own toggle button (which the wrapper
-          elevates above this sidebar on mobile) serves as the exit. */}
       <SidebarContainer isOpen={isOpen}>
         <SidebarContent>
           <SidebarHeader>
@@ -4188,6 +4216,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="user-name">John Trader</div>
               <div className="user-email">john@mytradeapp.com</div>
             </div>
+            <button
+              className="close-btn-mobile"
+              onClick={onClose}
+              aria-label="Close menu"
+            >
+              <CloseXIcon />
+            </button>
           </SidebarHeader>
 
           <NavSection>
