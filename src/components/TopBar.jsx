@@ -1693,7 +1693,8 @@ const TopPanel = ({
   // ✅ Route awareness
   const isForex = location.pathname.startsWith('/forex');
   const isDeriv = location.pathname.startsWith('/deriv');
-  const showSidebarToggle = !isForex && !!onSidebarToggle;
+  // ✅ Sidebar toggle always visible when a handler is provided (both deriv & forex)
+  const showSidebarToggle = !!onSidebarToggle;
 
   // ✅ Which forex nav item is active based on pathname
   const activeForexNav = (() => {
