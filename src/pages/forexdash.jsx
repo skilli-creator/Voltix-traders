@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import ForexTopbar from '../components/forextopbar';
 import ForexHome from '../components/forexhome';
 import LotSize from '../components/lotsize';
 import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
-import '../styles.css';
 
 /* =========================================================
    SHARED CONSTANTS
@@ -150,7 +149,7 @@ export const StatCard = ({ label, value, sub, accent, icon, valueClass = '' }) =
 );
 
 /* =========================================================
-   INITIAL DATA CREATORS
+   INITIAL DATA
    ========================================================= */
 const createInitialStrength = () => {
   const init = {};
@@ -205,7 +204,7 @@ const createInitialEquityHistory = (balance) => {
 };
 
 /* =========================================================
-   MAIN PAGE
+   PAGE META
    ========================================================= */
 const PAGE_META = {
   home: ['Dashboard', 'Live market overview & account summary'],
@@ -214,6 +213,9 @@ const PAGE_META = {
   bots: ['Trading Bots', 'Automated strategies running on your account'],
 };
 
+/* =========================================================
+   MAIN PAGE
+   ========================================================= */
 export default function ForexDash() {
   const [view, setView] = useState('home');
   const [strength, setStrength] = useState(createInitialStrength);
@@ -255,7 +257,7 @@ export default function ForexDash() {
     return () => clearInterval(id);
   }, []);
 
-  // Reprice instruments when strength changes
+  // Reprice instruments
   useEffect(() => {
     setPairs((prev) => {
       const next = { ...prev };
@@ -286,7 +288,7 @@ export default function ForexDash() {
     });
   }, [positions, pairs, strength, account.balance]);
 
-  // Simulate bot performance
+  // Bot simulation
   useEffect(() => {
     const id = setInterval(() => {
       setBots((prev) =>
@@ -314,79 +316,245 @@ export default function ForexDash() {
   ];
 
   return (
-    <div className="app">
-      {/* ---------- Sidebar ---------- */}
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brand-mark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#04150f" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 17l5-6 4 4 8-9" />
-              <path d="M15 6h5v5" />
-            </svg>
-          </div>
-          <div className="brand-text">
-            <b>NovaFX</b>
-            <span>Terminal</span>
-          </div>
-        </div>
+    <>
+      {/* ================= SHARED + LAYOUT STYLES ================= */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-        <nav className="nav">
-          <div className="nav-label">Trading</div>
-          {navItems.filter((i) => i.id !== 'bots').map((item) => (
-            <button key={item.id}
-              className={`nav-item ${view === item.id ? 'active' : ''}`}
-              onClick={() => setView(item.id)}>
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          ))}
-          <div className="nav-label">Automation</div>
-          {navItems.filter((i) => i.id === 'bots').map((item) => (
-            <button key={item.id}
-              className={`nav-item ${view === item.id ? 'active' : ''}`}
-              onClick={() => setView(item.id)}>
-              {item.icon}
-              <span>{item.label}</span>
-              {item.badge > 0 && <span className="nav-badge">{item.badge}</span>}
-            </button>
-          ))}
-        </nav>
+        *{box-sizing:border-box;margin:0;padding:0}
+        :root{
+          --bg:#070c16;--panel:#0e1626;--panel2:#121c30;--panel3:#16223a;
+          --border:#1d2a44;--border-soft:#16223a;
+          --text:#e8eefb;--muted:#7d90b0;--dim:#5a6b88;
+          --green:#00d68f;--red:#ff4d6a;--blue:#3b82f6;
+          --amber:#f5a524;--purple:#a855f7;
+          --radius:14px;
+          --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+        }
+        html,body,#root{height:100%}
+        body{
+          background:var(--bg);color:var(--text);
+          font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+          font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+        }
+        ::-webkit-scrollbar{width:9px;height:9px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:#1e2b45;border-radius:8px;border:2px solid var(--bg)}
+        ::-webkit-scrollbar-thumb:hover{background:#2b3d5e}
+        button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+        input,select{font-family:inherit}
+        .pos{color:var(--green)!important}
+        .neg{color:var(--red)!important}
+        .muted{color:var(--muted)}
+        .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
-        <div className="side-foot">
-          <div className="user-card">
-            <div className="avatar">AK</div>
-            <div className="user-meta">
-              <b>Alex Kim</b>
-              <span>Pro Account</span>
+        /* ---------- Layout ---------- */
+        .app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+        .main{display:flex;flex-direction:column;min-width:0}
+        .content{padding:24px 26px 60px;flex:1}
+        .view{display:none;animation:fade .28s ease}
+        .view.active{display:block}
+        @keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+        @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,214,143,.6)}70%{box-shadow:0 0 0 7px rgba(0,214,143,0)}100%{box-shadow:0 0 0 0 rgba(0,214,143,0)}}
+
+        /* ---------- Sidebar ---------- */
+        .sidebar{
+          background:linear-gradient(180deg,#0b1322 0%,#080e19 100%);
+          border-right:1px solid var(--border-soft);
+          display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+        }
+        .brand{display:flex;align-items:center;gap:11px;padding:22px 20px 20px}
+        .brand-mark{
+          width:36px;height:36px;border-radius:10px;flex:none;
+          background:linear-gradient(135deg,#00d68f,#0ea5e9);
+          display:grid;place-items:center;box-shadow:0 4px 16px rgba(0,214,143,.28);
+        }
+        .brand-mark svg{width:20px;height:20px}
+        .brand-text{display:flex;flex-direction:column;line-height:1.1}
+        .brand-text b{font-size:15.5px;letter-spacing:-.3px}
+        .brand-text span{font-size:10px;color:var(--dim);letter-spacing:1.6px;text-transform:uppercase;font-weight:600}
+        .nav{padding:8px 12px;display:flex;flex-direction:column;gap:3px;flex:1}
+        .nav-label{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--dim);font-weight:600;padding:16px 10px 8px}
+        .nav-item{
+          display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;
+          color:var(--muted);font-weight:500;font-size:13.5px;transition:.16s ease;
+          position:relative;width:100%;text-align:left;
+        }
+        .nav-item svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+        .nav-item:hover{background:#111b2e;color:var(--text)}
+        .nav-item.active{background:linear-gradient(90deg,rgba(0,214,143,.14),rgba(0,214,143,.02));color:#fff}
+        .nav-item.active::before{
+          content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);
+          width:3px;height:20px;border-radius:0 3px 3px 0;background:var(--green);
+        }
+        .nav-item.active svg{stroke:var(--green)}
+        .nav-badge{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:rgba(0,214,143,.16);color:var(--green)}
+        .side-foot{padding:14px;border-top:1px solid var(--border-soft)}
+        .user-card{display:flex;align-items:center;gap:11px;padding:9px;border-radius:11px;background:#0f1829;border:1px solid var(--border-soft)}
+        .avatar{width:33px;height:33px;border-radius:9px;background:linear-gradient(135deg,#3b82f6,#a855f7);display:grid;place-items:center;font-size:12px;font-weight:700;flex:none}
+        .user-meta{min-width:0}
+        .user-meta b{display:block;font-size:12.5px;font-weight:600}
+        .user-meta span{font-size:10.5px;color:var(--dim)}
+
+        /* ---------- Shared: Card ---------- */
+        .card{background:linear-gradient(180deg,#0f1829 0%,#0d1524 100%);border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden}
+        .card-head{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--border-soft)}
+        .card-head h3{font-size:13.5px;font-weight:600;letter-spacing:-.1px}
+        .card-head .spacer{flex:1}
+        .tag{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;background:#182338;color:var(--muted);border:1px solid var(--border)}
+
+        /* ---------- Shared: Stat card ---------- */
+        .stat-card{background:linear-gradient(180deg,#0f1829 0%,#0d1524 100%);border:1px solid var(--border-soft);border-radius:var(--radius);padding:17px 18px;position:relative;overflow:hidden}
+        .stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-line,#00d68f),transparent);opacity:.75}
+        .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+        .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.9px;font-weight:600}
+        .stat-icon{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#16223a}
+        .stat-icon svg{width:14px;height:14px;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+        .stat-value{font-family:var(--mono);font-size:23px;font-weight:500;letter-spacing:-.6px;line-height:1.15}
+        .stat-foot{font-size:11.5px;color:var(--dim);margin-top:6px;display:flex;align-items:center;gap:5px}
+        .delta{font-weight:600;font-size:11.5px}
+
+        /* ---------- Shared: Grids ---------- */
+        .grid-2{display:grid;grid-template-columns:1.85fr 1fr;gap:15px;margin-bottom:18px}
+        .grid-eq{display:grid;grid-template-columns:1fr;gap:15px;margin-bottom:18px}
+
+        /* ---------- Shared: Tables ---------- */
+        .tbl{width:100%;border-collapse:collapse}
+        .tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--dim);font-weight:600;padding:11px 18px;border-bottom:1px solid var(--border-soft);white-space:nowrap}
+        .tbl td{padding:11px 18px;border-bottom:1px solid rgba(22,34,58,.6);font-size:13px;white-space:nowrap}
+        .tbl tbody tr{transition:.13s}
+        .tbl tbody tr:hover{background:rgba(30,43,69,.35)}
+        .tbl tbody tr:last-child td{border-bottom:none}
+        .tbl .r{text-align:right}
+        .sym-cell{display:flex;align-items:center;gap:10px}
+        .sym-badge{width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;font-size:10px;font-weight:700;letter-spacing:.3px;background:#16223a;color:#9fb3d1;border:1px solid var(--border)}
+        .sym-name{font-weight:600;font-size:13px;letter-spacing:-.1px}
+        .sym-desc{font-size:10.5px;color:var(--dim)}
+        .spark{width:82px;height:28px;display:block}
+        .chart{width:100%;height:100%;display:block}
+
+        /* ---------- Shared: Side tag / buttons ---------- */
+        .side-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:5px}
+        .side-tag.buy{background:rgba(0,214,143,.13);color:var(--green)}
+        .side-tag.sell{background:rgba(255,77,106,.13);color:var(--red)}
+
+        .btn{padding:8px 15px;border-radius:9px;font-size:12.5px;font-weight:600;transition:.16s;border:1px solid transparent}
+        .btn.primary{background:var(--green);color:#04150f}
+        .btn.primary:hover{background:#1ee8a3;box-shadow:0 4px 16px rgba(0,214,143,.25)}
+        .btn.ghost{background:#16223a;border-color:var(--border);color:var(--muted)}
+        .btn.ghost:hover{background:#1d2b47;color:var(--text)}
+        .btn.sm{padding:5px 11px;font-size:11.5px;border-radius:7px}
+        .btn.trade{background:#16223a;border:1px solid var(--border);color:#9fb3d1;padding:5px 12px;font-size:11.5px;border-radius:7px}
+        .btn.trade:hover{background:rgba(0,214,143,.14);color:var(--green);border-color:rgba(0,214,143,.3)}
+        .icon-x{color:var(--dim);font-size:16px;line-height:1;padding:2px 7px;border-radius:6px}
+        .icon-x:hover{background:rgba(255,77,106,.13);color:var(--red)}
+
+        /* ---------- Shared: Strength bars ---------- */
+        .st-row{display:grid;grid-template-columns:44px 1fr 62px;align-items:center;gap:12px;padding:7px 18px}
+        .st-cur{font-size:12px;font-weight:700;letter-spacing:.4px;color:#c3d3ea}
+        .st-track{position:relative;height:22px;background:#0c1424;border-radius:6px;overflow:hidden;border:1px solid var(--border-soft)}
+        .st-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:#26364f}
+        .st-bar{position:absolute;top:3px;bottom:3px;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1),left .5s,right .5s}
+        .st-bar.pos{background:linear-gradient(90deg,rgba(0,214,143,.55),var(--green))}
+        .st-bar.neg{background:linear-gradient(270deg,rgba(255,77,106,.55),var(--red))}
+        .st-val{font-family:var(--mono);font-size:12px;text-align:right;font-weight:500}
+
+        /* ---------- Shared: Notice ---------- */
+        .notice{display:flex;align-items:center;gap:10px;margin-top:18px;padding:12px 16px;border-radius:11px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.18);font-size:12px;color:#8fb0e0}
+        .notice svg{width:15px;height:15px;flex:none;stroke:#5f8fd6;fill:none;stroke-width:1.8;stroke-linecap:round}
+        .empty{padding:36px;text-align:center;color:var(--dim);font-size:12.5px}
+
+        /* ---------- Responsive ---------- */
+        @media (max-width:1180px){
+          .grid-2{grid-template-columns:1fr}
+        }
+        @media (max-width:860px){
+          .app{grid-template-columns:1fr}
+          .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;z-index:60;flex-direction:row;border-right:none;border-top:1px solid var(--border);background:#0a1120}
+          .brand,.side-foot,.nav-label{display:none}
+          .nav{flex-direction:row;justify-content:space-around;padding:8px}
+          .nav-item{flex-direction:column;gap:4px;font-size:9.5px;padding:7px 4px}
+          .nav-item span{font-size:9.5px}
+          .nav-item.active::before{display:none}
+          .nav-badge{display:none}
+          .content{padding:18px 14px 100px}
+        }
+      `}</style>
+
+      <div className="app">
+        {/* ---------- Sidebar ---------- */}
+        <aside className="sidebar">
+          <div className="brand">
+            <div className="brand-mark">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#04150f" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 17l5-6 4 4 8-9" />
+                <path d="M15 6h5v5" />
+              </svg>
+            </div>
+            <div className="brand-text">
+              <b>NovaFX</b>
+              <span>Terminal</span>
             </div>
           </div>
-        </div>
-      </aside>
 
-      {/* ---------- Main ---------- */}
-      <div className="main">
-        <ForexTopbar title={meta[0]} subtitle={meta[1]} equity={equity} />
+          <nav className="nav">
+            <div className="nav-label">Trading</div>
+            {navItems.filter((i) => i.id !== 'bots').map((item) => (
+              <button key={item.id}
+                className={`nav-item ${view === item.id ? 'active' : ''}`}
+                onClick={() => setView(item.id)}>
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            ))}
+            <div className="nav-label">Automation</div>
+            {navItems.filter((i) => i.id === 'bots').map((item) => (
+              <button key={item.id}
+                className={`nav-item ${view === item.id ? 'active' : ''}`}
+                onClick={() => setView(item.id)}>
+                {item.icon}
+                <span>{item.label}</span>
+                {item.badge > 0 && <span className="nav-badge">{item.badge}</span>}
+              </button>
+            ))}
+          </nav>
 
-        <div className="content">
-          {view === 'home' && (
-            <ForexHome
-              pairs={pairs}
-              positions={positions}
-              account={account}
-              equityHistory={equityHistory}
-              strength={strength}
-              onTrade={onTrade}
-              onClosePosition={onClosePosition}
-              onViewChange={setView}
-            />
-          )}
-          {view === 'lot' && (
-            <LotSize pairs={pairs} strength={strength} initialPair={selectedPair} />
-          )}
-          {view === 'strength' && <Strength strength={strength} />}
-          {view === 'bots' && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
+          <div className="side-foot">
+            <div className="user-card">
+              <div className="avatar">AK</div>
+              <div className="user-meta">
+                <b>Alex Kim</b>
+                <span>Pro Account</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        {/* ---------- Main ---------- */}
+        <div className="main">
+          <ForexTopbar title={meta[0]} subtitle={meta[1]} equity={equity} />
+
+          <div className="content">
+            {view === 'home' && (
+              <ForexHome
+                pairs={pairs}
+                positions={positions}
+                account={account}
+                equityHistory={equityHistory}
+                strength={strength}
+                onTrade={onTrade}
+                onClosePosition={onClosePosition}
+                onViewChange={setView}
+              />
+            )}
+            {view === 'lot' && (
+              <LotSize pairs={pairs} strength={strength} initialPair={selectedPair} />
+            )}
+            {view === 'strength' && <Strength strength={strength} />}
+            {view === 'bots' && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
