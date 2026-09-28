@@ -144,6 +144,51 @@ const EyeIcon = ({ visible }) => (
   </svg>
 );
 
+// ---------- Forex nav icons ----------
+const DashboardIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 10.5 12 3l9 7.5" />
+    <path d="M5.5 9.6V20h13V9.6" />
+    <path d="M9.5 20v-5h5v5" />
+  </svg>
+);
+
+const CalculatorIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="3" width="16" height="18" rx="2.5" />
+    <path d="M8 7.5h8" />
+    <path d="M8 12h1.5M12 12h1.5M16 12h.01M8 16h1.5M12 16h1.5M16 16h.01" />
+  </svg>
+);
+
+const StrengthIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 20v-8" />
+    <path d="M12 20V4" />
+    <path d="M19 20v-5" />
+  </svg>
+);
+
+const BotsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3.5" y="7.5" width="17" height="12" rx="3.5" />
+    <path d="M12 7.5V4" />
+    <circle cx="12" cy="3.4" r="1" />
+    <path d="M9 13h.01M15 13h.01" />
+    <path d="M9.5 16.5h5" />
+  </svg>
+);
+
+// ============================================
+// FOREX NAV ITEMS
+// ============================================
+const FOREX_NAV_ITEMS = [
+  { key: 'home',     label: 'Dashboard',      path: '/forexdash',          icon: <DashboardIcon /> },
+  { key: 'lot',      label: 'Lot Calculator', path: '/forexdash/lot',      icon: <CalculatorIcon /> },
+  { key: 'strength', label: 'Strength',       path: '/forexdash/strength', icon: <StrengthIcon /> },
+  { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
+];
+
 // ============================================
 // FUNDS MODAL COMPONENTS
 // ============================================
@@ -725,7 +770,6 @@ const TopBar = styled.header`
       pointer-events: none;
       transition: none !important;
 
-      /* Hide the RightSection — 2nd direct child of the header. */
       & > *:nth-of-type(2) {
         opacity: 0;
         visibility: hidden;
@@ -734,8 +778,6 @@ const TopBar = styled.header`
         animation: none !important;
       }
 
-      /* Inside the LeftSection (1st direct child), hide everything
-         except the toggle. */
       & > *:nth-of-type(1) > *:not(.sidebar-toggle) {
         opacity: 0;
         visibility: hidden;
@@ -744,7 +786,6 @@ const TopBar = styled.header`
         animation: none !important;
       }
 
-      /* Keep the toggle and its contents fully visible / interactive. */
       & .sidebar-toggle,
       & .sidebar-toggle * {
         opacity: 1;
@@ -805,21 +846,90 @@ const RightSection = styled.div`
   }
 `;
 
+/* ---- Forex navigation (only shown on forex routes) ---- */
+const NavSection = styled.nav`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 16px;
+  padding: 4px;
+  background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border-radius: 12px;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    margin: 0 8px;
+    gap: 2px;
+  }
+
+  @media (max-width: 768px) {
+    order: 3;
+    width: 100%;
+    margin: 4px 0 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 4px;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+`;
+
+const NavButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
+    color: ${props => props.theme?.colors?.text || '#ffffff'};
+  }
+
+  &.active {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.14)'};
+    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
+    border-color: ${props => (props.theme?.colors?.accent || '#3b82f6') + '30'};
+    box-shadow: 0 0 12px ${props => (props.theme?.colors?.accent || '#3b82f6') + '20'};
+  }
+
+  @media (max-width: 768px) {
+    padding: 7px 12px;
+    font-size: 11.5px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 5px;
+
+    svg { width: 14px; height: 14px; }
+  }
+`;
+
 const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
 `;
 
-/* Base dropdown styling.
-
-   Desktop: min-width 300px, opens under the trigger.
-   Mobile:  shrink-to-fit content and never exceed the viewport minus
-            16px on each side, plus a max-height cap with vertical
-            scroll. Because the trigger button sits in the right-aligned
-            RightSection, the button's right edge is at most ~14px from
-            the viewport right edge - so anchoring the dropdown to the
-            button's right edge and capping its width automatically
-            keeps it fully on-screen at every phone width. */
 const GlassDropdownMenu = styled.div`
   position: absolute;
   top: calc(100% + 10px);
@@ -840,10 +950,6 @@ const GlassDropdownMenu = styled.div`
   transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)'};
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 300;
-  /* Vertical scroll when content overflows; horizontal clipped to keep
-     the rounded corners clean. Previously this was a single
-     "overflow: hidden" which silently disabled the earlier
-     "overflow-y: auto" and stopped tall dropdowns from scrolling. */
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -851,12 +957,8 @@ const GlassDropdownMenu = styled.div`
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
   @media (max-width: 768px) {
-    /* Shrink-to-fit + cap at viewport minus 32px of total margin. */
     min-width: 0;
     max-width: calc(100vw - 32px);
-    /* Cap the height so the dropdown always fits between the top of
-       the viewport and the bottom of the screen. The 140px leaves
-       room for the topbar + a 10px gap under the trigger. */
     max-height: calc(100vh - 140px);
     max-height: calc(100dvh - 140px);
     padding: 6px;
@@ -869,9 +971,6 @@ const RightAnchoredDropdown = styled(GlassDropdownMenu)`
   right: 0;
 `;
 
-/* Funds dropdown — right-anchored on desktop (as before), but on mobile
-   it flips to LEFT-anchored so it opens on the left side under the
-   Funds button. */
 const FundsDropdownMenu = styled(GlassDropdownMenu)`
   left: auto;
   right: 0;
@@ -891,8 +990,6 @@ const ThemeDropdownMenu = styled(GlassDropdownMenu)`
   @media (max-width: 768px) {
     min-width: 0;
     width: auto;
-    /* Left-anchored to a mid-screen trigger - cap so the right edge
-       never clips on small phones. */
     max-width: calc(100vw - 32px);
   }
 `;
@@ -917,7 +1014,6 @@ const MenuHeader = styled.div`
   color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
   margin-bottom: 4px;
-  /* Keep "Choose Theme", "Funds Management" and "Account" on one line. */
   white-space: nowrap;
 
   @media (max-width: 768px) {
@@ -929,8 +1025,6 @@ const MenuHeader = styled.div`
   }
 `;
 
-/* Section separator used inside the Account dropdown to divide the
-   account list from the currency list. */
 const DropdownSection = styled.div`
   padding: 8px 0 0;
   margin-top: 4px;
@@ -1009,7 +1103,6 @@ const ThemeOptionItem = styled.div`
 
   .flag-badge { flex-shrink: 0; }
 
-  /* Keep "Real Account" / "Demo Practice" / theme names on one line. */
   .theme-label {
     flex: 1;
     white-space: nowrap;
@@ -1017,7 +1110,6 @@ const ThemeOptionItem = styled.div`
     text-overflow: ellipsis;
   }
 
-  /* Ensure the balance on the right also stays on its own row. */
   & > span:not(.color-dot):not(.theme-label):not(.flag-badge) {
     flex-shrink: 0;
     white-space: nowrap;
@@ -1598,6 +1690,20 @@ const TopPanel = ({
   const DEPOSIT_RATE = 131;
   const WITHDRAW_RATE = 126;
 
+  // ✅ Route awareness
+  const isForex = location.pathname.startsWith('/forex');
+  const isDeriv = location.pathname.startsWith('/deriv');
+  const showSidebarToggle = !isForex && !!onSidebarToggle;
+
+  // ✅ Which forex nav item is active based on pathname
+  const activeForexNav = (() => {
+    const p = location.pathname;
+    if (p === '/forexdash/lot') return 'lot';
+    if (p === '/forexdash/strength') return 'strength';
+    if (p === '/forexdash/bots') return 'bots';
+    return 'home';
+  })();
+
   const generateAccountNickname = () => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let result = 'client_';
@@ -1697,6 +1803,11 @@ const TopPanel = ({
     if (opt?.route && location.pathname !== opt.route) {
       navigate(opt.route);
     }
+  };
+
+  // ✅ Forex nav click — navigate to sub-route
+  const handleForexNav = (path) => {
+    if (location.pathname !== path) navigate(path);
   };
 
   const closeModal = () => {
@@ -2040,18 +2151,20 @@ const TopPanel = ({
 
   return (
     <>
-      <TopBar className={isSidebarOpen ? 'sidebar-open' : ''}>
+      <TopBar className={isSidebarOpen && showSidebarToggle ? 'sidebar-open' : ''}>
         <LeftSection className="left-section">
-          <SidebarToggle
-            isOpen={isSidebarOpen}
-            onClick={onSidebarToggle}
-            className="sidebar-toggle"
-            aria-label="Toggle sidebar"
-          >
-            <span className="line" />
-            <span className="line" />
-            <span className="line" />
-          </SidebarToggle>
+          {showSidebarToggle && (
+            <SidebarToggle
+              isOpen={isSidebarOpen}
+              onClick={onSidebarToggle}
+              className="sidebar-toggle"
+              aria-label="Toggle sidebar"
+            >
+              <span className="line" />
+              <span className="line" />
+              <span className="line" />
+            </SidebarToggle>
+          )}
 
           <BrandContainer>
             <BrandText>
@@ -2090,6 +2203,22 @@ const TopPanel = ({
             </ConnectionStatus>
           </BrandContainer>
         </LeftSection>
+
+        {/* ✅ Forex-only navigation — appears between brand and actions */}
+        {isForex && (
+          <NavSection aria-label="Forex navigation">
+            {FOREX_NAV_ITEMS.map((item) => (
+              <NavButton
+                key={item.key}
+                className={activeForexNav === item.key ? 'active' : ''}
+                onClick={() => handleForexNav(item.path)}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </NavButton>
+            ))}
+          </NavSection>
+        )}
 
         <RightSection>
           <DropdownContainer ref={themeRef}>
