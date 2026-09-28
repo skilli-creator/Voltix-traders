@@ -180,7 +180,7 @@ const BotsIcon = () => (
 );
 
 // ============================================
-// FOREX NAV ITEMS
+// FOREX NAV ITEMS — Home (not Dashboard)
 // ============================================
 const FOREX_NAV_ITEMS = [
   { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
@@ -2152,161 +2152,198 @@ const TopPanel = ({
   return (
     <>
       <TopBar className={isSidebarOpen && showSidebarToggle ? 'sidebar-open' : ''}>
-        <LeftSection className="left-section">
-          {showSidebarToggle && (
-            <SidebarToggle
-              isOpen={isSidebarOpen}
-              onClick={onSidebarToggle}
-              className="sidebar-toggle"
-              aria-label="Toggle sidebar"
-            >
-              <span className="line" />
-              <span className="line" />
-              <span className="line" />
-            </SidebarToggle>
-          )}
-
-          <BrandContainer>
-            <BrandText>
-              <span className="voltix">MyTradeApp.</span>
-              <DropdownContainer ref={platformRef}>
-                <PlatformSelector
-                  onClick={togglePlatformDropdown}
-                  $color={PLATFORM_OPTIONS[platform].color}
+        {/* ✅ On forex: only nav buttons, theme & exit.
+            On other routes: full chrome (sidebar toggle, brand, platform switcher,
+            funds, account badge, exit). */}
+        {isForex ? (
+          <>
+            <NavSection aria-label="Forex navigation">
+              {FOREX_NAV_ITEMS.map((item) => (
+                <NavButton
+                  key={item.key}
+                  className={activeForexNav === item.key ? 'active' : ''}
+                  onClick={() => handleForexNav(item.path)}
                 >
-                  <span>{PLATFORM_OPTIONS[platform].label}</span>
-                  <span className="platform-definition">
-                    ({PLATFORM_OPTIONS[platform].definition})
-                  </span>
-                  <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
-                </PlatformSelector>
-                <PlatformDropdown isOpen={isPlatformOpen}>
-                  <MenuHeader>Select Platform</MenuHeader>
-                  {Object.entries(PLATFORM_OPTIONS).map(([key, opt]) => (
-                    <PlatformOptionItem
-                      key={key}
-                      $active={platform === key}
-                      $color={opt.color}
-                      onClick={() => handlePlatformSelect(key)}
+                  {item.icon}
+                  <span>{item.label}</span>
+                </NavButton>
+              ))}
+            </NavSection>
+
+            <RightSection>
+              <DropdownContainer ref={themeRef}>
+                <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
+                  <span className="theme-icon"><ThemeIcon /></span>
+                </IconThemeButton>
+                <ThemeDropdownMenu isOpen={isThemeOpen}>
+                  <MenuHeader>Choose Theme</MenuHeader>
+                  {THEME_OPTIONS.map((t) => (
+                    <ThemeOptionItem
+                      key={t.key}
+                      onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }}
+                      className={currentTheme === t.key ? 'active' : ''}
                     >
-                      <span className="platform-dot" />
-                      <span>{opt.label}</span>
-                      <span className="platform-desc">({opt.definition})</span>
-                    </PlatformOptionItem>
+                      <span className="color-dot" style={{ background: t.color }} />
+                      <span className="theme-label">{t.name}</span>
+                      {currentTheme === t.key && <span className="check-mark">✓</span>}
+                    </ThemeOptionItem>
                   ))}
-                </PlatformDropdown>
+                </ThemeDropdownMenu>
               </DropdownContainer>
-            </BrandText>
-            <ConnectionStatus connected={connected}>
-              <span className="status-dot" />
-              <span className="status-text">{connected ? 'Connected' : 'Disconnected'}</span>
-            </ConnectionStatus>
-          </BrandContainer>
-        </LeftSection>
 
-        {/* ✅ Forex-only navigation — appears between brand and actions */}
-        {isForex && (
-          <NavSection aria-label="Forex navigation">
-            {FOREX_NAV_ITEMS.map((item) => (
-              <NavButton
-                key={item.key}
-                className={activeForexNav === item.key ? 'active' : ''}
-                onClick={() => handleForexNav(item.path)}
+              <ExitButton
+                className="exit-button"
+                onClick={() => navigate('/')}
+                aria-label="Exit"
               >
-                {item.icon}
-                <span>{item.label}</span>
-              </NavButton>
-            ))}
-          </NavSection>
-        )}
+                <span className="exit-icon"><ExitIcon /></span>
+                <span>Exit</span>
+              </ExitButton>
+            </RightSection>
+          </>
+        ) : (
+          <>
+            <LeftSection className="left-section">
+              {showSidebarToggle && (
+                <SidebarToggle
+                  isOpen={isSidebarOpen}
+                  onClick={onSidebarToggle}
+                  className="sidebar-toggle"
+                  aria-label="Toggle sidebar"
+                >
+                  <span className="line" />
+                  <span className="line" />
+                  <span className="line" />
+                </SidebarToggle>
+              )}
 
-        <RightSection>
-          <DropdownContainer ref={themeRef}>
-            <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
-              <span className="theme-icon"><ThemeIcon /></span>
-            </IconThemeButton>
-            <ThemeDropdownMenu isOpen={isThemeOpen}>
-              <MenuHeader>Choose Theme</MenuHeader>
-              {THEME_OPTIONS.map((t) => (
-                <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
-                  <span className="color-dot" style={{ background: t.color }} />
-                  <span className="theme-label">{t.name}</span>
-                  {currentTheme === t.key && <span className="check-mark">✓</span>}
-                </ThemeOptionItem>
-              ))}
-            </ThemeDropdownMenu>
-          </DropdownContainer>
+              <BrandContainer>
+                <BrandText>
+                  <span className="voltix">MyTradeApp.</span>
+                  <DropdownContainer ref={platformRef}>
+                    <PlatformSelector
+                      onClick={togglePlatformDropdown}
+                      $color={PLATFORM_OPTIONS[platform].color}
+                    >
+                      <span>{PLATFORM_OPTIONS[platform].label}</span>
+                      <span className="platform-definition">
+                        ({PLATFORM_OPTIONS[platform].definition})
+                      </span>
+                      <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
+                    </PlatformSelector>
+                    <PlatformDropdown isOpen={isPlatformOpen}>
+                      <MenuHeader>Select Platform</MenuHeader>
+                      {Object.entries(PLATFORM_OPTIONS).map(([key, opt]) => (
+                        <PlatformOptionItem
+                          key={key}
+                          $active={platform === key}
+                          $color={opt.color}
+                          onClick={() => handlePlatformSelect(key)}
+                        >
+                          <span className="platform-dot" />
+                          <span>{opt.label}</span>
+                          <span className="platform-desc">({opt.definition})</span>
+                        </PlatformOptionItem>
+                      ))}
+                    </PlatformDropdown>
+                  </DropdownContainer>
+                </BrandText>
+                <ConnectionStatus connected={connected}>
+                  <span className="status-dot" />
+                  <span className="status-text">{connected ? 'Connected' : 'Disconnected'}</span>
+                </ConnectionStatus>
+              </BrandContainer>
+            </LeftSection>
 
-          <DropdownContainer ref={fundsRef}>
-            <FundsButton onClick={toggleFundsDropdown}>
-              <span className="funds-icon-wrapper"><FundsIcon /></span>
-              <span className="funds-content">
-                <span className="funds-title">Funds</span>
-                <span className="funds-sub">Manage your money</span>
-              </span>
-              <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
-            </FundsButton>
-            <FundsDropdownMenu isOpen={isFundsOpen}>
-              <MenuHeader>Funds Management</MenuHeader>
-              {fundOptions.map((option, index) => (
-                <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
-                  <span className="fund-icon">{option.icon}</span>
-                  <span className="fund-info">
-                    <span className="fund-name">{option.name}</span>
-                    <span className="fund-desc">{option.desc}</span>
+            <RightSection>
+              <DropdownContainer ref={themeRef}>
+                <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
+                  <span className="theme-icon"><ThemeIcon /></span>
+                </IconThemeButton>
+                <ThemeDropdownMenu isOpen={isThemeOpen}>
+                  <MenuHeader>Choose Theme</MenuHeader>
+                  {THEME_OPTIONS.map((t) => (
+                    <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
+                      <span className="color-dot" style={{ background: t.color }} />
+                      <span className="theme-label">{t.name}</span>
+                      {currentTheme === t.key && <span className="check-mark">✓</span>}
+                    </ThemeOptionItem>
+                  ))}
+                </ThemeDropdownMenu>
+              </DropdownContainer>
+
+              <DropdownContainer ref={fundsRef}>
+                <FundsButton onClick={toggleFundsDropdown}>
+                  <span className="funds-icon-wrapper"><FundsIcon /></span>
+                  <span className="funds-content">
+                    <span className="funds-title">Funds</span>
+                    <span className="funds-sub">Manage your money</span>
                   </span>
-                </FundsOption>
-              ))}
-            </FundsDropdownMenu>
-          </DropdownContainer>
+                  <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
+                </FundsButton>
+                <FundsDropdownMenu isOpen={isFundsOpen}>
+                  <MenuHeader>Funds Management</MenuHeader>
+                  {fundOptions.map((option, index) => (
+                    <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
+                      <span className="fund-icon">{option.icon}</span>
+                      <span className="fund-info">
+                        <span className="fund-name">{option.name}</span>
+                        <span className="fund-desc">{option.desc}</span>
+                      </span>
+                    </FundsOption>
+                  ))}
+                </FundsDropdownMenu>
+              </DropdownContainer>
 
-          <DropdownContainer ref={dropdownRef}>
-            <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
-              <span className="flag-badge">{getCurrencyFlag()}</span>
-              <span className="balance-display">{getFormattedBalance(currentAccount)}</span>
-              <span className="account-type-badge">{currentAccount.label}</span>
-              <span className="currency-tag">{selectedCurrency}</span>
-              <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
-            </AccountBadge>
-            <RightAnchoredDropdown isOpen={isDropdownOpen}>
-              <MenuHeader>Account</MenuHeader>
-              <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
-                <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
-                <span className="theme-label">Real Account</span>
-                <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
-              </ThemeOptionItem>
-              <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
-                <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
-                <span className="theme-label">Demo Practice</span>
-                <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
-              </ThemeOptionItem>
-              <DropdownSection>
-                <MenuHeader style={{ marginBottom: '6px' }}>Display currency in</MenuHeader>
-                {DISPLAY_CURRENCIES.map((curr) => (
-                  <CurrencyOptionItem
-                    key={curr.code}
-                    onClick={() => { setSelectedCurrency(curr.code); setIsDropdownOpen(false); }}
-                    className={selectedCurrency === curr.code ? 'active' : ''}
-                  >
-                    <span className="flag">{curr.flag}</span>
-                    <span className="code">{curr.code}</span>
-                    <span className="name">{curr.name}</span>
-                    {selectedCurrency === curr.code && <span className="check">✓</span>}
-                  </CurrencyOptionItem>
-                ))}
-              </DropdownSection>
-            </RightAnchoredDropdown>
-          </DropdownContainer>
+              <DropdownContainer ref={dropdownRef}>
+                <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
+                  <span className="flag-badge">{getCurrencyFlag()}</span>
+                  <span className="balance-display">{getFormattedBalance(currentAccount)}</span>
+                  <span className="account-type-badge">{currentAccount.label}</span>
+                  <span className="currency-tag">{selectedCurrency}</span>
+                  <span className="chevron"><ChevronDownIcon open={isDropdownOpen} /></span>
+                </AccountBadge>
+                <RightAnchoredDropdown isOpen={isDropdownOpen}>
+                  <MenuHeader>Account</MenuHeader>
+                  <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
+                    <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
+                    <span className="theme-label">Real Account</span>
+                    <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
+                  </ThemeOptionItem>
+                  <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
+                    <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
+                    <span className="theme-label">Demo Practice</span>
+                    <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
+                  </ThemeOptionItem>
+                  <DropdownSection>
+                    <MenuHeader style={{ marginBottom: '6px' }}>Display currency in</MenuHeader>
+                    {DISPLAY_CURRENCIES.map((curr) => (
+                      <CurrencyOptionItem
+                        key={curr.code}
+                        onClick={() => { setSelectedCurrency(curr.code); setIsDropdownOpen(false); }}
+                        className={selectedCurrency === curr.code ? 'active' : ''}
+                      >
+                        <span className="flag">{curr.flag}</span>
+                        <span className="code">{curr.code}</span>
+                        <span className="name">{curr.name}</span>
+                        {selectedCurrency === curr.code && <span className="check">✓</span>}
+                      </CurrencyOptionItem>
+                    ))}
+                  </DropdownSection>
+                </RightAnchoredDropdown>
+              </DropdownContainer>
 
-          <ExitButton
-            className="exit-button"
-            onClick={() => navigate('/')}
-            aria-label="Exit"
-          >
-            <span className="exit-icon"><ExitIcon /></span>
-            <span>Exit</span>
-          </ExitButton>
-        </RightSection>
+              <ExitButton
+                className="exit-button"
+                onClick={() => navigate('/')}
+                aria-label="Exit"
+              >
+                <span className="exit-icon"><ExitIcon /></span>
+                <span>Exit</span>
+              </ExitButton>
+            </RightSection>
+          </>
+        )}
       </TopBar>
 
       {fundModalAction && createPortal(
