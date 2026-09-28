@@ -206,6 +206,16 @@ const createInitialEquityHistory = (balance) => {
 };
 
 /* =========================================================
+   SIDEBAR MENU ITEMS
+   ========================================================= */
+const SIDEBAR_ITEMS = [
+  { key: 'home',     label: 'Home',            path: '/forexdash' },
+  { key: 'lot',      label: 'Lot Calculator',  path: '/forexdash/lot' },
+  { key: 'strength', label: 'Strength Meter',  path: '/forexdash/strength' },
+  { key: 'bots',     label: 'Trading Bots',    path: '/forexdash/bots' },
+];
+
+/* =========================================================
    PAGE
    ========================================================= */
 export default function ForexDash() {
@@ -308,6 +318,11 @@ export default function ForexDash() {
     navigate(v === 'home' ? '/forexdash' : `/forexdash/${v}`);
   }, [navigate]);
 
+  const handleSidebarNav = (path) => {
+    navigate(path);
+    setSidebarOpen(false);
+  };
+
   return (
     <>
       {/* ============ SHARED DASHBOARD STYLES ============ */}
@@ -345,6 +360,84 @@ export default function ForexDash() {
         .forex-page{min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
         .forex-content{padding:24px 26px 60px;flex:1;max-width:1600px;margin:0 auto;width:100%}
         @media (max-width:768px){ .forex-content{padding:18px 14px 80px} }
+
+        /* ---- Sidebar drawer ---- */
+        .sidebar-backdrop{
+          position:fixed;inset:0;background:rgba(0,0,0,0.55);
+          backdrop-filter:blur(2px);z-index:400;
+          animation:sidebarFade .2s ease;
+        }
+        @keyframes sidebarFade{from{opacity:0}to{opacity:1}}
+
+        .forex-sidebar{
+          position:fixed;top:0;left:0;bottom:0;width:270px;max-width:80vw;
+          background:linear-gradient(180deg,#0b1322 0%,#080e19 100%);
+          border-right:1px solid var(--border-soft);
+          z-index:410;display:flex;flex-direction:column;
+          animation:sidebarSlide .28s cubic-bezier(0.16,1,0.3,1);
+          box-shadow:14px 0 40px rgba(0,0,0,0.55);
+        }
+        @keyframes sidebarSlide{
+          from{transform:translateX(-100%)}
+          to{transform:translateX(0)}
+        }
+
+        .forex-sidebar-header{
+          display:flex;align-items:center;justify-content:space-between;
+          padding:18px 18px 14px;border-bottom:1px solid var(--border-soft);
+        }
+        .forex-sidebar-header .title{
+          font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px;
+        }
+        .forex-sidebar-header .close{
+          width:30px;height:30px;border-radius:8px;
+          display:grid;place-items:center;
+          color:var(--muted);font-size:20px;line-height:1;
+          transition:all .18s ease;
+        }
+        .forex-sidebar-header .close:hover{
+          background:rgba(255,77,106,.14);color:var(--red);
+        }
+
+        .forex-sidebar-nav{
+          flex:1;overflow-y:auto;padding:10px 12px;
+          display:flex;flex-direction:column;gap:3px;
+        }
+        .forex-sidebar-nav::-webkit-scrollbar{width:5px}
+        .forex-sidebar-nav::-webkit-scrollbar-thumb{background:#1e2b45;border-radius:8px}
+
+        .sidebar-item{
+          display:flex;align-items:center;gap:12px;
+          padding:11px 14px;border-radius:10px;
+          color:var(--muted);font-size:13.5px;font-weight:600;
+          text-align:left;width:100%;
+          transition:all .18s ease;position:relative;
+        }
+        .sidebar-item:hover{
+          background:#111b2e;color:var(--text);
+        }
+        .sidebar-item.active{
+          background:linear-gradient(90deg,rgba(0,214,143,.16),rgba(0,214,143,.02));
+          color:#fff;
+        }
+        .sidebar-item.active::before{
+          content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
+          width:3px;height:20px;border-radius:0 3px 3px 0;background:var(--green);
+        }
+        .sidebar-item .dot{
+          width:6px;height:6px;border-radius:50%;
+          background:var(--dim);flex-shrink:0;transition:all .18s ease;
+        }
+        .sidebar-item:hover .dot{background:var(--muted)}
+        .sidebar-item.active .dot{
+          background:var(--green);box-shadow:0 0 8px rgba(0,214,143,.7);
+        }
+
+        .forex-sidebar-footer{
+          padding:14px 18px;border-top:1px solid var(--border-soft);
+          font-size:10.5px;color:var(--dim);letter-spacing:.4px;
+          text-transform:uppercase;font-weight:600;
+        }
 
         /* ---- Cards ---- */
         .card{background:linear-gradient(180deg,#0f1829 0%,#0d1524 100%);border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden}
@@ -428,6 +521,42 @@ export default function ForexDash() {
           currentTheme="gold"
           onThemeChange={() => {}}
         />
+
+        {/* ✅ Forex sidebar drawer — appears when ☰ is clicked */}
+        {sidebarOpen && (
+          <>
+            <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+            <aside className="forex-sidebar" aria-label="Forex menu">
+              <div className="forex-sidebar-header">
+                <span className="title">Menu</span>
+                <button
+                  className="close"
+                  onClick={() => setSidebarOpen(false)}
+                  aria-label="Close menu"
+                >
+                  ×
+                </button>
+              </div>
+
+              <nav className="forex-sidebar-nav">
+                {SIDEBAR_ITEMS.map((item) => (
+                  <button
+                    key={item.key}
+                    className={`sidebar-item ${view === item.key ? 'active' : ''}`}
+                    onClick={() => handleSidebarNav(item.path)}
+                  >
+                    <span className="dot" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </nav>
+
+              <div className="forex-sidebar-footer">
+                NovaFX · Forex Terminal
+              </div>
+            </aside>
+          </>
+        )}
 
         <div className="forex-content">
           {view === 'home' && (
