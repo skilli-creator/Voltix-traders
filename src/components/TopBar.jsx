@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // ============================================
 // ANIMATION KEYFRAMES
@@ -1349,8 +1349,8 @@ const THEME_OPTIONS = [
 ];
 
 const PLATFORM_OPTIONS = {
-  deriv: { label: 'deriv', color: '#ff444f', definition: 'Synthetic Indices' },
-  forex: { label: 'forex', color: '#3b82f6', definition: 'Currency Pairs' },
+  deriv: { label: 'deriv', color: '#ff444f', definition: 'Synthetic Indices', route: '/derivdash' },
+  forex: { label: 'forex', color: '#3b82f6', definition: 'Currency Pairs',     route: '/forexdash' },
 };
 
 const Spinner = styled.div`
@@ -1593,6 +1593,7 @@ const TopPanel = ({
   const fundsRef = useRef(null);
   const platformRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const DEPOSIT_RATE = 131;
   const WITHDRAW_RATE = 126;
@@ -1615,6 +1616,15 @@ const TopPanel = ({
 
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
   const isDemo = accountType === 'demo';
+
+  // ✅ Keep the platform switcher in sync with the current route
+  useEffect(() => {
+    if (location.pathname.startsWith('/forex')) {
+      setPlatform('forex');
+    } else if (location.pathname.startsWith('/deriv')) {
+      setPlatform('deriv');
+    }
+  }, [location.pathname]);
 
   // ✅ Currency helpers ------------------------------------------------------
   const getCurrencyInfo = (code = selectedCurrency) =>
@@ -1677,6 +1687,16 @@ const TopPanel = ({
     setIsDropdownOpen(false);
     setIsThemeOpen(false);
     setIsFundsOpen(false);
+  };
+
+  // ✅ Platform selection — set + navigate to the matching dashboard
+  const handlePlatformSelect = (key) => {
+    const opt = PLATFORM_OPTIONS[key];
+    setPlatform(key);
+    setIsPlatformOpen(false);
+    if (opt?.route && location.pathname !== opt.route) {
+      navigate(opt.route);
+    }
   };
 
   const closeModal = () => {
@@ -2054,7 +2074,7 @@ const TopPanel = ({
                       key={key}
                       $active={platform === key}
                       $color={opt.color}
-                      onClick={() => { setPlatform(key); setIsPlatformOpen(false); }}
+                      onClick={() => handlePlatformSelect(key)}
                     >
                       <span className="platform-dot" />
                       <span>{opt.label}</span>
