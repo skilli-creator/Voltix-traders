@@ -1,7 +1,7 @@
 // src/pages/forexdash.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import TopPanel from '../components/TopBar';
+import TopPanel, { FOREX_NAV_ITEMS } from '../components/TopBar';
 import ForexHome from '../components/forexhome';
 import LotSize from '../components/lotsize';
 import Strength from '../components/strength';
@@ -206,16 +206,6 @@ const createInitialEquityHistory = (balance) => {
 };
 
 /* =========================================================
-   SIDEBAR MENU ITEMS
-   ========================================================= */
-const SIDEBAR_ITEMS = [
-  { key: 'home',     label: 'Home',            path: '/forexdash' },
-  { key: 'lot',      label: 'Lot Calculator',  path: '/forexdash/lot' },
-  { key: 'strength', label: 'Strength Meter',  path: '/forexdash/strength' },
-  { key: 'bots',     label: 'Trading Bots',    path: '/forexdash/bots' },
-];
-
-/* =========================================================
    PAGE
    ========================================================= */
 export default function ForexDash() {
@@ -224,7 +214,7 @@ export default function ForexDash() {
 
   const view = urlView || 'home';
 
-  // ✅ Sidebar state — this is what TopPanel needs to render the ☰ button
+  // ✅ Sidebar state
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [strength, setStrength] = useState(createInitialStrength);
@@ -424,14 +414,12 @@ export default function ForexDash() {
           content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
           width:3px;height:20px;border-radius:0 3px 3px 0;background:var(--green);
         }
-        .sidebar-item .dot{
-          width:6px;height:6px;border-radius:50%;
-          background:var(--dim);flex-shrink:0;transition:all .18s ease;
+        .sidebar-item svg{
+          width:16px;height:16px;flex-shrink:0;
+          stroke:currentColor;fill:none;stroke-width:1.8;
+          stroke-linecap:round;stroke-linejoin:round;
         }
-        .sidebar-item:hover .dot{background:var(--muted)}
-        .sidebar-item.active .dot{
-          background:var(--green);box-shadow:0 0 8px rgba(0,214,143,.7);
-        }
+        .sidebar-item.active svg{stroke:var(--green)}
 
         .forex-sidebar-footer{
           padding:14px 18px;border-top:1px solid var(--border-soft);
@@ -514,7 +502,6 @@ export default function ForexDash() {
       `}</style>
 
       <div className="forex-page">
-        {/* ✅ Pass both props so the ☰ button appears on forex */}
         <TopPanel
           isSidebarOpen={sidebarOpen}
           onSidebarToggle={() => setSidebarOpen((v) => !v)}
@@ -522,7 +509,7 @@ export default function ForexDash() {
           onThemeChange={() => {}}
         />
 
-        {/* ✅ Forex sidebar drawer — appears when ☰ is clicked */}
+        {/* ✅ Sidebar drawer — SAME options as the TopBar nav, pulled from FOREX_NAV_ITEMS */}
         {sidebarOpen && (
           <>
             <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
@@ -539,13 +526,13 @@ export default function ForexDash() {
               </div>
 
               <nav className="forex-sidebar-nav">
-                {SIDEBAR_ITEMS.map((item) => (
+                {FOREX_NAV_ITEMS.map((item) => (
                   <button
                     key={item.key}
                     className={`sidebar-item ${view === item.key ? 'active' : ''}`}
                     onClick={() => handleSidebarNav(item.path)}
                   >
-                    <span className="dot" />
+                    {item.icon}
                     <span>{item.label}</span>
                   </button>
                 ))}

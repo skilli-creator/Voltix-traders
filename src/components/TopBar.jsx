@@ -181,8 +181,9 @@ const BotsIcon = () => (
 
 // ============================================
 // FOREX NAV ITEMS — Home (not Dashboard)
+// ✅ Exported so forexdash.jsx can reuse the same items for its sidebar drawer
 // ============================================
-const FOREX_NAV_ITEMS = [
+export const FOREX_NAV_ITEMS = [
   { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
   { key: 'lot',      label: 'Lot Calculator', path: '/forexdash/lot',      icon: <CalculatorIcon /> },
   { key: 'strength', label: 'Strength',       path: '/forexdash/strength', icon: <StrengthIcon /> },
