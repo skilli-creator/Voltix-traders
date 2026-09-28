@@ -183,7 +183,7 @@ const BotsIcon = () => (
 // FOREX NAV ITEMS
 // ============================================
 const FOREX_NAV_ITEMS = [
-  { key: 'home',     label: 'Dashboard',      path: '/forexdash',          icon: <DashboardIcon /> },
+  { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
   { key: 'lot',      label: 'Lot Calculator', path: '/forexdash/lot',      icon: <CalculatorIcon /> },
   { key: 'strength', label: 'Strength',       path: '/forexdash/strength', icon: <StrengthIcon /> },
   { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
