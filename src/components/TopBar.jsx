@@ -181,7 +181,6 @@ const BotsIcon = () => (
 
 // ============================================
 // FOREX NAV ITEMS — Home (not Dashboard)
-// ✅ Exported so forexdash.jsx can reuse the same items for its sidebar drawer
 // ============================================
 export const FOREX_NAV_ITEMS = [
   { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
@@ -762,42 +761,7 @@ const TopBar = styled.header`
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
-
-    /* ---- sidebar-open overlay state ---- */
-    &.sidebar-open {
-      background: transparent;
-      border-bottom-color: transparent;
-      box-shadow: none;
-      pointer-events: none;
-      transition: none !important;
-
-      & > *:nth-of-type(2) {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition: none !important;
-        animation: none !important;
-      }
-
-      & > *:nth-of-type(1) > *:not(.sidebar-toggle) {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition: none !important;
-        animation: none !important;
-      }
-
-      & .sidebar-toggle,
-      & .sidebar-toggle * {
-        opacity: 1;
-        visibility: visible;
-        transition: none !important;
-      }
-
-      & .sidebar-toggle {
-        pointer-events: auto;
-      }
-    }
+    /* ✅ sidebar-open state removed — topbar always stays visible */
   }
 
   @media (max-width: 480px) {
@@ -2153,7 +2117,7 @@ const TopPanel = ({
 
   return (
     <>
-      <TopBar className={isSidebarOpen && showSidebarToggle ? 'sidebar-open' : ''}>
+      <TopBar>
         {/* ---------- Left: sidebar toggle + site name + platform switcher ---------- */}
         <LeftSection className="left-section">
           {showSidebarToggle && (
