@@ -1450,16 +1450,19 @@ const TermsSection = styled.div`
 // ============================================
 const TOPBAR_HEIGHT = '76px';
 
+// ✅ No blur, no tint — the page behind stays sharp.
 const Overlay = styled.div`
-  position: fixed; inset: 0;
-  background: rgba(2, 6, 18, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  position: fixed;
+  inset: 0;
+  background: transparent;
   z-index: 98;
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
   transition: opacity 0.28s ease, visibility 0.28s ease;
-  @media (min-width: 769px) { display: none; }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
 `;
 
 const SidebarContainer = styled.aside`
@@ -1482,7 +1485,6 @@ const SidebarContainer = styled.aside`
   overflow: hidden;
   box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
 
-  /* ── Mobile: same top offset as desktop so it sits BELOW the TopBar ── */
   @media (max-width: 768px) {
     top: ${TOPBAR_HEIGHT};
     width: min(85vw, 340px);
@@ -1911,7 +1913,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     setNoteModal(null); setEditNote('');
   };
 
-  // ===== HANDLERS =====
   const handleSettingsClick = () => {
     setActiveItem('settings');
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -2033,7 +2034,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const getRatingText = (value) => ({ 1: 'Needs Improvement', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' }[value] || '');
 
-  // ===== RENDER POPUP CONTENT =====
   const renderPopupContent = () => {
     switch (popupType) {
       case 'settings':
@@ -2652,9 +2652,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     }
   };
 
-  // ============================================
-  // RENDER
-  // ============================================
   return (
     <>
       <FullPanelOverlay isOpen={isFullPanelOpen} onClick={closeFullPanel}>
