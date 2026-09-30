@@ -519,9 +519,12 @@ const ChartDigitsOverlay = styled.div`
 
 // ===== FLOATING DIGIT OVERLAY CONTAINER (bottom) =====
 const DigitStatsContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  /* 10 equal columns that shrink with the viewport — this is what
+     keeps all 0–9 badges on screen on phones instead of clipping
+     the right-most ones. */
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  align-items: end;
   width: calc(100% - 20px);
   max-width: 680px;
   padding: 0;
@@ -533,56 +536,69 @@ const DigitStatsContainer = styled.div`
   left: 50%;
   transform: translateX(-50%);
   gap: 6px;
-  pointer-events: none;
-  z-index: 1;
+  pointer-events: none;   /* keep pan/zoom gestures flowing to the chart */
+  z-index: 3;
   font-weight: 700;
 
-  @media (max-width: 768px) { width: calc(100% - 16px); bottom: 48px; gap: 5px; }
-  @media (max-width: 480px) { width: calc(100% - 8px); bottom: 42px; gap: 4px; }
-  @media (max-width: 380px) { width: calc(100% - 4px); bottom: 38px; gap: 3px; }
+  @media (max-width: 768px) { width: calc(100% - 16px); bottom: 48px; gap: 4px; }
+  @media (max-width: 480px) { width: calc(100% - 10px); bottom: 42px; gap: 3px; }
+  @media (max-width: 380px) { width: calc(100% - 6px);  bottom: 38px; gap: 2px; }
 `;
 
 const DigitItem = styled.div`
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   position: relative;
   padding-bottom: 2px;
-  min-width: 0;
+  min-width: 0;            /* allow the grid cell to shrink below content */
   font-weight: 700;
 
   .circle-badge {
-    width: 38px; height: 38px; border-radius: 50%;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    /* fills its grid column, capped at 38px on wide screens */
+    width: 100%;
+    max-width: 38px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background: ${props => props.theme.colors.surface || props.theme.colors.backgroundSecondary};
     border: 2px solid ${props => props.isLastDigit ? props.theme.colors.accent : props.theme.colors.border};
     box-shadow: ${props => props.isLastDigit ? `0 0 15px ${props.theme.colors.accent + '80'}` : 'none'};
     transition: all 0.15s ease;
-    @media (max-width: 768px) { width: 34px; height: 34px; border-width: 2px; }
-    @media (max-width: 480px) { width: 32px; height: 32px; border-width: 2px; }
-    @media (max-width: 380px) { width: 28px; height: 28px; border-width: 2px; }
+
+    @media (max-width: 480px) { border-width: 1.5px; }
+    @media (max-width: 380px) { border-width: 1px; max-width: 28px; }
   }
 
   .digit-num {
-    font-size: 14px; font-weight: 700; color: ${props => props.theme.colors.text}; line-height: 1;
-    @media (max-width: 768px) { font-size: 13px; }
-    @media (max-width: 480px) { font-size: 12px; }
-    @media (max-width: 380px) { font-size: 10px; }
+    font-size: clamp(9px, 3.2vw, 14px);
+    font-weight: 700;
+    color: ${props => props.theme.colors.text};
+    line-height: 1;
   }
 
   .pct-text {
-    font-size: 8px; font-family: monospace; font-weight: 700;
+    font-size: clamp(5px, 1.8vw, 8px);
+    font-family: monospace;
+    font-weight: 700;
     color: ${props => props.isMax ? props.theme.colors.accent : props.theme.colors.textMuted};
-    line-height: 1; margin-top: 0px;
-    @media (max-width: 768px) { font-size: 7px; }
-    @media (max-width: 480px) { font-size: 7px; }
-    @media (max-width: 380px) { font-size: 6px; }
+    line-height: 1;
+    margin-top: 0px;
   }
 
   .active-arrow {
-    position: absolute; bottom: -4px; font-size: 10px; color: ${props => props.theme.colors.accent};
-    display: ${props => props.isLastDigit ? 'block' : 'none'}; line-height: 1; font-weight: 700;
+    position: absolute;
+    bottom: -4px;
+    font-size: 10px;
+    color: ${props => props.theme.colors.accent};
+    display: ${props => props.isLastDigit ? 'block' : 'none'};
+    line-height: 1;
+    font-weight: 700;
     @media (max-width: 480px) { font-size: 8px; bottom: -3px; }
     @media (max-width: 380px) { font-size: 7px; bottom: -2px; }
   }
