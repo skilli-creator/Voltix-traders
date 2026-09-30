@@ -237,6 +237,25 @@ const TradeModeButton = styled.button`
   }
 `;
 
+/* Groups every field that appears BELOW the execution-mode selector
+   and aligns its left/right edges with the inner edge of the
+   execution-mode buttons (2px border + 3px padding = 5px inset). */
+const FieldStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    gap: 6px;
+    padding: 0 5px;   /* matches TradeModeButtons border(2px) + padding(3px) */
+  }
+  @media (max-width: 480px) {
+    gap: 5px;
+    padding: 0 5px;
+  }
+`;
+
 const BotGrid = styled.div` display: grid; grid-template-columns: 1fr 1fr; gap: 4px; animation: ${fadeIn} 0.5s ease; font-weight: 700; @media (max-width: 768px) { gap: 6px; } `;
 const BotCard = styled.div`
   padding: 6px 4px;
@@ -473,15 +492,43 @@ const ModalButton = styled.button`
 // ============================================
 // DOLA STYLES
 // ============================================
+/* Dola floating button. On phones it flows in-page so it can sit exactly
+   1cm below the trade placement buttons. On desktop it stays fixed at
+   the bottom-right corner. */
 const AIButtonContainer = styled.div`
   position: fixed;
-  bottom: ${props => (props.isMobile ? '200px' : '70px')};
-  right: ${props => (props.isMobile ? '12px' : '24px')};
+  bottom: 70px;
+  right: 24px;
   z-index: 1000;
   display: flex; flex-direction: column; align-items: center;
-  @media (max-width: 480px) { bottom: 190px; right: 10px; }
-  @media (min-width: 769px) { bottom: 70px; right: 24px; }
+
+  @media (max-width: 768px) {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    z-index: 10;
+    width: 100%;
+    align-items: flex-end;
+    justify-content: flex-end;
+    /* ~1cm (≈38px) below the trade placement buttons */
+    margin-top: 1cm;
+    margin-bottom: 8px;
+    padding-right: 5px;   /* matches FieldStack inner inset */
+    animation: ${fadeIn} 0.3s ease;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 1cm;
+    margin-bottom: 6px;
+    padding-right: 5px;
+  }
+
+  @media (min-width: 769px) {
+    bottom: 70px;
+    right: 24px;
+  }
 `;
+
 const AIFloatingButton = styled.button`
   width: ${props => (props.isMobile ? '52px' : '58px')};
   height: ${props => (props.isMobile ? '52px' : '58px')};
@@ -507,34 +554,49 @@ const AIFloatingButton = styled.button`
   }
 `;
 
+/* Dola analysis panel. On phones it flows in-page under the button so it
+   opens right below the trade placement area. On desktop it stays fixed. */
 const AIAnalysisPanel = styled.div`
   position: fixed;
-  bottom: ${props => (props.isMobile ? '270px' : '140px')};
-  right: ${props => (props.isMobile ? '8px' : '24px')};
-  width: ${props => (props.isMobile ? '240px' : '300px')};
+  bottom: 140px;
+  right: 24px;
+  width: 300px;
   background: ${props => props.theme?.colors?.surface || props.theme?.colors?.backgroundSecondary || 'rgba(8,18,38,0.98)'};
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 2px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 14px;
-  padding: ${props => (props.isMobile ? '14px 16px' : '18px 20px')};
+  padding: 18px 20px;
   z-index: 1000;
   box-shadow: 0 20px 60px ${props => props.theme?.colors?.shadow || 'rgba(0,0,0,0.55)'};
   animation: ${fadeIn} 0.3s ease;
   display: ${props => props.isOpen ? 'block' : 'none'};
   overflow: visible;
-  max-height: calc(100vh - 330px);
-  max-height: calc(100dvh - 330px);
+  max-height: calc(100vh - 220px);
+  max-height: calc(100dvh - 220px);
   font-weight: 700;
+
   @media (max-width: 768px) {
-    width: min(280px, calc(100vw - 32px));
-    right: 16px;
-    bottom: 260px;
-    padding: 14px 16px;
-    border-radius: 12px;
-    max-height: calc(100vh - 320px);
-    max-height: calc(100dvh - 320px);
+    position: relative;
+    bottom: auto;
+    right: auto;
+    width: 100%;
+    max-height: 50vh;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    animation: ${fadeIn} 0.3s ease;
+    z-index: 10;
   }
+
+  @media (max-width: 480px) {
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
   @media (min-width: 769px) {
     bottom: 140px;
     right: 24px;
@@ -643,7 +705,7 @@ const AITradeTypeMenu = styled.div`
   max-height: 200px; overflow-y: auto; font-weight: 700;
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255,255,255,0.06)'}; border-radius: 4px; }
-  @media (max-width: 768px) { max-height: 55vh; border-radius: 8px; }
+  @media (max-width: 768px) { max-height: 45vh; border-radius: 8px; }
 `;
 const AITradeTypeItem = styled.div`
   padding: 8px 12px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
@@ -1543,31 +1605,69 @@ const RightPanel = ({ selectedMarket: externalMarket, onMarketChange }) => {
         </TradeModeButtons>
       </TradeModeWrapper>
 
-      {tradeMode === 'use-bots' && (
-        <>
-          <BotHeader><div className="title">Select Your Bot</div><div className="subtitle"><span className="highlight">print maziwa</span> — choose your weapon</div></BotHeader>
-          <BotGrid>
-            {filteredBots.map((bot) => (
-              <BotCard key={bot.id} selected={selectedBot === bot.id} onClick={() => handleBotSelect(bot.id)}>
-                <div className="bot-name">{bot.name}</div><div className="bot-type">{bot.type}</div><span className="bot-badge">{bot.badge}</span>
-              </BotCard>
-            ))}
-          </BotGrid>
-          {selectedBot && <div style={{ fontSize: '10px', color: '#5a6070', textAlign: 'center', padding: '3px 0', animation: `${fadeIn} 0.3s ease`, borderTop: '2px solid rgba(255,255,255,0.04)', marginTop: '2px', paddingTop: '4px', fontWeight: '700' }}>{filteredBots.find(b => b.id === selectedBot)?.name} ready</div>}
-        </>
-      )}
+      {/* Everything below the execution-mode selector lives inside FieldStack
+          so its left/right edges line up with the Auto/Manual/Bots buttons. */}
+      <FieldStack>
+        {tradeMode === 'use-bots' && (
+          <>
+            <BotHeader>
+              <div className="title">Select Your Bot</div>
+              <div className="subtitle">
+                <span className="highlight">print maziwa</span> — choose your weapon
+              </div>
+            </BotHeader>
+            <BotGrid>
+              {filteredBots.map((bot) => (
+                <BotCard key={bot.id} selected={selectedBot === bot.id} onClick={() => handleBotSelect(bot.id)}>
+                  <div className="bot-name">{bot.name}</div>
+                  <div className="bot-type">{bot.type}</div>
+                  <span className="bot-badge">{bot.badge}</span>
+                </BotCard>
+              ))}
+            </BotGrid>
+            {selectedBot && (
+              <div style={{
+                fontSize: '10px',
+                color: '#5a6070',
+                textAlign: 'center',
+                padding: '3px 0',
+                animation: `${fadeIn} 0.3s ease`,
+                borderTop: '2px solid rgba(255,255,255,0.04)',
+                marginTop: '2px',
+                paddingTop: '4px',
+                fontWeight: '700',
+              }}>
+                {filteredBots.find(b => b.id === selectedBot)?.name} ready
+              </div>
+            )}
+          </>
+        )}
 
-      {renderInputs()}
+        {renderInputs()}
 
-      {tradeMode === 'manual' && isPhone && renderDigitStats()}
-      {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
-      {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
-      {tradeMode === 'manual' && renderAccumulatorButtons()}
-      {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulators' && renderTradeButtons()}
+        {tradeMode === 'manual' && isPhone && renderDigitStats()}
+        {tradeMode === 'manual' && (tradeType === 'overunder' || tradeType === 'matches') && renderDigitGrid()}
+        {tradeMode === 'manual' && tradeType === 'evenodd' && renderEvenOddButtons()}
+        {tradeMode === 'manual' && renderAccumulatorButtons()}
+        {tradeMode === 'manual' && tradeType !== 'evenodd' && tradeType !== 'accumulators' && renderTradeButtons()}
 
-      {tradeMode === 'use-bots' ? renderRunButton(!selectedBot) : tradeMode === 'auto' ? renderRunButton(false) : null}
+        {tradeMode === 'use-bots'
+          ? renderRunButton(!selectedBot)
+          : tradeMode === 'auto'
+          ? renderRunButton(false)
+          : null}
+      </FieldStack>
 
-      {renderDolaFloatingButton()}
+      {/* Dola button + panel.
+          - Desktop: fixed floating at bottom-right.
+          - Phone: flows in-page, sitting ~1cm below the trade placement
+            buttons (margin-top: 1cm on AIButtonContainer).
+          Wrapped in a FieldStack so it lines up with the same left/right
+          edges as the fields above. */}
+      <FieldStack>
+        {renderDolaFloatingButton()}
+      </FieldStack>
+
       {renderStrategyBuilderModal()}
     </PanelContainer>
   );
