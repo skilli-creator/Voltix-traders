@@ -1954,11 +1954,13 @@ const Overlay = styled.div`
 
 const SidebarContainer = styled.aside`
   position: fixed;
-  top: ${TOPBAR_HEIGHT};
+  /* Sits directly below the real, measured TopBar height — no overlap
+     even when the bar wraps / grows on notched phones. */
+  top: var(--topbar-h, ${TOPBAR_HEIGHT});
   left: 0;
   width: 288px;
-  height: calc(100vh - ${TOPBAR_HEIGHT});
-  height: calc(100dvh - ${TOPBAR_HEIGHT});
+  height: calc(100vh - var(--topbar-h, ${TOPBAR_HEIGHT}));
+  height: calc(100dvh - var(--topbar-h, ${TOPBAR_HEIGHT}));
   background: ${props =>
     props.theme?.colors?.sidebarBackground ||
     props.theme?.colors?.surface ||
@@ -1973,10 +1975,12 @@ const SidebarContainer = styled.aside`
   box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
 
   @media (max-width: 768px) {
-    top: ${TOPBAR_HEIGHT};
+    /* Sit directly below the real, measured TopBar height — no overlap
+       even when the bar wraps / grows on notched phones. */
+    top: var(--topbar-h, ${TOPBAR_HEIGHT});
     width: min(85vw, 340px);
-    height: calc(100vh - ${TOPBAR_HEIGHT});
-    height: calc(100dvh - ${TOPBAR_HEIGHT});
+    height: calc(100vh - var(--topbar-h, ${TOPBAR_HEIGHT}));
+    height: calc(100dvh - var(--topbar-h, ${TOPBAR_HEIGHT}));
     border-top-right-radius: 0;
     border-bottom-right-radius: 20px;
     box-shadow: 16px 0 48px rgba(0, 0, 0, 0.55);

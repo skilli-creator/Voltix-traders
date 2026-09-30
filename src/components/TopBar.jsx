@@ -936,12 +936,16 @@ const TopBar = styled.header`
   }
 
   @media (max-width: 768px) {
-    position: static;
+    /* Sticky so the sidebar can always sit directly below it. */
+    position: sticky;
+    top: 0;
     padding: calc(clamp(12px, 3.4vw, 18px) + env(safe-area-inset-top, 0px)) clamp(14px, 4vw, 20px) clamp(12px, 3.4vw, 16px);
     min-height: auto;
     flex-wrap: wrap;
     gap: clamp(10px, 3vw, 14px);
     align-items: center;
+    /* Keep the TopBar above the slide-in sidebar & its overlay. */
+    z-index: 200;
   }
 
   @media (max-width: 480px) {
@@ -1883,6 +1887,7 @@ const TopPanel = ({
   const themeRef = useRef(null);
   const fundsRef = useRef(null);
   const platformRef = useRef(null);
+  const topBarRef = useRef(null);          // ← NEW
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -2100,6 +2105,41 @@ const TopPanel = ({
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Publish the real TopBar height as a CSS variable so other fixed
+  // elements (e.g. the OptionSideBar) can position themselves directly
+  // below it without being overlapped on phones where the bar wraps.
+  useEffect(() => {
+    const el = topBarRef.current;
+    if (!el) return;
+
+    const setH = () => {
+      const h = Math.round(el.getBoundingClientRect().height);
+      if (h > 0) {
+        document.documentElement.style.setProperty('--topbar-h', `${h}px`);
+      }
+    };
+
+    setH();
+
+    let ro;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(setH);
+      ro.observe(el);
+    }
+    window.addEventListener('resize', setH);
+    window.addEventListener('orientationchange', setH);
+
+    // Delayed pass catches the post-paint layout (fonts, safe-area).
+    const t = setTimeout(setH, 250);
+
+    return () => {
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', setH);
+      window.removeEventListener('orientationchange', setH);
+      clearTimeout(t);
+    };
   }, []);
 
   const fundOptions = [
@@ -2351,7 +2391,7 @@ const TopPanel = ({
 
   return (
     <>
-      <TopBar>
+      <TopBar ref={topBarRef}>
         {/* ---------- Left: sidebar toggle + site name + platform switcher ---------- */}
         <LeftSection className="left-section">
           {showSidebarToggle && (
