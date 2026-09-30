@@ -306,6 +306,17 @@ const LotsizeIcon = () => (
   </svg>
 );
 
+// ✅ NEW — SVG icon for the empty lot size prompt (replaces emoji)
+const BalancePromptIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="6" width="20" height="13" rx="2.5" />
+    <path d="M2 10h20" />
+    <circle cx="16.5" cy="14.5" r="1.3" />
+    <path d="M6 14.5h5" />
+    <path d="M12 3v3" />
+  </svg>
+);
+
 // ============================================
 // FULL PANEL (Right Side Slide-in)
 // ============================================
@@ -954,7 +965,7 @@ const RiskSummaryBox = styled.div`
 `;
 
 // ============================================
-// ✨ LOT SIZE CALCULATOR (forex) — new styled pieces
+// LOT SIZE CALCULATOR (forex)
 // ============================================
 const LotHeroCard = styled.div`
   padding: 26px 20px 22px;
@@ -1084,10 +1095,21 @@ const EmptyPrompt = styled.div`
   animation: ${fadeIn} 0.35s ease;
 
   .icon {
-    font-size: 32px;
-    margin-bottom: 10px;
-    opacity: 0.6;
-    filter: grayscale(0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
+    border: 1px solid ${props => props.theme?.colors?.accentMuted || 'rgba(59,130,246,0.15)'};
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+
+    svg {
+      width: 26px;
+      height: 26px;
+    }
   }
 `;
 
@@ -1703,7 +1725,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     first_name: '', last_name: '', phone: '', date_of_birth: '', gender: '', email: ''
   });
 
-  // Lot size / risk calc — for forex only the balance is user-input; the rest is derived.
   const [calcAccountBalance, setCalcAccountBalance] = useState('');
   const [calcRiskPercent] = useState(2);
   const [calcStopLoss] = useState(50);
@@ -2147,7 +2168,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
-      // ✅ UNIFIED — same content on both platforms
       case 'responsible-trading':
         return (
           <ResponsibleTradingContent>
@@ -2185,7 +2205,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </ResponsibleTradingContent>
         );
 
-      // ✅ UNIFIED
       case 'about':
         return (
           <AboutContent>
@@ -2236,7 +2255,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </AboutContent>
         );
 
-      // ✨ REDESIGNED LOT SIZE CALCULATOR (forex) + unchanged Risk Calculator (deriv)
       case 'risk-calculator':
         if (isForex) {
           const balance = parseFloat(calcAccountBalance) || 0;
@@ -2330,7 +2348,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 </>
               ) : (
                 <EmptyPrompt>
-                  <div className="icon">📊</div>
+                  <div className="icon"><BalancePromptIcon /></div>
                   Enter your account balance above and the system will instantly calculate the perfect position size for you.
                 </EmptyPrompt>
               )}
@@ -2338,7 +2356,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           );
         }
 
-        // Deriv Risk Calculator (kept interactive)
         return (
           <>
             <RiskInputGroup>
@@ -2579,7 +2596,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
-      // ✅ UNIFIED How-to-use
       case 'how-to-use':
         return (
           <>
@@ -2591,7 +2607,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
-      // ✅ UNIFIED Terms
       case 'terms':
         return (
           <>
