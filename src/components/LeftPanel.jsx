@@ -8,7 +8,6 @@ const pulse = keyframes`
 `;
 
 const PanelContainer = styled.div`
-  /* REMOVED fixed width - now fills parent container */
   width: 100%;
   min-width: 0;
   height: 100%;
@@ -42,13 +41,14 @@ const PanelContainer = styled.div`
     width: 100%;
     min-width: unset;
     height: 100%;
-    padding: 6px 8px;
+    padding: clamp(10px, 3vw, 16px) clamp(12px, 3.6vw, 18px);
     border-right: none;
     background: ${props => props.theme.colors.background};
+    gap: clamp(2px, 0.8vw, 6px);
   }
 
   @media (max-width: 480px) {
-    padding: 4px 6px;
+    padding: clamp(8px, 2.6vw, 14px) clamp(10px, 3.2vw, 16px);
   }
 `;
 
@@ -61,8 +61,9 @@ const NavList = styled.div`
   font-weight: 700;
 
   @media (max-width: 768px) {
-    gap: 4px;
+    gap: clamp(4px, 1.4vw, 8px);
     justify-content: space-around;
+    padding: 0 clamp(2px, 0.6vw, 4px);
   }
 `;
 
@@ -106,15 +107,21 @@ const NavItem = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 4px 8px;
-    .label { font-size: 10px; }
-    .badge { font-size: 9px; }
+    padding: clamp(10px, 2.8vw, 14px) clamp(8px, 2.4vw, 14px);
+    border-radius: clamp(6px, 2vw, 10px);
+    gap: clamp(4px, 1.2vw, 6px);
+    .label { font-size: clamp(12px, 3.4vw, 15px); }
+    .badge {
+      font-size: clamp(11px, 3.2vw, 14px);
+      padding: 1px clamp(5px, 1.6vw, 8px);
+      border-radius: clamp(4px, 1.2vw, 6px);
+    }
   }
 
   @media (max-width: 480px) {
-    padding: 3px 6px;
-    .label { font-size: 9px; }
-    .badge { font-size: 8px; }
+    padding: clamp(9px, 2.6vw, 12px) clamp(6px, 2vw, 10px);
+    .label { font-size: clamp(11px, 3.2vw, 14px); }
+    .badge { font-size: clamp(10px, 3vw, 13px); }
   }
 `;
 
@@ -125,7 +132,7 @@ const Divider = styled.div`
   transition: background 0.3s ease;
 
   @media (max-width: 768px) {
-    margin: 2px 0;
+    margin: clamp(6px, 2vw, 10px) 0;
   }
 `;
 
@@ -157,17 +164,23 @@ const NoPositions = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 4px 2px;
-    .icon { font-size: 14px; }
-    .title { font-size: 9px; }
-    .subtitle { font-size: 7px; }
+    padding: clamp(16px, 4.5vw, 24px) clamp(6px, 2vw, 12px);
+    .icon {
+      font-size: clamp(24px, 7vw, 34px);
+      margin-bottom: clamp(4px, 1.4vw, 8px);
+    }
+    .title {
+      font-size: clamp(13px, 3.8vw, 16px);
+      margin-bottom: clamp(3px, 1vw, 6px);
+    }
+    .subtitle { font-size: clamp(11px, 3.2vw, 14px); }
   }
 
   @media (max-width: 480px) {
-    padding: 2px 2px;
-    .icon { font-size: 12px; }
-    .title { font-size: 8px; }
-    .subtitle { font-size: 6px; }
+    padding: clamp(14px, 4vw, 20px) clamp(4px, 1.6vw, 10px);
+    .icon { font-size: clamp(22px, 6.5vw, 30px); }
+    .title { font-size: clamp(12px, 3.6vw, 15px); }
+    .subtitle { font-size: clamp(10px, 3vw, 13px); }
   }
 `;
 
@@ -182,8 +195,8 @@ const BottomContent = styled.div`
   font-weight: 700;
 
   @media (max-width: 768px) {
-    gap: 1px;
-    padding-top: 2px;
+    gap: clamp(4px, 1.4vw, 8px);
+    padding-top: clamp(8px, 2.6vw, 14px);
   }
 `;
 
@@ -200,7 +213,8 @@ const SessionLabel = styled.div`
   font-weight: 700;
 
   @media (max-width: 768px) {
-    font-size: 6px;
+    font-size: clamp(10px, 2.8vw, 12px);
+    letter-spacing: 0.4px;
   }
 `;
 
@@ -217,13 +231,16 @@ const SessionPL = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 11px;
-    .currency { font-size: 7px; }
+    font-size: clamp(16px, 4.6vw, 20px);
+    .currency {
+      font-size: clamp(10px, 3vw, 13px);
+      margin-left: clamp(2px, 0.8vw, 4px);
+    }
   }
 
   @media (max-width: 480px) {
-    font-size: 10px;
-    .currency { font-size: 6px; }
+    font-size: clamp(15px, 4.4vw, 19px);
+    .currency { font-size: clamp(10px, 3vw, 12px); }
   }
 `;
 
@@ -233,6 +250,11 @@ const SessionRow = styled.div`
   align-items: center;
   gap: 8px;
   padding: 0 2px;
+
+  @media (max-width: 768px) {
+    gap: clamp(10px, 3vw, 16px);
+    padding: 0 clamp(2px, 0.8vw, 4px);
+  }
 `;
 
 const SoundIcon = styled.button`
@@ -263,16 +285,16 @@ const SoundIcon = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
+    width: clamp(40px, 11vw, 52px);
+    height: clamp(40px, 11vw, 52px);
+    font-size: clamp(18px, 5vw, 24px);
+    border-width: clamp(2px, 0.5vw, 3px);
   }
 
   @media (max-width: 480px) {
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-    border-width: 1.5px;
+    width: clamp(38px, 10.5vw, 48px);
+    height: clamp(38px, 10.5vw, 48px);
+    font-size: clamp(17px, 4.8vw, 22px);
   }
 `;
 
@@ -291,11 +313,12 @@ const TradesSummary = styled.div`
   .losses { color: ${props => props.theme.colors.danger}; }
 
   @media (max-width: 768px) {
-    font-size: 7px;
+    font-size: clamp(11px, 3.2vw, 14px);
+    padding: 0 clamp(2px, 0.8vw, 4px);
   }
 
   @media (max-width: 480px) {
-    font-size: 6px;
+    font-size: clamp(11px, 3.2vw, 13px);
   }
 `;
 
@@ -321,13 +344,22 @@ const StatusDot = styled.div`
   }
 
   @media (max-width: 768px) {
-    font-size: 6px;
-    .dot { width: 4px; height: 4px; }
+    font-size: clamp(10px, 2.8vw, 12px);
+    gap: clamp(6px, 1.8vw, 10px);
+    letter-spacing: 0.4px;
+    .dot {
+      width: clamp(8px, 2.4vw, 11px);
+      height: clamp(8px, 2.4vw, 11px);
+      border-width: 1.5px;
+    }
   }
 
   @media (max-width: 480px) {
-    font-size: 5px;
-    .dot { width: 3px; height: 3px; }
+    font-size: clamp(9px, 2.6vw, 11px);
+    .dot {
+      width: clamp(7px, 2.2vw, 10px);
+      height: clamp(7px, 2.2vw, 10px);
+    }
   }
 `;
 
@@ -336,6 +368,10 @@ const StatusRow = styled.div`
   align-items: center;
   justify-content: flex-start;
   padding: 2px 2px 0 2px;
+
+  @media (max-width: 768px) {
+    padding: clamp(4px, 1.4vw, 8px) clamp(2px, 0.8vw, 4px) 0;
+  }
 `;
 
 const LeftPanel = () => {
