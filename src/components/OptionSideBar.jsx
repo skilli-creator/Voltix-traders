@@ -1,7 +1,7 @@
 // src/components/OptionSideBar.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'; // ✅ FOREX: added useLocation
 import Academy from '../pages/Academy';
 
 // ============================================
@@ -298,6 +298,15 @@ const CloseIcon = () => (
   </svg>
 );
 
+// ✅ FOREX: icon for the Lot Size Calculator nav item
+const LotsizeIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="3" width="16" height="18" rx="2.5" />
+    <path d="M8 7.5h8" />
+    <path d="M8 12h1.5M12 12h1.5M16 12h.01M8 16h1.5M12 16h1.5M16 16h.01" />
+  </svg>
+);
+
 // ============================================
 // FULL PANEL (Right Side Slide-in)
 // ============================================
@@ -328,23 +337,14 @@ const FullPanelContainer = styled.div`
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${props => props.theme?.colors?.accent || '#3B82F6'},
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, ${props => props.theme?.colors?.accent || '#3B82F6'}, transparent);
     background-size: 200% 100%;
     animation: ${shimmer} 4s ease-in-out infinite;
   }
 
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  @media (max-width: 768px) { width: 100%; }
 `;
 
 const FullPanelHeader = styled.div`
@@ -355,18 +355,11 @@ const FullPanelHeader = styled.div`
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   flex-shrink: 0;
 
-  .panel-title-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .panel-title-group { display: flex; align-items: center; gap: 12px; }
 
   .panel-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px;
     border-radius: 10px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
@@ -381,11 +374,8 @@ const FullPanelHeader = styled.div`
   }
 
   .panel-close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
     border-radius: 10px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     background: transparent;
@@ -420,14 +410,10 @@ const FullPanelBody = styled.div`
     border-radius: 99px;
   }
 
-  & > div {
-    padding: 24px 28px;
-  }
+  & > div { padding: 24px 28px; }
 
   @media (max-width: 480px) {
-    & > div {
-      padding: 16px;
-    }
+    & > div { padding: 16px; }
   }
 `;
 
@@ -446,9 +432,7 @@ const ModalOverlay = styled.div`
   animation: ${modalBackdrop} 0.28s ease;
   overflow: hidden;
 
-  @media (max-width: 480px) {
-    padding: 12px;
-  }
+  @media (max-width: 480px) { padding: 12px; }
 `;
 
 const ModalContainer = styled.div`
@@ -468,16 +452,9 @@ const ModalContainer = styled.div`
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${props => props.theme?.colors?.accent || '#3B82F6'},
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, ${props => props.theme?.colors?.accent || '#3B82F6'}, transparent);
     background-size: 200% 100%;
     animation: ${shimmer} 4s ease-in-out infinite;
   }
@@ -485,10 +462,8 @@ const ModalContainer = styled.div`
   &::after {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
     background: radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.02), transparent 70%);
     pointer-events: none;
   }
@@ -511,19 +486,11 @@ const ModalHeader = styled.div`
   position: relative;
   z-index: 1;
 
-  .title-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  }
+  .title-group { display: flex; align-items: center; gap: 10px; min-width: 0; }
 
   .title-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px;
     border-radius: 10px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
@@ -536,16 +503,12 @@ const ModalHeader = styled.div`
     font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: -0.2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
   .title-badge {
-    font-size: 9px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 999px;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
@@ -553,11 +516,8 @@ const ModalHeader = styled.div`
   }
 
   .close-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
     border-radius: 8px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     background: transparent;
@@ -595,30 +555,23 @@ const ModalBody = styled.div`
     border-radius: 99px;
   }
 
-  @media (max-width: 480px) {
-    padding: 12px 14px 16px;
-  }
+  @media (max-width: 480px) { padding: 12px 14px 16px; }
 `;
 
 // ============================================
 // JOURNAL SPECIFIC STYLES
 // ============================================
 const JournalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  display: flex; flex-direction: column; height: 100%;
   color: ${p => p.theme?.colors?.text || '#F8FAFC'};
 `;
 
 const JournalToolbar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 16px 0;
   border-bottom: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: wrap; gap: 12px;
 
   .toolbar-left { display: flex; align-items: center; gap: 12px; }
   .toolbar-right { display: flex; align-items: center; gap: 12px; }
@@ -630,15 +583,9 @@ const FilterChip = styled.button`
   border: 1px solid ${p => (p.active ? p.theme?.colors?.accent || '#3B82F6' : 'rgba(255,255,255,0.08)')};
   background: ${p => (p.active ? p.theme?.colors?.accentLight || 'rgba(59,130,246,0.1)' : 'transparent')};
   color: ${p => (p.active ? p.theme?.colors?.accent || '#3B82F6' : p.theme?.colors?.textSecondary || '#94A3B8')};
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
 
-  &:hover {
-    border-color: rgba(255,255,255,0.12);
-    color: ${p => p.theme?.colors?.text || '#F8FAFC'};
-  }
+  &:hover { border-color: rgba(255,255,255,0.12); color: ${p => p.theme?.colors?.text || '#F8FAFC'}; }
 `;
 
 const JournalButton = styled.button`
@@ -647,10 +594,7 @@ const JournalButton = styled.button`
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   background: ${p => (p.primary ? p.theme?.colors?.accent || '#3B82F6' : 'transparent')};
   color: ${p => (p.primary ? '#ffffff' : p.theme?.colors?.textSecondary || '#94A3B8')};
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
 
   &:hover {
     border-color: ${p => p.theme?.colors?.accent || '#3B82F6'};
@@ -661,41 +605,21 @@ const JournalButton = styled.button`
 const StatsRow = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 12px; margin-bottom: 20px;
 `;
 
 const StatBox = styled.div`
   background: ${p => p.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
-  border-radius: 10px;
-  padding: 12px 14px;
-  text-align: center;
+  border-radius: 10px; padding: 12px 14px; text-align: center;
 
-  .stat-label {
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: ${p => p.theme?.colors?.textMuted || '#64748B'};
-    margin-bottom: 4px;
-  }
-  .stat-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: ${p => p.color || p.theme?.colors?.text || '#F8FAFC'};
-    font-family: 'Courier New', monospace;
-  }
-  .stat-sub {
-    font-size: 10px;
-    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 2px;
-  }
+  .stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.6px; color: ${p => p.theme?.colors?.textMuted || '#64748B'}; margin-bottom: 4px; }
+  .stat-value { font-size: 20px; font-weight: 700; color: ${p => p.color || p.theme?.colors?.text || '#F8FAFC'}; font-family: 'Courier New', monospace; }
+  .stat-sub { font-size: 10px; color: ${p => p.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; }
 `;
 
 const TableContainer = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  border-radius: 10px;
+  flex: 1; overflow-y: auto; border-radius: 10px;
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.04)'};
   background: ${p => p.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
 
@@ -704,94 +628,53 @@ const TableContainer = styled.div`
 `;
 
 const JournalTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
+  width: 100%; border-collapse: collapse; font-size: 11px;
 
-  th, td {
-    padding: 10px 12px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.04); }
   th {
-    font-weight: 600;
-    color: ${p => p.theme?.colors?.textMuted || '#64748B'};
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: sticky;
-    top: 0;
+    font-weight: 600; color: ${p => p.theme?.colors?.textMuted || '#64748B'};
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    position: sticky; top: 0;
     background: ${p => p.theme?.colors?.surface || '#0F172A'};
   }
-  td {
-    color: ${p => p.theme?.colors?.textSecondary || '#CBD5E1'};
-  }
+  td { color: ${p => p.theme?.colors?.textSecondary || '#CBD5E1'}; }
   .win { color: #10B981; font-weight: 600; }
   .loss { color: #EF4444; font-weight: 600; }
   .pending { color: #F59E0B; }
-  .notes-cell {
-    max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: pointer;
-  }
+  .notes-cell { max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 `;
 
 const NoteModal = styled.div`
-  position: fixed;
-  inset: 0;
-  background: transparent;
-  z-index: 3000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: fixed; inset: 0; background: transparent; z-index: 3000;
+  display: flex; align-items: center; justify-content: center;
   animation: ${fadeIn} 0.2s ease;
 `;
 
 const NoteModalContent = styled.div`
   background: ${p => p.theme?.colors?.surface || '#0F172A'};
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 24px;
-  width: 90%;
-  max-width: 420px;
+  border-radius: 16px; padding: 24px;
+  width: 90%; max-width: 420px;
   color: ${p => p.theme?.colors?.text || '#F8FAFC'};
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: flex; flex-direction: column; gap: 12px;
   box-shadow: 0 24px 60px rgba(0,0,0,0.6);
 
-  .title {
-    font-size: 15px;
-    font-weight: 700;
-  }
+  .title { font-size: 15px; font-weight: 700; }
   textarea {
-    flex: 1;
-    min-height: 80px;
+    flex: 1; min-height: 80px;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
-    color: inherit;
-    padding: 12px;
-    font-size: 12px;
-    outline: none;
-    resize: vertical;
+    border-radius: 8px; color: inherit; padding: 12px;
+    font-size: 12px; outline: none; resize: vertical;
   }
-  .actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-  }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; }
 `;
 
 // ============================================
 // SETTINGS STYLES
 // ============================================
 const SettingsProfileCard = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  display: flex; align-items: center; gap: 16px;
   padding: 20px 20px;
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 14px;
@@ -800,25 +683,17 @@ const SettingsProfileCard = styled.div`
   animation: ${fadeUp} 0.3s ease;
 
   .profile-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
+    width: 64px; height: 64px; border-radius: 50%;
     background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    font-weight: 700;
-    color: #ffffff;
-    flex-shrink: 0;
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; color: #ffffff;
+    flex-shrink: 0; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
   }
 
   .profile-info { flex: 1; min-width: 0; }
 
   .profile-name {
-    font-size: 17px;
-    font-weight: 700;
+    font-size: 17px; font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: -0.2px;
   }
@@ -830,66 +705,39 @@ const SettingsProfileCard = styled.div`
   }
 
   .profile-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #10B981;
-    background: rgba(16, 185, 129, 0.1);
-    padding: 3px 12px;
-    border-radius: 999px;
-    margin-top: 4px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600;
+    color: #10B981; background: rgba(16, 185, 129, 0.1);
+    padding: 3px 12px; border-radius: 999px; margin-top: 4px;
 
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #10B981;
-      animation: ${pulseGlow} 2s infinite;
-    }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; animation: ${pulseGlow} 2s infinite; }
   }
 `;
 
 const SettingsGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
   animation: ${fadeUp} 0.4s ease;
 
-  @media (max-width: 520px) {
-    grid-template-columns: 1fr;
-  }
+  @media (max-width: 520px) { grid-template-columns: 1fr; }
 `;
 
 const SettingsCard = styled.div`
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 14px;
-  padding: 16px 18px;
+  border-radius: 14px; padding: 16px 18px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
   transition: all 0.2s ease;
 
-  &:hover {
-    border-color: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  }
+  &:hover { border-color: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'}; }
 
   .card-head {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     margin-bottom: 14px;
     padding-bottom: 10px;
     border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
-    .icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: ${props => props.theme?.colors?.textMuted || '#4b5563'};
-    }
+    .icon { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.textMuted || '#4b5563'}; }
   }
 `;
 
@@ -897,13 +745,9 @@ const SettingsField = styled.div`
   margin-bottom: 12px;
 
   label {
-    display: block;
-    font-size: 9.5px;
-    font-weight: 600;
+    display: block; font-size: 9.5px; font-weight: 600;
     color: ${props => props.theme?.colors?.textMuted || '#475569'};
-    margin-bottom: 3px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
+    margin-bottom: 3px; letter-spacing: 0.5px; text-transform: uppercase;
   }
 
   .val {
@@ -913,34 +757,23 @@ const SettingsField = styled.div`
     background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
     border-radius: 8px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.03)'};
-    min-height: 34px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    min-height: 34px; display: flex; align-items: center; justify-content: space-between;
   }
 
   .age-badge {
-    font-size: 9px;
-    color: #4ade80;
-    background: rgba(34, 197, 94, 0.06);
-    padding: 2px 8px;
-    border-radius: 20px;
+    font-size: 9px; color: #4ade80; background: rgba(34, 197, 94, 0.06);
+    padding: 2px 8px; border-radius: 20px;
     border: 1px solid rgba(34, 197, 94, 0.06);
-    font-weight: 500;
-    margin-left: 8px;
-    white-space: nowrap;
+    font-weight: 500; margin-left: 8px; white-space: nowrap;
   }
 
   input.inp, select.inp {
-    width: 100%;
-    padding: 6px 10px;
+    width: 100%; padding: 6px 10px;
     background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.02)'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     border-radius: 8px;
     color: ${props => props.theme?.colors?.text || '#e2e8f0'};
-    font-size: 12px;
-    transition: all 0.2s ease;
-    font-family: inherit;
+    font-size: 12px; transition: all 0.2s ease; font-family: inherit;
 
     &:focus {
       outline: none;
@@ -949,122 +782,61 @@ const SettingsField = styled.div`
       background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.03)'};
     }
 
-    &::placeholder {
-      color: ${props => props.theme?.colors?.textMuted || '#374151'};
-    }
-
-    &.err {
-      border-color: rgba(239, 68, 68, 0.3);
-    }
+    &::placeholder { color: ${props => props.theme?.colors?.textMuted || '#374151'}; }
+    &.err { border-color: rgba(239, 68, 68, 0.3); }
   }
 
   select.inp {
-    appearance: none;
-    cursor: pointer;
-
-    option {
-      background: ${props => props.theme?.colors?.surface || '#040810'};
-      color: ${props => props.theme?.colors?.text || '#e2e8f0'};
-    }
+    appearance: none; cursor: pointer;
+    option { background: ${props => props.theme?.colors?.surface || '#040810'}; color: ${props => props.theme?.colors?.text || '#e2e8f0'}; }
   }
 
-  .err-msg {
-    font-size: 9.5px;
-    color: #ef4444;
-    margin-top: 3px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
+  .err-msg { font-size: 9.5px; color: #ef4444; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
 `;
 
 const SettingsBtnRow = styled.div`
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  flex-wrap: wrap;
+  display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
 `;
 
 const SettingsBtn = styled.button`
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 10.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  padding: 6px 16px; border-radius: 20px;
+  font-size: 10.5px; font-weight: 600; cursor: pointer;
+  transition: all 0.3s ease; border: none;
+  display: inline-flex; align-items: center; gap: 5px;
   font-family: inherit;
 
   &.primary {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    color: #040810;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25);
-    }
+    background: linear-gradient(135deg, #22c55e, #16a34a); color: #040810;
+    &:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25); }
   }
 
   &.secondary {
     background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.03)'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     color: ${props => props.theme?.colors?.text || '#e2e8f0'};
-
-    &:hover {
-      background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.06)'};
-      transform: translateY(-2px);
-    }
+    &:hover { background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.06)'}; transform: translateY(-2px); }
   }
 
   &.danger {
     background: rgba(239, 68, 68, 0.07);
     border: 1px solid rgba(239, 68, 68, 0.14);
     color: #ef4444;
-
-    &:hover {
-      background: rgba(239, 68, 68, 0.14);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.1);
-    }
+    &:hover { background: rgba(239, 68, 68, 0.14); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(239, 68, 68, 0.1); }
   }
 
-  &:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    transform: none !important;
-  }
+  &:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
 
-  @media (max-width: 480px) {
-    padding: 5px 12px;
-    font-size: 9.5px;
-  }
+  @media (max-width: 480px) { padding: 5px 12px; font-size: 9.5px; }
 `;
 
 const SettingsDangerZone = styled.div`
-  margin-top: 14px;
-  padding: 14px 16px;
+  margin-top: 14px; padding: 14px 16px;
   border-radius: 12px;
   background: rgba(239, 68, 68, 0.025);
   border: 1px solid rgba(239, 68, 68, 0.05);
 
-  .dtitle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #ef4444;
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 3px;
-  }
-
-  .ddesc {
-    font-size: 10px;
-    color: ${props => props.theme?.colors?.textMuted || '#64748b'};
-    margin-bottom: 8px;
-  }
+  .dtitle { display: flex; align-items: center; gap: 6px; color: #ef4444; font-size: 11px; font-weight: 600; margin-bottom: 3px; }
+  .ddesc { font-size: 10px; color: ${props => props.theme?.colors?.textMuted || '#64748b'}; margin-bottom: 8px; }
 `;
 
 const SettingsSuccess = styled.div`
@@ -1072,12 +844,9 @@ const SettingsSuccess = styled.div`
   border: 1px solid rgba(34, 197, 94, 0.1);
   color: #4ade80;
   padding: 8px 14px;
-  border-radius: 9px;
-  font-size: 11px;
+  border-radius: 9px; font-size: 11px;
   margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
+  display: flex; align-items: center; gap: 7px;
   animation: ${fadeUp} 0.4s ease;
 `;
 
@@ -1089,110 +858,56 @@ const HelpContactCard = styled.div`
   border-radius: 12px;
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  margin-bottom: 10px;
-  transition: all 0.2s ease;
+  margin-bottom: 10px; transition: all 0.2s ease;
 
   &:hover {
     border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.3)'};
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.02)'};
   }
 
-  .contact-label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 6px;
-  }
-
-  .contact-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
+  .contact-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-bottom: 6px; }
+  .contact-row { display: flex; align-items: center; gap: 12px; }
   .contact-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 8px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     flex-shrink: 0;
   }
-
   .contact-info { flex: 1; min-width: 0; }
-
-  .contact-title {
-    font-size: 11px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-  }
-
-  .contact-value {
-    font-size: 12px;
-    font-weight: 500;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    word-break: break-all;
-  }
-
+  .contact-title { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
+  .contact-value { font-size: 12px; font-weight: 500; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; word-break: break-all; }
   .contact-action {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 11px; font-weight: 600;
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    cursor: pointer;
-    padding: 4px 12px;
-    border-radius: 6px;
+    cursor: pointer; padding: 4px 12px; border-radius: 6px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-    background: transparent;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-
-    &:hover {
-      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      color: #ffffff;
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    }
+    background: transparent; transition: all 0.2s ease; flex-shrink: 0;
+    &:hover { background: ${props => props.theme?.colors?.accent || '#3B82F6'}; color: #ffffff; border-color: ${props => props.theme?.colors?.accent || '#3B82F6'}; }
   }
 `;
 
 // ============================================
-// RISK CALCULATOR STYLES
+// RISK / LOT SIZE INPUT STYLES
 // ============================================
 const RiskInputGroup = styled.div`
   margin-bottom: 16px;
 
   .risk-label {
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 11px; font-weight: 700;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    display: flex; align-items: center; gap: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px;
 
-    .risk-hint {
-      font-size: 9px;
-      font-weight: 400;
-      opacity: 0.4;
-      text-transform: none;
-      letter-spacing: 0;
-    }
+    .risk-hint { font-size: 9px; font-weight: 400; opacity: 0.4; text-transform: none; letter-spacing: 0; }
   }
 
   .risk-input-wrap {
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
     background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    border-radius: 12px; overflow: hidden; transition: all 0.3s ease;
 
     &:focus-within {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
@@ -1201,42 +916,30 @@ const RiskInputGroup = styled.div`
 
     .risk-prefix {
       padding: 12px 14px;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 14px; font-weight: 700;
       color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
       background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.03)'};
       border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-      min-width: 40px;
-      text-align: center;
+      min-width: 40px; text-align: center;
+    }
+
+    .risk-suffix {
+      padding: 12px 14px;
+      font-size: 12px; font-weight: 600;
+      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+      border-left: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     }
 
     input {
-      flex: 1;
-      padding: 12px 14px;
-      background: transparent;
-      border: none;
+      flex: 1; padding: 12px 14px;
+      background: transparent; border: none;
       color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-size: 15px;
-      font-weight: 600;
-      outline: none;
-      width: 100%;
-      min-width: 0;
+      font-size: 15px; font-weight: 600; outline: none;
+      width: 100%; min-width: 0;
 
-      &::placeholder {
-        color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-        font-weight: 400;
-        opacity: 0.3;
-      }
-
-      &::-webkit-inner-spin-button,
-      &::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-      &[type='number'] {
-        -moz-appearance: textfield;
-      }
+      &::placeholder { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; font-weight: 400; opacity: 0.3; }
+      &::-webkit-inner-spin-button, &::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+      &[type='number'] { -moz-appearance: textfield; }
     }
   }
 `;
@@ -1247,22 +950,14 @@ const RiskCalculateBtn = styled.button`
   border: none;
   border-radius: 12px;
   background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 4px;
-  position: relative;
-  overflow: hidden;
+  color: #ffffff; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.3s ease;
+  margin-top: 4px; position: relative; overflow: hidden;
 
   &::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 100%;
+    position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
     animation: ${shimmer} 4s ease-in-out infinite;
   }
@@ -1272,103 +967,67 @@ const RiskCalculateBtn = styled.button`
     box-shadow: 0 8px 30px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.3)'};
   }
 
-  &:active:not(:disabled) {
-    transform: scale(0.98);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+  &:active:not(:disabled) { transform: scale(0.98); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
 const RiskResultsGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-top: 16px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px; margin-top: 16px;
   animation: ${fadeUp} 0.5s ease;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr 1fr;
-  }
+  @media (max-width: 480px) { grid-template-columns: 1fr 1fr; }
 `;
 
 const RiskResultBox = styled.div`
-  padding: 14px 12px;
-  border-radius: 12px;
-  text-align: center;
+  padding: 14px 12px; border-radius: 12px; text-align: center;
   background: ${props =>
-    props.type === 'risk'
-      ? 'rgba(239, 68, 68, 0.06)'
-      : props.type === 'reward'
-      ? 'rgba(16, 185, 129, 0.06)'
-      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+    props.type === 'risk' ? 'rgba(239, 68, 68, 0.06)' :
+    props.type === 'reward' ? 'rgba(16, 185, 129, 0.06)' :
+    props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
   border: 1px solid ${props =>
-    props.type === 'risk'
-      ? 'rgba(239, 68, 68, 0.1)'
-      : props.type === 'reward'
-      ? 'rgba(16, 185, 129, 0.1)'
-      : props.theme?.colors?.border || 'rgba(59, 130, 246, 0.1)'};
+    props.type === 'risk' ? 'rgba(239, 68, 68, 0.1)' :
+    props.type === 'reward' ? 'rgba(16, 185, 129, 0.1)' :
+    props.theme?.colors?.border || 'rgba(59, 130, 246, 0.1)'};
   transition: all 0.3s ease;
 
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
-  }
+  &:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15); }
 
   .result-label {
-    font-size: 8px;
-    font-weight: 700;
-    text-transform: uppercase;
+    font-size: 8px; font-weight: 700; text-transform: uppercase;
     letter-spacing: 0.6px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     margin-bottom: 4px;
   }
 
   .result-value {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 18px; font-weight: 700;
     color: ${props =>
-      props.type === 'risk'
-        ? '#EF4444'
-        : props.type === 'reward'
-        ? '#10B981'
-        : props.theme?.colors?.accent || '#3B82F6'};
+      props.type === 'risk' ? '#EF4444' :
+      props.type === 'reward' ? '#10B981' :
+      props.theme?.colors?.accent || '#3B82F6'};
   }
 
   .result-sub {
     font-size: 9px;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 4px;
-    opacity: 0.6;
-    font-weight: 500;
+    margin-top: 4px; opacity: 0.6; font-weight: 500;
   }
 `;
 
 const RiskSummaryBox = styled.div`
-  margin-top: 14px;
-  padding: 14px 18px;
+  margin-top: 14px; padding: 14px 18px;
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 12px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   animation: ${fadeUp} 0.6s ease;
 
   .summary-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
-    font-size: 12px;
-    font-weight: 500;
+    display: flex; justify-content: space-between;
+    padding: 5px 0; font-size: 12px; font-weight: 500;
 
-    .label {
-      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    }
-
-    .value {
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-weight: 600;
-    }
+    .label { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
+    .value { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; font-weight: 600; }
 
     &.highlight-risk .value { color: #EF4444; }
     &.highlight-reward .value { color: #10B981; }
@@ -1385,322 +1044,81 @@ const RiskSummaryBox = styled.div`
 // ============================================
 // COPY TRADING STYLES
 // ============================================
-const CopyTradingWrapper = styled.div`
-  animation: ${fadeUp} 0.4s ease;
-`;
-
+const CopyTradingWrapper = styled.div` animation: ${fadeUp} 0.4s ease; `;
 const CopyHeroSection = styled.div`
-  text-align: center;
-  padding: 8px 0 14px;
+  text-align: center; padding: 8px 0 14px;
 
-  .badge {
-    display: inline-block;
-    padding: 3px 12px;
-    border-radius: 20px;
-    background: rgba(56, 189, 248, 0.08);
-    border: 1px solid rgba(56, 189, 248, 0.1);
-    color: #38bdf8;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
+  .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.1); color: #38bdf8; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .title { font-size: 20px; font-weight: 800; color: #f1f5f9; line-height: 1.1; margin-bottom: 4px;
+    .gradient { background: linear-gradient(135deg, #22c55e, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   }
-
-  .title {
-    font-size: 20px;
-    font-weight: 800;
-    color: #f1f5f9;
-    line-height: 1.1;
-    margin-bottom: 4px;
-
-    .gradient {
-      background: linear-gradient(135deg, #22c55e, #38bdf8, #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-  }
-
-  .subtitle {
-    font-size: 12px;
-    color: #94a3b8;
-    max-width: 400px;
-    margin: 0 auto;
-    line-height: 1.5;
-  }
+  .subtitle { font-size: 12px; color: #94a3b8; max-width: 400px; margin: 0 auto; line-height: 1.5; }
 `;
 
 const MasterTraderCardCompact = styled.div`
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.04), rgba(129, 140, 248, 0.02));
   border: 1px solid rgba(56, 189, 248, 0.06);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  position: relative; overflow: hidden;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, rgba(56, 189, 248, 0.03), transparent 70%);
-    border-radius: 50%;
-  }
+  &::before { content: ''; position: absolute; top: -50%; right: -20%; width: 150px; height: 150px; background: radial-gradient(circle, rgba(56, 189, 248, 0.03), transparent 70%); border-radius: 50%; }
 
-  .master-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    z-index: 1;
-
-    .master-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #22c55e, #38bdf8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      font-weight: 700;
-      color: white;
-      flex-shrink: 0;
-      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2);
-    }
-
-    .master-info {
-      flex: 1;
-      min-width: 0;
-
-      .master-name {
-        font-size: 14px;
-        font-weight: 700;
-        color: #f1f5f9;
-      }
-
-      .master-title {
-        font-size: 10px;
-        color: #64748b;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-
-        .live-dot {
-          width: 5px;
-          height: 5px;
-          border-radius: 50%;
-          background: #22c55e;
-          display: inline-block;
-          animation: ${breathe} 2s ease-in-out infinite;
-        }
+  .master-header { display: flex; align-items: center; gap: 10px; position: relative; z-index: 1;
+    .master-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #22c55e, #38bdf8); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: white; flex-shrink: 0; box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2); }
+    .master-info { flex: 1; min-width: 0;
+      .master-name { font-size: 14px; font-weight: 700; color: #f1f5f9; }
+      .master-title { font-size: 10px; color: #64748b; display: flex; align-items: center; gap: 5px;
+        .live-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; display: inline-block; animation: ${breathe} 2s ease-in-out infinite; }
       }
     }
-
-    .master-badge {
-      font-size: 9px;
-      padding: 3px 12px;
-      border-radius: 20px;
-      background: rgba(34, 197, 94, 0.08);
-      color: #22c55e;
-      border: 1px solid rgba(34, 197, 94, 0.1);
-      font-weight: 600;
-      flex-shrink: 0;
-    }
+    .master-badge { font-size: 9px; padding: 3px 12px; border-radius: 20px; background: rgba(34, 197, 94, 0.08); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.1); font-weight: 600; flex-shrink: 0; }
   }
 
-  .master-stats {
-    display: flex;
-    gap: 16px;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    position: relative;
-    z-index: 1;
-
+  .master-stats { display: flex; gap: 16px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.02); position: relative; z-index: 1;
     .stat {
-      .stat-value {
-        font-size: 14px;
-        font-weight: 700;
-        color: #f1f5f9;
-        font-family: 'Courier New', monospace;
-      }
-      .stat-label {
-        font-size: 8px;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        margin-top: 1px;
-      }
+      .stat-value { font-size: 14px; font-weight: 700; color: #f1f5f9; font-family: 'Courier New', monospace; }
+      .stat-label { font-size: 8px; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 1px; }
     }
   }
 `;
 
 const ClientsGridCompact = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-
-  @media (max-width: 400px) {
-    grid-template-columns: 1fr;
-  }
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  @media (max-width: 400px) { grid-template-columns: 1fr; }
 `;
 
 const ClientCardCompact = styled.div`
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid ${props => (props.active ? 'rgba(34, 197, 94, 0.1)' : 'rgba(255, 255, 255, 0.04)')};
-  border-radius: 12px;
-  padding: 12px 12px;
-  transition: all 0.3s ease;
-  position: relative;
+  border-radius: 12px; padding: 12px 12px; transition: all 0.3s ease; position: relative;
 
-  &:hover {
-    border-color: rgba(56, 189, 248, 0.06);
-    background: rgba(255, 255, 255, 0.02);
-  }
+  &:hover { border-color: rgba(56, 189, 248, 0.06); background: rgba(255, 255, 255, 0.02); }
 
-  .client-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-
-    .client-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #818cf8, #38bdf8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 700;
-      color: white;
-      flex-shrink: 0;
+  .client-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+    .client-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #818cf8, #38bdf8); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; flex-shrink: 0; }
+    .client-info { flex: 1; min-width: 0;
+      .client-name { font-size: 11px; font-weight: 600; color: #f1f5f9; }
+      .client-token { font-size: 8px; color: #64748b; font-family: 'Courier New', monospace; word-break: break-all; }
     }
-
-    .client-info {
-      flex: 1;
-      min-width: 0;
-
-      .client-name {
-        font-size: 11px;
-        font-weight: 600;
-        color: #f1f5f9;
-      }
-
-      .client-token {
-        font-size: 8px;
-        color: #64748b;
-        font-family: 'Courier New', monospace;
-        word-break: break-all;
-      }
-    }
-
-    .status-badge {
-      font-size: 7px;
-      padding: 2px 8px;
-      border-radius: 20px;
-      font-weight: 600;
-      flex-shrink: 0;
-
-      &.active {
-        background: rgba(34, 197, 94, 0.08);
-        color: #22c55e;
-        border: 1px solid rgba(34, 197, 94, 0.1);
-      }
-
-      &.pending {
-        background: rgba(251, 191, 36, 0.08);
-        color: #fbbf24;
-        border: 1px solid rgba(251, 191, 36, 0.1);
-      }
-
-      &.inactive {
-        background: rgba(239, 68, 68, 0.08);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.1);
-      }
+    .status-badge { font-size: 7px; padding: 2px 8px; border-radius: 20px; font-weight: 600; flex-shrink: 0;
+      &.active { background: rgba(34, 197, 94, 0.08); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.1); }
+      &.pending { background: rgba(251, 191, 36, 0.08); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.1); }
+      &.inactive { background: rgba(239, 68, 68, 0.08); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); }
     }
   }
 
-  .client-details {
-    display: flex;
-    gap: 8px;
-    margin: 4px 0 6px;
-    padding: 4px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.02);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-
-    .detail {
-      flex: 1;
-      text-align: center;
-
-      .detail-value {
-        font-size: 11px;
-        font-weight: 700;
-        color: #f1f5f9;
-        font-family: 'Courier New', monospace;
-      }
-
-      .detail-label {
-        font-size: 6px;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        margin-top: 1px;
-      }
+  .client-details { display: flex; gap: 8px; margin: 4px 0 6px; padding: 4px 0; border-top: 1px solid rgba(255, 255, 255, 0.02); border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    .detail { flex: 1; text-align: center;
+      .detail-value { font-size: 11px; font-weight: 700; color: #f1f5f9; font-family: 'Courier New', monospace; }
+      .detail-label { font-size: 6px; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 1px; }
     }
   }
 
-  .client-actions {
-    display: flex;
-    gap: 4px;
-
-    .action-btn {
-      flex: 1;
-      padding: 4px 0;
-      border: none;
-      border-radius: 6px;
-      font-size: 9px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &.remove {
-        background: rgba(239, 68, 68, 0.08);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.1);
-
-        &:hover {
-          background: rgba(239, 68, 68, 0.15);
-        }
-      }
-
-      &.view {
-        background: rgba(255, 255, 255, 0.04);
-        color: #94a3b8;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.08);
-          color: #f1f5f9;
-        }
-      }
-
-      &.activate {
-        background: rgba(34, 197, 94, 0.08);
-        color: #22c55e;
-        border: 1px solid rgba(34, 197, 94, 0.1);
-
-        &:hover {
-          background: rgba(34, 197, 94, 0.15);
-        }
-      }
+  .client-actions { display: flex; gap: 4px;
+    .action-btn { flex: 1; padding: 4px 0; border: none; border-radius: 6px; font-size: 9px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+      &.remove { background: rgba(239, 68, 68, 0.08); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.1); &:hover { background: rgba(239, 68, 68, 0.15); } }
+      &.view { background: rgba(255, 255, 255, 0.04); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.04); &:hover { background: rgba(255, 255, 255, 0.08); color: #f1f5f9; } }
+      &.activate { background: rgba(34, 197, 94, 0.08); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.1); &:hover { background: rgba(34, 197, 94, 0.15); } }
     }
   }
 `;
@@ -1708,230 +1126,78 @@ const ClientCardCompact = styled.div`
 const AddClientButtonCompact = styled.button`
   padding: 12px 0;
   border: 2px dashed rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
-  background: transparent;
-  color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  width: 100%;
+  border-radius: 12px; background: transparent;
+  color: #64748b; font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.3s ease;
+  display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100%;
 
-  &:hover {
-    border-color: rgba(56, 189, 248, 0.2);
-    background: rgba(255, 255, 255, 0.01);
-    color: #f1f5f9;
-  }
-
-  .icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-  }
-
-  .text {
-    font-size: 11px;
-  }
-
-  .sub-text {
-    font-size: 9px;
-    color: #4a4f5e;
-  }
+  &:hover { border-color: rgba(56, 189, 248, 0.2); background: rgba(255, 255, 255, 0.01); color: #f1f5f9; }
+  .icon { display: flex; align-items: center; justify-content: center; color: #64748b; }
+  .text { font-size: 11px; }
+  .sub-text { font-size: 9px; color: #4a4f5e; }
 `;
 
 const EmptyStateCompact = styled.div`
-  text-align: center;
-  padding: 20px 16px;
-  border: 1px dashed rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
+  text-align: center; padding: 20px 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.04); border-radius: 12px;
   grid-column: 1 / -1;
 
-  .empty-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #4a4f5e;
-    margin-bottom: 8px;
-  }
-
-  .empty-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #f1f5f9;
-  }
-
-  .empty-sub {
-    font-size: 11px;
-    color: #64748b;
-    margin-top: 2px;
-  }
+  .empty-icon { display: flex; align-items: center; justify-content: center; color: #4a4f5e; margin-bottom: 8px; }
+  .empty-title { font-size: 13px; font-weight: 600; color: #f1f5f9; }
+  .empty-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
 `;
 
 const ConnectSectionCompact = styled.div`
   background: rgba(255, 255, 255, 0.015);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
 
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #f1f5f9;
-    margin-bottom: 2px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .section-title { font-size: 13px; font-weight: 600; color: #f1f5f9; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; }
+  .section-subtitle { font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
 
-  .section-subtitle {
-    font-size: 11px;
-    color: #94a3b8;
-    margin-bottom: 10px;
-  }
-
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    .input-wrapper {
-      position: relative;
-
-      .input-icon {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #64748b;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
+  .input-group { display: flex; flex-direction: column; gap: 8px;
+    .input-wrapper { position: relative;
+      .input-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #64748b; display: flex; align-items: center; justify-content: center; }
       input {
-        width: 100%;
-        padding: 8px 10px 8px 34px;
+        width: 100%; padding: 8px 10px 8px 34px;
         background: rgba(255, 255, 255, 0.02);
         border: 1px solid rgba(255, 255, 255, 0.04);
-        border-radius: 8px;
-        color: #f1f5f9;
-        font-size: 12px;
-        outline: none;
-        transition: all 0.2s ease;
-        font-family: 'Courier New', monospace;
+        border-radius: 8px; color: #f1f5f9; font-size: 12px; outline: none;
+        transition: all 0.2s ease; font-family: 'Courier New', monospace;
 
-        &::placeholder {
-          color: #4a4f5e;
-        }
-
-        &:focus {
-          border-color: rgba(56, 189, 248, 0.3);
-          box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.05);
-        }
+        &::placeholder { color: #4a4f5e; }
+        &:focus { border-color: rgba(56, 189, 248, 0.3); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.05); }
       }
     }
 
-    .action-row {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-
+    .action-row { display: flex; gap: 8px; width: 100%;
       .connect-btn {
-        flex: 1;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 8px;
-        background: linear-gradient(135deg, #2962ff, #1a4fcf);
-        color: #ffffff;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        flex: 1; padding: 8px 16px; border: none; border-radius: 8px;
+        background: linear-gradient(135deg, #2962ff, #1a4fcf); color: #ffffff;
+        font-size: 12px; font-weight: 600; cursor: pointer;
+        transition: all 0.3s ease; position: relative; overflow: hidden;
 
-        &:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(41, 98, 255, 0.3);
-        }
+        &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(41, 98, 255, 0.3); }
+        &:active:not(:disabled) { transform: scale(0.98); }
+        &:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        &:active:not(:disabled) {
-          transform: scale(0.98);
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .btn-shimmer {
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 60%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
-          animation: ${shimmer} 4s ease-in-out infinite;
-        }
+        .btn-shimmer { position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent); animation: ${shimmer} 4s ease-in-out infinite; }
       }
-
-      .cancel-btn {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 8px;
-        background: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-
-        &:hover {
-          background: rgba(239, 68, 68, 0.2);
-        }
+      .cancel-btn { padding: 8px 16px; border: none; border-radius: 8px; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+        &:hover { background: rgba(239, 68, 68, 0.2); }
       }
     }
   }
 
   .connection-status {
-    margin-top: 8px;
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    margin-top: 8px; padding: 6px 10px; border-radius: 8px;
+    font-size: 11px; display: flex; align-items: center; gap: 6px;
 
-    &.success {
-      background: rgba(34, 197, 94, 0.04);
-      border: 1px solid rgba(34, 197, 94, 0.06);
-      color: #22c55e;
-    }
+    &.success { background: rgba(34, 197, 94, 0.04); border: 1px solid rgba(34, 197, 94, 0.06); color: #22c55e; }
+    &.error { background: rgba(239, 68, 68, 0.04); border: 1px solid rgba(239, 68, 68, 0.06); color: #ef4444; }
+    &.info { background: rgba(56, 189, 248, 0.04); border: 1px solid rgba(56, 189, 248, 0.06); color: #38bdf8; }
 
-    &.error {
-      background: rgba(239, 68, 68, 0.04);
-      border: 1px solid rgba(239, 68, 68, 0.06);
-      color: #ef4444;
-    }
-
-    &.info {
-      background: rgba(56, 189, 248, 0.04);
-      border: 1px solid rgba(56, 189, 248, 0.06);
-      color: #38bdf8;
-    }
-
-    .status-dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      flex-shrink: 0;
-
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
       &.green { background: #22c55e; animation: ${breathe} 2s ease-in-out infinite; }
       &.red { background: #ef4444; }
       &.blue { background: #38bdf8; animation: ${breathe} 2s ease-in-out infinite; }
@@ -1943,71 +1209,18 @@ const ConnectSectionCompact = styled.div`
 // RESPONSIBLE TRADING POPUP
 // ============================================
 const ResponsibleTradingContent = styled.div`
-  .rt-section {
-    margin-bottom: 16px;
-    padding: 14px 16px;
-    border-radius: 12px;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+  .rt-section { margin-bottom: 16px; padding: 14px 16px; border-radius: 12px; background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'}; border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'}; }
+  .rt-title { font-size: 13px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .rt-desc { font-size: 11.5px; line-height: 1.7; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; }
+
+  .rt-bullet { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; font-size: 11.5px; line-height: 1.6; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    .bullet-dot { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .highlight { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; font-weight: 600; }
   }
 
-  .rt-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .rt-desc {
-    font-size: 11.5px;
-    line-height: 1.7;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-  }
-
-  .rt-bullet {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 4px 0;
-    font-size: 11.5px;
-    line-height: 1.6;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-
-    .bullet-dot {
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .highlight {
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-weight: 600;
-    }
-  }
-
-  .rt-tip {
-    padding: 12px 16px;
-    border-radius: 10px;
-    background: rgba(59, 130, 246, 0.04);
-    border: 1px solid rgba(59, 130, 246, 0.08);
-    margin-top: 10px;
-
-    .tip-title {
-      font-size: 11px;
-      font-weight: 600;
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      margin-bottom: 2px;
-    }
-
-    .tip-text {
-      font-size: 11px;
-      color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-      line-height: 1.6;
-    }
+  .rt-tip { padding: 12px 16px; border-radius: 10px; background: rgba(59, 130, 246, 0.04); border: 1px solid rgba(59, 130, 246, 0.08); margin-top: 10px;
+    .tip-title { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; margin-bottom: 2px; }
+    .tip-text { font-size: 11px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; line-height: 1.6; }
   }
 `;
 
@@ -2015,91 +1228,18 @@ const ResponsibleTradingContent = styled.div`
 // ABOUT US POPUP
 // ============================================
 const AboutContent = styled.div`
-  .about-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border-radius: 14px;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-
-    .logo-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    }
-
-    .logo-text {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #3B82F6, #1D4ED8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  .about-logo { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 20px; margin-bottom: 16px; border-radius: 14px; background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'}; border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
+    .logo-icon { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; }
+    .logo-text { font-size: 22px; font-weight: 800; background: linear-gradient(135deg, #3B82F6, #1D4ED8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   }
-
-  .about-section {
-    margin-bottom: 14px;
-    padding: 14px 16px;
-    border-radius: 12px;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-  }
-
-  .about-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 4px;
-  }
-
-  .about-desc {
-    font-size: 11.5px;
-    line-height: 1.7;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-  }
-
-  .about-features {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 10px;
-
-    @media (max-width: 400px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .about-feature {
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-    text-align: center;
-
-    .feature-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      margin-bottom: 4px;
-    }
-
-    .feature-name {
-      font-size: 10.5px;
-      font-weight: 600;
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    }
-
-    .feature-desc {
-      font-size: 9.5px;
-      color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-      margin-top: 2px;
-    }
+  .about-section { margin-bottom: 14px; padding: 14px 16px; border-radius: 12px; background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'}; border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'}; }
+  .about-title { font-size: 13px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 4px; }
+  .about-desc { font-size: 11.5px; line-height: 1.7; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; }
+  .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; @media (max-width: 400px) { grid-template-columns: 1fr; } }
+  .about-feature { padding: 10px 12px; border-radius: 10px; background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'}; border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'}; text-align: center;
+    .feature-icon { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; margin-bottom: 4px; }
+    .feature-name { font-size: 10.5px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
+    .feature-desc { font-size: 9.5px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; }
   }
 `;
 
@@ -2107,118 +1247,51 @@ const AboutContent = styled.div`
 // NOTIFICATIONS
 // ============================================
 const NotificationItem = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: ${props =>
-    props.read
-      ? 'transparent'
-      : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
-  border: 1px solid ${props =>
-    props.read
-      ? 'transparent'
-      : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: ${props => props.read ? 'transparent' : props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.06)'};
+  border: 1px solid ${props => props.read ? 'transparent' : props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   margin-bottom: 6px;
   transition: background 0.2s ease, border-color 0.2s ease;
 
-  &:hover {
-    background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.04)'};
-  }
+  &:hover { background: ${props => props.theme?.colors?.surfaceHover || 'rgba(255, 255, 255, 0.04)'}; }
 
-  .notif-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: ${props =>
-      props.type === 'trade' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(59, 130, 246, 0.12)'};
+  .notif-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(59, 130, 246, 0.12)'};
     color: ${props => (props.type === 'trade' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6')};
   }
 
   .notif-content { flex: 1; min-width: 0; }
-  .notif-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 2px;
-  }
-  .notif-desc {
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    line-height: 1.45;
-  }
-  .notif-time {
-    font-size: 10px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 3px;
-  }
-  .notif-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    flex-shrink: 0;
-    margin-top: 4px;
-    display: ${props => (props.read ? 'none' : 'block')};
-  }
+  .notif-title { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 2px; }
+  .notif-desc { font-size: 11px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; line-height: 1.45; }
+  .notif-time { font-size: 10px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 3px; }
+  .notif-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => props.theme?.colors?.accent || '#3B82F6'}; flex-shrink: 0; margin-top: 4px; display: ${props => (props.read ? 'none' : 'block')}; }
 `;
 
 // ============================================
 // VOICE SETTINGS
 // ============================================
 const VoiceToggleRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 10px 12px;
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 10px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   margin-bottom: 10px;
 
-  .toggle-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-  }
-  .toggle-status {
-    font-size: 9px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 999px;
-    color: ${props => (props.active ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
-    background: ${props =>
-      props.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.04)'};
-  }
+  .toggle-label { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
+  .toggle-status { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 999px; color: ${props => (props.active ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')}; background: ${props => props.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.04)'}; }
 `;
 
 const ToggleSwitch = styled.button`
-  width: 42px;
-  height: 24px;
-  border-radius: 12px;
-  border: none;
-  background: ${props =>
-    props.active
-      ? props.theme?.colors?.accent || '#3B82F6'
-      : props.theme?.colors?.scrollbar || '#2a2e3d'};
-  cursor: pointer;
-  transition: background 0.25s ease;
-  position: relative;
-  flex-shrink: 0;
+  width: 42px; height: 24px; border-radius: 12px; border: none;
+  background: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.scrollbar || '#2a2e3d'};
+  cursor: pointer; transition: background 0.25s ease; position: relative; flex-shrink: 0;
 
   &::after {
-    content: '';
-    position: absolute;
-    top: 2px;
+    content: ''; position: absolute; top: 2px;
     left: ${props => (props.active ? '20px' : '2px')};
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
+    width: 20px; height: 20px; border-radius: 50%;
     background: ${props => props.theme?.colors?.text || '#ffffff'};
     transition: left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -2228,35 +1301,21 @@ const ToggleSwitch = styled.button`
 `;
 
 const VolumeSlider = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: flex; align-items: center; gap: 10px;
   padding: 10px 12px;
   background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
   border-radius: 10px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   margin-bottom: 10px;
 
-  .slider-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    min-width: 28px;
-  }
+  .slider-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; min-width: 28px; }
 
   input[type='range'] {
-    flex: 1;
-    -webkit-appearance: none;
-    height: 4px;
-    border-radius: 2px;
-    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'};
-    outline: none;
+    flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px;
+    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'}; outline: none;
 
     &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
+      -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
       background: ${props => props.theme?.colors?.accent || '#3B82F6'};
       cursor: pointer;
       border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
@@ -2266,51 +1325,19 @@ const VolumeSlider = styled.div`
     &:disabled { opacity: 0.4; }
   }
 
-  .slider-value {
-    font-size: 12px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    min-width: 28px;
-    text-align: right;
-  }
+  .slider-value { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; min-width: 28px; text-align: right; }
 `;
 
 const VoiceEventItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 8px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
   &:last-child { border-bottom: none; }
 
-  .event-name {
-    font-size: 11px;
-    font-weight: 500;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .event-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
-  }
-
-  .event-status {
-    font-size: 9px;
-    font-weight: 700;
-    color: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')};
-    cursor: pointer;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: ${props =>
-      props.enabled ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)'};
-    transition: opacity 0.2s ease;
-
+  .event-name { font-size: 11px; font-weight: 500; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; display: flex; align-items: center; gap: 8px; }
+  .event-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')}; }
+  .event-status { font-size: 9px; font-weight: 700; color: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')}; cursor: pointer; padding: 3px 8px; border-radius: 6px; background: ${props => props.enabled ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)'}; transition: opacity 0.2s ease;
     &:hover { opacity: 0.75; }
   }
 `;
@@ -2319,44 +1346,16 @@ const VoiceEventItem = styled.div`
 // ACCOUNT INFO
 // ============================================
 const AccountInfoRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 11px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
   &:last-child { border-bottom: none; }
 
-  .row-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-  }
-
-  .row-value {
-    font-size: 12px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .status-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.success || '#10B981'};
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: ${props => props.theme?.colors?.success || '#10B981'};
-      animation: ${pulseGlow} 2s infinite;
-    }
+  .row-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
+  .row-value { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; display: flex; align-items: center; gap: 6px; }
+  .status-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: ${props => props.theme?.colors?.success || '#10B981'};
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => props.theme?.colors?.success || '#10B981'}; animation: ${pulseGlow} 2s infinite; }
   }
 `;
 
@@ -2364,73 +1363,24 @@ const AccountInfoRow = styled.div`
 // HOW TO USE / TERMS
 // ============================================
 const StepItem = styled.div`
-  display: flex;
-  gap: 12px;
-  padding: 12px 0;
+  display: flex; gap: 12px; padding: 12px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
   &:last-child { border-bottom: none; }
 
-  .step-number {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
-    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-    flex-shrink: 0;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  }
-
+  .step-number { width: 26px; height: 26px; border-radius: 50%; background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'}; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'}; }
   .step-content { flex: 1; min-width: 0; }
-  .step-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 2px;
-  }
-  .step-desc {
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-    line-height: 1.5;
-  }
+  .step-title { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 2px; }
+  .step-desc { font-size: 11px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; line-height: 1.5; }
 `;
 
 const TermsSection = styled.div`
   margin-bottom: 14px;
 
-  .terms-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 6px;
-  }
-
-  .terms-text {
-    font-size: 11px;
-    line-height: 1.65;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-  }
-
-  .terms-bullet {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 3px 0;
-    font-size: 11px;
-    line-height: 1.55;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-
-    .bullet-dot {
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
+  .terms-title { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 6px; }
+  .terms-text { font-size: 11px; line-height: 1.65; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; }
+  .terms-bullet { display: flex; align-items: flex-start; gap: 8px; padding: 3px 0; font-size: 11px; line-height: 1.55; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
+    .bullet-dot { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
   }
 `;
 
@@ -2440,8 +1390,7 @@ const TermsSection = styled.div`
 const TOPBAR_HEIGHT = '76px';
 
 const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(2, 6, 18, 0.55);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -2450,179 +1399,94 @@ const Overlay = styled.div`
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
   transition: opacity 0.28s ease, visibility 0.28s ease;
 
-  @media (min-width: 769px) {
-    display: none;
-  }
+  @media (min-width: 769px) { display: none; }
 `;
 
 const SidebarContainer = styled.aside`
-  position: fixed;
-  top: ${TOPBAR_HEIGHT};
-  left: 0;
+  position: fixed; top: ${TOPBAR_HEIGHT}; left: 0;
   width: 288px;
   height: calc(100vh - ${TOPBAR_HEIGHT});
   height: calc(100dvh - ${TOPBAR_HEIGHT});
-  background: ${props =>
-    props.theme?.colors?.sidebarBackground ||
-    props.theme?.colors?.surface ||
-    '#0F172A'};
+  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || '#0F172A'};
   border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 99;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  display: flex; flex-direction: column; overflow: hidden;
   box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
 
-  /* ── Mobile: proper side-sheet drawer, not full screen ── */
   @media (max-width: 768px) {
     top: 0;
     width: min(85vw, 340px);
-    height: 100vh;
-    height: 100dvh;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+    height: 100vh; height: 100dvh;
+    border-top-right-radius: 20px; border-bottom-right-radius: 20px;
     box-shadow: 16px 0 48px rgba(0, 0, 0, 0.55);
   }
 
-  @media (max-width: 380px) {
-    width: 88vw;
-  }
+  @media (max-width: 380px) { width: 88vw; }
 `;
 
 const SidebarContent = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  flex: 1; overflow-y: auto; overflow-x: hidden;
   padding: 18px 14px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  display: flex; flex-direction: column; gap: 18px;
 
-  /* Give the notch room without pushing the whole drawer down */
-  @media (max-width: 768px) {
-    padding-top: calc(18px + env(safe-area-inset-top, 0px));
-  }
+  @media (max-width: 768px) { padding-top: calc(18px + env(safe-area-inset-top, 0px)); }
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
-    border-radius: 99px;
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'};
-  }
+  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'}; border-radius: 99px; }
+  &::-webkit-scrollbar-thumb:hover { background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'}; }
 `;
 
 const SidebarHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex; align-items: center; gap: 12px;
   padding: 8px 8px 16px;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   animation: ${slideIn} 0.3s ease;
 
-  .avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: linear-gradient(
-      135deg,
-      ${props => props.theme?.colors?.accent || '#3B82F6'},
-      ${props => props.theme?.colors?.accentHover || '#1D4ED8'}
-    );
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 0.4px;
+  .avatar { width: 42px; height: 42px; border-radius: 12px;
+    background: linear-gradient(135deg, ${props => props.theme?.colors?.accent || '#3B82F6'}, ${props => props.theme?.colors?.accentHover || '#1D4ED8'});
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.4px;
     box-shadow: 0 4px 14px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.35)'};
     flex-shrink: 0;
   }
 
   .user-info { flex: 1; min-width: 0; }
-  .user-name {
-    font-size: 13.5px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .user-email {
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  .user-name { font-size: 13.5px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-email { font-size: 11px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .close-btn-mobile {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    display: none; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 8px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
+    cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
 
-    &:hover {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
-      transform: rotate(90deg);
-    }
+    &:hover { border-color: ${props => props.theme?.colors?.accent || '#3B82F6'}; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'}; transform: rotate(90deg); }
 
-    @media (max-width: 768px) {
-      display: flex;
-    }
+    @media (max-width: 768px) { display: flex; }
   }
 `;
 
-const NavSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  animation: ${slideIn} 0.35s ease;
-`;
+const NavSection = styled.div` display: flex; flex-direction: column; gap: 3px; animation: ${slideIn} 0.35s ease; `;
 
 const SectionLabel = styled.div`
-  font-size: 10px;
-  font-weight: 700;
+  font-size: 10px; font-weight: 700;
   color: ${props => props.theme?.colors?.textMuted || '#64748B'};
-  text-transform: uppercase;
-  letter-spacing: 0.9px;
-  padding: 0 10px;
-  margin-bottom: 4px;
+  text-transform: uppercase; letter-spacing: 0.9px;
+  padding: 0 10px; margin-bottom: 4px;
 `;
 
 const NavItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 9px 12px;
-  border-radius: 10px;
-  cursor: pointer;
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 12px; border-radius: 10px; cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  background: ${props =>
-    props.active
-      ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'
-      : 'transparent'};
-  color: ${props =>
-    props.active
-      ? props.theme?.colors?.accent || '#3B82F6'
-      : props.theme?.colors?.textSecondary || '#CBD5E1'};
+  background: ${props => props.active ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)' : 'transparent'};
+  color: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.textSecondary || '#CBD5E1'};
 
   &:hover {
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
@@ -2630,296 +1494,123 @@ const NavItem = styled.div`
     transform: translateX(2px);
   }
 
-  ${props =>
-    props.active &&
-    css`
-      font-weight: 600;
+  ${props => props.active && css`
+    font-weight: 600;
 
-      &::before {
-        content: '';
-        position: absolute;
-        left: -14px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 18px;
-        background: ${props.theme?.colors?.accent || '#3B82F6'};
-        border-radius: 0 4px 4px 0;
-        box-shadow: 0 0 10px ${props.theme?.colors?.accent || '#3B82F6'};
-      }
-    `}
+    &::before {
+      content: '';
+      position: absolute; left: -14px; top: 50%;
+      transform: translateY(-50%);
+      width: 3px; height: 18px;
+      background: ${props.theme?.colors?.accent || '#3B82F6'};
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 0 10px ${props.theme?.colors?.accent || '#3B82F6'};
+    }
+  `}
 
-  .nav-icon {
-    width: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: transform 0.2s ease;
-  }
+  .nav-icon { width: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.2s ease; }
+  &:hover .nav-icon { transform: scale(1.08); }
 
-  &:hover .nav-icon {
-    transform: scale(1.08);
-  }
-
-  .nav-label {
-    flex: 1;
-    font-size: 12.5px;
-    letter-spacing: 0.1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  .nav-label { flex: 1; font-size: 12.5px; letter-spacing: 0.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .badge {
-    font-size: 9px;
-    font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 6px;
-    background: ${props =>
-      props.active
-        ? props.theme?.colors?.accent || '#3B82F6'
-        : 'rgba(255, 255, 255, 0.06)'};
-    color: ${props =>
-      props.active ? '#FFFFFF' : props.theme?.colors?.textMuted || '#94A3B8'};
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    flex-shrink: 0;
+    font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 6px;
+    background: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : 'rgba(255, 255, 255, 0.06)'};
+    color: ${props => props.active ? '#FFFFFF' : props.theme?.colors?.textMuted || '#94A3B8'};
+    text-transform: uppercase; letter-spacing: 0.3px; flex-shrink: 0;
   }
 
-  .notification-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: ${props => props.theme?.colors?.danger || '#EF4444'};
-    animation: ${pulseGlow} 2s infinite;
-    flex-shrink: 0;
-  }
+  .notification-dot { width: 7px; height: 7px; border-radius: 50%; background: ${props => props.theme?.colors?.danger || '#EF4444'}; animation: ${pulseGlow} 2s infinite; flex-shrink: 0; }
 `;
 
 const SideCard = styled.div`
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 12px 14px; border-radius: 12px;
   background: ${props => props.theme?.colors?.bg || 'rgba(15, 23, 42, 0.35)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   animation: ${fadeIn} 0.35s ease;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
-  &:hover {
-    border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.35)'};
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+  &:hover { border-color: ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.35)'}; box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15); }
+
+  .card-title { font-size: 11.5px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+    .icon { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; }
   }
 
-  .card-title {
-    font-size: 11.5px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    }
+  .card-item { font-size: 10.5px; color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'}; padding: 3px 0; display: flex; align-items: flex-start; gap: 6px; line-height: 1.45;
+    .bullet { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; font-weight: 700; flex-shrink: 0; }
+    .highlight { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; font-weight: 600; }
   }
 
-  .card-item {
-    font-size: 10.5px;
-    color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'};
-    padding: 3px 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    line-height: 1.45;
-
-    .bullet {
-      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .highlight {
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-      font-weight: 600;
-    }
-  }
-
-  .learn-more {
-    margin-top: 10px;
-    font-size: 11px;
-    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    cursor: pointer;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: gap 0.2s ease, color 0.2s ease;
-
-    &:hover {
-      gap: 7px;
-      color: ${props => props.theme?.colors?.accentHover || '#60A5FA'};
-    }
+  .learn-more { margin-top: 10px; font-size: 11px; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: gap 0.2s ease, color 0.2s ease;
+    &:hover { gap: 7px; color: ${props => props.theme?.colors?.accentHover || '#60A5FA'}; }
   }
 `;
 
 const FeedbackSection = styled.div`
-  padding: 14px;
-  border-radius: 12px;
+  padding: 14px; border-radius: 12px;
   background: ${props => props.theme?.colors?.bg || 'rgba(15, 23, 42, 0.35)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   animation: ${fadeIn} 0.35s ease;
 
-  .feedback-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 10px;
-    text-align: center;
-  }
-
-  .stars {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
-    justify-content: center;
-  }
+  .feedback-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-bottom: 10px; text-align: center; }
+  .stars { display: flex; gap: 6px; margin-bottom: 8px; justify-content: center; }
 
   .star-btn {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
+    background: transparent; border: none; padding: 0; cursor: pointer;
     color: rgba(255, 255, 255, 0.14);
     transition: all 0.15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
 
-    svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-
-    &:hover {
-      transform: scale(1.18);
-    }
-
-    &.active,
-    &.hover {
-      color: ${props => props.theme?.colors?.warning || '#F59E0B'};
-      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.35));
-    }
+    svg { width: 20px; height: 20px; fill: currentColor; }
+    &:hover { transform: scale(1.18); }
+    &.active, &.hover { color: ${props => props.theme?.colors?.warning || '#F59E0B'}; filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.35)); }
   }
 
-  .star-rating-text {
-    text-align: center;
-    font-size: 11px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    min-height: 16px;
-    color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
-  }
+  .star-rating-text { text-align: center; font-size: 11px; font-weight: 600; margin-bottom: 10px; min-height: 16px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; }
 
   .feedback-textarea {
-    width: 100%;
-    min-height: 68px;
-    padding: 10px 12px;
+    width: 100%; min-height: 68px; padding: 10px 12px;
     background: ${props => props.theme?.colors?.surface || 'rgba(255, 255, 255, 0.03)'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-    border-radius: 10px;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    font-size: 12px;
-    font-family: inherit;
-    resize: none;
-    outline: none;
+    border-radius: 10px; color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    font-size: 12px; font-family: inherit; resize: none; outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     margin-bottom: 10px;
 
-    &::placeholder {
-      color: ${props => props.theme?.colors?.textMuted || '#64748B'};
-    }
-
-    &:focus {
-      border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'};
-    }
+    &::placeholder { color: ${props => props.theme?.colors?.textMuted || '#64748B'}; }
+    &:focus { border-color: ${props => props.theme?.colors?.accent || '#3B82F6'}; box-shadow: 0 0 0 3px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'}; }
   }
 
   .feedback-submit {
-    width: 100%;
-    padding: 10px 0;
-    border: none;
-    border-radius: 10px;
+    width: 100%; padding: 10px 0; border: none; border-radius: 10px;
     background: ${props => props.theme?.colors?.accent || '#3B82F6'};
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
+    color: #ffffff; font-size: 12px; font-weight: 600; cursor: pointer;
     transition: all 0.2s ease;
 
-    &:hover:not(:disabled) {
-      background: ${props => props.theme?.colors?.accentHover || '#2563EB'};
-      box-shadow: 0 4px 14px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'};
-    }
-
-    &:active:not(:disabled) {
-      transform: scale(0.98);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    &:hover:not(:disabled) { background: ${props => props.theme?.colors?.accentHover || '#2563EB'}; box-shadow: 0 4px 14px ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.25)'}; }
+    &:active:not(:disabled) { transform: scale(0.98); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 
-  .feedback-status {
-    margin-top: 8px;
-    font-size: 11px;
-    text-align: center;
-    color: ${props => props.theme?.colors?.success || '#10B981'};
-    font-weight: 500;
-  }
+  .feedback-status { margin-top: 8px; font-size: 11px; text-align: center; color: ${props => props.theme?.colors?.success || '#10B981'}; font-weight: 500; }
 `;
 
 const SidebarFooter = styled.footer`
   flex-shrink: 0;
   padding: 12px 14px calc(12px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  background: ${props =>
-    props.theme?.colors?.sidebarBackground ||
-    props.theme?.colors?.surface ||
-    '#0F172A'};
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || '#0F172A'};
+  display: flex; flex-direction: column; gap: 2px;
 
   .footer-item {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    cursor: pointer;
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 10px; border-radius: 8px; cursor: pointer;
     transition: all 0.2s ease;
     color: ${props => props.theme?.colors?.textSecondary || '#94A3B8'};
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 12px; font-weight: 500;
 
-    &:hover {
-      background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
-      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    }
-
-    .footer-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    &:hover { background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'}; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
+    .footer-icon { display: flex; align-items: center; justify-content: center; }
   }
 `;
 
@@ -2941,6 +1632,12 @@ if (typeof window !== 'undefined' && !window.logTrade) {
 const OptionSideBar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // ✅ FOREX: detect current route to switch between Deriv / Forex content
+  const location = useLocation();
+  const isForex = location.pathname.startsWith('/forex');
+  const isDeriv = location.pathname.startsWith('/deriv');
+
   const [activeItem, setActiveItem] = useState('academy');
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -2971,22 +1668,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [dobError, setDobError] = useState('');
   const [calculatedAge, setCalculatedAge] = useState(null);
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    phone: '',
-    date_of_birth: '',
-    gender: '',
-    email: ''
+    first_name: '', last_name: '', phone: '', date_of_birth: '', gender: '', email: ''
   });
 
-  // Risk calculator state
+  // ✅ FOREX: Risk / Lot Size calculator state — added setters so the Lot Size
+  // calculator (forex) can be interactive
   const [calcAccountBalance, setCalcAccountBalance] = useState('');
-  const [calcRiskPercent] = useState(2);
-  const [calcStopLoss] = useState(50);
-  const [calcTakeProfit] = useState(150);
+  const [calcRiskPercent, setCalcRiskPercent] = useState(2);
+  const [calcStopLoss, setCalcStopLoss] = useState(50);
+  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
+  const [calcPair, setCalcPair] = useState('EURUSD');
   const [calculated, setCalculated] = useState(false);
 
-  // Copy Trading state
+  // Copy Trading state (only used on deriv)
   const [copyTokenInput, setCopyTokenInput] = useState('');
   const [copyClientNameInput, setCopyClientNameInput] = useState('');
   const [copyConnecting, setCopyConnecting] = useState(false);
@@ -3011,13 +1705,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       gender: userData.gender || '',
       email: userData.email || 'tonnykyalo054@gmail.com'
     });
-    if (userData.date_of_birth) {
-      const age = calculateAge(userData.date_of_birth);
-      setCalculatedAge(age);
-    }
+    if (userData.date_of_birth) setCalculatedAge(calculateAge(userData.date_of_birth));
   }, []);
 
-  // Load journal on mount and listen for updates
+  // Load journal
   useEffect(() => {
     const loadJournal = () => setJournalTrades(JSON.parse(localStorage.getItem('tradeJournal') || '[]'));
     loadJournal();
@@ -3025,21 +1716,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return () => window.removeEventListener('tradeLogUpdated', loadJournal);
   }, []);
 
-  // Auto-open a panel/popup when navigated in with ?open=<key>
+  // Auto-open panel from query param
   useEffect(() => {
     const open = searchParams.get('open');
     if (!open) return;
-
     if (open === 'terms') {
       setActiveItem('terms');
-      openPopup('terms', {
-        title: 'Terms & Conditions',
-        icon: <TermsIcon />,
-        badge: 'v2.0',
-      });
+      openPopup('terms', { title: 'Terms & Conditions', icon: <TermsIcon />, badge: 'v2.0' });
     }
-
-    // Strip the query param so refresh / back-nav doesn't re-open the popup
     const next = new URLSearchParams(searchParams);
     next.delete('open');
     setSearchParams(next, { replace: true });
@@ -3055,86 +1739,41 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return age;
   };
 
-  const getMaxDate = () => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() - 10);
-    return d.toISOString().split('T')[0];
-  };
+  const getMaxDate = () => { const d = new Date(); d.setFullYear(d.getFullYear() - 10); return d.toISOString().split('T')[0]; };
 
   const validateDob = (dob) => {
     if (!dob) { setDobError(''); setCalculatedAge(null); return true; }
     const birthDate = new Date(dob);
     const maxDate = new Date(getMaxDate());
-    if (birthDate > maxDate) {
-      setDobError('You must be at least 10 years old');
-      setCalculatedAge(null);
-      return false;
-    }
-    setCalculatedAge(calculateAge(dob));
-    setDobError('');
-    return true;
+    if (birthDate > maxDate) { setDobError('You must be at least 10 years old'); setCalculatedAge(null); return false; }
+    setCalculatedAge(calculateAge(dob)); setDobError(''); return true;
   };
 
-  const handleDobChange = (e) => {
-    const v = e.target.value;
-    setFormData(prev => ({ ...prev, date_of_birth: v }));
-    validateDob(v);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+  const handleDobChange = (e) => { const v = e.target.value; setFormData(prev => ({ ...prev, date_of_birth: v })); validateDob(v); };
+  const handleInputChange = (e) => { const { name, value } = e.target; setFormData(prev => ({ ...prev, [name]: value })); };
 
   const handleSaveProfile = () => {
     if (formData.date_of_birth && !validateDob(formData.date_of_birth)) return;
-
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     const updated = { ...userData, ...formData };
     localStorage.setItem('user', JSON.stringify(updated));
-
-    setIsEditing(false);
-    setShowSuccess(true);
+    setIsEditing(false); setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
   };
 
   const handleDeleteAccount = () => {
     if (window.confirm('Delete your account? This cannot be undone.')) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      navigate('/login');
-      closePopup();
+      localStorage.removeItem('token'); localStorage.removeItem('user');
+      navigate('/login'); closePopup();
     }
   };
 
-  const closeSidebarOnMobile = () => {
-    if (window.innerWidth <= 768) onClose();
-  };
+  const openPopup = (type, data = {}, isSettings = false) => { setPopupType(type); setPopupData(data); setIsSettingsPopup(isSettings); setIsPopupOpen(true); };
+  const closePopup = () => { setIsPopupOpen(false); setTimeout(() => setPopupType(null), 300); };
+  const openFullPanel = (content) => { setFullPanelContent(content); setIsFullPanelOpen(true); };
+  const closeFullPanel = () => { setIsFullPanelOpen(false); setCurrentPanel(null); setTimeout(() => setFullPanelContent(null), 300); };
 
-  const openPopup = (type, data = {}, isSettings = false) => {
-    setPopupType(type);
-    setPopupData(data);
-    setIsSettingsPopup(isSettings);
-    setIsPopupOpen(true);
-  };
-
-  const closePopup = () => {
-    setIsPopupOpen(false);
-    setTimeout(() => setPopupType(null), 300);
-  };
-
-  const openFullPanel = (content) => {
-    setFullPanelContent(content);
-    setIsFullPanelOpen(true);
-  };
-
-  const closeFullPanel = () => {
-    setIsFullPanelOpen(false);
-    setCurrentPanel(null);
-    setTimeout(() => setFullPanelContent(null), 300);
-  };
-
-  // ===== RISK CALCULATOR LOGIC =====
+  // ===== RISK / LOT SIZE CALC =====
   const calculateRisk = () => {
     if (!calcAccountBalance || parseFloat(calcAccountBalance) <= 0) return;
     setCalculated(true);
@@ -3145,7 +1784,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     const riskPercent = parseFloat(calcRiskPercent) || 0;
     const stopLoss = parseFloat(calcStopLoss) || 1;
     const takeProfit = parseFloat(calcTakeProfit) || 1;
-
     const riskAmount = balance * (riskPercent / 100);
     const rewardAmount = balance * ((takeProfit / stopLoss) * (riskPercent / 100));
     const riskRewardRatio = riskAmount > 0 ? rewardAmount / riskAmount : 0;
@@ -3154,112 +1792,52 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     const maxProfit = rewardAmount;
     const stakeAmount = riskAmount;
 
-    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit, stakeAmount, balance };
+    // ✅ FOREX: lot size math
+    const pipValuePerLot = 10; // USD per pip per standard lot (approx for USD-quoted pairs)
+    const lots = stopLoss > 0 ? riskAmount / (stopLoss * pipValuePerLot) : 0;
+    const units = lots * 100000;
+    const margin = units / 100;   // 1:100 leverage
+    const notional = units;
+
+    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit, stakeAmount, balance, lots, units, margin, notional, pipValuePerLot };
   };
 
   const riskResults = getRiskResults();
 
   // ===== COPY TRADING LOGIC =====
   const handleCopyConnect = () => {
-    if (!copyTokenInput.trim()) {
-      setCopyConnectionStatus({ type: 'error', message: 'Please enter a valid API token' });
-      return;
-    }
-    if (!copyClientNameInput.trim()) {
-      setCopyConnectionStatus({ type: 'error', message: "Please enter the client's name" });
-      return;
-    }
-
+    if (!copyTokenInput.trim()) { setCopyConnectionStatus({ type: 'error', message: 'Please enter a valid API token' }); return; }
+    if (!copyClientNameInput.trim()) { setCopyConnectionStatus({ type: 'error', message: "Please enter the client's name" }); return; }
     setCopyConnecting(true);
     setCopyConnectionStatus({ type: 'info', message: 'Adding client...' });
-
     setTimeout(() => {
       const exists = copyClients.some(c => c.token === copyTokenInput.trim());
-
-      if (exists) {
-        setCopyConnectionStatus({ type: 'error', message: 'This client is already in your list' });
-        setCopyConnecting(false);
-        return;
-      }
-
-      const newClient = {
-        id: Date.now(),
-        name: copyClientNameInput.trim(),
-        token: copyTokenInput.trim(),
-        status: 'pending',
-        copiedTrades: 0,
-        profit: 0,
-        avatar: copyClientNameInput.trim().slice(0, 2).toUpperCase()
-      };
-
+      if (exists) { setCopyConnectionStatus({ type: 'error', message: 'This client is already in your list' }); setCopyConnecting(false); return; }
+      const newClient = { id: Date.now(), name: copyClientNameInput.trim(), token: copyTokenInput.trim(), status: 'pending', copiedTrades: 0, profit: 0, avatar: copyClientNameInput.trim().slice(0, 2).toUpperCase() };
       setCopyClients(prev => [newClient, ...prev]);
-      setCopyConnectionStatus({
-        type: 'success',
-        message: `Successfully added ${newClient.name}! They will copy your trades once activated.`
-      });
-      setCopyTokenInput('');
-      setCopyClientNameInput('');
-      setCopyShowAddClient(false);
-      setCopyConnecting(false);
-
-      setTimeout(() => {
-        setCopyConnectionStatus(null);
-      }, 5000);
+      setCopyConnectionStatus({ type: 'success', message: `Successfully added ${newClient.name}! They will copy your trades once activated.` });
+      setCopyTokenInput(''); setCopyClientNameInput(''); setCopyShowAddClient(false); setCopyConnecting(false);
+      setTimeout(() => setCopyConnectionStatus(null), 5000);
     }, 1500);
   };
 
-  const handleCopyRemoveClient = (clientId) => {
-    setCopyClients(prev => prev.filter(c => c.id !== clientId));
-  };
-
-  const handleCopyActivateClient = (clientId) => {
-    setCopyClients(prev => prev.map(c =>
-      c.id === clientId ? { ...c, status: 'active' } : c
-    ));
-  };
-
+  const handleCopyRemoveClient = (id) => setCopyClients(prev => prev.filter(c => c.id !== id));
+  const handleCopyActivateClient = (id) => setCopyClients(prev => prev.map(c => c.id === id ? { ...c, status: 'active' } : c));
   const handleCopyViewClient = () => {};
+  const getCopyStatusBadge = (status) => ({ active: { label: 'Active', className: 'active' }, pending: { label: 'Pending', className: 'pending' }, inactive: { label: 'Inactive', className: 'inactive' } }[status] || { label: 'Inactive', className: 'inactive' });
 
-  const getCopyStatusBadge = (status) => {
-    const badges = {
-      active: { label: 'Active', className: 'active' },
-      pending: { label: 'Pending', className: 'pending' },
-      inactive: { label: 'Inactive', className: 'inactive' }
-    };
-    return badges[status] || badges.inactive;
-  };
-
-  // ===== EXPORT CSV =====
   const exportCSV = () => {
     const headers = ['Date', 'Market', 'Type', 'Direction', 'Stake', 'Payout', 'Result', 'Strategy', 'Mode', 'Notes'];
-    const rows = journalTrades.map(t => [
-      new Date(t.timestamp).toLocaleString(),
-      t.market,
-      t.tradeType,
-      t.direction,
-      t.stake,
-      t.payout,
-      t.result,
-      t.strategy,
-      t.mode,
-      t.notes
-    ]);
+    const rows = journalTrades.map(t => [new Date(t.timestamp).toLocaleString(), t.market, t.tradeType, t.direction, t.stake, t.payout, t.result, t.strategy, t.mode, t.notes]);
     const csv = [headers, ...rows].map(r => r.map(cell => `"${cell}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `trade_journal_${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
+    a.href = url; a.download = `trade_journal_${new Date().toISOString().slice(0, 10)}.csv`; a.click();
     URL.revokeObjectURL(url);
   };
 
-  // ===== DERIVED JOURNAL DATA =====
-  const filteredTrades = useMemo(() => {
-    if (filter === 'all') return journalTrades;
-    return journalTrades.filter(t => t.result === filter);
-  }, [journalTrades, filter]);
-
+  const filteredTrades = useMemo(() => filter === 'all' ? journalTrades : journalTrades.filter(t => t.result === filter), [journalTrades, filter]);
   const stats = useMemo(() => {
     const wins = journalTrades.filter(t => t.result === 'win').length;
     const losses = journalTrades.filter(t => t.result === 'loss').length;
@@ -3274,10 +1852,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleNoteSave = () => {
     if (noteModal === null) return;
     const updated = journalTrades.map(t => t.id === noteModal ? { ...t, notes: editNote } : t);
-    setJournalTrades(updated);
-    localStorage.setItem('tradeJournal', JSON.stringify(updated));
-    setNoteModal(null);
-    setEditNote('');
+    setJournalTrades(updated); localStorage.setItem('tradeJournal', JSON.stringify(updated));
+    setNoteModal(null); setEditNote('');
   };
 
   // ===== HANDLERS =====
@@ -3292,42 +1868,26 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       gender: userData.gender || '',
       email: userData.email || 'tonnykyalo054@gmail.com'
     });
-    if (userData.date_of_birth) {
-      setCalculatedAge(calculateAge(userData.date_of_birth));
-    }
-    setIsEditing(false);
-    setShowSuccess(false);
-    setDobError('');
-
+    if (userData.date_of_birth) setCalculatedAge(calculateAge(userData.date_of_birth));
+    setIsEditing(false); setShowSuccess(false); setDobError('');
     openPopup('settings', { title: 'Account Settings', icon: <SettingsIcon /> }, true);
   };
 
-  const handleHelpClick = () => {
-    setActiveItem('help');
-    openPopup('help', { title: 'Help & Support', icon: <HelpIcon /> });
-  };
+  const handleHelpClick = () => { setActiveItem('help'); openPopup('help', { title: 'Help & Support', icon: <HelpIcon /> }); };
+  const handleResponsibleTradingClick = () => { setActiveItem('responsible-trading'); openPopup('responsible-trading', { title: 'Responsible Trading', icon: <ShieldIcon /> }); };
+  const handleAboutClick = () => { setActiveItem('about'); openPopup('about', { title: 'About MyTradeApp', icon: <CompanyIcon /> }); };
+  const handleAcademyClick = () => { setActiveItem('academy'); setCurrentPanel('academy'); openFullPanel(<Academy />); };
 
-  const handleResponsibleTradingClick = () => {
-    setActiveItem('responsible-trading');
-    openPopup('responsible-trading', { title: 'Responsible Trading', icon: <ShieldIcon /> });
-  };
-
-  const handleAboutClick = () => {
-    setActiveItem('about');
-    openPopup('about', { title: 'About MyTradeApp', icon: <CompanyIcon /> });
-  };
-
-  const handleAcademyClick = () => {
-    setActiveItem('academy');
-    setCurrentPanel('academy');
-    openFullPanel(<Academy />);
-  };
-
+  // ✅ FOREX: label switches between "Risk Calculator" (deriv) and "Lot Size Calculator" (forex)
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
     setCalculated(false);
     setCalcAccountBalance('');
-    openPopup('risk-calculator', { title: 'Risk Calculator', icon: <RiskIcon />, badge: 'Premium' });
+    openPopup('risk-calculator', {
+      title: isForex ? 'Lot Size Calculator' : 'Risk Calculator',
+      icon: isForex ? <LotsizeIcon /> : <RiskIcon />,
+      badge: isForex ? null : 'Premium'
+    });
   };
 
   const handleCopyTradingClick = () => {
@@ -3337,14 +1897,10 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     openPopup('copy-trading', { title: 'Copy Trading', icon: <CopyTradeIcon />, badge: 'BETA' });
   };
 
-  const handlePerformanceClick = () => {
-    setActiveItem('performance');
-    openPopup('performance', { title: 'Performance', icon: <PerformanceIcon /> });
-  };
+  const handlePerformanceClick = () => { setActiveItem('performance'); openPopup('performance', { title: 'Performance', icon: <PerformanceIcon /> }); };
 
   const handleJournalClick = () => {
-    setActiveItem('journal');
-    setCurrentPanel('journal');
+    setActiveItem('journal'); setCurrentPanel('journal');
     const journalContent = (
       <JournalContainer>
         <JournalToolbar>
@@ -3353,32 +1909,14 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <FilterChip active={filter === 'win'} onClick={() => setFilter('win')}>Wins</FilterChip>
             <FilterChip active={filter === 'loss'} onClick={() => setFilter('loss')}>Losses</FilterChip>
           </div>
-          <div className="toolbar-right">
-            <JournalButton onClick={exportCSV}>Export CSV</JournalButton>
-          </div>
+          <div className="toolbar-right"><JournalButton onClick={exportCSV}>Export CSV</JournalButton></div>
         </JournalToolbar>
 
         <StatsRow>
-          <StatBox color="#10B981">
-            <div className="stat-label">Win Rate</div>
-            <div className="stat-value">{stats.winRate}%</div>
-            <div className="stat-sub">{stats.wins}W / {stats.losses}L</div>
-          </StatBox>
-          <StatBox color={stats.totalPnL >= 0 ? '#10B981' : '#EF4444'}>
-            <div className="stat-label">Total P&L</div>
-            <div className="stat-value">{stats.totalPnL >= 0 ? '+' : ''}${Math.abs(stats.totalPnL).toFixed(2)}</div>
-            <div className="stat-sub">Net profit/loss</div>
-          </StatBox>
-          <StatBox color="#10B981">
-            <div className="stat-label">Best Trade</div>
-            <div className="stat-value">+${Math.abs(stats.best).toFixed(2)}</div>
-            <div className="stat-sub">Max profit</div>
-          </StatBox>
-          <StatBox color="#EF4444">
-            <div className="stat-label">Worst Trade</div>
-            <div className="stat-value">-${Math.abs(stats.worst).toFixed(2)}</div>
-            <div className="stat-sub">Max loss</div>
-          </StatBox>
+          <StatBox color="#10B981"><div className="stat-label">Win Rate</div><div className="stat-value">{stats.winRate}%</div><div className="stat-sub">{stats.wins}W / {stats.losses}L</div></StatBox>
+          <StatBox color={stats.totalPnL >= 0 ? '#10B981' : '#EF4444'}><div className="stat-label">Total P&L</div><div className="stat-value">{stats.totalPnL >= 0 ? '+' : ''}${Math.abs(stats.totalPnL).toFixed(2)}</div><div className="stat-sub">Net profit/loss</div></StatBox>
+          <StatBox color="#10B981"><div className="stat-label">Best Trade</div><div className="stat-value">+${Math.abs(stats.best).toFixed(2)}</div><div className="stat-sub">Max profit</div></StatBox>
+          <StatBox color="#EF4444"><div className="stat-label">Worst Trade</div><div className="stat-value">-${Math.abs(stats.worst).toFixed(2)}</div><div className="stat-sub">Max loss</div></StatBox>
         </StatsRow>
 
         <TableContainer>
@@ -3393,88 +1931,55 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <tbody>
               {filteredTrades.length === 0 ? (
                 <tr><td colSpan={10} style={{ textAlign: 'center', padding: '40px', color: '#64748B' }}>No trades recorded yet.</td></tr>
-              ) : (
-                filteredTrades.map(t => (
-                  <tr key={t.id}>
-                    <td>
-                      {new Date(t.timestamp).toLocaleDateString()}<br />
-                      <span style={{ fontSize: 9, color: '#64748B' }}>{new Date(t.timestamp).toLocaleTimeString()}</span>
-                    </td>
-                    <td>{t.market}</td>
-                    <td>{t.tradeType}</td>
-                    <td>{t.direction}</td>
-                    <td>${t.stake?.toFixed(2) || '0.00'}</td>
-                    <td>${t.payout?.toFixed(2) || '0.00'}</td>
-                    <td className={t.result === 'win' ? 'win' : t.result === 'loss' ? 'loss' : 'pending'}>{t.result}</td>
-                    <td>{t.strategy || '-'}</td>
-                    <td>{t.mode}</td>
-                    <td className="notes-cell" onClick={() => { setNoteModal(t.id); setEditNote(t.notes); }}>{t.notes || 'Add note...'}</td>
-                  </tr>
-                ))
-              )}
+              ) : filteredTrades.map(t => (
+                <tr key={t.id}>
+                  <td>{new Date(t.timestamp).toLocaleDateString()}<br /><span style={{ fontSize: 9, color: '#64748B' }}>{new Date(t.timestamp).toLocaleTimeString()}</span></td>
+                  <td>{t.market}</td><td>{t.tradeType}</td><td>{t.direction}</td>
+                  <td>${t.stake?.toFixed(2) || '0.00'}</td><td>${t.payout?.toFixed(2) || '0.00'}</td>
+                  <td className={t.result === 'win' ? 'win' : t.result === 'loss' ? 'loss' : 'pending'}>{t.result}</td>
+                  <td>{t.strategy || '-'}</td><td>{t.mode}</td>
+                  <td className="notes-cell" onClick={() => { setNoteModal(t.id); setEditNote(t.notes); }}>{t.notes || 'Add note...'}</td>
+                </tr>
+              ))}
             </tbody>
           </JournalTable>
         </TableContainer>
       </JournalContainer>
     );
-    setFullPanelContent(journalContent);
-    setIsFullPanelOpen(true);
+    setFullPanelContent(journalContent); setIsFullPanelOpen(true);
   };
 
-  const handleNotificationsClick = () => {
-    setActiveItem('notifications');
-    setHasNotifications(false);
-    openPopup('notifications', { title: 'Notifications', icon: <BellIcon />, badge: '2 New' });
-  };
+  const handleNotificationsClick = () => { setActiveItem('notifications'); setHasNotifications(false); openPopup('notifications', { title: 'Notifications', icon: <BellIcon />, badge: '2 New' }); };
+  const handleVoiceClick = () => { setActiveItem('voice'); openPopup('voice', { title: 'Voice Notifications', icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />, badge: voiceEnabled ? 'Active' : 'Muted' }); };
 
-  const handleVoiceClick = () => {
-    setActiveItem('voice');
-    openPopup('voice', {
-      title: 'Voice Notifications',
-      icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />,
-      badge: voiceEnabled ? 'Active' : 'Muted'
+  // ✅ FOREX: title switches based on route
+  const handleAccountInfoClick = () => {
+    setActiveItem('account-info');
+    openPopup('account-info', {
+      title: isForex ? 'Forex Account Information' : 'Deriv Account Information',
+      icon: <AccountIcon />
     });
   };
 
-  const handleAccountInfoClick = () => {
-    setActiveItem('account-info');
-    openPopup('account-info', { title: 'Deriv Account Information', icon: <AccountIcon /> });
-  };
-
-  const handleHowToUseClick = () => {
-    setActiveItem('how-to-use');
-    openPopup('how-to-use', { title: 'How to Use This Tool', icon: <BookIcon /> });
-  };
-
-  const handleTermsClick = () => {
-    setActiveItem('terms');
-    openPopup('terms', { title: 'Terms & Conditions', icon: <TermsIcon />, badge: 'v2.0' });
-  };
+  const handleHowToUseClick = () => { setActiveItem('how-to-use'); openPopup('how-to-use', { title: 'How to Use This Tool', icon: <BookIcon /> }); };
+  const handleTermsClick = () => { setActiveItem('terms'); openPopup('terms', { title: 'Terms & Conditions', icon: <TermsIcon />, badge: 'v2.0' }); };
 
   // ===== FEEDBACK =====
   const handleSubmitFeedback = async () => {
     if (rating === 0) { setSubmitStatus('Please select a rating'); setTimeout(() => setSubmitStatus(''), 3000); return; }
     if (!feedbackText.trim()) { setSubmitStatus('Please write your feedback'); setTimeout(() => setSubmitStatus(''), 3000); return; }
-    setIsSubmitting(true);
-    setSubmitStatus('Sending feedback...');
+    setIsSubmitting(true); setSubmitStatus('Sending feedback...');
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       setSubmitStatus('Thank you for your feedback!');
-      setRating(0);
-      setFeedbackText('');
+      setRating(0); setFeedbackText('');
       setTimeout(() => setSubmitStatus(''), 5000);
     } catch (error) {
-      setSubmitStatus('Failed to send. Please try again.');
-      setTimeout(() => setSubmitStatus(''), 3000);
-    } finally {
-      setIsSubmitting(false);
-    }
+      setSubmitStatus('Failed to send. Please try again.'); setTimeout(() => setSubmitStatus(''), 3000);
+    } finally { setIsSubmitting(false); }
   };
 
-  const getRatingText = (value) => {
-    const texts = { 1: 'Needs Improvement', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' };
-    return texts[value] || '';
-  };
+  const getRatingText = (value) => ({ 1: 'Needs Improvement', 2: 'Fair', 3: 'Good', 4: 'Great', 5: 'Excellent' }[value] || '');
 
   // ===== RENDER POPUP CONTENT =====
   const renderPopupContent = () => {
@@ -3489,63 +1994,36 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   : 'T'}
               </div>
               <div className="profile-info">
-                <div className="profile-name">
-                  {formData.first_name || formData.last_name
-                    ? `${formData.first_name} ${formData.last_name}`.trim()
-                    : 'Tonny Mutua Kyalo'}
-                </div>
+                <div className="profile-name">{formData.first_name || formData.last_name ? `${formData.first_name} ${formData.last_name}`.trim() : 'Tonny Mutua Kyalo'}</div>
                 <div className="profile-email">{formData.email || 'tonnykyalo054@gmail.com'}</div>
-                <div className="profile-status">
-                  <span className="status-dot" />
-                  Active
-                </div>
+                <div className="profile-status"><span className="status-dot" />Active</div>
               </div>
             </SettingsProfileCard>
 
-            {showSuccess && (
-              <SettingsSuccess>
-                <CheckIcon /> Profile updated successfully!
-              </SettingsSuccess>
-            )}
+            {showSuccess && <SettingsSuccess><CheckIcon /> Profile updated successfully!</SettingsSuccess>}
 
             <SettingsGrid>
               <SettingsCard>
-                <div className="card-head">
-                  <span className="icon"><DiamondIcon /></span> Personal Information
-                </div>
+                <div className="card-head"><span className="icon"><DiamondIcon /></span> Personal Information</div>
 
                 <SettingsField>
                   <label>First Name</label>
-                  {isEditing ? (
-                    <input type="text" name="first_name" className="inp" value={formData.first_name} onChange={handleInputChange} placeholder="First name" />
-                  ) : (
-                    <div className="val">{formData.first_name || 'Not set'}</div>
-                  )}
+                  {isEditing ? <input type="text" name="first_name" className="inp" value={formData.first_name} onChange={handleInputChange} placeholder="First name" /> : <div className="val">{formData.first_name || 'Not set'}</div>}
                 </SettingsField>
 
                 <SettingsField>
                   <label>Last Name</label>
-                  {isEditing ? (
-                    <input type="text" name="last_name" className="inp" value={formData.last_name} onChange={handleInputChange} placeholder="Last name" />
-                  ) : (
-                    <div className="val">{formData.last_name || 'Not set'}</div>
-                  )}
+                  {isEditing ? <input type="text" name="last_name" className="inp" value={formData.last_name} onChange={handleInputChange} placeholder="Last name" /> : <div className="val">{formData.last_name || 'Not set'}</div>}
                 </SettingsField>
 
                 <SettingsField>
                   <label>Phone Number</label>
-                  {isEditing ? (
-                    <input type="tel" name="phone" className="inp" value={formData.phone} onChange={handleInputChange} placeholder="Phone number" />
-                  ) : (
-                    <div className="val">{formData.phone || 'Not set'}</div>
-                  )}
+                  {isEditing ? <input type="tel" name="phone" className="inp" value={formData.phone} onChange={handleInputChange} placeholder="Phone number" /> : <div className="val">{formData.phone || 'Not set'}</div>}
                 </SettingsField>
 
                 <SettingsField>
                   <label>Email Address</label>
-                  <div className="val" style={{ color: '#64748b' }}>
-                    {formData.email || 'Not set'}
-                  </div>
+                  <div className="val" style={{ color: '#64748b' }}>{formData.email || 'Not set'}</div>
                 </SettingsField>
 
                 <SettingsField>
@@ -3554,18 +2032,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                     <>
                       <input type="date" name="date_of_birth" className={`inp${dobError ? ' err' : ''}`} value={formData.date_of_birth} onChange={handleDobChange} max={getMaxDate()} />
                       {dobError && <div className="err-msg">! {dobError}</div>}
-                      {formData.date_of_birth && !dobError && calculatedAge !== null && (
-                        <div style={{ fontSize: '10px', color: '#4ade80', marginTop: '4px' }}>
-                          ✓ Age: <strong>{calculatedAge}</strong> yrs
-                        </div>
-                      )}
+                      {formData.date_of_birth && !dobError && calculatedAge !== null && <div style={{ fontSize: '10px', color: '#4ade80', marginTop: '4px' }}>✓ Age: <strong>{calculatedAge}</strong> yrs</div>}
                     </>
                   ) : (
                     <div className="val">
                       <span>{formData.date_of_birth || 'Not set'}</span>
-                      {formData.date_of_birth && calculatedAge !== null && (
-                        <span className="age-badge">◇ {calculatedAge} yrs</span>
-                      )}
+                      {formData.date_of_birth && calculatedAge !== null && <span className="age-badge">◇ {calculatedAge} yrs</span>}
                     </div>
                   )}
                 </SettingsField>
@@ -3580,79 +2052,51 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                       <option value="other">Other</option>
                       <option value="prefer-not">Prefer not to say</option>
                     </select>
-                  ) : (
-                    <div className="val">
-                      {formData.gender
-                        ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1)
-                        : 'Not set'}
-                    </div>
-                  )}
+                  ) : <div className="val">{formData.gender ? formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1) : 'Not set'}</div>}
                 </SettingsField>
 
                 <SettingsBtnRow>
                   {isEditing ? (
                     <>
-                      <SettingsBtn className="primary" onClick={handleSaveProfile} disabled={!!dobError}>
-                        <CheckIcon /> Save
-                      </SettingsBtn>
-                      <SettingsBtn
-                        className="secondary"
-                        onClick={() => {
-                          setIsEditing(false);
-                          setDobError('');
-                          const userData = JSON.parse(localStorage.getItem('user') || '{}');
-                          setFormData({
-                            first_name: userData.first_name || 'Tonny',
-                            last_name: userData.last_name || 'Mutua Kyalo',
-                            phone: userData.phone || '',
-                            date_of_birth: userData.date_of_birth || '',
-                            gender: userData.gender || '',
-                            email: userData.email || 'tonnykyalo054@gmail.com'
-                          });
-                          if (userData.date_of_birth) {
-                            setCalculatedAge(calculateAge(userData.date_of_birth));
-                          }
-                        }}
-                      >
-                        Cancel
-                      </SettingsBtn>
+                      <SettingsBtn className="primary" onClick={handleSaveProfile} disabled={!!dobError}><CheckIcon /> Save</SettingsBtn>
+                      <SettingsBtn className="secondary" onClick={() => {
+                        setIsEditing(false); setDobError('');
+                        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                        setFormData({
+                          first_name: userData.first_name || 'Tonny',
+                          last_name: userData.last_name || 'Mutua Kyalo',
+                          phone: userData.phone || '',
+                          date_of_birth: userData.date_of_birth || '',
+                          gender: userData.gender || '',
+                          email: userData.email || 'tonnykyalo054@gmail.com'
+                        });
+                        if (userData.date_of_birth) setCalculatedAge(calculateAge(userData.date_of_birth));
+                      }}>Cancel</SettingsBtn>
                     </>
-                  ) : (
-                    <SettingsBtn className="primary" onClick={() => setIsEditing(true)}>
-                      <EditIcon /> Edit Profile
-                    </SettingsBtn>
-                  )}
+                  ) : <SettingsBtn className="primary" onClick={() => setIsEditing(true)}><EditIcon /> Edit Profile</SettingsBtn>}
                 </SettingsBtnRow>
               </SettingsCard>
 
               <SettingsCard>
-                <div className="card-head">
-                  <span className="icon"><DiamondIcon /></span> Security & Privacy
-                </div>
+                <div className="card-head"><span className="icon"><DiamondIcon /></span> Security & Privacy</div>
 
                 <SettingsField>
                   <label>Password</label>
                   <div className="val" style={{ justifyContent: 'space-between' }}>
                     <span>••••••••</span>
-                    <SettingsBtn className="secondary" style={{ padding: '3px 10px', fontSize: '9px' }} onClick={() => alert('Password change coming soon.')}>
-                      Change
-                    </SettingsBtn>
+                    <SettingsBtn className="secondary" style={{ padding: '3px 10px', fontSize: '9px' }} onClick={() => alert('Password change coming soon.')}>Change</SettingsBtn>
                   </div>
                 </SettingsField>
 
                 <SettingsField>
                   <label>Account Created</label>
-                  <div className="val" style={{ color: '#64748b', fontSize: '11px' }}>
-                    {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-                  </div>
+                  <div className="val" style={{ color: '#64748b', fontSize: '11px' }}>{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                 </SettingsField>
 
                 <SettingsDangerZone>
                   <div className="dtitle"><LogoutIcon /> Danger Zone</div>
                   <div className="ddesc">Permanently delete your account and all data. Cannot be undone.</div>
-                  <SettingsBtn className="danger" onClick={handleDeleteAccount}>
-                    Delete Account
-                  </SettingsBtn>
+                  <SettingsBtn className="danger" onClick={handleDeleteAccount}>Delete Account</SettingsBtn>
                 </SettingsDangerZone>
               </SettingsCard>
             </SettingsGrid>
@@ -3666,10 +2110,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="contact-label">Email Support</div>
               <div className="contact-row">
                 <div className="contact-icon"><EmailIcon /></div>
-                <div className="contact-info">
-                  <div className="contact-title">Email</div>
-                  <div className="contact-value">tonnykyalo054@gmail.com</div>
-                </div>
+                <div className="contact-info"><div className="contact-title">Email</div><div className="contact-value">tonnykyalo054@gmail.com</div></div>
                 <button className="contact-action" onClick={() => { window.location.href = 'mailto:tonnykyalo054@gmail.com'; }}>Send</button>
               </div>
             </HelpContactCard>
@@ -3678,10 +2119,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="contact-label">Phone Support</div>
               <div className="contact-row">
                 <div className="contact-icon"><PhoneIcon /></div>
-                <div className="contact-info">
-                  <div className="contact-title">Call Us</div>
-                  <div className="contact-value">0704 182 603</div>
-                </div>
+                <div className="contact-info"><div className="contact-title">Call Us</div><div className="contact-value">0704 182 603</div></div>
                 <button className="contact-action" onClick={() => { window.location.href = 'tel:0704182603'; }}>Call</button>
               </div>
             </HelpContactCard>
@@ -3690,10 +2128,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="contact-label">WhatsApp</div>
               <div className="contact-row">
                 <div className="contact-icon"><WhatsAppIcon /></div>
-                <div className="contact-info">
-                  <div className="contact-title">WhatsApp</div>
-                  <div className="contact-value">0704 182 603</div>
-                </div>
+                <div className="contact-info"><div className="contact-title">WhatsApp</div><div className="contact-value">0704 182 603</div></div>
                 <button className="contact-action" onClick={() => window.open('https://wa.me/254704182603', '_blank')}>Chat</button>
               </div>
             </HelpContactCard>
@@ -3705,9 +2140,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <ResponsibleTradingContent>
             <div className="rt-section">
               <div className="rt-title"><InfoIcon /> What is Responsible Trading?</div>
-              <div className="rt-desc">
-                Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.
-              </div>
+              <div className="rt-desc">Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.</div>
             </div>
 
             <div className="rt-section">
@@ -3731,7 +2164,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <div className="rt-tip">
               <div className="tip-title"><AwardIcon /> Pro Tip</div>
               <div className="tip-text">
-                Consider using the <strong style={{ color: '#F8FAFC' }}>Risk Calculator</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
+                Consider using the <strong style={{ color: '#F8FAFC' }}>{isForex ? 'Lot Size Calculator' : 'Risk Calculator'}</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
               </div>
             </div>
           </ResponsibleTradingContent>
@@ -3748,7 +2181,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <div className="about-section">
               <div className="about-title"><InfoIcon /> Our Mission</div>
               <div className="about-desc">
-                MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities for the Deriv platform.
+                {isForex
+                  ? 'MyTradeApp is a third-party trading application designed to provide forex traders with powerful tools, real-time currency quotes, and automated execution capabilities across major, minor and exotic pairs.'
+                  : 'MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities for the Deriv platform.'}
               </div>
             </div>
 
@@ -3758,7 +2193,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <div className="about-feature">
                   <div className="feature-icon"><TrendingUpIcon /></div>
                   <div className="feature-name">Real-Time Data</div>
-                  <div className="feature-desc">Live market streams</div>
+                  <div className="feature-desc">{isForex ? 'Live FX quotes' : 'Live market streams'}</div>
                 </div>
                 <div className="about-feature">
                   <div className="feature-icon"><SettingsIcon /></div>
@@ -3787,13 +2222,79 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </AboutContent>
         );
 
+      // ✅ FOREX: branch between Lot Size Calculator (forex) and Risk Calculator (deriv)
       case 'risk-calculator':
+        if (isForex) {
+          return (
+            <>
+              <RiskInputGroup>
+                <div className="risk-label">Account Balance <span className="risk-hint">(USD)</span></div>
+                <div className="risk-input-wrap">
+                  <span className="risk-prefix">$</span>
+                  <input type="number" placeholder="25000" value={calcAccountBalance} onChange={(e) => setCalcAccountBalance(e.target.value)} min="0" step="100" />
+                </div>
+              </RiskInputGroup>
+
+              <RiskInputGroup>
+                <div className="risk-label">Risk per Trade</div>
+                <div className="risk-input-wrap">
+                  <input type="number" placeholder="1" value={calcRiskPercent} onChange={(e) => setCalcRiskPercent(parseFloat(e.target.value) || 0)} min="0.01" step="0.1" />
+                  <span className="risk-suffix">%</span>
+                </div>
+              </RiskInputGroup>
+
+              <RiskInputGroup>
+                <div className="risk-label">Stop Loss</div>
+                <div className="risk-input-wrap">
+                  <input type="number" placeholder="25" value={calcStopLoss} onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)} min="0.1" step="0.5" />
+                  <span className="risk-suffix">pips</span>
+                </div>
+              </RiskInputGroup>
+
+              <RiskCalculateBtn onClick={calculateRisk} disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}>
+                Calculate Lot Size
+              </RiskCalculateBtn>
+
+              {calculated && parseFloat(calcAccountBalance) > 0 && (
+                <>
+                  <RiskResultsGrid>
+                    <RiskResultBox type="stake">
+                      <div className="result-label">Position Size</div>
+                      <div className="result-value">{riskResults.lots.toFixed(2)}</div>
+                      <div className="result-sub">standard lots</div>
+                    </RiskResultBox>
+                    <RiskResultBox type="risk">
+                      <div className="result-label">Risk Amount</div>
+                      <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
+                      <div className="result-sub">{calcRiskPercent}% of balance</div>
+                    </RiskResultBox>
+                    <RiskResultBox type="reward">
+                      <div className="result-label">Units</div>
+                      <div className="result-value">{riskResults.units.toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
+                      <div className="result-sub">currency units</div>
+                    </RiskResultBox>
+                  </RiskResultsGrid>
+
+                  <RiskSummaryBox>
+                    <div className="summary-row"><span className="label">Pip value (per lot)</span><span className="value">${riskResults.pipValuePerLot.toFixed(2)}</span></div>
+                    <div className="summary-row"><span className="label">Stop loss distance</span><span className="value">{calcStopLoss} pips</span></div>
+                    <div className="summary-divider" />
+                    <div className="summary-row"><span className="label">Notional value</span><span className="value">${riskResults.notional.toLocaleString('en-US')}</span></div>
+                    <div className="summary-row highlight-risk"><span className="label">Margin required (1:100)</span><span className="value">${riskResults.margin.toLocaleString('en-US', { maximumFractionDigits: 2 })}</span></div>
+                    <div className="summary-divider" />
+                    <div className="summary-row highlight-ratio"><span className="label">Risk / Reward potential</span><span className="value">1:{(riskResults.rewardAmount / Math.max(riskResults.riskAmount, 0.01)).toFixed(2)}</span></div>
+                  </RiskSummaryBox>
+                </>
+              )}
+            </>
+          );
+        }
+
+        // Deriv Risk Calculator (unchanged)
         return (
           <>
             <RiskInputGroup>
-              <div className="risk-label">
-                Account Balance <span className="risk-hint">(USD)</span>
-              </div>
+              <div className="risk-label">Account Balance <span className="risk-hint">(USD)</span></div>
               <div className="risk-input-wrap">
                 <span className="risk-prefix">$</span>
                 <input type="number" placeholder="Enter your account balance" value={calcAccountBalance} onChange={(e) => setCalcAccountBalance(e.target.value)} min="0" step="100" />
@@ -3807,23 +2308,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             {calculated && parseFloat(calcAccountBalance) > 0 && (
               <>
                 <RiskResultsGrid>
-                  <RiskResultBox type="stake">
-                    <div className="result-label">Stake Amount</div>
-                    <div className="result-value">${riskResults.stakeAmount.toFixed(2)}</div>
-                    <div className="result-sub">per trade</div>
-                  </RiskResultBox>
-                  <RiskResultBox type="risk">
-                    <div className="result-label">Risk Amount</div>
-                    <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
-                    <div className="result-sub">{calcRiskPercent}% of balance</div>
-                  </RiskResultBox>
-                  <RiskResultBox type="reward">
-                    <div className="result-label">Reward Amount</div>
-                    <div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div>
-                    <div className="result-sub">
-                      {((parseFloat(calcTakeProfit) / parseFloat(calcStopLoss)) * parseFloat(calcRiskPercent)).toFixed(2)}%
-                    </div>
-                  </RiskResultBox>
+                  <RiskResultBox type="stake"><div className="result-label">Stake Amount</div><div className="result-value">${riskResults.stakeAmount.toFixed(2)}</div><div className="result-sub">per trade</div></RiskResultBox>
+                  <RiskResultBox type="risk"><div className="result-label">Risk Amount</div><div className="result-value">${riskResults.riskAmount.toFixed(2)}</div><div className="result-sub">{calcRiskPercent}% of balance</div></RiskResultBox>
+                  <RiskResultBox type="reward"><div className="result-label">Reward Amount</div><div className="result-value">${riskResults.rewardAmount.toFixed(2)}</div><div className="result-sub">{((parseFloat(calcTakeProfit) / parseFloat(calcStopLoss)) * parseFloat(calcRiskPercent)).toFixed(2)}%</div></RiskResultBox>
                 </RiskResultsGrid>
 
                 <RiskSummaryBox>
@@ -3839,6 +2326,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
+      // Copy Trading is only shown on deriv — hidden from forex, but kept in case user navigates back.
       case 'copy-trading':
         return (
           <CopyTradingWrapper>
@@ -3858,20 +2346,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <span className="master-badge">Active</span>
               </div>
               <div className="master-stats">
-                <div className="stat">
-                  <div className="stat-value">{copyClients.filter(c => c.status === 'active').length}</div>
-                  <div className="stat-label">Active Followers</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-value">{copyClients.reduce((sum, c) => sum + c.copiedTrades, 0)}</div>
-                  <div className="stat-label">Total Copied Trades</div>
-                </div>
-                <div className="stat">
-                  <div className="stat-value" style={{ color: '#22c55e' }}>
-                    ${copyClients.reduce((sum, c) => sum + c.profit, 0).toFixed(2)}
-                  </div>
-                  <div className="stat-label">Total Follower Profit</div>
-                </div>
+                <div className="stat"><div className="stat-value">{copyClients.filter(c => c.status === 'active').length}</div><div className="stat-label">Active Followers</div></div>
+                <div className="stat"><div className="stat-value">{copyClients.reduce((sum, c) => sum + c.copiedTrades, 0)}</div><div className="stat-label">Total Copied Trades</div></div>
+                <div className="stat"><div className="stat-value" style={{ color: '#22c55e' }}>${copyClients.reduce((sum, c) => sum + c.profit, 0).toFixed(2)}</div><div className="stat-label">Total Follower Profit</div></div>
               </div>
             </MasterTraderCardCompact>
 
@@ -3882,55 +2359,40 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   <div className="empty-title">No Followers Yet</div>
                   <div className="empty-sub">Click the "Add Client" button below to start adding followers.</div>
                 </EmptyStateCompact>
-              ) : (
-                copyClients.map((client) => {
-                  const status = getCopyStatusBadge(client.status);
-                  return (
-                    <ClientCardCompact key={client.id} active={client.status === 'active'}>
-                      <div className="client-header">
-                        <div className="client-avatar">{client.avatar}</div>
-                        <div className="client-info">
-                          <div className="client-name">{client.name}</div>
-                          <div className="client-token">{client.token}</div>
-                        </div>
-                        <span className={`status-badge ${status.className}`}>{status.label}</span>
-                      </div>
-
-                      <div className="client-details">
-                        <div className="detail">
-                          <div className="detail-value">{client.copiedTrades}</div>
-                          <div className="detail-label">Trades</div>
-                        </div>
-                        <div className="detail">
-                          <div className="detail-value" style={{ color: client.profit > 0 ? '#22c55e' : '#ef4444' }}>
-                            ${client.profit.toFixed(2)}
-                          </div>
-                          <div className="detail-label">Profit</div>
-                        </div>
-                      </div>
-
-                      <div className="client-actions">
-                        {client.status === 'pending' ? (
-                          <>
-                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>Activate</button>
-                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
-                          </>
-                        ) : client.status === 'active' ? (
-                          <>
-                            <button className="action-btn view" onClick={() => handleCopyViewClient()}>View</button>
-                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
-                          </>
-                        ) : (
-                          <>
-                            <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>Reactivate</button>
-                            <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
-                          </>
-                        )}
-                      </div>
-                    </ClientCardCompact>
-                  );
-                })
-              )}
+              ) : copyClients.map((client) => {
+                const status = getCopyStatusBadge(client.status);
+                return (
+                  <ClientCardCompact key={client.id} active={client.status === 'active'}>
+                    <div className="client-header">
+                      <div className="client-avatar">{client.avatar}</div>
+                      <div className="client-info"><div className="client-name">{client.name}</div><div className="client-token">{client.token}</div></div>
+                      <span className={`status-badge ${status.className}`}>{status.label}</span>
+                    </div>
+                    <div className="client-details">
+                      <div className="detail"><div className="detail-value">{client.copiedTrades}</div><div className="detail-label">Trades</div></div>
+                      <div className="detail"><div className="detail-value" style={{ color: client.profit > 0 ? '#22c55e' : '#ef4444' }}>${client.profit.toFixed(2)}</div><div className="detail-label">Profit</div></div>
+                    </div>
+                    <div className="client-actions">
+                      {client.status === 'pending' ? (
+                        <>
+                          <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>Activate</button>
+                          <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
+                        </>
+                      ) : client.status === 'active' ? (
+                        <>
+                          <button className="action-btn view" onClick={() => handleCopyViewClient()}>View</button>
+                          <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
+                        </>
+                      ) : (
+                        <>
+                          <button className="action-btn activate" onClick={() => handleCopyActivateClient(client.id)}>Reactivate</button>
+                          <button className="action-btn remove" onClick={() => handleCopyRemoveClient(client.id)}>Remove</button>
+                        </>
+                      )}
+                    </div>
+                  </ClientCardCompact>
+                );
+              })}
 
               {!copyShowAddClient ? (
                 <div style={{ gridColumn: '1 / -1' }}>
@@ -3945,50 +2407,22 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                   <ConnectSectionCompact>
                     <div className="section-title"><UserPlusIcon /> Add New Client</div>
                     <div className="section-subtitle">Enter your client's name and API token to add them</div>
-
                     <div className="input-group">
                       <div className="input-wrapper">
                         <span className="input-icon"><UserIcon /></span>
-                        <input
-                          type="text"
-                          placeholder="Enter client's name (e.g., John Smith)"
-                          value={copyClientNameInput}
-                          onChange={(e) => setCopyClientNameInput(e.target.value)}
-                        />
+                        <input type="text" placeholder="Enter client's name (e.g., John Smith)" value={copyClientNameInput} onChange={(e) => setCopyClientNameInput(e.target.value)} />
                       </div>
                       <div className="input-wrapper">
                         <span className="input-icon"><DiamondIcon /></span>
-                        <input
-                          type="text"
-                          placeholder="Enter client's API token (e.g., 0x7a3f...9b2e)"
-                          value={copyTokenInput}
-                          onChange={(e) => setCopyTokenInput(e.target.value)}
-                          onKeyDown={(e) => { if (e.key === 'Enter') handleCopyConnect(); }}
-                        />
+                        <input type="text" placeholder="Enter client's API token (e.g., 0x7a3f...9b2e)" value={copyTokenInput} onChange={(e) => setCopyTokenInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleCopyConnect(); }} />
                       </div>
                       <div className="action-row">
-                        <button
-                          className="connect-btn"
-                          onClick={handleCopyConnect}
-                          disabled={copyConnecting || !copyTokenInput.trim() || !copyClientNameInput.trim()}
-                        >
-                          <span className="btn-shimmer" />
-                          {copyConnecting ? 'Adding...' : 'Add Client'}
+                        <button className="connect-btn" onClick={handleCopyConnect} disabled={copyConnecting || !copyTokenInput.trim() || !copyClientNameInput.trim()}>
+                          <span className="btn-shimmer" />{copyConnecting ? 'Adding...' : 'Add Client'}
                         </button>
-                        <button
-                          className="cancel-btn"
-                          onClick={() => {
-                            setCopyShowAddClient(false);
-                            setCopyTokenInput('');
-                            setCopyClientNameInput('');
-                            setCopyConnectionStatus(null);
-                          }}
-                        >
-                          Cancel
-                        </button>
+                        <button className="cancel-btn" onClick={() => { setCopyShowAddClient(false); setCopyTokenInput(''); setCopyClientNameInput(''); setCopyConnectionStatus(null); }}>Cancel</button>
                       </div>
                     </div>
-
                     {copyConnectionStatus && (
                       <div className={`connection-status ${copyConnectionStatus.type}`}>
                         <span className={`status-dot ${copyConnectionStatus.type === 'success' ? 'green' : copyConnectionStatus.type === 'error' ? 'red' : 'blue'}`} />
@@ -4007,8 +2441,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <div>
             <div style={{ padding: '20px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
               <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}><PerformanceIcon /></div>
-              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>Trading Performance</h3>
-              <p style={{ color: '#94A3B8', fontSize: '13px' }}>Your trading performance metrics will appear here.</p>
+              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>
+                {isForex ? 'Forex Trading Performance' : 'Trading Performance'}
+              </h3>
+              <p style={{ color: '#94A3B8', fontSize: '13px' }}>
+                {isForex ? 'Your forex trading performance metrics will appear here.' : 'Your trading performance metrics will appear here.'}
+              </p>
             </div>
           </div>
         );
@@ -4020,7 +2458,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="notif-icon"><TrendingUpIcon /></div>
               <div className="notif-content">
                 <div className="notif-title">Trade Executed</div>
-                <div className="notif-desc">Buy order #TRX-7841 filled at $12,450.00</div>
+                <div className="notif-desc">{isForex ? 'Buy EURUSD 0.50 lots filled at 1.08210' : 'Buy order #TRX-7841 filled at $12,450.00'}</div>
                 <div className="notif-time">2 min ago</div>
               </div>
               <div className="notif-dot" />
@@ -4029,7 +2467,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="notif-icon"><TrendingDownIcon /></div>
               <div className="notif-content">
                 <div className="notif-title">Market Alert</div>
-                <div className="notif-desc">Volatility 100 (1s) Index reached resistance level</div>
+                <div className="notif-desc">{isForex ? 'GBPUSD reached a key resistance level' : 'Volatility 100 (1s) Index reached resistance level'}</div>
                 <div className="notif-time">15 min ago</div>
               </div>
               <div className="notif-dot" />
@@ -4038,7 +2476,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="notif-icon"><TrendingUpIcon /></div>
               <div className="notif-content">
                 <div className="notif-title">Position Closed</div>
-                <div className="notif-desc">Sell order #TRX-7839 closed at $5,670.00</div>
+                <div className="notif-desc">{isForex ? 'Sell GBPJPY closed with +42 pips profit' : 'Sell order #TRX-7839 closed at $5,670.00'}</div>
                 <div className="notif-time">1 hour ago</div>
               </div>
             </NotificationItem>
@@ -4068,35 +2506,27 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <input type="range" min="0" max="100" value={voiceVolume} onChange={(e) => setVoiceVolume(parseInt(e.target.value))} disabled={!voiceEnabled} />
               <span className="slider-value">{voiceVolume}%</span>
             </VolumeSlider>
-            <VoiceEventItem enabled={voiceEvents.trade}>
-              <span className="event-name"><span className="event-dot" />Trade Execution</span>
-              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, trade: !voiceEvents.trade })}>
-                {voiceEvents.trade ? 'Enabled' : 'Disabled'}
-              </span>
-            </VoiceEventItem>
-            <VoiceEventItem enabled={voiceEvents.price}>
-              <span className="event-name"><span className="event-dot" />Price Alerts</span>
-              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, price: !voiceEvents.price })}>
-                {voiceEvents.price ? 'Enabled' : 'Disabled'}
-              </span>
-            </VoiceEventItem>
-            <VoiceEventItem enabled={voiceEvents.market}>
-              <span className="event-name"><span className="event-dot" />Market Signals</span>
-              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, market: !voiceEvents.market })}>
-                {voiceEvents.market ? 'Enabled' : 'Disabled'}
-              </span>
-            </VoiceEventItem>
-            <VoiceEventItem enabled={voiceEvents.system}>
-              <span className="event-name"><span className="event-dot" />System Updates</span>
-              <span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, system: !voiceEvents.system })}>
-                {voiceEvents.system ? 'Enabled' : 'Disabled'}
-              </span>
-            </VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.trade}><span className="event-name"><span className="event-dot" />Trade Execution</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, trade: !voiceEvents.trade })}>{voiceEvents.trade ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.price}><span className="event-name"><span className="event-dot" />Price Alerts</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, price: !voiceEvents.price })}>{voiceEvents.price ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.market}><span className="event-name"><span className="event-dot" />Market Signals</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, market: !voiceEvents.market })}>{voiceEvents.market ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
+            <VoiceEventItem enabled={voiceEvents.system}><span className="event-name"><span className="event-dot" />System Updates</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, system: !voiceEvents.system })}>{voiceEvents.system ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
           </>
         );
 
+      // ✅ FOREX: show forex-specific account rows
       case 'account-info':
-        return (
+        return isForex ? (
+          <>
+            <AccountInfoRow><span className="row-label">Account ID</span><span className="row-value">FX-9315-220</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Account Type</span><span className="row-value">Live Forex</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Base Currency</span><span className="row-value">USD</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Balance</span><span className="row-value" style={{ color: '#10B981' }}>$25,000.00 USD</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Leverage</span><span className="row-value">1:100</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Status</span><span className="row-value"><span className="status-indicator"><span className="dot" />Active</span></span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Server</span><span className="row-value">MT5-Live-02</span></AccountInfoRow>
+            <AccountInfoRow><span className="row-label">Last Sync</span><span className="row-value">Today, 14:32</span></AccountInfoRow>
+          </>
+        ) : (
           <>
             <AccountInfoRow><span className="row-label">Account ID</span><span className="row-value">ACC-8472-001</span></AccountInfoRow>
             <AccountInfoRow><span className="row-label">Account Type</span><span className="row-value">Real Trading</span></AccountInfoRow>
@@ -4110,9 +2540,9 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       case 'how-to-use':
         return (
           <>
-            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Connect Your Account</div><div className="step-desc">Link your Deriv account to access real-time trading data and execute trades directly.</div></div></StepItem>
-            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">Choose from multiple volatility indices including 1s and standard options to start trading.</div></div></StepItem>
-            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Choose Your Strategy</div><div className="step-desc">Select between manual, auto, or bot-assisted trading modes based on your preference.</div></div></StepItem>
+            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">{isForex ? 'Connect Your Forex Broker' : 'Connect Your Account'}</div><div className="step-desc">{isForex ? 'Link your forex broker account to access live currency quotes and execute trades directly.' : 'Link your Deriv account to access real-time trading data and execute trades directly.'}</div></div></StepItem>
+            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">{isForex ? 'Choose from major, minor and exotic currency pairs, plus gold and other commodities.' : 'Choose from multiple volatility indices including 1s and standard options to start trading.'}</div></div></StepItem>
+            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Size Your Position</div><div className="step-desc">{isForex ? 'Use the built-in Lot Size Calculator to determine the correct position size for your risk tolerance.' : 'Select between manual, auto, or bot-assisted trading modes based on your preference.'}</div></div></StepItem>
             <StepItem><div className="step-number">4</div><div className="step-content"><div className="step-title">Monitor Your Positions</div><div className="step-desc">Track open positions, view performance metrics, and manage risk in real-time.</div></div></StepItem>
             <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Customize Experience</div><div className="step-desc">Personalize themes, notification settings, and display preferences to suit your workflow.</div></div></StepItem>
           </>
@@ -4127,13 +2557,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
             </TermsSection>
-            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data from Deriv via APIs.</div></TermsSection>
+            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">{isForex ? 'MyTradeApp provides automated forex trading, risk management tools, lot size calculation, currency strength analysis, and live quote streaming via broker APIs.' : 'MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data from Deriv via APIs.'}</div></TermsSection>
             <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradeApp does not store your login credentials.</div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
             </TermsSection>
             <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradeApp provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
-            <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your Deriv or Forex login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
+            <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your {isForex ? 'Forex' : 'Deriv'} or Forex login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
             <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradeApp operates.</div></TermsSection>
             <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@mytradeapp.com</strong></div></TermsSection>
           </>
@@ -4149,29 +2579,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   // ============================================
   return (
     <>
-      {/* Full Panel (Academy / Journal) */}
       <FullPanelOverlay isOpen={isFullPanelOpen} onClick={closeFullPanel}>
         <FullPanelContainer onClick={(e) => e.stopPropagation()}>
           <FullPanelHeader>
             <div className="panel-title-group">
-              <span className="panel-icon">
-                {currentPanel === 'journal' ? <JournalIcon /> : <AcademyIcon />}
-              </span>
-              <span className="panel-title">
-                {currentPanel === 'journal' ? 'Trading Journal' : 'MyTradeApp Academy'}
-              </span>
+              <span className="panel-icon">{currentPanel === 'journal' ? <JournalIcon /> : <AcademyIcon />}</span>
+              <span className="panel-title">{currentPanel === 'journal' ? 'Trading Journal' : 'MyTradeApp Academy'}</span>
             </div>
-            <button className="panel-close-btn" onClick={closeFullPanel}>
-              <CloseIcon />
-            </button>
+            <button className="panel-close-btn" onClick={closeFullPanel}><CloseIcon /></button>
           </FullPanelHeader>
-          <FullPanelBody>
-            {fullPanelContent}
-          </FullPanelBody>
+          <FullPanelBody>{fullPanelContent}</FullPanelBody>
         </FullPanelContainer>
       </FullPanelOverlay>
 
-      {/* Small Modal Popups */}
       <ModalOverlay isOpen={isPopupOpen} onClick={closePopup}>
         <ModalContainer settings={isSettingsPopup} onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
@@ -4182,22 +2602,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </div>
             <button className="close-btn" onClick={closePopup}><CloseXIcon /></button>
           </ModalHeader>
-          <ModalBody>
-            {renderPopupContent()}
-          </ModalBody>
+          <ModalBody>{renderPopupContent()}</ModalBody>
         </ModalContainer>
       </ModalOverlay>
 
-      {/* Note editing modal */}
       {noteModal && (
         <NoteModal onClick={() => setNoteModal(null)}>
           <NoteModalContent onClick={(e) => e.stopPropagation()}>
             <div className="title">Edit Trade Note</div>
-            <textarea
-              value={editNote}
-              onChange={(e) => setEditNote(e.target.value)}
-              placeholder="Add your observations..."
-            />
+            <textarea value={editNote} onChange={(e) => setEditNote(e.target.value)} placeholder="Add your observations..." />
             <div className="actions">
               <JournalButton onClick={() => setNoteModal(null)}>Cancel</JournalButton>
               <JournalButton primary onClick={handleNoteSave}>Save</JournalButton>
@@ -4211,18 +2624,12 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       <SidebarContainer isOpen={isOpen}>
         <SidebarContent>
           <SidebarHeader>
-            <div className="avatar">MT</div>
+            <div className="avatar">{isForex ? 'FX' : 'MT'}</div>
             <div className="user-info">
               <div className="user-name">John Trader</div>
               <div className="user-email">john@mytradeapp.com</div>
             </div>
-            <button
-              className="close-btn-mobile"
-              onClick={onClose}
-              aria-label="Close menu"
-            >
-              <CloseXIcon />
-            </button>
+            <button className="close-btn-mobile" onClick={onClose} aria-label="Close menu"><CloseXIcon /></button>
           </SidebarHeader>
 
           <NavSection>
@@ -4236,15 +2643,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <NavItem active={activeItem === 'voice'} onClick={handleVoiceClick}>
               <span className="nav-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
               <span className="nav-label">Voice Notifications</span>
-              <span
-                className="badge"
-                style={{
-                  background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
-                  color: voiceEnabled ? '#10B981' : '#EF4444'
-                }}
-              >
-                {voiceEnabled ? 'On' : 'Off'}
-              </span>
+              <span className="badge" style={{ background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)', color: voiceEnabled ? '#10B981' : '#EF4444' }}>{voiceEnabled ? 'On' : 'Off'}</span>
             </NavItem>
           </NavSection>
 
@@ -4257,32 +2656,41 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
+          {/* ✅ FOREX: Linked account label switches */}
           <NavSection>
             <SectionLabel>Account</SectionLabel>
             <NavItem active={activeItem === 'account-info'} onClick={handleAccountInfoClick}>
               <span className="nav-icon"><AccountIcon /></span>
-              <span className="nav-label">Linked Deriv Account Info</span>
+              <span className="nav-label">{isForex ? 'Linked Forex Account' : 'Linked Deriv Account Info'}</span>
             </NavItem>
           </NavSection>
 
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
-            <NavItem active={activeItem === 'copy-trading'} onClick={handleCopyTradingClick}>
-              <span className="nav-icon"><CopyTradeIcon /></span>
-              <span className="nav-label">Copy Trading</span>
-              <span className="badge">BETA</span>
-            </NavItem>
+
+            {/* ✅ FOREX: Copy Trading hidden on forex */}
+            {!isForex && (
+              <NavItem active={activeItem === 'copy-trading'} onClick={handleCopyTradingClick}>
+                <span className="nav-icon"><CopyTradeIcon /></span>
+                <span className="nav-label">Copy Trading</span>
+                <span className="badge">BETA</span>
+              </NavItem>
+            )}
+
             <NavItem active={activeItem === 'performance'} onClick={handlePerformanceClick}>
               <span className="nav-icon"><PerformanceIcon /></span>
               <span className="nav-label">Performance</span>
             </NavItem>
+
             <NavItem active={activeItem === 'journal'} onClick={handleJournalClick}>
               <span className="nav-icon"><JournalIcon /></span>
               <span className="nav-label">Journal</span>
             </NavItem>
+
+            {/* ✅ FOREX: Risk Calculator → Lot Size Calculator */}
             <NavItem active={activeItem === 'risk-calculator'} onClick={handleRiskCalculatorClick}>
-              <span className="nav-icon"><RiskIcon /></span>
-              <span className="nav-label">Risk Calculator</span>
+              <span className="nav-icon">{isForex ? <LotsizeIcon /> : <RiskIcon />}</span>
+              <span className="nav-label">{isForex ? 'Lot Size Calculator' : 'Risk Calculator'}</span>
             </NavItem>
           </NavSection>
 
@@ -4303,65 +2711,43 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="feedback-label">Rate your experience</div>
               <div className="stars">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
+                  <button key={star} type="button"
                     className={`star-btn ${star <= (hoverRating || rating) ? 'active' : ''} ${star <= hoverRating && star > rating ? 'hover' : ''}`}
                     onClick={() => setRating(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
                   >
-                    <svg viewBox="0 0 24 24">
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                    </svg>
+                    <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
                   </button>
                 ))}
               </div>
               <div className="star-rating-text">{rating > 0 ? getRatingText(rating) : 'Tap a star to rate'}</div>
-              <textarea
-                className="feedback-textarea"
-                placeholder="Share your feedback or suggestions..."
-                value={feedbackText}
-                onChange={(e) => setFeedbackText(e.target.value)}
-                disabled={isSubmitting}
-              />
-              <button className="feedback-submit" onClick={handleSubmitFeedback} disabled={isSubmitting}>
-                {isSubmitting ? 'Sending...' : 'Submit Feedback'}
-              </button>
+              <textarea className="feedback-textarea" placeholder="Share your feedback or suggestions..." value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} disabled={isSubmitting} />
+              <button className="feedback-submit" onClick={handleSubmitFeedback} disabled={isSubmitting}>{isSubmitting ? 'Sending...' : 'Submit Feedback'}</button>
               {submitStatus && <div className="feedback-status">{submitStatus}</div>}
             </FeedbackSection>
           </NavSection>
 
           <NavSection>
             <SectionLabel>Information</SectionLabel>
-            <NavItem active={activeItem === 'how-to-use'} onClick={handleHowToUseClick}>
-              <span className="nav-icon"><BookIcon /></span>
-              <span className="nav-label">How to Use</span>
-            </NavItem>
-            <NavItem active={activeItem === 'terms'} onClick={handleTermsClick}>
-              <span className="nav-icon"><TermsIcon /></span>
-              <span className="nav-label">Terms & Conditions</span>
-            </NavItem>
+            <NavItem active={activeItem === 'how-to-use'} onClick={handleHowToUseClick}><span className="nav-icon"><BookIcon /></span><span className="nav-label">How to Use</span></NavItem>
+            <NavItem active={activeItem === 'terms'} onClick={handleTermsClick}><span className="nav-icon"><TermsIcon /></span><span className="nav-label">Terms & Conditions</span></NavItem>
           </NavSection>
 
           <NavSection>
             <SectionLabel>Company</SectionLabel>
             <SideCard>
               <div className="card-title"><span className="icon"><CompanyIcon /></span>About MyTradeApp</div>
-              <div className="card-item"><span className="bullet">•</span><span>Third-party trading application for Deriv platform.</span></div>
-              <div className="card-item"><span className="bullet">•</span><span>Provides real-time API market streams and automated execution tools.</span></div>
+              <div className="card-item"><span className="bullet">•</span><span>Third-party trading application for {isForex ? 'the forex market' : 'Deriv platform'}.</span></div>
+              <div className="card-item"><span className="bullet">•</span><span>{isForex ? 'Provides live currency streams and lot-size / risk tools.' : 'Provides real-time API market streams and automated execution tools.'}</span></div>
               <div className="learn-more" onClick={handleAboutClick}>About us →</div>
             </SideCard>
           </NavSection>
         </SidebarContent>
 
         <SidebarFooter>
-          <div className="footer-item" onClick={handleSettingsClick}>
-            <span className="footer-icon"><SettingsIcon /></span> Settings
-          </div>
-          <div className="footer-item" onClick={handleHelpClick}>
-            <span className="footer-icon"><HelpIcon /></span> Help & Support
-          </div>
+          <div className="footer-item" onClick={handleSettingsClick}><span className="footer-icon"><SettingsIcon /></span> Settings</div>
+          <div className="footer-item" onClick={handleHelpClick}><span className="footer-icon"><HelpIcon /></span> Help & Support</div>
         </SidebarFooter>
       </SidebarContainer>
     </>
