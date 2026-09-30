@@ -540,9 +540,28 @@ const DigitStatsContainer = styled.div`
   z-index: 3;
   font-weight: 700;
 
-  @media (max-width: 768px) { width: calc(100% - 16px); bottom: 48px; gap: 4px; }
-  @media (max-width: 480px) { width: calc(100% - 10px); bottom: 42px; gap: 3px; }
-  @media (max-width: 380px) { width: calc(100% - 6px);  bottom: 38px; gap: 2px; }
+  /* On phones the row is anchored 1.5cm BELOW the centered "Last N digits"
+     overlay. The overlay's vertical center sits at 50% of the wrapper, so
+     we offset from 50% plus half the overlay height (~26–31px depending
+     on breakpoint) plus the 1.5cm gap. */
+  @media (max-width: 768px) {
+    top: calc(50% + 31px + 1.5cm);   /* desktop-style overlay on 768px phones */
+    bottom: auto;
+    width: calc(100% - 16px);
+    gap: 4px;
+  }
+  @media (max-width: 480px) {
+    top: calc(50% + 25px + 1.5cm);   /* compact overlay: 8+30+8 padding + 4 border */
+    bottom: auto;
+    width: calc(100% - 10px);
+    gap: 3px;
+  }
+  @media (max-width: 380px) {
+    top: calc(50% + 25px + 1.5cm);
+    bottom: auto;
+    width: calc(100% - 6px);
+    gap: 2px;
+  }
 `;
 
 const DigitItem = styled.div`
