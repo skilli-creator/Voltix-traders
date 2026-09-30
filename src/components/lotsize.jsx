@@ -1,10 +1,15 @@
+// src/components/lotsize.jsx
 import { useState, useEffect, useMemo } from 'react';
+import { useTheme } from 'styled-components';
 import {
   CUR_NAMES, INSTRUMENTS,
   fmt, fmtPrice, pipSizeOf, contractOf, usdValueOf,
 } from '../pages/forexdash';
 
 export default function LotSize({ pairs, strength, initialPair }) {
+  const theme = useTheme();
+  const c = theme?.colors || {};
+
   const [balance, setBalance] = useState(25000);
   const [risk, setRisk] = useState(1);
   const [sl, setSl] = useState(25);
@@ -46,40 +51,130 @@ export default function LotSize({ pairs, strength, initialPair }) {
         .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
         .field{display:flex;flex-direction:column;gap:7px}
         .field.full{grid-column:1/-1}
-        .field label{font-size:11.5px;font-weight:600;color:var(--muted);letter-spacing:.2px}
+        .field label{font-size:11.5px;font-weight:600;color:${c.textSecondary || '#7d90b0'};letter-spacing:.2px}
         .input-wrap{position:relative;display:flex;align-items:center}
-        .input-wrap .suffix{position:absolute;right:13px;font-size:12px;color:var(--dim);font-weight:600;pointer-events:none}
-        .input-wrap .prefix{position:absolute;left:13px;font-size:12px;color:var(--dim);font-weight:600;pointer-events:none}
+        .input-wrap .suffix{position:absolute;right:13px;font-size:12px;color:${c.textMuted || '#5a6b88'};font-weight:600;pointer-events:none}
+        .input-wrap .prefix{position:absolute;left:13px;font-size:12px;color:${c.textMuted || '#5a6b88'};font-weight:600;pointer-events:none}
+
         input[type=number],select{
-          width:100%;background:#0c1424;border:1px solid var(--border);
-          border-radius:10px;padding:11px 13px;color:var(--text);
-          font-size:13.5px;font-family:var(--mono);outline:none;transition:.16s;appearance:none;
+          width:100%;
+          background:${c.surface || '#0c1424'};
+          border:1px solid ${c.border || '#1d2a44'};
+          border-radius:10px;
+          padding:11px 13px;
+          color:${c.text || '#e8eefb'};
+          font-size:13.5px;
+          font-family:'JetBrains Mono',ui-monospace,monospace;
+          outline:none;
+          transition:.16s;
+          appearance:none;
         }
         select{
-          font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;
+          font-family:'Inter',sans-serif;
+          font-weight:500;
+          cursor:pointer;
           background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237d90b0' stroke-width='2'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
-          background-repeat:no-repeat;background-position:right 12px center;background-size:15px;padding-right:36px;
+          background-repeat:no-repeat;
+          background-position:right 12px center;
+          background-size:15px;
+          padding-right:36px;
         }
-        input[type=number]:focus,select:focus{border-color:#2b4a7a;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+        input[type=number]:focus,select:focus{
+          border-color:${c.accent || '#2b4a7a'};
+          box-shadow:0 0 0 3px ${c.accentLight || 'rgba(59,130,246,.1)'};
+        }
         input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-        .chip-row{display:flex;gap:7px;margin-top:2px}
-        .chip{padding:5px 12px;border-radius:8px;font-size:11.5px;font-weight:600;background:#0c1424;border:1px solid var(--border);color:var(--muted);transition:.15s}
-        .chip:hover{border-color:#2b4a7a;color:var(--text)}
-        .chip.on{background:rgba(0,214,143,.14);border-color:rgba(0,214,143,.4);color:var(--green)}
 
-        .result-hero{padding:24px 22px;text-align:center;background:radial-gradient(ellipse at 50% 0%,rgba(0,214,143,.12),transparent 70%);border-bottom:1px solid var(--border-soft)}
-        .result-hero .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;color:var(--muted);font-weight:600}
-        .result-hero .big{font-family:var(--mono);font-size:46px;font-weight:500;letter-spacing:-2px;color:var(--green);line-height:1.1;margin:6px 0 2px}
-        .result-hero .sub{font-size:12.5px;color:var(--dim);font-family:var(--mono)}
-        .res-row{display:flex;justify-content:space-between;align-items:center;padding:11px 20px;border-bottom:1px solid rgba(22,34,58,.6);font-size:13px}
+        .chip-row{display:flex;gap:7px;margin-top:2px}
+        .chip{
+          padding:5px 12px;
+          border-radius:8px;
+          font-size:11.5px;
+          font-weight:600;
+          background:${c.surface || '#0c1424'};
+          border:1px solid ${c.border || '#1d2a44'};
+          color:${c.textSecondary || '#7d90b0'};
+          transition:.15s;
+          cursor:pointer;
+        }
+        .chip:hover{border-color:${c.accent || '#2b4a7a'};color:${c.text || '#e8eefb'}}
+        .chip.on{
+          background:${c.accentLight || 'rgba(0,214,143,.14)'};
+          border-color:${c.accentMuted || 'rgba(0,214,143,.4)'};
+          color:${c.accent || '#00d68f'};
+        }
+
+        .result-hero{
+          padding:24px 22px;
+          text-align:center;
+          background:radial-gradient(ellipse at 50% 0%, ${c.accentLight || 'rgba(0,214,143,.12)'}, transparent 70%);
+          border-bottom:1px solid ${c.borderMuted || '#16223a'};
+        }
+        .result-hero .lbl{
+          font-size:11px;
+          text-transform:uppercase;
+          letter-spacing:1.3px;
+          color:${c.textSecondary || '#7d90b0'};
+          font-weight:600;
+        }
+        .result-hero .big{
+          font-family:'JetBrains Mono',monospace;
+          font-size:46px;
+          font-weight:500;
+          letter-spacing:-2px;
+          color:${c.accent || '#00d68f'};
+          line-height:1.1;
+          margin:6px 0 2px;
+        }
+        .result-hero .sub{
+          font-size:12.5px;
+          color:${c.textMuted || '#5a6b88'};
+          font-family:'JetBrains Mono',monospace;
+        }
+        .res-row{
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          padding:11px 20px;
+          border-bottom:1px solid ${c.borderMuted || 'rgba(22,34,58,.6)'};
+          font-size:13px;
+        }
         .res-row:last-child{border-bottom:none}
-        .res-row .k{color:var(--muted)}
-        .res-row .v{font-family:var(--mono);font-weight:500}
-        .lot-ladder{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 18px}
-        .ladder-item{background:#0c1424;border:1px solid var(--border-soft);border-radius:10px;padding:12px;text-align:center}
-        .ladder-item .t{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
-        .ladder-item .n{font-family:var(--mono);font-size:16px;font-weight:500;margin-top:5px}
-        .ladder-item .u{font-size:10.5px;color:var(--dim);margin-top:2px}
+        .res-row .k{color:${c.textSecondary || '#7d90b0'}}
+        .res-row .v{font-family:'JetBrains Mono',monospace;font-weight:500;color:${c.text || '#e8eefb'}}
+
+        .lot-ladder{
+          display:grid;
+          grid-template-columns:repeat(3,1fr);
+          gap:10px;
+          padding:16px 18px;
+        }
+        .ladder-item{
+          background:${c.surface || '#0c1424'};
+          border:1px solid ${c.borderMuted || '#16223a'};
+          border-radius:10px;
+          padding:12px;
+          text-align:center;
+        }
+        .ladder-item .t{
+          font-size:10.5px;
+          color:${c.textMuted || '#5a6b88'};
+          text-transform:uppercase;
+          letter-spacing:.8px;
+          font-weight:600;
+        }
+        .ladder-item .n{
+          font-family:'JetBrains Mono',monospace;
+          font-size:16px;
+          font-weight:500;
+          margin-top:5px;
+          color:${c.text || '#e8eefb'};
+        }
+        .ladder-item .u{
+          font-size:10.5px;
+          color:${c.textMuted || '#5a6b88'};
+          margin-top:2px;
+        }
 
         @media (max-width:860px){
           .form-grid{grid-template-columns:1fr}
@@ -109,8 +204,8 @@ export default function LotSize({ pairs, strength, initialPair }) {
                 <div className="field">
                   <label>Account Currency</label>
                   <select value={acctCur} onChange={(e) => setAcctCur(e.target.value)}>
-                    {['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'NZD'].map((c) => (
-                      <option key={c} value={c}>{c} — {CUR_NAMES[c]}</option>
+                    {['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'NZD'].map((cc) => (
+                      <option key={cc} value={cc}>{cc} — {CUR_NAMES[cc]}</option>
                     ))}
                   </select>
                 </div>
@@ -198,7 +293,7 @@ export default function LotSize({ pairs, strength, initialPair }) {
                       <div className="t">{l.t}</div>
                       <div className="n">{fmt(lotSize, l.mult === 1 ? 2 : 1)}</div>
                       <div className="u">{l.u}</div>
-                      <div className="u" style={{ marginTop: 6, color: riskAtSize > result.riskAmount * 1.02 ? '#ff4d6a' : '#5a6b88' }}>
+                      <div className="u" style={{ marginTop: 6, color: riskAtSize > result.riskAmount * 1.02 ? (c.danger || '#ff4d6a') : (c.textMuted || '#5a6b88') }}>
                         risk {fmtAcct(riskAtSize)}
                       </div>
                     </div>

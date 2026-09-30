@@ -1,12 +1,139 @@
 // src/pages/forexdash.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
 import TopPanel from '../components/TopBar';
 import OptionSideBar from '../components/OptionSideBar';
 import ForexHome from '../components/forexhome';
 import LotSize from '../components/lotsize';
 import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
+
+/* =========================================================
+   THEMES (mirrors the ones defined in Derivdash.jsx)
+   — keep these in sync if you ever add a new theme key
+   ========================================================= */
+const themes = {
+  white: {
+    name: 'White', category: 'light',
+    colors: {
+      bg: '#f4f6f9', surface: '#ffffff', surfaceHover: '#f1f4f8', surfaceActive: '#e8edf4',
+      surfaceElevated: '#ffffff', surfaceGlass: 'rgba(255, 255, 255, 0.78)',
+      glassBorder: 'rgba(15, 23, 42, 0.06)', glassBlur: '24px',
+      border: '#e2e8f0', borderMuted: '#eef2f7',
+      text: '#0f172a', textSecondary: '#475569', textMuted: '#94a3b8',
+      accent: '#2563eb', accentHover: '#1d4ed8', accentSoft: '#3b82f6',
+      accentLight: 'rgba(37, 99, 235, 0.08)', accentMuted: 'rgba(37, 99, 235, 0.16)',
+      accentGlow: '0 0 24px rgba(37, 99, 235, 0.18)',
+      success: '#059669', warning: '#d97706', danger: '#dc2626',
+      shadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -6px rgba(15, 23, 42, 0.08)',
+      shadowElevated: '0 4px 12px rgba(15, 23, 42, 0.06), 0 20px 40px -12px rgba(15, 23, 42, 0.12)',
+      scrollbar: '#cbd5e1', ring: 'rgba(37, 99, 235, 0.35)',
+    },
+  },
+  dark: {
+    name: 'Dark', category: 'dark',
+    colors: {
+      bg: '#09090b', surface: '#121214', surfaceHover: '#1a1a1e', surfaceActive: '#232328',
+      surfaceElevated: '#18181b', surfaceGlass: 'rgba(18, 18, 20, 0.72)',
+      glassBorder: 'rgba(255, 255, 255, 0.07)', glassBlur: '28px',
+      border: '#27272a', borderMuted: '#1c1c1f',
+      text: '#fafafa', textSecondary: '#a1a1aa', textMuted: '#71717a',
+      accent: '#3b82f6', accentHover: '#60a5fa', accentSoft: '#60a5fa',
+      accentLight: 'rgba(59, 130, 246, 0.12)', accentMuted: 'rgba(59, 130, 246, 0.22)',
+      accentGlow: '0 0 28px rgba(59, 130, 246, 0.22)',
+      success: '#10b981', warning: '#f59e0b', danger: '#ef4444',
+      shadow: '0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px -8px rgba(0, 0, 0, 0.65)',
+      shadowElevated: '0 8px 24px rgba(0, 0, 0, 0.45), 0 24px 48px -12px rgba(0, 0, 0, 0.75)',
+      scrollbar: '#3f3f46', ring: 'rgba(59, 130, 246, 0.4)',
+    },
+  },
+  gold: {
+    name: 'Gold', category: 'dark',
+    colors: {
+      bg: '#0b0a08', surface: '#141310', surfaceHover: '#1c1a16', surfaceActive: '#25221c',
+      surfaceElevated: '#1a1814', surfaceGlass: 'rgba(20, 19, 16, 0.75)',
+      glassBorder: 'rgba(212, 175, 55, 0.14)', glassBlur: '28px',
+      border: '#2a2620', borderMuted: '#1c1a16',
+      text: '#f8f5ef', textSecondary: '#b8b0a0', textMuted: '#7a7368',
+      accent: '#d4af37', accentHover: '#e6c45a', accentSoft: '#e5c158',
+      accentLight: 'rgba(212, 175, 55, 0.10)', accentMuted: 'rgba(212, 175, 55, 0.20)',
+      accentGlow: '0 0 28px rgba(212, 175, 55, 0.20)',
+      success: '#34a853', warning: '#f0a020', danger: '#e04545',
+      shadow: '0 1px 2px rgba(0, 0, 0, 0.5), 0 14px 36px -10px rgba(0, 0, 0, 0.75)',
+      shadowElevated: '0 10px 28px rgba(0, 0, 0, 0.5), 0 28px 56px -14px rgba(0, 0, 0, 0.8)',
+      scrollbar: '#3a3530', ring: 'rgba(212, 175, 55, 0.35)',
+    },
+  },
+  forest: {
+    name: 'Forest', category: 'dark',
+    colors: {
+      bg: '#050c09', surface: '#0c1713', surfaceHover: '#12221c', surfaceActive: '#1a2f27',
+      surfaceElevated: '#101c17', surfaceGlass: 'rgba(12, 23, 19, 0.75)',
+      glassBorder: 'rgba(16, 185, 129, 0.14)', glassBlur: '28px',
+      border: '#1a332a', borderMuted: '#12221c',
+      text: '#ecfdf5', textSecondary: '#a7f3d0', textMuted: '#6b9e8a',
+      accent: '#10b981', accentHover: '#34d399', accentSoft: '#34d399',
+      accentLight: 'rgba(16, 185, 129, 0.12)', accentMuted: 'rgba(16, 185, 129, 0.22)',
+      accentGlow: '0 0 28px rgba(16, 185, 129, 0.22)',
+      success: '#34d399', warning: '#f59e0b', danger: '#f43f5e',
+      shadow: '0 1px 2px rgba(0, 0, 0, 0.45), 0 14px 36px -10px rgba(2, 12, 8, 0.7)',
+      shadowElevated: '0 10px 28px rgba(0, 0, 0, 0.45), 0 28px 56px -14px rgba(2, 12, 8, 0.75)',
+      scrollbar: '#1f3d32', ring: 'rgba(16, 185, 129, 0.4)',
+    },
+  },
+  ocean: {
+    name: 'Ocean', category: 'dark',
+    colors: {
+      bg: '#030b12', surface: '#081621', surfaceHover: '#0d2130', surfaceActive: '#132c40',
+      surfaceElevated: '#0b1c28', surfaceGlass: 'rgba(8, 22, 33, 0.75)',
+      glassBorder: 'rgba(14, 165, 233, 0.14)', glassBlur: '28px',
+      border: '#143447', borderMuted: '#0d2130',
+      text: '#f0f9ff', textSecondary: '#7dd3fc', textMuted: '#5a8fa8',
+      accent: '#0ea5e9', accentHover: '#38bdf8', accentSoft: '#38bdf8',
+      accentLight: 'rgba(14, 165, 233, 0.12)', accentMuted: 'rgba(14, 165, 233, 0.22)',
+      accentGlow: '0 0 28px rgba(14, 165, 233, 0.22)',
+      success: '#10b981', warning: '#f59e0b', danger: '#f43f5e',
+      shadow: '0 1px 2px rgba(0, 0, 0, 0.45), 0 14px 36px -10px rgba(1, 12, 22, 0.7)',
+      shadowElevated: '0 10px 28px rgba(0, 0, 0, 0.45), 0 28px 56px -14px rgba(1, 12, 22, 0.75)',
+      scrollbar: '#1a3d52', ring: 'rgba(14, 165, 233, 0.4)',
+    },
+  },
+  red: {
+    name: 'Red', category: 'dark',
+    colors: {
+      bg: '#0c0505', surface: '#160a0a', surfaceHover: '#221010', surfaceActive: '#2e1616',
+      surfaceElevated: '#1c0e0e', surfaceGlass: 'rgba(22, 10, 10, 0.75)',
+      glassBorder: 'rgba(239, 68, 68, 0.14)', glassBlur: '28px',
+      border: '#2e1616', borderMuted: '#221010',
+      text: '#fef2f2', textSecondary: '#fca5a5', textMuted: '#9f6b6b',
+      accent: '#ef4444', accentHover: '#f87171', accentSoft: '#f87171',
+      accentLight: 'rgba(239, 68, 68, 0.12)', accentMuted: 'rgba(239, 68, 68, 0.22)',
+      accentGlow: '0 0 28px rgba(239, 68, 68, 0.22)',
+      success: '#10b981', warning: '#f59e0b', danger: '#f87171',
+      shadow: '0 1px 2px rgba(0, 0, 0, 0.45), 0 14px 36px -10px rgba(12, 4, 4, 0.7)',
+      shadowElevated: '0 10px 28px rgba(0, 0, 0, 0.45), 0 28px 56px -14px rgba(12, 4, 4, 0.75)',
+      scrollbar: '#3a1c1c', ring: 'rgba(239, 68, 68, 0.4)',
+    },
+  },
+  orange: {
+    name: 'Orange', category: 'dark',
+    colors: {
+      bg: '#0c0703', surface: '#16100a', surfaceHover: '#22180f', surfaceActive: '#2e2115',
+      surfaceElevated: '#1c140c', surfaceGlass: 'rgba(22, 16, 10, 0.75)',
+      glassBorder: 'rgba(249, 115, 22, 0.14)', glassBlur: '28px',
+      border: '#2e2115', borderMuted: '#22180f',
+      text: '#fff7ed', textSecondary: '#fdba74', textMuted: '#a07a4e',
+      accent: '#f97316', accentHover: '#fb923c', accentSoft: '#fb923c',
+      accentLight: 'rgba(249, 115, 22, 0.12)', accentMuted: 'rgba(249, 115, 22, 0.22)',
+      accentGlow: '0 0 28px rgba(249, 115, 22, 0.22)',
+      success: '#10b981', warning: '#fbbf24', danger: '#ef4444',
+      shadow: '0 1px 2px rgba(0, 0, 0, 0.45), 0 14px 36px -10px rgba(12, 6, 2, 0.7)',
+      shadowElevated: '0 10px 28px rgba(0, 0, 0, 0.45), 0 28px 56px -14px rgba(12, 6, 2, 0.75)',
+      scrollbar: '#3a2a18', ring: 'rgba(249, 115, 22, 0.4)',
+    },
+  },
+};
 
 /* =========================================================
    SHARED CONSTANTS
@@ -69,13 +196,13 @@ export const pipValueUSD = (sym, lots, strength) => {
 export const currencyStrength = (strength) => {
   const raw = {};
   let logSum = 0;
-  for (const c of CURRENCIES) {
-    raw[c] = strength[c];
-    logSum += Math.log(strength[c]);
+  for (const cc of CURRENCIES) {
+    raw[cc] = strength[cc];
+    logSum += Math.log(strength[cc]);
   }
   const geo = Math.exp(logSum / CURRENCIES.length);
   const out = {};
-  for (const c of CURRENCIES) out[c] = (raw[c] / geo - 1) * 100;
+  for (const cc of CURRENCIES) out[cc] = (raw[cc] / geo - 1) * 100;
   return out;
 };
 
@@ -215,8 +342,12 @@ export default function ForexDash() {
 
   const view = urlView || 'home';
 
-  // ✅ Sidebar state — drives OptionSideBar's `isOpen` prop
+  // ✅ Sidebar state
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // ✅ Theme state — controlled here, changed by TopBar, consumed by every child
+  const [currentTheme, setCurrentTheme] = useState('gold');
+  const handleThemeChange = (name) => setCurrentTheme(name);
 
   const [strength, setStrength] = useState(createInitialStrength);
   const [pairs, setPairs] = useState(() => createInitialPairs(strength));
@@ -229,6 +360,36 @@ export default function ForexDash() {
   const [equityHistory, setEquityHistory] = useState(() => createInitialEquityHistory(25000));
   const [bots, setBots] = useState(createInitialBots);
   const [selectedPair, setSelectedPair] = useState('EURUSD');
+
+  // ✅ Sync page background + meta tags when theme changes (same pattern as Derivdash)
+  useEffect(() => {
+    const themeObj = themes[currentTheme] || themes.dark;
+    const colors = themeObj.colors || {};
+    const surface = colors.surface || colors.bg || '#0b0a08';
+    const bg = colors.bg || surface;
+    const scheme = themeObj.category === 'light' ? 'light' : 'dark';
+
+    let metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (!metaTheme) {
+      metaTheme = document.createElement('meta');
+      metaTheme.setAttribute('name', 'theme-color');
+      document.head.appendChild(metaTheme);
+    }
+    metaTheme.setAttribute('content', surface);
+
+    let metaScheme = document.querySelector('meta[name="color-scheme"]');
+    if (!metaScheme) {
+      metaScheme = document.createElement('meta');
+      metaScheme.setAttribute('name', 'color-scheme');
+      document.head.appendChild(metaScheme);
+    }
+    metaScheme.setAttribute('content', scheme);
+
+    document.documentElement.style.backgroundColor = bg;
+    if (document.body) document.body.style.backgroundColor = bg;
+
+    return () => {};
+  }, [currentTheme]);
 
   // Market simulation: strength walk
   useEffect(() => {
@@ -309,150 +470,228 @@ export default function ForexDash() {
     navigate(v === 'home' ? '/forexdash' : `/forexdash/${v}`);
   }, [navigate]);
 
+  const t = themes[currentTheme] || themes.dark;
+  const c = t.colors;
+
   return (
-    <>
-      {/* ============ SHARED DASHBOARD STYLES ============ */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    <ThemeProvider theme={t}>
+      <>
+        {/* ============ SHARED DASHBOARD STYLES (theme-driven) ============ */}
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-        *{box-sizing:border-box;margin:0;padding:0}
-        :root{
-          --bg:#070c16;--panel:#0e1626;--panel2:#121c30;--panel3:#16223a;
-          --border:#1d2a44;--border-soft:#16223a;
-          --text:#e8eefb;--muted:#7d90b0;--dim:#5a6b88;
-          --green:#00d68f;--red:#ff4d6a;--blue:#3b82f6;
-          --amber:#f5a524;--purple:#a855f7;
-          --radius:14px;
-          --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-        }
-        html,body,#root{height:100%}
-        body{
-          background:var(--bg);color:var(--text);
-          font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
-          font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden;
-        }
-        ::-webkit-scrollbar{width:9px;height:9px}
-        ::-webkit-scrollbar-track{background:transparent}
-        ::-webkit-scrollbar-thumb{background:#1e2b45;border-radius:8px;border:2px solid var(--bg)}
-        ::-webkit-scrollbar-thumb:hover{background:#2b3d5e}
-        button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-        input,select{font-family:inherit}
-        .pos{color:var(--green)!important}
-        .neg{color:var(--red)!important}
-        .muted{color:var(--muted)}
-        .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+          *{box-sizing:border-box;margin:0;padding:0}
+          :root{
+            --bg:${c.bg};
+            --panel:${c.surface};
+            --panel2:${c.surfaceElevated};
+            --panel3:${c.surfaceHover};
+            --border:${c.border};
+            --border-soft:${c.borderMuted};
+            --text:${c.text};
+            --muted:${c.textSecondary};
+            --dim:${c.textMuted};
+            --green:${c.success};
+            --red:${c.danger};
+            --blue:${c.accent};
+            --amber:${c.warning};
+            --purple:${c.accentSoft};
+            --radius:14px;
+            --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+          }
+          html,body,#root{height:100%}
+          body{
+            background:${c.bg};
+            color:${c.text};
+            font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+            font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+            transition:background .3s ease,color .3s ease;
+          }
+          ::-webkit-scrollbar{width:9px;height:9px}
+          ::-webkit-scrollbar-track{background:transparent}
+          ::-webkit-scrollbar-thumb{background:${c.scrollbar};border-radius:8px;border:2px solid ${c.bg}}
+          ::-webkit-scrollbar-thumb:hover{background:${c.textMuted}}
+          button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+          input,select{font-family:inherit}
+          .pos{color:${c.success}!important}
+          .neg{color:${c.danger}!important}
+          .muted{color:${c.textSecondary}}
+          .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
-        /* ---- Page shell ---- */
-        .forex-page{min-height:100vh;background:var(--bg);display:flex;flex-direction:column}
-        .forex-content{padding:24px 26px 60px;flex:1;max-width:1600px;margin:0 auto;width:100%}
-        @media (max-width:768px){ .forex-content{padding:18px 14px 80px} }
+          /* ---- Page shell ---- */
+          .forex-page{
+            min-height:100vh;
+            background:${c.bg};
+            display:flex;
+            flex-direction:column;
+            transition:background .3s ease;
+          }
+          .forex-content{padding:24px 26px 60px;flex:1;max-width:1600px;margin:0 auto;width:100%}
+          @media (max-width:768px){ .forex-content{padding:18px 14px 80px} }
 
-        /* ---- Cards ---- */
-        .card{background:linear-gradient(180deg,#0f1829 0%,#0d1524 100%);border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden}
-        .card-head{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--border-soft)}
-        .card-head h3{font-size:13.5px;font-weight:600;letter-spacing:-.1px}
-        .card-head .spacer{flex:1}
-        .tag{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;background:#182338;color:var(--muted);border:1px solid var(--border)}
+          /* ---- Cards ---- */
+          .card{
+            background:linear-gradient(180deg, ${c.surfaceElevated} 0%, ${c.surface} 100%);
+            border:1px solid ${c.borderMuted};
+            border-radius:var(--radius);
+            overflow:hidden;
+            transition:background .3s ease,border-color .3s ease;
+          }
+          .card-head{
+            display:flex;align-items:center;gap:12px;
+            padding:15px 18px;
+            border-bottom:1px solid ${c.borderMuted};
+          }
+          .card-head h3{font-size:13.5px;font-weight:600;letter-spacing:-.1px;color:${c.text}}
+          .card-head .spacer{flex:1}
+          .tag{
+            font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:20px;
+            background:${c.accentLight};
+            color:${c.textSecondary};
+            border:1px solid ${c.border};
+          }
 
-        /* ---- Stat cards ---- */
-        .stat-card{background:linear-gradient(180deg,#0f1829 0%,#0d1524 100%);border:1px solid var(--border-soft);border-radius:var(--radius);padding:17px 18px;position:relative;overflow:hidden}
-        .stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent-line,#00d68f),transparent);opacity:.75}
-        .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
-        .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.9px;font-weight:600}
-        .stat-icon{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#16223a}
-        .stat-icon svg{width:14px;height:14px;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-        .stat-value{font-family:var(--mono);font-size:23px;font-weight:500;letter-spacing:-.6px;line-height:1.15}
-        .stat-foot{font-size:11.5px;color:var(--dim);margin-top:6px;display:flex;align-items:center;gap:5px}
-        .delta{font-weight:600;font-size:11.5px}
+          /* ---- Stat cards ---- */
+          .stat-card{
+            background:linear-gradient(180deg, ${c.surfaceElevated} 0%, ${c.surface} 100%);
+            border:1px solid ${c.borderMuted};
+            border-radius:var(--radius);
+            padding:17px 18px;position:relative;overflow:hidden;
+            transition:background .3s ease,border-color .3s ease;
+          }
+          .stat-card::after{
+            content:'';position:absolute;top:0;left:0;right:0;height:2px;
+            background:linear-gradient(90deg,var(--accent-line,${c.accent}),transparent);
+            opacity:.75;
+          }
+          .stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+          .stat-label{font-size:11px;color:${c.textSecondary};text-transform:uppercase;letter-spacing:.9px;font-weight:600}
+          .stat-icon{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:${c.surfaceHover}}
+          .stat-icon svg{width:14px;height:14px;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+          .stat-value{font-family:var(--mono);font-size:23px;font-weight:500;letter-spacing:-.6px;line-height:1.15;color:${c.text}}
+          .stat-foot{font-size:11.5px;color:${c.textMuted};margin-top:6px;display:flex;align-items:center;gap:5px}
+          .delta{font-weight:600;font-size:11.5px}
 
-        /* ---- Grids ---- */
-        .grid-2{display:grid;grid-template-columns:1.85fr 1fr;gap:15px;margin-bottom:18px}
-        .grid-eq{display:grid;grid-template-columns:1fr;gap:15px;margin-bottom:18px}
-        @media (max-width:1180px){ .grid-2{grid-template-columns:1fr} }
+          /* ---- Grids ---- */
+          .grid-2{display:grid;grid-template-columns:1.85fr 1fr;gap:15px;margin-bottom:18px}
+          .grid-eq{display:grid;grid-template-columns:1fr;gap:15px;margin-bottom:18px}
+          @media (max-width:1180px){ .grid-2{grid-template-columns:1fr} }
 
-        /* ---- Tables ---- */
-        .tbl{width:100%;border-collapse:collapse}
-        .tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--dim);font-weight:600;padding:11px 18px;border-bottom:1px solid var(--border-soft);white-space:nowrap}
-        .tbl td{padding:11px 18px;border-bottom:1px solid rgba(22,34,58,.6);font-size:13px;white-space:nowrap}
-        .tbl tbody tr{transition:.13s}
-        .tbl tbody tr:hover{background:rgba(30,43,69,.35)}
-        .tbl tbody tr:last-child td{border-bottom:none}
-        .tbl .r{text-align:right}
-        .sym-cell{display:flex;align-items:center;gap:10px}
-        .sym-badge{width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;font-size:10px;font-weight:700;letter-spacing:.3px;background:#16223a;color:#9fb3d1;border:1px solid var(--border)}
-        .sym-name{font-weight:600;font-size:13px;letter-spacing:-.1px}
-        .sym-desc{font-size:10.5px;color:var(--dim)}
-        .spark{width:82px;height:28px;display:block}
-        .chart{width:100%;height:100%;display:block}
+          /* ---- Tables ---- */
+          .tbl{width:100%;border-collapse:collapse}
+          .tbl th{
+            text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.9px;
+            color:${c.textMuted};font-weight:600;padding:11px 18px;
+            border-bottom:1px solid ${c.borderMuted};white-space:nowrap;
+          }
+          .tbl td{
+            padding:11px 18px;
+            border-bottom:1px solid ${c.borderMuted};
+            font-size:13px;white-space:nowrap;color:${c.text};
+          }
+          .tbl tbody tr{transition:.13s}
+          .tbl tbody tr:hover{background:${c.surfaceHover}}
+          .tbl tbody tr:last-child td{border-bottom:none}
+          .tbl .r{text-align:right}
+          .sym-cell{display:flex;align-items:center;gap:10px}
+          .sym-badge{
+            width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;
+            font-size:10px;font-weight:700;letter-spacing:.3px;
+            background:${c.surfaceHover};color:${c.textSecondary};
+            border:1px solid ${c.border};
+          }
+          .sym-name{font-weight:600;font-size:13px;letter-spacing:-.1px;color:${c.text}}
+          .sym-desc{font-size:10.5px;color:${c.textMuted}}
+          .spark{width:82px;height:28px;display:block}
+          .chart{width:100%;height:100%;display:block}
 
-        /* ---- Side tag / buttons ---- */
-        .side-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:5px}
-        .side-tag.buy{background:rgba(0,214,143,.13);color:var(--green)}
-        .side-tag.sell{background:rgba(255,77,106,.13);color:var(--red)}
+          /* ---- Side tag / buttons ---- */
+          .side-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:5px}
+          .side-tag.buy{background:${c.accentLight};color:${c.success}}
+          .side-tag.sell{background:${c.accentLight};color:${c.danger}}
 
-        .btn{padding:8px 15px;border-radius:9px;font-size:12.5px;font-weight:600;transition:.16s;border:1px solid transparent}
-        .btn.primary{background:var(--green);color:#04150f}
-        .btn.primary:hover{background:#1ee8a3;box-shadow:0 4px 16px rgba(0,214,143,.25)}
-        .btn.ghost{background:#16223a;border-color:var(--border);color:var(--muted)}
-        .btn.ghost:hover{background:#1d2b47;color:var(--text)}
-        .btn.sm{padding:5px 11px;font-size:11.5px;border-radius:7px}
-        .btn.trade{background:#16223a;border:1px solid var(--border);color:#9fb3d1;padding:5px 12px;font-size:11.5px;border-radius:7px}
-        .btn.trade:hover{background:rgba(0,214,143,.14);color:var(--green);border-color:rgba(0,214,143,.3)}
-        .icon-x{color:var(--dim);font-size:16px;line-height:1;padding:2px 7px;border-radius:6px}
-        .icon-x:hover{background:rgba(255,77,106,.13);color:var(--red)}
+          .btn{padding:8px 15px;border-radius:9px;font-size:12.5px;font-weight:600;transition:.16s;border:1px solid transparent}
+          .btn.primary{background:${c.accent};color:${c.bg}}
+          .btn.primary:hover{background:${c.accentHover};box-shadow:${c.accentGlow}}
+          .btn.ghost{background:${c.surfaceHover};border-color:${c.border};color:${c.textSecondary}}
+          .btn.ghost:hover{background:${c.surfaceActive};color:${c.text}}
+          .btn.sm{padding:5px 11px;font-size:11.5px;border-radius:7px}
+          .btn.trade{
+            background:${c.surfaceHover};border:1px solid ${c.border};color:${c.textSecondary};
+            padding:5px 12px;font-size:11.5px;border-radius:7px;
+          }
+          .btn.trade:hover{
+            background:${c.accentLight};color:${c.accent};border-color:${c.accentMuted};
+          }
+          .icon-x{color:${c.textMuted};font-size:16px;line-height:1;padding:2px 7px;border-radius:6px}
+          .icon-x:hover{background:${c.accentLight};color:${c.danger}}
 
-        /* ---- Strength bars ---- */
-        .st-row{display:grid;grid-template-columns:44px 1fr 62px;align-items:center;gap:12px;padding:7px 18px}
-        .st-cur{font-size:12px;font-weight:700;letter-spacing:.4px;color:#c3d3ea}
-        .st-track{position:relative;height:22px;background:#0c1424;border-radius:6px;overflow:hidden;border:1px solid var(--border-soft)}
-        .st-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:#26364f}
-        .st-bar{position:absolute;top:3px;bottom:3px;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1),left .5s,right .5s}
-        .st-bar.pos{background:linear-gradient(90deg,rgba(0,214,143,.55),var(--green))}
-        .st-bar.neg{background:linear-gradient(270deg,rgba(255,77,106,.55),var(--red))}
-        .st-val{font-family:var(--mono);font-size:12px;text-align:right;font-weight:500}
+          /* ---- Strength bars ---- */
+          .st-row{display:grid;grid-template-columns:44px 1fr 62px;align-items:center;gap:12px;padding:7px 18px}
+          .st-cur{font-size:12px;font-weight:700;letter-spacing:.4px;color:${c.text}}
+          .st-track{
+            position:relative;height:22px;background:${c.surface};
+            border-radius:6px;overflow:hidden;border:1px solid ${c.borderMuted};
+          }
+          .st-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:${c.border}}
+          .st-bar{
+            position:absolute;top:3px;bottom:3px;border-radius:4px;
+            transition:width .5s cubic-bezier(.4,0,.2,1),left .5s,right .5s;
+          }
+          .st-bar.pos{background:linear-gradient(90deg, ${c.accentLight}, ${c.success})}
+          .st-bar.neg{background:linear-gradient(270deg, ${c.accentLight}, ${c.danger})}
+          .st-val{font-family:var(--mono);font-size:12px;text-align:right;font-weight:500}
 
-        /* ---- Notice ---- */
-        .notice{display:flex;align-items:center;gap:10px;margin-top:18px;padding:12px 16px;border-radius:11px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.18);font-size:12px;color:#8fb0e0}
-        .notice svg{width:15px;height:15px;flex:none;stroke:#5f8fd6;fill:none;stroke-width:1.8;stroke-linecap:round}
-        .empty{padding:36px;text-align:center;color:var(--dim);font-size:12.5px}
+          /* ---- Notice ---- */
+          .notice{
+            display:flex;align-items:center;gap:10px;margin-top:18px;
+            padding:12px 16px;border-radius:11px;
+            background:${c.accentLight};
+            border:1px solid ${c.accentMuted};
+            font-size:12px;color:${c.textSecondary};
+          }
+          .notice svg{width:15px;height:15px;flex:none;stroke:${c.accent};fill:none;stroke-width:1.8;stroke-linecap:round}
+          .empty{padding:36px;text-align:center;color:${c.textMuted};font-size:12.5px}
 
-        /* ---- View animation ---- */
-        .view{display:block;animation:fade .28s ease}
-        @keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-      `}</style>
+          /* ---- View animation ---- */
+          .view{display:block;animation:fade .28s ease}
+          @keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+        `}</style>
 
-      <div className="forex-page">
-        <TopPanel
-          isSidebarOpen={sidebarOpen}
-          onSidebarToggle={() => setSidebarOpen((v) => !v)}
-          currentTheme="gold"
-          onThemeChange={() => {}}
-        />
+        <div className="forex-page">
+          <TopPanel
+            isSidebarOpen={sidebarOpen}
+            onSidebarToggle={() => setSidebarOpen((v) => !v)}
+            currentTheme={currentTheme}
+            onThemeChange={handleThemeChange}
+          />
 
-        {/* ✅ OptionSideBar stays mounted; visibility is controlled by `isOpen` */}
-        <OptionSideBar
-          isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
-        />
+          {/* ✅ OptionSideBar stays mounted; visibility is controlled by `isOpen`
+              and its internal styled-components read from ThemeProvider */}
+          <OptionSideBar
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
 
-        <div className="forex-content">
-          {view === 'home' && (
-            <ForexHome
-              pairs={pairs}
-              positions={positions}
-              account={account}
-              equityHistory={equityHistory}
-              strength={strength}
-              onTrade={onTrade}
-              onClosePosition={onClosePosition}
-              onViewChange={onViewChange}
-            />
-          )}
-          {view === 'lot'      && <LotSize  pairs={pairs} strength={strength} initialPair={selectedPair} />}
-          {view === 'strength' && <Strength strength={strength} />}
-          {view === 'bots'     && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
+          <div className="forex-content">
+            {view === 'home' && (
+              <ForexHome
+                pairs={pairs}
+                positions={positions}
+                account={account}
+                equityHistory={equityHistory}
+                strength={strength}
+                onTrade={onTrade}
+                onClosePosition={onClosePosition}
+                onViewChange={onViewChange}
+              />
+            )}
+            {view === 'lot'      && <LotSize  pairs={pairs} strength={strength} initialPair={selectedPair} />}
+            {view === 'strength' && <Strength strength={strength} />}
+            {view === 'bots'     && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
+          </div>
         </div>
-      </div>
-    </>
+      </>
+    </ThemeProvider>
   );
 }

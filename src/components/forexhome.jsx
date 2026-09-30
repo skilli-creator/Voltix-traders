@@ -1,4 +1,5 @@
 // src/components/forexhome.jsx
+import { useTheme } from 'styled-components';
 import {
   CURRENCIES, CUR_NAMES, WATCHLIST,
   fmt, fmtMoney, fmtPrice, usdValueOf, contractOf,
@@ -10,6 +11,9 @@ export default function ForexHome({
   pairs, positions, account, equityHistory, strength,
   onTrade, onClosePosition, onViewChange,
 }) {
+  const theme = useTheme();
+  const c = theme?.colors || {};
+
   const pl = totalPL(positions, pairs, strength);
   const equity = account.balance + pl;
 
@@ -26,7 +30,7 @@ export default function ForexHome({
   const st = currencyStrength(strength);
   const sortedCur = CURRENCIES.slice().sort((a, b) => st[b] - st[a]);
   const pick = [...sortedCur.slice(0, 4), ...sortedCur.slice(-4)];
-  const maxAbs = Math.max(...pick.map((c) => Math.abs(st[c])), 0.05);
+  const maxAbs = Math.max(...pick.map((x) => Math.abs(st[x])), 0.05);
 
   const lo = Math.min(...equityHistory);
   const hi = Math.max(...equityHistory);
@@ -108,18 +112,18 @@ export default function ForexHome({
           border-radius:18px;
           margin-bottom:22px;
           overflow:hidden;
-          border:1px solid rgba(0,214,143,.18);
+          border:1px solid ${c.glassBorder || 'rgba(255,255,255,.08)'};
           background:
-            radial-gradient(ellipse at 0% 0%, rgba(0,214,143,.18), transparent 55%),
-            radial-gradient(ellipse at 100% 100%, rgba(59,130,246,.16), transparent 55%),
-            linear-gradient(180deg,#0c1523 0%,#0a121e 100%);
+            radial-gradient(ellipse at 0% 0%, ${c.accentLight || 'rgba(0,214,143,.14)'}, transparent 55%),
+            radial-gradient(ellipse at 100% 100%, ${c.accentLight || 'rgba(59,130,246,.12)'}, transparent 55%),
+            linear-gradient(180deg, ${c.surfaceElevated || '#0c1523'} 0%, ${c.bg || '#0a121e'} 100%);
         }
         .home-hero::before{
           content:'';
           position:absolute;inset:0;
           background-image:
-            linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+            linear-gradient(${c.text}05 1px, transparent 1px),
+            linear-gradient(90deg, ${c.text}05 1px, transparent 1px);
           background-size:40px 40px;
           pointer-events:none;
           mask-image:radial-gradient(ellipse at center, black, transparent 75%);
@@ -132,9 +136,9 @@ export default function ForexHome({
           gap:7px;
           padding:5px 12px;
           border-radius:20px;
-          background:rgba(0,214,143,.12);
-          border:1px solid rgba(0,214,143,.28);
-          color:#00d68f;
+          background:${c.accentLight || 'rgba(0,214,143,.12)'};
+          border:1px solid ${c.accentMuted || 'rgba(0,214,143,.28)'};
+          color:${c.accent || '#00d68f'};
           font-size:10.5px;
           font-weight:700;
           letter-spacing:1.2px;
@@ -142,14 +146,15 @@ export default function ForexHome({
           margin-bottom:16px;
         }
         .hero-badge .dot{
-          width:6px;height:6px;border-radius:50%;background:#00d68f;
-          box-shadow:0 0 8px rgba(0,214,143,.8);
+          width:6px;height:6px;border-radius:50%;
+          background:${c.accent || '#00d68f'};
+          box-shadow:0 0 8px ${c.accent || 'rgba(0,214,143,.8)'};
           animation:heroPulse 2s infinite;
         }
         @keyframes heroPulse{
-          0%{box-shadow:0 0 0 0 rgba(0,214,143,.7)}
-          70%{box-shadow:0 0 0 8px rgba(0,214,143,0)}
-          100%{box-shadow:0 0 0 0 rgba(0,214,143,0)}
+          0%{box-shadow:0 0 0 0 ${c.accentMuted || 'rgba(0,214,143,.7)'}}
+          70%{box-shadow:0 0 0 8px transparent}
+          100%{box-shadow:0 0 0 0 transparent}
         }
 
         .home-hero h1{
@@ -157,12 +162,12 @@ export default function ForexHome({
           line-height:1.15;
           font-weight:800;
           letter-spacing:-1px;
-          color:#e8eefb;
+          color:${c.text || '#e8eefb'};
           margin-bottom:12px;
           max-width:720px;
         }
         .home-hero h1 .accent{
-          background:linear-gradient(90deg,#00d68f,#3b82f6);
+          background:linear-gradient(90deg, ${c.accent || '#00d68f'}, ${c.accentHover || '#3b82f6'});
           -webkit-background-clip:text;
           background-clip:text;
           -webkit-text-fill-color:transparent;
@@ -170,7 +175,7 @@ export default function ForexHome({
         .home-hero p{
           font-size:14.5px;
           line-height:1.6;
-          color:#7d90b0;
+          color:${c.textSecondary || '#7d90b0'};
           max-width:660px;
           margin-bottom:26px;
         }
@@ -180,20 +185,20 @@ export default function ForexHome({
           flex-wrap:wrap;
           gap:22px 40px;
           padding-top:22px;
-          border-top:1px solid rgba(255,255,255,.06);
+          border-top:1px solid ${c.border || 'rgba(255,255,255,.06)'};
         }
         .hero-feature .n{
           font-family:'JetBrains Mono','Courier New',monospace;
           font-size:22px;
           font-weight:700;
           letter-spacing:-.6px;
-          color:#e8eefb;
+          color:${c.text || '#e8eefb'};
           line-height:1;
         }
-        .hero-feature .n span{ color:#00d68f; }
+        .hero-feature .n span{ color:${c.accent || '#00d68f'}; }
         .hero-feature .l{
           font-size:10.5px;
-          color:#5a6b88;
+          color:${c.textMuted || '#5a6b88'};
           text-transform:uppercase;
           letter-spacing:.9px;
           font-weight:600;
@@ -223,17 +228,17 @@ export default function ForexHome({
           font-size:18px;
           font-weight:700;
           letter-spacing:-.4px;
-          color:#e8eefb;
+          color:${c.text || '#e8eefb'};
         }
         .section-head p{
           font-size:12.5px;
-          color:#7d90b0;
+          color:${c.textSecondary || '#7d90b0'};
           margin-top:2px;
         }
         .section-head .count{
           font-size:11px;
           font-weight:600;
-          color:#5a6b88;
+          color:${c.textMuted || '#5a6b88'};
           text-transform:uppercase;
           letter-spacing:1px;
         }
@@ -250,8 +255,8 @@ export default function ForexHome({
           position:relative;
           padding:20px 18px 18px;
           border-radius:14px;
-          background:linear-gradient(180deg,#0f1829 0%,#0d1524 100%);
-          border:1px solid #16223a;
+          background:linear-gradient(180deg, ${c.surfaceElevated || '#0f1829'} 0%, ${c.surface || '#0d1524'} 100%);
+          border:1px solid ${c.border || '#16223a'};
           cursor:pointer;
           transition:.22s cubic-bezier(.16,1,.3,1);
           overflow:hidden;
@@ -260,14 +265,14 @@ export default function ForexHome({
           content:'';
           position:absolute;
           top:0;left:0;right:0;height:2px;
-          background:linear-gradient(90deg,#00d68f,transparent);
+          background:linear-gradient(90deg, ${c.accent || '#00d68f'}, transparent);
           opacity:0;
           transition:opacity .25s;
         }
         .service-card:hover{
           transform:translateY(-3px);
-          border-color:#243550;
-          box-shadow:0 14px 34px rgba(0,0,0,.35);
+          border-color:${c.accentMuted || '#243550'};
+          box-shadow:${c.shadowElevated || '0 14px 34px rgba(0,0,0,.35)'};
         }
         .service-card:hover::before{ opacity:1; }
 
@@ -275,9 +280,9 @@ export default function ForexHome({
           width:38px;height:38px;
           border-radius:10px;
           display:grid;place-items:center;
-          background:linear-gradient(135deg,rgba(0,214,143,.16),rgba(59,130,246,.12));
-          border:1px solid rgba(0,214,143,.22);
-          color:#00d68f;
+          background:linear-gradient(135deg, ${c.accentLight || 'rgba(0,214,143,.16)'}, ${c.accentLight || 'rgba(59,130,246,.12)'});
+          border:1px solid ${c.accentMuted || 'rgba(0,214,143,.22)'};
+          color:${c.accent || '#00d68f'};
           margin-bottom:14px;
         }
         .service-icon svg{ width:18px;height:18px; }
@@ -286,13 +291,13 @@ export default function ForexHome({
           font-size:14px;
           font-weight:700;
           letter-spacing:-.2px;
-          color:#e8eefb;
+          color:${c.text || '#e8eefb'};
           margin-bottom:7px;
         }
         .service-card p{
           font-size:12.5px;
           line-height:1.55;
-          color:#7d90b0;
+          color:${c.textSecondary || '#7d90b0'};
           margin-bottom:14px;
           min-height:58px;
         }
@@ -302,7 +307,7 @@ export default function ForexHome({
           gap:6px;
           font-size:12px;
           font-weight:700;
-          color:#00d68f;
+          color:${c.accent || '#00d68f'};
           letter-spacing:.2px;
         }
         .service-cta::after{
@@ -378,30 +383,30 @@ export default function ForexHome({
             label="Balance"
             value={fmtMoney(account.balance)}
             sub={<><span className="delta pos">USD</span> Base currency</>}
-            accent="#00d68f"
-            icon={<svg viewBox="0 0 24 24" stroke="#00d68f"><rect x="3" y="6" width="18" height="13" rx="2.5" /><path d="M3 10h18" /></svg>}
+            accent={c.success || '#00d68f'}
+            icon={<svg viewBox="0 0 24 24" stroke={c.success || '#00d68f'}><rect x="3" y="6" width="18" height="13" rx="2.5" /><path d="M3 10h18" /></svg>}
           />
           <StatCard
             label="Equity"
             value={fmtMoney(equity)}
             sub={<><span className={`delta ${dayPct >= 0 ? 'pos' : 'neg'}`}>{dayPct >= 0 ? '+' : ''}{fmt(dayPct, 2)}%</span> today</>}
-            accent="#3b82f6"
-            icon={<svg viewBox="0 0 24 24" stroke="#3b82f6"><path d="M3 17l5-6 4 4 8-9" /></svg>}
+            accent={c.accent || '#3b82f6'}
+            icon={<svg viewBox="0 0 24 24" stroke={c.accent || '#3b82f6'}><path d="M3 17l5-6 4 4 8-9" /></svg>}
           />
           <StatCard
             label="Open P/L"
             value={(pl >= 0 ? '+' : '') + fmtMoney(pl)}
             valueClass={pl >= 0 ? 'pos' : 'neg'}
             sub={`${positions.length} open positions`}
-            accent="#f5a524"
-            icon={<svg viewBox="0 0 24 24" stroke="#f5a524"><path d="M12 3v18" /><path d="M6 9l6-6 6 6" /></svg>}
+            accent={c.warning || '#f5a524'}
+            icon={<svg viewBox="0 0 24 24" stroke={c.warning || '#f5a524'}><path d="M12 3v18" /><path d="M6 9l6-6 6 6" /></svg>}
           />
           <StatCard
             label="Free Margin"
             value={fmtMoney(Math.max(freeMargin, 0))}
             sub={<>Margin level <span className="delta pos">{fmt(marginLevel, 1)}%</span></>}
-            accent="#a855f7"
-            icon={<svg viewBox="0 0 24 24" stroke="#a855f7"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" /></svg>}
+            accent={c.accentSoft || '#a855f7'}
+            icon={<svg viewBox="0 0 24 24" stroke={c.accentSoft || '#a855f7'}><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z" /></svg>}
           />
         </div>
 
@@ -415,7 +420,7 @@ export default function ForexHome({
               <span className="muted" style={{ fontSize: 11.5 }}>{fmtMoney(lo)} — {fmtMoney(hi)}</span>
             </div>
             <div style={{ height: 170, padding: '14px 8px 8px' }}>
-              <AreaChart values={equityHistory} w={1000} h={150} color="#00d68f" id="eqGrad" />
+              <AreaChart values={equityHistory} w={1000} h={150} color={c.accent || '#00d68f'} id="eqGrad" />
             </div>
           </div>
         </div>
@@ -462,7 +467,7 @@ export default function ForexHome({
                         <td className={`r num ${up ? 'pos' : 'neg'}`}>
                           {up ? '+' : ''}{fmt(chg, 2)}%
                         </td>
-                        <td><Sparkline values={p.history} w={100} h={28} color={up ? '#00d68f' : '#ff4d6a'} /></td>
+                        <td><Sparkline values={p.history} w={100} h={28} color={up ? (c.success || '#00d68f') : (c.danger || '#ff4d6a')} /></td>
                         <td className="r">
                           <button className="btn trade" onClick={() => onTrade(sym)}>Trade</button>
                         </td>
@@ -481,13 +486,13 @@ export default function ForexHome({
               <span className="muted" style={{ fontSize: 11 }}>vs basket</span>
             </div>
             <div style={{ padding: '9px 0 14px' }}>
-              {pick.map((c) => {
-                const v = st[c];
+              {pick.map((curr) => {
+                const v = st[curr];
                 const w = (Math.abs(v) / maxAbs) * 50;
                 const pos = v >= 0;
                 return (
-                  <div className="st-row" key={c}>
-                    <div className="st-cur">{c}</div>
+                  <div className="st-row" key={curr}>
+                    <div className="st-cur">{curr}</div>
                     <div className="st-track">
                       <div className="st-mid" />
                       <div
