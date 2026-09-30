@@ -306,7 +306,6 @@ const LotsizeIcon = () => (
   </svg>
 );
 
-// ✅ NEW — SVG icon for the empty lot size prompt (replaces emoji)
 const BalancePromptIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="6" width="20" height="13" rx="2.5" />
@@ -1464,39 +1463,59 @@ const Overlay = styled.div`
 `;
 
 const SidebarContainer = styled.aside`
-  position: fixed; top: ${TOPBAR_HEIGHT}; left: 0;
+  position: fixed;
+  top: ${TOPBAR_HEIGHT};
+  left: 0;
   width: 288px;
   height: calc(100vh - ${TOPBAR_HEIGHT});
   height: calc(100dvh - ${TOPBAR_HEIGHT});
-  background: ${props => props.theme?.colors?.sidebarBackground || props.theme?.colors?.surface || '#0F172A'};
+  background: ${props =>
+    props.theme?.colors?.sidebarBackground ||
+    props.theme?.colors?.surface ||
+    '#0F172A'};
   border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 99;
-  display: flex; flex-direction: column; overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
 
+  /* ── Mobile: same top offset as desktop so it sits BELOW the TopBar ── */
   @media (max-width: 768px) {
-    top: 0;
+    top: ${TOPBAR_HEIGHT};
     width: min(85vw, 340px);
-    height: 100vh; height: 100dvh;
-    border-top-right-radius: 20px; border-bottom-right-radius: 20px;
+    height: calc(100vh - ${TOPBAR_HEIGHT});
+    height: calc(100dvh - ${TOPBAR_HEIGHT});
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 20px;
     box-shadow: 16px 0 48px rgba(0, 0, 0, 0.55);
   }
-  @media (max-width: 380px) { width: 88vw; }
+
+  @media (max-width: 380px) {
+    width: 88vw;
+  }
 `;
 
 const SidebarContent = styled.div`
-  flex: 1; overflow-y: auto; overflow-x: hidden;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 18px 14px 20px;
-  display: flex; flex-direction: column; gap: 18px;
-
-  @media (max-width: 768px) { padding-top: calc(18px + env(safe-area-inset-top, 0px)); }
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'}; border-radius: 99px; }
-  &::-webkit-scrollbar-thumb:hover { background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'}; }
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
+    border-radius: 99px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme?.colors?.textMuted || 'rgba(255, 255, 255, 0.25)'};
+  }
 `;
 
 const SidebarHeader = styled.div`
