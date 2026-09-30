@@ -3224,7 +3224,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
             </TermsSection>
-            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data via APIs.</div></TermsSection>
+            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">In Deriv, MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data via Deriv API.  In Forex, MyTradeApp provides automated trading bots and special tools such as Lotsize calculator for risk management.</div></TermsSection>
             <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradeApp does not store your login credentials.</div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
@@ -3232,7 +3232,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradeApp provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
             <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your trading login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
             <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradeApp operates.</div></TermsSection>
-            <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@mytradeapp.com</strong></div></TermsSection>
+            <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>tonnykyalo054@gmail.com</strong></div></TermsSection>
           </>
         );
 
