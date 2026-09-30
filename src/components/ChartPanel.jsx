@@ -18,6 +18,14 @@ const VOLATILITY_MARKETS = [
   { symbol: 'R_100', name: 'Volatility 100 Index', display: '100', color: '#064e3b', isOneSec: false },
 ];
 
+// ============================================
+// CHART / VIEW CONSTANTS
+// ============================================
+const MAX_TICKS = 1500;              // rolling history buffer kept in memory
+const MIN_VISIBLE_TICKS = 15;        // max zoom-in
+const DEFAULT_VISIBLE_TICKS = 80;    // default zoom level
+const WHEEL_ZOOM_STEP = 1.15;
+
 const pulse = keyframes`
   0%, 100% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.15); }
@@ -51,12 +59,6 @@ const PanelContainer = styled.div`
   transition: all 0.3s ease;
   font-weight: 700;
 
-  /* On mobile the TopBar is position: fixed and its own padding
-     includes env(safe-area-inset-top). The parent (Derivdash) only
-     reserves a fixed ~96px, so on notched phones the top of this
-     panel would sit under the bar. Mirror the same inset here so
-     the header + chart top always clear it. On non-notched devices
-     env() = 0 and this is a no-op. */
   @media (max-width: 768px) {
     padding-top: env(safe-area-inset-top, 0px);
   }
@@ -326,12 +328,22 @@ const ChartWrapper = styled.div`
   z-index: 2;
   transition: background 0.3s ease;
   cursor: crosshair;
+
+  /* Let the chart own all touch gestures (pan / pinch zoom) instead of
+     letting the browser scroll or bounce the page. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &.grabbing { cursor: grabbing; }
 `;
 
 const ChartCanvas = styled.canvas`
   width: 100%;
   height: 100%;
   display: block;
+  touch-action: none;
 `;
 
 // ===== CHART OVERLAY: Last digits selector =====
@@ -386,6 +398,57 @@ const DigitDisplaySelector = styled.div`
       color: ${props => props.theme.colors.buttonText || '#fff'};
       border-color: ${props => props.theme.colors.accent};
       box-shadow: 0 0 8px ${props => props.theme.colors.accent + '80'};
+    }
+  }
+`;
+
+// ===== CHART OVERLAY: zoom / live controls =====
+const ChartControls = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 7;
+  pointer-events: auto;
+
+  button {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 6px;
+    border-radius: 8px;
+    border: 1px solid ${p => p.theme.colors.border};
+    background: ${p => (p.theme.colors.surface || p.theme.colors.backgroundSecondary)}ee;
+    color: ${p => p.theme.colors.text};
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: ${p => p.theme.colors.accentLight || p.theme.colors.accentActive};
+      border-color: ${p => p.theme.colors.accent};
+    }
+
+    &.live {
+      width: auto;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      color: ${p => p.theme.colors.accent};
+      border-color: ${p => p.theme.colors.accent};
+      box-shadow: 0 0 10px ${p => p.theme.colors.accent + '60'};
+    }
+
+    @media (max-width: 480px) {
+      min-width: 26px;
+      height: 26px;
+      font-size: 13px;
+      &.live { font-size: 9px; padding: 0 5px; }
     }
   }
 `;
@@ -542,7 +605,9 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 // ============================================
 const ChartPanel = () => {
   const canvasRef = useRef(null);
+  const wrapperRef = useRef(null);
   const theme = useContext(ThemeContext);
+
   const [selectedMarket, setSelectedMarket] = useState(VOLATILITY_MARKETS[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [price, setPrice] = useState(8459.65);
@@ -555,10 +620,26 @@ const ChartPanel = () => {
   const [movementDirection, setMovementDirection] = useState('down');
   const [currentTime, setCurrentTime] = useState('');
 
+  // ===== VIEWPORT (zoom + scroll) =====
+  // count       -> how many ticks are visible
+  // rightOffset -> how many ticks from the newest one the view is scrolled back
+  const [view, setView] = useState({ count: DEFAULT_VISIBLE_TICKS, rightOffset: 0 });
+  const viewRef = useRef(view);
+  useEffect(() => { viewRef.current = view; }, [view]);
+
+  const totalTicksRef = useRef(0);
+  const visibleTicksRef = useRef([]);
+
   // Crosshair state
   const [crosshairData, setCrosshairData] = useState(null);
   const padRef = useRef({ top: 25, bottom: 35, left: 15, right: 65 });
   const chartSizeRef = useRef({ chartW: 0, chartH: 0 });
+
+  // Pointer gesture bookkeeping
+  const pointersRef = useRef(new Map());
+  const gestureRef = useRef({
+    mode: null, lastX: 0, pinchDist: 0, pinchCount: 0, pinchFraction: 0.5, moved: false,
+  });
 
   // State for last digits of the last 4 prices (to support display selection)
   const [recentLastDigits, setRecentLastDigits] = useState([null, null, null, null]);
@@ -575,16 +656,21 @@ const ChartPanel = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // ============================================
+  // TICK GENERATION
+  // ============================================
   useEffect(() => {
     let basePrice = selectedMarket.symbol.includes('100') ? 8459.65 : 230.15;
     const initialTicks = [];
-    for (let i = 0; i < 120; i++) {
+    const INITIAL_COUNT = 600;
+    for (let i = 0; i < INITIAL_COUNT; i++) {
       const delta = (Math.random() - 0.5) * (basePrice * 0.001);
       basePrice = parseFloat((basePrice + delta).toFixed(2));
-      initialTicks.push({ time: Date.now() - (120 - i) * 1000, price: basePrice });
+      initialTicks.push({ time: Date.now() - (INITIAL_COUNT - i) * 1000, price: basePrice });
     }
     setTicks(initialTicks);
     setCrosshairData(null);
+    setView(prev => ({ ...prev, rightOffset: 0 }));
 
     // Set last digits of last 4 initial ticks
     const lastFourTicks = initialTicks.slice(-4);
@@ -599,7 +685,7 @@ const ChartPanel = () => {
         const delta = (Math.random() - 0.5) * (previousPrice * 0.0008);
         const newPrice = parseFloat((previousPrice + delta).toFixed(2));
         const newTick = { time: Date.now(), price: newPrice };
-        const updated = [...prev.slice(-140), newTick];
+        const updated = [...prev.slice(-(MAX_TICKS - 1)), newTick];
 
         setPrice(newPrice);
         const newChange = newPrice - initialTicks[0].price;
@@ -612,18 +698,18 @@ const ChartPanel = () => {
         const currentLastDigit = parseInt(priceStr.slice(-1));
         if (!isNaN(currentLastDigit)) {
           setLastDigit(currentLastDigit);
-          setRecentLastDigits(prev => [...prev.slice(1), currentLastDigit]);
+          setRecentLastDigits(prevDigits => [...prevDigits.slice(1), currentLastDigit]);
         }
 
         // Digit stats
-        const digits = Array(10).fill(0);
+        const digitsCount = Array(10).fill(0);
         updated.forEach(t => {
           const str = t.price.toFixed(2);
           const d = parseInt(str.slice(-1));
-          if (!isNaN(d)) digits[d]++;
+          if (!isNaN(d)) digitsCount[d]++;
         });
         const total = updated.length || 1;
-        const stats = digits.map((count, i) => ({
+        const stats = digitsCount.map((count, i) => ({
           digit: i,
           pct: parseFloat(((count / total) * 100).toFixed(1))
         }));
@@ -631,12 +717,86 @@ const ChartPanel = () => {
 
         return updated;
       });
+
+      // Keep a scrolled-back viewport pinned to the same historical data
+      // while new ticks stream in.
+      setView(prev => (prev.rightOffset > 0
+        ? { ...prev, rightOffset: prev.rightOffset + 1 }
+        : prev));
     }, selectedMarket.isOneSec ? 1000 : 2000);
 
     return () => clearInterval(interval);
   }, [selectedMarket]);
 
-  // Canvas drawing effect (unchanged, but includes crosshair)
+  // ============================================
+  // HELPERS: client X -> chart fraction
+  // ============================================
+  const clientXToFraction = useCallback((clientX) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return 0.5;
+    const rect = canvas.getBoundingClientRect();
+    const pad = padRef.current;
+    const { chartW } = chartSizeRef.current;
+    if (chartW <= 0) return 0.5;
+    return Math.min(1, Math.max(0, (clientX - rect.left - pad.left) / chartW));
+  }, []);
+
+  // ============================================
+  // ZOOM  (absolute target count, anchored on a fraction of the plot)
+  // ============================================
+  const applyZoom = useCallback((newCountRaw, fraction) => {
+    setView(prev => {
+      const total = totalTicksRef.current;
+      if (total < 2) return prev;
+
+      const minCount = Math.min(MIN_VISIBLE_TICKS, total);
+      const count = Math.max(minCount, Math.min(total, Math.round(newCountRaw)));
+
+      const prevCount = Math.max(minCount, Math.min(Math.round(prev.count), total));
+      if (count === prevCount && prev.rightOffset === 0) return prev;
+
+      const end = total - prev.rightOffset;
+      const start = end - prevCount;
+      const anchor = start + fraction * prevCount;
+
+      let s = anchor - fraction * count;
+      let e2 = s + count;
+
+      if (s < 0) { s = 0; e2 = count; }
+      if (e2 > total) { e2 = total; s = total - count; }
+
+      const rightOffset = Math.max(0, Math.min(total - count, total - e2));
+      if (count === prevCount && Math.abs(rightOffset - prev.rightOffset) < 0.5) return prev;
+
+      return { count, rightOffset };
+    });
+  }, []);
+
+  // ============================================
+  // PAN  (horizontal drag, in pixels)
+  // ============================================
+  const panBy = useCallback((dxPixels) => {
+    setView(prev => {
+      const total = totalTicksRef.current;
+      const count = Math.min(Math.round(prev.count), total);
+      const maxOff = Math.max(0, total - count);
+      if (maxOff === 0) return prev;
+
+      const chartW = chartSizeRef.current.chartW || 1;
+      const delta = (dxPixels / chartW) * count;
+      const next = Math.max(0, Math.min(maxOff, prev.rightOffset + delta));
+      if (Math.abs(next - prev.rightOffset) < 0.4) return prev;
+      return { ...prev, rightOffset: next };
+    });
+  }, []);
+
+  const resetToLive = useCallback(() => {
+    setView(prev => ({ ...prev, rightOffset: 0 }));
+  }, []);
+
+  // ============================================
+  // CANVAS DRAWING
+  // ============================================
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || ticks.length < 2 || !theme) return;
@@ -647,14 +807,27 @@ const ChartPanel = () => {
     const height = rect.height;
     if (width === 0 || height === 0) return;
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 
     const ctx = canvas.getContext('2d');
-    ctx.scale(dpr, dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
+
+    // ---------- resolve visible window ----------
+    const total = ticks.length;
+    const visibleCount = Math.max(2, Math.min(Math.round(view.count), total));
+    const maxOffset = Math.max(0, total - visibleCount);
+    const rightOffset = Math.max(0, Math.min(Math.round(view.rightOffset), maxOffset));
+    const endIdx = total - rightOffset;
+    const startIdx = Math.max(0, endIdx - visibleCount);
+    const data = ticks.slice(startIdx, endIdx);
+    if (data.length < 2) return;
+
+    visibleTicksRef.current = data;
+    totalTicksRef.current = total;
 
     const bgColor = theme.colors.bg || theme.colors.background;
     const textColor = theme.colors.text;
@@ -669,14 +842,20 @@ const ChartPanel = () => {
       return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : { r: 10, g: 14, b: 23 };
     };
 
+    // ---------- background ----------
     const rgb = hexToRgb(bgColor);
     const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
-    bgGrad.addColorStop(0, `rgb(${Math.min(rgb.r+2,255)}, ${Math.min(rgb.g+2,255)}, ${Math.min(rgb.b+4,255)})`);
-    bgGrad.addColorStop(1, `rgb(${Math.max(rgb.r-2,0)}, ${Math.max(rgb.g-2,0)}, ${Math.max(rgb.b-4,0)})`);
+    bgGrad.addColorStop(0, `rgb(${Math.min(rgb.r + 2, 255)}, ${Math.min(rgb.g + 2, 255)}, ${Math.min(rgb.b + 4, 255)})`);
+    bgGrad.addColorStop(1, `rgb(${Math.max(rgb.r - 2, 0)}, ${Math.max(rgb.g - 2, 0)}, ${Math.max(rgb.b - 4, 0)})`);
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, width, height);
 
-    const pad = { top: 25, bottom: 35, left: 15, right: 65 };
+    // ---------- padding ----------
+    const isNarrow = width < 520;
+    const pad = isNarrow
+      ? { top: 44, bottom: 28, left: 10, right: 54 }
+      : { top: 25, bottom: 35, left: 15, right: 65 };
+
     const chartW = width - pad.left - pad.right;
     const chartH = height - pad.top - pad.bottom;
     if (chartW <= 0 || chartH <= 0) return;
@@ -684,7 +863,8 @@ const ChartPanel = () => {
     padRef.current = pad;
     chartSizeRef.current = { chartW, chartH };
 
-    const prices = ticks.map(t => t.price);
+    // ---------- price scale ----------
+    const prices = data.map(t => t.price);
     const minP = Math.min(...prices);
     const maxP = Math.max(...prices);
     const paddingP = (maxP - minP) * 0.1 || 0.5;
@@ -693,117 +873,314 @@ const ChartPanel = () => {
     const range = maxPBound - minPBound || 1;
 
     const yScale = (p) => pad.top + chartH - ((p - minPBound) / range) * chartH;
-    const xScale = (i) => pad.left + (i / (ticks.length - 1)) * chartW;
+    const xScale = (i) => pad.left + (i / (data.length - 1)) * chartW;
+    const priceAtY = (y) => minPBound + ((pad.top + chartH - y) / chartH) * range;
 
-    // Grid
+    // ============================================
+    // SQUARE GRID
+    // Pick a cell count per axis so that the cell is as close to a
+    // perfect square as possible, regardless of the panel aspect ratio
+    // (this is what fixes the "stretched rectangle" grid on phones).
+    // ============================================
+    const gridTarget = Math.max(26, Math.min(72, Math.min(chartW, chartH) / 6));
+    const cols = Math.max(2, Math.round(chartW / gridTarget));
+    const rows = Math.max(2, Math.round(chartH / gridTarget));
+    const cellW = chartW / cols;
+    const cellH = chartH / rows;
+
     const gridRgb = hexToRgb(borderColor);
     ctx.strokeStyle = `rgba(${gridRgb.r},${gridRgb.g},${gridRgb.b},0.3)`;
-    ctx.lineWidth = 2;
-    for (let i=0; i<=5; i++) { const y=pad.top+(i/5)*chartH; ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(width-pad.right,y); ctx.stroke(); }
-    for (let i=0; i<=10; i++) { const x=pad.left+(i/10)*chartW; ctx.beginPath(); ctx.moveTo(x,pad.top); ctx.lineTo(x,height-pad.bottom); ctx.stroke(); }
+    ctx.lineWidth = 1;
 
-    // Line
+    for (let j = 0; j <= rows; j++) {
+      const y = pad.top + j * cellH;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(pad.left + chartW, y);
+      ctx.stroke();
+    }
+    for (let i = 0; i <= cols; i++) {
+      const x = pad.left + i * cellW;
+      ctx.beginPath();
+      ctx.moveTo(x, pad.top);
+      ctx.lineTo(x, pad.top + chartH);
+      ctx.stroke();
+    }
+
+    // ---------- price line ----------
     ctx.beginPath();
     ctx.strokeStyle = accentColor;
     ctx.lineWidth = 2.2;
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    for (let i=0; i<ticks.length; i++) {
-      const x = xScale(i), y = yScale(ticks[i].price);
-      if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    for (let i = 0; i < data.length; i++) {
+      const x = xScale(i);
+      const y = yScale(data[i].price);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.stroke();
 
-    // Fill
-    const lastX = xScale(ticks.length-1);
-    ctx.lineTo(lastX, height-pad.bottom); ctx.lineTo(pad.left, height-pad.bottom); ctx.closePath();
+    // ---------- area fill ----------
+    const lastX = xScale(data.length - 1);
+    ctx.lineTo(lastX, pad.top + chartH);
+    ctx.lineTo(pad.left, pad.top + chartH);
+    ctx.closePath();
     const fillRgb = hexToRgb(accentColor);
-    const fillGrad = ctx.createLinearGradient(0, pad.top, 0, height-pad.bottom);
+    const fillGrad = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
     fillGrad.addColorStop(0, `rgba(${fillRgb.r},${fillRgb.g},${fillRgb.b},0.15)`);
     fillGrad.addColorStop(1, `rgba(${fillRgb.r},${fillRgb.g},${fillRgb.b},0)`);
-    ctx.fillStyle = fillGrad; ctx.fill();
+    ctx.fillStyle = fillGrad;
+    ctx.fill();
 
-    // Current price dot
-    const currentPrice = ticks[ticks.length-1].price;
+    // ---------- current price dot ----------
+    const currentPrice = data[data.length - 1].price;
     const currentY = yScale(currentPrice);
-    ctx.fillStyle = accentColor; ctx.beginPath(); ctx.arc(lastX, currentY, 4.5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = accentColor;
+    ctx.beginPath();
+    ctx.arc(lastX, currentY, 4.5, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Dashed line
+    // ---------- dashed guide to price axis ----------
     const dashRgb = hexToRgb(textColor);
-    ctx.setLineDash([4,4]); ctx.strokeStyle = `rgba(${dashRgb.r},${dashRgb.g},${dashRgb.b},0.15)`;
-    ctx.beginPath(); ctx.moveTo(lastX,currentY); ctx.lineTo(width-pad.right,currentY); ctx.stroke(); ctx.setLineDash([]);
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = `rgba(${dashRgb.r},${dashRgb.g},${dashRgb.b},0.15)`;
+    ctx.beginPath();
+    ctx.moveTo(lastX, currentY);
+    ctx.lineTo(width - pad.right, currentY);
+    ctx.stroke();
+    ctx.setLineDash([]);
 
-    // Price badge
-    const badgeW=55, badgeH=20;
-    ctx.fillStyle = accentColor; ctx.beginPath(); ctx.roundRect(width-pad.right+4, currentY-badgeH/2, badgeW, badgeH, 4); ctx.fill();
-    ctx.fillStyle = surfaceColor; ctx.font='bold 10px monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(currentPrice.toFixed(2), width-pad.right+4+badgeW/2, currentY);
+    // ---------- price badge ----------
+    const badgeW = 55, badgeH = 20;
+    ctx.fillStyle = accentColor;
+    ctx.beginPath();
+    ctx.roundRect(width - pad.right + 4, currentY - badgeH / 2, badgeW, badgeH, 4);
+    ctx.fill();
+    ctx.fillStyle = surfaceColor;
+    ctx.font = 'bold 10px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(currentPrice.toFixed(2), width - pad.right + 4 + badgeW / 2, currentY);
 
-    // Y-axis labels
-    ctx.fillStyle = textMutedColor; ctx.font='bold 10px monospace'; ctx.textAlign='left'; ctx.textBaseline='middle';
-    for (let i=0; i<=4; i++) { const p = maxPBound - (i/4)*range; ctx.fillText(p.toFixed(2), width-pad.right+6, yScale(p)); }
-
-    // X-axis labels
-    ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillStyle=textMutedColor; ctx.font='bold 10px monospace';
-    const times = ['08:00','11:00','14:00','17:00','20:00'];
-    times.forEach((t, idx) => ctx.fillText(t, pad.left+(idx/(times.length-1))*chartW, height-pad.bottom+6));
-
-    // Border
-    const borderRgb = hexToRgb(borderColor);
-    ctx.strokeStyle = `rgba(${borderRgb.r},${borderRgb.g},${borderRgb.b},0.2)`; ctx.lineWidth=1; ctx.strokeRect(pad.left,pad.top,chartW,chartH);
-
-    // Crosshair
-    if (crosshairData && crosshairData.index >= 0) {
-      const { index, price: crossPrice, time } = crosshairData;
-      const cx = xScale(index), cy = yScale(crossPrice);
-      ctx.save(); ctx.setLineDash([4,6]); ctx.strokeStyle=accentColor; ctx.lineWidth=1.5; ctx.globalAlpha=0.8;
-      ctx.beginPath(); ctx.moveTo(cx, pad.top); ctx.lineTo(cx, height-pad.bottom); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(pad.left, cy); ctx.lineTo(width-pad.right, cy); ctx.stroke(); ctx.restore();
-
-      const tooltipFont = 'bold 11px monospace'; ctx.font = tooltipFont;
-      const priceText = crossPrice.toFixed(2); const timeText = new Date(time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      const fullText = `${priceText}  ${timeText}`; const textMetrics = ctx.measureText(fullText); const textWidth = textMetrics.width;
-      const paddingX = 8, paddingY = 6; const tooltipWidth = textWidth+paddingX*2; const tooltipHeight=22;
-      let tooltipX = cx+10, tooltipY = cy-30;
-      if (tooltipX+tooltipWidth > width-pad.right) tooltipX = cx - tooltipWidth - 10;
-      if (tooltipY < pad.top+5) tooltipY = cy+15;
-
-      ctx.save(); ctx.globalAlpha=0.95; ctx.fillStyle=surfaceColor; ctx.strokeStyle=accentColor; ctx.lineWidth=1.5;
-      ctx.beginPath(); ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 5); ctx.fill(); ctx.stroke(); ctx.restore();
-
-      ctx.save(); ctx.fillStyle=textColor; ctx.font=tooltipFont; ctx.textBaseline='middle'; ctx.textAlign='left';
-      ctx.fillText(fullText, tooltipX+paddingX, tooltipY+tooltipHeight/2); ctx.restore();
+    // ---------- Y axis labels (aligned to the square grid lines) ----------
+    const priceDecimals = range >= 1 ? 2 : 3;
+    ctx.fillStyle = textMutedColor;
+    ctx.font = 'bold 10px monospace';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    for (let j = 0; j <= rows; j++) {
+      const y = pad.top + j * cellH;
+      const p = priceAtY(y);
+      ctx.fillText(p.toFixed(priceDecimals), width - pad.right + 6, y);
     }
-  }, [ticks, movementDirection, theme, crosshairData]);
 
-  const handleMouseMove = useCallback((e) => {
+    // ---------- X axis labels (real times from the visible window) ----------
+    const xLabelCount = isNarrow ? 3 : 5;
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = textMutedColor;
+    ctx.font = 'bold 10px monospace';
+    for (let i = 0; i < xLabelCount; i++) {
+      const t = i / (xLabelCount - 1);
+      const idx = Math.round(t * (data.length - 1));
+      const d = new Date(data[idx].time);
+      const label = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      const x = pad.left + t * chartW;
+      ctx.textAlign = i === 0 ? 'left' : (i === xLabelCount - 1 ? 'right' : 'center');
+      ctx.fillText(label, x, pad.top + chartH + 6);
+    }
+
+    // ---------- plot border ----------
+    const borderRgb = hexToRgb(borderColor);
+    ctx.strokeStyle = `rgba(${borderRgb.r},${borderRgb.g},${borderRgb.b},0.2)`;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(pad.left, pad.top, chartW, chartH);
+
+    // ---------- crosshair ----------
+    if (crosshairData && crosshairData.index >= 0 && crosshairData.index < data.length) {
+      const { index, price: crossPrice, time } = crosshairData;
+      const cx = xScale(index);
+      const cy = yScale(crossPrice);
+
+      ctx.save();
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = 0.8;
+      ctx.beginPath(); ctx.moveTo(cx, pad.top); ctx.lineTo(cx, pad.top + chartH); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(pad.left, cy); ctx.lineTo(pad.left + chartW, cy); ctx.stroke();
+      ctx.restore();
+
+      const tooltipFont = 'bold 11px monospace';
+      ctx.font = tooltipFont;
+      const priceText = crossPrice.toFixed(2);
+      const timeText = new Date(time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const fullText = `${priceText}  ${timeText}`;
+      const textWidth = ctx.measureText(fullText).width;
+      const paddingX = 8;
+      const tooltipWidth = textWidth + paddingX * 2;
+      const tooltipHeight = 22;
+
+      let tooltipX = cx + 10;
+      let tooltipY = cy - 30;
+      if (tooltipX + tooltipWidth > width - pad.right) tooltipX = cx - tooltipWidth - 10;
+      if (tooltipX < pad.left) tooltipX = pad.left + 4;
+      if (tooltipY < pad.top + 5) tooltipY = cy + 15;
+
+      ctx.save();
+      ctx.globalAlpha = 0.95;
+      ctx.fillStyle = surfaceColor;
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 5);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = textColor;
+      ctx.font = tooltipFont;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      ctx.fillText(fullText, tooltipX + paddingX, tooltipY + tooltipHeight / 2);
+      ctx.restore();
+    }
+  }, [ticks, movementDirection, theme, crosshairData, view]);
+
+  // ============================================
+  // CROSSHAIR (hover only)
+  // ============================================
+  const updateCrosshair = useCallback((clientX, clientY) => {
     const canvas = canvasRef.current;
-    if (!canvas || ticks.length === 0) return;
+    const data = visibleTicksRef.current;
+    if (!canvas || !data || data.length < 2) return;
+
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left, mouseY = e.clientY - rect.top;
-    const pad = padRef.current; const { chartW, chartH } = chartSizeRef.current;
-    const relX = mouseX - pad.left, relY = mouseY - pad.top;
+    const mouseX = clientX - rect.left;
+    const mouseY = clientY - rect.top;
+    const pad = padRef.current;
+    const { chartW, chartH } = chartSizeRef.current;
+
+    const relX = mouseX - pad.left;
+    const relY = mouseY - pad.top;
+
     if (relX >= 0 && relX <= chartW && relY >= 0 && relY <= chartH) {
-      const idx = Math.round((relX / chartW) * (ticks.length - 1));
-      const clampedIdx = Math.max(0, Math.min(idx, ticks.length - 1));
-      const tick = ticks[clampedIdx];
+      const idx = Math.round((relX / chartW) * (data.length - 1));
+      const clampedIdx = Math.max(0, Math.min(idx, data.length - 1));
+      const tick = data[clampedIdx];
       if (tick) {
         setCrosshairData({ index: clampedIdx, price: tick.price, time: tick.time });
         return;
       }
     }
     setCrosshairData(null);
-  }, [ticks]);
+  }, []);
 
-  const handleMouseLeave = useCallback(() => setCrosshairData(null), []);
+  // ============================================
+  // POINTER GESTURES (pan + pinch zoom)
+  // ============================================
+  const handlePointerDown = useCallback((e) => {
+    // Let buttons (digit selector, controls) handle their own taps.
+    if (e.target && e.target.closest && e.target.closest('button')) return;
+
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const el = wrapperRef.current;
+    if (el && el.setPointerCapture) {
+      try { el.setPointerCapture(e.pointerId); } catch (err) { /* noop */ }
+    }
+
+    const pts = [...pointersRef.current.values()];
+    const g = gestureRef.current;
+
+    if (pts.length === 1) {
+      g.mode = 'pan';
+      g.lastX = e.clientX;
+      g.moved = false;
+    } else if (pts.length === 2) {
+      const [a, b] = pts;
+      g.mode = 'pinch';
+      g.pinchDist = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      g.pinchCount = viewRef.current.count;
+      g.pinchFraction = clientXToFraction((a.x + b.x) / 2);
+      g.moved = true;
+    }
+    setCrosshairData(null);
+  }, [clientXToFraction]);
+
+  const handlePointerMove = useCallback((e) => {
+    const tracked = pointersRef.current.has(e.pointerId);
+
+    // Plain hover (mouse, no button pressed) -> crosshair
+    if (!tracked) {
+      if (e.pointerType === 'mouse') updateCrosshair(e.clientX, e.clientY);
+      return;
+    }
+
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const pts = [...pointersRef.current.values()];
+    const g = gestureRef.current;
+
+    if (g.mode === 'pinch' && pts.length >= 2) {
+      const [a, b] = pts;
+      const dist = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      // fingers apart -> dist grows -> factor < 1 -> fewer ticks -> zoom in
+      const factor = g.pinchDist / dist;
+      applyZoom(g.pinchCount * factor, g.pinchFraction);
+    } else if (g.mode === 'pan' && pts.length === 1) {
+      const dx = e.clientX - g.lastX;
+      g.lastX = e.clientX;
+      if (dx !== 0) {
+        g.moved = true;
+        panBy(dx);
+      }
+    }
+  }, [applyZoom, panBy, updateCrosshair]);
+
+  const handlePointerUp = useCallback((e) => {
+    pointersRef.current.delete(e.pointerId);
+    const el = wrapperRef.current;
+    if (el && el.releasePointerCapture) {
+      try { el.releasePointerCapture(e.pointerId); } catch (err) { /* noop */ }
+    }
+
+    const pts = [...pointersRef.current.values()];
+    const g = gestureRef.current;
+    if (pts.length === 0) {
+      g.mode = null;
+    } else if (pts.length === 1) {
+      // dropped from pinch to single-finger pan
+      g.mode = 'pan';
+      g.lastX = pts[0].x;
+    }
+  }, []);
+
+  const handlePointerLeave = useCallback(() => {
+    if (!gestureRef.current.mode) setCrosshairData(null);
+  }, []);
+
+  // Non-passive wheel listener so we can preventDefault the page scroll.
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const onWheel = (ev) => {
+      ev.preventDefault();
+      const factor = ev.deltaY > 0 ? WHEEL_ZOOM_STEP : 1 / WHEEL_ZOOM_STEP;
+      applyZoom(viewRef.current.count * factor, clientXToFraction(ev.clientX));
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [applyZoom, clientXToFraction]);
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const selectMarket = (market) => { setSelectedMarket(market); setIsDropdownOpen(false); };
 
   const allPercentages = digitStats.map(s => s.pct);
-  const maxPct = Math.max(...allPercentages), minPct = Math.min(...allPercentages);
+  const maxPct = Math.max(...allPercentages);
+  const minPct = Math.min(...allPercentages);
 
   const visibleDigits = recentLastDigits.slice(-displayCount);
+  const isScrolledBack = view.rightOffset > 0.5;
+  const isZoomed = view.count !== DEFAULT_VISIBLE_TICKS;
 
   return (
     <PanelContainer>
@@ -847,13 +1224,21 @@ const ChartPanel = () => {
         <LiveIndicator><span className="dot" /> Live Feed</LiveIndicator>
       </Header>
 
-      <ChartWrapper onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+      <ChartWrapper
+        ref={wrapperRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
+      >
         {/* Selector for number of digits to display */}
         <DigitDisplaySelector>
           <span className="selector-label">Show</span>
-          {[1,2,3,4].map(num => (
+          {[1, 2, 3, 4].map(num => (
             <button
               key={num}
+              type="button"
               className={`selector-btn ${displayCount === num ? 'active' : ''}`}
               onClick={() => setDisplayCount(num)}
             >
@@ -861,6 +1246,28 @@ const ChartPanel = () => {
             </button>
           ))}
         </DigitDisplaySelector>
+
+        {/* Zoom / scroll-back controls */}
+        <ChartControls>
+          <button
+            type="button"
+            title="Zoom in"
+            onClick={() => applyZoom(viewRef.current.count / 1.4, 0.5)}
+          >+</button>
+          <button
+            type="button"
+            title="Zoom out"
+            onClick={() => applyZoom(viewRef.current.count * 1.4, 0.5)}
+          >−</button>
+          {(isScrolledBack || isZoomed) && (
+            <button
+              type="button"
+              className="live"
+              title="Back to live"
+              onClick={() => { resetToLive(); applyZoom(DEFAULT_VISIBLE_TICKS, 1); }}
+            >LIVE</button>
+          )}
+        </ChartControls>
 
         {/* Centered overlay showing last N digits */}
         <ChartDigitsOverlay>
