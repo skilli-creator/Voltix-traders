@@ -1,7 +1,7 @@
 // src/components/OptionSideBar.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'; // ✅ FOREX: added useLocation
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import Academy from '../pages/Academy';
 
 // ============================================
@@ -298,7 +298,6 @@ const CloseIcon = () => (
   </svg>
 );
 
-// ✅ FOREX: icon for the Lot Size Calculator nav item
 const LotsizeIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="4" y="3" width="16" height="18" rx="2.5" />
@@ -356,32 +355,21 @@ const FullPanelHeader = styled.div`
   flex-shrink: 0;
 
   .panel-title-group { display: flex; align-items: center; gap: 12px; }
-
   .panel-icon {
     display: flex; align-items: center; justify-content: center;
-    width: 40px; height: 40px;
-    border-radius: 10px;
+    width: 40px; height: 40px; border-radius: 10px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
   }
-
-  .panel-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    letter-spacing: -0.3px;
-  }
-
+  .panel-title { font-size: 18px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; letter-spacing: -0.3px; }
   .panel-close-btn {
     display: flex; align-items: center; justify-content: center;
-    width: 36px; height: 36px;
-    border-radius: 10px;
+    width: 36px; height: 36px; border-radius: 10px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     background: transparent;
     color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    cursor: pointer;
-    transition: all 0.25s ease;
+    cursor: pointer; transition: all 0.25s ease;
 
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
@@ -399,35 +387,23 @@ const FullPanelHeader = styled.div`
 `;
 
 const FullPanelBody = styled.div`
-  flex: 1;
-  overflow-y: auto;
-  padding: 0;
-
+  flex: 1; overflow-y: auto; padding: 0;
   &::-webkit-scrollbar { width: 5px; }
   &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
-    border-radius: 99px;
-  }
-
+  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'}; border-radius: 99px; }
   & > div { padding: 24px 28px; }
-
-  @media (max-width: 480px) {
-    & > div { padding: 16px; }
-  }
+  @media (max-width: 480px) { & > div { padding: 16px; } }
 `;
 
 // ============================================
 // PREMIUM MODAL (Small Popups)
 // ============================================
 const ModalOverlay = styled.div`
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: transparent;
   z-index: 1000;
   display: ${props => (props.isOpen ? 'flex' : 'none')};
-  align-items: center;
-  justify-content: center;
+  align-items: center; justify-content: center;
   padding: 20px;
   animation: ${modalBackdrop} 0.28s ease;
   overflow: hidden;
@@ -437,22 +413,18 @@ const ModalOverlay = styled.div`
 
 const ModalContainer = styled.div`
   max-width: ${props => (props.settings ? '560px' : '480px')};
-  width: 100%;
-  max-height: 90vh;
+  width: 100%; max-height: 90vh;
   background: ${props => props.theme?.colors?.surface || '#0F172A'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   border-radius: 20px;
   box-shadow: ${props => props.theme?.colors?.shadow || '0 32px 80px rgba(0, 0, 0, 0.6)'};
   animation: ${modalSlideIn} 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
 
   &::before {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
+    position: absolute; top: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, ${props => props.theme?.colors?.accent || '#3B82F6'}, transparent);
     background-size: 200% 100%;
@@ -461,70 +433,52 @@ const ModalContainer = styled.div`
 
   &::after {
     content: '';
-    position: absolute;
-    top: -50%; left: -50%;
+    position: absolute; top: -50%; left: -50%;
     width: 200%; height: 200%;
     background: radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.02), transparent 70%);
     pointer-events: none;
   }
 
   @media (max-width: 480px) {
-    max-width: 100%;
-    margin: 8px;
-    border-radius: 16px;
-    max-height: 92vh;
+    max-width: 100%; margin: 8px;
+    border-radius: 16px; max-height: 92vh;
   }
 `;
 
 const ModalHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   padding: 16px 20px 12px;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
+  flex-shrink: 0; position: relative; z-index: 1;
 
   .title-group { display: flex; align-items: center; gap: 10px; min-width: 0; }
-
   .title-icon {
     display: flex; align-items: center; justify-content: center;
-    width: 34px; height: 34px;
-    border-radius: 10px;
+    width: 34px; height: 34px; border-radius: 10px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     flex-shrink: 0;
   }
-
   .title-text {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 15px; font-weight: 700;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: -0.2px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-
   .title-badge {
-    font-size: 9px; font-weight: 700;
-    padding: 2px 8px; border-radius: 999px;
+    font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     flex-shrink: 0;
   }
-
   .close-btn {
     display: flex; align-items: center; justify-content: center;
-    width: 30px; height: 30px;
-    border-radius: 8px;
+    width: 30px; height: 30px; border-radius: 8px;
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-    background: transparent;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    cursor: pointer;
-    transition: all 0.25s ease;
-    flex-shrink: 0;
+    background: transparent; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    cursor: pointer; transition: all 0.25s ease; flex-shrink: 0;
 
     &:hover {
       border-color: ${props => props.theme?.colors?.accent || '#3B82F6'};
@@ -542,18 +496,13 @@ const ModalHeader = styled.div`
 `;
 
 const ModalBody = styled.div`
-  flex: 1;
-  overflow-y: auto;
+  flex: 1; overflow-y: auto;
   padding: 16px 20px 20px;
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb {
-    background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'};
-    border-radius: 99px;
-  }
+  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.scrollbar || 'rgba(255, 255, 255, 0.12)'}; border-radius: 99px; }
 
   @media (max-width: 480px) { padding: 12px 14px 16px; }
 `;
@@ -570,16 +519,14 @@ const JournalToolbar = styled.div`
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 0;
   border-bottom: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  margin-bottom: 16px;
-  flex-wrap: wrap; gap: 12px;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
 
   .toolbar-left { display: flex; align-items: center; gap: 12px; }
   .toolbar-right { display: flex; align-items: center; gap: 12px; }
 `;
 
 const FilterChip = styled.button`
-  padding: 6px 14px;
-  border-radius: 20px;
+  padding: 6px 14px; border-radius: 20px;
   border: 1px solid ${p => (p.active ? p.theme?.colors?.accent || '#3B82F6' : 'rgba(255,255,255,0.08)')};
   background: ${p => (p.active ? p.theme?.colors?.accentLight || 'rgba(59,130,246,0.1)' : 'transparent')};
   color: ${p => (p.active ? p.theme?.colors?.accent || '#3B82F6' : p.theme?.colors?.textSecondary || '#94A3B8')};
@@ -589,8 +536,7 @@ const FilterChip = styled.button`
 `;
 
 const JournalButton = styled.button`
-  padding: 7px 16px;
-  border-radius: 8px;
+  padding: 7px 16px; border-radius: 8px;
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   background: ${p => (p.primary ? p.theme?.colors?.accent || '#3B82F6' : 'transparent')};
   color: ${p => (p.primary ? '#ffffff' : p.theme?.colors?.textSecondary || '#94A3B8')};
@@ -603,8 +549,7 @@ const JournalButton = styled.button`
 `;
 
 const StatsRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 12px; margin-bottom: 20px;
 `;
 
@@ -645,7 +590,8 @@ const JournalTable = styled.table`
 `;
 
 const NoteModal = styled.div`
-  position: fixed; inset: 0; background: transparent; z-index: 3000;
+  position: fixed; inset: 0;
+  background: transparent; z-index: 3000;
   display: flex; align-items: center; justify-content: center;
   animation: ${fadeIn} 0.2s ease;
 `;
@@ -682,28 +628,15 @@ const SettingsProfileCard = styled.div`
   margin-bottom: 18px;
   animation: ${fadeUp} 0.3s ease;
 
-  .profile-avatar {
-    width: 64px; height: 64px; border-radius: 50%;
+  .profile-avatar { width: 64px; height: 64px; border-radius: 50%;
     background: linear-gradient(135deg, #3B82F6, #1D4ED8);
     display: flex; align-items: center; justify-content: center;
     font-size: 24px; font-weight: 700; color: #ffffff;
     flex-shrink: 0; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
   }
-
   .profile-info { flex: 1; min-width: 0; }
-
-  .profile-name {
-    font-size: 17px; font-weight: 700;
-    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    letter-spacing: -0.2px;
-  }
-
-  .profile-email {
-    font-size: 13px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 2px;
-  }
-
+  .profile-name { font-size: 17px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; letter-spacing: -0.2px; }
+  .profile-email { font-size: 13px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; }
   .profile-status {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 11px; font-weight: 600;
@@ -733,8 +666,7 @@ const SettingsCard = styled.div`
     display: flex; align-items: center; gap: 8px;
     font-size: 11px; font-weight: 600;
     color: ${props => props.theme?.colors?.text || '#F8FAFC'};
-    margin-bottom: 14px;
-    padding-bottom: 10px;
+    margin-bottom: 14px; padding-bottom: 10px;
     border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
 
     .icon { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.textMuted || '#4b5563'}; }
@@ -809,21 +741,18 @@ const SettingsBtn = styled.button`
     background: linear-gradient(135deg, #22c55e, #16a34a); color: #040810;
     &:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25); }
   }
-
   &.secondary {
     background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.03)'};
     border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
     color: ${props => props.theme?.colors?.text || '#e2e8f0'};
     &:hover { background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.06)'}; transform: translateY(-2px); }
   }
-
   &.danger {
     background: rgba(239, 68, 68, 0.07);
     border: 1px solid rgba(239, 68, 68, 0.14);
     color: #ef4444;
     &:hover { background: rgba(239, 68, 68, 0.14); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(239, 68, 68, 0.1); }
   }
-
   &:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
 
   @media (max-width: 480px) { padding: 5px 12px; font-size: 9.5px; }
@@ -945,10 +874,8 @@ const RiskInputGroup = styled.div`
 `;
 
 const RiskCalculateBtn = styled.button`
-  width: 100%;
-  padding: 14px 0;
-  border: none;
-  border-radius: 12px;
+  width: 100%; padding: 14px 0;
+  border: none; border-radius: 12px;
   background: linear-gradient(135deg, #3B82F6, #1D4ED8);
   color: #ffffff; font-size: 14px; font-weight: 700;
   cursor: pointer; transition: all 0.3s ease;
@@ -972,8 +899,8 @@ const RiskCalculateBtn = styled.button`
 `;
 
 const RiskResultsGrid = styled.div`
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px; margin-top: 16px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  margin-top: 16px;
   animation: ${fadeUp} 0.5s ease;
 
   @media (max-width: 480px) { grid-template-columns: 1fr 1fr; }
@@ -993,13 +920,7 @@ const RiskResultBox = styled.div`
 
   &:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15); }
 
-  .result-label {
-    font-size: 8px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-bottom: 4px;
-  }
-
+  .result-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-bottom: 4px; }
   .result-value {
     font-size: 18px; font-weight: 700;
     color: ${props =>
@@ -1007,12 +928,7 @@ const RiskResultBox = styled.div`
       props.type === 'reward' ? '#10B981' :
       props.theme?.colors?.accent || '#3B82F6'};
   }
-
-  .result-sub {
-    font-size: 9px;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 4px; opacity: 0.6; font-weight: 500;
-  }
+  .result-sub { font-size: 9px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 4px; opacity: 0.6; font-weight: 500; }
 `;
 
 const RiskSummaryBox = styled.div`
@@ -1034,10 +950,144 @@ const RiskSummaryBox = styled.div`
     &.highlight-ratio .value { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; }
   }
 
-  .summary-divider {
-    height: 1px;
-    background: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-    margin: 6px 0;
+  .summary-divider { height: 1px; background: ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'}; margin: 6px 0; }
+`;
+
+// ============================================
+// ✨ LOT SIZE CALCULATOR (forex) — new styled pieces
+// ============================================
+const LotHeroCard = styled.div`
+  padding: 26px 20px 22px;
+  border-radius: 18px;
+  text-align: center;
+  margin: 6px 0 14px;
+  border: 1px solid ${props => props.theme?.colors?.accentMuted || 'rgba(59,130,246,0.2)'};
+  background:
+    radial-gradient(ellipse at 50% 0%, ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'}, transparent 70%),
+    linear-gradient(180deg, ${props => props.theme?.colors?.surfaceElevated || '#0f1829'} 0%, ${props => props.theme?.colors?.surface || '#0d1524'} 100%);
+  animation: ${fadeUp} 0.4s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, ${props => props.theme?.colors?.accent || '#3B82F6'}, transparent);
+    background-size: 200% 100%;
+    animation: ${shimmer} 4s ease-in-out infinite;
+  }
+
+  .lbl {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-bottom: 10px;
+  }
+
+  .big {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -2.5px;
+    line-height: 1;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+
+    .unit {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+      opacity: 0.7;
+    }
+  }
+
+  .sub {
+    font-size: 12px;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.3px;
+  }
+`;
+
+const SystemChips = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+  justify-content: center;
+`;
+
+const SystemChip = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
+  color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+  border: 1px solid ${props => props.theme?.colors?.accentMuted || 'rgba(59,130,246,0.15)'};
+
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+  }
+`;
+
+const LotBreakdown = styled.div`
+  background: ${props => props.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border-radius: 12px;
+  padding: 2px 0;
+  animation: ${fadeUp} 0.5s ease;
+  overflow: hidden;
+`;
+
+const LotBreakdownRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 16px;
+  font-size: 12px;
+  border-bottom: 1px solid ${props => props.theme?.colors?.borderMuted || 'rgba(255,255,255,0.04)'};
+
+  &:last-child { border-bottom: none; }
+
+  .k { color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; font-weight: 500; }
+  .v { color: ${props => props.theme?.colors?.text || '#F8FAFC'}; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+  &.highlight {
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.06)'};
+    .v { color: ${props => props.theme?.colors?.accent || '#3B82F6'}; font-size: 13px; }
+  }
+`;
+
+const EmptyPrompt = styled.div`
+  padding: 36px 22px;
+  text-align: center;
+  border-radius: 14px;
+  border: 1px dashed ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+  background: ${props => props.theme?.colors?.bg || 'rgba(255,255,255,0.02)'};
+  font-size: 12.5px;
+  color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
+  line-height: 1.6;
+  animation: ${fadeIn} 0.35s ease;
+
+  .icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    opacity: 0.6;
+    filter: grayscale(0.4);
   }
 `;
 
@@ -1047,7 +1097,6 @@ const RiskSummaryBox = styled.div`
 const CopyTradingWrapper = styled.div` animation: ${fadeUp} 0.4s ease; `;
 const CopyHeroSection = styled.div`
   text-align: center; padding: 8px 0 14px;
-
   .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.1); color: #38bdf8; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 6px; }
   .title { font-size: 20px; font-weight: 800; color: #f1f5f9; line-height: 1.1; margin-bottom: 4px;
     .gradient { background: linear-gradient(135deg, #22c55e, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -1260,7 +1309,6 @@ const NotificationItem = styled.div`
     background: ${props => props.type === 'trade' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(59, 130, 246, 0.12)'};
     color: ${props => (props.type === 'trade' ? '#10B981' : props.theme?.colors?.accent || '#3B82F6')};
   }
-
   .notif-content { flex: 1; min-width: 0; }
   .notif-title { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 2px; }
   .notif-desc { font-size: 11px; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; line-height: 1.45; }
@@ -1296,7 +1344,6 @@ const ToggleSwitch = styled.button`
     transition: left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   }
-
   &:hover { opacity: 0.9; }
 `;
 
@@ -1309,7 +1356,6 @@ const VolumeSlider = styled.div`
   margin-bottom: 10px;
 
   .slider-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; min-width: 28px; }
-
   input[type='range'] {
     flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px;
     background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'}; outline: none;
@@ -1321,10 +1367,8 @@ const VolumeSlider = styled.div`
       border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
     }
-
     &:disabled { opacity: 0.4; }
   }
-
   .slider-value { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; min-width: 28px; text-align: right; }
 `;
 
@@ -1332,7 +1376,6 @@ const VoiceEventItem = styled.div`
   display: flex; align-items: center; justify-content: space-between;
   padding: 8px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-
   &:last-child { border-bottom: none; }
 
   .event-name { font-size: 11px; font-weight: 500; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; display: flex; align-items: center; gap: 8px; }
@@ -1349,7 +1392,6 @@ const AccountInfoRow = styled.div`
   display: flex; align-items: center; justify-content: space-between;
   padding: 11px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-
   &:last-child { border-bottom: none; }
 
   .row-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; }
@@ -1365,7 +1407,6 @@ const AccountInfoRow = styled.div`
 const StepItem = styled.div`
   display: flex; gap: 12px; padding: 12px 0;
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-
   &:last-child { border-bottom: none; }
 
   .step-number { width: 26px; height: 26px; border-radius: 50%; background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.12)'}; color: ${props => props.theme?.colors?.accent || '#3B82F6'}; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'}; }
@@ -1376,7 +1417,6 @@ const StepItem = styled.div`
 
 const TermsSection = styled.div`
   margin-bottom: 14px;
-
   .terms-title { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; margin-bottom: 6px; }
   .terms-text { font-size: 11px; line-height: 1.65; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; }
   .terms-bullet { display: flex; align-items: flex-start; gap: 8px; padding: 3px 0; font-size: 11px; line-height: 1.55; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
@@ -1398,7 +1438,6 @@ const Overlay = styled.div`
   opacity: ${props => (props.isOpen ? 1 : 0)};
   visibility: ${props => (props.isOpen ? 'visible' : 'hidden')};
   transition: opacity 0.28s ease, visibility 0.28s ease;
-
   @media (min-width: 769px) { display: none; }
 `;
 
@@ -1422,7 +1461,6 @@ const SidebarContainer = styled.aside`
     border-top-right-radius: 20px; border-bottom-right-radius: 20px;
     box-shadow: 16px 0 48px rgba(0, 0, 0, 0.55);
   }
-
   @media (max-width: 380px) { width: 88vw; }
 `;
 
@@ -1466,7 +1504,6 @@ const SidebarHeader = styled.div`
     cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
 
     &:hover { border-color: ${props => props.theme?.colors?.accent || '#3B82F6'}; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'}; transform: rotate(90deg); }
-
     @media (max-width: 768px) { display: flex; }
   }
 `;
@@ -1633,7 +1670,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // ✅ FOREX: detect current route to switch between Deriv / Forex content
   const location = useLocation();
   const isForex = location.pathname.startsWith('/forex');
   const isDeriv = location.pathname.startsWith('/deriv');
@@ -1646,23 +1682,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
 
-  // Voice states
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [voiceVolume, setVoiceVolume] = useState(70);
   const [voiceEvents, setVoiceEvents] = useState({ trade: true, price: true, market: false, system: true });
 
-  // Popup state
   const [popupType, setPopupType] = useState(null);
   const [popupData, setPopupData] = useState({});
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSettingsPopup, setIsSettingsPopup] = useState(false);
 
-  // Full Panel state
   const [isFullPanelOpen, setIsFullPanelOpen] = useState(false);
   const [fullPanelContent, setFullPanelContent] = useState(null);
   const [currentPanel, setCurrentPanel] = useState(null);
 
-  // Settings state
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [dobError, setDobError] = useState('');
@@ -1671,16 +1703,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     first_name: '', last_name: '', phone: '', date_of_birth: '', gender: '', email: ''
   });
 
-  // ✅ FOREX: Risk / Lot Size calculator state — added setters so the Lot Size
-  // calculator (forex) can be interactive
+  // Lot size / risk calc — for forex only the balance is user-input; the rest is derived.
   const [calcAccountBalance, setCalcAccountBalance] = useState('');
-  const [calcRiskPercent, setCalcRiskPercent] = useState(2);
-  const [calcStopLoss, setCalcStopLoss] = useState(50);
-  const [calcTakeProfit, setCalcTakeProfit] = useState(150);
-  const [calcPair, setCalcPair] = useState('EURUSD');
+  const [calcRiskPercent] = useState(2);
+  const [calcStopLoss] = useState(50);
+  const [calcTakeProfit] = useState(150);
   const [calculated, setCalculated] = useState(false);
 
-  // Copy Trading state (only used on deriv)
   const [copyTokenInput, setCopyTokenInput] = useState('');
   const [copyClientNameInput, setCopyClientNameInput] = useState('');
   const [copyConnecting, setCopyConnecting] = useState(false);
@@ -1688,13 +1717,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [copyClients, setCopyClients] = useState([]);
   const [copyShowAddClient, setCopyShowAddClient] = useState(false);
 
-  // Journal state
   const [journalTrades, setJournalTrades] = useState([]);
   const [filter, setFilter] = useState('all');
   const [noteModal, setNoteModal] = useState(null);
   const [editNote, setEditNote] = useState('');
 
-  // Load user data for settings
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     setFormData({
@@ -1708,7 +1735,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     if (userData.date_of_birth) setCalculatedAge(calculateAge(userData.date_of_birth));
   }, []);
 
-  // Load journal
   useEffect(() => {
     const loadJournal = () => setJournalTrades(JSON.parse(localStorage.getItem('tradeJournal') || '[]'));
     loadJournal();
@@ -1716,7 +1742,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return () => window.removeEventListener('tradeLogUpdated', loadJournal);
   }, []);
 
-  // Auto-open panel from query param
   useEffect(() => {
     const open = searchParams.get('open');
     if (!open) return;
@@ -1773,7 +1798,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const openFullPanel = (content) => { setFullPanelContent(content); setIsFullPanelOpen(true); };
   const closeFullPanel = () => { setIsFullPanelOpen(false); setCurrentPanel(null); setTimeout(() => setFullPanelContent(null), 300); };
 
-  // ===== RISK / LOT SIZE CALC =====
   const calculateRisk = () => {
     if (!calcAccountBalance || parseFloat(calcAccountBalance) <= 0) return;
     setCalculated(true);
@@ -1791,20 +1815,11 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     const maxLoss = riskAmount;
     const maxProfit = rewardAmount;
     const stakeAmount = riskAmount;
-
-    // ✅ FOREX: lot size math
-    const pipValuePerLot = 10; // USD per pip per standard lot (approx for USD-quoted pairs)
-    const lots = stopLoss > 0 ? riskAmount / (stopLoss * pipValuePerLot) : 0;
-    const units = lots * 100000;
-    const margin = units / 100;   // 1:100 leverage
-    const notional = units;
-
-    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit, stakeAmount, balance, lots, units, margin, notional, pipValuePerLot };
+    return { riskAmount, rewardAmount, riskRewardRatio, positionSize, maxLoss, maxProfit, stakeAmount, balance };
   };
 
   const riskResults = getRiskResults();
 
-  // ===== COPY TRADING LOGIC =====
   const handleCopyConnect = () => {
     if (!copyTokenInput.trim()) { setCopyConnectionStatus({ type: 'error', message: 'Please enter a valid API token' }); return; }
     if (!copyClientNameInput.trim()) { setCopyConnectionStatus({ type: 'error', message: "Please enter the client's name" }); return; }
@@ -1878,7 +1893,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleAboutClick = () => { setActiveItem('about'); openPopup('about', { title: 'About MyTradeApp', icon: <CompanyIcon /> }); };
   const handleAcademyClick = () => { setActiveItem('academy'); setCurrentPanel('academy'); openFullPanel(<Academy />); };
 
-  // ✅ FOREX: label switches between "Risk Calculator" (deriv) and "Lot Size Calculator" (forex)
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
     setCalculated(false);
@@ -1952,7 +1966,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleNotificationsClick = () => { setActiveItem('notifications'); setHasNotifications(false); openPopup('notifications', { title: 'Notifications', icon: <BellIcon />, badge: '2 New' }); };
   const handleVoiceClick = () => { setActiveItem('voice'); openPopup('voice', { title: 'Voice Notifications', icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />, badge: voiceEnabled ? 'Active' : 'Muted' }); };
 
-  // ✅ FOREX: title switches based on route
   const handleAccountInfoClick = () => {
     setActiveItem('account-info');
     openPopup('account-info', {
@@ -1964,7 +1977,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleHowToUseClick = () => { setActiveItem('how-to-use'); openPopup('how-to-use', { title: 'How to Use This Tool', icon: <BookIcon /> }); };
   const handleTermsClick = () => { setActiveItem('terms'); openPopup('terms', { title: 'Terms & Conditions', icon: <TermsIcon />, badge: 'v2.0' }); };
 
-  // ===== FEEDBACK =====
   const handleSubmitFeedback = async () => {
     if (rating === 0) { setSubmitStatus('Please select a rating'); setTimeout(() => setSubmitStatus(''), 3000); return; }
     if (!feedbackText.trim()) { setSubmitStatus('Please write your feedback'); setTimeout(() => setSubmitStatus(''), 3000); return; }
@@ -2135,12 +2147,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
+      // ✅ UNIFIED — same content on both platforms
       case 'responsible-trading':
         return (
           <ResponsibleTradingContent>
             <div className="rt-section">
               <div className="rt-title"><InfoIcon /> What is Responsible Trading?</div>
-              <div className="rt-desc">Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.</div>
+              <div className="rt-desc">
+                Responsible trading means maintaining control over your trading activities and making informed decisions. It's about protecting your financial well-being while engaging in trading activities.
+              </div>
             </div>
 
             <div className="rt-section">
@@ -2164,12 +2179,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <div className="rt-tip">
               <div className="tip-title"><AwardIcon /> Pro Tip</div>
               <div className="tip-text">
-                Consider using the <strong style={{ color: '#F8FAFC' }}>{isForex ? 'Lot Size Calculator' : 'Risk Calculator'}</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
+                Consider using the <strong style={{ color: '#F8FAFC' }}>Risk / Lot Size Calculator</strong> tool in this sidebar to determine your optimal position size based on your account balance and risk tolerance.
               </div>
             </div>
           </ResponsibleTradingContent>
         );
 
+      // ✅ UNIFIED
       case 'about':
         return (
           <AboutContent>
@@ -2181,9 +2197,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <div className="about-section">
               <div className="about-title"><InfoIcon /> Our Mission</div>
               <div className="about-desc">
-                {isForex
-                  ? 'MyTradeApp is a third-party trading application designed to provide forex traders with powerful tools, real-time currency quotes, and automated execution capabilities across major, minor and exotic pairs.'
-                  : 'MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities for the Deriv platform.'}
+                MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities across the platforms we support.
               </div>
             </div>
 
@@ -2193,7 +2207,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
                 <div className="about-feature">
                   <div className="feature-icon"><TrendingUpIcon /></div>
                   <div className="feature-name">Real-Time Data</div>
-                  <div className="feature-desc">{isForex ? 'Live FX quotes' : 'Live market streams'}</div>
+                  <div className="feature-desc">Live market streams</div>
                 </div>
                 <div className="about-feature">
                   <div className="feature-icon"><SettingsIcon /></div>
@@ -2222,75 +2236,109 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </AboutContent>
         );
 
-      // ✅ FOREX: branch between Lot Size Calculator (forex) and Risk Calculator (deriv)
+      // ✨ REDESIGNED LOT SIZE CALCULATOR (forex) + unchanged Risk Calculator (deriv)
       case 'risk-calculator':
         if (isForex) {
+          const balance = parseFloat(calcAccountBalance) || 0;
+          const ready = balance > 0;
+
+          const SYSTEM_RISK_PCT = 1;
+          const SYSTEM_SL_PIPS = 20;
+          const SYSTEM_PIP_VALUE = 10;
+          const SYSTEM_LEVERAGE = 100;
+          const SYSTEM_PAIR = 'EURUSD';
+
+          const riskAmount = balance * (SYSTEM_RISK_PCT / 100);
+          const lots = ready ? riskAmount / (SYSTEM_SL_PIPS * SYSTEM_PIP_VALUE) : 0;
+          const units = lots * 100000;
+          const notional = units;
+          const margin = notional / SYSTEM_LEVERAGE;
+          const pipValueAtSize = lots * SYSTEM_PIP_VALUE;
+
           return (
             <>
               <RiskInputGroup>
                 <div className="risk-label">Account Balance <span className="risk-hint">(USD)</span></div>
                 <div className="risk-input-wrap">
                   <span className="risk-prefix">$</span>
-                  <input type="number" placeholder="25000" value={calcAccountBalance} onChange={(e) => setCalcAccountBalance(e.target.value)} min="0" step="100" />
+                  <input
+                    type="number"
+                    placeholder="25000"
+                    value={calcAccountBalance}
+                    onChange={(e) => setCalcAccountBalance(e.target.value)}
+                    min="0"
+                    step="100"
+                    autoFocus
+                  />
+                </div>
+                <div style={{
+                  marginTop: 8,
+                  fontSize: 10.5,
+                  color: 'inherit',
+                  opacity: 0.6,
+                  lineHeight: 1.55
+                }}>
+                  Just enter your balance — the system automatically applies a safe <strong>1% risk model</strong> with a <strong>20-pip stop loss</strong> on EURUSD.
                 </div>
               </RiskInputGroup>
 
-              <RiskInputGroup>
-                <div className="risk-label">Risk per Trade</div>
-                <div className="risk-input-wrap">
-                  <input type="number" placeholder="1" value={calcRiskPercent} onChange={(e) => setCalcRiskPercent(parseFloat(e.target.value) || 0)} min="0.01" step="0.1" />
-                  <span className="risk-suffix">%</span>
-                </div>
-              </RiskInputGroup>
-
-              <RiskInputGroup>
-                <div className="risk-label">Stop Loss</div>
-                <div className="risk-input-wrap">
-                  <input type="number" placeholder="25" value={calcStopLoss} onChange={(e) => setCalcStopLoss(parseFloat(e.target.value) || 0)} min="0.1" step="0.5" />
-                  <span className="risk-suffix">pips</span>
-                </div>
-              </RiskInputGroup>
-
-              <RiskCalculateBtn onClick={calculateRisk} disabled={!calcAccountBalance || parseFloat(calcAccountBalance) <= 0}>
-                Calculate Lot Size
-              </RiskCalculateBtn>
-
-              {calculated && parseFloat(calcAccountBalance) > 0 && (
+              {ready ? (
                 <>
-                  <RiskResultsGrid>
-                    <RiskResultBox type="stake">
-                      <div className="result-label">Position Size</div>
-                      <div className="result-value">{riskResults.lots.toFixed(2)}</div>
-                      <div className="result-sub">standard lots</div>
-                    </RiskResultBox>
-                    <RiskResultBox type="risk">
-                      <div className="result-label">Risk Amount</div>
-                      <div className="result-value">${riskResults.riskAmount.toFixed(2)}</div>
-                      <div className="result-sub">{calcRiskPercent}% of balance</div>
-                    </RiskResultBox>
-                    <RiskResultBox type="reward">
-                      <div className="result-label">Units</div>
-                      <div className="result-value">{riskResults.units.toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
-                      <div className="result-sub">currency units</div>
-                    </RiskResultBox>
-                  </RiskResultsGrid>
+                  <LotHeroCard>
+                    <div className="lbl">Recommended Position Size</div>
+                    <div className="big">
+                      {lots.toFixed(2)}<span className="unit">lots</span>
+                    </div>
+                    <div className="sub">
+                      {units.toLocaleString('en-US', { maximumFractionDigits: 0 })} units · {SYSTEM_PAIR}
+                    </div>
+                  </LotHeroCard>
 
-                  <RiskSummaryBox>
-                    <div className="summary-row"><span className="label">Pip value (per lot)</span><span className="value">${riskResults.pipValuePerLot.toFixed(2)}</span></div>
-                    <div className="summary-row"><span className="label">Stop loss distance</span><span className="value">{calcStopLoss} pips</span></div>
-                    <div className="summary-divider" />
-                    <div className="summary-row"><span className="label">Notional value</span><span className="value">${riskResults.notional.toLocaleString('en-US')}</span></div>
-                    <div className="summary-row highlight-risk"><span className="label">Margin required (1:100)</span><span className="value">${riskResults.margin.toLocaleString('en-US', { maximumFractionDigits: 2 })}</span></div>
-                    <div className="summary-divider" />
-                    <div className="summary-row highlight-ratio"><span className="label">Risk / Reward potential</span><span className="value">1:{(riskResults.rewardAmount / Math.max(riskResults.riskAmount, 0.01)).toFixed(2)}</span></div>
-                  </RiskSummaryBox>
+                  <SystemChips>
+                    <SystemChip><span className="dot" />Risk {SYSTEM_RISK_PCT}%</SystemChip>
+                    <SystemChip><span className="dot" />SL {SYSTEM_SL_PIPS} pips</SystemChip>
+                    <SystemChip><span className="dot" />{SYSTEM_PAIR}</SystemChip>
+                    <SystemChip><span className="dot" />1:{SYSTEM_LEVERAGE}</SystemChip>
+                  </SystemChips>
+
+                  <LotBreakdown>
+                    <LotBreakdownRow>
+                      <span className="k">Risk amount</span>
+                      <span className="v">${riskAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </LotBreakdownRow>
+                    <LotBreakdownRow>
+                      <span className="k">Stop loss distance</span>
+                      <span className="v">{SYSTEM_SL_PIPS} pips</span>
+                    </LotBreakdownRow>
+                    <LotBreakdownRow>
+                      <span className="k">Pip value per lot</span>
+                      <span className="v">${SYSTEM_PIP_VALUE.toFixed(2)}</span>
+                    </LotBreakdownRow>
+                    <LotBreakdownRow>
+                      <span className="k">Pip value at this size</span>
+                      <span className="v">${pipValueAtSize.toFixed(2)}</span>
+                    </LotBreakdownRow>
+                    <LotBreakdownRow>
+                      <span className="k">Notional value</span>
+                      <span className="v">${notional.toLocaleString('en-US', { maximumFractionDigits: 0 })}</span>
+                    </LotBreakdownRow>
+                    <LotBreakdownRow className="highlight">
+                      <span className="k">Margin required (1:{SYSTEM_LEVERAGE})</span>
+                      <span className="v">${margin.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    </LotBreakdownRow>
+                  </LotBreakdown>
                 </>
+              ) : (
+                <EmptyPrompt>
+                  <div className="icon">📊</div>
+                  Enter your account balance above and the system will instantly calculate the perfect position size for you.
+                </EmptyPrompt>
               )}
             </>
           );
         }
 
-        // Deriv Risk Calculator (unchanged)
+        // Deriv Risk Calculator (kept interactive)
         return (
           <>
             <RiskInputGroup>
@@ -2326,7 +2374,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
-      // Copy Trading is only shown on deriv — hidden from forex, but kept in case user navigates back.
       case 'copy-trading':
         return (
           <CopyTradingWrapper>
@@ -2441,12 +2488,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <div>
             <div style={{ padding: '20px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
               <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}><PerformanceIcon /></div>
-              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>
-                {isForex ? 'Forex Trading Performance' : 'Trading Performance'}
-              </h3>
-              <p style={{ color: '#94A3B8', fontSize: '13px' }}>
-                {isForex ? 'Your forex trading performance metrics will appear here.' : 'Your trading performance metrics will appear here.'}
-              </p>
+              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>Trading Performance</h3>
+              <p style={{ color: '#94A3B8', fontSize: '13px' }}>Your trading performance metrics will appear here.</p>
             </div>
           </div>
         );
@@ -2513,7 +2556,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
-      // ✅ FOREX: show forex-specific account rows
       case 'account-info':
         return isForex ? (
           <>
@@ -2537,17 +2579,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
+      // ✅ UNIFIED How-to-use
       case 'how-to-use':
         return (
           <>
-            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">{isForex ? 'Connect Your Forex Broker' : 'Connect Your Account'}</div><div className="step-desc">{isForex ? 'Link your forex broker account to access live currency quotes and execute trades directly.' : 'Link your Deriv account to access real-time trading data and execute trades directly.'}</div></div></StepItem>
-            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">{isForex ? 'Choose from major, minor and exotic currency pairs, plus gold and other commodities.' : 'Choose from multiple volatility indices including 1s and standard options to start trading.'}</div></div></StepItem>
-            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Size Your Position</div><div className="step-desc">{isForex ? 'Use the built-in Lot Size Calculator to determine the correct position size for your risk tolerance.' : 'Select between manual, auto, or bot-assisted trading modes based on your preference.'}</div></div></StepItem>
+            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Connect Your Account</div><div className="step-desc">Link your trading account to access live market data and execute trades directly.</div></div></StepItem>
+            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">Choose from the range of instruments available on your platform.</div></div></StepItem>
+            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Size Your Position</div><div className="step-desc">Use the built-in Risk / Lot Size Calculator to determine the correct position size for your risk tolerance.</div></div></StepItem>
             <StepItem><div className="step-number">4</div><div className="step-content"><div className="step-title">Monitor Your Positions</div><div className="step-desc">Track open positions, view performance metrics, and manage risk in real-time.</div></div></StepItem>
             <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Customize Experience</div><div className="step-desc">Personalize themes, notification settings, and display preferences to suit your workflow.</div></div></StepItem>
           </>
         );
 
+      // ✅ UNIFIED Terms
       case 'terms':
         return (
           <>
@@ -2557,13 +2601,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
             </TermsSection>
-            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">{isForex ? 'MyTradeApp provides automated forex trading, risk management tools, lot size calculation, currency strength analysis, and live quote streaming via broker APIs.' : 'MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data from Deriv via APIs.'}</div></TermsSection>
+            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data via APIs.</div></TermsSection>
             <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradeApp does not store your login credentials.</div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
             </TermsSection>
             <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradeApp provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
-            <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your {isForex ? 'Forex' : 'Deriv'} or Forex login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
+            <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your trading login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
             <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradeApp operates.</div></TermsSection>
             <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>support@mytradeapp.com</strong></div></TermsSection>
           </>
@@ -2656,7 +2700,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             </NavItem>
           </NavSection>
 
-          {/* ✅ FOREX: Linked account label switches */}
           <NavSection>
             <SectionLabel>Account</SectionLabel>
             <NavItem active={activeItem === 'account-info'} onClick={handleAccountInfoClick}>
@@ -2668,7 +2711,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <NavSection>
             <SectionLabel>Trading</SectionLabel>
 
-            {/* ✅ FOREX: Copy Trading hidden on forex */}
             {!isForex && (
               <NavItem active={activeItem === 'copy-trading'} onClick={handleCopyTradingClick}>
                 <span className="nav-icon"><CopyTradeIcon /></span>
@@ -2687,7 +2729,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="nav-label">Journal</span>
             </NavItem>
 
-            {/* ✅ FOREX: Risk Calculator → Lot Size Calculator */}
             <NavItem active={activeItem === 'risk-calculator'} onClick={handleRiskCalculatorClick}>
               <span className="nav-icon">{isForex ? <LotsizeIcon /> : <RiskIcon />}</span>
               <span className="nav-label">{isForex ? 'Lot Size Calculator' : 'Risk Calculator'}</span>
@@ -2738,8 +2779,8 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <SectionLabel>Company</SectionLabel>
             <SideCard>
               <div className="card-title"><span className="icon"><CompanyIcon /></span>About MyTradeApp</div>
-              <div className="card-item"><span className="bullet">•</span><span>Third-party trading application for {isForex ? 'the forex market' : 'Deriv platform'}.</span></div>
-              <div className="card-item"><span className="bullet">•</span><span>{isForex ? 'Provides live currency streams and lot-size / risk tools.' : 'Provides real-time API market streams and automated execution tools.'}</span></div>
+              <div className="card-item"><span className="bullet">•</span><span>Third-party trading application supporting multiple markets.</span></div>
+              <div className="card-item"><span className="bullet">•</span><span>Provides real-time market streams and automated execution tools.</span></div>
               <div className="learn-more" onClick={handleAboutClick}>About us →</div>
             </SideCard>
           </NavSection>
