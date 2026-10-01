@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { useTheme } from 'styled-components';
 import {
   CURRENCIES, WATCHLIST,
-  fmt, fmtMoney, fmtPrice,
+  fmt, fmtPrice,
   currencyStrength, Sparkline,
 } from '../pages/forexdash';
 import tonnyPhoto from '../assets/images/image13.png';
@@ -85,10 +85,10 @@ const Reveal = memo(({ children, delay = 0 }) => {
 });
 Reveal.displayName = 'Reveal';
 
-const Counter = memo(({ to, decimals = 0, prefix = '', suffix = '', separator = true }) => {
+const Counter = memo(({ to, decimals = 0, prefix = '', suffix = '' }) => {
   const [v, ref] = useCountUp(to);
   const num = v.toFixed(decimals);
-  const display = separator ? num.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : num;
+  const display = num.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return <span ref={ref}>{prefix}{display}{suffix}</span>;
 });
 Counter.displayName = 'Counter';
@@ -1259,699 +1259,696 @@ export default function ForexHome({
         }
       `}</style>
 
-      {/* ============ ROOT = same structure as your working file ============ */}
       <section className="view active">
-        <div style={{ background: th.bg, color: th.text, fontFamily: "-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif" }}>
 
-          {/* ===== HERO ===== */}
-          <div className="tf-hero">
-            <div className="tf-hero-inner">
-              <div className="tf-badge"><span className="dot" /> MyTradeApp · Built by Tonnyfx</div>
-              <h1>Master Forex Trading<br />with <span className="g">Tonnyfx</span></h1>
-              <p className="tf-hero-lead">
-                Learn, trade and grow with proven strategies and real results.
-                MyTradeApp is the third-party terminal I built for EUR/USD, BTC/USD and XAU/USD —
-                bots, calculators and risk tools in one place.
-              </p>
-              <div className="tf-hero-cta">
-                <button className="tf-btn tf-btn-gold" onClick={() => go('bots')}>
-                  Join MyTradeApp <Icon name="arrow" size={16} />
-                </button>
-                <button className="tf-btn tf-btn-outline" onClick={() => go('lot')}>
-                  Create Trading Account
-                </button>
+        {/* ===== HERO ===== */}
+        <div className="tf-hero">
+          <div className="tf-hero-inner">
+            <div className="tf-badge"><span className="dot" /> MyTradeApp · Built by Tonnyfx</div>
+            <h1>Master Forex Trading<br />with <span className="g">Tonnyfx</span></h1>
+            <p className="tf-hero-lead">
+              Learn, trade and grow with proven strategies and real results.
+              MyTradeApp is the third-party terminal I built for EUR/USD, BTC/USD and XAU/USD —
+              bots, calculators and risk tools in one place.
+            </p>
+            <div className="tf-hero-cta">
+              <button className="tf-btn tf-btn-gold" onClick={() => go('bots')}>
+                Join MyTradeApp <Icon name="arrow" size={16} />
+              </button>
+              <button className="tf-btn tf-btn-outline" onClick={() => go('lot')}>
+                Create Trading Account
+              </button>
+            </div>
+            <div className="tf-trust">
+              <span><Icon name="users" size={17} /> 3,200+ Traders</span>
+              <span><Icon name="shield" size={17} /> Verified Results</span>
+              <span><Icon name="phone" size={17} /> 24/7 Support</span>
+            </div>
+          </div>
+          <div className="tf-herostats">
+            {STATS.map((s) => (
+              <div key={s.l} className="tf-herostat">
+                <div className="n"><Counter to={s.n} suffix={s.suffix} /></div>
+                <div className="l">{s.l}</div>
               </div>
-              <div className="tf-trust">
-                <span><Icon name="users" size={17} /> 3,200+ Traders</span>
-                <span><Icon name="shield" size={17} /> Verified Results</span>
-                <span><Icon name="phone" size={17} /> 24/7 Support</span>
+            ))}
+          </div>
+        </div>
+
+        {/* ===== TICKER ===== */}
+        <div className="tf-ticker">
+          <div className="tf-ticker-track">
+            {[0, 1].map((dup) =>
+              WATCHLIST.map((sym) => {
+                const price = priceOf(sym);
+                const chg = changeOf(sym);
+                const up = chg >= 0;
+                return (
+                  <div className="tf-tick" key={`${dup}-${sym}`}>
+                    <span className="s">{sym.slice(0, 3)}/{sym.slice(3, 6)}</span>
+                    <span className="p">{price ? fmtPrice(sym, price) : '—'}</span>
+                    <span className={`c ${up ? 'pos' : 'neg'}`}>
+                      {up ? '▲' : '▼'} {fmt(Math.abs(chg), 2)}%
+                    </span>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* ===== ABOUT / FOUNDER ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">About</div>
+                <h2 className="tf-h2">About <span className="g">MyTradeApp</span></h2>
+                <p className="tf-sub">
+                  MyTradeApp is a results-driven forex automation and trading-tools brand by Tonnyfx,
+                  helping traders from beginner to advanced become consistently profitable.
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <div className="tf-founder">
+                <div className="tf-founder-photo">
+                  <img src={tonnyPhoto} alt="Tonny — founder of MyTradeApp" loading="lazy" />
+                  <span className="tf-founder-tag">Founder</span>
+                </div>
+                <div className="tf-founder-body">
+                  <h3 className="tf-founder-name">Tonny (Tonnyfx)</h3>
+                  <div className="tf-founder-role">Forex Trader · Mentor · Founder</div>
+                  <p className="tf-founder-bio">
+                    Tonny is a full-time forex trader, mentor and founder of MyTradeApp, with{' '}
+                    <strong>over 10 years of experience</strong> in the financial markets. Known for a
+                    practical, no-hype approach to trading, he focuses on helping traders develop
+                    discipline, consistency and profitable habits through mentorship and real market
+                    execution. He trades three instruments only —{' '}
+                    <strong>EUR/USD, BTC/USD and XAU/USD</strong> — and every tool inside MyTradeApp
+                    reflects that focus.
+                  </p>
+                  <div className="tf-founder-stats">
+                    {STATS.map((s) => (
+                      <div className="tf-fstat" key={s.l}>
+                        <div className="n"><Counter to={s.n} suffix={s.suffix} /></div>
+                        <div className="l">{s.l}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+            <div className="g-4" style={{ marginTop: 32 }}>
+              {FEATURES.map((f, i) => (
+                <Reveal key={f.title} delay={i * 80}>
+                  <GlowCard className="tf-feature">
+                    <div className="tf-feature-icon"><Icon name={f.icon} /></div>
+                    <h4>{f.title}</h4>
+                    <p>{f.desc}</p>
+                  </GlowCard>
+                </Reveal>
+              ))}
+            </div>
+            <div style={{ marginTop: 56 }}>
+              <Reveal>
+                <div className="tf-head" style={{ marginBottom: 32 }}>
+                  <div className="tf-eyebrow">Philosophy</div>
+                  <h2 className="tf-h2" style={{ fontSize: 30 }}>Four rules I trade by</h2>
+                </div>
+              </Reveal>
+              <div className="g-4">
+                {PHILOSOPHY.map((p, i) => (
+                  <Reveal key={p.title} delay={i * 80}>
+                    <GlowCard className="tf-feature">
+                      <div className="tf-feature-icon"><Icon name={p.icon} /></div>
+                      <h4>{p.title}</h4>
+                      <p>{p.text}</p>
+                    </GlowCard>
+                  </Reveal>
+                ))}
               </div>
             </div>
-            <div className="tf-herostats">
-              {STATS.map((s) => (
-                <div key={s.l} className="tf-herostat">
-                  <div className="n"><Counter to={s.n} suffix={s.suffix} /></div>
-                  <div className="l">{s.l}</div>
-                </div>
+          </div>
+        </div>
+
+        {/* ===== TIMELINE ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Journey</div>
+                <h2 className="tf-h2">The road to <span className="g">MyTradeApp</span></h2>
+                <p className="tf-sub">
+                  A decade of trading, losing, learning and rebuilding — written down honestly.
+                </p>
+              </div>
+            </Reveal>
+            <div className="tf-timeline">
+              {TIMELINE.map((t, i) => (
+                <Reveal key={t.year} delay={i * 60}>
+                  <div className="tf-tl-item">
+                    <div className="y">{t.year}</div>
+                    <h6>{t.title}</h6>
+                    <p>{t.text}</p>
+                  </div>
+                </Reveal>
               ))}
             </div>
           </div>
+        </div>
 
-          {/* ===== TICKER ===== */}
-          <div className="tf-ticker">
-            <div className="tf-ticker-track">
-              {[0, 1].map((dup) =>
-                WATCHLIST.map((sym) => {
-                  const price = priceOf(sym);
-                  const chg = changeOf(sym);
-                  const up = chg >= 0;
-                  return (
-                    <div className="tf-tick" key={`${dup}-${sym}`}>
-                      <span className="s">{sym.slice(0, 3)}/{sym.slice(3, 6)}</span>
-                      <span className="p">{price ? fmtPrice(sym, price) : '—'}</span>
-                      <span className={`c ${up ? 'pos' : 'neg'}`}>
-                        {up ? '▲' : '▼'} {fmt(Math.abs(chg), 2)}%
-                      </span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-
-          {/* ===== ABOUT / FOUNDER ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">About</div>
-                  <h2 className="tf-h2">About <span className="g">MyTradeApp</span></h2>
-                  <p className="tf-sub">
-                    MyTradeApp is a results-driven forex automation and trading-tools brand by Tonnyfx,
-                    helping traders from beginner to advanced become consistently profitable.
-                  </p>
-                </div>
-              </Reveal>
-              <Reveal delay={80}>
-                <div className="tf-founder">
-                  <div className="tf-founder-photo">
-                    <img src={tonnyPhoto} alt="Tonny — founder of MyTradeApp" loading="lazy" />
-                    <span className="tf-founder-tag">Founder</span>
-                  </div>
-                  <div className="tf-founder-body">
-                    <h3 className="tf-founder-name">Tonny (Tonnyfx)</h3>
-                    <div className="tf-founder-role">Forex Trader · Mentor · Founder</div>
-                    <p className="tf-founder-bio">
-                      Tonny is a full-time forex trader, mentor and founder of MyTradeApp, with{' '}
-                      <strong>over 10 years of experience</strong> in the financial markets. Known for a
-                      practical, no-hype approach to trading, he focuses on helping traders develop
-                      discipline, consistency and profitable habits through mentorship and real market
-                      execution. He trades three instruments only —{' '}
-                      <strong>EUR/USD, BTC/USD and XAU/USD</strong> — and every tool inside MyTradeApp
-                      reflects that focus.
-                    </p>
-                    <div className="tf-founder-stats">
-                      {STATS.map((s) => (
-                        <div className="tf-fstat" key={s.l}>
-                          <div className="n"><Counter to={s.n} suffix={s.suffix} /></div>
-                          <div className="l">{s.l}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </Reveal>
-              <div className="g-4" style={{ marginTop: 32 }}>
-                {FEATURES.map((f, i) => (
-                  <Reveal key={f.title} delay={i * 80}>
-                    <GlowCard className="tf-feature">
-                      <div className="tf-feature-icon"><Icon name={f.icon} /></div>
-                      <h4>{f.title}</h4>
-                      <p>{f.desc}</p>
-                    </GlowCard>
-                  </Reveal>
-                ))}
+        {/* ===== SERVICES ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Our Services</div>
+                <h2 className="tf-h2">What <span className="g">MyTradeApp</span> provides</h2>
+                <p className="tf-sub">
+                  From free tools to fully automated bots and 1-on-1 coaching —
+                  everything a retail trader actually needs.
+                </p>
               </div>
-              <div style={{ marginTop: 56 }}>
-                <Reveal>
-                  <div className="tf-head" style={{ marginBottom: 32 }}>
-                    <div className="tf-eyebrow">Philosophy</div>
-                    <h2 className="tf-h2" style={{ fontSize: 30 }}>Four rules I trade by</h2>
-                  </div>
+            </Reveal>
+            <div className="g-4">
+              {SERVICES.map((s, i) => (
+                <Reveal key={s.key} delay={i * 50}>
+                  <GlowCard
+                    className="tf-service"
+                    onClick={() => go(s.key)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter') go(s.key); }}
+                  >
+                    <div className="tf-service-icon"><Icon name={s.icon} /></div>
+                    <h3>{s.title}</h3>
+                    <p>{s.desc}</p>
+                    <span className="tf-service-cta">{s.cta}</span>
+                  </GlowCard>
                 </Reveal>
-                <div className="g-4">
-                  {PHILOSOPHY.map((p, i) => (
-                    <Reveal key={p.title} delay={i * 80}>
-                      <GlowCard className="tf-feature">
-                        <div className="tf-feature-icon"><Icon name={p.icon} /></div>
-                        <h4>{p.title}</h4>
-                        <p>{p.text}</p>
-                      </GlowCard>
-                    </Reveal>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
+        </div>
 
-          {/* ===== TIMELINE ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Journey</div>
-                  <h2 className="tf-h2">The road to <span className="g">MyTradeApp</span></h2>
-                  <p className="tf-sub">
-                    A decade of trading, losing, learning and rebuilding — written down honestly.
-                  </p>
-                </div>
-              </Reveal>
-              <div className="tf-timeline">
-                {TIMELINE.map((t, i) => (
-                  <Reveal key={t.year} delay={i * 60}>
-                    <div className="tf-tl-item">
-                      <div className="y">{t.year}</div>
-                      <h6>{t.title}</h6>
-                      <p>{t.text}</p>
-                    </div>
-                  </Reveal>
-                ))}
+        {/* ===== MARKETS ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Markets</div>
+                <h2 className="tf-h2">Three instruments. <span className="g">Total mastery.</span></h2>
+                <p className="tf-sub">
+                  We deliberately trade a tiny universe so every bot, every calculator
+                  and every risk rule is tuned to the exact behaviour of that market.
+                </p>
               </div>
-            </div>
+            </Reveal>
+            <Reveal delay={100}>
+              <MarketTabs pairs={pairs} onTrade={onTrade} th={th} />
+            </Reveal>
           </div>
+        </div>
 
-          {/* ===== SERVICES ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Our Services</div>
-                  <h2 className="tf-h2">What <span className="g">MyTradeApp</span> provides</h2>
-                  <p className="tf-sub">
-                    From free tools to fully automated bots and 1-on-1 coaching —
-                    everything a retail trader actually needs.
-                  </p>
-                </div>
-              </Reveal>
-              <div className="g-4">
-                {SERVICES.map((s, i) => (
-                  <Reveal key={s.key} delay={i * 50}>
-                    <GlowCard
-                      className="tf-service"
-                      onClick={() => go(s.key)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => { if (e.key === 'Enter') go(s.key); }}
-                    >
-                      <div className="tf-service-icon"><Icon name={s.icon} /></div>
-                      <h3>{s.title}</h3>
-                      <p>{s.desc}</p>
-                      <span className="tf-service-cta">{s.cta}</span>
-                    </GlowCard>
-                  </Reveal>
-                ))}
+        {/* ===== BOTS ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Automation</div>
+                <h2 className="tf-h2">Trading bots, tuned <span className="g">one market each</span></h2>
+                <p className="tf-sub">
+                  Every strategy is built for a single instrument. No generic multi-asset logic —
+                  just focused systems with transparent performance.
+                </p>
               </div>
-            </div>
+            </Reveal>
+            <BotExplorer onViewChange={go} th={th} />
           </div>
+        </div>
 
-          {/* ===== MARKETS ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
+        {/* ===== TOOLS ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Free Tools</div>
+                <h2 className="tf-h2">Size every trade. <span className="g">Read every currency.</span></h2>
+                <p className="tf-sub">
+                  Two tools that do more for your account than any indicator ever will.
+                </p>
+              </div>
+            </Reveal>
+            <div className="g-2">
               <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Markets</div>
-                  <h2 className="tf-h2">Three instruments. <span className="g">Total mastery.</span></h2>
-                  <p className="tf-sub">
-                    We deliberately trade a tiny universe so every bot, every calculator
-                    and every risk rule is tuned to the exact behaviour of that market.
+                <div style={{ padding: '34px 30px', borderRadius: 18, border: `1px solid ${th.border}`, background: th.card }}>
+                  <h3 style={{ fontSize: 19, fontWeight: 800, color: th.text, margin: '0 0 4px' }}>
+                    Advanced Risk Calculator
+                  </h3>
+                  <p style={{ fontSize: 12, color: th.textMuted, margin: '0 0 24px' }}>
+                    Live sliders · dynamic risk score · EUR/USD pip value $10
                   </p>
+                  <RiskCalculator th={th} />
                 </div>
               </Reveal>
               <Reveal delay={100}>
-                <MarketTabs pairs={pairs} onTrade={onTrade} th={th} />
-              </Reveal>
-            </div>
-          </div>
-
-          {/* ===== BOTS ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Automation</div>
-                  <h2 className="tf-h2">Trading bots, tuned <span className="g">one market each</span></h2>
-                  <p className="tf-sub">
-                    Every strategy is built for a single instrument. No generic multi-asset logic —
-                    just focused systems with transparent performance.
-                  </p>
-                </div>
-              </Reveal>
-              <BotExplorer onViewChange={go} th={th} />
-            </div>
-          </div>
-
-          {/* ===== TOOLS ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Free Tools</div>
-                  <h2 className="tf-h2">Size every trade. <span className="g">Read every currency.</span></h2>
-                  <p className="tf-sub">
-                    Two tools that do more for your account than any indicator ever will.
-                  </p>
-                </div>
-              </Reveal>
-              <div className="g-2">
-                <Reveal>
-                  <div style={{ padding: '34px 30px', borderRadius: 18, border: `1px solid ${th.border}`, background: th.card }}>
-                    <h3 style={{ fontSize: 19, fontWeight: 800, color: th.text, margin: '0 0 4px' }}>
-                      Advanced Risk Calculator
+                <div style={{ padding: '34px 30px', borderRadius: 18, border: `1px solid ${th.border}`, background: th.card }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <h3 style={{ fontSize: 19, fontWeight: 800, color: th.text, margin: 0 }}>
+                      Currency Strength
                     </h3>
-                    <p style={{ fontSize: 12, color: th.textMuted, margin: '0 0 24px' }}>
-                      Live sliders · dynamic risk score · EUR/USD pip value $10
-                    </p>
-                    <RiskCalculator th={th} />
+                    <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: 1, padding: '5px 10px',
+                      borderRadius: 6, background: `${th.success}18`, color: th.success,
+                      border: `1px solid ${th.success}44` }}>
+                      <span style={{ marginRight: 5 }}>●</span>LIVE
+                    </span>
                   </div>
-                </Reveal>
-                <Reveal delay={100}>
-                  <div style={{ padding: '34px 30px', borderRadius: 18, border: `1px solid ${th.border}`, background: th.card }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                      <h3 style={{ fontSize: 19, fontWeight: 800, color: th.text, margin: 0 }}>
-                        Currency Strength
-                      </h3>
-                      <span style={{ fontSize: 9.5, fontWeight: 800, letterSpacing: 1, padding: '5px 10px',
-                        borderRadius: 6, background: `${th.success}18`, color: th.success,
-                        border: `1px solid ${th.success}44` }}>
-                        <span style={{ marginRight: 5 }}>●</span>LIVE
-                      </span>
-                    </div>
-                    <p style={{ fontSize: 12, color: th.textMuted, margin: '0 0 22px' }}>
-                      Eight majors vs a weighted basket — updated in real time
-                    </p>
-                    <div style={{ marginBottom: 20 }}>
-                      {pick.map((curr) => {
-                        const v = st[curr] || 0;
-                        const w = (Math.abs(v) / maxAbs) * 50;
-                        const pos = v >= 0;
-                        return (
-                          <div key={curr} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '9px 0' }}>
-                            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12.5, fontWeight: 800,
-                              color: th.text, width: 44, letterSpacing: .5 }}>{curr}</div>
-                            <div style={{ position: 'relative', flex: 1, height: 8, borderRadius: 5, background: th.border }}>
-                              <div style={{ position: 'absolute', left: '50%', top: -3, bottom: -3, width: 1, background: th.border2 }} />
-                              <div style={{
-                                position: 'absolute', top: 0, bottom: 0, borderRadius: 5,
-                                ...(pos
-                                  ? { left: '50%', width: `${w}%`, background: `linear-gradient(90deg, ${th.success}, ${th.accentHover})` }
-                                  : { right: '50%', width: `${w}%`, background: `linear-gradient(270deg, ${th.danger}, ${th.warning})` }),
-                                transition: 'width .6s cubic-bezier(.16,1,.3,1)',
-                              }} />
-                            </div>
-                            <div className={pos ? 'pos' : 'neg'} style={{
-                              fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 800,
-                              minWidth: 56, textAlign: 'right' }}>
-                              {pos ? '+' : ''}{fmt(v, 2)}%
-                            </div>
+                  <p style={{ fontSize: 12, color: th.textMuted, margin: '0 0 22px' }}>
+                    Eight majors vs a weighted basket — updated in real time
+                  </p>
+                  <div style={{ marginBottom: 20 }}>
+                    {pick.map((curr) => {
+                      const v = st[curr] || 0;
+                      const w = (Math.abs(v) / maxAbs) * 50;
+                      const pos = v >= 0;
+                      return (
+                        <div key={curr} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '9px 0' }}>
+                          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12.5, fontWeight: 800,
+                            color: th.text, width: 44, letterSpacing: .5 }}>{curr}</div>
+                          <div style={{ position: 'relative', flex: 1, height: 8, borderRadius: 5, background: th.border }}>
+                            <div style={{ position: 'absolute', left: '50%', top: -3, bottom: -3, width: 1, background: th.border2 }} />
+                            <div style={{
+                              position: 'absolute', top: 0, bottom: 0, borderRadius: 5,
+                              ...(pos
+                                ? { left: '50%', width: `${w}%`, background: `linear-gradient(90deg, ${th.success}, ${th.accentHover})` }
+                                : { right: '50%', width: `${w}%`, background: `linear-gradient(270deg, ${th.danger}, ${th.warning})` }),
+                              transition: 'width .6s cubic-bezier(.16,1,.3,1)',
+                            }} />
                           </div>
-                        );
-                      })}
-                    </div>
-                    <button className="tf-btn tf-btn-gold" style={{ width: '100%' }} onClick={() => go('strength')}>
-                      Open full meter <Icon name="arrow" size={15} />
-                    </button>
-                  </div>
-                </Reveal>
-              </div>
-              <Reveal delay={180}>
-                <div style={{ marginTop: 24, padding: '28px 30px', borderRadius: 18,
-                  border: `1px solid ${th.border}`, background: th.card }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
-                    <div>
-                      <h3 style={{ fontSize: 16, fontWeight: 800, color: th.text, margin: 0 }}>
-                        EUR/USD — Order Book
-                      </h3>
-                      <p style={{ fontSize: 11.5, color: th.textMuted, margin: '4px 0 0' }}>
-                        Simulated depth · live bid/ask pressure
-                      </p>
-                    </div>
-                    <div style={{ display: 'flex', gap: 20 }}>
-                      {[['Best bid', '1.08405', th.success], ['Best ask', '1.08410', th.danger], ['Spread', '0.5', th.accent]].map(([k, v, col]) => (
-                        <div key={k}>
-                          <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: 1, color: th.textMuted, textTransform: 'uppercase' }}>{k}</div>
-                          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, fontWeight: 800, color: col, marginTop: 3 }}>{v}</div>
+                          <div className={pos ? 'pos' : 'neg'} style={{
+                            fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 800,
+                            minWidth: 56, textAlign: 'right' }}>
+                            {pos ? '+' : ''}{fmt(v, 2)}%
+                          </div>
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
-                  <OrderBook th={th} />
-                </div>
-              </Reveal>
-            </div>
-          </div>
-
-          {/* ===== HOW IT WORKS ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">How it works</div>
-                  <h2 className="tf-h2">From sign-up to <span className="g">automated</span> in four steps</h2>
-                </div>
-              </Reveal>
-              <div className="g-4">
-                {[
-                  { n:1, t:'Create your account', d:'Sign up in under a minute. No broker lock-in — connect any supported MT4/MT5 or crypto venue.' },
-                  { n:2, t:'Size your risk', d:'Run the calculator, set your risk %, and let the risk manager cap your daily exposure.' },
-                  { n:3, t:'Switch on a bot', d:'Pick a strategy for EUR/USD, BTC/USD or XAU/USD and let it execute while you watch.' },
-                  { n:4, t:'Review & refine', d:'Every trade lands in your journal with expectancy stats, so next week is sharper.' },
-                ].map((s, i) => (
-                  <Reveal key={s.n} delay={i * 80}>
-                    <GlowCard className="tf-feature">
-                      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 34, fontWeight: 900,
-                        letterSpacing: -2, color: th.accent, lineHeight: 1, marginBottom: 16 }}>
-                        {String(s.n).padStart(2, '0')}
-                      </div>
-                      <h4>{s.t}</h4>
-                      <p>{s.d}</p>
-                    </GlowCard>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ===== FOREX BASICS ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Forex 101</div>
-                  <h2 className="tf-h2">Everything a new trader <span className="g">needs to know</span></h2>
-                  <p className="tf-sub">
-                    Straight answers to the questions every retail trader asks in their first month.
-                  </p>
-                </div>
-              </Reveal>
-              <div className="g-2">
-                {FOREX_BASICS.map((b, i) => (
-                  <Reveal key={b.t} delay={i * 40}>
-                    <div className="tf-basic">
-                      <h4>{b.t}</h4>
-                      <p>{b.d}</p>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ===== SESSIONS ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Market clock</div>
-                  <h2 className="tf-h2">The four <span className="g">forex sessions</span></h2>
-                  <p className="tf-sub">Know when the market moves — timing matters as much as direction.</p>
-                </div>
-              </Reveal>
-              <SessionClock th={th} />
-            </div>
-          </div>
-
-          {/* ===== PIP TABLE ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Reference</div>
-                  <h2 className="tf-h2">Pip value <span className="g">cheat-sheet</span></h2>
-                  <p className="tf-sub">What one pip is worth per lot size, for the instruments you actually trade.</p>
-                </div>
-              </Reveal>
-              <Reveal delay={80}>
-                <div className="tf-tbl-wrap">
-                  <table className="tf-tbl">
-                    <thead>
-                      <tr>
-                        <th>Instrument</th>
-                        <th className="r">1 Pip</th>
-                        <th className="r">Standard lot</th>
-                        <th className="r">Mini lot</th>
-                        <th className="r">Micro lot</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {PIP_TABLE.map((r) => (
-                        <tr key={r.pair}>
-                          <td><strong style={{ color: th.text }}>{r.pair}</strong></td>
-                          <td className="r num">{r.pip}</td>
-                          <td className="r num">{r.std}</td>
-                          <td className="r num">{r.mini}</td>
-                          <td className="r num">{r.micro}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-
-          {/* ===== STRATEGIES ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Strategy library</div>
-                  <h2 className="tf-h2">Four strategies, <span className="g">explained simply</span></h2>
-                  <p className="tf-sub">The playbooks behind our bots — written so a beginner can follow.</p>
-                </div>
-              </Reveal>
-              <div className="g-2">
-                {STRATEGIES.map((s, i) => (
-                  <Reveal key={s.name} delay={i * 60}>
-                    <div className="tf-strat">
-                      <div className="tf-strat-head">
-                        <h4>{s.name}</h4>
-                        <span className="meta">{s.market} · {s.tf}</span>
-                      </div>
-                      <p>{s.desc}</p>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ===== EVENTS ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">This week</div>
-                  <h2 className="tf-h2">High-impact <span className="g">events to watch</span></h2>
-                  <p className="tf-sub">
-                    Filtered for EUR/USD, BTC/USD and XAU/USD. Volatility clusters around these releases.
-                  </p>
-                </div>
-              </Reveal>
-              <Reveal delay={80}>
-                <div className="tf-events">
-                  {EVENTS.map((e, i) => (
-                    <div className="tf-event" key={i}>
-                      <div className="d">{e.day}</div>
-                      <div className="t">{e.time}</div>
-                      <div className="e">{e.event}</div>
-                      <div className={`imp ${e.impact === 'Very High' ? 'vh' : e.impact === 'High' ? 'h' : 'm'}`}>
-                        {e.impact}
-                      </div>
-                      <div className="af">{e.affect}</div>
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
-            </div>
-          </div>
-
-          {/* ===== GLOSSARY ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Glossary</div>
-                  <h2 className="tf-h2">Forex terms, <span className="g">defined plainly</span></h2>
-                </div>
-              </Reveal>
-              <div className="tf-gloss">
-                {GLOSSARY.map((g, i) => (
-                  <Reveal key={g.k} delay={i * 40}>
-                    <div className="tf-term">
-                      <div className="k">{g.k}</div>
-                      <div className="v">{g.v}</div>
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ===== MILESTONES + LIVE FEED ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">By the numbers</div>
-                  <h2 className="tf-h2">The platform in <span className="g">real numbers</span></h2>
-                </div>
-              </Reveal>
-              <div className="g-4">
-                {MILESTONES.map((m, i) => (
-                  <Reveal key={m.l} delay={i * 80}>
-                    <GlowCard className="tf-feature" style={{ textAlign: 'center' }}>
-                      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 28, fontWeight: 800,
-                        letterSpacing: -1.2, color: th.accent, lineHeight: 1, marginBottom: 10 }}>
-                        <Counter to={m.n} prefix={m.prefix || ''} suffix={m.suffix || ''} decimals={m.decimals || 0} />
-                      </div>
-                      <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: 1,
-                        textTransform: 'uppercase', color: th.textMuted }}>
-                        {m.l}
-                      </div>
-                    </GlowCard>
-                  </Reveal>
-                ))}
-              </div>
-              <div style={{ marginTop: 56 }}>
-                <Reveal>
-                  <div className="tf-head" style={{ marginBottom: 26 }}>
-                    <div className="tf-eyebrow">Live activity</div>
-                    <h2 className="tf-h2" style={{ fontSize: 28 }}>What traders are doing <span className="g">right now</span></h2>
-                  </div>
-                </Reveal>
-                <Reveal delay={80}>
-                  <LiveFeed th={th} />
-                </Reveal>
-              </div>
-            </div>
-          </div>
-
-          {/* ===== QUOTE BAND ===== */}
-          <div className="tf-wrap tf-sec-sm">
-            <Reveal>
-              <div className="tf-quote-band">
-                <div className="tf-quote-mark">“</div>
-                <div className="tf-quote-text" key={quoteIdx}>{QUOTES[quoteIdx]}</div>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* ===== PRICING ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Pricing</div>
-                  <h2 className="tf-h2">Simple plans. <span className="g">No lock-in.</span></h2>
-                  <p className="tf-sub">Start free, upgrade when you are ready to run live bots.</p>
-                </div>
-              </Reveal>
-              <Pricing th={th} onViewChange={go} />
-            </div>
-          </div>
-
-          {/* ===== TESTIMONIALS ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">Feedback</div>
-                  <h2 className="tf-h2">What the <span className="g">community</span> says</h2>
-                </div>
-              </Reveal>
-              <Reveal delay={80}>
-                <TestimonialCarousel th={th} />
-              </Reveal>
-            </div>
-          </div>
-
-          {/* ===== ARTICLES ===== */}
-          <div className="tf-sec">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">From the journal</div>
-                  <h2 className="tf-h2">Latest <span className="g">articles & guides</span></h2>
-                  <p className="tf-sub">
-                    Written by Tonny and the community — practical, no-hype content, updated weekly.
-                  </p>
-                </div>
-              </Reveal>
-              <div className="g-3">
-                {ARTICLES.map((a, i) => (
-                  <Reveal key={a.title} delay={i * 50}>
-                    <GlowCard className="tf-article">
-                      <div className="cat">{a.cat}</div>
-                      <h5>{a.title}</h5>
-                      <div className="meta"><span>{a.date}</span><span>{a.read}</span></div>
-                    </GlowCard>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* ===== NEWSLETTER ===== */}
-          <div className="tf-wrap tf-sec-sm">
-            <Reveal>
-              <div className="tf-news">
-                <div>
-                  <h3>Get one useful forex idea each week.</h3>
-                  <p>
-                    No spam, no affiliate links. Just a short note on what moved in EUR/USD,
-                    BTC/USD and XAU/USD, plus one practical risk tip. Unsubscribe anytime.
-                  </p>
-                </div>
-                <form className="tf-news-form" onSubmit={(e) => e.preventDefault()}>
-                  <input type="email" placeholder="you@email.com" aria-label="Email address" />
-                  <button className="tf-btn tf-btn-gold" type="submit">Subscribe</button>
-                </form>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* ===== FAQ ===== */}
-          <div className="tf-sec tf-alt">
-            <div className="tf-wrap">
-              <Reveal>
-                <div className="tf-head">
-                  <div className="tf-eyebrow">FAQ</div>
-                  <h2 className="tf-h2">Questions traders <span className="g">ask first</span></h2>
-                </div>
-              </Reveal>
-              <FAQAccordion th={th} />
-            </div>
-          </div>
-
-          {/* ===== CTA ===== */}
-          <div className="tf-wrap tf-sec">
-            <Reveal>
-              <div className="tf-cta">
-                <h2>Ready to trade with <span className="g">an edge</span>?</h2>
-                <p>
-                  Start with the free tools, then let a bot handle the execution. No broker lock-in,
-                  no hidden promises — just a better way to trade EUR/USD, BTC/USD and XAU/USD.
-                </p>
-                <div className="tf-cta-row">
-                  <button className="tf-btn tf-btn-gold" onClick={() => go('bots')}>
-                    Join MyTradeApp <Icon name="arrow" size={16} />
-                  </button>
-                  <button className="tf-btn tf-btn-outline" onClick={() => go('strength')}>
-                    Check Currency Strength
+                  <button className="tf-btn tf-btn-gold" style={{ width: '100%' }} onClick={() => go('strength')}>
+                    Open full meter <Icon name="arrow" size={15} />
                   </button>
                 </div>
+              </Reveal>
+            </div>
+            <Reveal delay={180}>
+              <div style={{ marginTop: 24, padding: '28px 30px', borderRadius: 18,
+                border: `1px solid ${th.border}`, background: th.card }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  marginBottom: 18, flexWrap: 'wrap', gap: 10 }}>
+                  <div>
+                    <h3 style={{ fontSize: 16, fontWeight: 800, color: th.text, margin: 0 }}>
+                      EUR/USD — Order Book
+                    </h3>
+                    <p style={{ fontSize: 11.5, color: th.textMuted, margin: '4px 0 0' }}>
+                      Simulated depth · live bid/ask pressure
+                    </p>
+                  </div>
+                  <div style={{ display: 'flex', gap: 20 }}>
+                    {[['Best bid', '1.08405', th.success], ['Best ask', '1.08410', th.danger], ['Spread', '0.5', th.accent]].map(([k, v, col]) => (
+                      <div key={k}>
+                        <div style={{ fontSize: 9.5, fontWeight: 700, letterSpacing: 1, color: th.textMuted, textTransform: 'uppercase' }}>{k}</div>
+                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, fontWeight: 800, color: col, marginTop: 3 }}>{v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <OrderBook th={th} />
               </div>
             </Reveal>
           </div>
-
-          {/* ===== NOTICE ===== */}
-          <div className="tf-wrap" style={{ paddingBottom: 70 }}>
-            <div className="tf-notice">
-              <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 8h.01M11 12h1v4h1" />
-              </svg>
-              <span>
-                MyTradeApp is a third-party analytics and automation platform created by Tonny
-                (Tonnyfx) — not a broker or investment advisor. All performance figures shown are
-                simulated and for illustration only. Trading forex, crypto and metals carries
-                significant risk of loss. Never risk capital you cannot afford to lose.
-              </span>
-            </div>
-          </div>
-
         </div>
+
+        {/* ===== HOW IT WORKS ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">How it works</div>
+                <h2 className="tf-h2">From sign-up to <span className="g">automated</span> in four steps</h2>
+              </div>
+            </Reveal>
+            <div className="g-4">
+              {[
+                { n:1, t:'Create your account', d:'Sign up in under a minute. No broker lock-in — connect any supported MT4/MT5 or crypto venue.' },
+                { n:2, t:'Size your risk', d:'Run the calculator, set your risk %, and let the risk manager cap your daily exposure.' },
+                { n:3, t:'Switch on a bot', d:'Pick a strategy for EUR/USD, BTC/USD or XAU/USD and let it execute while you watch.' },
+                { n:4, t:'Review & refine', d:'Every trade lands in your journal with expectancy stats, so next week is sharper.' },
+              ].map((s, i) => (
+                <Reveal key={s.n} delay={i * 80}>
+                  <GlowCard className="tf-feature">
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 34, fontWeight: 900,
+                      letterSpacing: -2, color: th.accent, lineHeight: 1, marginBottom: 16 }}>
+                      {String(s.n).padStart(2, '0')}
+                    </div>
+                    <h4>{s.t}</h4>
+                    <p>{s.d}</p>
+                  </GlowCard>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ===== FOREX BASICS ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Forex 101</div>
+                <h2 className="tf-h2">Everything a new trader <span className="g">needs to know</span></h2>
+                <p className="tf-sub">
+                  Straight answers to the questions every retail trader asks in their first month.
+                </p>
+              </div>
+            </Reveal>
+            <div className="g-2">
+              {FOREX_BASICS.map((b, i) => (
+                <Reveal key={b.t} delay={i * 40}>
+                  <div className="tf-basic">
+                    <h4>{b.t}</h4>
+                    <p>{b.d}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ===== SESSIONS ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Market clock</div>
+                <h2 className="tf-h2">The four <span className="g">forex sessions</span></h2>
+                <p className="tf-sub">Know when the market moves — timing matters as much as direction.</p>
+              </div>
+            </Reveal>
+            <SessionClock th={th} />
+          </div>
+        </div>
+
+        {/* ===== PIP TABLE ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Reference</div>
+                <h2 className="tf-h2">Pip value <span className="g">cheat-sheet</span></h2>
+                <p className="tf-sub">What one pip is worth per lot size, for the instruments you actually trade.</p>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <div className="tf-tbl-wrap">
+                <table className="tf-tbl">
+                  <thead>
+                    <tr>
+                      <th>Instrument</th>
+                      <th className="r">1 Pip</th>
+                      <th className="r">Standard lot</th>
+                      <th className="r">Mini lot</th>
+                      <th className="r">Micro lot</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PIP_TABLE.map((r) => (
+                      <tr key={r.pair}>
+                        <td><strong style={{ color: th.text }}>{r.pair}</strong></td>
+                        <td className="r num">{r.pip}</td>
+                        <td className="r num">{r.std}</td>
+                        <td className="r num">{r.mini}</td>
+                        <td className="r num">{r.micro}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* ===== STRATEGIES ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Strategy library</div>
+                <h2 className="tf-h2">Four strategies, <span className="g">explained simply</span></h2>
+                <p className="tf-sub">The playbooks behind our bots — written so a beginner can follow.</p>
+              </div>
+            </Reveal>
+            <div className="g-2">
+              {STRATEGIES.map((s, i) => (
+                <Reveal key={s.name} delay={i * 60}>
+                  <div className="tf-strat">
+                    <div className="tf-strat-head">
+                      <h4>{s.name}</h4>
+                      <span className="meta">{s.market} · {s.tf}</span>
+                    </div>
+                    <p>{s.desc}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ===== EVENTS ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">This week</div>
+                <h2 className="tf-h2">High-impact <span className="g">events to watch</span></h2>
+                <p className="tf-sub">
+                  Filtered for EUR/USD, BTC/USD and XAU/USD. Volatility clusters around these releases.
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <div className="tf-events">
+                {EVENTS.map((e, i) => (
+                  <div className="tf-event" key={i}>
+                    <div className="d">{e.day}</div>
+                    <div className="t">{e.time}</div>
+                    <div className="e">{e.event}</div>
+                    <div className={`imp ${e.impact === 'Very High' ? 'vh' : e.impact === 'High' ? 'h' : 'm'}`}>
+                      {e.impact}
+                    </div>
+                    <div className="af">{e.affect}</div>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* ===== GLOSSARY ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Glossary</div>
+                <h2 className="tf-h2">Forex terms, <span className="g">defined plainly</span></h2>
+              </div>
+            </Reveal>
+            <div className="tf-gloss">
+              {GLOSSARY.map((g, i) => (
+                <Reveal key={g.k} delay={i * 40}>
+                  <div className="tf-term">
+                    <div className="k">{g.k}</div>
+                    <div className="v">{g.v}</div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ===== MILESTONES + LIVE FEED ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">By the numbers</div>
+                <h2 className="tf-h2">The platform in <span className="g">real numbers</span></h2>
+              </div>
+            </Reveal>
+            <div className="g-4">
+              {MILESTONES.map((m, i) => (
+                <Reveal key={m.l} delay={i * 80}>
+                  <GlowCard className="tf-feature" style={{ textAlign: 'center' }}>
+                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 28, fontWeight: 800,
+                      letterSpacing: -1.2, color: th.accent, lineHeight: 1, marginBottom: 10 }}>
+                      <Counter to={m.n} prefix={m.prefix || ''} suffix={m.suffix || ''} decimals={m.decimals || 0} />
+                    </div>
+                    <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: 1,
+                      textTransform: 'uppercase', color: th.textMuted }}>
+                      {m.l}
+                    </div>
+                  </GlowCard>
+                </Reveal>
+              ))}
+            </div>
+            <div style={{ marginTop: 56 }}>
+              <Reveal>
+                <div className="tf-head" style={{ marginBottom: 26 }}>
+                  <div className="tf-eyebrow">Live activity</div>
+                  <h2 className="tf-h2" style={{ fontSize: 28 }}>What traders are doing <span className="g">right now</span></h2>
+                </div>
+              </Reveal>
+              <Reveal delay={80}>
+                <LiveFeed th={th} />
+              </Reveal>
+            </div>
+          </div>
+        </div>
+
+        {/* ===== QUOTE BAND ===== */}
+        <div className="tf-wrap tf-sec-sm">
+          <Reveal>
+            <div className="tf-quote-band">
+              <div className="tf-quote-mark">“</div>
+              <div className="tf-quote-text" key={quoteIdx}>{QUOTES[quoteIdx]}</div>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* ===== PRICING ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Pricing</div>
+                <h2 className="tf-h2">Simple plans. <span className="g">No lock-in.</span></h2>
+                <p className="tf-sub">Start free, upgrade when you are ready to run live bots.</p>
+              </div>
+            </Reveal>
+            <Pricing th={th} onViewChange={go} />
+          </div>
+        </div>
+
+        {/* ===== TESTIMONIALS ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">Feedback</div>
+                <h2 className="tf-h2">What the <span className="g">community</span> says</h2>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <TestimonialCarousel th={th} />
+            </Reveal>
+          </div>
+        </div>
+
+        {/* ===== ARTICLES ===== */}
+        <div className="tf-sec">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">From the journal</div>
+                <h2 className="tf-h2">Latest <span className="g">articles & guides</span></h2>
+                <p className="tf-sub">
+                  Written by Tonny and the community — practical, no-hype content, updated weekly.
+                </p>
+              </div>
+            </Reveal>
+            <div className="g-3">
+              {ARTICLES.map((a, i) => (
+                <Reveal key={a.title} delay={i * 50}>
+                  <GlowCard className="tf-article">
+                    <div className="cat">{a.cat}</div>
+                    <h5>{a.title}</h5>
+                    <div className="meta"><span>{a.date}</span><span>{a.read}</span></div>
+                  </GlowCard>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ===== NEWSLETTER ===== */}
+        <div className="tf-wrap tf-sec-sm">
+          <Reveal>
+            <div className="tf-news">
+              <div>
+                <h3>Get one useful forex idea each week.</h3>
+                <p>
+                  No spam, no affiliate links. Just a short note on what moved in EUR/USD,
+                  BTC/USD and XAU/USD, plus one practical risk tip. Unsubscribe anytime.
+                </p>
+              </div>
+              <form className="tf-news-form" onSubmit={(e) => e.preventDefault()}>
+                <input type="email" placeholder="you@email.com" aria-label="Email address" />
+                <button className="tf-btn tf-btn-gold" type="submit">Subscribe</button>
+              </form>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* ===== FAQ ===== */}
+        <div className="tf-sec tf-alt">
+          <div className="tf-wrap">
+            <Reveal>
+              <div className="tf-head">
+                <div className="tf-eyebrow">FAQ</div>
+                <h2 className="tf-h2">Questions traders <span className="g">ask first</span></h2>
+              </div>
+            </Reveal>
+            <FAQAccordion th={th} />
+          </div>
+        </div>
+
+        {/* ===== CTA ===== */}
+        <div className="tf-wrap tf-sec">
+          <Reveal>
+            <div className="tf-cta">
+              <h2>Ready to trade with <span className="g">an edge</span>?</h2>
+              <p>
+                Start with the free tools, then let a bot handle the execution. No broker lock-in,
+                no hidden promises — just a better way to trade EUR/USD, BTC/USD and XAU/USD.
+              </p>
+              <div className="tf-cta-row">
+                <button className="tf-btn tf-btn-gold" onClick={() => go('bots')}>
+                  Join MyTradeApp <Icon name="arrow" size={16} />
+                </button>
+                <button className="tf-btn tf-btn-outline" onClick={() => go('strength')}>
+                  Check Currency Strength
+                </button>
+              </div>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* ===== NOTICE ===== */}
+        <div className="tf-wrap" style={{ paddingBottom: 70 }}>
+          <div className="tf-notice">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 8h.01M11 12h1v4h1" />
+            </svg>
+            <span>
+              MyTradeApp is a third-party analytics and automation platform created by Tonny
+              (Tonnyfx) — not a broker or investment advisor. All performance figures shown are
+              simulated and for illustration only. Trading forex, crypto and metals carries
+              significant risk of loss. Never risk capital you cannot afford to lose.
+            </span>
+          </div>
+        </div>
+
       </section>
     </>
   );
