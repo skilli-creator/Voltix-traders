@@ -22,6 +22,12 @@ const pulseGlow = keyframes`
   50% { opacity: 0.9; transform: scale(1.08); }
 `;
 
+const sessionPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 var(--sc-glow); }
+  70% { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+`;
+
 const slideUp = keyframes`
   from { opacity: 0; transform: translateY(30px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -89,14 +95,14 @@ const ExitIcon = () => (
 );
 
 const ChevronDownIcon = ({ open }) => (
-  <svg 
-    width="12" 
-    height="12" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
     strokeLinejoin="round"
     style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}
   >
@@ -144,50 +150,301 @@ const EyeIcon = ({ visible }) => (
   </svg>
 );
 
-// ---------- Forex nav icons ----------
-const DashboardIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 10.5 12 3l9 7.5" />
-    <path d="M5.5 9.6V20h13V9.6" />
-    <path d="M9.5 20v-5h5v5" />
-  </svg>
-);
-
-const CalculatorIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="3" width="16" height="18" rx="2.5" />
-    <path d="M8 7.5h8" />
-    <path d="M8 12h1.5M12 12h1.5M16 12h.01M8 16h1.5M12 16h1.5M16 16h.01" />
-  </svg>
-);
-
-const StrengthIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 20v-8" />
-    <path d="M12 20V4" />
-    <path d="M19 20v-5" />
-  </svg>
-);
-
-const BotsIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3.5" y="7.5" width="17" height="12" rx="3.5" />
-    <path d="M12 7.5V4" />
-    <circle cx="12" cy="3.4" r="1" />
-    <path d="M9 13h.01M15 13h.01" />
-    <path d="M9.5 16.5h5" />
+const GlobeIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18" />
+    <path d="M12 3c3 3 3 15 0 18" />
+    <path d="M12 3c-3 3-3 15 0 18" />
   </svg>
 );
 
 // ============================================
-// FOREX NAV ITEMS — Home (not Dashboard)
+// FOREX SESSIONS DATA
 // ============================================
-export const FOREX_NAV_ITEMS = [
-  { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
-  { key: 'lot',      label: 'Lot Calculator', path: '/forexdash/lot',      icon: <CalculatorIcon /> },
-  { key: 'strength', label: 'Strength',       path: '/forexdash/strength', icon: <StrengthIcon /> },
-  { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
+const FOREX_SESSIONS = [
+  { key: 'sydney',   name: 'Sydney',   flag: '🇦🇺', openUTC: 22, closeUTC: 7,  hours: '22:00 – 07:00', color: '#a855f7' },
+  { key: 'tokyo',    name: 'Tokyo',    flag: '🇯🇵', openUTC: 0,  closeUTC: 9,  hours: '00:00 – 09:00', color: '#3b82f6' },
+  { key: 'london',   name: 'London',   flag: '🇬🇧', openUTC: 7,  closeUTC: 16, hours: '07:00 – 16:00', color: '#22c55e' },
+  { key: 'newyork',  name: 'New York', flag: '🇺🇸', openUTC: 12, closeUTC: 21, hours: '12:00 – 21:00', color: '#f5a524' },
 ];
+
+// ============================================
+// FOREX SESSION DISPLAY
+// ============================================
+const SessionBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 16px;
+  padding: 6px 12px 6px 14px;
+  background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
+  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+  border-radius: 14px;
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+  max-width: 100%;
+
+  @media (max-width: 1180px) {
+    margin: 0 8px;
+    gap: 8px;
+  }
+
+  @media (max-width: 768px) {
+    order: 3;
+    width: 100%;
+    margin: 6px 0 0;
+    padding: clamp(8px, 2.4vw, 12px) clamp(10px, 3vw, 14px);
+    gap: clamp(8px, 2.4vw, 12px);
+    border-radius: clamp(10px, 3vw, 14px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar { display: none; }
+  }
+`;
+
+const SessionLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 14px;
+  border-right: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+  flex-shrink: 0;
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 10px #22c55e;
+    animation: ${pulseGlow} 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  .label-text {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
+    white-space: nowrap;
+  }
+
+  .utc {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: ${p => p.theme?.colors?.text || '#ffffff'};
+    letter-spacing: 0.4px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: ${p => p.theme?.colors?.surface || 'rgba(255,255,255,0.05)'};
+    border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+    white-space: nowrap;
+  }
+
+  @media (max-width: 1180px) {
+    padding-right: 10px;
+    gap: 6px;
+    .label-text { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    padding-right: clamp(10px, 3vw, 14px);
+    gap: clamp(6px, 2vw, 10px);
+    .live-dot { width: clamp(7px, 2vw, 9px); height: clamp(7px, 2vw, 9px); }
+    .utc {
+      font-size: clamp(11px, 3.2vw, 14px);
+      padding: clamp(2px, 0.8vw, 4px) clamp(6px, 2vw, 10px);
+      border-radius: clamp(5px, 1.6vw, 7px);
+    }
+  }
+`;
+
+const SessionList = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+
+  @media (max-width: 768px) {
+    gap: clamp(6px, 2vw, 10px);
+  }
+`;
+
+const SessionChip = styled.div`
+  --sc: ${p => p.$color};
+  --sc-glow: ${p => p.$color}55;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 11px;
+  border-radius: 10px;
+  background: ${p => p.$open
+    ? `linear-gradient(135deg, ${p.$color}22 0%, ${p.$color}0a 100%)`
+    : 'transparent'};
+  border: 1px solid ${p => p.$open
+    ? `${p.$color}55`
+    : (p.theme?.colors?.border || 'rgba(255,255,255,0.06)')};
+  transition: all 0.3s ease;
+  position: relative;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: ${p => p.$open
+    ? `0 0 16px ${p.$color}22, inset 0 0 12px ${p.$color}08`
+    : 'none'};
+
+  ${p => p.$open && `animation: ${sessionPulse} 2.5s ease-out infinite;`}
+
+  &:hover {
+    border-color: ${p => p.$open ? `${p.$color}88` : (p.theme?.colors?.accent || '#3b82f6')};
+    transform: translateY(-1px);
+  }
+
+  .flag {
+    font-size: 17px;
+    line-height: 1;
+    filter: ${p => p.$open ? 'none' : 'grayscale(0.75)'};
+    opacity: ${p => p.$open ? 1 : 0.55};
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .name {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: ${p => p.$open
+      ? (p.theme?.colors?.text || '#ffffff')
+      : (p.theme?.colors?.textMuted || '#94a3b8')};
+    line-height: 1.1;
+    letter-spacing: -0.1px;
+  }
+
+  .hours {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: ${p => p.$open
+      ? p.$color
+      : (p.theme?.colors?.textMuted || '#94a3b8')};
+    opacity: ${p => p.$open ? 1 : 0.6};
+    line-height: 1.1;
+    letter-spacing: 0.2px;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    padding: 3px 6px;
+    border-radius: 5px;
+    background: ${p => `${p.$color}22`};
+    color: ${p => p.$color};
+    border: 1px solid ${p => `${p.$color}44`};
+    margin-left: 2px;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: ${p => p.$color};
+      box-shadow: 0 0 6px ${p => p.$color};
+      animation: ${pulseGlow} 1.5s ease-in-out infinite;
+    }
+  }
+
+  @media (max-width: 1180px) {
+    padding: 5px 9px;
+    gap: 6px;
+    .flag { font-size: 15px; }
+    .name { font-size: 11px; }
+    .hours { font-size: 8.5px; }
+    .live-badge { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(6px, 2vw, 9px) clamp(9px, 2.8vw, 13px);
+    gap: clamp(6px, 2vw, 9px);
+    border-radius: clamp(8px, 2.4vw, 11px);
+    .flag { font-size: clamp(16px, 4.6vw, 20px); }
+    .name { font-size: clamp(11.5px, 3.2vw, 14px); }
+    .hours { font-size: clamp(9px, 2.6vw, 11px); }
+    .live-badge {
+      display: flex;
+      font-size: clamp(8px, 2.2vw, 10px);
+      padding: clamp(2px, 0.8vw, 4px) clamp(5px, 1.6vw, 8px);
+      border-radius: clamp(4px, 1.4vw, 6px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: clamp(5px, 1.8vw, 8px) clamp(8px, 2.6vw, 11px);
+    gap: clamp(5px, 1.8vw, 8px);
+    .flag { font-size: clamp(15px, 4.4vw, 18px); }
+    .name { font-size: clamp(11px, 3vw, 13px); }
+    .hours { display: none; }
+    .live-badge {
+      padding: clamp(2px, 0.6vw, 3px) clamp(4px, 1.4vw, 6px);
+      font-size: clamp(7.5px, 2.1vw, 9px);
+    }
+  }
+`;
+
+const ForexSessionDisplay = () => {
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 30000); // refresh every 30s
+    return () => clearInterval(t);
+  }, []);
+
+  const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60;
+  const isOpen = (from, to) =>
+    from < to ? utcHours >= from && utcHours < to : utcHours >= from || utcHours < to;
+
+  const utcTime = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}`;
+
+  return (
+    <SessionBar aria-label="Forex trading sessions">
+      <SessionLabel>
+        <span className="live-dot" />
+        <span className="label-text">Forex Sessions</span>
+        <span className="utc">
+          <GlobeIcon style={{ marginRight: 5, verticalAlign: -2 }} /> {utcTime} UTC
+        </span>
+      </SessionLabel>
+      <SessionList>
+        {FOREX_SESSIONS.map((s) => {
+          const open = isOpen(s.openUTC, s.closeUTC);
+          return (
+            <SessionChip key={s.key} $open={open} $color={s.color} title={`${s.name} session · ${s.hours} UTC`}>
+              <span className="flag">{s.flag}</span>
+              <span className="info">
+                <span className="name">{s.name}</span>
+                <span className="hours">{s.hours}</span>
+              </span>
+              {open && <span className="live-badge">LIVE</span>}
+            </SessionChip>
+          );
+        })}
+      </SessionList>
+    </SessionBar>
+  );
+};
 
 // ============================================
 // FUNDS MODAL COMPONENTS
@@ -312,9 +569,9 @@ const ModalBody = styled.div`
   position: relative;
 
   &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-thumb { 
-    background: ${p => p.theme.colors?.scrollbar || 'rgba(255,255,255,0.15)'}; 
-    border-radius: 10px; 
+  &::-webkit-scrollbar-thumb {
+    background: ${p => p.theme.colors?.scrollbar || 'rgba(255,255,255,0.15)'};
+    border-radius: 10px;
   }
   &::-webkit-scrollbar-track { background: transparent; }
 
@@ -588,8 +845,8 @@ const ActionButton = styled.button`
   border: none;
   border-radius: 10px;
   background: linear-gradient(
-    135deg, 
-    ${p => p.theme.colors?.accent || '#3B82F6'}, 
+    135deg,
+    ${p => p.theme.colors?.accent || '#3B82F6'},
     ${p => p.theme.colors?.accentHover || '#2563EB'}
   );
   color: ${p => p.theme.colors?.buttonText || '#FFFFFF'};
@@ -621,8 +878,8 @@ const ActionButton = styled.button`
 
 const OverviewBalance = styled.div`
   background: linear-gradient(
-    135deg, 
-    ${p => p.theme.colors?.accent || '#3B82F6'}, 
+    135deg,
+    ${p => p.theme.colors?.accent || '#3B82F6'},
     ${p => p.theme.colors?.accentDark || '#1D4ED8'}
   );
   border-radius: 14px;
@@ -992,94 +1249,6 @@ const RightSection = styled.div`
   @media (max-width: 480px) {
     gap: clamp(5px, 1.8vw, 8px);
     justify-content: flex-end;
-  }
-`;
-
-/* ---- Forex navigation (only shown on forex routes) ---- */
-const NavSection = styled.nav`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin: 0 16px;
-  padding: 4px;
-  background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 12px;
-  flex-shrink: 0;
-
-  @media (max-width: 1024px) {
-    margin: 0 8px;
-    gap: 2px;
-  }
-
-  @media (max-width: 768px) {
-    order: 3;
-    width: 100%;
-    margin: 4px 0 0;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: clamp(5px, 1.6vw, 8px);
-    gap: clamp(4px, 1.4vw, 8px);
-    border-radius: clamp(10px, 3vw, 14px);
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar { display: none; }
-  }
-`;
-
-const NavButton = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border-radius: 9px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-  font-size: 12.5px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  white-space: nowrap;
-  flex-shrink: 0;
-
-  svg {
-    width: 15px;
-    height: 15px;
-    flex-shrink: 0;
-  }
-
-  &:hover {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
-    color: ${props => props.theme?.colors?.text || '#ffffff'};
-  }
-
-  &.active {
-    background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.14)'};
-    color: ${props => props.theme?.colors?.accent || '#3b82f6'};
-    border-color: ${props => (props.theme?.colors?.accent || '#3b82f6') + '30'};
-    box-shadow: 0 0 12px ${props => (props.theme?.colors?.accent || '#3b82f6') + '20'};
-  }
-
-  @media (max-width: 768px) {
-    padding: clamp(10px, 2.8vw, 14px) clamp(12px, 3.6vw, 18px);
-    font-size: clamp(13px, 3.6vw, 15px);
-    border-radius: clamp(8px, 2.6vw, 12px);
-    gap: clamp(6px, 2vw, 10px);
-
-    svg {
-      width: clamp(16px, 4.6vw, 20px);
-      height: clamp(16px, 4.6vw, 20px);
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: clamp(9px, 2.6vw, 12px) clamp(10px, 3vw, 15px);
-    font-size: clamp(12px, 3.4vw, 14px);
-    gap: clamp(5px, 1.8vw, 8px);
-
-    svg { width: clamp(15px, 4.4vw, 18px); height: clamp(15px, 4.4vw, 18px); }
   }
 `;
 
@@ -1651,7 +1820,7 @@ const BrandText = styled.div`
   cursor: default;
   gap: 2px;
   white-space: nowrap;
-  
+
   .voltix {
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
@@ -1855,9 +2024,9 @@ const SidebarToggle = styled.button`
 // ============================================
 // MAIN COMPONENT
 // ============================================
-const TopPanel = ({ 
-  isSidebarOpen, 
-  onSidebarToggle, 
+const TopPanel = ({
+  isSidebarOpen,
+  onSidebarToggle,
   currentTheme = 'gold',
   onThemeChange
 }) => {
@@ -1869,7 +2038,7 @@ const TopPanel = ({
   const [connected, setConnected] = useState(true);
   const [accountType, setAccountType] = useState('real');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  
+
   const [fundModalAction, setFundModalAction] = useState(null);
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -1887,7 +2056,7 @@ const TopPanel = ({
   const themeRef = useRef(null);
   const fundsRef = useRef(null);
   const platformRef = useRef(null);
-  const topBarRef = useRef(null);          // ← NEW
+  const topBarRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -1897,17 +2066,7 @@ const TopPanel = ({
   // ✅ Route awareness
   const isForex = location.pathname.startsWith('/forex');
   const isDeriv = location.pathname.startsWith('/deriv');
-  // ✅ Sidebar toggle always visible when a handler is provided (both deriv & forex)
   const showSidebarToggle = !!onSidebarToggle;
-
-  // ✅ Which forex nav item is active based on pathname
-  const activeForexNav = (() => {
-    const p = location.pathname;
-    if (p === '/forexdash/lot') return 'lot';
-    if (p === '/forexdash/strength') return 'strength';
-    if (p === '/forexdash/bots') return 'bots';
-    return 'home';
-  })();
 
   const generateAccountNickname = () => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -2000,7 +2159,6 @@ const TopPanel = ({
     setIsFundsOpen(false);
   };
 
-  // ✅ Platform selection — set + navigate to the matching dashboard
   const handlePlatformSelect = (key) => {
     const opt = PLATFORM_OPTIONS[key];
     setPlatform(key);
@@ -2008,11 +2166,6 @@ const TopPanel = ({
     if (opt?.route && location.pathname !== opt.route) {
       navigate(opt.route);
     }
-  };
-
-  // ✅ Forex nav click — navigate to sub-route
-  const handleForexNav = (path) => {
-    if (location.pathname !== path) navigate(path);
   };
 
   const closeModal = () => {
@@ -2131,7 +2284,6 @@ const TopPanel = ({
     window.addEventListener('resize', setH);
     window.addEventListener('orientationchange', setH);
 
-    // Delayed pass catches the post-paint layout (fonts, safe-area).
     const t = setTimeout(setH, 250);
 
     return () => {
@@ -2221,7 +2373,7 @@ const TopPanel = ({
               <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: '#F8FAFC' }}>
                 Please wait for the payment prompt on your phone and enter your PIN to complete the transaction.
               </div>
-              <button 
+              <button
                 onClick={() => setDepositPending(false)}
                 style={{ padding: '8px 20px', borderRadius: '8px', background: '#3B82F6', color: 'white', border: 'none', fontWeight: 600, cursor: 'pointer' }}
               >
@@ -2259,8 +2411,8 @@ const TopPanel = ({
               </div>
               <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
-            <ActionButton 
-              onClick={handleSubmitDeposit} 
+            <ActionButton
+              onClick={handleSubmitDeposit}
               disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
             >
               Deposit to Deriv
@@ -2305,7 +2457,7 @@ const TopPanel = ({
               <ActionButton onClick={handleConfirmWithdraw} disabled={confirmationPhone.length !== 9}>
                 Confirm Withdrawal
               </ActionButton>
-              <button 
+              <button
                 onClick={() => setWithdrawConfirmationStep(false)}
                 style={{ width: '100%', padding: '10px', marginTop: '8px', background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', color: '#94A3B8', fontWeight: 600, cursor: 'pointer' }}
               >
@@ -2344,8 +2496,8 @@ const TopPanel = ({
               </div>
               <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
-            <ActionButton 
-              onClick={handleSubmitWithdraw} 
+            <ActionButton
+              onClick={handleSubmitWithdraw}
               disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
             >
               Withdraw to M‑Pesa
@@ -2445,21 +2597,8 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* ---------- Middle: forex-only nav buttons ---------- */}
-        {isForex && (
-          <NavSection aria-label="Forex navigation">
-            {FOREX_NAV_ITEMS.map((item) => (
-              <NavButton
-                key={item.key}
-                className={activeForexNav === item.key ? 'active' : ''}
-                onClick={() => handleForexNav(item.path)}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </NavButton>
-            ))}
-          </NavSection>
-        )}
+        {/* ---------- Middle: forex-only live session display ---------- */}
+        {isForex && <ForexSessionDisplay />}
 
         {/* ---------- Right: theme + (funds & account on deriv only) + exit ---------- */}
         <RightSection>
