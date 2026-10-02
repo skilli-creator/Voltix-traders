@@ -151,7 +151,7 @@ const EyeIcon = ({ visible }) => (
 );
 
 const GlobeIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
     <circle cx="12" cy="12" r="9" />
     <path d="M3 12h18" />
     <path d="M12 3c3 3 3 15 0 18" />
@@ -159,14 +159,62 @@ const GlobeIcon = () => (
   </svg>
 );
 
+// ---------- Forex nav icons (kept for other files that import them) ----------
+const DashboardIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 10.5 12 3l9 7.5" />
+    <path d="M5.5 9.6V20h13V9.6" />
+    <path d="M9.5 20v-5h5v5" />
+  </svg>
+);
+
+const CalculatorIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="3" width="16" height="18" rx="2.5" />
+    <path d="M8 7.5h8" />
+    <path d="M8 12h1.5M12 12h1.5M16 12h.01M8 16h1.5M12 16h1.5M16 16h.01" />
+  </svg>
+);
+
+const StrengthIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 20v-8" />
+    <path d="M12 20V4" />
+    <path d="M19 20v-5" />
+  </svg>
+);
+
+const BotsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3.5" y="7.5" width="17" height="12" rx="3.5" />
+    <path d="M12 7.5V4" />
+    <circle cx="12" cy="3.4" r="1" />
+    <path d="M9 13h.01M15 13h.01" />
+    <path d="M9.5 16.5h5" />
+  </svg>
+);
+
+// ============================================
+// FOREX NAV ITEMS
+// ⚠️ KEPT AS AN EXPORT because other files
+// (e.g. sidebars / dashboards) import it from here.
+// The TopBar itself no longer renders these buttons.
+// ============================================
+export const FOREX_NAV_ITEMS = [
+  { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
+  { key: 'lot',      label: 'Lot Calculator', path: '/forexdash/lot',      icon: <CalculatorIcon /> },
+  { key: 'strength', label: 'Strength',       path: '/forexdash/strength', icon: <StrengthIcon /> },
+  { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
+];
+
 // ============================================
 // FOREX SESSIONS DATA
 // ============================================
 const FOREX_SESSIONS = [
-  { key: 'sydney',   name: 'Sydney',   flag: '🇦🇺', openUTC: 22, closeUTC: 7,  hours: '22:00 – 07:00', color: '#a855f7' },
-  { key: 'tokyo',    name: 'Tokyo',    flag: '🇯🇵', openUTC: 0,  closeUTC: 9,  hours: '00:00 – 09:00', color: '#3b82f6' },
-  { key: 'london',   name: 'London',   flag: '🇬🇧', openUTC: 7,  closeUTC: 16, hours: '07:00 – 16:00', color: '#22c55e' },
-  { key: 'newyork',  name: 'New York', flag: '🇺🇸', openUTC: 12, closeUTC: 21, hours: '12:00 – 21:00', color: '#f5a524' },
+  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', openUTC: 22, closeUTC: 7,  hours: '22:00 – 07:00', color: '#a855f7' },
+  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', openUTC: 0,  closeUTC: 9,  hours: '00:00 – 09:00', color: '#3b82f6' },
+  { key: 'london',  name: 'London',   flag: '🇬🇧', openUTC: 7,  closeUTC: 16, hours: '07:00 – 16:00', color: '#22c55e' },
+  { key: 'newyork', name: 'New York', flag: '🇺🇸', openUTC: 12, closeUTC: 21, hours: '12:00 – 21:00', color: '#f5a524' },
 ];
 
 // ============================================
@@ -243,6 +291,9 @@ const SessionLabel = styled.div`
     background: ${p => p.theme?.colors?.surface || 'rgba(255,255,255,0.05)'};
     border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
   }
 
   @media (max-width: 1180px) {
@@ -297,7 +348,9 @@ const SessionChip = styled.div`
     ? `0 0 16px ${p.$color}22, inset 0 0 12px ${p.$color}08`
     : 'none'};
 
-  ${p => p.$open && `animation: ${sessionPulse} 2.5s ease-out infinite;`}
+  ${p => p.$open
+    ? `animation: ${sessionPulse} 2.5s ease-out infinite;`
+    : ''}
 
   &:hover {
     border-color: ${p => p.$open ? `${p.$color}88` : (p.theme?.colors?.accent || '#3b82f6')};
@@ -408,7 +461,7 @@ const ForexSessionDisplay = () => {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30000); // refresh every 30s
+    const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
   }, []);
 
@@ -424,7 +477,7 @@ const ForexSessionDisplay = () => {
         <span className="live-dot" />
         <span className="label-text">Forex Sessions</span>
         <span className="utc">
-          <GlobeIcon style={{ marginRight: 5, verticalAlign: -2 }} /> {utcTime} UTC
+          <GlobeIcon /> {utcTime} UTC
         </span>
       </SessionLabel>
       <SessionList>
@@ -1193,7 +1246,6 @@ const TopBar = styled.header`
   }
 
   @media (max-width: 768px) {
-    /* Sticky so the sidebar can always sit directly below it. */
     position: sticky;
     top: 0;
     padding: calc(clamp(12px, 3.4vw, 18px) + env(safe-area-inset-top, 0px)) clamp(14px, 4vw, 20px) clamp(12px, 3.4vw, 16px);
@@ -1201,7 +1253,6 @@ const TopBar = styled.header`
     flex-wrap: wrap;
     gap: clamp(10px, 3vw, 14px);
     align-items: center;
-    /* Keep the TopBar above the slide-in sidebar & its overlay. */
     z-index: 200;
   }
 
@@ -1777,12 +1828,12 @@ const ExitButton = styled.button`
 `;
 
 const THEME_OPTIONS = [
-  { key: 'white', name: 'White', color: '#f4f6f9' },
-  { key: 'dark', name: 'Dark', color: '#09090b' },
-  { key: 'gold', name: 'Gold', color: '#0b0a08' },
+  { key: 'white',  name: 'White',  color: '#f4f6f9' },
+  { key: 'dark',   name: 'Dark',   color: '#09090b' },
+  { key: 'gold',   name: 'Gold',   color: '#0b0a08' },
   { key: 'forest', name: 'Forest', color: '#050c09' },
-  { key: 'ocean', name: 'Ocean', color: '#030b12' },
-  { key: 'red', name: 'Red', color: '#0c0505' },
+  { key: 'ocean',  name: 'Ocean',  color: '#030b12' },
+  { key: 'red',    name: 'Red',    color: '#0c0505' },
   { key: 'orange', name: 'Orange', color: '#0c0703' },
 ];
 
@@ -2063,7 +2114,6 @@ const TopPanel = ({
   const DEPOSIT_RATE = 131;
   const WITHDRAW_RATE = 126;
 
-  // ✅ Route awareness
   const isForex = location.pathname.startsWith('/forex');
   const isDeriv = location.pathname.startsWith('/deriv');
   const showSidebarToggle = !!onSidebarToggle;
@@ -2087,7 +2137,6 @@ const TopPanel = ({
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
   const isDemo = accountType === 'demo';
 
-  // ✅ Keep the platform switcher in sync with the current route
   useEffect(() => {
     if (location.pathname.startsWith('/forex')) {
       setPlatform('forex');
@@ -2096,7 +2145,6 @@ const TopPanel = ({
     }
   }, [location.pathname]);
 
-  // ✅ Currency helpers ------------------------------------------------------
   const getCurrencyInfo = (code = selectedCurrency) =>
     DISPLAY_CURRENCIES.find(c => c.code === code) || DISPLAY_CURRENCIES[0];
 
@@ -2128,8 +2176,6 @@ const TopPanel = ({
   };
 
   const getCurrencyFlag = () => getCurrencyInfo().flag;
-
-  // -------------------------------------------------------------------------
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -2260,9 +2306,6 @@ const TopPanel = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Publish the real TopBar height as a CSS variable so other fixed
-  // elements (e.g. the OptionSideBar) can position themselves directly
-  // below it without being overlapped on phones where the bar wraps.
   useEffect(() => {
     const el = topBarRef.current;
     if (!el) return;
@@ -2544,7 +2587,6 @@ const TopPanel = ({
   return (
     <>
       <TopBar ref={topBarRef}>
-        {/* ---------- Left: sidebar toggle + site name + platform switcher ---------- */}
         <LeftSection className="left-section">
           {showSidebarToggle && (
             <SidebarToggle
