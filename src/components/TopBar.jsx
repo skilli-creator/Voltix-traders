@@ -1,5 +1,5 @@
 // src/components/TopBar.jsx
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -22,12 +22,6 @@ const pulseGlow = keyframes`
   50% { opacity: 0.9; transform: scale(1.08); }
 `;
 
-const sessionPulse = keyframes`
-  0%, 100% { box-shadow: 0 0 0 0 var(--sc-glow); }
-  70% { box-shadow: 0 0 0 6px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
-`;
-
 const slideUp = keyframes`
   from { opacity: 0; transform: translateY(30px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -40,6 +34,12 @@ const fadeIn = keyframes`
 
 const spin = keyframes`
   to { transform: rotate(360deg); }
+`;
+
+const livePulse = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.55); }
+  70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 `;
 
 // ============================================
@@ -95,14 +95,14 @@ const ExitIcon = () => (
 );
 
 const ChevronDownIcon = ({ open }) => (
-  <svg
-    width="12"
-    height="12"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
+  <svg 
+    width="12" 
+    height="12" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2.5" 
+    strokeLinecap="round" 
     strokeLinejoin="round"
     style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}
   >
@@ -151,352 +151,70 @@ const EyeIcon = ({ visible }) => (
 );
 
 const GlobeIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}>
-    <circle cx="12" cy="12" r="9" />
-    <path d="M3 12h18" />
-    <path d="M12 3c3 3 3 15 0 18" />
-    <path d="M12 3c-3 3-3 15 0 18" />
-  </svg>
-);
-
-// ---------- Forex nav icons (kept for other files that import them) ----------
-const DashboardIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 10.5 12 3l9 7.5" />
-    <path d="M5.5 9.6V20h13V9.6" />
-    <path d="M9.5 20v-5h5v5" />
-  </svg>
-);
-
-const CalculatorIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="3" width="16" height="18" rx="2.5" />
-    <path d="M8 7.5h8" />
-    <path d="M8 12h1.5M12 12h1.5M16 12h.01M8 16h1.5M12 16h1.5M16 16h.01" />
-  </svg>
-);
-
-const StrengthIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 20v-8" />
-    <path d="M12 20V4" />
-    <path d="M19 20v-5" />
-  </svg>
-);
-
-const BotsIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3.5" y="7.5" width="17" height="12" rx="3.5" />
-    <path d="M12 7.5V4" />
-    <circle cx="12" cy="3.4" r="1" />
-    <path d="M9 13h.01M15 13h.01" />
-    <path d="M9.5 16.5h5" />
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="2" y1="12" x2="22" y2="12" />
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
   </svg>
 );
 
 // ============================================
-// FOREX NAV ITEMS
-// ⚠️ KEPT AS AN EXPORT because other files
-// (e.g. sidebars / dashboards) import it from here.
-// The TopBar itself no longer renders these buttons.
-// ============================================
-export const FOREX_NAV_ITEMS = [
-  { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
-  { key: 'lot',      label: 'Lot Calculator', path: '/forexdash/lot',      icon: <CalculatorIcon /> },
-  { key: 'strength', label: 'Strength',       path: '/forexdash/strength', icon: <StrengthIcon /> },
-  { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
-];
-
-// ============================================
-// FOREX SESSIONS DATA
+// FOREX SESSIONS — Sydney, Tokyo, London, New York
+// Times are UTC (start inclusive, end exclusive). Cross-midnight handled.
 // ============================================
 const FOREX_SESSIONS = [
-  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', openUTC: 22, closeUTC: 7,  hours: '22:00 – 07:00', color: '#a855f7' },
-  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', openUTC: 0,  closeUTC: 9,  hours: '00:00 – 09:00', color: '#3b82f6' },
-  { key: 'london',  name: 'London',   flag: '🇬🇧', openUTC: 7,  closeUTC: 16, hours: '07:00 – 16:00', color: '#22c55e' },
-  { key: 'newyork', name: 'New York', flag: '🇺🇸', openUTC: 12, closeUTC: 21, hours: '12:00 – 21:00', color: '#f5a524' },
+  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific' },
+  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific' },
+  { key: 'london',  name: 'London',   flag: '🇬🇧', startUTC: 8,  endUTC: 17, color: '#60A5FA', region: 'Europe' },
+  { key: 'newyork', name: 'New York', flag: '🇺🇸', startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas' },
 ];
 
-// ============================================
-// FOREX SESSION DISPLAY
-// ============================================
-const SessionBar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 16px;
-  padding: 6px 12px 6px 14px;
-  background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
-  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-  border-radius: 14px;
-  flex-shrink: 0;
-  flex-wrap: nowrap;
-  max-width: 100%;
+const getSessionStatus = (session, now) => {
+  const nowMin = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const openMin = session.startUTC * 60;
+  const closeMin = session.endUTC * 60;
+  const dayMin = 24 * 60;
 
-  @media (max-width: 1180px) {
-    margin: 0 8px;
-    gap: 8px;
-  }
+  let isOpen;
+  let minUntil;
+  let totalMin;
 
-  @media (max-width: 768px) {
-    order: 3;
-    width: 100%;
-    margin: 6px 0 0;
-    padding: clamp(8px, 2.4vw, 12px) clamp(10px, 3vw, 14px);
-    gap: clamp(8px, 2.4vw, 12px);
-    border-radius: clamp(10px, 3vw, 14px);
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    &::-webkit-scrollbar { display: none; }
-  }
-`;
-
-const SessionLabel = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-right: 14px;
-  border-right: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-  flex-shrink: 0;
-
-  .live-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 10px #22c55e;
-    animation: ${pulseGlow} 2s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-
-  .label-text {
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
-    white-space: nowrap;
-  }
-
-  .utc {
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    color: ${p => p.theme?.colors?.text || '#ffffff'};
-    letter-spacing: 0.4px;
-    padding: 2px 7px;
-    border-radius: 5px;
-    background: ${p => p.theme?.colors?.surface || 'rgba(255,255,255,0.05)'};
-    border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  @media (max-width: 1180px) {
-    padding-right: 10px;
-    gap: 6px;
-    .label-text { display: none; }
-  }
-
-  @media (max-width: 768px) {
-    padding-right: clamp(10px, 3vw, 14px);
-    gap: clamp(6px, 2vw, 10px);
-    .live-dot { width: clamp(7px, 2vw, 9px); height: clamp(7px, 2vw, 9px); }
-    .utc {
-      font-size: clamp(11px, 3.2vw, 14px);
-      padding: clamp(2px, 0.8vw, 4px) clamp(6px, 2vw, 10px);
-      border-radius: clamp(5px, 1.6vw, 7px);
+  if (openMin < closeMin) {
+    // Same-day session
+    isOpen = nowMin >= openMin && nowMin < closeMin;
+    if (isOpen) {
+      minUntil = closeMin - nowMin;
+      totalMin = closeMin - openMin;
+    } else if (nowMin < openMin) {
+      minUntil = openMin - nowMin;
+      totalMin = closeMin - openMin;
+    } else {
+      minUntil = dayMin - nowMin + openMin;
+      totalMin = closeMin - openMin;
     }
-  }
-`;
-
-const SessionList = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: nowrap;
-
-  @media (max-width: 768px) {
-    gap: clamp(6px, 2vw, 10px);
-  }
-`;
-
-const SessionChip = styled.div`
-  --sc: ${p => p.$color};
-  --sc-glow: ${p => p.$color}55;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 11px;
-  border-radius: 10px;
-  background: ${p => p.$open
-    ? `linear-gradient(135deg, ${p.$color}22 0%, ${p.$color}0a 100%)`
-    : 'transparent'};
-  border: 1px solid ${p => p.$open
-    ? `${p.$color}55`
-    : (p.theme?.colors?.border || 'rgba(255,255,255,0.06)')};
-  transition: all 0.3s ease;
-  position: relative;
-  white-space: nowrap;
-  flex-shrink: 0;
-  box-shadow: ${p => p.$open
-    ? `0 0 16px ${p.$color}22, inset 0 0 12px ${p.$color}08`
-    : 'none'};
-
-  ${p => p.$open
-    ? `animation: ${sessionPulse} 2.5s ease-out infinite;`
-    : ''}
-
-  &:hover {
-    border-color: ${p => p.$open ? `${p.$color}88` : (p.theme?.colors?.accent || '#3b82f6')};
-    transform: translateY(-1px);
-  }
-
-  .flag {
-    font-size: 17px;
-    line-height: 1;
-    filter: ${p => p.$open ? 'none' : 'grayscale(0.75)'};
-    opacity: ${p => p.$open ? 1 : 0.55};
-    flex-shrink: 0;
-    transition: all 0.3s ease;
-  }
-
-  .info {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    min-width: 0;
-  }
-
-  .name {
-    font-size: 11.5px;
-    font-weight: 700;
-    color: ${p => p.$open
-      ? (p.theme?.colors?.text || '#ffffff')
-      : (p.theme?.colors?.textMuted || '#94a3b8')};
-    line-height: 1.1;
-    letter-spacing: -0.1px;
-  }
-
-  .hours {
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
-    font-size: 9px;
-    font-weight: 600;
-    color: ${p => p.$open
-      ? p.$color
-      : (p.theme?.colors?.textMuted || '#94a3b8')};
-    opacity: ${p => p.$open ? 1 : 0.6};
-    line-height: 1.1;
-    letter-spacing: 0.2px;
-  }
-
-  .live-badge {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 8px;
-    font-weight: 800;
-    letter-spacing: 0.7px;
-    padding: 3px 6px;
-    border-radius: 5px;
-    background: ${p => `${p.$color}22`};
-    color: ${p => p.$color};
-    border: 1px solid ${p => `${p.$color}44`};
-    margin-left: 2px;
-
-    &::before {
-      content: '';
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: ${p => p.$color};
-      box-shadow: 0 0 6px ${p => p.$color};
-      animation: ${pulseGlow} 1.5s ease-in-out infinite;
+  } else {
+    // Cross-midnight session (e.g. Sydney 21 → 06)
+    isOpen = nowMin >= openMin || nowMin < closeMin;
+    totalMin = dayMin - openMin + closeMin;
+    if (isOpen) {
+      minUntil = nowMin >= openMin
+        ? dayMin - nowMin + closeMin
+        : closeMin - nowMin;
+    } else {
+      minUntil = openMin - nowMin;
     }
   }
 
-  @media (max-width: 1180px) {
-    padding: 5px 9px;
-    gap: 6px;
-    .flag { font-size: 15px; }
-    .name { font-size: 11px; }
-    .hours { font-size: 8.5px; }
-    .live-badge { display: none; }
-  }
+  return { isOpen, minUntil, totalMin };
+};
 
-  @media (max-width: 768px) {
-    padding: clamp(6px, 2vw, 9px) clamp(9px, 2.8vw, 13px);
-    gap: clamp(6px, 2vw, 9px);
-    border-radius: clamp(8px, 2.4vw, 11px);
-    .flag { font-size: clamp(16px, 4.6vw, 20px); }
-    .name { font-size: clamp(11.5px, 3.2vw, 14px); }
-    .hours { font-size: clamp(9px, 2.6vw, 11px); }
-    .live-badge {
-      display: flex;
-      font-size: clamp(8px, 2.2vw, 10px);
-      padding: clamp(2px, 0.8vw, 4px) clamp(5px, 1.6vw, 8px);
-      border-radius: clamp(4px, 1.4vw, 6px);
-    }
-  }
-
-  @media (max-width: 480px) {
-    padding: clamp(5px, 1.8vw, 8px) clamp(8px, 2.6vw, 11px);
-    gap: clamp(5px, 1.8vw, 8px);
-    .flag { font-size: clamp(15px, 4.4vw, 18px); }
-    .name { font-size: clamp(11px, 3vw, 13px); }
-    .hours { display: none; }
-    .live-badge {
-      padding: clamp(2px, 0.6vw, 3px) clamp(4px, 1.4vw, 6px);
-      font-size: clamp(7.5px, 2.1vw, 9px);
-    }
-  }
-`;
-
-const ForexSessionDisplay = () => {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30000);
-    return () => clearInterval(t);
-  }, []);
-
-  const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60;
-  const isOpen = (from, to) =>
-    from < to ? utcHours >= from && utcHours < to : utcHours >= from || utcHours < to;
-
-  const utcTime = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}`;
-
-  return (
-    <SessionBar aria-label="Forex trading sessions">
-      <SessionLabel>
-        <span className="live-dot" />
-        <span className="label-text">Forex Sessions</span>
-        <span className="utc">
-          <GlobeIcon /> {utcTime} UTC
-        </span>
-      </SessionLabel>
-      <SessionList>
-        {FOREX_SESSIONS.map((s) => {
-          const open = isOpen(s.openUTC, s.closeUTC);
-          return (
-            <SessionChip key={s.key} $open={open} $color={s.color} title={`${s.name} session · ${s.hours} UTC`}>
-              <span className="flag">{s.flag}</span>
-              <span className="info">
-                <span className="name">{s.name}</span>
-                <span className="hours">{s.hours}</span>
-              </span>
-              {open && <span className="live-badge">LIVE</span>}
-            </SessionChip>
-          );
-        })}
-      </SessionList>
-    </SessionBar>
-  );
+const formatDuration = (mins) => {
+  if (mins <= 0) return '0m';
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h === 0) return `${m}m`;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
 };
 
 // ============================================
@@ -622,9 +340,9 @@ const ModalBody = styled.div`
   position: relative;
 
   &::-webkit-scrollbar { width: 4px; }
-  &::-webkit-scrollbar-thumb {
-    background: ${p => p.theme.colors?.scrollbar || 'rgba(255,255,255,0.15)'};
-    border-radius: 10px;
+  &::-webkit-scrollbar-thumb { 
+    background: ${p => p.theme.colors?.scrollbar || 'rgba(255,255,255,0.15)'}; 
+    border-radius: 10px; 
   }
   &::-webkit-scrollbar-track { background: transparent; }
 
@@ -898,8 +616,8 @@ const ActionButton = styled.button`
   border: none;
   border-radius: 10px;
   background: linear-gradient(
-    135deg,
-    ${p => p.theme.colors?.accent || '#3B82F6'},
+    135deg, 
+    ${p => p.theme.colors?.accent || '#3B82F6'}, 
     ${p => p.theme.colors?.accentHover || '#2563EB'}
   );
   color: ${p => p.theme.colors?.buttonText || '#FFFFFF'};
@@ -931,8 +649,8 @@ const ActionButton = styled.button`
 
 const OverviewBalance = styled.div`
   background: linear-gradient(
-    135deg,
-    ${p => p.theme.colors?.accent || '#3B82F6'},
+    135deg, 
+    ${p => p.theme.colors?.accent || '#3B82F6'}, 
     ${p => p.theme.colors?.accentDark || '#1D4ED8'}
   );
   border-radius: 14px;
@@ -1300,6 +1018,321 @@ const RightSection = styled.div`
   @media (max-width: 480px) {
     gap: clamp(5px, 1.8vw, 8px);
     justify-content: flex-end;
+  }
+`;
+
+/* ---- Forex session display (replaces old forex nav) ---- */
+const SessionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 0 16px;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    margin: 0 8px;
+  }
+
+  @media (max-width: 768px) {
+    order: 3;
+    width: 100%;
+    margin: 4px 0 0;
+    justify-content: flex-start;
+  }
+`;
+
+const SessionPill = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  border-radius: 12px;
+  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+  background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
+  color: ${p => p.theme?.colors?.text || '#ffffff'};
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: ${p => p.theme?.colors?.accent || '#3b82f6'};
+    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
+    box-shadow: 0 0 16px ${p => (p.theme?.colors?.accent || '#3b82f6') + '20'};
+  }
+
+  .globe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'};
+    color: ${p => p.theme?.colors?.accent || '#3b82f6'};
+    flex-shrink: 0;
+  }
+
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22C55E;
+    animation: ${livePulse} 2s ease-out infinite;
+    flex-shrink: 0;
+  }
+
+  .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+  }
+
+  .flags {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .flag {
+    font-size: 15px;
+    line-height: 1;
+    filter: grayscale(1) opacity(0.3);
+    transition: all 0.25s ease;
+    transform: scale(0.92);
+
+    &.open {
+      filter: none;
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .chevron {
+    display: flex;
+    align-items: center;
+    opacity: 0.65;
+    margin-left: 2px;
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(10px, 2.8vw, 14px) clamp(12px, 3.6vw, 18px);
+    gap: clamp(7px, 2.2vw, 11px);
+    border-radius: clamp(10px, 3vw, 14px);
+    font-size: clamp(13px, 3.6vw, 15px);
+
+    .globe {
+      width: clamp(22px, 6vw, 28px);
+      height: clamp(22px, 6vw, 28px);
+      border-radius: clamp(6px, 2vw, 9px);
+      svg { width: clamp(12px, 3.4vw, 16px); height: clamp(12px, 3.4vw, 16px); }
+    }
+    .flag { font-size: clamp(15px, 4.4vw, 19px); }
+    .label { font-size: clamp(10px, 2.8vw, 12px); }
+    .chevron svg { width: clamp(11px, 3.2vw, 14px); height: clamp(11px, 3.2vw, 14px); }
+  }
+
+  @media (max-width: 480px) {
+    padding: clamp(9px, 2.6vw, 12px) clamp(10px, 3vw, 14px);
+    gap: clamp(6px, 1.8vw, 9px);
+    .flag { font-size: clamp(14px, 4.2vw, 17px); }
+    .label { display: none; }
+  }
+`;
+
+const SessionDropdownMenu = styled(GlassDropdownMenu)`
+  min-width: 320px;
+  left: 0;
+  right: auto;
+
+  @media (max-width: 768px) {
+    min-width: 0;
+    max-width: calc(100vw - 32px);
+  }
+`;
+
+const SessionItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: ${p => p.$isOpen
+    ? `linear-gradient(135deg, ${p.$color}1f, ${p.$color}05)`
+    : 'transparent'};
+  border: 1px solid ${p => (p.$isOpen ? p.$color + '35' : 'rgba(255,255,255,0.04)')};
+  margin-bottom: 6px;
+  transition: all 0.25s ease;
+
+  &:last-child { margin-bottom: 0; }
+
+  .flag-wrap {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: ${p => (p.$isOpen ? p.$color + '1a' : 'rgba(255,255,255,0.04)')};
+    border: 1px solid ${p => (p.$isOpen ? p.$color + '55' : 'rgba(255,255,255,0.06)')};
+    font-size: 21px;
+    filter: ${p => (p.$isOpen ? 'none' : 'grayscale(1) opacity(0.5)')};
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: ${p => (p.$isOpen ? '#22C55E' : '#64748B')};
+      border: 2px solid ${p => p.theme?.colors?.surface || '#0F172A'};
+      box-shadow: ${p => (p.$isOpen ? '0 0 8px rgba(34,197,94,0.75)' : 'none')};
+    }
+  }
+
+  .info {
+    flex: 1;
+    min-width: 0;
+
+    .name {
+      font-size: 13px;
+      font-weight: 700;
+      color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .region {
+      font-size: 10px;
+      font-weight: 500;
+      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+      margin-top: 1px;
+    }
+
+    .status {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .open-tag {
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: rgba(34,197,94,0.15);
+      color: #4ADE80;
+      border: 1px solid rgba(34,197,94,0.3);
+    }
+  }
+
+  .countdown {
+    text-align: right;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    .value {
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      color: ${p => (p.$isOpen ? p.$color : (p.theme?.colors?.textMuted || '#94A3B8'))};
+    }
+
+    .small {
+      display: block;
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+      margin-top: 3px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(10px, 3vw, 14px) clamp(10px, 3vw, 14px);
+    gap: clamp(10px, 3vw, 14px);
+
+    .flag-wrap {
+      width: clamp(38px, 10.5vw, 46px);
+      height: clamp(38px, 10.5vw, 46px);
+      font-size: clamp(20px, 5.6vw, 24px);
+      border-radius: clamp(10px, 3vw, 13px);
+    }
+    .info {
+      .name { font-size: clamp(13px, 3.8vw, 16px); }
+      .region { font-size: clamp(10px, 2.8vw, 12px); }
+      .status { font-size: clamp(11px, 3vw, 13px); }
+      .open-tag { font-size: clamp(8px, 2.2vw, 10px); padding: 2px clamp(5px, 1.6vw, 8px); }
+    }
+    .countdown {
+      .value { font-size: clamp(12px, 3.4vw, 15px); }
+      .small { font-size: clamp(8px, 2.2vw, 10px); }
+    }
+  }
+`;
+
+const SessionSummary = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
+  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.05)'};
+
+  .left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+  }
+
+  .live-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #4ADE80;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22C55E;
+      animation: ${livePulse} 2s ease-out infinite;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(8px, 2.6vw, 12px) clamp(10px, 3vw, 14px);
+    margin-bottom: clamp(8px, 2.4vw, 12px);
+    .left { font-size: clamp(10px, 2.8vw, 12px); }
+    .live-count { font-size: clamp(10px, 2.8vw, 12px); }
   }
 `;
 
@@ -1828,12 +1861,12 @@ const ExitButton = styled.button`
 `;
 
 const THEME_OPTIONS = [
-  { key: 'white',  name: 'White',  color: '#f4f6f9' },
-  { key: 'dark',   name: 'Dark',   color: '#09090b' },
-  { key: 'gold',   name: 'Gold',   color: '#0b0a08' },
+  { key: 'white', name: 'White', color: '#f4f6f9' },
+  { key: 'dark', name: 'Dark', color: '#09090b' },
+  { key: 'gold', name: 'Gold', color: '#0b0a08' },
   { key: 'forest', name: 'Forest', color: '#050c09' },
-  { key: 'ocean',  name: 'Ocean',  color: '#030b12' },
-  { key: 'red',    name: 'Red',    color: '#0c0505' },
+  { key: 'ocean', name: 'Ocean', color: '#030b12' },
+  { key: 'red', name: 'Red', color: '#0c0505' },
   { key: 'orange', name: 'Orange', color: '#0c0703' },
 ];
 
@@ -1871,7 +1904,7 @@ const BrandText = styled.div`
   cursor: default;
   gap: 2px;
   white-space: nowrap;
-
+  
   .voltix {
     color: ${props => props.theme?.colors?.text || '#ffffff'};
   }
@@ -2075,9 +2108,9 @@ const SidebarToggle = styled.button`
 // ============================================
 // MAIN COMPONENT
 // ============================================
-const TopPanel = ({
-  isSidebarOpen,
-  onSidebarToggle,
+const TopPanel = ({ 
+  isSidebarOpen, 
+  onSidebarToggle, 
   currentTheme = 'gold',
   onThemeChange
 }) => {
@@ -2085,11 +2118,12 @@ const TopPanel = ({
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isFundsOpen, setIsFundsOpen] = useState(false);
   const [isPlatformOpen, setIsPlatformOpen] = useState(false);
+  const [isSessionOpen, setIsSessionOpen] = useState(false);
   const [platform, setPlatform] = useState('deriv');
   const [connected, setConnected] = useState(true);
   const [accountType, setAccountType] = useState('real');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-
+  
   const [fundModalAction, setFundModalAction] = useState(null);
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -2103,10 +2137,14 @@ const TopPanel = ({
 
   const [depositPending, setDepositPending] = useState(false);
 
+  // Live clock for forex sessions (refreshed every 30s)
+  const [now, setNow] = useState(() => new Date());
+
   const dropdownRef = useRef(null);
   const themeRef = useRef(null);
   const fundsRef = useRef(null);
   const platformRef = useRef(null);
+  const sessionRef = useRef(null);
   const topBarRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -2114,9 +2152,17 @@ const TopPanel = ({
   const DEPOSIT_RATE = 131;
   const WITHDRAW_RATE = 126;
 
+  // Route awareness
   const isForex = location.pathname.startsWith('/forex');
   const isDeriv = location.pathname.startsWith('/deriv');
   const showSidebarToggle = !!onSidebarToggle;
+
+  // Live session states
+  const sessionStates = useMemo(
+    () => FOREX_SESSIONS.map(s => ({ ...s, ...getSessionStatus(s, now) })),
+    [now]
+  );
+  const openSessions = sessionStates.filter(s => s.isOpen);
 
   const generateAccountNickname = () => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -2137,6 +2183,7 @@ const TopPanel = ({
   const currentAccount = accountType === 'real' ? accountData.real : accountData.demo;
   const isDemo = accountType === 'demo';
 
+  // Keep the platform switcher in sync with the current route
   useEffect(() => {
     if (location.pathname.startsWith('/forex')) {
       setPlatform('forex');
@@ -2145,6 +2192,13 @@ const TopPanel = ({
     }
   }, [location.pathname]);
 
+  // Tick the clock every 30 seconds so session status/countdown stays fresh
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Currency helpers ------------------------------------------------------
   const getCurrencyInfo = (code = selectedCurrency) =>
     DISPLAY_CURRENCIES.find(c => c.code === code) || DISPLAY_CURRENCIES[0];
 
@@ -2177,11 +2231,14 @@ const TopPanel = ({
 
   const getCurrencyFlag = () => getCurrencyInfo().flag;
 
+  // -------------------------------------------------------------------------
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
     setIsThemeOpen(false);
     setIsFundsOpen(false);
     setIsPlatformOpen(false);
+    setIsSessionOpen(false);
   };
 
   const toggleThemeDropdown = () => {
@@ -2189,6 +2246,7 @@ const TopPanel = ({
     setIsDropdownOpen(false);
     setIsFundsOpen(false);
     setIsPlatformOpen(false);
+    setIsSessionOpen(false);
   };
 
   const toggleFundsDropdown = () => {
@@ -2196,6 +2254,7 @@ const TopPanel = ({
     setIsDropdownOpen(false);
     setIsThemeOpen(false);
     setIsPlatformOpen(false);
+    setIsSessionOpen(false);
   };
 
   const togglePlatformDropdown = () => {
@@ -2203,6 +2262,15 @@ const TopPanel = ({
     setIsDropdownOpen(false);
     setIsThemeOpen(false);
     setIsFundsOpen(false);
+    setIsSessionOpen(false);
+  };
+
+  const toggleSessionDropdown = () => {
+    setIsSessionOpen(!isSessionOpen);
+    setIsDropdownOpen(false);
+    setIsThemeOpen(false);
+    setIsFundsOpen(false);
+    setIsPlatformOpen(false);
   };
 
   const handlePlatformSelect = (key) => {
@@ -2301,11 +2369,15 @@ const TopPanel = ({
       if (platformRef.current && !platformRef.current.contains(e.target)) {
         setIsPlatformOpen(false);
       }
+      if (sessionRef.current && !sessionRef.current.contains(e.target)) {
+        setIsSessionOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Publish TopBar height as CSS variable --topbar-h
   useEffect(() => {
     const el = topBarRef.current;
     if (!el) return;
@@ -2416,7 +2488,7 @@ const TopPanel = ({
               <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: '#F8FAFC' }}>
                 Please wait for the payment prompt on your phone and enter your PIN to complete the transaction.
               </div>
-              <button
+              <button 
                 onClick={() => setDepositPending(false)}
                 style={{ padding: '8px 20px', borderRadius: '8px', background: '#3B82F6', color: 'white', border: 'none', fontWeight: 600, cursor: 'pointer' }}
               >
@@ -2454,8 +2526,8 @@ const TopPanel = ({
               </div>
               <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
-            <ActionButton
-              onClick={handleSubmitDeposit}
+            <ActionButton 
+              onClick={handleSubmitDeposit} 
               disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
             >
               Deposit to Deriv
@@ -2500,7 +2572,7 @@ const TopPanel = ({
               <ActionButton onClick={handleConfirmWithdraw} disabled={confirmationPhone.length !== 9}>
                 Confirm Withdrawal
               </ActionButton>
-              <button
+              <button 
                 onClick={() => setWithdrawConfirmationStep(false)}
                 style={{ width: '100%', padding: '10px', marginTop: '8px', background: 'transparent', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '10px', color: '#94A3B8', fontWeight: 600, cursor: 'pointer' }}
               >
@@ -2539,8 +2611,8 @@ const TopPanel = ({
               </div>
               <div className="helper-text">Exchange rate: 1 USD = {rate} KES</div>
             </FormGroup>
-            <ActionButton
-              onClick={handleSubmitWithdraw}
+            <ActionButton 
+              onClick={handleSubmitWithdraw} 
               disabled={!amount || parseFloat(amount) < 1 || parseFloat(amount) > 2000 || !phoneNumber || phoneNumber.length !== 9}
             >
               Withdraw to M‑Pesa
@@ -2587,6 +2659,7 @@ const TopPanel = ({
   return (
     <>
       <TopBar ref={topBarRef}>
+        {/* ---------- Left: sidebar toggle + site name + platform switcher ---------- */}
         <LeftSection className="left-section">
           {showSidebarToggle && (
             <SidebarToggle
@@ -2639,8 +2712,69 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* ---------- Middle: forex-only live session display ---------- */}
-        {isForex && <ForexSessionDisplay />}
+        {/* ---------- Middle: forex session display (forex only) ---------- */}
+        {isForex && (
+          <SessionWrapper ref={sessionRef}>
+            <DropdownContainer style={{ position: 'relative' }}>
+              <SessionPill
+                onClick={toggleSessionDropdown}
+                aria-label="Forex market sessions"
+              >
+                <span className="globe"><GlobeIcon /></span>
+                <span className="live-dot" />
+                <span className="label">Sessions</span>
+                <span className="flags">
+                  {sessionStates.map((s) => (
+                    <span
+                      key={s.key}
+                      className={`flag ${s.isOpen ? 'open' : ''}`}
+                      title={`${s.name} • ${s.isOpen ? 'Open' : 'Closed'}`}
+                    >
+                      {s.flag}
+                    </span>
+                  ))}
+                </span>
+                <span className="chevron"><ChevronDownIcon open={isSessionOpen} /></span>
+              </SessionPill>
+
+              <SessionDropdownMenu isOpen={isSessionOpen}>
+                <SessionSummary>
+                  <span className="left"><GlobeIcon /> Market Sessions</span>
+                  <span className="live-count">
+                    <span className="dot" />
+                    {openSessions.length} / {FOREX_SESSIONS.length} open
+                  </span>
+                </SessionSummary>
+
+                {sessionStates.map((s) => (
+                  <SessionItem
+                    key={s.key}
+                    $isOpen={s.isOpen}
+                    $color={s.color}
+                  >
+                    <span className="flag-wrap">{s.flag}</span>
+                    <div className="info">
+                      <div className="name">
+                        {s.name}
+                        {s.isOpen && <span className="open-tag">Open</span>}
+                      </div>
+                      <div className="region">{s.region}</div>
+                      <div className="status">
+                        {s.isOpen ? 'Closes' : 'Opens'} in
+                      </div>
+                    </div>
+                    <div className="countdown">
+                      <div className="value">{formatDuration(s.minUntil)}</div>
+                      <span className="small">
+                        {String(s.startUTC).padStart(2, '0')}:00 – {String(s.endUTC).padStart(2, '0')}:00 UTC
+                      </span>
+                    </div>
+                  </SessionItem>
+                ))}
+              </SessionDropdownMenu>
+            </DropdownContainer>
+          </SessionWrapper>
+        )}
 
         {/* ---------- Right: theme + (funds & account on deriv only) + exit ---------- */}
         <RightSection>
