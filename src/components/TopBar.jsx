@@ -42,40 +42,43 @@ const livePulse = keyframes`
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 `;
 
-/* 🌊 Realistic multi-phase flying flag — hinged from the pole side */
-const flagWave = keyframes`
-  0%   { transform: perspective(160px) rotateY(0deg)  skewY(0deg)   scaleX(1); }
-  12%  { transform: perspective(160px) rotateY(14deg) skewY(-2.5deg) scaleX(0.95); }
-  26%  { transform: perspective(160px) rotateY(-6deg) skewY(1.2deg)  scaleX(0.99); }
-  42%  { transform: perspective(160px) rotateY(-17deg) skewY(3deg)   scaleX(0.94); }
-  58%  { transform: perspective(160px) rotateY(-3deg) skewY(-0.5deg) scaleX(1); }
-  74%  { transform: perspective(160px) rotateY(11deg) skewY(-1.8deg) scaleX(0.96); }
-  88%  { transform: perspective(160px) rotateY(2deg)  skewY(0.6deg)  scaleX(0.99); }
-  100% { transform: perspective(160px) rotateY(0deg)  skewY(0deg)   scaleX(1); }
+/* 🌊 Multi-phase flag wave — applied to the flag background layer */
+const flagWave3D = keyframes`
+  0%, 100% { transform: perspective(220px) rotateY(0deg)  skewY(0deg)   scale(1.14); }
+  18%      { transform: perspective(220px) rotateY(14deg) skewY(-1.8deg) scale(1.14); }
+  38%      { transform: perspective(220px) rotateY(-4deg) skewY(0.9deg)  scale(1.14); }
+  58%      { transform: perspective(220px) rotateY(-16deg) skewY(2deg)   scale(1.14); }
+  78%      { transform: perspective(220px) rotateY(5deg)  skewY(-1.2deg) scale(1.14); }
 `;
 
-/* ✨ Soft shine sweep across premium cards */
+/* ✨ Shine sweep across premium cards */
 const shimmer = keyframes`
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 `;
 
-/* 🎯 Pulsing live ring around the current-session flag */
+/* 🎯 Pulsing live ring */
 const liveRing = keyframes`
   0%   { transform: scale(0.85); opacity: 0.9; }
   100% { transform: scale(2.2);  opacity: 0; }
 `;
 
-/* 🌈 Slow color drift for the hero card aura */
+/* 🌈 Slow color drift for the hero aura */
 const auraDrift = keyframes`
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
-  50%      { transform: translate3d(2%, -2%, 0) scale(1.08); opacity: 0.85; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.5; }
+  50%      { transform: translate3d(2%, -3%, 0) scale(1.1); opacity: 0.85; }
 `;
 
-/* 🫧 Breathing glow for the LIVE tag */
+/* 🫧 Breathing glow */
 const breathe = keyframes`
   0%, 100% { opacity: 0.85; }
   50%      { opacity: 1; }
+`;
+
+/* 🕒 Slow sweep for background-position wave on flag images */
+const bgWave = keyframes`
+  0%, 100% { background-position: 30% 50%; }
+  50%      { background-position: 70% 50%; }
 `;
 
 // ============================================
@@ -201,15 +204,6 @@ const ClockIcon = ({ size = 12 }) => (
   </svg>
 );
 
-const CalendarIcon = ({ size = 12 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="2.5" />
-    <line x1="16" y1="2" x2="16" y2="6" />
-    <line x1="8" y1="2" x2="8" y2="6" />
-    <line x1="3" y1="10" x2="21" y2="10" />
-  </svg>
-);
-
 const BoltIcon = ({ size = 11 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
@@ -217,13 +211,13 @@ const BoltIcon = ({ size = 11 }) => (
 );
 
 // ============================================
-// FOREX SESSIONS
+// FOREX SESSIONS — with flag image URLs
 // ============================================
 const FOREX_SESSIONS = [
-  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', country: 'Australia', startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific', tag: 'AUD · NZD' },
-  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', country: 'Japan',     startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific', tag: 'JPY · AUD' },
-  { key: 'london',  name: 'London',   flag: '🇬🇧', country: 'United Kingdom', startUTC: 8, endUTC: 17, color: '#60A5FA', region: 'Europe', tag: 'EUR · GBP' },
-  { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States', startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas', tag: 'USD · CAD' },
+  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', flagUrl: 'https://flagcdn.com/w640/au.png', country: 'Australia',      startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific', tag: 'AUD · NZD' },
+  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', flagUrl: 'https://flagcdn.com/w640/jp.png', country: 'Japan',          startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific', tag: 'JPY · AUD' },
+  { key: 'london',  name: 'London',   flag: '🇬🇧', flagUrl: 'https://flagcdn.com/w640/gb.png', country: 'United Kingdom', startUTC: 8,  endUTC: 17, color: '#60A5FA', region: 'Europe',       tag: 'EUR · GBP' },
+  { key: 'newyork', name: 'New York', flag: '🇺🇸', flagUrl: 'https://flagcdn.com/w640/us.png', country: 'United States',  startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas',     tag: 'USD · CAD' },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -1098,175 +1092,151 @@ const SessionWrapper = styled.div`
 `;
 
 // ============================================
-// 🌊 PREMIUM FLYING FLAG
+// 🌊 FLAG-AS-BACKGROUND — reusable layer
 // ============================================
-const FlagWrap = styled.div`
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 6px;
-  perspective: 180px;
-  flex-shrink: 0;
-  width: ${p => p.$size || 26}px;
-  height: ${p => p.$size || 26}px;
-
-  /* Metallic pole */
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -3px;
-    bottom: -3px;
-    width: 2px;
-    border-radius: 2px;
-    background: linear-gradient(
-      180deg,
-      rgba(255,255,255,0.95) 0%,
-      ${p => p.$color || '#60a5fa'} 35%,
-      ${p => p.$color || '#60a5fa'} 65%,
-      rgba(255,255,255,0.35) 100%
-    );
-    box-shadow:
-      0 0 6px ${p => (p.$color || '#60a5fa') + 'b0'},
-      0 0 12px ${p => (p.$color || '#60a5fa') + '60'};
-    z-index: 3;
-  }
-
-  /* Pole cap */
-  &::after {
-    content: '';
-    position: absolute;
-    left: -2.5px;
-    top: -5px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background:
-      radial-gradient(circle at 30% 30%, #ffffff 0%, ${p => p.$color || '#60a5fa'} 45%, rgba(0,0,0,0.5) 100%);
-    box-shadow:
-      0 0 8px ${p => (p.$color || '#60a5fa') + 'cc'},
-      inset 0 0 2px rgba(255,255,255,0.6);
-    z-index: 4;
-  }
-
-  .cloth {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 3px;
-    font-size: ${p => p.$size || 26}px;
-    line-height: 1;
-    transform-origin: 0% 50%;
-    transform-style: preserve-3d;
-    animation: ${flagWave} ${p => p.$speed || '3s'} ease-in-out infinite;
-    animation-delay: ${p => p.$delay || '0s'};
-    filter:
-      drop-shadow(2px 3px 3px rgba(0,0,0,0.45))
-      drop-shadow(0 0 6px ${p => (p.$color || '#60a5fa') + '40'});
-    will-change: transform;
-    position: relative;
-  }
-
-  /* Light-catching sheen layered over the flag */
-  .cloth::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      115deg,
-      transparent 35%,
-      rgba(255,255,255,0.35) 50%,
-      transparent 65%
-    );
-    background-size: 220% 100%;
-    animation: ${shimmer} 3.5s ease-in-out infinite;
-    mix-blend-mode: screen;
-    pointer-events: none;
-    border-radius: 2px;
-  }
+const FlagBgLayer = styled.div`
+  position: absolute;
+  top: -14%;
+  bottom: -14%;
+  left: -12%;
+  right: -12%;
+  background-image: url(${p => p.$url});
+  background-size: cover;
+  background-position: ${p => p.$pos || 'center'};
+  background-repeat: no-repeat;
+  background-color: ${p => p.$fallback || '#1a2332'};
+  transform-origin: 0% 50%;
+  animation: ${flagWave3D} ${p => p.$speed || '5s'} ease-in-out infinite;
+  animation-delay: ${p => p.$delay || '0s'};
+  will-change: transform;
+  z-index: 0;
+  pointer-events: none;
 `;
 
-const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
-  <FlagWrap $size={size} $color={color} $delay={delay} $speed={speed}>
-    <span className="cloth" role="img" aria-label="flag">{flag}</span>
-  </FlagWrap>
-);
+/* Dark scrim that darkens the flag just enough for text legibility */
+const FlagScrim = styled.div`
+  position: absolute;
+  inset: 0;
+  background: ${p => p.$variant === 'left'
+    ? `linear-gradient(
+        95deg,
+        rgba(0,0,0,0.88) 0%,
+        rgba(0,0,0,0.7) 30%,
+        rgba(0,0,0,0.35) 60%,
+        rgba(0,0,0,0.55) 100%
+      )`
+    : `linear-gradient(
+        180deg,
+        rgba(0,0,0,0.4) 0%,
+        rgba(0,0,0,0.65) 40%,
+        rgba(0,0,0,0.85) 100%
+      )`};
+  z-index: 1;
+  pointer-events: none;
+`;
+
+/* Soft colored aura to blend the flag with the session color */
+const FlagAura = styled.div`
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 100% 50%, ${p => p.$color + '45'} 0%, transparent 55%),
+    radial-gradient(circle at 0% 50%, ${p => p.$color + '25'} 0%, transparent 50%);
+  z-index: 2;
+  mix-blend-mode: screen;
+  pointer-events: none;
+`;
+
+/* Light sheen sweep */
+const FlagShine = styled.div`
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255,255,255,0.22) 50%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  animation: ${shimmer} 4.5s ease-in-out infinite;
+  z-index: 3;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+`;
 
 // ============================================
-// SESSION HERO — PREMIUM PILL
+// SESSION HERO — wide flag-background pill
 // ============================================
 const SessionHero = styled.button`
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 7px 12px 7px 8px;
+  padding: 0;
   border-radius: 14px;
-  border: 1px solid ${p => p.$live ? (p.$color + '66') : (p.theme?.colors?.border || 'rgba(255,255,255,0.08)')};
-  background:
-    ${p => p.$live
-      ? `linear-gradient(135deg, ${p.$color}2e 0%, ${p.$color}0a 45%, ${p.theme?.colors?.background || 'rgba(255,255,255,0.03)'} 100%)`
-      : (p.theme?.colors?.background || 'rgba(255,255,255,0.03)')};
-  color: ${p => p.theme?.colors?.text || '#fff'};
+  border: 1px solid ${p => p.$live ? (p.$color + 'AA') : (p.theme?.colors?.border || 'rgba(255,255,255,0.1)')};
+  color: #fff;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   flex-shrink: 0;
   white-space: nowrap;
+  width: 340px;
+  height: 62px;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    0 1px 0 rgba(0,0,0,0.2),
-    ${p => p.$live ? `0 6px 20px -6px ${p.$color}80` : '0 4px 14px -6px rgba(0,0,0,0.6)'};
-
-  /* Shimmer sweep */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      110deg,
-      transparent 30%,
-      ${p => p.$live ? (p.$color + '1c') : 'rgba(255,255,255,0.05)'} 50%,
-      transparent 70%
-    );
-    background-size: 220% 100%;
-    animation: ${shimmer} 5s ease-in-out infinite;
-    pointer-events: none;
-  }
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    inset 0 -1px 0 rgba(0,0,0,0.4),
+    0 4px 16px -4px rgba(0,0,0,0.6),
+    ${p => p.$live ? `0 10px 28px -10px ${p.$color}` : '0 6px 18px -8px rgba(0,0,0,0.7)'};
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  isolation: isolate;
 
   &:hover {
-    border-color: ${p => p.$color || p.theme?.colors?.accent || '#3b82f6'};
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.12),
-      0 8px 26px -6px ${p => (p.$color || '#3b82f6') + '70'};
     transform: translateY(-1px);
+    border-color: ${p => p.$color};
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 14px 34px -10px ${p => p.$color};
   }
 
   &:active { transform: translateY(0); }
 
-  .session-meta {
+  .content {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    height: 100%;
+    padding: 0 14px 0 16px;
+  }
+
+  .left {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     line-height: 1.15;
     min-width: 0;
-    position: relative;
-    z-index: 1;
+    flex: 1;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.75), 0 0 12px rgba(0,0,0,0.5);
   }
 
-  .session-row {
+  .name-row {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
   }
 
   .session-name {
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 800;
-    letter-spacing: -0.2px;
-    color: ${p => p.theme?.colors?.text || '#fff'};
+    letter-spacing: -0.3px;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .live-tag {
@@ -1279,91 +1249,102 @@ const SessionHero = styled.button`
     font-weight: 800;
     letter-spacing: 0.8px;
     text-transform: uppercase;
-    background: ${p => p.$live ? 'rgba(34,197,94,0.2)' : 'rgba(148,163,184,0.15)'};
-    color: ${p => p.$live ? '#4ade80' : '#94a3b8'};
-    border: 1px solid ${p => p.$live ? 'rgba(34,197,94,0.45)' : 'rgba(148,163,184,0.25)'};
+    background: ${p => p.$live ? 'rgba(34,197,94,0.28)' : 'rgba(148,163,184,0.25)'};
+    color: ${p => p.$live ? '#86efac' : '#cbd5e1'};
+    border: 1px solid ${p => p.$live ? 'rgba(34,197,94,0.6)' : 'rgba(148,163,184,0.35)'};
+    backdrop-filter: blur(6px);
     animation: ${p => p.$live ? breathe : 'none'} 2.4s ease-in-out infinite;
+    flex-shrink: 0;
 
     .dot {
       width: 5px;
       height: 5px;
       border-radius: 50%;
       background: ${p => p.$live ? '#22c55e' : '#94a3b8'};
-      box-shadow: ${p => p.$live ? '0 0 6px #22c55e' : 'none'};
+      box-shadow: ${p => p.$live ? '0 0 8px #22c55e' : 'none'};
       animation: ${p => p.$live ? livePulse : 'none'} 1.6s ease-out infinite;
     }
   }
 
   .session-sub {
-    font-size: 9.5px;
+    font-size: 10px;
     font-weight: 600;
-    color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
+    color: rgba(255,255,255,0.82);
     letter-spacing: 0.3px;
-    margin-top: 3px;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 150px;
-    font-variant-numeric: tabular-nums;
+    max-width: 100%;
   }
 
-  .clock {
+  .right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    line-height: 1.15;
-    margin-left: auto;
+    line-height: 1.1;
     padding-left: 12px;
-    border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-    position: relative;
-    z-index: 1;
+    border-left: 1px solid rgba(255,255,255,0.18);
+    flex-shrink: 0;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.75);
+  }
 
-    .time {
-      font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      color: ${p => p.$live ? p.$color : (p.theme?.colors?.text || '#fff')};
-      font-variant-numeric: tabular-nums;
-      text-shadow: ${p => p.$live ? `0 0 12px ${p.$color}66` : 'none'};
-    }
+  .clock-time {
+    font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+  }
 
-    .tz {
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
-      margin-top: 2px;
-      text-transform: uppercase;
-    }
+  .clock-tz {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    color: rgba(255,255,255,0.75);
+    margin-top: 3px;
+    text-transform: uppercase;
   }
 
   .chev {
     display: flex;
     align-items: center;
-    margin-left: 2px;
-    opacity: 0.6;
+    margin-left: 4px;
+    opacity: 0.75;
     flex-shrink: 0;
-    position: relative;
-    z-index: 1;
+    color: #ffffff;
+  }
+
+  @media (max-width: 1024px) {
+    width: 300px;
   }
 
   @media (max-width: 768px) {
-    flex: 1;
-    padding: clamp(8px, 2.2vw, 11px) clamp(10px, 3vw, 14px) clamp(8px, 2.2vw, 11px) clamp(7px, 2vw, 9px);
+    width: 100%;
+    height: auto;
+    min-height: clamp(56px, 15vw, 68px);
     border-radius: clamp(11px, 3.2vw, 15px);
-    gap: clamp(9px, 2.6vw, 13px);
 
-    .session-name { font-size: clamp(12px, 3.4vw, 14px); }
-    .session-sub { font-size: clamp(9px, 2.6vw, 11px); max-width: clamp(110px, 34vw, 170px); }
-    .clock .time { font-size: clamp(12px, 3.4vw, 14px); }
-    .clock .tz { font-size: clamp(8px, 2.2vw, 10px); }
+    .content {
+      padding: clamp(8px, 2.4vw, 12px) clamp(12px, 3.4vw, 16px);
+      gap: clamp(8px, 2.4vw, 12px);
+    }
+    .session-name { font-size: clamp(13px, 3.6vw, 15px); }
+    .session-sub { font-size: clamp(10px, 2.8vw, 12px); }
+    .clock-time { font-size: clamp(13px, 3.6vw, 15px); }
+    .clock-tz { font-size: clamp(8.5px, 2.4vw, 10px); }
   }
 
   @media (max-width: 480px) {
     .session-sub { display: none; }
-    .clock .tz { display: none; }
-    .live-tag { padding: 1px 5px; font-size: 8px; }
+    .clock-tz { display: none; }
+    .session-name { font-size: clamp(13px, 3.8vw, 14px); }
+    .clock-time { font-size: clamp(13px, 3.8vw, 14px); }
   }
 `;
 
@@ -1490,151 +1471,111 @@ const SessionHeader = styled.div`
 
 const HeroSessionCard = styled.div`
   position: relative;
+  min-height: 190px;
   padding: 18px 18px 16px;
-  border-radius: 16px;
+  border-radius: 18px;
   margin-bottom: 14px;
   overflow: hidden;
-  border: 1px solid ${p => p.$color + '55'};
-  background:
-    linear-gradient(135deg, ${p => p.$color + '1c'} 0%, ${p => p.$color + '06'} 40%, ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.02)'} 100%);
+  border: 1px solid ${p => p.$color + '66'};
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    0 12px 32px -14px ${p => p.$color + '90'};
+    inset 0 1px 0 rgba(255,255,255,0.14),
+    0 16px 40px -14px ${p => p.$color + 'C0'};
+  isolation: isolate;
 
-  /* Drifting aura */
-  &::before {
+  /* Drifting aura overlay */
+  &::after {
     content: '';
     position: absolute;
     top: -50%;
     right: -30%;
-    width: 260px;
-    height: 260px;
+    width: 300px;
+    height: 300px;
     border-radius: 50%;
     background: radial-gradient(circle, ${p => p.$color + '55'} 0%, transparent 65%);
-    filter: blur(30px);
-    animation: ${auraDrift} 8s ease-in-out infinite;
+    filter: blur(40px);
+    animation: ${auraDrift} 9s ease-in-out infinite;
+    z-index: 3;
     pointer-events: none;
   }
 
-  /* Shimmer sweep */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      115deg,
-      transparent 30%,
-      ${p => p.$color + '18'} 50%,
-      transparent 70%
-    );
-    background-size: 220% 100%;
-    animation: ${shimmer} 6s ease-in-out infinite;
-    pointer-events: none;
+  .content {
+    position: relative;
+    z-index: 4;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .hero-top {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 14px;
-    position: relative;
-    z-index: 1;
     gap: 10px;
-  }
-
-  .hero-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 0;
-    flex: 1;
-  }
-
-  .flag-zone {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 10px 8px 12px;
-    border-radius: 12px;
-    background:
-      radial-gradient(circle at 30% 30%, ${p => p.$color + '30'} 0%, transparent 70%),
-      ${p => p.$color + '12'};
-    border: 1px solid ${p => p.$color + '45'};
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.1),
-      0 0 20px -4px ${p => p.$color + '70'};
-
-    /* Pulsing live ring */
-    &::after {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      border-radius: 15px;
-      border: 1px solid ${p => p.$color};
-      animation: ${liveRing} 2.4s ease-out infinite;
-      pointer-events: none;
-    }
   }
 
   .hero-info {
     display: flex;
     flex-direction: column;
-    line-height: 1.15;
+    line-height: 1.1;
     min-width: 0;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0 18px rgba(0,0,0,0.6);
   }
 
   .hero-name {
-    font-size: 19px;
+    font-size: 22px;
     font-weight: 800;
-    letter-spacing: -0.4px;
-    color: ${p => p.theme?.colors?.text || '#F8FAFC'};
-    line-height: 1.05;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    line-height: 1;
   }
 
   .hero-region {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-size: 10px;
+    gap: 6px;
+    font-size: 10.5px;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 4px;
+    color: rgba(255,255,255,0.85);
+    margin-top: 6px;
   }
 
   .hero-tag {
     display: inline-flex;
     align-items: center;
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: 8.5px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 9px;
     font-weight: 800;
     letter-spacing: 0.5px;
-    background: ${p => p.$color + '1a'};
-    color: ${p => p.$color};
-    border: 1px solid ${p => p.$color + '45'};
+    background: rgba(255,255,255,0.16);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(6px);
   }
 
   .hero-status {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 4px 10px;
-    border-radius: 7px;
+    padding: 5px 11px;
+    border-radius: 8px;
     font-size: 9.5px;
     font-weight: 800;
-    letter-spacing: 0.7px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    background: linear-gradient(135deg, rgba(34,197,94,0.22), rgba(34,197,94,0.1));
-    color: #4ade80;
-    border: 1px solid rgba(34,197,94,0.45);
+    background: linear-gradient(135deg, rgba(34,197,94,0.35), rgba(34,197,94,0.15));
+    color: #bbf7d0;
+    border: 1px solid rgba(34,197,94,0.65);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.12),
-      0 0 12px rgba(34,197,94,0.35);
+      inset 0 1px 0 rgba(255,255,255,0.2),
+      0 0 18px rgba(34,197,94,0.5);
+    backdrop-filter: blur(8px);
     white-space: nowrap;
     flex-shrink: 0;
+    animation: ${breathe} 2.4s ease-in-out infinite;
 
     .dot {
       width: 6px;
@@ -1647,10 +1588,11 @@ const HeroSessionCard = styled.div`
   }
 
   .hero-status.closed {
-    background: rgba(148,163,184,0.15);
-    color: #cbd5e1;
-    border-color: rgba(148,163,184,0.3);
-    box-shadow: none;
+    background: rgba(148,163,184,0.2);
+    color: #e2e8f0;
+    border-color: rgba(148,163,184,0.4);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: none;
 
     .dot {
       background: #94a3b8;
@@ -1659,16 +1601,19 @@ const HeroSessionCard = styled.div`
     }
   }
 
+  .spacer {
+    flex: 1;
+    min-height: 20px;
+  }
+
   .hero-timing {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
     margin-bottom: 10px;
-    position: relative;
-    z-index: 1;
     padding-top: 12px;
-    border-top: 1px dashed ${p => p.$color + '30'};
+    border-top: 1px dashed rgba(255,255,255,0.25);
   }
 
   .time-range {
@@ -1676,38 +1621,45 @@ const HeroSessionCard = styled.div`
     align-items: center;
     gap: 6px;
     font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #ffffff;
     letter-spacing: 0.3px;
     font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 
-    svg { color: ${p => p.$color}; }
+    svg { color: ${p => p.$color}; filter: drop-shadow(0 0 4px ${p => p.$color}); }
   }
 
   .countdown {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-size: 10.5px;
+    font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.4px;
-    color: ${p => p.$color};
+    color: #ffffff;
     text-transform: uppercase;
-    text-shadow: 0 0 10px ${p => p.$color + '60'};
     font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+    padding: 4px 9px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid ${p => p.$color + '80'};
+    backdrop-filter: blur(6px);
+
+    svg { color: ${p => p.$color}; }
   }
 
   .progress-track {
     position: relative;
-    height: 7px;
-    border-radius: 7px;
-    background: rgba(255,255,255,0.05);
+    height: 8px;
+    border-radius: 8px;
+    background: rgba(0,0,0,0.45);
     overflow: hidden;
     box-shadow:
-      inset 0 1px 2px rgba(0,0,0,0.4),
-      inset 0 0 0 1px rgba(255,255,255,0.04);
-    z-index: 1;
+      inset 0 1px 2px rgba(0,0,0,0.6),
+      inset 0 0 0 1px rgba(255,255,255,0.08);
   }
 
   .progress-fill {
@@ -1716,20 +1668,19 @@ const HeroSessionCard = styled.div`
     left: 0;
     bottom: 0;
     width: ${p => (p.$progress * 100) + '%'};
-    border-radius: 7px;
-    background: linear-gradient(90deg, ${p => p.$color}, ${p => p.$color}cc);
+    border-radius: 8px;
+    background: linear-gradient(90deg, ${p => p.$color}, ${p => p.$color}dd);
     box-shadow:
-      0 0 12px ${p => p.$color + '90'},
-      inset 0 1px 0 rgba(255,255,255,0.3);
+      0 0 14px ${p => p.$color},
+      inset 0 1px 0 rgba(255,255,255,0.4);
     transition: width 1s linear;
     overflow: hidden;
 
-    /* Shimmer on the fill */
     &::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
       background-size: 60% 100%;
       animation: ${shimmer} 2.5s linear infinite;
     }
@@ -1739,27 +1690,27 @@ const HeroSessionCard = styled.div`
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
-    font-size: 9px;
+    font-size: 9.5px;
     font-weight: 800;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.7px;
     text-transform: uppercase;
-    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-    position: relative;
-    z-index: 1;
+    color: rgba(255,255,255,0.85);
     font-variant-numeric: tabular-nums;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
 
-    .pct { color: ${p => p.$color}; }
+    .pct { color: ${p => p.$color}; text-shadow: 0 0 10px ${p => p.$color + '90'}; }
   }
 
   @media (max-width: 768px) {
+    min-height: clamp(170px, 46vw, 200px);
     padding: clamp(15px, 4.2vw, 19px);
-    border-radius: clamp(13px, 3.6vw, 16px);
+    border-radius: clamp(14px, 3.8vw, 18px);
     margin-bottom: clamp(11px, 3vw, 14px);
 
-    .hero-name { font-size: clamp(16px, 4.6vw, 19px); }
-    .hero-region { font-size: clamp(9.5px, 2.6vw, 11px); margin-top: clamp(3px, 1vw, 5px); }
-    .hero-status { font-size: clamp(9px, 2.6vw, 11px); padding: 3px clamp(7px, 2vw, 10px); }
-    .time-range { font-size: clamp(11px, 3.2vw, 13px); }
+    .hero-name { font-size: clamp(18px, 5vw, 22px); }
+    .hero-region { font-size: clamp(10px, 2.8vw, 12px); margin-top: clamp(4px, 1.4vw, 6px); }
+    .hero-status { font-size: clamp(9px, 2.6vw, 11px); padding: 4px clamp(8px, 2.4vw, 11px); }
+    .time-range { font-size: clamp(11.5px, 3.2vw, 13px); }
     .countdown { font-size: clamp(10px, 2.8vw, 12px); }
     .progress-labels { font-size: clamp(9px, 2.4vw, 10.5px); }
     .hero-timing { padding-top: clamp(10px, 3vw, 12px); }
@@ -1798,38 +1749,102 @@ const SessionListItem = styled.div`
   padding: 10px 12px;
   border-radius: 12px;
   margin-bottom: 6px;
-  border: 1px solid ${p => (p.$live ? p.$color + '40' : 'rgba(255,255,255,0.04)')};
+  border: 1px solid ${p => (p.$live ? p.$color + '55' : 'rgba(255,255,255,0.05)')};
   background: ${p => (p.$live
-    ? `linear-gradient(90deg, ${p.$color}16, ${p.$color}05 50%, transparent)`
+    ? `linear-gradient(90deg, ${p.$color}22, ${p.$color}08 50%, transparent)`
     : 'rgba(255,255,255,0.015)')};
   transition: all 0.2s ease;
   box-shadow: ${p => (p.$live
-    ? `inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 14px -8px ${p.$color}80`
+    ? `inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 16px -8px ${p.$color}90`
     : 'inset 0 1px 0 rgba(255,255,255,0.03)')};
+  overflow: hidden;
 
   &:hover {
     background: ${p => (p.$live
-      ? `linear-gradient(90deg, ${p.$color}22, ${p.$color}0a 50%, transparent)`
+      ? `linear-gradient(90deg, ${p.$color}2e, ${p.$color}10 50%, transparent)`
       : 'rgba(255,255,255,0.03)')};
-    border-color: ${p => (p.$live ? p.$color + '66' : 'rgba(255,255,255,0.08)')};
+    border-color: ${p => (p.$live ? p.$color + '77' : 'rgba(255,255,255,0.1)')};
     transform: translateX(2px);
   }
 
   &:last-child { margin-bottom: 0; }
 
-  .flag-zone {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 11px;
-    background: ${p => (p.$live
-      ? `radial-gradient(circle at 30% 30%, ${p.$color}30, transparent 70%), ${p.$color}12`
-      : 'rgba(255,255,255,0.04)')};
-    border: 1px solid ${p => (p.$live ? p.$color + '50' : 'rgba(255,255,255,0.06)')};
-    box-shadow: ${p => (p.$live ? `inset 0 1px 0 rgba(255,255,255,0.1), 0 0 12px -2px ${p.$color}60` : 'inset 0 1px 0 rgba(255,255,255,0.05)')};
+  /* Flag tile with flag image as background */
+  .flag-tile {
+    position: relative;
+    width: 52px;
+    height: 38px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid ${p => (p.$live ? p.$color + '88' : 'rgba(255,255,255,0.12)')};
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.2),
+      ${p => (p.$live
+        ? `0 0 14px -2px ${p.$color}90, 0 4px 10px -4px rgba(0,0,0,0.7)`
+        : '0 2px 6px -2px rgba(0,0,0,0.6)')};
     flex-shrink: 0;
+    background: #1a2332;
+  }
+
+  /* Dark scrim on the tile for depth */
+  .flag-tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0,0,0,0) 30%,
+      rgba(0,0,0,0.25) 75%,
+      rgba(0,0,0,0.5) 100%
+    );
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .flag-tile .tile-flag {
+    position: absolute;
+    top: -8%;
+    bottom: -8%;
+    left: -6%;
+    right: -6%;
+    background-image: url(${p => p.$flagUrl});
+    background-size: cover;
+    background-position: center;
+    transform-origin: 0% 50%;
+    animation: ${flagWave3D} ${p => p.$speed || '4.2s'} ease-in-out infinite;
+    animation-delay: ${p => p.$delay || '0s'};
+    z-index: 1;
+  }
+
+  /* Shine sweep on the tile */
+  .flag-tile .tile-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 35%,
+      rgba(255,255,255,0.35) 50%,
+      transparent 65%
+    );
+    background-size: 220% 100%;
+    animation: ${shimmer} 4s ease-in-out infinite;
+    animation-delay: ${p => p.$delay || '0s'};
+    mix-blend-mode: overlay;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* Live accent bar on the left of the tile */
+  .flag-tile .accent-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: ${p => p.color};
+    box-shadow: 0 0 8px ${p => p.color};
+    z-index: 4;
+    opacity: ${p => (p.$live ? 1 : 0.25)};
   }
 
   .list-info {
@@ -1859,10 +1874,10 @@ const SessionListItem = styled.div`
       font-weight: 800;
       letter-spacing: 0.7px;
       text-transform: uppercase;
-      background: rgba(34,197,94,0.18);
+      background: rgba(34,197,94,0.2);
       color: #4ade80;
-      border: 1px solid rgba(34,197,94,0.4);
-      box-shadow: 0 0 8px rgba(34,197,94,0.25);
+      border: 1px solid rgba(34,197,94,0.45);
+      box-shadow: 0 0 8px rgba(34,197,94,0.3);
 
       .dot {
         width: 4px;
@@ -1885,7 +1900,7 @@ const SessionListItem = styled.div`
       font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
       font-variant-numeric: tabular-nums;
 
-      svg { opacity: 0.65; }
+      svg { opacity: 0.7; }
     }
   }
 
@@ -1896,7 +1911,7 @@ const SessionListItem = styled.div`
     line-height: 1.15;
     flex-shrink: 0;
     padding-left: 8px;
-    border-left: 1px dashed ${p => (p.$live ? p.$color + '40' : 'rgba(255,255,255,0.06)')};
+    border-left: 1px dashed ${p => (p.$live ? p.$color + '50' : 'rgba(255,255,255,0.08)')};
 
     .status-label {
       font-size: 8.5px;
@@ -1914,7 +1929,7 @@ const SessionListItem = styled.div`
       margin-top: 3px;
       letter-spacing: 0.3px;
       font-variant-numeric: tabular-nums;
-      text-shadow: ${p => p.$live ? `0 0 10px ${p.$color}66` : 'none'};
+      text-shadow: ${p => p.$live ? `0 0 12px ${p.$color}80` : 'none'};
     }
   }
 
@@ -1924,10 +1939,10 @@ const SessionListItem = styled.div`
     border-radius: clamp(11px, 3.2vw, 13px);
     margin-bottom: clamp(6px, 2vw, 8px);
 
-    .flag-zone {
-      width: clamp(38px, 10.5vw, 46px);
-      height: clamp(38px, 10.5vw, 46px);
-      border-radius: clamp(10px, 2.8vw, 12px);
+    .flag-tile {
+      width: clamp(48px, 13vw, 58px);
+      height: clamp(34px, 9.6vw, 42px);
+      border-radius: clamp(7px, 2.2vw, 9px);
     }
     .list-info {
       .name { font-size: clamp(13px, 3.7vw, 15px); }
@@ -2041,12 +2056,12 @@ const PlatformDropdown = styled(GlassDropdownMenu)`
 `;
 
 const SessionDropdownMenu = styled(GlassDropdownMenu)`
-  min-width: 380px;
+  min-width: 400px;
   left: 0;
   right: auto;
 
   @media (max-width: 1024px) {
-    min-width: 340px;
+    min-width: 360px;
   }
 
   @media (max-width: 768px) {
@@ -2778,7 +2793,6 @@ const TopPanel = ({
 
   const [depositPending, setDepositPending] = useState(false);
 
-  // Live 1-second clock
   const [now, setNow] = useState(() => new Date());
 
   const dropdownRef = useRef(null);
@@ -2804,7 +2818,6 @@ const TopPanel = ({
 
   const openSessions = sessionStates.filter(s => s.isOpen);
 
-  // Hero = most recently opened live session, else soonest to open
   const heroSession = useMemo(() => {
     if (openSessions.length > 0) {
       return [...openSessions].sort((a, b) => b.startUTC - a.startUTC)[0];
@@ -3355,7 +3368,7 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* ---------- Forex live session hero pill ---------- */}
+        {/* ---------- Forex live session hero pill with flag BG ---------- */}
         {isForex && (
           <SessionWrapper ref={sessionRef}>
             <DropdownContainer style={{ position: 'relative', width: '100%' }}>
@@ -3365,32 +3378,37 @@ const TopPanel = ({
                 $live={heroSession.isOpen}
                 $color={heroSession.color}
               >
-                <WavingFlag
-                  flag={heroSession.flag}
-                  color={heroSession.color}
-                  size={30}
-                  delay="0s"
-                  speed="3.2s"
+                {/* Flag as background */}
+                <FlagBgLayer
+                  $url={heroSession.flagUrl}
+                  $fallback={heroSession.color + '30'}
+                  $speed="5s"
                 />
-                <div className="session-meta">
-                  <div className="session-row">
-                    <span className="session-name">{heroSession.name}</span>
-                    <span className="live-tag">
-                      <span className="dot" />
-                      {heroSession.isOpen ? 'Live' : 'Soon'}
+                <FlagScrim $variant="left" />
+                <FlagAura $color={heroSession.color} />
+                <FlagShine />
+
+                <div className="content">
+                  <div className="left">
+                    <div className="name-row">
+                      <span className="session-name">{heroSession.name}</span>
+                      <span className="live-tag">
+                        <span className="dot" />
+                        {heroSession.isOpen ? 'Live' : 'Soon'}
+                      </span>
+                    </div>
+                    <span className="session-sub">
+                      {heroSession.isOpen
+                        ? `Closes in ${formatDuration(heroSession.minUntil)}`
+                        : `Opens in ${formatDuration(heroSession.minUntil)}`}
                     </span>
                   </div>
-                  <span className="session-sub">
-                    {heroSession.isOpen
-                      ? `Closes in ${formatDuration(heroSession.minUntil)}`
-                      : `Opens in ${formatDuration(heroSession.minUntil)}`}
-                  </span>
+                  <div className="right">
+                    <span className="clock-time">{clock.full}</span>
+                    <span className="clock-tz">UTC+3</span>
+                  </div>
+                  <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
                 </div>
-                <div className="clock">
-                  <span className="time">{clock.full}</span>
-                  <span className="tz">UTC+3</span>
-                </div>
-                <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
               </SessionHero>
 
               <SessionDropdownMenu isOpen={isSessionOpen}>
@@ -3412,56 +3430,59 @@ const TopPanel = ({
                   </div>
                 </SessionHeader>
 
-                {/* Hero — current or next session */}
+                {/* Hero — current or next session, with flag as background */}
                 <HeroSessionCard
                   $color={heroSession.color}
                   $progress={heroSession.progress}
                 >
-                  <div className="hero-top">
-                    <div className="hero-left">
-                      <div className="flag-zone">
-                        <WavingFlag
-                          flag={heroSession.flag}
-                          color={heroSession.color}
-                          size={42}
-                          delay="0s"
-                          speed="2.8s"
-                        />
-                      </div>
+                  <FlagBgLayer
+                    $url={heroSession.flagUrl}
+                    $fallback={heroSession.color + '30'}
+                    $speed="6s"
+                  />
+                  <FlagScrim $variant="bottom" />
+                  <FlagAura $color={heroSession.color} />
+                  <FlagShine />
+
+                  <div className="content">
+                    <div className="hero-top">
                       <div className="hero-info">
                         <div className="hero-name">{heroSession.name}</div>
                         <div className="hero-region">
-                          <GlobeIcon size={10} />
+                          <GlobeIcon size={11} />
                           {heroSession.region}
                           <span className="hero-tag">{heroSession.tag}</span>
                         </div>
                       </div>
+                      <div className={`hero-status ${heroSession.isOpen ? '' : 'closed'}`}>
+                        <span className="dot" />
+                        {heroSession.isOpen ? 'Live Now' : 'Opens Soon'}
+                      </div>
                     </div>
-                    <div className={`hero-status ${heroSession.isOpen ? '' : 'closed'}`}>
-                      <span className="dot" />
-                      {heroSession.isOpen ? 'Live Now' : 'Opens Soon'}
-                    </div>
-                  </div>
 
-                  <div className="hero-timing">
-                    <div className="time-range">
-                      <ClockIcon size={13} />
-                      {toUTC3(heroSession.startUTC)} – {toUTC3(heroSession.endUTC)} <span style={{ opacity: 0.6, marginLeft: 2 }}>EAT</span>
-                    </div>
-                    <div className="countdown">
-                      <BoltIcon size={11} />
-                      {heroSession.isOpen
-                        ? `Closes in ${formatDuration(heroSession.minUntil)}`
-                        : `Opens in ${formatDuration(heroSession.minUntil)}`}
-                    </div>
-                  </div>
+                    <div className="spacer" />
 
-                  <div className="progress-track">
-                    <div className="progress-fill" />
-                  </div>
-                  <div className="progress-labels">
-                    <span>{heroSession.isOpen ? 'Session progress' : 'Waiting to open'}</span>
-                    <span className="pct">{Math.round(heroSession.progress * 100)}%</span>
+                    <div className="hero-timing">
+                      <div className="time-range">
+                        <ClockIcon size={13} />
+                        {toUTC3(heroSession.startUTC)} – {toUTC3(heroSession.endUTC)}
+                        <span style={{ opacity: 0.75, marginLeft: 3 }}>EAT</span>
+                      </div>
+                      <div className="countdown">
+                        <BoltIcon size={11} />
+                        {heroSession.isOpen
+                          ? `Closes in ${formatDuration(heroSession.minUntil)}`
+                          : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                      </div>
+                    </div>
+
+                    <div className="progress-track">
+                      <div className="progress-fill" />
+                    </div>
+                    <div className="progress-labels">
+                      <span>{heroSession.isOpen ? 'Session progress' : 'Waiting to open'}</span>
+                      <span className="pct">{Math.round(heroSession.progress * 100)}%</span>
+                    </div>
                   </div>
                 </HeroSessionCard>
 
@@ -3473,15 +3494,14 @@ const TopPanel = ({
                     key={s.key}
                     $live={s.isOpen}
                     $color={s.color}
+                    $flagUrl={s.flagUrl}
+                    $delay={`${idx * 0.4}s`}
+                    $speed="4.2s"
                   >
-                    <div className="flag-zone">
-                      <WavingFlag
-                        flag={s.flag}
-                        color={s.color}
-                        size={28}
-                        delay={`${idx * 0.35}s`}
-                        speed="3.4s"
-                      />
+                    <div className="flag-tile">
+                      <div className="tile-flag" />
+                      <div className="tile-shine" />
+                      <div className="accent-bar" />
                     </div>
                     <div className="list-info">
                       <div className="name-row">
