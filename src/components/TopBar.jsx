@@ -216,6 +216,33 @@ const BoltIcon = ({ size = 11 }) => (
   </svg>
 );
 
+/* ---------- Forex nav icons ---------- */
+const DashboardIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 10.5 12 3l9 7.5" />
+    <path d="M5.5 9.6V20h13V9.6" />
+    <path d="M9.5 20v-5h5v5" />
+  </svg>
+);
+
+const StrengthIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 20v-8" />
+    <path d="M12 20V4" />
+    <path d="M19 20v-5" />
+  </svg>
+);
+
+const BotsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3.5" y="7.5" width="17" height="12" rx="3.5" />
+    <path d="M12 7.5V4" />
+    <circle cx="12" cy="3.4" r="1" />
+    <path d="M9 13h.01M15 13h.01" />
+    <path d="M9.5 16.5h5" />
+  </svg>
+);
+
 // ============================================
 // FOREX SESSIONS
 // ============================================
@@ -224,6 +251,15 @@ const FOREX_SESSIONS = [
   { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', country: 'Japan',     startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific', tag: 'JPY · AUD' },
   { key: 'london',  name: 'London',   flag: '🇬🇧', country: 'United Kingdom', startUTC: 8, endUTC: 17, color: '#60A5FA', region: 'Europe', tag: 'EUR · GBP' },
   { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States', startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas', tag: 'USD · CAD' },
+];
+
+// ============================================
+// FOREX NAV ITEMS — Home / Strength Meter / Bots
+// ============================================
+export const FOREX_NAV_ITEMS = [
+  { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
+  { key: 'strength', label: 'Strength Meter', path: '/forexdash/strength', icon: <StrengthIcon /> },
+  { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -1079,6 +1115,94 @@ const RightSection = styled.div`
   }
 `;
 
+/* ---- Forex navigation (Home / Strength Meter / Bots) ---- */
+const ForexNavWrapper = styled.nav`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 16px;
+  padding: 4px;
+  background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
+  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  border-radius: 12px;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    margin: 0 8px;
+    gap: 2px;
+  }
+
+  @media (max-width: 768px) {
+    order: 3;
+    width: 100%;
+    margin: 4px 0 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: clamp(5px, 1.6vw, 8px);
+    gap: clamp(4px, 1.4vw, 8px);
+    border-radius: clamp(10px, 3vw, 14px);
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+`;
+
+const ForexNavButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
+    color: ${p => p.theme?.colors?.text || '#ffffff'};
+  }
+
+  &.active {
+    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.14)'};
+    color: ${p => p.theme?.colors?.accent || '#3b82f6'};
+    border-color: ${p => (p.theme?.colors?.accent || '#3b82f6') + '30'};
+    box-shadow: 0 0 12px ${p => (p.theme?.colors?.accent || '#3b82f6') + '20'};
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(9px, 2.6vw, 12px) clamp(12px, 3.6vw, 16px);
+    font-size: clamp(12.5px, 3.5vw, 14px);
+    border-radius: clamp(8px, 2.6vw, 12px);
+    gap: clamp(6px, 2vw, 10px);
+
+    svg {
+      width: clamp(15px, 4.2vw, 18px);
+      height: clamp(15px, 4.2vw, 18px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: clamp(8px, 2.4vw, 11px) clamp(10px, 3vw, 14px);
+    font-size: clamp(12px, 3.4vw, 13.5px);
+    gap: clamp(5px, 1.8vw, 8px);
+
+    svg { width: clamp(14px, 4vw, 16px); height: clamp(14px, 4vw, 16px); }
+  }
+`;
+
 const SessionWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -1090,7 +1214,7 @@ const SessionWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    order: 3;
+    order: 4;
     width: 100%;
     margin: 4px 0 0;
     justify-content: flex-start;
@@ -2877,6 +3001,19 @@ const TopPanel = ({
 
   const openSessions = sessionStates.filter(s => s.isOpen);
 
+  // ✅ Which forex nav item is active based on pathname
+  const activeForexNav = (() => {
+    const p = location.pathname;
+    if (p === '/forexdash/strength') return 'strength';
+    if (p === '/forexdash/bots') return 'bots';
+    return 'home';
+  })();
+
+  // ✅ Navigate between forex sub-routes
+  const handleForexNav = (path) => {
+    if (location.pathname !== path) navigate(path);
+  };
+
   // Hero = most recently opened live session, else soonest to open
   const heroSession = useMemo(() => {
     if (openSessions.length > 0) {
@@ -3427,6 +3564,23 @@ const TopPanel = ({
             </ConnectionStatus>
           </BrandContainer>
         </LeftSection>
+
+        {/* ---------- Forex navigation (Home / Strength Meter / Bots) ---------- */}
+        {isForex && (
+          <ForexNavWrapper aria-label="Forex navigation">
+            {FOREX_NAV_ITEMS.map((item) => (
+              <ForexNavButton
+                key={item.key}
+                className={activeForexNav === item.key ? 'active' : ''}
+                onClick={() => handleForexNav(item.path)}
+                aria-label={item.label}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </ForexNavButton>
+            ))}
+          </ForexNavWrapper>
+        )}
 
         {/* ---------- Forex live session hero pill ---------- */}
         {isForex && (
