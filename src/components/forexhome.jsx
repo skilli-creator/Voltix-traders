@@ -22,18 +22,6 @@ const C = {
 /* ================================================================ */
 /*  CONTENT                                                         */
 /* ================================================================ */
-const MARKETS = [
-  { sym:'EURUSD', label:'EUR/USD', name:'Euro / US Dollar', tag:'Major',
-    desc:'The world’s most liquid pair. Tight spreads, deep liquidity and clean directional trends during London and New York.',
-    spread:'0.4 pips', session:'London · New York', vol:'Medium', atr:'65 pips' },
-  { sym:'BTCUSD', label:'BTC/USD', name:'Bitcoin / US Dollar', tag:'Crypto',
-    desc:'24/7 volatility with enormous intraday ranges. Built for momentum, breakout and session-based automation.',
-    spread:'$12', session:'24 / 7', vol:'High', atr:'$1,200' },
-  { sym:'XAUUSD', label:'XAU/USD', name:'Gold / US Dollar', tag:'Metal',
-    desc:'The classic safe-haven asset. Strong directional runs during risk-off flows and US data releases.',
-    spread:'18 pts', session:'London · New York', vol:'High', atr:'$24' },
-];
-
 const SERVICES = [
   { key:'bots',     title:'Automated Trading Bots',    desc:'Six pre-built strategies tuned for EUR/USD, BTC/USD and XAU/USD. Toggle on and let them run.',              cta:'Manage bots', icon:'bot' },
   { key:'lot',      title:'Lot Size Calculator',       desc:'Risk-based sizing on every instrument. Balance, risk % and stop-loss — instant lot size.',                  cta:'Calculate',   icon:'calc' },
@@ -41,17 +29,6 @@ const SERVICES = [
   { key:'signals',  title:'Live Signal Alerts',        desc:'Momentum, breakout and mean-reversion alerts the moment price structure shifts on your watchlist.',        cta:'See alerts',  icon:'bell' },
   { key:'risk',     title:'Risk & Margin Manager',     desc:'Real-time margin level, free margin and exposure warnings — so one trade never takes down your account.',  cta:'Review risk', icon:'shield' },
   { key:'journal',  title:'Trade Journal & Analytics', desc:'Every fill and every pip logged automatically. Win rate, expectancy, drawdown, equity curve.',              cta:'Open journal', icon:'journal' },
-  { key:'backtest', title:'Backtesting Engine',        desc:'Run any bot against years of tick data before risking a cent. Drawdown, Sharpe and profit factor up front.', cta:'Run backtest', icon:'flask' },
-  { key:'coaching', title:'1-on-1 Coaching',           desc:'Direct sessions with Tonny covering risk, journaling, bot selection and strategy design.',                 cta:'Book session', icon:'user' },
-];
-
-const BOTS = [
-  { name:'Pip Scalper',      market:'EUR/USD', tf:'M5',  win:68, trades:1243, dd:'4.2%',  pf:2.1, sharpe:1.8, live:true },
-  { name:'Momentum Rider',   market:'BTC/USD', tf:'H1',  win:61, trades:486,  dd:'9.8%',  pf:1.9, sharpe:1.5, live:true },
-  { name:'Gold Reversal',    market:'XAU/USD', tf:'M30', win:57, trades:712,  dd:'11.4%', pf:1.7, sharpe:1.2, live:true },
-  { name:'London Breakout',  market:'EUR/USD', tf:'M15', win:64, trades:894,  dd:'6.1%',  pf:2.0, sharpe:1.6, live:true },
-  { name:'Asian Range Fade', market:'XAU/USD', tf:'M15', win:59, trades:534,  dd:'7.9%',  pf:1.6, sharpe:1.3, live:true },
-  { name:'Crypto Session',   market:'BTC/USD', tf:'H4',  win:55, trades:312,  dd:'13.2%', pf:1.8, sharpe:1.4, live:true },
 ];
 
 const STATS = [
@@ -202,6 +179,8 @@ export default function ForexHome({
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,900&family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap');
+
         /* ============================================================
            FORCE THE VIEW CONTAINER TO SCROLL
            ============================================================ */
@@ -219,7 +198,7 @@ export default function ForexHome({
           color:${C.text};
           min-height:100%;
           display:block;
-          font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
+          font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
         }
         .tf-page *{ box-sizing:border-box; }
 
@@ -258,34 +237,191 @@ export default function ForexHome({
         .tf-btn-sm{ padding:10px 18px; font-size:12.5px; }
         .pos{ color:${C.green}; } .neg{ color:${C.red}; }
 
-        /* ---------- HERO ---------- */
-        .tf-hero{ position:relative; overflow:hidden; padding:96px 0 108px;
-          text-align:center;
+        /* ============================================================
+           HERO — SUPER UI
+           ============================================================ */
+        .tf-hero{ position:relative; overflow:hidden;
+          padding:112px 0 128px; text-align:center;
           background:
-            radial-gradient(ellipse at 50% 0%, rgba(245,180,0,.10), transparent 60%),
+            radial-gradient(ellipse 900px 500px at 50% -10%, rgba(245,180,0,.14), transparent 65%),
+            radial-gradient(ellipse 700px 400px at 50% 110%, rgba(245,180,0,.05), transparent 60%),
             linear-gradient(180deg, #0a0a0a 0%, #070707 100%); }
         .tf-hero::before{ content:''; position:absolute; inset:0;
           pointer-events:none;
           background-image:
-            linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-          background-size:48px 48px;
-          mask-image:radial-gradient(ellipse at 50% 30%, black, transparent 75%);
-          -webkit-mask-image:radial-gradient(ellipse at 50% 30%, black, transparent 75%); }
-        .tf-candles{ position:absolute; inset:0; pointer-events:none; opacity:.55; }
+            linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+          background-size:52px 52px;
+          mask-image:radial-gradient(ellipse at 50% 40%, black 20%, transparent 78%);
+          -webkit-mask-image:radial-gradient(ellipse at 50% 40%, black 20%, transparent 78%); }
+
+        /* Rotating gold conic glow behind the headline */
+        .tf-hero::after{
+          content:'';
+          position:absolute;
+          top:-260px; left:50%;
+          width:900px; height:900px;
+          margin-left:-450px;
+          border-radius:50%;
+          background:conic-gradient(from 0deg,
+            transparent 0deg,
+            rgba(245,180,0,.12) 60deg,
+            transparent 130deg,
+            rgba(245,180,0,.08) 240deg,
+            transparent 300deg);
+          filter:blur(60px);
+          animation:tfSpinSlow 40s linear infinite;
+          pointer-events:none;
+          z-index:0;
+        }
+        @keyframes tfSpinSlow{ to{ transform:rotate(360deg); } }
+
+        .tf-candles{ position:absolute; inset:0; pointer-events:none; opacity:.5; z-index:1; }
         .tf-candles svg{ width:100%; height:100%; }
-        .tf-hero-inner{ position:relative; z-index:2; max-width:920px;
+
+        .tf-hero-inner{ position:relative; z-index:2; max-width:980px;
           margin:0 auto; padding:0 22px; }
-        .tf-hero h1{ font-size:76px; line-height:1.02; font-weight:900;
-          letter-spacing:-3px; color:${C.text}; margin:0 0 22px; }
-        .tf-hero h1 .g{ color:${C.gold}; }
-        .tf-hero-lead{ font-size:19px; line-height:1.55; color:${C.text2};
-          max-width:660px; margin:0 auto 38px; }
-        .tf-hero-cta{ display:flex; justify-content:center; gap:14px;
-          flex-wrap:wrap; margin-bottom:44px; }
-        .tf-trust{ display:flex; justify-content:center; gap:42px; flex-wrap:wrap; }
-        .tf-trust span{ display:flex; align-items:center; gap:10px;
-          font-size:14px; color:${C.text2}; font-weight:600; }
+
+        /* Badge above headline */
+        .tf-hero-badge{
+          display:inline-flex; align-items:center; gap:10px;
+          padding:8px 18px 8px 12px;
+          border-radius:100px;
+          background:rgba(245,180,0,.08);
+          border:1px solid rgba(245,180,0,.28);
+          font-family:'JetBrains Mono',monospace;
+          font-size:11.5px; font-weight:700;
+          letter-spacing:1.4px; text-transform:uppercase;
+          color:${C.gold};
+          margin-bottom:32px;
+          backdrop-filter:blur(10px);
+          -webkit-backdrop-filter:blur(10px);
+        }
+        .tf-hero-badge .pulse{
+          width:7px; height:7px; border-radius:50%;
+          background:${C.green};
+          box-shadow:0 0 10px ${C.green};
+          animation:tfPulseDot 2s ease-in-out infinite;
+        }
+        @keyframes tfPulseDot{
+          0%,100%{ opacity:1; transform:scale(1); }
+          50%{ opacity:.55; transform:scale(1.35); }
+        }
+
+        /* Headline composition */
+        .tf-hero-head{ margin:0 0 30px; }
+
+        /* Line 1: "Master Forex Trading" — Playfair Display, italic serif */
+        .tf-hero-line1{
+          display:block;
+          font-family:'Playfair Display', Georgia, serif;
+          font-style:italic;
+          font-weight:700;
+          font-size:72px;
+          line-height:1.02;
+          letter-spacing:-2.4px;
+          color:${C.text};
+          text-shadow:
+            0 2px 30px rgba(0,0,0,.6),
+            0 0 60px rgba(245,180,0,.08);
+          animation:tfRiseIn .9s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        /* Line 2: "with Tonnyfx" — massive gradient gold */
+        .tf-hero-line2{
+          display:block;
+          margin-top:6px;
+          font-family:'Inter', sans-serif;
+          font-weight:900;
+          font-size:120px;
+          line-height:.95;
+          letter-spacing:-6px;
+          background:linear-gradient(180deg, #fff5cc 0%, ${C.gold} 45%, ${C.gold2} 100%);
+          -webkit-background-clip:text;
+          background-clip:text;
+          color:transparent;
+          -webkit-text-fill-color:transparent;
+          filter:drop-shadow(0 8px 30px rgba(245,180,0,.35));
+          animation:tfRiseIn .9s .1s cubic-bezier(.16,1,.3,1) both;
+        }
+
+        @keyframes tfRiseIn{
+          from{ opacity:0; transform:translateY(26px); filter:blur(6px); }
+          to{ opacity:1; transform:translateY(0); filter:blur(0); }
+        }
+
+        /* Word divider under headline */
+        .tf-hero-divider{
+          display:flex; align-items:center; justify-content:center;
+          gap:14px; margin:0 auto 32px; max-width:340px;
+          opacity:0;
+          animation:tfFadeIn .9s .35s ease-out both;
+        }
+        .tf-hero-divider .line{
+          flex:1; height:1px;
+          background:linear-gradient(90deg, transparent, rgba(245,180,0,.6), transparent);
+        }
+        .tf-hero-divider .dot{
+          width:6px; height:6px; border-radius:50%;
+          background:${C.gold};
+          box-shadow:0 0 12px ${C.gold};
+        }
+        @keyframes tfFadeIn{ to{ opacity:1; } }
+
+        /* Lead paragraph with side accents */
+        .tf-hero-lead{
+          position:relative;
+          display:inline-block;
+          font-family:'Inter', sans-serif;
+          font-size:17.5px;
+          font-weight:500;
+          line-height:1.65;
+          color:${C.text2};
+          max-width:660px;
+          margin:0 auto 40px;
+          padding:0 22px;
+          opacity:0;
+          animation:tfFadeIn .9s .5s ease-out both;
+        }
+        .tf-hero-lead::before,
+        .tf-hero-lead::after{
+          content:'';
+          position:absolute;
+          top:50%;
+          width:3px;
+          height:3px;
+          border-radius:50%;
+          background:${C.gold};
+          transform:translateY(-50%);
+          opacity:.6;
+        }
+        .tf-hero-lead::before{ left:0; }
+        .tf-hero-lead::after{ right:0; }
+
+        .tf-hero-cta{
+          display:flex; justify-content:center; gap:14px;
+          flex-wrap:wrap; margin-bottom:50px;
+          opacity:0;
+          animation:tfFadeIn .9s .6s ease-out both;
+        }
+
+        /* Trust row upgraded */
+        .tf-trust{
+          display:flex; justify-content:center; gap:36px; flex-wrap:wrap;
+          opacity:0;
+          animation:tfFadeIn .9s .75s ease-out both;
+        }
+        .tf-trust span{
+          display:flex; align-items:center; gap:10px;
+          font-family:'JetBrains Mono', monospace;
+          font-size:12px; font-weight:700;
+          letter-spacing:1.2px; text-transform:uppercase;
+          color:${C.text2};
+          padding:9px 16px;
+          border-radius:100px;
+          background:rgba(255,255,255,.025);
+          border:1px solid ${C.border};
+        }
         .tf-trust svg{ color:${C.gold}; flex-shrink:0; }
 
         /* ---------- FOUNDER ---------- */
@@ -321,7 +457,7 @@ export default function ForexHome({
           text-transform:uppercase; color:${C.text3}; margin-top:8px; }
 
         /* ---------- SERVICES ---------- */
-        .tf-services{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+        .tf-services{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
         .tf-service{ padding:28px 22px; border-radius:14px;
           border:1px solid ${C.border}; background:${C.card}; cursor:pointer;
           transition:.24s cubic-bezier(.16,1,.3,1);
@@ -344,92 +480,6 @@ export default function ForexHome({
           color:${C.gold}; text-transform:uppercase; }
         .tf-service-cta::after{ content:'→'; transition:transform .2s; }
         .tf-service:hover .tf-service-cta::after{ transform:translateX(4px); }
-
-        /* ---------- MARKETS ---------- */
-        .tf-markets{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-        .tf-market{ padding:28px 24px; border-radius:16px;
-          border:1px solid ${C.border}; background:${C.card};
-          position:relative; transition:.24s cubic-bezier(.16,1,.3,1);
-          overflow:hidden; }
-        .tf-market::before{ content:''; position:absolute; top:0; left:0; right:0;
-          height:3px; background:${C.gold}; opacity:.75; }
-        .tf-market:hover{ transform:translateY(-5px);
-          border-color:${C.goldBorder};
-          box-shadow:0 20px 44px rgba(0,0,0,.55); }
-        .tf-market-top{ display:flex; align-items:center; gap:12px;
-          margin-bottom:18px; }
-        .tf-market-logo{ width:48px; height:48px; border-radius:12px;
-          display:grid; place-items:center; background:${C.goldSoft};
-          border:1px solid ${C.goldBorder}; color:${C.gold};
-          font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:800; }
-        .tf-market-name{ font-size:17px; font-weight:800; color:${C.text};
-          letter-spacing:-.4px; }
-        .tf-market-sub{ font-size:11.5px; color:${C.text3}; margin-top:3px; }
-        .tf-market-tag{ margin-left:auto; font-size:9.5px; font-weight:800;
-          letter-spacing:1px; text-transform:uppercase; padding:5px 10px;
-          border-radius:6px; background:${C.goldSoft}; color:${C.gold};
-          border:1px solid ${C.goldBorder}; }
-        .tf-market-desc{ font-size:13px; line-height:1.65; color:${C.text2};
-          margin:0 0 20px; min-height:66px; }
-        .tf-market-meta{ display:grid; grid-template-columns:repeat(3,1fr);
-          gap:10px; padding-top:16px; border-top:1px solid ${C.border}; }
-        .tf-market-meta .k{ font-size:9.5px; font-weight:700;
-          letter-spacing:.9px; text-transform:uppercase; color:${C.text3}; }
-        .tf-market-meta .v{ font-family:'JetBrains Mono',monospace;
-          font-size:12.5px; font-weight:700; color:${C.text}; margin-top:5px; }
-        .tf-market-live{ display:flex; align-items:center;
-          justify-content:space-between; gap:12px; margin-top:18px;
-          padding-top:16px; border-top:1px solid ${C.border}; }
-        .tf-market-live .lp{ font-family:'JetBrains Mono',monospace;
-          font-size:15px; font-weight:800; color:${C.text}; }
-        .tf-market-live .chg{ font-family:'JetBrains Mono',monospace;
-          font-size:11.5px; font-weight:700; margin-top:3px; }
-        .tf-market-trade{ padding:9px 16px; border-radius:8px;
-          background:${C.gold}; color:#0a0a0a; font-family:inherit;
-          font-size:12px; font-weight:800; border:none; cursor:pointer;
-          letter-spacing:.2px; transition:.2s; }
-        .tf-market-trade:hover{ background:${C.gold2}; }
-
-        /* ---------- BOTS ---------- */
-        .tf-bots{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-        .tf-bot{ padding:28px 24px; border-radius:16px;
-          border:1px solid ${C.border}; background:${C.card};
-          transition:.24s cubic-bezier(.16,1,.3,1); }
-        .tf-bot:hover{ transform:translateY(-4px); border-color:${C.goldBorder};
-          box-shadow:0 18px 40px rgba(0,0,0,.5); }
-        .tf-bot-head{ display:flex; align-items:flex-start;
-          justify-content:space-between; gap:10px; margin-bottom:20px; }
-        .tf-bot-name{ font-size:15.5px; font-weight:800; color:${C.text};
-          letter-spacing:-.3px; }
-        .tf-bot-market{ font-size:11px; color:${C.text3}; margin-top:4px;
-          font-family:'JetBrains Mono',monospace; font-weight:600; }
-        .tf-bot-live{ font-size:9px; font-weight:800; letter-spacing:1px;
-          text-transform:uppercase; padding:5px 9px; border-radius:6px;
-          background:rgba(34,197,94,.1); color:${C.green};
-          border:1px solid rgba(34,197,94,.28); }
-        .tf-bot-live::before{ content:'●'; margin-right:5px; }
-        .tf-bot-stats{ display:grid; grid-template-columns:1fr 1fr; gap:10px;
-          margin-bottom:18px; }
-        .tf-bot-stat{ padding:12px 13px; border-radius:10px;
-          background:${C.bg2}; border:1px solid ${C.border}; }
-        .tf-bot-stat .k{ font-size:9px; font-weight:700; letter-spacing:.9px;
-          text-transform:uppercase; color:${C.text3}; }
-        .tf-bot-stat .v{ font-family:'JetBrains Mono',monospace; font-size:15px;
-          font-weight:800; color:${C.text}; margin-top:5px; }
-        .tf-bot-bar{ height:5px; border-radius:4px; overflow:hidden;
-          background:${C.border}; margin-bottom:8px; }
-        .tf-bot-bar i{ display:block; height:100%; background:${C.gold};
-          border-radius:4px; }
-        .tf-bot-bar-label{ display:flex; justify-content:space-between;
-          font-size:10px; font-weight:700; color:${C.text3};
-          text-transform:uppercase; letter-spacing:.7px; margin-bottom:18px; }
-        .tf-bot-btn{ width:100%; padding:11px; border-radius:9px;
-          background:transparent; border:1.5px solid ${C.goldBorder};
-          color:${C.gold}; font-family:inherit; font-size:12px;
-          font-weight:800; letter-spacing:.3px; cursor:pointer;
-          transition:.2s; }
-        .tf-bot-btn:hover{ background:${C.gold}; color:#0a0a0a;
-          border-color:${C.gold}; }
 
         /* ---------- BASICS ---------- */
         .tf-basics{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
@@ -622,9 +672,9 @@ export default function ForexHome({
            RESPONSIVE
            ============================================================ */
         @media (max-width:1100px){
-          .tf-hero h1{ font-size:60px; letter-spacing:-2.4px; }
+          .tf-hero-line1{ font-size:58px; letter-spacing:-1.8px; }
+          .tf-hero-line2{ font-size:96px; letter-spacing:-4.4px; }
           .tf-services{ grid-template-columns:repeat(2,1fr); }
-          .tf-bots{ grid-template-columns:repeat(2,1fr); }
           .tf-h2{ font-size:36px; letter-spacing:-1.2px; }
           .tf-articles{ grid-template-columns:repeat(2,1fr); }
           .tf-sessions{ grid-template-columns:repeat(2,1fr); }
@@ -632,14 +682,13 @@ export default function ForexHome({
         }
 
         @media (max-width:900px){
-          .tf-hero{ padding:72px 0 84px; }
-          .tf-hero h1{ font-size:50px; letter-spacing:-1.9px; }
-          .tf-hero-lead{ font-size:16.5px; }
+          .tf-hero{ padding:88px 0 100px; }
+          .tf-hero-line1{ font-size:46px; letter-spacing:-1.4px; }
+          .tf-hero-line2{ font-size:76px; letter-spacing:-3.2px; margin-top:4px; }
+          .tf-hero-lead{ font-size:15.5px; }
           .tf-founder{ grid-template-columns:1fr; gap:32px; padding:32px; }
           .tf-founder-photo{ max-width:320px; }
           .tf-founder-stats{ grid-template-columns:repeat(2,1fr); gap:22px; }
-          .tf-markets{ grid-template-columns:1fr; }
-          .tf-market-desc{ min-height:0; }
           .tf-sec{ padding:60px 0; }
           .tf-news{ grid-template-columns:1fr; gap:22px; padding:28px 26px; }
           .tf-miles{ grid-template-columns:repeat(2,1fr); }
@@ -647,13 +696,16 @@ export default function ForexHome({
 
         @media (max-width:640px){
           .tf-wrap{ padding:0 16px; }
-          .tf-hero{ padding:54px 0 64px; }
-          .tf-hero h1{ font-size:38px; letter-spacing:-1.4px; line-height:1.08; }
-          .tf-hero-lead{ font-size:14.5px; margin-bottom:30px; }
-          .tf-hero-cta{ gap:10px; margin-bottom:34px; }
+          .tf-hero{ padding:64px 0 76px; }
+          .tf-hero-badge{ font-size:10px; padding:7px 14px 7px 10px; margin-bottom:24px; letter-spacing:1.1px; }
+          .tf-hero-line1{ font-size:34px; letter-spacing:-.9px; }
+          .tf-hero-line2{ font-size:56px; letter-spacing:-2.2px; margin-top:2px; }
+          .tf-hero-divider{ margin-bottom:24px; max-width:220px; }
+          .tf-hero-lead{ font-size:14.5px; margin-bottom:32px; padding:0 16px; }
+          .tf-hero-cta{ gap:10px; margin-bottom:40px; }
           .tf-btn{ flex:1 1 100%; padding:14px 22px; font-size:13.5px; }
-          .tf-trust{ gap:20px; }
-          .tf-trust span{ font-size:12.5px; }
+          .tf-trust{ gap:12px; }
+          .tf-trust span{ font-size:10.5px; padding:7px 12px; letter-spacing:1px; }
           .tf-h2{ font-size:27px; letter-spacing:-.9px; }
           .tf-sub{ font-size:13.5px; }
           .tf-sec{ padding:52px 0; }
@@ -662,8 +714,6 @@ export default function ForexHome({
           .tf-services{ grid-template-columns:1fr; gap:12px; }
           .tf-service{ padding:22px 18px; }
           .tf-service p{ min-height:0; }
-          .tf-bots{ grid-template-columns:1fr; gap:12px; }
-          .tf-bot{ padding:22px 18px; }
           .tf-founder{ padding:22px 18px; gap:26px; }
           .tf-founder-photo{ max-width:100%; }
           .tf-founder-name{ font-size:25px; }
@@ -687,7 +737,8 @@ export default function ForexHome({
         }
 
         @media (max-width:420px){
-          .tf-hero h1{ font-size:32px; }
+          .tf-hero-line1{ font-size:29px; }
+          .tf-hero-line2{ font-size:46px; letter-spacing:-1.8px; }
           .tf-fstat .n{ font-size:19px; }
           .tf-founder-stats{ grid-template-columns:1fr; }
           .tf-miles{ grid-template-columns:1fr; }
@@ -698,7 +749,7 @@ export default function ForexHome({
       <section className="view active tf-page">
 
         {/* ============================================================
-            HERO
+            HERO — SUPER UI
            ============================================================ */}
         <div className="tf-hero">
           <div className="tf-candles">
@@ -732,15 +783,28 @@ export default function ForexHome({
           </div>
 
           <div className="tf-hero-inner">
-            <h1>
-              Master Forex Trading<br />
-              with <span className="g">Tonnyfx</span>
+            <div className="tf-hero-badge">
+              <span className="pulse" />
+              Live · EUR/USD · BTC/USD · XAU/USD
+            </div>
+
+            <h1 className="tf-hero-head">
+              <span className="tf-hero-line1">Master Forex Trading</span>
+              <span className="tf-hero-line2">with Tonnyfx</span>
             </h1>
+
+            <div className="tf-hero-divider">
+              <span className="line" />
+              <span className="dot" />
+              <span className="line" />
+            </div>
+
             <p className="tf-hero-lead">
               Learn, trade and grow with proven strategies and real results.
               MyTradeApp is the terminal I built for EUR/USD, BTC/USD and XAU/USD —
               bots, calculators and risk tools in one place.
             </p>
+
             <div className="tf-hero-cta">
               <button className="tf-btn tf-btn-gold" onClick={() => go('bots')}>
                 Join MyTradeApp <Icon name="arrow" size={16} />
@@ -749,10 +813,11 @@ export default function ForexHome({
                 Create Trading Account
               </button>
             </div>
+
             <div className="tf-trust">
-              <span><Icon name="users" size={17} /> 3,200+ Traders</span>
-              <span><Icon name="shield" size={17} /> Verified Results</span>
-              <span><Icon name="phone" size={17} /> 24/7 Support</span>
+              <span><Icon name="users" size={15} /> 3,200+ Traders</span>
+              <span><Icon name="shield" size={15} /> Verified Results</span>
+              <span><Icon name="phone" size={15} /> 24/7 Support</span>
             </div>
           </div>
         </div>
@@ -803,7 +868,7 @@ export default function ForexHome({
         </div>
 
         {/* ============================================================
-            SERVICES
+            SERVICES (6 — backtest & coaching removed)
            ============================================================ */}
         <div className="tf-sec tf-alt">
           <div className="tf-wrap">
@@ -812,7 +877,7 @@ export default function ForexHome({
               <h2 className="tf-h2">What <span className="g">MyTradeApp</span> provides</h2>
               <p className="tf-sub">
                 Choose the service that fits your trading journey — from free tools
-                to fully automated bots and 1-on-1 coaching.
+                to fully automated bots and risk management.
               </p>
             </div>
             <div className="tf-services">
@@ -824,119 +889,6 @@ export default function ForexHome({
                   <h3>{s.title}</h3>
                   <p>{s.desc}</p>
                   <span className="tf-service-cta">{s.cta}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            MARKETS
-           ============================================================ */}
-        <div className="tf-sec">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">Markets</div>
-              <h2 className="tf-h2">Three instruments. <span className="g">Total mastery.</span></h2>
-              <p className="tf-sub">
-                We deliberately trade a tiny universe so every bot, every calculator
-                and every risk rule is tuned to the exact behaviour of that market.
-              </p>
-            </div>
-            <div className="tf-markets">
-              {MARKETS.map((m) => {
-                const price = priceOf(m.sym);
-                const chg = changeOf(m.sym);
-                const up = chg >= 0;
-                const hist = pairs?.[m.sym]?.history || [];
-                return (
-                  <div className="tf-market" key={m.sym}>
-                    <div className="tf-market-top">
-                      <div className="tf-market-logo">{m.label.split('/')[0]}</div>
-                      <div>
-                        <div className="tf-market-name">{m.label}</div>
-                        <div className="tf-market-sub">{m.name}</div>
-                      </div>
-                      <span className="tf-market-tag">{m.tag}</span>
-                    </div>
-                    <p className="tf-market-desc">{m.desc}</p>
-                    <div className="tf-market-meta">
-                      <div><div className="k">Spread</div><div className="v">{m.spread}</div></div>
-                      <div><div className="k">ATR (D1)</div><div className="v">{m.atr}</div></div>
-                      <div><div className="k">Volatility</div><div className="v">{m.vol}</div></div>
-                    </div>
-                    <div className="tf-market-live">
-                      <div>
-                        <div className="lp">{price ? fmtPrice(m.sym, price) : '—'}</div>
-                        <div className={`chg ${up ? 'pos' : 'neg'}`}>
-                          {up ? '+' : ''}{fmt(chg, 2)}% today
-                        </div>
-                      </div>
-                      {hist.length > 1 && (
-                        <Sparkline values={hist} w={90} h={30}
-                          color={up ? C.green : C.red} />
-                      )}
-                      <button className="tf-market-trade"
-                        onClick={() => onTrade && onTrade(m.sym)}>
-                        Trade
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            TRADING BOTS
-           ============================================================ */}
-        <div className="tf-sec tf-alt">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">Automation</div>
-              <h2 className="tf-h2">Trading bots, tuned <span className="g">one market each</span></h2>
-              <p className="tf-sub">
-                Every strategy is built for a single instrument. No generic multi-asset logic —
-                just focused systems with transparent performance.
-              </p>
-            </div>
-            <div className="tf-bots">
-              {BOTS.map((b) => (
-                <div className="tf-bot" key={b.name}>
-                  <div className="tf-bot-head">
-                    <div>
-                      <div className="tf-bot-name">{b.name}</div>
-                      <div className="tf-bot-market">{b.market} · {b.tf}</div>
-                    </div>
-                    {b.live && <span className="tf-bot-live">Live</span>}
-                  </div>
-                  <div className="tf-bot-stats">
-                    <div className="tf-bot-stat">
-                      <div className="k">Win rate</div>
-                      <div className="v pos">{b.win}%</div>
-                    </div>
-                    <div className="tf-bot-stat">
-                      <div className="k">Trades</div>
-                      <div className="v">{b.trades}</div>
-                    </div>
-                    <div className="tf-bot-stat">
-                      <div className="k">Max DD</div>
-                      <div className="v neg">{b.dd}</div>
-                    </div>
-                    <div className="tf-bot-stat">
-                      <div className="k">Profit factor</div>
-                      <div className="v">{b.pf}</div>
-                    </div>
-                  </div>
-                  <div className="tf-bot-bar"><i style={{ width: `${b.win}%` }} /></div>
-                  <div className="tf-bot-bar-label">
-                    <span>Performance</span>
-                    <span>{b.win}/100</span>
-                  </div>
-                  <button className="tf-bot-btn" onClick={() => go('bots')}>
-                    Configure this bot
-                  </button>
                 </div>
               ))}
             </div>
