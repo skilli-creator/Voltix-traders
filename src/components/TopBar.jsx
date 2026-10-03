@@ -42,6 +42,27 @@ const livePulse = keyframes`
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 `;
 
+/* 🌊 Realistic flag wave — 3D rotation from the pole side + skew */
+const flagWave = keyframes`
+  0%, 100% { transform: perspective(140px) rotateY(0deg) skewY(0deg) scaleX(1); }
+  18%      { transform: perspective(140px) rotateY(16deg) skewY(-3deg) scaleX(0.94); }
+  38%      { transform: perspective(140px) rotateY(-4deg) skewY(1.5deg) scaleX(1); }
+  58%      { transform: perspective(140px) rotateY(-16deg) skewY(3deg) scaleX(0.94); }
+  80%      { transform: perspective(140px) rotateY(4deg) skewY(-1.5deg) scaleX(1); }
+`;
+
+/* ✨ Soft shine sweep across the hero card */
+const shimmer = keyframes`
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+`;
+
+/* 🎯 Pulse for the live ring on the current-session flag */
+const liveRing = keyframes`
+  0%   { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(2.1); opacity: 0; }
+`;
+
 // ============================================
 // SVG ICONS
 // ============================================
@@ -158,18 +179,44 @@ const GlobeIcon = () => (
   </svg>
 );
 
+const ClockIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const ArrowRightIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
 // ============================================
-// FOREX SESSIONS — Sydney, Tokyo, London, New York
+// FOREX SESSIONS — real UTC open/close windows
 // ============================================
 const FOREX_SESSIONS = [
-  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific' },
-  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific' },
-  { key: 'london',  name: 'London',   flag: '🇬🇧', startUTC: 8,  endUTC: 17, color: '#60A5FA', region: 'Europe' },
-  { key: 'newyork', name: 'New York', flag: '🇺🇸', startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas' },
+  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', country: 'Australia', startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific' },
+  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', country: 'Japan',     startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific' },
+  { key: 'london',  name: 'London',   flag: '🇬🇧', country: 'UK',        startUTC: 8,  endUTC: 17, color: '#60A5FA', region: 'Europe' },
+  { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'USA',       startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas' },
 ];
 
+/* Convert an hour in UTC to local time in UTC+3 (EAT), returns "HH:00" */
+const toUTC3 = (utcHour) => {
+  const h = ((utcHour + 3) % 24 + 24) % 24;
+  return `${String(h).padStart(2, '0')}:00`;
+};
+
+/* Format a Date into "HH:MM" using UTC+3 as the reference timezone */
+const formatUTC3Clock = (date) => {
+  const shifted = new Date(date.getTime() + 3 * 3600 * 1000);
+  return `${String(shifted.getUTCHours()).padStart(2, '0')}:${String(shifted.getUTCMinutes()).padStart(2, '0')}`;
+};
+
 const getSessionStatus = (session, now) => {
-  const nowMin = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const nowMin = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
   const openMin = session.startUTC * 60;
   const closeMin = session.endUTC * 60;
   const dayMin = 24 * 60;
@@ -177,38 +224,47 @@ const getSessionStatus = (session, now) => {
   let isOpen;
   let minUntil;
   let totalMin;
+  let elapsedMin;
 
   if (openMin < closeMin) {
     isOpen = nowMin >= openMin && nowMin < closeMin;
+    totalMin = closeMin - openMin;
     if (isOpen) {
       minUntil = closeMin - nowMin;
-      totalMin = closeMin - openMin;
+      elapsedMin = nowMin - openMin;
     } else if (nowMin < openMin) {
       minUntil = openMin - nowMin;
-      totalMin = closeMin - openMin;
+      elapsedMin = 0;
     } else {
       minUntil = dayMin - nowMin + openMin;
-      totalMin = closeMin - openMin;
+      elapsedMin = 0;
     }
   } else {
+    // Cross-midnight session
     isOpen = nowMin >= openMin || nowMin < closeMin;
     totalMin = dayMin - openMin + closeMin;
     if (isOpen) {
-      minUntil = nowMin >= openMin
-        ? dayMin - nowMin + closeMin
-        : closeMin - nowMin;
+      if (nowMin >= openMin) {
+        minUntil = dayMin - nowMin + closeMin;
+        elapsedMin = nowMin - openMin;
+      } else {
+        minUntil = closeMin - nowMin;
+        elapsedMin = dayMin - openMin + nowMin;
+      }
     } else {
       minUntil = openMin - nowMin;
+      elapsedMin = 0;
     }
   }
 
-  return { isOpen, minUntil, totalMin };
+  const progress = totalMin > 0 ? Math.min(1, Math.max(0, elapsedMin / totalMin)) : 0;
+  return { isOpen, minUntil, totalMin, elapsedMin, progress };
 };
 
 const formatDuration = (mins) => {
   if (mins <= 0) return '0m';
   const h = Math.floor(mins / 60);
-  const m = mins % 60;
+  const m = Math.floor(mins % 60);
   if (h === 0) return `${m}m`;
   if (m === 0) return `${h}h`;
   return `${h}h ${m}m`;
@@ -1018,7 +1074,73 @@ const RightSection = styled.div`
   }
 `;
 
-/* ---- Forex session display (replaces old forex nav) ---- */
+// ============================================
+// 🌊 WAVING FLAG COMPONENT
+// ============================================
+const FlagWrap = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 5px;
+  perspective: 160px;
+  flex-shrink: 0;
+  width: ${p => p.$size || 26}px;
+  height: ${p => p.$size || 26}px;
+
+  /* The pole */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -2px;
+    bottom: -2px;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.2));
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    z-index: 2;
+  }
+
+  /* The pole cap */
+  &::after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: -4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fff, ${p => p.$color || '#60a5fa'});
+    box-shadow: 0 0 6px ${p => (p.$color || '#60a5fa') + '80'};
+    z-index: 3;
+  }
+
+  .cloth {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3px;
+    font-size: ${p => p.$size || 26}px;
+    line-height: 1;
+    transform-origin: 0% 50%;
+    transform-style: preserve-3d;
+    animation: ${flagWave} ${p => p.$speed || '3s'} ease-in-out infinite;
+    animation-delay: ${p => p.$delay || '0s'};
+    filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.45));
+    will-change: transform;
+  }
+`;
+
+const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
+  <FlagWrap $size={size} $color={color} $delay={delay} $speed={speed}>
+    <span className="cloth" role="img" aria-label="flag">{flag}</span>
+  </FlagWrap>
+);
+
+// ============================================
+// SESSION UI — HERO PILL (TopBar)
+// ============================================
 const SessionWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -1037,291 +1159,608 @@ const SessionWrapper = styled.div`
   }
 `;
 
-const SessionPill = styled.button`
+const SessionHero = styled.button`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 14px;
-  border-radius: 12px;
-  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
-  background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
-  color: ${p => p.theme?.colors?.text || '#ffffff'};
+  padding: 6px 12px 6px 6px;
+  border-radius: 14px;
+  border: 1px solid ${p => (p.$live ? (p.$color + '66') : (p.theme?.colors?.border || 'rgba(255,255,255,0.08)'))};
+  background: ${p => p.$live
+    ? `linear-gradient(135deg, ${p.$color}22 0%, ${p.$color}08 40%, ${p.theme?.colors?.background || 'rgba(255,255,255,0.03)'} 100%)`
+    : (p.theme?.colors?.background || 'rgba(255,255,255,0.03)')};
+  color: ${p => p.theme?.colors?.text || '#fff'};
   font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 700;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
   flex-shrink: 0;
   white-space: nowrap;
+  box-shadow: ${p => p.$live ? `0 0 0 1px ${p.$color}20, 0 4px 14px -4px ${p.$color}40` : 'none'};
 
-  &:hover {
-    border-color: ${p => p.theme?.colors?.accent || '#3b82f6'};
-    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
-    box-shadow: 0 0 16px ${p => (p.theme?.colors?.accent || '#3b82f6') + '20'};
+  /* Animated shimmer sweep */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 25%,
+      ${p => p.$live ? (p.$color + '18') : 'rgba(255,255,255,0.05)'} 50%,
+      transparent 75%
+    );
+    background-size: 220% 100%;
+    animation: ${shimmer} 4.5s ease-in-out infinite;
+    pointer-events: none;
   }
 
-  .globe {
+  &:hover {
+    border-color: ${p => p.$color || p.theme?.colors?.accent || '#3b82f6'};
+    box-shadow: ${p => `0 0 0 1px ${p.$color}40, 0 6px 22px -4px ${p.$color}70`};
+    transform: translateY(-1px);
+  }
+
+  &:active { transform: translateY(0); }
+
+  .session-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+    min-width: 0;
+  }
+
+  .session-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .session-name {
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    color: ${p => p.theme?.colors?.text || '#fff'};
+  }
+
+  .live-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 6px;
+    border-radius: 5px;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    background: ${p => p.$live ? 'rgba(34,197,94,0.18)' : 'rgba(148,163,184,0.15)'};
+    color: ${p => p.$live ? '#4ade80' : '#94a3b8'};
+    border: 1px solid ${p => p.$live ? 'rgba(34,197,94,0.4)' : 'rgba(148,163,184,0.25)'};
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: ${p => p.$live ? '#22c55e' : '#94a3b8'};
+      animation: ${p => (p.$live ? livePulse : 'none')} 1.6s ease-out infinite;
+    }
+  }
+
+  .session-sub {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
+    letter-spacing: 0.3px;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+
+  .clock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.15;
+    margin-left: auto;
+    padding-left: 10px;
+    border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+
+    .time {
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: ${p => p.$live ? p.$color : (p.theme?.colors?.text || '#fff')};
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tz {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+  }
+
+  .chev {
+    display: flex;
+    align-items: center;
+    margin-left: 2px;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(7px, 2vw, 10px) clamp(10px, 3vw, 14px) clamp(7px, 2vw, 10px) clamp(6px, 1.6vw, 8px);
+    border-radius: clamp(11px, 3.2vw, 15px);
+    gap: clamp(8px, 2.4vw, 12px);
+
+    .session-name { font-size: clamp(12px, 3.4vw, 14px); }
+    .session-sub { font-size: clamp(9px, 2.6vw, 11px); max-width: clamp(110px, 32vw, 160px); }
+    .clock .time { font-size: clamp(11px, 3.2vw, 13px); }
+    .clock .tz { font-size: clamp(8px, 2.2vw, 10px); }
+  }
+
+  @media (max-width: 480px) {
+    .session-sub { display: none; }
+    .clock .tz { display: none; }
+  }
+`;
+
+// ============================================
+// SESSION DROPDOWN — CONTENT PIECES
+// ============================================
+const SessionHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px 10px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+
+  .title-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .globe-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 7px;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
     background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'};
     color: ${p => p.theme?.colors?.accent || '#3b82f6'};
     flex-shrink: 0;
   }
 
-  .live-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #22C55E;
-    animation: ${livePulse} 2s ease-out infinite;
+  .titles {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  .title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+    white-space: nowrap;
+  }
+
+  .subtitle {
+    font-size: 9.5px;
+    font-weight: 600;
+    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+    letter-spacing: 0.3px;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+
+  .clock-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.15;
+    padding-left: 10px;
+    border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
     flex-shrink: 0;
   }
 
-  .label {
-    font-size: 10px;
+  .clock-time {
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 0.7px;
-    text-transform: uppercase;
-    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+    letter-spacing: 0.5px;
+    color: ${p => p.theme?.colors?.accent || '#3b82f6'};
+    font-variant-numeric: tabular-nums;
   }
 
-  .flags {
-    display: flex;
+  .clock-tz {
+    display: inline-flex;
     align-items: center;
     gap: 4px;
-  }
-
-  .flag {
-    font-size: 15px;
-    line-height: 1;
-    filter: grayscale(1) opacity(0.3);
-    transition: all 0.25s ease;
-    transform: scale(0.92);
-
-    &.open {
-      filter: none;
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  .chevron {
-    display: flex;
-    align-items: center;
-    opacity: 0.65;
-    margin-left: 2px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
+    text-transform: uppercase;
   }
 
   @media (max-width: 768px) {
-    padding: clamp(10px, 2.8vw, 14px) clamp(12px, 3.6vw, 18px);
-    gap: clamp(7px, 2.2vw, 11px);
-    border-radius: clamp(10px, 3vw, 14px);
-    font-size: clamp(13px, 3.6vw, 15px);
-
-    .globe {
-      width: clamp(22px, 6vw, 28px);
-      height: clamp(22px, 6vw, 28px);
-      border-radius: clamp(6px, 2vw, 9px);
-      svg { width: clamp(12px, 3.4vw, 16px); height: clamp(12px, 3.4vw, 16px); }
-    }
-    .flag { font-size: clamp(15px, 4.4vw, 19px); }
-    .label { font-size: clamp(10px, 2.8vw, 12px); }
-    .chevron svg { width: clamp(11px, 3.2vw, 14px); height: clamp(11px, 3.2vw, 14px); }
-  }
-
-  @media (max-width: 480px) {
-    padding: clamp(9px, 2.6vw, 12px) clamp(10px, 3vw, 14px);
-    gap: clamp(6px, 1.8vw, 9px);
-    .flag { font-size: clamp(14px, 4.2vw, 17px); }
-    .label { display: none; }
+    padding: clamp(6px, 2vw, 10px) clamp(8px, 2.4vw, 12px) clamp(8px, 2.6vw, 12px);
+    margin-bottom: clamp(6px, 2vw, 10px);
+    .globe-badge { width: clamp(24px, 6.5vw, 30px); height: clamp(24px, 6.5vw, 30px); }
+    .title { font-size: clamp(11px, 3vw, 13px); }
+    .subtitle { font-size: clamp(9.5px, 2.6vw, 11px); }
+    .clock-time { font-size: clamp(13px, 3.6vw, 15px); }
+    .clock-tz { font-size: clamp(9px, 2.4vw, 10px); }
   }
 `;
 
-const SessionItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: ${p => p.$isOpen
-    ? `linear-gradient(135deg, ${p.$color}1f, ${p.$color}05)`
-    : 'transparent'};
-  border: 1px solid ${p => (p.$isOpen ? p.$color + '35' : 'rgba(255,255,255,0.04)')};
-  margin-bottom: 6px;
-  transition: all 0.25s ease;
+const HeroSessionCard = styled.div`
+  position: relative;
+  padding: 16px 16px 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  border: 1px solid ${p => p.$color + '55'};
+  background:
+    radial-gradient(circle at 100% 0%, ${p => p.$color + '2a'}, transparent 60%),
+    linear-gradient(135deg, ${p => p.$color + '18'}, ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.02)'} 70%);
+  box-shadow: 0 8px 24px -10px ${p => p.$color + '70'};
 
-  &:last-child { margin-bottom: 0; }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, ${p => p.$color + '15'} 50%, transparent 70%);
+    background-size: 220% 100%;
+    animation: ${shimmer} 5s ease-in-out infinite;
+    pointer-events: none;
+  }
 
-  .flag-wrap {
+  .hero-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
     position: relative;
-    width: 40px;
-    height: 40px;
+    z-index: 1;
+  }
+
+  .hero-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .flag-zone {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 11px;
-    background: ${p => (p.$isOpen ? p.$color + '1a' : 'rgba(255,255,255,0.04)')};
-    border: 1px solid ${p => (p.$isOpen ? p.$color + '55' : 'rgba(255,255,255,0.06)')};
-    font-size: 21px;
-    filter: ${p => (p.$isOpen ? 'none' : 'grayscale(1) opacity(0.5)')};
-    transition: all 0.25s ease;
-    flex-shrink: 0;
+    padding: 6px 8px 6px 10px;
+    border-radius: 10px;
+    background: ${p => p.$color + '18'};
+    border: 1px solid ${p => p.$color + '40'};
 
+    /* Live pulse ring around the flag */
     &::after {
       content: '';
       position: absolute;
-      bottom: -3px;
-      right: -3px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: ${p => (p.$isOpen ? '#22C55E' : '#64748B')};
-      border: 2px solid ${p => p.theme?.colors?.surface || '#0F172A'};
-      box-shadow: ${p => (p.$isOpen ? '0 0 8px rgba(34,197,94,0.75)' : 'none')};
+      inset: -2px;
+      border-radius: 12px;
+      border: 1px solid ${p => p.$color};
+      animation: ${liveRing} 2.2s ease-out infinite;
+      pointer-events: none;
     }
   }
 
-  .info {
-    flex: 1;
-    min-width: 0;
-
-    .name {
-      font-size: 13px;
-      font-weight: 700;
-      color: ${p => p.theme?.colors?.text || '#F8FAFC'};
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .region {
-      font-size: 10px;
-      font-weight: 500;
-      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-      margin-top: 1px;
-    }
-
-    .status {
-      font-size: 10.5px;
-      font-weight: 500;
-      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-      margin-top: 3px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .open-tag {
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      padding: 2px 7px;
-      border-radius: 5px;
-      background: rgba(34,197,94,0.15);
-      color: #4ADE80;
-      border: 1px solid rgba(34,197,94,0.3);
-    }
-  }
-
-  .countdown {
-    text-align: right;
-    white-space: nowrap;
-    flex-shrink: 0;
-
-    .value {
-      font-size: 13px;
-      font-weight: 700;
-      font-family: 'Courier New', monospace;
-      color: ${p => (p.$isOpen ? p.$color : (p.theme?.colors?.textMuted || '#94A3B8'))};
-    }
-
-    .small {
-      display: block;
-      font-size: 8px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-      margin-top: 3px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: clamp(10px, 3vw, 14px) clamp(10px, 3vw, 14px);
-    gap: clamp(10px, 3vw, 14px);
-
-    .flag-wrap {
-      width: clamp(38px, 10.5vw, 46px);
-      height: clamp(38px, 10.5vw, 46px);
-      font-size: clamp(20px, 5.6vw, 24px);
-      border-radius: clamp(10px, 3vw, 13px);
-    }
-    .info {
-      .name { font-size: clamp(13px, 3.8vw, 16px); }
-      .region { font-size: clamp(10px, 2.8vw, 12px); }
-      .status { font-size: clamp(11px, 3vw, 13px); }
-      .open-tag { font-size: clamp(8px, 2.2vw, 10px); padding: 2px clamp(5px, 1.6vw, 8px); }
-    }
-    .countdown {
-      .value { font-size: clamp(12px, 3.4vw, 15px); }
-      .small { font-size: clamp(8px, 2.2vw, 10px); }
-    }
-  }
-`;
-
-const SessionSummary = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.02)'};
-  border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.05)'};
-
-  .left {
+  .hero-info {
     display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  .hero-name {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+  }
+
+  .hero-region {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+    margin-top: 2px;
   }
 
-  .live-count {
+  .hero-status {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
     text-transform: uppercase;
-    color: #4ADE80;
+    background: rgba(34,197,94,0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34,197,94,0.4);
+    white-space: nowrap;
+    flex-shrink: 0;
 
     .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #22C55E;
-      animation: ${livePulse} 2s ease-out infinite;
+      background: #22c55e;
+      animation: ${livePulse} 1.6s ease-out infinite;
+    }
+  }
+
+  .hero-status.closed {
+    background: rgba(148,163,184,0.15);
+    color: #cbd5e1;
+    border-color: rgba(148,163,184,0.3);
+
+    .dot {
+      background: #94a3b8;
+      animation: none;
+    }
+  }
+
+  .hero-timing {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .time-range {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+    letter-spacing: 0.3px;
+  }
+
+  .countdown {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: ${p => p.$color};
+    text-transform: uppercase;
+  }
+
+  .progress-track {
+    position: relative;
+    height: 6px;
+    border-radius: 6px;
+    background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.04)'};
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    z-index: 1;
+  }
+
+  .progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: ${p => (p.$progress * 100) + '%'};
+    border-radius: 6px;
+    background: linear-gradient(90deg, ${p => p.$color}, ${p => p.$color}cc);
+    box-shadow: 0 0 10px ${p => p.$color + '80'};
+    transition: width 1s linear;
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 768px) {
+    padding: clamp(14px, 4vw, 18px);
+    border-radius: clamp(12px, 3.6vw, 16px);
+    margin-bottom: clamp(10px, 3vw, 14px);
+    .hero-name { font-size: clamp(15px, 4.4vw, 18px); }
+    .hero-region { font-size: clamp(9.5px, 2.6vw, 11px); }
+    .hero-status { font-size: clamp(9px, 2.6vw, 11px); padding: 3px clamp(7px, 2vw, 10px); }
+    .time-range { font-size: clamp(11px, 3.2vw, 13px); }
+    .countdown { font-size: clamp(10px, 2.8vw, 12px); }
+    .progress-labels { font-size: clamp(9px, 2.4vw, 10.5px); }
+  }
+`;
+
+const SectionLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+  padding: 4px 6px 8px;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+  }
+
+  @media (max-width: 768px) {
+    font-size: clamp(9.5px, 2.6vw, 11px);
+    padding: clamp(4px, 1.4vw, 6px) clamp(5px, 1.6vw, 8px) clamp(6px, 2vw, 10px);
+  }
+`;
+
+const SessionListItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  border: 1px solid ${p => (p.$live ? p.$color + '40' : 'transparent')};
+  background: ${p => (p.$live
+    ? `linear-gradient(90deg, ${p.$color}15, ${p.$color}05 60%, transparent)`
+    : 'transparent')};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.06)'};
+  }
+
+  &:last-child { margin-bottom: 0; }
+
+  .flag-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: ${p => (p.$live ? p.$color + '1f' : 'rgba(255,255,255,0.04)')};
+    border: 1px solid ${p => (p.$live ? p.$color + '50' : 'rgba(255,255,255,0.06)')};
+    flex-shrink: 0;
+  }
+
+  .list-info {
+    flex: 1;
+    min-width: 0;
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .name {
+      font-size: 13px;
+      font-weight: 700;
+      color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+      letter-spacing: -0.1px;
+    }
+
+    .live-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      background: rgba(34,197,94,0.15);
+      color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.35);
+
+      .dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #22c55e;
+      }
+    }
+
+    .range {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+      margin-top: 3px;
+      font-family: 'SF Mono', 'Courier New', monospace;
+    }
+  }
+
+  .list-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
+    flex-shrink: 0;
+
+    .status-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
+    }
+
+    .status-value {
+      font-family: 'SF Mono', 'Courier New', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: ${p => p.$live ? p.$color : (p.theme?.colors?.text || '#F8FAFC')};
+      margin-top: 3px;
+      letter-spacing: 0.3px;
     }
   }
 
   @media (max-width: 768px) {
-    padding: clamp(8px, 2.6vw, 12px) clamp(10px, 3vw, 14px);
-    margin-bottom: clamp(8px, 2.4vw, 12px);
-    .left { font-size: clamp(10px, 2.8vw, 12px); }
-    .live-count { font-size: clamp(10px, 2.8vw, 12px); }
+    padding: clamp(9px, 2.6vw, 12px) clamp(8px, 2.4vw, 12px);
+    gap: clamp(10px, 3vw, 14px);
+    border-radius: clamp(10px, 3vw, 12px);
+
+    .flag-zone {
+      width: clamp(36px, 10vw, 44px);
+      height: clamp(36px, 10vw, 44px);
+      border-radius: clamp(9px, 2.6vw, 12px);
+    }
+    .list-info {
+      .name { font-size: clamp(13px, 3.6vw, 15px); }
+      .range { font-size: clamp(10px, 2.8vw, 12px); }
+    }
+    .list-right {
+      .status-label { font-size: clamp(9px, 2.4vw, 10.5px); }
+      .status-value { font-size: clamp(12px, 3.4vw, 14px); }
+    }
   }
 `;
 
+// ============================================
+// BASE DROPDOWN SHELL
+// ============================================
 const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
@@ -1334,18 +1773,18 @@ const GlassDropdownMenu = styled.div`
   right: auto;
   min-width: 300px;
   max-width: 90vw;
-  max-height: 450px;
+  max-height: 480px;
   background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(15,17,23,0.94)'};
   backdrop-filter: blur(24px) saturate(190%);
   -webkit-backdrop-filter: blur(24px) saturate(190%);
   border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255,255,255,0.12)'};
-  border-radius: 14px;
-  padding: 8px;
-  box-shadow: ${props => props.theme?.colors?.shadow || '0 20px 40px -10px rgba(0,0,0,0.6)'};
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: ${props => props.theme?.colors?.shadow || '0 24px 48px -12px rgba(0,0,0,0.7)'};
   opacity: ${props => props.isOpen ? 1 : 0};
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
   transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)'};
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
   z-index: 300;
   overflow-x: hidden;
   overflow-y: auto;
@@ -1358,12 +1797,12 @@ const GlassDropdownMenu = styled.div`
     max-width: calc(100vw - 32px);
     max-height: calc(100vh - 140px);
     max-height: calc(100dvh - 140px);
-    padding: clamp(6px, 2vw, 10px);
-    border-radius: clamp(12px, 3.5vw, 16px);
+    padding: clamp(8px, 2.4vw, 12px);
+    border-radius: clamp(14px, 4vw, 18px);
   }
 `;
 
-// ✅ All styled(GlassDropdownMenu) calls come AFTER GlassDropdownMenu
+// ✅ All styled(GlassDropdownMenu) declarations come AFTER GlassDropdownMenu
 const RightAnchoredDropdown = styled(GlassDropdownMenu)`
   left: auto;
   right: 0;
@@ -1404,7 +1843,7 @@ const PlatformDropdown = styled(GlassDropdownMenu)`
 `;
 
 const SessionDropdownMenu = styled(GlassDropdownMenu)`
-  min-width: 320px;
+  min-width: 340px;
   left: 0;
   right: auto;
 
@@ -2135,6 +2574,7 @@ const TopPanel = ({
 
   const [depositPending, setDepositPending] = useState(false);
 
+  // Ticking clock — 1s resolution for a live UTC+3 readout
   const [now, setNow] = useState(() => new Date());
 
   const dropdownRef = useRef(null);
@@ -2153,11 +2593,25 @@ const TopPanel = ({
   const isDeriv = location.pathname.startsWith('/deriv');
   const showSidebarToggle = !!onSidebarToggle;
 
+  // Recompute session statuses every render — pure function of `now`
   const sessionStates = useMemo(
     () => FOREX_SESSIONS.map(s => ({ ...s, ...getSessionStatus(s, now) })),
     [now]
   );
+
   const openSessions = sessionStates.filter(s => s.isOpen);
+
+  // The "hero" = the most recently opened live session, or the next to open
+  const heroSession = useMemo(() => {
+    if (openSessions.length > 0) {
+      // Most recently opened = the one that started latest
+      return [...openSessions].sort((a, b) => b.startUTC - a.startUTC)[0];
+    }
+    // None open — the soonest to open
+    return [...sessionStates].sort((a, b) => a.minUntil - b.minUntil)[0];
+  }, [sessionStates, openSessions]);
+
+  const liveClockUTC3 = formatUTC3Clock(now);
 
   const generateAccountNickname = () => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -2186,11 +2640,13 @@ const TopPanel = ({
     }
   }, [location.pathname]);
 
+  // 1-second tick for a live clock
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 30_000);
+    const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
 
+  // Currency helpers ------------------------------------------------------
   const getCurrencyInfo = (code = selectedCurrency) =>
     DISPLAY_CURRENCIES.find(c => c.code === code) || DISPLAY_CURRENCIES[0];
 
@@ -2700,63 +3156,148 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
+        {/* ---------- Forex live session hero ---------- */}
         {isForex && (
           <SessionWrapper ref={sessionRef}>
             <DropdownContainer style={{ position: 'relative' }}>
-              <SessionPill
+              <SessionHero
                 onClick={toggleSessionDropdown}
                 aria-label="Forex market sessions"
+                $live={heroSession.isOpen}
+                $color={heroSession.color}
               >
-                <span className="globe"><GlobeIcon /></span>
-                <span className="live-dot" />
-                <span className="label">Sessions</span>
-                <span className="flags">
-                  {sessionStates.map((s) => (
-                    <span
-                      key={s.key}
-                      className={`flag ${s.isOpen ? 'open' : ''}`}
-                      title={`${s.name} • ${s.isOpen ? 'Open' : 'Closed'}`}
-                    >
-                      {s.flag}
+                <WavingFlag
+                  flag={heroSession.flag}
+                  color={heroSession.color}
+                  size={30}
+                  delay="0s"
+                  speed="3.2s"
+                />
+                <div className="session-meta">
+                  <div className="session-row">
+                    <span className="session-name">{heroSession.name}</span>
+                    <span className="live-tag">
+                      <span className="dot" />
+                      {heroSession.isOpen ? 'Live' : 'Soon'}
                     </span>
-                  ))}
-                </span>
-                <span className="chevron"><ChevronDownIcon open={isSessionOpen} /></span>
-              </SessionPill>
+                  </div>
+                  <span className="session-sub">
+                    {heroSession.isOpen
+                      ? `Closes in ${formatDuration(heroSession.minUntil)}`
+                      : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                  </span>
+                </div>
+                <div className="clock">
+                  <span className="time">{liveClockUTC3}</span>
+                  <span className="tz">UTC+3</span>
+                </div>
+                <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
+              </SessionHero>
 
               <SessionDropdownMenu isOpen={isSessionOpen}>
-                <SessionSummary>
-                  <span className="left"><GlobeIcon /> Market Sessions</span>
-                  <span className="live-count">
-                    <span className="dot" />
-                    {openSessions.length} / {FOREX_SESSIONS.length} open
-                  </span>
-                </SessionSummary>
+                {/* Header — world clock */}
+                <SessionHeader>
+                  <div className="title-block">
+                    <div className="globe-badge"><GlobeIcon /></div>
+                    <div className="titles">
+                      <div className="title">Forex Sessions</div>
+                      <div className="subtitle">{openSessions.length} of {FOREX_SESSIONS.length} markets open</div>
+                    </div>
+                  </div>
+                  <div className="clock-block">
+                    <div className="clock-time">{liveClockUTC3}</div>
+                    <div className="clock-tz"><ClockIcon /> Nairobi · UTC+3</div>
+                  </div>
+                </SessionHeader>
 
-                {sessionStates.map((s) => (
-                  <SessionItem
-                    key={s.key}
-                    $isOpen={s.isOpen}
-                    $color={s.color}
-                  >
-                    <span className="flag-wrap">{s.flag}</span>
-                    <div className="info">
-                      <div className="name">
-                        {s.name}
-                        {s.isOpen && <span className="open-tag">Open</span>}
+                {/* Hero — the current (or next) session */}
+                <HeroSessionCard
+                  $color={heroSession.color}
+                  $progress={heroSession.progress}
+                >
+                  <div className="hero-top">
+                    <div className="hero-left">
+                      <div className="flag-zone">
+                        <WavingFlag
+                          flag={heroSession.flag}
+                          color={heroSession.color}
+                          size={40}
+                          delay="0s"
+                          speed="2.8s"
+                        />
                       </div>
-                      <div className="region">{s.region}</div>
-                      <div className="status">
-                        {s.isOpen ? 'Closes' : 'Opens'} in
+                      <div className="hero-info">
+                        <div className="hero-name">{heroSession.name}</div>
+                        <div className="hero-region">{heroSession.region} · {heroSession.country}</div>
                       </div>
+                    </div>
+                    <div className={`hero-status ${heroSession.isOpen ? '' : 'closed'}`}>
+                      <span className="dot" />
+                      {heroSession.isOpen ? 'Live Now' : 'Opens Soon'}
+                    </div>
+                  </div>
+
+                  <div className="hero-timing">
+                    <div className="time-range">
+                      <ClockIcon />
+                      {toUTC3(heroSession.startUTC)} – {toUTC3(heroSession.endUTC)} EAT
                     </div>
                     <div className="countdown">
-                      <div className="value">{formatDuration(s.minUntil)}</div>
-                      <span className="small">
-                        {String(s.startUTC).padStart(2, '0')}:00 – {String(s.endUTC).padStart(2, '0')}:00 UTC
+                      {heroSession.isOpen
+                        ? `Closes in ${formatDuration(heroSession.minUntil)}`
+                        : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                    </div>
+                  </div>
+
+                  <div className="progress-track">
+                    <div className="progress-fill" />
+                  </div>
+                  <div className="progress-labels">
+                    <span>{heroSession.isOpen ? 'Session progress' : 'Upcoming session'}</span>
+                    <span>{Math.round(heroSession.progress * 100)}%</span>
+                  </div>
+                </HeroSessionCard>
+
+                {/* Other sessions */}
+                <SectionLabel>All Markets</SectionLabel>
+
+                {sessionStates.map((s, idx) => (
+                  <SessionListItem
+                    key={s.key}
+                    $live={s.isOpen}
+                    $color={s.color}
+                  >
+                    <div className="flag-zone">
+                      <WavingFlag
+                        flag={s.flag}
+                        color={s.color}
+                        size={26}
+                        delay={`${idx * 0.35}s`}
+                        speed="3.4s"
+                      />
+                    </div>
+                    <div className="list-info">
+                      <div className="name-row">
+                        <span className="name">{s.name}</span>
+                        {s.isOpen && (
+                          <span className="live-chip">
+                            <span className="dot" />
+                            Live
+                          </span>
+                        )}
+                      </div>
+                      <span className="range">
+                        <ClockIcon />
+                        {toUTC3(s.startUTC)} – {toUTC3(s.endUTC)} EAT
                       </span>
                     </div>
-                  </SessionItem>
+                    <div className="list-right">
+                      <span className="status-label">
+                        {s.isOpen ? 'Closes in' : 'Opens in'}
+                      </span>
+                      <span className="status-value">{formatDuration(s.minUntil)}</span>
+                    </div>
+                  </SessionListItem>
                 ))}
               </SessionDropdownMenu>
             </DropdownContainer>
