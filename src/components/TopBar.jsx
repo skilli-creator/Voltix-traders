@@ -1480,6 +1480,13 @@ const SessionHero = styled.button`
       text-shadow: 0 0 6px ${p => p.$color + '70'};
       line-height: 1.1;
       white-space: nowrap;
+
+      .pct-value {
+        color: ${p => p.theme?.colors?.text || '#ffffff'};
+        font-weight: 900;
+        margin: 0 2px;
+        text-shadow: none;
+      }
     }
   }
 
@@ -3655,7 +3662,7 @@ const TopPanel = ({
                       : `Opens in ${formatDuration(heroSession.minUntil)}`}
                     {heroSession.isOpen && (
                       <span className="pct-chip">
-                        {Math.round(heroSession.progress * 100)}% complete
+                        Session progress<span className="pct-value">{Math.round(heroSession.progress * 100)}%</span>complete
                       </span>
                     )}
                   </span>
@@ -3741,7 +3748,7 @@ const TopPanel = ({
                   <div className="progress-labels">
                     <span className="label-left">
                       {heroSession.isOpen
-                        ? <>{Math.round(heroSession.progress * 100)}<span className="pct-accent">%</span> of session completed</>
+                        ? <>Session progress <span className="pct-accent">{Math.round(heroSession.progress * 100)}%</span> complete</>
                         : <>Waiting for market to open</>}
                     </span>
                     <span className="label-right">
