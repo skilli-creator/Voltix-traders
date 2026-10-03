@@ -1059,7 +1059,7 @@ const TopBar = styled.header`
     justify-content: flex-start;
   }
 
-  /* 📱 Phone — explicit stacked layout driven by child `order` */
+    /* 📱 Phone — explicit stacked layout driven by child order */
   @media (max-width: 768px) {
     position: sticky;
     top: 0;
