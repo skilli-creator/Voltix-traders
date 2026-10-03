@@ -42,25 +42,40 @@ const livePulse = keyframes`
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 `;
 
-/* 🌊 Realistic flag wave — 3D rotation from the pole side + skew */
+/* 🌊 Realistic multi-phase flying flag — hinged from the pole side */
 const flagWave = keyframes`
-  0%, 100% { transform: perspective(140px) rotateY(0deg) skewY(0deg) scaleX(1); }
-  18%      { transform: perspective(140px) rotateY(16deg) skewY(-3deg) scaleX(0.94); }
-  38%      { transform: perspective(140px) rotateY(-4deg) skewY(1.5deg) scaleX(1); }
-  58%      { transform: perspective(140px) rotateY(-16deg) skewY(3deg) scaleX(0.94); }
-  80%      { transform: perspective(140px) rotateY(4deg) skewY(-1.5deg) scaleX(1); }
+  0%   { transform: perspective(160px) rotateY(0deg)  skewY(0deg)   scaleX(1); }
+  12%  { transform: perspective(160px) rotateY(14deg) skewY(-2.5deg) scaleX(0.95); }
+  26%  { transform: perspective(160px) rotateY(-6deg) skewY(1.2deg)  scaleX(0.99); }
+  42%  { transform: perspective(160px) rotateY(-17deg) skewY(3deg)   scaleX(0.94); }
+  58%  { transform: perspective(160px) rotateY(-3deg) skewY(-0.5deg) scaleX(1); }
+  74%  { transform: perspective(160px) rotateY(11deg) skewY(-1.8deg) scaleX(0.96); }
+  88%  { transform: perspective(160px) rotateY(2deg)  skewY(0.6deg)  scaleX(0.99); }
+  100% { transform: perspective(160px) rotateY(0deg)  skewY(0deg)   scaleX(1); }
 `;
 
-/* ✨ Soft shine sweep across the hero card */
+/* ✨ Soft shine sweep across premium cards */
 const shimmer = keyframes`
   0%   { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 `;
 
-/* 🎯 Pulse for the live ring on the current-session flag */
+/* 🎯 Pulsing live ring around the current-session flag */
 const liveRing = keyframes`
-  0%   { transform: scale(0.9); opacity: 0.9; }
-  100% { transform: scale(2.1); opacity: 0; }
+  0%   { transform: scale(0.85); opacity: 0.9; }
+  100% { transform: scale(2.2);  opacity: 0; }
+`;
+
+/* 🌈 Slow color drift for the hero card aura */
+const auraDrift = keyframes`
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
+  50%      { transform: translate3d(2%, -2%, 0) scale(1.08); opacity: 0.85; }
+`;
+
+/* 🫧 Breathing glow for the LIVE tag */
+const breathe = keyframes`
+  0%, 100% { opacity: 0.85; }
+  50%      { opacity: 1; }
 `;
 
 // ============================================
@@ -171,48 +186,57 @@ const EyeIcon = ({ visible }) => (
   </svg>
 );
 
-const GlobeIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+const GlobeIcon = ({ size = 14 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <line x1="2" y1="12" x2="22" y2="12" />
     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
   </svg>
 );
 
-const ClockIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+const ClockIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="10" />
     <polyline points="12 6 12 12 16 14" />
   </svg>
 );
 
-const ArrowRightIcon = () => (
-  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12" />
-    <polyline points="12 5 19 12 12 19" />
+const CalendarIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4" width="18" height="18" rx="2.5" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+  </svg>
+);
+
+const BoltIcon = ({ size = 11 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
   </svg>
 );
 
 // ============================================
-// FOREX SESSIONS — real UTC open/close windows
+// FOREX SESSIONS
 // ============================================
 const FOREX_SESSIONS = [
-  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', country: 'Australia', startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific' },
-  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', country: 'Japan',     startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific' },
-  { key: 'london',  name: 'London',   flag: '🇬🇧', country: 'UK',        startUTC: 8,  endUTC: 17, color: '#60A5FA', region: 'Europe' },
-  { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'USA',       startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas' },
+  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', country: 'Australia', startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific', tag: 'AUD · NZD' },
+  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', country: 'Japan',     startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific', tag: 'JPY · AUD' },
+  { key: 'london',  name: 'London',   flag: '🇬🇧', country: 'United Kingdom', startUTC: 8, endUTC: 17, color: '#60A5FA', region: 'Europe', tag: 'EUR · GBP' },
+  { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States', startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas', tag: 'USD · CAD' },
 ];
 
-/* Convert an hour in UTC to local time in UTC+3 (EAT), returns "HH:00" */
 const toUTC3 = (utcHour) => {
   const h = ((utcHour + 3) % 24 + 24) % 24;
   return `${String(h).padStart(2, '0')}:00`;
 };
 
-/* Format a Date into "HH:MM" using UTC+3 as the reference timezone */
 const formatUTC3Clock = (date) => {
   const shifted = new Date(date.getTime() + 3 * 3600 * 1000);
-  return `${String(shifted.getUTCHours()).padStart(2, '0')}:${String(shifted.getUTCMinutes()).padStart(2, '0')}`;
+  const h = String(shifted.getUTCHours()).padStart(2, '0');
+  const m = String(shifted.getUTCMinutes()).padStart(2, '0');
+  const s = String(shifted.getUTCSeconds()).padStart(2, '0');
+  return { h, m, s, full: `${h}:${m}`, precise: `${h}:${m}:${s}` };
 };
 
 const getSessionStatus = (session, now) => {
@@ -221,40 +245,21 @@ const getSessionStatus = (session, now) => {
   const closeMin = session.endUTC * 60;
   const dayMin = 24 * 60;
 
-  let isOpen;
-  let minUntil;
-  let totalMin;
-  let elapsedMin;
+  let isOpen, minUntil, totalMin, elapsedMin;
 
   if (openMin < closeMin) {
     isOpen = nowMin >= openMin && nowMin < closeMin;
     totalMin = closeMin - openMin;
-    if (isOpen) {
-      minUntil = closeMin - nowMin;
-      elapsedMin = nowMin - openMin;
-    } else if (nowMin < openMin) {
-      minUntil = openMin - nowMin;
-      elapsedMin = 0;
-    } else {
-      minUntil = dayMin - nowMin + openMin;
-      elapsedMin = 0;
-    }
+    if (isOpen) { minUntil = closeMin - nowMin; elapsedMin = nowMin - openMin; }
+    else if (nowMin < openMin) { minUntil = openMin - nowMin; elapsedMin = 0; }
+    else { minUntil = dayMin - nowMin + openMin; elapsedMin = 0; }
   } else {
-    // Cross-midnight session
     isOpen = nowMin >= openMin || nowMin < closeMin;
     totalMin = dayMin - openMin + closeMin;
     if (isOpen) {
-      if (nowMin >= openMin) {
-        minUntil = dayMin - nowMin + closeMin;
-        elapsedMin = nowMin - openMin;
-      } else {
-        minUntil = closeMin - nowMin;
-        elapsedMin = dayMin - openMin + nowMin;
-      }
-    } else {
-      minUntil = openMin - nowMin;
-      elapsedMin = 0;
-    }
+      if (nowMin >= openMin) { minUntil = dayMin - nowMin + closeMin; elapsedMin = nowMin - openMin; }
+      else { minUntil = closeMin - nowMin; elapsedMin = dayMin - openMin + nowMin; }
+    } else { minUntil = openMin - nowMin; elapsedMin = 0; }
   }
 
   const progress = totalMin > 0 ? Math.min(1, Math.max(0, elapsedMin / totalMin)) : 0;
@@ -1074,73 +1079,6 @@ const RightSection = styled.div`
   }
 `;
 
-// ============================================
-// 🌊 WAVING FLAG COMPONENT
-// ============================================
-const FlagWrap = styled.div`
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 5px;
-  perspective: 160px;
-  flex-shrink: 0;
-  width: ${p => p.$size || 26}px;
-  height: ${p => p.$size || 26}px;
-
-  /* The pole */
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -2px;
-    bottom: -2px;
-    width: 2px;
-    border-radius: 2px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.2));
-    box-shadow: 0 0 4px rgba(0,0,0,0.5);
-    z-index: 2;
-  }
-
-  /* The pole cap */
-  &::after {
-    content: '';
-    position: absolute;
-    left: -2px;
-    top: -4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, #fff, ${p => p.$color || '#60a5fa'});
-    box-shadow: 0 0 6px ${p => (p.$color || '#60a5fa') + '80'};
-    z-index: 3;
-  }
-
-  .cloth {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 3px;
-    font-size: ${p => p.$size || 26}px;
-    line-height: 1;
-    transform-origin: 0% 50%;
-    transform-style: preserve-3d;
-    animation: ${flagWave} ${p => p.$speed || '3s'} ease-in-out infinite;
-    animation-delay: ${p => p.$delay || '0s'};
-    filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.45));
-    will-change: transform;
-  }
-`;
-
-const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
-  <FlagWrap $size={size} $color={color} $delay={delay} $speed={speed}>
-    <span className="cloth" role="img" aria-label="flag">{flag}</span>
-  </FlagWrap>
-);
-
-// ============================================
-// SESSION UI — HERO PILL (TopBar)
-// ============================================
 const SessionWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -1155,21 +1093,121 @@ const SessionWrapper = styled.div`
     order: 3;
     width: 100%;
     margin: 4px 0 0;
-    justify-content: flex-start;
+    justify-content: stretch;
   }
 `;
 
+// ============================================
+// 🌊 PREMIUM FLYING FLAG
+// ============================================
+const FlagWrap = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 6px;
+  perspective: 180px;
+  flex-shrink: 0;
+  width: ${p => p.$size || 26}px;
+  height: ${p => p.$size || 26}px;
+
+  /* Metallic pole */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -3px;
+    bottom: -3px;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.95) 0%,
+      ${p => p.$color || '#60a5fa'} 35%,
+      ${p => p.$color || '#60a5fa'} 65%,
+      rgba(255,255,255,0.35) 100%
+    );
+    box-shadow:
+      0 0 6px ${p => (p.$color || '#60a5fa') + 'b0'},
+      0 0 12px ${p => (p.$color || '#60a5fa') + '60'};
+    z-index: 3;
+  }
+
+  /* Pole cap */
+  &::after {
+    content: '';
+    position: absolute;
+    left: -2.5px;
+    top: -5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 30%, #ffffff 0%, ${p => p.$color || '#60a5fa'} 45%, rgba(0,0,0,0.5) 100%);
+    box-shadow:
+      0 0 8px ${p => (p.$color || '#60a5fa') + 'cc'},
+      inset 0 0 2px rgba(255,255,255,0.6);
+    z-index: 4;
+  }
+
+  .cloth {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3px;
+    font-size: ${p => p.$size || 26}px;
+    line-height: 1;
+    transform-origin: 0% 50%;
+    transform-style: preserve-3d;
+    animation: ${flagWave} ${p => p.$speed || '3s'} ease-in-out infinite;
+    animation-delay: ${p => p.$delay || '0s'};
+    filter:
+      drop-shadow(2px 3px 3px rgba(0,0,0,0.45))
+      drop-shadow(0 0 6px ${p => (p.$color || '#60a5fa') + '40'});
+    will-change: transform;
+    position: relative;
+  }
+
+  /* Light-catching sheen layered over the flag */
+  .cloth::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 35%,
+      rgba(255,255,255,0.35) 50%,
+      transparent 65%
+    );
+    background-size: 220% 100%;
+    animation: ${shimmer} 3.5s ease-in-out infinite;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    border-radius: 2px;
+  }
+`;
+
+const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
+  <FlagWrap $size={size} $color={color} $delay={delay} $speed={speed}>
+    <span className="cloth" role="img" aria-label="flag">{flag}</span>
+  </FlagWrap>
+);
+
+// ============================================
+// SESSION HERO — PREMIUM PILL
+// ============================================
 const SessionHero = styled.button`
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 12px 6px 6px;
+  gap: 12px;
+  padding: 7px 12px 7px 8px;
   border-radius: 14px;
-  border: 1px solid ${p => (p.$live ? (p.$color + '66') : (p.theme?.colors?.border || 'rgba(255,255,255,0.08)'))};
-  background: ${p => p.$live
-    ? `linear-gradient(135deg, ${p.$color}22 0%, ${p.$color}08 40%, ${p.theme?.colors?.background || 'rgba(255,255,255,0.03)'} 100%)`
-    : (p.theme?.colors?.background || 'rgba(255,255,255,0.03)')};
+  border: 1px solid ${p => p.$live ? (p.$color + '66') : (p.theme?.colors?.border || 'rgba(255,255,255,0.08)')};
+  background:
+    ${p => p.$live
+      ? `linear-gradient(135deg, ${p.$color}2e 0%, ${p.$color}0a 45%, ${p.theme?.colors?.background || 'rgba(255,255,255,0.03)'} 100%)`
+      : (p.theme?.colors?.background || 'rgba(255,255,255,0.03)')};
   color: ${p => p.theme?.colors?.text || '#fff'};
   font-family: inherit;
   cursor: pointer;
@@ -1177,27 +1215,32 @@ const SessionHero = styled.button`
   overflow: hidden;
   flex-shrink: 0;
   white-space: nowrap;
-  box-shadow: ${p => p.$live ? `0 0 0 1px ${p.$color}20, 0 4px 14px -4px ${p.$color}40` : 'none'};
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 1px 0 rgba(0,0,0,0.2),
+    ${p => p.$live ? `0 6px 20px -6px ${p.$color}80` : '0 4px 14px -6px rgba(0,0,0,0.6)'};
 
-  /* Animated shimmer sweep */
+  /* Shimmer sweep */
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     background: linear-gradient(
       110deg,
-      transparent 25%,
-      ${p => p.$live ? (p.$color + '18') : 'rgba(255,255,255,0.05)'} 50%,
-      transparent 75%
+      transparent 30%,
+      ${p => p.$live ? (p.$color + '1c') : 'rgba(255,255,255,0.05)'} 50%,
+      transparent 70%
     );
     background-size: 220% 100%;
-    animation: ${shimmer} 4.5s ease-in-out infinite;
+    animation: ${shimmer} 5s ease-in-out infinite;
     pointer-events: none;
   }
 
   &:hover {
     border-color: ${p => p.$color || p.theme?.colors?.accent || '#3b82f6'};
-    box-shadow: ${p => `0 0 0 1px ${p.$color}40, 0 6px 22px -4px ${p.$color}70`};
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 8px 26px -6px ${p => (p.$color || '#3b82f6') + '70'};
     transform: translateY(-1px);
   }
 
@@ -1209,12 +1252,14 @@ const SessionHero = styled.button`
     align-items: flex-start;
     line-height: 1.15;
     min-width: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .session-row {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
   }
 
   .session-name {
@@ -1228,22 +1273,24 @@ const SessionHero = styled.button`
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 1px 6px;
+    padding: 2px 7px;
     border-radius: 5px;
     font-size: 8.5px;
     font-weight: 800;
-    letter-spacing: 0.7px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
-    background: ${p => p.$live ? 'rgba(34,197,94,0.18)' : 'rgba(148,163,184,0.15)'};
+    background: ${p => p.$live ? 'rgba(34,197,94,0.2)' : 'rgba(148,163,184,0.15)'};
     color: ${p => p.$live ? '#4ade80' : '#94a3b8'};
-    border: 1px solid ${p => p.$live ? 'rgba(34,197,94,0.4)' : 'rgba(148,163,184,0.25)'};
+    border: 1px solid ${p => p.$live ? 'rgba(34,197,94,0.45)' : 'rgba(148,163,184,0.25)'};
+    animation: ${p => p.$live ? breathe : 'none'} 2.4s ease-in-out infinite;
 
     .dot {
       width: 5px;
       height: 5px;
       border-radius: 50%;
       background: ${p => p.$live ? '#22c55e' : '#94a3b8'};
-      animation: ${p => (p.$live ? livePulse : 'none')} 1.6s ease-out infinite;
+      box-shadow: ${p => p.$live ? '0 0 6px #22c55e' : 'none'};
+      animation: ${p => p.$live ? livePulse : 'none'} 1.6s ease-out infinite;
     }
   }
 
@@ -1256,7 +1303,8 @@ const SessionHero = styled.button`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 130px;
+    max-width: 150px;
+    font-variant-numeric: tabular-nums;
   }
 
   .clock {
@@ -1265,22 +1313,25 @@ const SessionHero = styled.button`
     align-items: flex-end;
     line-height: 1.15;
     margin-left: auto;
-    padding-left: 10px;
+    padding-left: 12px;
     border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+    position: relative;
+    z-index: 1;
 
     .time {
-      font-family: 'SF Mono', 'Courier New', monospace;
-      font-size: 12px;
+      font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
       color: ${p => p.$live ? p.$color : (p.theme?.colors?.text || '#fff')};
       font-variant-numeric: tabular-nums;
+      text-shadow: ${p => p.$live ? `0 0 12px ${p.$color}66` : 'none'};
     }
 
     .tz {
       font-size: 8px;
-      font-weight: 700;
-      letter-spacing: 0.6px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
       color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
       margin-top: 2px;
       text-transform: uppercase;
@@ -1293,52 +1344,63 @@ const SessionHero = styled.button`
     margin-left: 2px;
     opacity: 0.6;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
   }
 
   @media (max-width: 768px) {
-    padding: clamp(7px, 2vw, 10px) clamp(10px, 3vw, 14px) clamp(7px, 2vw, 10px) clamp(6px, 1.6vw, 8px);
+    flex: 1;
+    padding: clamp(8px, 2.2vw, 11px) clamp(10px, 3vw, 14px) clamp(8px, 2.2vw, 11px) clamp(7px, 2vw, 9px);
     border-radius: clamp(11px, 3.2vw, 15px);
-    gap: clamp(8px, 2.4vw, 12px);
+    gap: clamp(9px, 2.6vw, 13px);
 
     .session-name { font-size: clamp(12px, 3.4vw, 14px); }
-    .session-sub { font-size: clamp(9px, 2.6vw, 11px); max-width: clamp(110px, 32vw, 160px); }
-    .clock .time { font-size: clamp(11px, 3.2vw, 13px); }
+    .session-sub { font-size: clamp(9px, 2.6vw, 11px); max-width: clamp(110px, 34vw, 170px); }
+    .clock .time { font-size: clamp(12px, 3.4vw, 14px); }
     .clock .tz { font-size: clamp(8px, 2.2vw, 10px); }
   }
 
   @media (max-width: 480px) {
     .session-sub { display: none; }
     .clock .tz { display: none; }
+    .live-tag { padding: 1px 5px; font-size: 8px; }
   }
 `;
 
 // ============================================
-// SESSION DROPDOWN — CONTENT PIECES
+// SESSION DROPDOWN CONTENT
 // ============================================
 const SessionHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 10px 10px;
-  margin-bottom: 6px;
+  padding: 4px 6px 12px;
+  margin-bottom: 8px;
   border-bottom: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
 
   .title-block {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     min-width: 0;
   }
 
   .globe-badge {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
-    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'};
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background:
+      radial-gradient(circle at 30% 30%, ${p => (p.theme?.colors?.accent || '#3b82f6') + '30'} 0%, transparent 70%),
+      ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.12)'};
     color: ${p => p.theme?.colors?.accent || '#3b82f6'};
+    border: 1px solid ${p => (p.theme?.colors?.accent || '#3b82f6') + '30'};
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 0 12px ${p => (p.theme?.colors?.accent || '#3b82f6') + '30'};
     flex-shrink: 0;
   }
 
@@ -1350,40 +1412,53 @@ const SessionHeader = styled.div`
   }
 
   .title {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
     color: ${p => p.theme?.colors?.text || '#F8FAFC'};
     white-space: nowrap;
   }
 
   .subtitle {
-    font-size: 9.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
     font-weight: 600;
     color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
     letter-spacing: 0.3px;
-    margin-top: 1px;
+    margin-top: 2px;
     white-space: nowrap;
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: ${livePulse} 1.6s ease-out infinite;
+    }
   }
 
   .clock-block {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    line-height: 1.15;
-    padding-left: 10px;
+    line-height: 1.1;
+    padding-left: 12px;
     border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
     flex-shrink: 0;
   }
 
   .clock-time {
-    font-family: 'SF Mono', 'Courier New', monospace;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
     color: ${p => p.theme?.colors?.accent || '#3b82f6'};
     font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 14px ${p => (p.theme?.colors?.accent || '#3b82f6') + '50'};
   }
 
   .clock-tz {
@@ -1391,43 +1466,69 @@ const SessionHeader = styled.div`
     align-items: center;
     gap: 4px;
     font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
     color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
     margin-top: 2px;
     text-transform: uppercase;
   }
 
   @media (max-width: 768px) {
-    padding: clamp(6px, 2vw, 10px) clamp(8px, 2.4vw, 12px) clamp(8px, 2.6vw, 12px);
-    margin-bottom: clamp(6px, 2vw, 10px);
-    .globe-badge { width: clamp(24px, 6.5vw, 30px); height: clamp(24px, 6.5vw, 30px); }
-    .title { font-size: clamp(11px, 3vw, 13px); }
-    .subtitle { font-size: clamp(9.5px, 2.6vw, 11px); }
-    .clock-time { font-size: clamp(13px, 3.6vw, 15px); }
-    .clock-tz { font-size: clamp(9px, 2.4vw, 10px); }
+    padding: clamp(4px, 1.4vw, 8px) clamp(4px, 1.4vw, 8px) clamp(10px, 3vw, 14px);
+    margin-bottom: clamp(8px, 2.4vw, 12px);
+    .globe-badge {
+      width: clamp(30px, 8vw, 36px);
+      height: clamp(30px, 8vw, 36px);
+      border-radius: clamp(9px, 2.6vw, 12px);
+    }
+    .title { font-size: clamp(12px, 3.2vw, 14px); }
+    .subtitle { font-size: clamp(10px, 2.8vw, 12px); }
+    .clock-time { font-size: clamp(14px, 3.8vw, 16px); }
+    .clock-tz { font-size: clamp(9px, 2.4vw, 10.5px); }
   }
 `;
 
 const HeroSessionCard = styled.div`
   position: relative;
-  padding: 16px 16px 14px;
-  border-radius: 14px;
-  margin-bottom: 12px;
+  padding: 18px 18px 16px;
+  border-radius: 16px;
+  margin-bottom: 14px;
   overflow: hidden;
   border: 1px solid ${p => p.$color + '55'};
   background:
-    radial-gradient(circle at 100% 0%, ${p => p.$color + '2a'}, transparent 60%),
-    linear-gradient(135deg, ${p => p.$color + '18'}, ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.02)'} 70%);
-  box-shadow: 0 8px 24px -10px ${p => p.$color + '70'};
+    linear-gradient(135deg, ${p => p.$color + '1c'} 0%, ${p => p.$color + '06'} 40%, ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.02)'} 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 12px 32px -14px ${p => p.$color + '90'};
 
+  /* Drifting aura */
   &::before {
     content: '';
     position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, ${p => p.$color + '55'} 0%, transparent 65%);
+    filter: blur(30px);
+    animation: ${auraDrift} 8s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Shimmer sweep */
+  &::after {
+    content: '';
+    position: absolute;
     inset: 0;
-    background: linear-gradient(110deg, transparent 30%, ${p => p.$color + '15'} 50%, transparent 70%);
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      ${p => p.$color + '18'} 50%,
+      transparent 70%
+    );
     background-size: 220% 100%;
-    animation: ${shimmer} 5s ease-in-out infinite;
+    animation: ${shimmer} 6s ease-in-out infinite;
     pointer-events: none;
   }
 
@@ -1435,9 +1536,10 @@ const HeroSessionCard = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
     position: relative;
     z-index: 1;
+    gap: 10px;
   }
 
   .hero-left {
@@ -1445,6 +1547,7 @@ const HeroSessionCard = styled.div`
     align-items: center;
     gap: 12px;
     min-width: 0;
+    flex: 1;
   }
 
   .flag-zone {
@@ -1452,19 +1555,24 @@ const HeroSessionCard = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px 8px 6px 10px;
-    border-radius: 10px;
-    background: ${p => p.$color + '18'};
-    border: 1px solid ${p => p.$color + '40'};
+    padding: 8px 10px 8px 12px;
+    border-radius: 12px;
+    background:
+      radial-gradient(circle at 30% 30%, ${p => p.$color + '30'} 0%, transparent 70%),
+      ${p => p.$color + '12'};
+    border: 1px solid ${p => p.$color + '45'};
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      0 0 20px -4px ${p => p.$color + '70'};
 
-    /* Live pulse ring around the flag */
+    /* Pulsing live ring */
     &::after {
       content: '';
       position: absolute;
-      inset: -2px;
-      border-radius: 12px;
+      inset: -3px;
+      border-radius: 15px;
       border: 1px solid ${p => p.$color};
-      animation: ${liveRing} 2.2s ease-out infinite;
+      animation: ${liveRing} 2.4s ease-out infinite;
       pointer-events: none;
     }
   }
@@ -1472,39 +1580,59 @@ const HeroSessionCard = styled.div`
   .hero-info {
     display: flex;
     flex-direction: column;
-    line-height: 1.2;
+    line-height: 1.15;
     min-width: 0;
   }
 
   .hero-name {
-    font-size: 17px;
+    font-size: 19px;
     font-weight: 800;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.4px;
     color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+    line-height: 1.05;
   }
 
   .hero-region {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.5px;
     text-transform: uppercase;
     color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-    margin-top: 2px;
+    margin-top: 4px;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    background: ${p => p.$color + '1a'};
+    color: ${p => p.$color};
+    border: 1px solid ${p => p.$color + '45'};
   }
 
   .hero-status {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    padding: 3px 9px;
-    border-radius: 6px;
+    padding: 4px 10px;
+    border-radius: 7px;
     font-size: 9.5px;
     font-weight: 800;
     letter-spacing: 0.7px;
     text-transform: uppercase;
-    background: rgba(34,197,94,0.15);
+    background: linear-gradient(135deg, rgba(34,197,94,0.22), rgba(34,197,94,0.1));
     color: #4ade80;
-    border: 1px solid rgba(34,197,94,0.4);
+    border: 1px solid rgba(34,197,94,0.45);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 0 12px rgba(34,197,94,0.35);
     white-space: nowrap;
     flex-shrink: 0;
 
@@ -1513,6 +1641,7 @@ const HeroSessionCard = styled.div`
       height: 6px;
       border-radius: 50%;
       background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
       animation: ${livePulse} 1.6s ease-out infinite;
     }
   }
@@ -1521,9 +1650,11 @@ const HeroSessionCard = styled.div`
     background: rgba(148,163,184,0.15);
     color: #cbd5e1;
     border-color: rgba(148,163,184,0.3);
+    box-shadow: none;
 
     .dot {
       background: #94a3b8;
+      box-shadow: none;
       animation: none;
     }
   }
@@ -1532,38 +1663,50 @@ const HeroSessionCard = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 10px;
     position: relative;
     z-index: 1;
+    padding-top: 12px;
+    border-top: 1px dashed ${p => p.$color + '30'};
   }
 
   .time-range {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: 'SF Mono', 'Courier New', monospace;
-    font-size: 11.5px;
+    font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 12px;
     font-weight: 700;
     color: ${p => p.theme?.colors?.text || '#F8FAFC'};
     letter-spacing: 0.3px;
+    font-variant-numeric: tabular-nums;
+
+    svg { color: ${p => p.$color}; }
   }
 
   .countdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
     color: ${p => p.$color};
     text-transform: uppercase;
+    text-shadow: 0 0 10px ${p => p.$color + '60'};
+    font-variant-numeric: tabular-nums;
   }
 
   .progress-track {
     position: relative;
-    height: 6px;
-    border-radius: 6px;
-    background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.04)'};
+    height: 7px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.05);
     overflow: hidden;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    box-shadow:
+      inset 0 1px 2px rgba(0,0,0,0.4),
+      inset 0 0 0 1px rgba(255,255,255,0.04);
     z-index: 1;
   }
 
@@ -1573,35 +1716,53 @@ const HeroSessionCard = styled.div`
     left: 0;
     bottom: 0;
     width: ${p => (p.$progress * 100) + '%'};
-    border-radius: 6px;
+    border-radius: 7px;
     background: linear-gradient(90deg, ${p => p.$color}, ${p => p.$color}cc);
-    box-shadow: 0 0 10px ${p => p.$color + '80'};
+    box-shadow:
+      0 0 12px ${p => p.$color + '90'},
+      inset 0 1px 0 rgba(255,255,255,0.3);
     transition: width 1s linear;
+    overflow: hidden;
+
+    /* Shimmer on the fill */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      background-size: 60% 100%;
+      animation: ${shimmer} 2.5s linear infinite;
+    }
   }
 
   .progress-labels {
     display: flex;
     justify-content: space-between;
-    margin-top: 6px;
+    margin-top: 8px;
     font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
     color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
     position: relative;
     z-index: 1;
+    font-variant-numeric: tabular-nums;
+
+    .pct { color: ${p => p.$color}; }
   }
 
   @media (max-width: 768px) {
-    padding: clamp(14px, 4vw, 18px);
-    border-radius: clamp(12px, 3.6vw, 16px);
-    margin-bottom: clamp(10px, 3vw, 14px);
-    .hero-name { font-size: clamp(15px, 4.4vw, 18px); }
-    .hero-region { font-size: clamp(9.5px, 2.6vw, 11px); }
+    padding: clamp(15px, 4.2vw, 19px);
+    border-radius: clamp(13px, 3.6vw, 16px);
+    margin-bottom: clamp(11px, 3vw, 14px);
+
+    .hero-name { font-size: clamp(16px, 4.6vw, 19px); }
+    .hero-region { font-size: clamp(9.5px, 2.6vw, 11px); margin-top: clamp(3px, 1vw, 5px); }
     .hero-status { font-size: clamp(9px, 2.6vw, 11px); padding: 3px clamp(7px, 2vw, 10px); }
     .time-range { font-size: clamp(11px, 3.2vw, 13px); }
     .countdown { font-size: clamp(10px, 2.8vw, 12px); }
     .progress-labels { font-size: clamp(9px, 2.4vw, 10.5px); }
+    .hero-timing { padding-top: clamp(10px, 3vw, 12px); }
   }
 `;
 
@@ -1611,39 +1772,47 @@ const SectionLabel = styled.div`
   gap: 8px;
   font-size: 9.5px;
   font-weight: 800;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.9px;
   text-transform: uppercase;
   color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-  padding: 4px 6px 8px;
+  padding: 6px 8px 10px;
 
   &::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
+    background: linear-gradient(90deg, ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'}, transparent);
   }
 
   @media (max-width: 768px) {
     font-size: clamp(9.5px, 2.6vw, 11px);
-    padding: clamp(4px, 1.4vw, 6px) clamp(5px, 1.6vw, 8px) clamp(6px, 2vw, 10px);
+    padding: clamp(4px, 1.4vw, 6px) clamp(6px, 1.8vw, 8px) clamp(8px, 2.4vw, 10px);
   }
 `;
 
 const SessionListItem = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 9px 10px;
-  border-radius: 10px;
-  margin-bottom: 4px;
-  border: 1px solid ${p => (p.$live ? p.$color + '40' : 'transparent')};
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  border: 1px solid ${p => (p.$live ? p.$color + '40' : 'rgba(255,255,255,0.04)')};
   background: ${p => (p.$live
-    ? `linear-gradient(90deg, ${p.$color}15, ${p.$color}05 60%, transparent)`
-    : 'transparent')};
+    ? `linear-gradient(90deg, ${p.$color}16, ${p.$color}05 50%, transparent)`
+    : 'rgba(255,255,255,0.015)')};
   transition: all 0.2s ease;
+  box-shadow: ${p => (p.$live
+    ? `inset 0 1px 0 rgba(255,255,255,0.06), 0 4px 14px -8px ${p.$color}80`
+    : 'inset 0 1px 0 rgba(255,255,255,0.03)')};
 
   &:hover {
-    background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.06)'};
+    background: ${p => (p.$live
+      ? `linear-gradient(90deg, ${p.$color}22, ${p.$color}0a 50%, transparent)`
+      : 'rgba(255,255,255,0.03)')};
+    border-color: ${p => (p.$live ? p.$color + '66' : 'rgba(255,255,255,0.08)')};
+    transform: translateX(2px);
   }
 
   &:last-child { margin-bottom: 0; }
@@ -1652,11 +1821,14 @@ const SessionListItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: ${p => (p.$live ? p.$color + '1f' : 'rgba(255,255,255,0.04)')};
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: ${p => (p.$live
+      ? `radial-gradient(circle at 30% 30%, ${p.$color}30, transparent 70%), ${p.$color}12`
+      : 'rgba(255,255,255,0.04)')};
     border: 1px solid ${p => (p.$live ? p.$color + '50' : 'rgba(255,255,255,0.06)')};
+    box-shadow: ${p => (p.$live ? `inset 0 1px 0 rgba(255,255,255,0.1), 0 0 12px -2px ${p.$color}60` : 'inset 0 1px 0 rgba(255,255,255,0.05)')};
     flex-shrink: 0;
   }
 
@@ -1671,31 +1843,33 @@ const SessionListItem = styled.div`
     }
 
     .name {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 700;
       color: ${p => p.theme?.colors?.text || '#F8FAFC'};
-      letter-spacing: -0.1px;
+      letter-spacing: -0.15px;
     }
 
     .live-chip {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 1px 6px;
+      padding: 1.5px 6px;
       border-radius: 4px;
       font-size: 8px;
       font-weight: 800;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.7px;
       text-transform: uppercase;
-      background: rgba(34,197,94,0.15);
+      background: rgba(34,197,94,0.18);
       color: #4ade80;
-      border: 1px solid rgba(34,197,94,0.35);
+      border: 1px solid rgba(34,197,94,0.4);
+      box-shadow: 0 0 8px rgba(34,197,94,0.25);
 
       .dot {
         width: 4px;
         height: 4px;
         border-radius: 50%;
         background: #22c55e;
+        box-shadow: 0 0 4px #22c55e;
       }
     }
 
@@ -1704,11 +1878,14 @@ const SessionListItem = styled.div`
       align-items: center;
       gap: 5px;
       font-size: 10px;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 0.2px;
       color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
-      margin-top: 3px;
-      font-family: 'SF Mono', 'Courier New', monospace;
+      margin-top: 4px;
+      font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+      font-variant-numeric: tabular-nums;
+
+      svg { opacity: 0.65; }
     }
   }
 
@@ -1716,45 +1893,54 @@ const SessionListItem = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    line-height: 1.2;
+    line-height: 1.15;
     flex-shrink: 0;
+    padding-left: 8px;
+    border-left: 1px dashed ${p => (p.$live ? p.$color + '40' : 'rgba(255,255,255,0.06)')};
 
     .status-label {
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 800;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.7px;
       text-transform: uppercase;
       color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
     }
 
     .status-value {
-      font-family: 'SF Mono', 'Courier New', monospace;
-      font-size: 12px;
-      font-weight: 700;
+      font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 12.5px;
+      font-weight: 800;
       color: ${p => p.$live ? p.$color : (p.theme?.colors?.text || '#F8FAFC')};
       margin-top: 3px;
       letter-spacing: 0.3px;
+      font-variant-numeric: tabular-nums;
+      text-shadow: ${p => p.$live ? `0 0 10px ${p.$color}66` : 'none'};
     }
   }
 
   @media (max-width: 768px) {
-    padding: clamp(9px, 2.6vw, 12px) clamp(8px, 2.4vw, 12px);
+    padding: clamp(10px, 2.8vw, 13px) clamp(10px, 3vw, 13px);
     gap: clamp(10px, 3vw, 14px);
-    border-radius: clamp(10px, 3vw, 12px);
+    border-radius: clamp(11px, 3.2vw, 13px);
+    margin-bottom: clamp(6px, 2vw, 8px);
 
     .flag-zone {
-      width: clamp(36px, 10vw, 44px);
-      height: clamp(36px, 10vw, 44px);
-      border-radius: clamp(9px, 2.6vw, 12px);
+      width: clamp(38px, 10.5vw, 46px);
+      height: clamp(38px, 10.5vw, 46px);
+      border-radius: clamp(10px, 2.8vw, 12px);
     }
     .list-info {
-      .name { font-size: clamp(13px, 3.6vw, 15px); }
+      .name { font-size: clamp(13px, 3.7vw, 15px); }
       .range { font-size: clamp(10px, 2.8vw, 12px); }
     }
     .list-right {
-      .status-label { font-size: clamp(9px, 2.4vw, 10.5px); }
+      .status-label { font-size: clamp(8.5px, 2.4vw, 10px); }
       .status-value { font-size: clamp(12px, 3.4vw, 14px); }
     }
+  }
+
+  @media (max-width: 400px) {
+    .list-right .status-label { display: none; }
   }
 `;
 
@@ -1768,41 +1954,53 @@ const DropdownContainer = styled.div`
 
 const GlassDropdownMenu = styled.div`
   position: absolute;
-  top: calc(100% + 10px);
+  top: calc(100% + 12px);
   left: 0;
   right: auto;
   min-width: 300px;
   max-width: 90vw;
-  max-height: 480px;
-  background: ${props => props.theme?.colors?.surfaceGlass || 'rgba(15,17,23,0.94)'};
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255,255,255,0.12)'};
-  border-radius: 16px;
-  padding: 10px;
-  box-shadow: ${props => props.theme?.colors?.shadow || '0 24px 48px -12px rgba(0,0,0,0.7)'};
+  max-height: 520px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255,255,255,0.04), transparent 40%),
+    ${props => props.theme?.colors?.surfaceGlass || 'rgba(15,17,23,0.96)'};
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid ${props => props.theme?.colors?.glassBorder || 'rgba(255,255,255,0.14)'};
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    ${props => props.theme?.colors?.shadow || '0 32px 64px -16px rgba(0,0,0,0.8)'},
+    0 0 0 1px rgba(0,0,0,0.3);
   opacity: ${props => props.isOpen ? 1 : 0};
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
-  transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.98)'};
-  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+  transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-8px) scale(0.97)'};
+  transition:
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.22s;
   z-index: 300;
   overflow-x: hidden;
   overflow-y: auto;
 
-  &::-webkit-scrollbar { width: 3px; }
-  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
 
   @media (max-width: 768px) {
     min-width: 0;
-    max-width: calc(100vw - 32px);
-    max-height: calc(100vh - 140px);
-    max-height: calc(100dvh - 140px);
-    padding: clamp(8px, 2.4vw, 12px);
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 130px);
+    max-height: calc(100dvh - 130px);
+    padding: clamp(10px, 2.8vw, 14px);
     border-radius: clamp(14px, 4vw, 18px);
   }
 `;
 
-// ✅ All styled(GlassDropdownMenu) declarations come AFTER GlassDropdownMenu
+// ✅ All styled(GlassDropdownMenu) declarations MUST come AFTER GlassDropdownMenu
 const RightAnchoredDropdown = styled(GlassDropdownMenu)`
   left: auto;
   right: 0;
@@ -1843,13 +2041,19 @@ const PlatformDropdown = styled(GlassDropdownMenu)`
 `;
 
 const SessionDropdownMenu = styled(GlassDropdownMenu)`
-  min-width: 340px;
+  min-width: 380px;
   left: 0;
   right: auto;
+
+  @media (max-width: 1024px) {
+    min-width: 340px;
+  }
 
   @media (max-width: 768px) {
     min-width: 0;
     max-width: calc(100vw - 32px);
+    left: 0;
+    right: auto;
   }
 `;
 
@@ -2574,7 +2778,7 @@ const TopPanel = ({
 
   const [depositPending, setDepositPending] = useState(false);
 
-  // Ticking clock — 1s resolution for a live UTC+3 readout
+  // Live 1-second clock
   const [now, setNow] = useState(() => new Date());
 
   const dropdownRef = useRef(null);
@@ -2593,7 +2797,6 @@ const TopPanel = ({
   const isDeriv = location.pathname.startsWith('/deriv');
   const showSidebarToggle = !!onSidebarToggle;
 
-  // Recompute session statuses every render — pure function of `now`
   const sessionStates = useMemo(
     () => FOREX_SESSIONS.map(s => ({ ...s, ...getSessionStatus(s, now) })),
     [now]
@@ -2601,17 +2804,15 @@ const TopPanel = ({
 
   const openSessions = sessionStates.filter(s => s.isOpen);
 
-  // The "hero" = the most recently opened live session, or the next to open
+  // Hero = most recently opened live session, else soonest to open
   const heroSession = useMemo(() => {
     if (openSessions.length > 0) {
-      // Most recently opened = the one that started latest
       return [...openSessions].sort((a, b) => b.startUTC - a.startUTC)[0];
     }
-    // None open — the soonest to open
     return [...sessionStates].sort((a, b) => a.minUntil - b.minUntil)[0];
   }, [sessionStates, openSessions]);
 
-  const liveClockUTC3 = formatUTC3Clock(now);
+  const clock = formatUTC3Clock(now);
 
   const generateAccountNickname = () => {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -2640,13 +2841,11 @@ const TopPanel = ({
     }
   }, [location.pathname]);
 
-  // 1-second tick for a live clock
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
   }, []);
 
-  // Currency helpers ------------------------------------------------------
   const getCurrencyInfo = (code = selectedCurrency) =>
     DISPLAY_CURRENCIES.find(c => c.code === code) || DISPLAY_CURRENCIES[0];
 
@@ -3156,10 +3355,10 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* ---------- Forex live session hero ---------- */}
+        {/* ---------- Forex live session hero pill ---------- */}
         {isForex && (
           <SessionWrapper ref={sessionRef}>
-            <DropdownContainer style={{ position: 'relative' }}>
+            <DropdownContainer style={{ position: 'relative', width: '100%' }}>
               <SessionHero
                 onClick={toggleSessionDropdown}
                 aria-label="Forex market sessions"
@@ -3188,29 +3387,32 @@ const TopPanel = ({
                   </span>
                 </div>
                 <div className="clock">
-                  <span className="time">{liveClockUTC3}</span>
+                  <span className="time">{clock.full}</span>
                   <span className="tz">UTC+3</span>
                 </div>
                 <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
               </SessionHero>
 
               <SessionDropdownMenu isOpen={isSessionOpen}>
-                {/* Header — world clock */}
+                {/* World clock header */}
                 <SessionHeader>
                   <div className="title-block">
-                    <div className="globe-badge"><GlobeIcon /></div>
+                    <div className="globe-badge"><GlobeIcon size={16} /></div>
                     <div className="titles">
                       <div className="title">Forex Sessions</div>
-                      <div className="subtitle">{openSessions.length} of {FOREX_SESSIONS.length} markets open</div>
+                      <div className="subtitle">
+                        <span className="pulse-dot" />
+                        {openSessions.length} of {FOREX_SESSIONS.length} markets open now
+                      </div>
                     </div>
                   </div>
                   <div className="clock-block">
-                    <div className="clock-time">{liveClockUTC3}</div>
-                    <div className="clock-tz"><ClockIcon /> Nairobi · UTC+3</div>
+                    <div className="clock-time">{clock.precise}</div>
+                    <div className="clock-tz"><ClockIcon size={11} /> Nairobi · UTC+3</div>
                   </div>
                 </SessionHeader>
 
-                {/* Hero — the current (or next) session */}
+                {/* Hero — current or next session */}
                 <HeroSessionCard
                   $color={heroSession.color}
                   $progress={heroSession.progress}
@@ -3221,14 +3423,18 @@ const TopPanel = ({
                         <WavingFlag
                           flag={heroSession.flag}
                           color={heroSession.color}
-                          size={40}
+                          size={42}
                           delay="0s"
                           speed="2.8s"
                         />
                       </div>
                       <div className="hero-info">
                         <div className="hero-name">{heroSession.name}</div>
-                        <div className="hero-region">{heroSession.region} · {heroSession.country}</div>
+                        <div className="hero-region">
+                          <GlobeIcon size={10} />
+                          {heroSession.region}
+                          <span className="hero-tag">{heroSession.tag}</span>
+                        </div>
                       </div>
                     </div>
                     <div className={`hero-status ${heroSession.isOpen ? '' : 'closed'}`}>
@@ -3239,10 +3445,11 @@ const TopPanel = ({
 
                   <div className="hero-timing">
                     <div className="time-range">
-                      <ClockIcon />
-                      {toUTC3(heroSession.startUTC)} – {toUTC3(heroSession.endUTC)} EAT
+                      <ClockIcon size={13} />
+                      {toUTC3(heroSession.startUTC)} – {toUTC3(heroSession.endUTC)} <span style={{ opacity: 0.6, marginLeft: 2 }}>EAT</span>
                     </div>
                     <div className="countdown">
+                      <BoltIcon size={11} />
                       {heroSession.isOpen
                         ? `Closes in ${formatDuration(heroSession.minUntil)}`
                         : `Opens in ${formatDuration(heroSession.minUntil)}`}
@@ -3253,13 +3460,13 @@ const TopPanel = ({
                     <div className="progress-fill" />
                   </div>
                   <div className="progress-labels">
-                    <span>{heroSession.isOpen ? 'Session progress' : 'Upcoming session'}</span>
-                    <span>{Math.round(heroSession.progress * 100)}%</span>
+                    <span>{heroSession.isOpen ? 'Session progress' : 'Waiting to open'}</span>
+                    <span className="pct">{Math.round(heroSession.progress * 100)}%</span>
                   </div>
                 </HeroSessionCard>
 
-                {/* Other sessions */}
-                <SectionLabel>All Markets</SectionLabel>
+                {/* All markets */}
+                <SectionLabel>All markets</SectionLabel>
 
                 {sessionStates.map((s, idx) => (
                   <SessionListItem
@@ -3271,7 +3478,7 @@ const TopPanel = ({
                       <WavingFlag
                         flag={s.flag}
                         color={s.color}
-                        size={26}
+                        size={28}
                         delay={`${idx * 0.35}s`}
                         speed="3.4s"
                       />
@@ -3287,7 +3494,7 @@ const TopPanel = ({
                         )}
                       </div>
                       <span className="range">
-                        <ClockIcon />
+                        <ClockIcon size={11} />
                         {toUTC3(s.startUTC)} – {toUTC3(s.endUTC)} EAT
                       </span>
                     </div>
