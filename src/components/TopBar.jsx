@@ -1093,7 +1093,7 @@ const SessionWrapper = styled.div`
     order: 3;
     width: 100%;
     margin: 4px 0 0;
-    justify-content: stretch;
+    justify-content: flex-start;
   }
 `;
 
@@ -1194,7 +1194,7 @@ const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
 );
 
 // ============================================
-// SESSION HERO — PREMIUM PILL (with in-pill progress bar)
+// SESSION HERO — PREMIUM PILL (with in-pill progress + %)
 // ============================================
 const SessionHero = styled.button`
   position: relative;
@@ -1255,6 +1255,7 @@ const SessionHero = styled.button`
     align-items: flex-start;
     line-height: 1.15;
     min-width: 0;
+    flex: 1;
     position: relative;
     z-index: 2;
   }
@@ -1286,6 +1287,7 @@ const SessionHero = styled.button`
     color: ${p => p.$live ? '#4ade80' : '#94a3b8'};
     border: 1px solid ${p => p.$live ? 'rgba(34,197,94,0.45)' : 'rgba(148,163,184,0.25)'};
     animation: ${p => p.$live ? breathe : 'none'} 2.4s ease-in-out infinite;
+    flex-shrink: 0;
 
     .dot {
       width: 5px;
@@ -1298,16 +1300,37 @@ const SessionHero = styled.button`
   }
 
   .session-sub {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     font-size: 9.5px;
     font-weight: 600;
     color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
     letter-spacing: 0.3px;
-    margin-top: 3px;
+    margin-top: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
+    max-width: 100%;
     font-variant-numeric: tabular-nums;
+
+    /* 🎯 Inline percentage chip */
+    .pct-chip {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      background: ${p => p.$color + '28'};
+      color: ${p => p.$color};
+      border: 1px solid ${p => p.$color + '55'};
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 6px ${p => p.$color + '70'};
+      line-height: 1.1;
+    }
   }
 
   .clock {
@@ -1315,11 +1338,11 @@ const SessionHero = styled.button`
     flex-direction: column;
     align-items: flex-end;
     line-height: 1.15;
-    margin-left: auto;
     padding-left: 12px;
     border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
     position: relative;
     z-index: 2;
+    flex-shrink: 0;
 
     .time {
       font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
@@ -1391,20 +1414,27 @@ const SessionHero = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: 100%;
-    min-height: clamp(60px, 16vw, 72px);
+    /* 📱 No longer fills the whole row — shrink to content */
+    width: auto;
+    max-width: 100%;
+    min-height: 0;
     border-radius: clamp(11px, 3.2vw, 15px);
-    padding: clamp(9px, 2.6vw, 13px) clamp(12px, 3.4vw, 16px) clamp(12px, 3.4vw, 16px) clamp(8px, 2.4vw, 12px);
+    padding: clamp(9px, 2.6vw, 12px) clamp(12px, 3.4vw, 16px) clamp(12px, 3.4vw, 15px) clamp(8px, 2.4vw, 12px);
     gap: clamp(8px, 2.4vw, 12px);
 
     .session-name { font-size: clamp(12px, 3.4vw, 14px); }
-    .session-sub { font-size: clamp(9px, 2.6vw, 11px); max-width: clamp(110px, 34vw, 170px); }
+    .session-sub { font-size: clamp(9px, 2.6vw, 11px); }
+    .session-sub .pct-chip { font-size: clamp(8px, 2.3vw, 10px); padding: 1px clamp(4px, 1.4vw, 6px); }
     .clock .time { font-size: clamp(12px, 3.4vw, 14px); }
     .clock .tz { font-size: clamp(8px, 2.2vw, 10px); }
   }
 
   @media (max-width: 480px) {
-    .session-sub { display: none; }
+    /* Keep the sub visible but compact — percentage stays in view */
+    .session-sub {
+      font-size: 9px;
+      max-width: 100%;
+    }
     .clock .tz { display: none; }
     .live-tag { padding: 1px 5px; font-size: 8px; }
   }
@@ -3401,7 +3431,7 @@ const TopPanel = ({
         {/* ---------- Forex live session hero pill ---------- */}
         {isForex && (
           <SessionWrapper ref={sessionRef}>
-            <DropdownContainer style={{ position: 'relative', width: '100%' }}>
+            <DropdownContainer style={{ position: 'relative' }}>
               <SessionHero
                 onClick={toggleSessionDropdown}
                 aria-label="Forex market sessions"
@@ -3428,6 +3458,7 @@ const TopPanel = ({
                     {heroSession.isOpen
                       ? `Closes in ${formatDuration(heroSession.minUntil)}`
                       : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                    <span className="pct-chip">{Math.round(heroSession.progress * 100)}%</span>
                   </span>
                 </div>
                 <div className="clock">
