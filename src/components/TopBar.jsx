@@ -1194,14 +1194,14 @@ const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
 );
 
 // ============================================
-// SESSION HERO — PREMIUM PILL
+// SESSION HERO — PREMIUM PILL (with in-pill progress bar)
 // ============================================
 const SessionHero = styled.button`
   position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 7px 12px 7px 8px;
+  padding: 9px 14px 14px 10px;
   border-radius: 14px;
   border: 1px solid ${p => p.$live ? (p.$color + '66') : (p.theme?.colors?.border || 'rgba(255,255,255,0.08)')};
   background:
@@ -1215,6 +1215,8 @@ const SessionHero = styled.button`
   overflow: hidden;
   flex-shrink: 0;
   white-space: nowrap;
+  width: 400px;
+  min-height: 68px;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.08),
     0 1px 0 rgba(0,0,0,0.2),
@@ -1234,6 +1236,7 @@ const SessionHero = styled.button`
     background-size: 220% 100%;
     animation: ${shimmer} 5s ease-in-out infinite;
     pointer-events: none;
+    z-index: 1;
   }
 
   &:hover {
@@ -1253,7 +1256,7 @@ const SessionHero = styled.button`
     line-height: 1.15;
     min-width: 0;
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 
   .session-row {
@@ -1263,7 +1266,7 @@ const SessionHero = styled.button`
   }
 
   .session-name {
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: -0.2px;
     color: ${p => p.theme?.colors?.text || '#fff'};
@@ -1303,7 +1306,7 @@ const SessionHero = styled.button`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 150px;
+    max-width: 200px;
     font-variant-numeric: tabular-nums;
   }
 
@@ -1316,11 +1319,11 @@ const SessionHero = styled.button`
     padding-left: 12px;
     border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
     position: relative;
-    z-index: 1;
+    z-index: 2;
 
     .time {
       font-family: 'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 700;
       letter-spacing: 0.4px;
       color: ${p => p.$live ? p.$color : (p.theme?.colors?.text || '#fff')};
@@ -1341,18 +1344,58 @@ const SessionHero = styled.button`
   .chev {
     display: flex;
     align-items: center;
-    margin-left: 2px;
+    margin-left: 4px;
     opacity: 0.6;
     flex-shrink: 0;
     position: relative;
-    z-index: 1;
+    z-index: 2;
+  }
+
+  /* 🔥 Progress bar pinned to the bottom of the pill */
+  .session-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: rgba(0,0,0,0.45);
+    overflow: hidden;
+    z-index: 3;
+    pointer-events: none;
+
+    .bar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: ${p => (p.$progress * 100) + '%'};
+      border-radius: 0 3px 3px 0;
+      background: linear-gradient(90deg, ${p => p.$color}, ${p => p.$color}dd);
+      box-shadow: 0 0 10px ${p => p.$color};
+      transition: width 1s linear;
+      overflow: hidden;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+        background-size: 60% 100%;
+        animation: ${shimmer} 2.5s linear infinite;
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    width: 360px;
   }
 
   @media (max-width: 768px) {
-    flex: 1;
-    padding: clamp(8px, 2.2vw, 11px) clamp(10px, 3vw, 14px) clamp(8px, 2.2vw, 11px) clamp(7px, 2vw, 9px);
+    width: 100%;
+    min-height: clamp(60px, 16vw, 72px);
     border-radius: clamp(11px, 3.2vw, 15px);
-    gap: clamp(9px, 2.6vw, 13px);
+    padding: clamp(9px, 2.6vw, 13px) clamp(12px, 3.4vw, 16px) clamp(12px, 3.4vw, 16px) clamp(8px, 2.4vw, 12px);
+    gap: clamp(8px, 2.4vw, 12px);
 
     .session-name { font-size: clamp(12px, 3.4vw, 14px); }
     .session-sub { font-size: clamp(9px, 2.6vw, 11px); max-width: clamp(110px, 34vw, 170px); }
@@ -3364,6 +3407,7 @@ const TopPanel = ({
                 aria-label="Forex market sessions"
                 $live={heroSession.isOpen}
                 $color={heroSession.color}
+                $progress={heroSession.progress}
               >
                 <WavingFlag
                   flag={heroSession.flag}
@@ -3391,6 +3435,11 @@ const TopPanel = ({
                   <span className="tz">UTC+3</span>
                 </div>
                 <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
+
+                {/* 🔥 Progress bar — always visible on the pill */}
+                <div className="session-progress">
+                  <div className="bar" />
+                </div>
               </SessionHero>
 
               <SessionDropdownMenu isOpen={isSessionOpen}>
