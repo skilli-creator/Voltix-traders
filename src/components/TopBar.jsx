@@ -1,7 +1,7 @@
 // src/components/TopBar.jsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, useTheme } from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 // ============================================
@@ -244,13 +244,15 @@ const BotsIcon = () => (
 );
 
 // ============================================
-// FOREX SESSIONS
+// FOREX SESSIONS — real UTC open/close windows.
+// `color` acts only as a FALLBACK; the live color is
+// pulled from the active theme so the pill obeys themes.
 // ============================================
 const FOREX_SESSIONS = [
-  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', country: 'Australia', startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific', tag: 'AUD · NZD' },
-  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', country: 'Japan',     startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific', tag: 'JPY · AUD' },
-  { key: 'london',  name: 'London',   flag: '🇬🇧', country: 'United Kingdom', startUTC: 8, endUTC: 17, color: '#60A5FA', region: 'Europe', tag: 'EUR · GBP' },
-  { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States', startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas', tag: 'USD · CAD' },
+  { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', country: 'Australia',      startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific', tag: 'AUD · NZD' },
+  { key: 'tokyo',   name: 'Tokyo',    flag: '🇯🇵', country: 'Japan',          startUTC: 0,  endUTC: 9,  color: '#F87171', region: 'Asia-Pacific', tag: 'JPY · AUD' },
+  { key: 'london',  name: 'London',   flag: '🇬🇧', country: 'United Kingdom', startUTC: 8,  endUTC: 17, color: '#60A5FA', region: 'Europe',       tag: 'EUR · GBP' },
+  { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States',  startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas',     tag: 'USD · CAD' },
 ];
 
 // ============================================
@@ -309,6 +311,26 @@ const formatDuration = (mins) => {
   if (h === 0) return `${m}m`;
   if (m === 0) return `${h}h`;
   return `${h}h ${m}m`;
+};
+
+/* ================================================================
+   Resolve a session's live display color from the current theme.
+   Order of precedence:
+     1) theme.colors.sessions[key]   (explicit per-theme override)
+     2) a themed family tone         (accent / info / danger / success)
+     3) the hardcoded fallback        (original hex on the session object)
+   ================================================================ */
+const getSessionColor = (session, theme) => {
+  const tc = theme?.colors || {};
+  if (tc.sessions && tc.sessions[session.key]) return tc.sessions[session.key];
+
+  switch (session.key) {
+    case 'sydney':  return tc.info    || tc.purple   || session.color;
+    case 'tokyo':   return tc.danger  || tc.red      || session.color;
+    case 'london':  return tc.accent  || tc.gold     || session.color;
+    case 'newyork': return tc.success || tc.green    || session.color;
+    default:        return tc.accent  || session.color;
+  }
 };
 
 // ============================================
@@ -3000,6 +3022,8 @@ const TopPanel = ({
   currentTheme = 'gold',
   onThemeChange
 }) => {
+  const theme = useTheme();
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isThemeOpen, setIsThemeOpen] = useState(false);
   const [isFundsOpen, setIsFundsOpen] = useState(false);
@@ -3042,9 +3066,15 @@ const TopPanel = ({
   const isDeriv = location.pathname.startsWith('/deriv');
   const showSidebarToggle = !!onSidebarToggle;
 
+  /* ============================================================
+     Session state — recomputed live, colored from the active theme
+     ============================================================ */
   const sessionStates = useMemo(
-    () => FOREX_SESSIONS.map(s => ({ ...s, ...getSessionStatus(s, now) })),
-    [now]
+    () => FOREX_SESSIONS.map(s => {
+      const color = getSessionColor(s, theme);
+      return { ...s, color, ...getSessionStatus(s, now) };
+    }),
+    [now, theme]
   );
 
   const openSessions = sessionStates.filter(s => s.isOpen);
