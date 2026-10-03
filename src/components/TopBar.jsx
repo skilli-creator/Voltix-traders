@@ -1051,30 +1051,26 @@ const TopBar = styled.header`
   flex-shrink: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
 
-  /* 🖥 Laptop — allow wrapping, left-align so wrapped rows sit flush */
   @media (max-width: 1024px) {
     padding: 12px 20px;
     flex-wrap: wrap;
-    gap: 10px 14px;
-    justify-content: flex-start;
+    gap: 12px;
   }
 
-  /* 📱 Phone — explicit stacked layout driven by child `order` */
   @media (max-width: 768px) {
     position: sticky;
     top: 0;
     padding: calc(clamp(12px, 3.4vw, 18px) + env(safe-area-inset-top, 0px)) clamp(14px, 4vw, 20px) clamp(12px, 3.4vw, 16px);
     min-height: auto;
     flex-wrap: wrap;
-    gap: clamp(8px, 2.4vw, 12px);
+    gap: clamp(10px, 3vw, 14px);
     align-items: center;
-    justify-content: flex-start;
     z-index: 200;
   }
 
   @media (max-width: 480px) {
     padding: calc(clamp(10px, 3.2vw, 16px) + env(safe-area-inset-top, 0px)) clamp(12px, 3.6vw, 16px) clamp(10px, 3.2vw, 14px);
-    gap: clamp(6px, 2vw, 10px);
+    gap: clamp(8px, 2.6vw, 12px);
   }
 `;
 
@@ -1083,26 +1079,15 @@ const LeftSection = styled.div`
   align-items: center;
   gap: 16px;
   flex-shrink: 0;
-  min-width: 0;
 
-  /* 🖥 Laptop — order 1, natural width, can shrink if needed */
-  @media (max-width: 1024px) {
-    order: 1;
-    gap: 12px;
-    flex: 0 1 auto;
-    min-width: 0;
-  }
-
-  /* 📱 Phone — order 1, fills the top-left */
   @media (max-width: 768px) {
-    order: 1;
-    gap: clamp(8px, 2.6vw, 12px);
-    flex: 0 1 auto;
+    gap: clamp(10px, 3vw, 14px);
+    flex: 1;
     min-width: 0;
   }
 
   @media (max-width: 480px) {
-    gap: clamp(6px, 2vw, 10px);
+    gap: clamp(8px, 2.6vw, 12px);
   }
 `;
 
@@ -1112,21 +1097,21 @@ const RightSection = styled.div`
   gap: 10px;
   flex-wrap: wrap;
 
-  /* 🖥 Laptop — order 2, pushed right with margin-left: auto */
   @media (max-width: 1024px) {
-    order: 2;
     gap: 8px;
-    flex: 0 0 auto;
-    margin-left: auto;
   }
 
-  /* 📱 Phone — order 2, stays top-right next to brand */
   @media (max-width: 768px) {
+    gap: clamp(6px, 2vw, 10px);
+    width: 100%;
+    justify-content: flex-end;
     order: 2;
-    gap: clamp(5px, 1.8vw, 8px);
-    flex: 0 0 auto;
     flex-wrap: nowrap;
-    margin-left: auto;
+  }
+
+  @media (max-width: 480px) {
+    gap: clamp(5px, 1.8vw, 8px);
+    justify-content: flex-end;
   }
 `;
 
@@ -1142,20 +1127,15 @@ const ForexNavWrapper = styled.nav`
   border-radius: 12px;
   flex-shrink: 0;
 
-  /* 🖥 Laptop — order 4, sits on its own row below the session pill */
   @media (max-width: 1024px) {
-    order: 4;
-    margin: 0;
+    margin: 0 8px;
     gap: 2px;
-    flex: 0 0 auto;
   }
 
-  /* 📱 Phone — full-width horizontal strip, order 4 (below session pill) */
   @media (max-width: 768px) {
-    order: 4;
+    order: 3;
     width: 100%;
-    flex: 0 0 100%;
-    margin: 2px 0 0;
+    margin: 4px 0 0;
     justify-content: flex-start;
     overflow-x: auto;
     padding: clamp(5px, 1.6vw, 8px);
@@ -1229,19 +1209,14 @@ const SessionWrapper = styled.div`
   margin: 0 16px;
   flex-shrink: 0;
 
-  /* 🖥 Laptop — order 3, natural width */
   @media (max-width: 1024px) {
-    order: 3;
-    margin: 0;
-    flex: 0 0 auto;
+    margin: 0 8px;
   }
 
-  /* 📱 Phone — full-width row, order 3 (above nav) */
   @media (max-width: 768px) {
-    order: 3;
+    order: 4;
     width: 100%;
-    flex: 0 0 100%;
-    margin: 2px 0 0;
+    margin: 4px 0 0;
     justify-content: flex-start;
   }
 `;
