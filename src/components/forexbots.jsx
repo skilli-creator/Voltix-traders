@@ -1,6 +1,6 @@
 // src/components/forexbots.jsx
 import { useTheme } from 'styled-components';
-import { fmt, fmtMoney, Sparkline, StatCard } from '../pages/forexdash';
+import { fmt, fmtMoney, Sparkline } from '../pages/forexdash';
 
 // AI bot avatars — one per instrument
 import euroBotImg from '../assets/images/image14.png';
@@ -64,16 +64,14 @@ const withAlpha = (color, a) => {
 /* ================================================================ */
 /*  COMPONENT                                                      */
 /* ================================================================ */
-export default function ForexBots({ bots = [], onToggleBot }) {
+export default function ForexBots({ bots = [], onToggleBot, onConfigureBot }) {
   const theme = useTheme();
   const c = theme?.colors || {};
 
   /* --------------------------------------------------------------
-     THEME TOKENS — every color resolves from theme, with the
-     previous hardcoded values used only as last-resort fallbacks.
+     THEME TOKENS
      -------------------------------------------------------------- */
   const accent        = c.accent       || '#f5b400';
-  const accentHover   = c.accentHover  || accent;
   const accentSoft    = c.accentLight  || withAlpha(accent, 0.12);
   const accentBorder  = withAlpha(accent, 0.28);
   const accentGlow    = withAlpha(accent, 0.35);
@@ -84,11 +82,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
   const successGlow   = withAlpha(success, 0.45);
 
   const danger        = c.danger       || '#ff4d6a';
-  const dangerGlow    = withAlpha(danger, 0.35);
-
-  const info          = c.info         || '#3b82f6';
   const warning       = c.warning      || '#f5a524';
-  const purple        = c.purple       || '#a855f7';
 
   const text          = c.text         || '#e8eefb';
   const textSecondary = c.textSecondary|| c.textMuted || '#b0b0b8';
@@ -99,8 +93,6 @@ export default function ForexBots({ bots = [], onToggleBot }) {
   const cardHover     = c.surfaceHover || cardElev;
   const bg            = c.bg           || c.background || '#0a0a0a';
   const border        = c.border       || 'rgba(255,255,255,0.08)';
-  const borderHover   = c.borderHover  || border;
-  const shadow        = c.shadow       || '0 20px 40px -12px rgba(0,0,0,0.6)';
   const shadowStrong  = c.shadowStrong || '0 28px 60px -20px rgba(0,0,0,0.8)';
 
   /* Per-bot accent — falls back to a themed family tone. */
@@ -118,12 +110,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
     .map((sym) => bots.find((b) => b.sym === sym))
     .filter(Boolean);
 
-  const active      = orderedBots.filter((b) => b.on).length;
-  const totalPL     = orderedBots.reduce((s, b) => s + (b.pnl || 0), 0);
-  const avgWin      = orderedBots.length
-    ? orderedBots.reduce((s, b) => s + (b.winRate || 0), 0) / orderedBots.length
-    : 0;
-  const totalTrades = orderedBots.reduce((s, b) => s + (b.trades || 0), 0);
+  const active = orderedBots.filter((b) => b.on).length;
 
   /* --------------------------------------------------------------
      RENDER
@@ -132,7 +119,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
     <>
       <style>{`
         /* ============================================================
-           SCROLL — this is what makes the page actually scroll.
+           SCROLL
            ============================================================ */
         .view.active.fb-root{
           overflow-y:auto !important;
@@ -223,9 +210,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           margin:0 0 8px;
           line-height:1.15;
         }
-        .fb-hero-title .accent{
-          color:${accent};
-        }
+        .fb-hero-title .accent{ color:${accent}; }
         .fb-hero-sub{
           font-size:13px; line-height:1.6;
           color:${textSecondary};
@@ -252,14 +237,6 @@ export default function ForexBots({ bots = [], onToggleBot }) {
         @keyframes fbPulse{
           0%,100%{ opacity:.6; transform:scale(1); }
           50%    { opacity:1;  transform:scale(1.18); }
-        }
-
-        /* ---------- Summary strip ---------- */
-        .fb-summary{
-          display:grid;
-          grid-template-columns:repeat(4,1fr);
-          gap:14px;
-          margin-bottom:22px;
         }
 
         /* ---------- Bots grid ---------- */
@@ -560,7 +537,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           pointer-events:none;
         }
 
-        /* ---------- Footer ---------- */
+        /* ---------- Footer / Configure button ---------- */
         .fb-foot{
           display:flex;
           align-items:center;
@@ -585,50 +562,42 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           margin-left:5px;
           text-transform:none;
         }
-
-        /* ---------- Premium switch ---------- */
-        .fb-switch{
-          position:relative;
-          width:54px; height:30px;
-          border-radius:20px;
-          background:${cardHover};
-          border:1px solid ${border};
+        .fb-configure{
+          display:inline-flex;
+          align-items:center;
+          gap:8px;
+          padding:10px 18px;
+          border-radius:10px;
+          font-family:inherit;
+          font-size:12.5px;
+          font-weight:800;
+          letter-spacing:.2px;
           cursor:pointer;
-          transition:
-            background .25s ease,
-            border-color .25s ease,
-            box-shadow .25s ease;
-          flex-shrink:0;
-          padding:0;
-        }
-        .fb-switch::after{
-          content:'';
-          position:absolute;
-          top:3px; left:3px;
-          width:22px; height:22px;
-          border-radius:50%;
-          background:${textMuted};
-          transition:
-            transform .3s cubic-bezier(.4,0,.2,1),
-            background .25s ease,
-            box-shadow .25s ease,
-            width .2s ease;
-        }
-        .fb-switch:hover{
-          border-color:var(--fb-accent-border);
-        }
-        .fb-switch.on{
+          white-space:nowrap;
           background:var(--fb-accent-soft);
-          border-color:var(--fb-accent-border);
-          box-shadow:0 0 18px -4px var(--fb-accent);
+          border:1px solid var(--fb-accent-border);
+          color:var(--fb-accent);
+          transition:
+            background .22s ease,
+            color .22s ease,
+            border-color .22s ease,
+            transform .22s cubic-bezier(.16,1,.3,1),
+            box-shadow .22s ease;
+          flex-shrink:0;
         }
-        .fb-switch.on::after{
-          transform:translateX(24px);
+        .fb-configure:hover{
           background:var(--fb-accent);
-          box-shadow:0 0 14px var(--fb-accent);
+          color:${withAlpha('#000000', 0.9)};
+          border-color:var(--fb-accent);
+          transform:translateY(-1px);
+          box-shadow:0 8px 22px -8px var(--fb-accent);
         }
-        .fb-switch:active::after{
-          width:26px;
+        .fb-configure:active{
+          transform:translateY(0) scale(.98);
+        }
+        .fb-configure svg{
+          width:14px; height:14px;
+          flex-shrink:0;
         }
 
         /* ---------- Notice ---------- */
@@ -661,7 +630,6 @@ export default function ForexBots({ bots = [], onToggleBot }) {
            RESPONSIVE
            ============================================================ */
         @media (max-width:1180px){
-          .fb-summary{ grid-template-columns:repeat(2,1fr); }
           .fb-grid{ grid-template-columns:1fr; gap:18px; }
           .fb-img-wrap{ aspect-ratio:16/8; }
           .fb-hero-title{ font-size:23px; }
@@ -676,7 +644,6 @@ export default function ForexBots({ bots = [], onToggleBot }) {
             justify-content:center;
             margin-top:4px;
           }
-          .fb-summary{ grid-template-columns:1fr 1fr; gap:10px; }
           .fb-img-wrap{ aspect-ratio:16/10; }
           .fb-title-block{ padding:18px 16px 16px; }
           .fb-name{ font-size:17px; }
@@ -689,10 +656,13 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           .fb-stat .v{ font-size:13px; }
           .fb-top-bar{ top:12px; left:12px; right:12px; }
           .fb-chip{ padding:5px 9px; font-size:9.5px; }
+          .fb-configure{ padding:9px 15px; font-size:12px; }
         }
         @media (max-width:480px){
-          .fb-summary{ grid-template-columns:1fr; }
           .fb-img-wrap{ aspect-ratio:16/11; }
+          .fb-configure span{ display:none; }
+          .fb-configure{ padding:10px; gap:0; }
+          .fb-configure svg{ width:16px; height:16px; }
         }
       `}</style>
 
@@ -720,8 +690,8 @@ export default function ForexBots({ bots = [], onToggleBot }) {
               </h1>
               <p className="fb-hero-sub">
                 Each bot is tuned to the personality of a single market — EUR/USD’s liquidity,
-                BTC/USD’s volatility, XAU/USD’s safe-haven rhythms. Toggle a strategy on and
-                let the rules do the work.
+                BTC/USD’s volatility, XAU/USD’s safe-haven rhythms. Open one up to configure
+                its rules, risk and session window.
               </p>
             </div>
             <div className="fb-hero-live">
@@ -732,37 +702,6 @@ export default function ForexBots({ bots = [], onToggleBot }) {
         </div>
 
         {/* ============================================================
-            SUMMARY STRIP
-           ============================================================ */}
-        <div className="fb-summary">
-          <StatCard
-            label="Active Bots"
-            value={`${active} / ${orderedBots.length}`}
-            sub="Automated strategies"
-            accent={success}
-          />
-          <StatCard
-            label="Combined P/L"
-            value={(totalPL >= 0 ? '+' : '') + fmtMoney(totalPL)}
-            valueClass={totalPL >= 0 ? 'pos' : 'neg'}
-            sub="Since inception"
-            accent={accent}
-          />
-          <StatCard
-            label="Avg Win Rate"
-            value={`${fmt(avgWin, 1)}%`}
-            sub="Across all strategies"
-            accent={warning}
-          />
-          <StatCard
-            label="Total Trades"
-            value={totalTrades.toLocaleString('en-US')}
-            sub="Executed orders"
-            accent={purple}
-          />
-        </div>
-
-        {/* ============================================================
             BOT CARDS
            ============================================================ */}
         <div className="fb-grid">
@@ -770,12 +709,10 @@ export default function ForexBots({ bots = [], onToggleBot }) {
             const pres = BOT_PRESENTATION[b.sym] || {};
             const up = (b.pnl || 0) >= 0;
             const botAccent = getBotAccent(b.sym);
-            const botAccent2 = withAlpha(botAccent, 1); // same hue for gradient endpoint
 
             const base  = b.sym.slice(0, 3);
             const quote = b.sym.slice(3, 6);
             const baseFlag  = { EUR: '🇪🇺', BTC: '₿', XAU: '🥇' }[base] || '';
-            const quoteFlag = { USD: '🇺🇸' }[quote] || '';
 
             return (
               <article
@@ -783,7 +720,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
                 className={`fb-card ${b.on ? 'running' : ''}`}
                 style={{
                   '--fb-accent':        botAccent,
-                  '--fb-accent-2':      botAccent2,
+                  '--fb-accent-2':      botAccent,
                   '--fb-accent-soft':   withAlpha(botAccent, 0.14),
                   '--fb-accent-border': withAlpha(botAccent, 0.42),
                   '--fb-accent-glow':   withAlpha(botAccent, 0.30),
@@ -857,12 +794,23 @@ export default function ForexBots({ bots = [], onToggleBot }) {
                       Max DD <strong>{b.dd || '—'}</strong>
                     </span>
                     <button
-                      className={`fb-switch ${b.on ? 'on' : ''}`}
-                      onClick={() => onToggleBot && onToggleBot(b.id)}
-                      aria-label={`Toggle ${pres.name || b.name}`}
-                      aria-pressed={b.on}
+                      className="fb-configure"
                       type="button"
-                    />
+                      onClick={() =>
+                        onConfigureBot
+                          ? onConfigureBot(b.id)
+                          : (onToggleBot && onToggleBot(b.id))
+                      }
+                      aria-label={`Configure ${pres.name || b.name}`}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth="2"
+                        strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg>
+                      <span>Configure</span>
+                    </button>
                   </div>
                 </div>
               </article>
