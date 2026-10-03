@@ -1,5 +1,6 @@
 // src/components/Strength.jsx
 import { useState, useEffect } from 'react';
+import { useTheme } from 'styled-components';
 import { CURRENCIES, PAIRS, fmt, currencyStrength } from '../pages/forexdash';
 
 /* ================================================================ */
@@ -25,6 +26,26 @@ const TIMEFRAMES = [
 /* ================================================================ */
 /*  HELPERS                                                         */
 /* ================================================================ */
+
+/* Apply alpha (0..1) to a colour, tolerating hex/rgb/hsl and
+   already-alpha'd values. Returns the original string if it can't
+   be parsed, so a bad theme entry never throws. */
+const withAlpha = (color, a) => {
+  if (typeof color !== 'string') return color;
+  if (color.startsWith('rgb') || color.startsWith('hsl')) return color;
+  if (/^#[0-9a-f]{8}$/i.test(color)) return color;
+  if (/^#[0-9a-f]{6}$/i.test(color)) {
+    const alpha = Math.round(Math.min(1, Math.max(0, a)) * 255)
+      .toString(16).padStart(2, '0');
+    return color + alpha;
+  }
+  if (/^#[0-9a-f]{3}$/i.test(color)) {
+    const e = '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+    return withAlpha(e, a);
+  }
+  return color;
+};
+
 const toScore = (v, maxPos, maxNeg) => {
   if (!Number.isFinite(v)) return 50;
   if (v >= 0) return 50 + (maxPos > 0 ? (v / maxPos) * 50 : 0);
@@ -40,17 +61,11 @@ const getTier = (v, maxPos) => {
   return 'mild';
 };
 
-const TIER_STYLES = {
-  ultra:  { bar: 'linear-gradient(90deg, #00e89a 0%, #00a86f 100%)', text: '#00e89a', glow: 'rgba(0,232,154,.38)' },
-  strong: { bar: 'linear-gradient(90deg, #4ade80 0%, #16a34a 100%)', text: '#4ade80', glow: 'rgba(74,222,128,.30)' },
-  mild:   { bar: 'linear-gradient(90deg, #f5b400 0%, #d99800 100%)', text: '#f5b400', glow: 'rgba(245,180,0,.32)'  },
-  neg:    { bar: 'linear-gradient(90deg, #ff4d6a 0%, #c92444 100%)', text: '#ff4d6a', glow: 'rgba(255,77,106,.35)' },
-};
-
 /* ================================================================ */
 /*  COMPONENT                                                       */
 /* ================================================================ */
 export default function Strength({ strength, onNavigate }) {
+  const theme = useTheme();
   const [tf, setTf]   = useState('4H');
   const [now, setNow] = useState(() => new Date());
 
@@ -59,9 +74,71 @@ export default function Strength({ strength, onNavigate }) {
     return () => clearInterval(id);
   }, []);
 
-  /* ---- Safe data derivation ---- */
-  const st = currencyStrength(strength) || {};
+  /* ================================================================
+     THEME TOKENS — everything the styles need is resolved here.
+     ================================================================ */
+  const c = theme?.colors || {};
 
+  const accent       = c.accent       || c.gold      || '#f5b400';
+  const accentHover  = c.accentHover  || accent;
+  const accentSoft   = c.accentLight  || withAlpha(accent, 0.10);
+  const accentBorder = withAlpha(accent, 0.25);
+  const accentBorderStrong = withAlpha(accent, 0.45);
+  const accentGlow   = withAlpha(accent, 0.30);
+
+  const success      = c.success      || '#00d68f';
+  const successSoft  = withAlpha(success, 0.10);
+  const successBorder= withAlpha(success, 0.25);
+  const successGlow  = withAlpha(success, 0.35);
+
+  const danger       = c.danger       || '#ff4d6a';
+  const dangerSoft   = withAlpha(danger, 0.10);
+  const dangerBorder = withAlpha(danger, 0.25);
+  const dangerGlow   = withAlpha(danger, 0.32);
+
+  const warning      = c.warning      || '#f5a524';
+
+  const text         = c.text         || '#f5f5f7';
+  const textSecondary= c.textSecondary|| c.textMuted || '#b0b0b8';
+  const textMuted    = c.textMuted    || '#8b8b93';
+
+  const card         = c.surface      || c.card      || '#111114';
+  const cardElev     = c.surfaceElevated || card;
+  const cardHover    = c.surfaceHover || c.surfaceElevated || card;
+  const bg           = c.bg           || c.background|| '#0a0a0a';
+
+  const border       = c.border       || '#1e1e22';
+  const borderHover  = c.borderHover  || border;
+  const borderStrong = c.borderStrong || borderHover;
+
+  /* Tier visuals — all derived from the theme palette */
+  const TIER_STYLES = {
+    ultra:  {
+      bar:  `linear-gradient(90deg, ${success} 0%, ${accentHover === success ? success : success} 100%)`,
+      text: success,
+      glow: successGlow,
+    },
+    strong: {
+      bar:  `linear-gradient(90deg, ${success} 0%, ${success} 100%)`,
+      text: success,
+      glow: successGlow,
+    },
+    mild:   {
+      bar:  `linear-gradient(90deg, ${accent} 0%, ${accentHover} 100%)`,
+      text: accent,
+      glow: accentGlow,
+    },
+    neg:    {
+      bar:  `linear-gradient(90deg, ${danger} 0%, ${danger} 100%)`,
+      text: danger,
+      glow: dangerGlow,
+    },
+  };
+
+  /* ================================================================
+     DERIVED DATA — safe against partial props
+     ================================================================ */
+  const st = currencyStrength(strength) || {};
   const safe = (code) => (Number.isFinite(st[code]) ? st[code] : 0);
 
   const sorted = CURRENCIES.slice().sort((a, b) => safe(b) - safe(a));
@@ -88,13 +165,17 @@ export default function Strength({ strength, onNavigate }) {
 
   const go = (path) => { if (onNavigate) onNavigate(path); };
 
-  /* ---- Render ---- */
+  /* ================================================================
+     RENDER
+     ================================================================ */
   return (
     <>
       <style>{`
         .sm-root{
           font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
-          color:var(--text,#f5f5f7);
+          color:${text};
+          background:transparent;
+          transition:color .25s ease;
         }
         .sm-root *{ box-sizing:border-box; }
 
@@ -105,37 +186,38 @@ export default function Strength({ strength, onNavigate }) {
         }
         .sm-tabs{
           display:inline-flex; gap:4px; padding:4px;
-          background:var(--card,#111114);
-          border:1px solid var(--border,#1e1e22);
+          background:${card};
+          border:1px solid ${border};
           border-radius:12px;
+          transition:background .25s ease, border-color .25s ease;
         }
         .sm-tab{
           padding:8px 18px; border-radius:9px;
           font-family:inherit; font-size:12.5px; font-weight:700;
-          color:var(--text-muted,#8b8b93);
+          color:${textMuted};
           background:transparent; border:none; cursor:pointer;
           transition:all .2s cubic-bezier(.16,1,.3,1);
           white-space:nowrap;
         }
         .sm-tab:hover{
-          color:var(--text,#f5f5f7);
-          background:rgba(255,255,255,.03);
+          color:${text};
+          background:${withAlpha(text, 0.05)};
         }
         .sm-tab.active{
-          background:linear-gradient(135deg, #f5b400 0%, #e0a200 100%);
-          color:#0a0a0a;
-          box-shadow:0 4px 14px rgba(245,180,0,.25);
+          background:linear-gradient(135deg, ${accent} 0%, ${accentHover} 100%);
+          color:${bg};
+          box-shadow:0 4px 14px ${accentGlow};
         }
         .sm-status{
           display:inline-flex; align-items:center; gap:8px;
           font-size:11.5px; font-weight:600;
-          color:var(--text-muted,#8b8b93);
+          color:${textMuted};
           letter-spacing:.2px;
         }
         .sm-status .dot{
           width:7px; height:7px; border-radius:50%;
-          background:#f5b400;
-          box-shadow:0 0 8px #f5b400;
+          background:${accent};
+          box-shadow:0 0 8px ${accent};
           animation:smPulse 2s ease-in-out infinite;
         }
         @keyframes smPulse{
@@ -144,51 +226,52 @@ export default function Strength({ strength, onNavigate }) {
         }
         .sm-status .clock{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
-          color:var(--text,#f5f5f7);
+          color:${text};
           font-weight:800;
           font-variant-numeric:tabular-nums;
         }
 
         /* ---------- Main card ---------- */
         .sm-card{
-          background:var(--card,#111114);
-          border:1px solid var(--border,#1e1e22);
+          background:${card};
+          border:1px solid ${border};
           border-radius:16px;
           overflow:hidden;
           margin-bottom:16px;
+          transition:background .25s ease, border-color .25s ease;
         }
         .sm-card-head{
           display:flex; align-items:center; gap:12px;
           padding:18px 22px 14px;
-          border-bottom:1px solid var(--border,#1e1e22);
+          border-bottom:1px solid ${border};
         }
         .sm-card-head .icon{
           width:32px; height:32px; border-radius:9px;
           display:flex; align-items:center; justify-content:center;
-          background:rgba(245,180,0,.1);
-          border:1px solid rgba(245,180,0,.25);
-          color:#f5b400;
+          background:${accentSoft};
+          border:1px solid ${accentBorder};
+          color:${accent};
           flex-shrink:0;
         }
         .sm-card-head .title{
           font-size:14px; font-weight:800; letter-spacing:.6px;
           text-transform:uppercase;
-          color:var(--text,#f5f5f7);
+          color:${text};
         }
-        .sm-card-head .title .accent{ color:#f5b400; }
-        .sm-card-head .sep{ color:var(--text-muted,#8b8b93); font-weight:400; margin:0 4px; }
+        .sm-card-head .title .accent{ color:${accent}; }
+        .sm-card-head .sep{ color:${textMuted}; font-weight:400; margin:0 4px; }
         .sm-card-head .tf-tag{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:11px; font-weight:800;
-          color:#f5b400;
+          color:${accent};
           padding:3px 9px; border-radius:6px;
-          background:rgba(245,180,0,.1);
-          border:1px solid rgba(245,180,0,.25);
+          background:${accentSoft};
+          border:1px solid ${accentBorder};
         }
         .sm-card-head .spacer{ flex:1; }
         .sm-card-head .meta{
           font-size:11px;
-          color:var(--text-muted,#8b8b93);
+          color:${textMuted};
           font-weight:600;
         }
 
@@ -203,16 +286,16 @@ export default function Strength({ strength, onNavigate }) {
           transition:background .18s ease;
           position:relative;
         }
-        .sm-row:hover{ background:rgba(255,255,255,.02); }
-        .sm-row + .sm-row{ border-top:1px solid rgba(255,255,255,.03); }
+        .sm-row:hover{ background:${withAlpha(text, 0.02)}; }
+        .sm-row + .sm-row{ border-top:1px solid ${withAlpha(text, 0.03)}; }
         .sm-rank{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:12px; font-weight:800;
-          color:var(--text-muted,#8b8b93);
+          color:${textMuted};
           text-align:right;
           font-variant-numeric:tabular-nums;
         }
-        .sm-row.top .sm-rank{ color:#f5b400; }
+        .sm-row.top .sm-rank{ color:${accent}; }
         .sm-flag{
           font-size:22px; line-height:1;
           display:flex; align-items:center; justify-content:center;
@@ -221,14 +304,14 @@ export default function Strength({ strength, onNavigate }) {
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:13.5px; font-weight:800;
           letter-spacing:.4px;
-          color:var(--text,#f5f5f7);
+          color:${text};
         }
         .sm-bar-wrap{
           position:relative;
           height:26px;
           border-radius:8px;
-          background:rgba(255,255,255,.035);
-          border:1px solid rgba(255,255,255,.04);
+          background:${withAlpha(text, 0.035)};
+          border:1px solid ${withAlpha(text, 0.04)};
           overflow:hidden;
         }
         .sm-bar{
@@ -240,7 +323,12 @@ export default function Strength({ strength, onNavigate }) {
         .sm-bar::after{
           content:'';
           position:absolute; inset:0;
-          background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,.18) 50%, transparent 100%);
+          background:linear-gradient(
+            90deg,
+            transparent 0%,
+            ${withAlpha('#ffffff', 0.18)} 50%,
+            transparent 100%
+          );
           background-size:220% 100%;
           animation:smShine 3.6s linear infinite;
           border-radius:8px;
@@ -263,7 +351,7 @@ export default function Strength({ strength, onNavigate }) {
         .sm-val .pct{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:10.5px; font-weight:700;
-          color:var(--text-muted,#8b8b93);
+          color:${textMuted};
           margin-top:3px;
         }
 
@@ -275,35 +363,39 @@ export default function Strength({ strength, onNavigate }) {
           margin-bottom:18px;
         }
         .sm-sumcard{
-          background:var(--card,#111114);
-          border:1px solid var(--border,#1e1e22);
+          background:${card};
+          border:1px solid ${border};
           border-radius:14px;
           padding:18px 20px 20px;
           position:relative;
           overflow:hidden;
-          transition:transform .22s cubic-bezier(.16,1,.3,1), border-color .22s ease;
+          transition:
+            transform .22s cubic-bezier(.16,1,.3,1),
+            border-color .22s ease,
+            background .25s ease,
+            box-shadow .25s ease;
         }
         .sm-sumcard:hover{ transform:translateY(-2px); }
-        .sm-sumcard.strongest{ border-color:rgba(0,232,154,.25); }
-        .sm-sumcard.strongest:hover{ box-shadow:0 8px 24px -8px rgba(0,232,154,.35); }
-        .sm-sumcard.weakest{ border-color:rgba(255,77,106,.22); }
-        .sm-sumcard.weakest:hover{ box-shadow:0 8px 24px -8px rgba(255,77,106,.3); }
+        .sm-sumcard.strongest{ border-color:${successBorder}; }
+        .sm-sumcard.strongest:hover{ box-shadow:0 8px 24px -8px ${successGlow}; }
+        .sm-sumcard.weakest{ border-color:${dangerBorder}; }
+        .sm-sumcard.weakest:hover{ box-shadow:0 8px 24px -8px ${dangerGlow}; }
         .sm-sumcard.watch{
-          border-color:rgba(245,180,0,.35);
+          border-color:${accentBorderStrong};
           background:
-            radial-gradient(ellipse at 100% 0%, rgba(245,180,0,.09), transparent 60%),
-            var(--card,#111114);
+            radial-gradient(ellipse at 100% 0%, ${withAlpha(accent, 0.09)}, transparent 60%),
+            ${card};
         }
-        .sm-sumcard.watch:hover{ box-shadow:0 8px 24px -8px rgba(245,180,0,.4); }
+        .sm-sumcard.watch:hover{ box-shadow:0 8px 24px -8px ${accentGlow}; }
         .sm-sumcard .label{
           display:flex; align-items:center; gap:7px;
           font-size:10px; font-weight:900; letter-spacing:1.1px;
           text-transform:uppercase;
           margin-bottom:12px;
         }
-        .sm-sumcard.strongest .label{ color:#00e89a; }
-        .sm-sumcard.weakest .label{ color:#ff4d6a; }
-        .sm-sumcard.watch .label{ color:#f5b400; }
+        .sm-sumcard.strongest .label{ color:${success}; }
+        .sm-sumcard.weakest   .label{ color:${danger}; }
+        .sm-sumcard.watch     .label{ color:${accent}; }
         .sm-sumcard .label::before{
           content:'';
           width:6px; height:6px; border-radius:50%;
@@ -315,28 +407,29 @@ export default function Strength({ strength, onNavigate }) {
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:22px; font-weight:900;
           letter-spacing:-.6px;
-          color:var(--text,#f5f5f7);
+          color:${text};
         }
         .sm-sumcard .value .flag{ font-size:22px; line-height:1; }
         .sm-sumcard .sub{
           font-size:11px; font-weight:600;
-          color:var(--text-muted,#8b8b93);
+          color:${textMuted};
           margin-top:8px;
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
         }
-        .sm-sumcard.watch .sub{ color:#f5b400; }
+        .sm-sumcard.watch .sub{ color:${accent}; }
 
         /* ---------- How-to-use ---------- */
         .sm-howto{
-          background:var(--card,#111114);
-          border:1px solid var(--border,#1e1e22);
+          background:${card};
+          border:1px solid ${border};
           border-radius:14px;
           padding:22px 24px;
+          transition:background .25s ease, border-color .25s ease;
         }
         .sm-howto h4{
           font-size:12px; font-weight:900; letter-spacing:1.2px;
           text-transform:uppercase;
-          color:var(--text,#f5f5f7);
+          color:${text};
           margin:0 0 14px;
         }
         .sm-howto ul{
@@ -346,13 +439,13 @@ export default function Strength({ strength, onNavigate }) {
         .sm-howto li{
           display:flex; align-items:flex-start; gap:12px;
           font-size:12.5px; line-height:1.65;
-          color:var(--text-secondary,#b0b0b8);
+          color:${textSecondary};
         }
         .sm-howto li::before{
           content:'';
           flex-shrink:0;
           width:5px; height:5px; border-radius:50%;
-          background:#f5b400;
+          background:${accent};
           margin-top:9px;
         }
         .sm-howto .cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
@@ -367,24 +460,24 @@ export default function Strength({ strength, onNavigate }) {
           white-space:nowrap;
         }
         .sm-btn.primary{
-          background:linear-gradient(135deg, #f5b400 0%, #e0a200 100%);
-          color:#0a0a0a;
+          background:linear-gradient(135deg, ${accent} 0%, ${accentHover} 100%);
+          color:${bg};
           border:none;
-          box-shadow:0 6px 18px rgba(245,180,0,.28);
+          box-shadow:0 6px 18px ${accentGlow};
         }
         .sm-btn.primary:hover{
           transform:translateY(-2px);
-          box-shadow:0 10px 24px rgba(245,180,0,.4);
+          box-shadow:0 10px 24px ${withAlpha(accent, 0.4)};
         }
         .sm-btn.ghost{
           background:transparent;
-          color:var(--text,#f5f5f7);
-          border:1.5px solid var(--border-strong,#2a2a30);
+          color:${text};
+          border:1.5px solid ${borderStrong};
         }
         .sm-btn.ghost:hover{
-          border-color:#f5b400;
-          color:#f5b400;
-          background:rgba(245,180,0,.05);
+          border-color:${accent};
+          color:${accent};
+          background:${accentSoft};
           transform:translateY(-2px);
         }
 
@@ -473,8 +566,8 @@ export default function Strength({ strength, onNavigate }) {
           </div>
 
           <div className="sm-ladder">
-            {sorted.map((c, i) => {
-              const v = safe(c);
+            {sorted.map((cur, i) => {
+              const v = safe(cur);
               const w = (Math.abs(v) / Math.max(maxPos, maxNeg)) * 100;
               const tier = getTier(v, maxPos);
               const style = TIER_STYLES[tier];
@@ -482,10 +575,10 @@ export default function Strength({ strength, onNavigate }) {
               const isEdge = i === 0 || i === sorted.length - 1;
 
               return (
-                <div className={`sm-row ${isEdge ? 'top' : ''}`} key={c}>
+                <div className={`sm-row ${isEdge ? 'top' : ''}`} key={cur}>
                   <div className="sm-rank">{i + 1}</div>
-                  <div className="sm-flag">{CURRENCY_META[c]?.flag || '🏳️'}</div>
-                  <div className="sm-sym">{c}</div>
+                  <div className="sm-flag">{CURRENCY_META[cur]?.flag || '🏳️'}</div>
+                  <div className="sm-sym">{cur}</div>
                   <div className="sm-bar-wrap">
                     <div
                       className="sm-bar"
