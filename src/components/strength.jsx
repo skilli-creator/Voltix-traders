@@ -1,5 +1,5 @@
 // src/components/Strength.jsx
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { CURRENCIES, PAIRS, fmt, currencyStrength } from '../pages/forexdash';
 
 /* ================================================================ */
@@ -25,28 +25,17 @@ const TIMEFRAMES = [
 /* ================================================================ */
 /*  HELPERS                                                         */
 /* ================================================================ */
-
-/**
- * Turn a raw strength value into a 0..100 score using the current
- * dataset's max positive / max negative as the anchors.
- *   100 = strongest positive reading in the basket
- *    50 = neutral
- *     0 = weakest negative reading in the basket
- */
 const toScore = (v, maxPos, maxNeg) => {
+  if (!Number.isFinite(v)) return 50;
   if (v >= 0) return 50 + (maxPos > 0 ? (v / maxPos) * 50 : 0);
   return 50 - (maxNeg > 0 ? (Math.abs(v) / maxNeg) * 50 : 0);
 };
 
-/**
- * Return a colour tier for a strength value. Positive momentum
- * transitions bright green → medium green → amber; anything
- * negative goes red.
- */
 const getTier = (v, maxPos) => {
+  if (!Number.isFinite(v)) return 'mild';
   if (v < 0) return 'neg';
   const ratio = maxPos > 0 ? v / maxPos : 0;
-  if (ratio >= 0.7) return 'ultra';
+  if (ratio >= 0.7)  return 'ultra';
   if (ratio >= 0.35) return 'strong';
   return 'mild';
 };
@@ -58,18 +47,11 @@ const TIER_STYLES = {
   neg:    { bar: 'linear-gradient(90deg, #ff4d6a 0%, #c92444 100%)', text: '#ff4d6a', glow: 'rgba(255,77,106,.35)' },
 };
 
-const tierLabel = (tier, v) => {
-  if (tier === 'ultra')  return 'Very strong';
-  if (tier === 'strong') return 'Strong';
-  if (tier === 'mild')   return v >= 0 ? 'Mildly bullish' : 'Neutral';
-  return v < -0.05 ? 'Very weak' : 'Weak';
-};
-
 /* ================================================================ */
 /*  COMPONENT                                                       */
 /* ================================================================ */
 export default function Strength({ strength, onNavigate }) {
-  const [tf, setTf] = useState('4H');
+  const [tf, setTf]   = useState('4H');
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -77,75 +59,67 @@ export default function Strength({ strength, onNavigate }) {
     return () => clearInterval(id);
   }, []);
 
-  /* ---- Derived strength data ---- */
-  const st = currencyStrength(strength);
+  /* ---- Safe data derivation ---- */
+  const st = currencyStrength(strength) || {};
 
-  const sorted = useMemo(
-    () => CURRENCIES.slice().sort((a, b) => st[b] - st[a]),
-    [st]
-  );
+  const safe = (code) => (Number.isFinite(st[code]) ? st[code] : 0);
 
-  const maxPos = Math.max(0.0001, ...CURRENCIES.map(c => st[c]).filter(v => v > 0));
-  const maxNeg = Math.max(0.0001, ...CURRENCIES.map(c => Math.abs(st[c])).filter(v => st[c] < 0));
+  const sorted = CURRENCIES.slice().sort((a, b) => safe(b) - safe(a));
 
-  /* ---- Pair rankings ---- */
-  const pairData = useMemo(
-    () => PAIRS.map((sym) => {
-      const b = sym.slice(0, 3);
-      const q = sym.slice(3, 6);
-      return { sym, base: b, quote: q, diff: st[b] - st[q] };
-    }).sort((a, b) => b.diff - a.diff),
-    [st]
-  );
+  const positives = CURRENCIES.map(safe).filter(v => v > 0);
+  const negatives = CURRENCIES.map(safe).filter(v => v < 0).map(v => Math.abs(v));
+  const maxPos = positives.length ? Math.max(...positives) : 0.0001;
+  const maxNeg = negatives.length ? Math.max(...negatives) : 0.0001;
 
-  const strongest = sorted[0];
-  const weakest   = sorted[sorted.length - 1];
+  const pairData = PAIRS.map((sym) => {
+    const b = sym.slice(0, 3);
+    const q = sym.slice(3, 6);
+    return { sym, base: b, quote: q, diff: safe(b) - safe(q) };
+  }).sort((a, b) => b.diff - a.diff);
+
+  const strongest   = sorted[0];
+  const weakest     = sorted[sorted.length - 1];
   const pairToWatch = pairData[0];
-  const pairToAvoid = pairData[pairData.length - 1];
 
-  /* ---- Live clock ---- */
-  const clock = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+  const clock =
+    `${String(now.getHours()).padStart(2, '0')}:` +
+    `${String(now.getMinutes()).padStart(2, '0')}:` +
+    `${String(now.getSeconds()).padStart(2, '0')}`;
 
-  /* ---- Navigation helper ---- */
   const go = (path) => { if (onNavigate) onNavigate(path); };
 
-  /* ================================================================ */
-  /*  RENDER                                                          */
-  /* ================================================================ */
+  /* ---- Render ---- */
   return (
     <>
       <style>{`
-        /* ============================================================
-           SCOPED STYLES — prefix: sm-
-           ============================================================ */
         .sm-root{
           font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
-          color:${'var(--text,#f5f5f7)'};
+          color:var(--text,#f5f5f7);
         }
         .sm-root *{ box-sizing:border-box; }
 
-        /* ---------- Top bar (timeframe tabs + status) ---------- */
+        /* ---------- Top bar ---------- */
         .sm-topbar{
           display:flex; align-items:center; justify-content:space-between;
           gap:16px; flex-wrap:wrap; margin-bottom:18px;
         }
         .sm-tabs{
           display:inline-flex; gap:4px; padding:4px;
-          background:${'var(--card,#111114)'};
-          border:1px solid ${'var(--border,#1e1e22)'};
+          background:var(--card,#111114);
+          border:1px solid var(--border,#1e1e22);
           border-radius:12px;
         }
         .sm-tab{
           padding:8px 18px; border-radius:9px;
           font-family:inherit; font-size:12.5px; font-weight:700;
-          color:${'var(--text-muted,#8b8b93)'};
+          color:var(--text-muted,#8b8b93);
           background:transparent; border:none; cursor:pointer;
           transition:all .2s cubic-bezier(.16,1,.3,1);
           white-space:nowrap;
         }
         .sm-tab:hover{
-          color:${'var(--text,#f5f5f7)'};
-          background:${'rgba(255,255,255,.03)'};
+          color:var(--text,#f5f5f7);
+          background:rgba(255,255,255,.03);
         }
         .sm-tab.active{
           background:linear-gradient(135deg, #f5b400 0%, #e0a200 100%);
@@ -155,7 +129,7 @@ export default function Strength({ strength, onNavigate }) {
         .sm-status{
           display:inline-flex; align-items:center; gap:8px;
           font-size:11.5px; font-weight:600;
-          color:${'var(--text-muted,#8b8b93)'};
+          color:var(--text-muted,#8b8b93);
           letter-spacing:.2px;
         }
         .sm-status .dot{
@@ -170,15 +144,15 @@ export default function Strength({ strength, onNavigate }) {
         }
         .sm-status .clock{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
-          color:${'var(--text,#f5f5f7)'};
+          color:var(--text,#f5f5f7);
           font-weight:800;
           font-variant-numeric:tabular-nums;
         }
 
-        /* ---------- Main ladder card ---------- */
+        /* ---------- Main card ---------- */
         .sm-card{
-          background:${'var(--card,#111114)'};
-          border:1px solid ${'var(--border,#1e1e22)'};
+          background:var(--card,#111114);
+          border:1px solid var(--border,#1e1e22);
           border-radius:16px;
           overflow:hidden;
           margin-bottom:16px;
@@ -186,7 +160,7 @@ export default function Strength({ strength, onNavigate }) {
         .sm-card-head{
           display:flex; align-items:center; gap:12px;
           padding:18px 22px 14px;
-          border-bottom:1px solid ${'var(--border,#1e1e22)'};
+          border-bottom:1px solid var(--border,#1e1e22);
         }
         .sm-card-head .icon{
           width:32px; height:32px; border-radius:9px;
@@ -199,16 +173,10 @@ export default function Strength({ strength, onNavigate }) {
         .sm-card-head .title{
           font-size:14px; font-weight:800; letter-spacing:.6px;
           text-transform:uppercase;
-          color:${'var(--text,#f5f5f7)'};
+          color:var(--text,#f5f5f7);
         }
-        .sm-card-head .title .accent{
-          color:#f5b400;
-        }
-        .sm-card-head .sep{
-          color:${'var(--text-muted,#8b8b93)'};
-          font-weight:400;
-          margin:0 4px;
-        }
+        .sm-card-head .title .accent{ color:#f5b400; }
+        .sm-card-head .sep{ color:var(--text-muted,#8b8b93); font-weight:400; margin:0 4px; }
         .sm-card-head .tf-tag{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:11px; font-weight:800;
@@ -220,11 +188,11 @@ export default function Strength({ strength, onNavigate }) {
         .sm-card-head .spacer{ flex:1; }
         .sm-card-head .meta{
           font-size:11px;
-          color:${'var(--text-muted,#8b8b93)'};
+          color:var(--text-muted,#8b8b93);
           font-weight:600;
         }
 
-        /* ---------- Ladder rows ---------- */
+        /* ---------- Ladder ---------- */
         .sm-ladder{ padding:8px 0 12px; }
         .sm-row{
           display:grid;
@@ -235,16 +203,12 @@ export default function Strength({ strength, onNavigate }) {
           transition:background .18s ease;
           position:relative;
         }
-        .sm-row:hover{
-          background:${'rgba(255,255,255,.02)'};
-        }
-        .sm-row + .sm-row{
-          border-top:1px solid ${'rgba(255,255,255,.03)'};
-        }
+        .sm-row:hover{ background:rgba(255,255,255,.02); }
+        .sm-row + .sm-row{ border-top:1px solid rgba(255,255,255,.03); }
         .sm-rank{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:12px; font-weight:800;
-          color:${'var(--text-muted,#8b8b93)'};
+          color:var(--text-muted,#8b8b93);
           text-align:right;
           font-variant-numeric:tabular-nums;
         }
@@ -257,21 +221,21 @@ export default function Strength({ strength, onNavigate }) {
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:13.5px; font-weight:800;
           letter-spacing:.4px;
-          color:${'var(--text,#f5f5f7)'};
+          color:var(--text,#f5f5f7);
         }
         .sm-bar-wrap{
           position:relative;
           height:26px;
           border-radius:8px;
-          background:${'rgba(255,255,255,.035)'};
-          border:1px solid ${'rgba(255,255,255,.04)'};
+          background:rgba(255,255,255,.035);
+          border:1px solid rgba(255,255,255,.04);
           overflow:hidden;
         }
         .sm-bar{
           position:absolute;
-          top:0; bottom:0;
+          top:0; bottom:0; left:0;
           border-radius:8px;
-          transition:width .9s cubic-bezier(.16,1,.3,1), left .9s cubic-bezier(.16,1,.3,1), right .9s cubic-bezier(.16,1,.3,1);
+          transition:width .9s cubic-bezier(.16,1,.3,1);
         }
         .sm-bar::after{
           content:'';
@@ -299,11 +263,11 @@ export default function Strength({ strength, onNavigate }) {
         .sm-val .pct{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:10.5px; font-weight:700;
-          color:${'var(--text-muted,#8b8b93)'};
+          color:var(--text-muted,#8b8b93);
           margin-top:3px;
         }
 
-        /* ---------- Bottom summary cards ---------- */
+        /* ---------- Summary cards ---------- */
         .sm-summary{
           display:grid;
           grid-template-columns:repeat(3,1fr);
@@ -311,17 +275,15 @@ export default function Strength({ strength, onNavigate }) {
           margin-bottom:18px;
         }
         .sm-sumcard{
-          background:${'var(--card,#111114)'};
-          border:1px solid ${'var(--border,#1e1e22)'};
+          background:var(--card,#111114);
+          border:1px solid var(--border,#1e1e22);
           border-radius:14px;
           padding:18px 20px 20px;
           position:relative;
           overflow:hidden;
           transition:transform .22s cubic-bezier(.16,1,.3,1), border-color .22s ease;
         }
-        .sm-sumcard:hover{
-          transform:translateY(-2px);
-        }
+        .sm-sumcard:hover{ transform:translateY(-2px); }
         .sm-sumcard.strongest{ border-color:rgba(0,232,154,.25); }
         .sm-sumcard.strongest:hover{ box-shadow:0 8px 24px -8px rgba(0,232,154,.35); }
         .sm-sumcard.weakest{ border-color:rgba(255,77,106,.22); }
@@ -330,10 +292,9 @@ export default function Strength({ strength, onNavigate }) {
           border-color:rgba(245,180,0,.35);
           background:
             radial-gradient(ellipse at 100% 0%, rgba(245,180,0,.09), transparent 60%),
-            ${'var(--card,#111114)'};
+            var(--card,#111114);
         }
         .sm-sumcard.watch:hover{ box-shadow:0 8px 24px -8px rgba(245,180,0,.4); }
-
         .sm-sumcard .label{
           display:flex; align-items:center; gap:7px;
           font-size:10px; font-weight:900; letter-spacing:1.1px;
@@ -354,30 +315,28 @@ export default function Strength({ strength, onNavigate }) {
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:22px; font-weight:900;
           letter-spacing:-.6px;
-          color:${'var(--text,#f5f5f7)'};
+          color:var(--text,#f5f5f7);
         }
         .sm-sumcard .value .flag{ font-size:22px; line-height:1; }
         .sm-sumcard .sub{
           font-size:11px; font-weight:600;
-          color:${'var(--text-muted,#8b8b93)'};
+          color:var(--text-muted,#8b8b93);
           margin-top:8px;
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
         }
-        .sm-sumcard.watch .sub{
-          color:#f5b400;
-        }
+        .sm-sumcard.watch .sub{ color:#f5b400; }
 
         /* ---------- How-to-use ---------- */
         .sm-howto{
-          background:${'var(--card,#111114)'};
-          border:1px solid ${'var(--border,#1e1e22)'};
+          background:var(--card,#111114);
+          border:1px solid var(--border,#1e1e22);
           border-radius:14px;
           padding:22px 24px;
         }
         .sm-howto h4{
           font-size:12px; font-weight:900; letter-spacing:1.2px;
           text-transform:uppercase;
-          color:${'var(--text,#f5f5f7)'};
+          color:var(--text,#f5f5f7);
           margin:0 0 14px;
         }
         .sm-howto ul{
@@ -387,7 +346,7 @@ export default function Strength({ strength, onNavigate }) {
         .sm-howto li{
           display:flex; align-items:flex-start; gap:12px;
           font-size:12.5px; line-height:1.65;
-          color:${'var(--text-secondary,#b0b0b8)'};
+          color:var(--text-secondary,#b0b0b8);
         }
         .sm-howto li::before{
           content:'';
@@ -396,9 +355,7 @@ export default function Strength({ strength, onNavigate }) {
           background:#f5b400;
           margin-top:9px;
         }
-        .sm-howto .cta-row{
-          display:flex; gap:10px; flex-wrap:wrap;
-        }
+        .sm-howto .cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
         .sm-btn{
           display:inline-flex; align-items:center; justify-content:center;
           gap:8px;
@@ -421,8 +378,8 @@ export default function Strength({ strength, onNavigate }) {
         }
         .sm-btn.ghost{
           background:transparent;
-          color:${'var(--text,#f5f5f7)'};
-          border:1.5px solid ${'var(--border-strong,#2a2a30)'};
+          color:var(--text,#f5f5f7);
+          border:1.5px solid var(--border-strong,#2a2a30);
         }
         .sm-btn.ghost:hover{
           border-color:#f5b400;
@@ -458,10 +415,7 @@ export default function Strength({ strength, onNavigate }) {
           .sm-bar-wrap{ height:22px; }
           .sm-val .score{ font-size:12px; }
           .sm-val .pct{ font-size:9.5px; }
-          .sm-summary{
-            grid-template-columns:1fr;
-            gap:9px;
-          }
+          .sm-summary{ grid-template-columns:1fr; gap:9px; }
           .sm-sumcard{ padding:14px 16px 16px; }
           .sm-sumcard .value{ font-size:20px; }
           .sm-howto{ padding:18px 18px; }
@@ -474,7 +428,7 @@ export default function Strength({ strength, onNavigate }) {
       <section className="view active sm-root">
 
         {/* ============================================================
-            TOP BAR — timeframe tabs + live status
+            TOP BAR
            ============================================================ */}
         <div className="sm-topbar">
           <div className="sm-tabs" role="tablist">
@@ -520,16 +474,15 @@ export default function Strength({ strength, onNavigate }) {
 
           <div className="sm-ladder">
             {sorted.map((c, i) => {
-              const v = st[c];
+              const v = safe(c);
               const w = (Math.abs(v) / Math.max(maxPos, maxNeg)) * 100;
               const tier = getTier(v, maxPos);
               const style = TIER_STYLES[tier];
               const score = toScore(v, maxPos, maxNeg);
-              const isTop = i === 0;
-              const isBot = i === sorted.length - 1;
+              const isEdge = i === 0 || i === sorted.length - 1;
 
               return (
-                <div className={`sm-row ${isTop || isBot ? 'top' : ''}`} key={c}>
+                <div className={`sm-row ${isEdge ? 'top' : ''}`} key={c}>
                   <div className="sm-rank">{i + 1}</div>
                   <div className="sm-flag">{CURRENCY_META[c]?.flag || '🏳️'}</div>
                   <div className="sm-sym">{c}</div>
@@ -537,7 +490,6 @@ export default function Strength({ strength, onNavigate }) {
                     <div
                       className="sm-bar"
                       style={{
-                        left: 0,
                         width: `${Math.max(w, 6)}%`,
                         background: style.bar,
                         boxShadow: `0 0 16px ${style.glow}`,
@@ -559,7 +511,7 @@ export default function Strength({ strength, onNavigate }) {
         </div>
 
         {/* ============================================================
-            SUMMARY CARDS — Strongest / Weakest / Pair to watch
+            SUMMARY CARDS
            ============================================================ */}
         <div className="sm-summary">
           <div className="sm-sumcard strongest">
@@ -569,7 +521,7 @@ export default function Strength({ strength, onNavigate }) {
               {strongest}
             </div>
             <div className="sub">
-              {st[strongest] >= 0 ? '+' : ''}{fmt(st[strongest], 2)}% · {CURRENCY_META[strongest]?.name}
+              {safe(strongest) >= 0 ? '+' : ''}{fmt(safe(strongest), 2)}% · {CURRENCY_META[strongest]?.name}
             </div>
           </div>
 
@@ -580,18 +532,18 @@ export default function Strength({ strength, onNavigate }) {
               {weakest}
             </div>
             <div className="sub">
-              {st[weakest] >= 0 ? '+' : ''}{fmt(st[weakest], 2)}% · {CURRENCY_META[weakest]?.name}
+              {safe(weakest) >= 0 ? '+' : ''}{fmt(safe(weakest), 2)}% · {CURRENCY_META[weakest]?.name}
             </div>
           </div>
 
           <div className="sm-sumcard watch">
             <div className="label">Pair to watch</div>
             <div className="value">
-              <span className="flag">{CURRENCY_META[pairToWatch.base]?.flag}</span>
-              {pairToWatch.base}/{pairToWatch.quote}
+              <span className="flag">{CURRENCY_META[pairToWatch?.base]?.flag}</span>
+              {pairToWatch?.base}/{pairToWatch?.quote}
             </div>
             <div className="sub">
-              Strength gap {fmt(pairToWatch.diff, 2)} pts · long bias
+              Strength gap {fmt(pairToWatch?.diff ?? 0, 2)} pts · long bias
             </div>
           </div>
         </div>
