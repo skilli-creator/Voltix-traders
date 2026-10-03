@@ -3,56 +3,117 @@ import { useTheme } from 'styled-components';
 import { fmt, fmtMoney, Sparkline, StatCard } from '../pages/forexdash';
 
 // AI bot avatars — one per instrument
-import euroBotImg from '../assets/images/image14.png';   // EUR/USD
-import btcBotImg  from '../assets/images/image15.png';   // BTC/USD
-import goldBotImg from '../assets/images/image16.png';   // XAU/USD
+import euroBotImg from '../assets/images/image14.png';
+import btcBotImg  from '../assets/images/image15.png';
+import goldBotImg from '../assets/images/image16.png';
 
-/* ================================================================
-   PRESENTATION MAP
-   Only three bots — one master per instrument. Visual identity
-   (name, tagline, image, accent) lives here; live data still
-   comes from the `bots` prop so nothing else needs to change.
-   ================================================================ */
+/* ================================================================ */
+/*  PRESENTATION                                                   */
+/*  Identity only (name/tagline/image/initials) — colors come      */
+/*  from the theme so everything obeys theme changes.              */
+/* ================================================================ */
 const BOT_PRESENTATION = {
   EURUSD: {
     name: 'Euro Master',
     tagline: 'Precision scalping on the world’s most liquid pair',
     image: euroBotImg,
-    accent: '#3b82f6',
-    accent2: '#60a5fa',
     initials: 'EM',
     badge: 'FX',
+    accentKey: 'info',
   },
   BTCUSD: {
     name: 'Bitcoin Master',
     tagline: 'Momentum and breakout hunting on 24/7 crypto',
     image: btcBotImg,
-    accent: '#f7931a',
-    accent2: '#ffb04d',
     initials: 'BM',
     badge: 'CRYPTO',
+    accentKey: 'warning',
   },
   XAUUSD: {
     name: 'Gold Master',
     tagline: 'Safe-haven reversal plays around US session flows',
     image: goldBotImg,
-    accent: '#f5b400',
-    accent2: '#ffcb45',
     initials: 'GM',
     badge: 'METAL',
+    accentKey: 'accent',
   },
 };
 
 const FALLBACK_ORDER = ['EURUSD', 'BTCUSD', 'XAUUSD'];
 
-/* ================================================================
-   COMPONENT
-   ================================================================ */
+/* ---------------------------------------------------------------- */
+/*  Alpha helper — turns #rrggbb / #rgb / rgb() / hsl() into an    */
+/*  alpha-suffixed value. Falls back safely if unparsable.         */
+/* ---------------------------------------------------------------- */
+const withAlpha = (color, a) => {
+  if (typeof color !== 'string') return color;
+  if (color.startsWith('rgb') || color.startsWith('hsl')) return color;
+  if (/^#[0-9a-f]{8}$/i.test(color)) return color;
+  if (/^#[0-9a-f]{6}$/i.test(color)) {
+    const alpha = Math.round(Math.min(1, Math.max(0, a)) * 255)
+      .toString(16).padStart(2, '0');
+    return color + alpha;
+  }
+  if (/^#[0-9a-f]{3}$/i.test(color)) {
+    const e = '#' + color[1] + color[1] + color[2] + color[2] + color[3] + color[3];
+    return withAlpha(e, a);
+  }
+  return color;
+};
+
+/* ================================================================ */
+/*  COMPONENT                                                      */
+/* ================================================================ */
 export default function ForexBots({ bots = [], onToggleBot }) {
   const theme = useTheme();
   const c = theme?.colors || {};
 
-  // Normalise to exactly three bots (one per pair) in a stable order
+  /* --------------------------------------------------------------
+     THEME TOKENS — every color resolves from theme, with the
+     previous hardcoded values used only as last-resort fallbacks.
+     -------------------------------------------------------------- */
+  const accent        = c.accent       || '#f5b400';
+  const accentHover   = c.accentHover  || accent;
+  const accentSoft    = c.accentLight  || withAlpha(accent, 0.12);
+  const accentBorder  = withAlpha(accent, 0.28);
+  const accentGlow    = withAlpha(accent, 0.35);
+
+  const success       = c.success      || '#00d68f';
+  const successSoft   = withAlpha(success, 0.14);
+  const successBorder = withAlpha(success, 0.42);
+  const successGlow   = withAlpha(success, 0.45);
+
+  const danger        = c.danger       || '#ff4d6a';
+  const dangerGlow    = withAlpha(danger, 0.35);
+
+  const info          = c.info         || '#3b82f6';
+  const warning       = c.warning      || '#f5a524';
+  const purple        = c.purple       || '#a855f7';
+
+  const text          = c.text         || '#e8eefb';
+  const textSecondary = c.textSecondary|| c.textMuted || '#b0b0b8';
+  const textMuted     = c.textMuted    || '#8b8b93';
+
+  const card          = c.surface      || '#111114';
+  const cardElev      = c.surfaceElevated || card;
+  const cardHover     = c.surfaceHover || cardElev;
+  const bg            = c.bg           || c.background || '#0a0a0a';
+  const border        = c.border       || 'rgba(255,255,255,0.08)';
+  const borderHover   = c.borderHover  || border;
+  const shadow        = c.shadow       || '0 20px 40px -12px rgba(0,0,0,0.6)';
+  const shadowStrong  = c.shadowStrong || '0 28px 60px -20px rgba(0,0,0,0.8)';
+
+  /* Per-bot accent — falls back to a themed family tone. */
+  const getBotAccent = (sym) => {
+    const themed = c.bots?.[sym];
+    if (themed) return themed;
+    const key = BOT_PRESENTATION[sym]?.accentKey || 'accent';
+    return c[key] || accent;
+  };
+
+  /* --------------------------------------------------------------
+     DATA
+     -------------------------------------------------------------- */
   const orderedBots = FALLBACK_ORDER
     .map((sym) => bots.find((b) => b.sym === sym))
     .filter(Boolean);
@@ -64,15 +125,32 @@ export default function ForexBots({ bots = [], onToggleBot }) {
     : 0;
   const totalTrades = orderedBots.reduce((s, b) => s + (b.trades || 0), 0);
 
+  /* --------------------------------------------------------------
+     RENDER
+     -------------------------------------------------------------- */
   return (
     <>
       <style>{`
         /* ============================================================
-           SCOPED STYLES — prefix: fb-
+           SCROLL — this is what makes the page actually scroll.
            ============================================================ */
+        .view.active.fb-root{
+          overflow-y:auto !important;
+          overflow-x:hidden !important;
+          height:100% !important;
+          max-height:100vh;
+          -webkit-overflow-scrolling:touch;
+          scroll-behavior:smooth;
+        }
+
+        /* ---------- Root ---------- */
         .fb-root{
           font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
-          color:var(--text,#e8eefb);
+          color:${text};
+          background:transparent;
+          transition:color .25s ease;
+          display:block;
+          padding:0;
         }
         .fb-root *{ box-sizing:border-box; }
 
@@ -80,88 +158,99 @@ export default function ForexBots({ bots = [], onToggleBot }) {
         .fb-hero{
           position:relative;
           overflow:hidden;
-          padding:26px 26px 24px;
-          border-radius:18px;
-          margin-bottom:18px;
-          border:1px solid ${'var(--border,#16223a)'};
-          background:
-            radial-gradient(ellipse at 0% 0%, rgba(0,214,143,.10), transparent 55%),
-            radial-gradient(ellipse at 100% 100%, rgba(245,180,0,.08), transparent 55%),
-            linear-gradient(180deg, ${'var(--surface,#0d1524)'} 0%, ${'var(--surface,#0d1524)'} 100%);
+          padding:28px 28px 26px;
+          border-radius:20px;
+          margin-bottom:22px;
+          border:1px solid ${border};
+          background:${card};
+          transition:background .25s ease, border-color .25s ease;
         }
         .fb-hero::before{
           content:'';
-          position:absolute; inset:0;
-          background-image:
-            linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-          background-size:34px 34px;
-          mask-image:radial-gradient(ellipse at 50% 0%, black, transparent 78%);
-          -webkit-mask-image:radial-gradient(ellipse at 50% 0%, black, transparent 78%);
+          position:absolute;
+          top:-120px; left:-80px;
+          width:340px; height:340px;
+          border-radius:50%;
+          background:radial-gradient(circle, ${accentGlow}, transparent 65%);
+          filter:blur(30px);
+          opacity:.55;
+          pointer-events:none;
+        }
+        .fb-hero::after{
+          content:'';
+          position:absolute;
+          bottom:-140px; right:-100px;
+          width:340px; height:340px;
+          border-radius:50%;
+          background:radial-gradient(circle, ${successGlow}, transparent 65%);
+          filter:blur(30px);
+          opacity:.35;
           pointer-events:none;
         }
         .fb-hero-inner{
-          position:relative; z-index:1;
-          display:flex; align-items:flex-end; gap:18px; flex-wrap:wrap;
+          position:relative;
+          z-index:1;
+          display:flex;
+          align-items:center;
+          gap:20px;
+          flex-wrap:wrap;
         }
         .fb-hero-icon{
-          width:46px; height:46px; border-radius:13px;
+          width:52px; height:52px; border-radius:15px;
           display:flex; align-items:center; justify-content:center;
-          background:linear-gradient(135deg, rgba(0,214,143,.18), rgba(0,214,143,.05));
-          border:1px solid rgba(0,214,143,.32);
-          color:${'var(--success,#00d68f)'};
+          background:${accentSoft};
+          border:1px solid ${accentBorder};
+          color:${accent};
           flex-shrink:0;
-          box-shadow:0 0 24px rgba(0,214,143,.22);
+          box-shadow:0 0 24px -6px ${accentGlow};
         }
-        .fb-hero-text{ flex:1; min-width:0; }
+        .fb-hero-text{ flex:1; min-width:220px; }
         .fb-hero-eyebrow{
           display:inline-flex; align-items:center; gap:8px;
           font-size:10.5px; font-weight:800; letter-spacing:1.6px;
           text-transform:uppercase;
-          color:${'var(--success,#00d68f)'};
-          margin-bottom:8px;
+          color:${accent};
+          margin-bottom:10px;
         }
         .fb-hero-eyebrow::before{
           content:'';
-          width:18px; height:2px;
-          background:${'var(--success,#00d68f)'};
+          width:20px; height:2px;
+          background:${accent};
         }
         .fb-hero-title{
-          font-size:24px; font-weight:800; letter-spacing:-.7px;
-          color:${'var(--text,#e8eefb)'};
-          margin:0 0 6px;
+          font-size:26px; font-weight:800; letter-spacing:-.8px;
+          color:${text};
+          margin:0 0 8px;
           line-height:1.15;
         }
         .fb-hero-title .accent{
-          background:linear-gradient(135deg, ${'var(--success,#00d68f)'}, #34d399);
-          -webkit-background-clip:text;
-          background-clip:text;
-          color:transparent;
+          color:${accent};
         }
         .fb-hero-sub{
-          font-size:12.5px; line-height:1.6;
-          color:${'var(--text-muted,#5a6b88)'};
-          max-width:640px;
+          font-size:13px; line-height:1.6;
+          color:${textSecondary};
+          max-width:680px;
+          margin:0;
         }
         .fb-hero-live{
-          display:inline-flex; align-items:center; gap:8px;
-          padding:8px 14px; border-radius:11px;
-          background:${'var(--surface,#0d1524)'};
-          border:1px solid ${'var(--border,#16223a)'};
+          display:inline-flex; align-items:center; gap:9px;
+          padding:9px 15px; border-radius:12px;
+          background:${cardHover};
+          border:1px solid ${border};
           font-size:11px; font-weight:800;
           letter-spacing:.9px;
           text-transform:uppercase;
-          color:${'var(--text,#e8eefb)'};
+          color:${text};
           flex-shrink:0;
         }
         .fb-hero-live .dot{
           width:8px; height:8px; border-radius:50%;
-          background:${'var(--success,#00d68f)'};
-          box-shadow:0 0 10px ${'var(--success,#00d68f)'};
+          background:${success};
+          box-shadow:0 0 10px ${success};
           animation:fbPulse 2s ease-in-out infinite;
         }
         @keyframes fbPulse{
-          0%,100%{ opacity:.65; transform:scale(1); }
+          0%,100%{ opacity:.6; transform:scale(1); }
           50%    { opacity:1;  transform:scale(1.18); }
         }
 
@@ -170,115 +259,131 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           display:grid;
           grid-template-columns:repeat(4,1fr);
           gap:14px;
-          margin-bottom:18px;
+          margin-bottom:22px;
         }
 
         /* ---------- Bots grid ---------- */
         .fb-grid{
           display:grid;
           grid-template-columns:repeat(3,1fr);
-          gap:18px;
-          margin-bottom:18px;
+          gap:20px;
+          margin-bottom:22px;
         }
 
         /* ---------- Bot card ---------- */
         .fb-card{
           position:relative;
+          display:flex;
+          flex-direction:column;
           border-radius:20px;
           overflow:hidden;
-          background:${'var(--surface,#0d1524)'};
-          border:1px solid ${'var(--border,#16223a)'};
-          transition:transform .32s cubic-bezier(.16,1,.3,1), box-shadow .32s ease, border-color .3s ease;
-          isolation:isolate;
+          background:${card};
+          border:1px solid ${border};
+          transition:
+            transform .35s cubic-bezier(.16,1,.3,1),
+            border-color .3s ease,
+            box-shadow .35s ease,
+            background .25s ease;
         }
         .fb-card:hover{
           transform:translateY(-6px);
-          border-color:var(--fb-accent);
+          border-color:var(--fb-accent-border);
           box-shadow:
-            0 22px 48px -20px rgba(0,0,0,.75),
-            0 0 0 1px var(--fb-accent),
-            0 0 32px -8px var(--fb-accent);
+            ${shadowStrong},
+            0 0 0 1px var(--fb-accent-border),
+            0 0 40px -12px var(--fb-accent);
         }
         .fb-card.running{
-          border-color:var(--fb-accent);
-        }
-        .fb-card.running::after{
-          content:'';
-          position:absolute;
-          inset:-1px;
-          border-radius:inherit;
-          pointer-events:none;
-          background:linear-gradient(135deg, var(--fb-accent), transparent 45%, transparent 55%, var(--fb-accent));
-          -webkit-mask:
-            linear-gradient(#fff 0 0) content-box,
-            linear-gradient(#fff 0 0);
-          -webkit-mask-composite:xor;
-          mask-composite:exclude;
-          padding:1px;
-          opacity:.7;
-          animation:fbEdgeShine 6s linear infinite;
-          background-size:200% 200%;
-        }
-        @keyframes fbEdgeShine{
-          0%  { background-position:0% 0%; }
-          100%{ background-position:200% 200%; }
+          border-color:var(--fb-accent-border);
+          box-shadow:
+            0 0 0 1px var(--fb-accent-border),
+            0 0 26px -14px var(--fb-accent);
         }
 
         /* ---------- Image area ---------- */
         .fb-img-wrap{
           position:relative;
-          aspect-ratio:16/11;
+          aspect-ratio:16/12;
           overflow:hidden;
-          background:
-            radial-gradient(ellipse at 50% 30%, var(--fb-accent-20), transparent 70%),
-            ${'var(--surface-2,#0a1220)'};
+          background:${cardElev};
+          flex-shrink:0;
         }
         .fb-img{
           position:absolute;
           inset:0;
           width:100%; height:100%;
           object-fit:cover;
+          object-position:center;
           transform:scale(1.02);
-          transition:transform .9s cubic-bezier(.16,1,.3,1), filter .4s ease;
-          filter:saturate(1.05) contrast(1.02);
+          transition:transform 1s cubic-bezier(.16,1,.3,1), filter .4s ease;
+          filter:saturate(1.04) contrast(1.03);
+          user-select:none;
         }
         .fb-card:hover .fb-img{
           transform:scale(1.08);
         }
+        /* Dark scrim from bottom */
         .fb-img-wrap::after{
           content:'';
           position:absolute;
           inset:0;
-          background:
-            linear-gradient(180deg, rgba(0,0,0,.15) 0%, transparent 30%, transparent 45%, rgba(0,0,0,.72) 100%);
+          background:linear-gradient(
+            180deg,
+            rgba(0,0,0,.15) 0%,
+            transparent 28%,
+            transparent 42%,
+            rgba(0,0,0,.55) 72%,
+            rgba(0,0,0,.88) 100%
+          );
           pointer-events:none;
+          z-index:1;
         }
+        /* Accent glow at bottom of image */
         .fb-img-wrap::before{
           content:'';
           position:absolute;
-          inset:0;
-          background:radial-gradient(ellipse at 50% 120%, var(--fb-accent-45), transparent 60%);
+          bottom:-40%; left:50%;
+          transform:translateX(-50%);
+          width:110%; height:70%;
+          background:radial-gradient(ellipse at center, var(--fb-accent-glow), transparent 65%);
           mix-blend-mode:screen;
           pointer-events:none;
+          z-index:2;
+          opacity:.75;
         }
+        /* Live shine sweep */
         .fb-shine{
           position:absolute;
           inset:0;
-          background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.14) 50%, transparent 60%);
+          background:linear-gradient(
+            115deg,
+            transparent 42%,
+            ${withAlpha('#ffffff', 0.14)} 50%,
+            transparent 58%
+          );
           background-size:220% 100%;
-          animation:fbShine 5.5s linear infinite;
+          animation:fbShine 6s linear infinite;
           pointer-events:none;
           mix-blend-mode:overlay;
+          z-index:3;
         }
         @keyframes fbShine{
-          0%  { background-position:-200% 0; }
-          100%{ background-position: 200% 0; }
+          0%  { background-position:-220% 0; }
+          100%{ background-position: 220% 0; }
         }
 
-        /* ---------- Overlay chips ---------- */
-        .fb-chip{
+        /* ---------- Top chips (over image) ---------- */
+        .fb-top-bar{
           position:absolute;
-          z-index:2;
+          top:14px; left:14px; right:14px;
+          z-index:4;
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          gap:8px;
+          pointer-events:none;
+        }
+        .fb-chip{
           display:inline-flex; align-items:center; gap:6px;
           padding:6px 11px;
           border-radius:9px;
@@ -290,16 +395,15 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           white-space:nowrap;
         }
         .fb-chip.status{
-          top:14px; left:14px;
-          color:${'var(--text,#e8eefb)'};
-          background:rgba(0,0,0,.55);
-          border:1px solid rgba(255,255,255,.12);
+          color:${text};
+          background:${withAlpha('#000000', 0.55)};
+          border:1px solid ${withAlpha('#ffffff', 0.14)};
         }
         .fb-chip.status.on{
-          color:#4ade80;
-          background:rgba(34,197,94,.18);
-          border-color:rgba(34,197,94,.45);
-          box-shadow:0 0 14px rgba(34,197,94,.35);
+          color:${success};
+          background:${successSoft};
+          border-color:${successBorder};
+          box-shadow:0 0 16px -4px ${successGlow};
         }
         .fb-chip.status .dot{
           width:6px; height:6px; border-radius:50%;
@@ -310,10 +414,9 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           animation:fbPulse 1.6s ease-out infinite;
         }
         .fb-chip.symbol{
-          top:14px; right:14px;
-          color:#fff;
-          background:rgba(0,0,0,.6);
-          border:1px solid rgba(255,255,255,.14);
+          color:${withAlpha('#ffffff', 0.95)};
+          background:${withAlpha('#000000', 0.6)};
+          border:1px solid ${withAlpha('#ffffff', 0.14)};
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           letter-spacing:1px;
         }
@@ -321,66 +424,71 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           font-size:12px;
           line-height:1;
         }
-        .fb-chip.badge{
-          position:absolute;
-          bottom:98px; left:16px;
-          color:var(--fb-accent);
-          background:rgba(0,0,0,.55);
-          border:1px solid var(--fb-accent-45);
-          box-shadow:0 0 14px -2px var(--fb-accent);
-          z-index:3;
-        }
 
-        /* ---------- Bottom-of-image title block ---------- */
+        /* ---------- Title block (over image) ---------- */
         .fb-title-block{
           position:absolute;
           left:0; right:0; bottom:0;
-          z-index:2;
-          padding:22px 20px 18px;
-          display:flex;
-          flex-direction:column;
-          gap:6px;
+          z-index:4;
+          padding:22px 22px 20px;
         }
         .fb-title-row{
-          display:flex; align-items:center; gap:12px;
+          display:flex;
+          align-items:center;
+          gap:14px;
+          margin-bottom:8px;
         }
         .fb-avatar{
-          width:46px; height:46px; border-radius:13px;
+          width:48px; height:48px; border-radius:14px;
           display:flex; align-items:center; justify-content:center;
           font-size:14px; font-weight:900;
           letter-spacing:-.4px;
-          color:#0a0a0a;
+          color:${withAlpha('#000000', 0.92)};
           background:linear-gradient(135deg, var(--fb-accent), var(--fb-accent-2));
-          border:1px solid rgba(255,255,255,.16);
+          border:1px solid ${withAlpha('#ffffff', 0.18)};
           box-shadow:
-            0 8px 20px -6px var(--fb-accent),
-            inset 0 1px 0 rgba(255,255,255,.35);
+            0 10px 24px -8px var(--fb-accent),
+            inset 0 1px 0 ${withAlpha('#ffffff', 0.4)};
           flex-shrink:0;
         }
+        .fb-name-col{ min-width:0; flex:1; }
         .fb-name{
           font-size:19px;
           font-weight:800;
           letter-spacing:-.5px;
-          color:#fff;
-          line-height:1.1;
-          text-shadow:0 2px 12px rgba(0,0,0,.7);
-          margin:0;
+          color:${withAlpha('#ffffff', 0.98)};
+          line-height:1.15;
+          text-shadow:0 2px 14px ${withAlpha('#000000', 0.75)};
+          margin:0 0 2px;
+        }
+        .fb-badge{
+          display:inline-block;
+          font-size:9px;
+          font-weight:900;
+          letter-spacing:1.1px;
+          text-transform:uppercase;
+          padding:2px 7px;
+          border-radius:5px;
+          color:var(--fb-accent);
+          background:${withAlpha('#000000', 0.5)};
+          border:1px solid var(--fb-accent-border);
         }
         .fb-tagline{
           font-size:11.5px;
           font-weight:500;
-          color:rgba(255,255,255,.75);
-          line-height:1.45;
-          text-shadow:0 1px 8px rgba(0,0,0,.75);
+          color:${withAlpha('#ffffff', 0.78)};
+          line-height:1.5;
+          text-shadow:0 1px 10px ${withAlpha('#000000', 0.8)};
           margin:0;
         }
 
-        /* ---------- Body ---------- */
+        /* ---------- Card body ---------- */
         .fb-body{
-          padding:18px 20px 18px;
+          padding:18px 20px 20px;
           display:flex;
           flex-direction:column;
           gap:14px;
+          flex:1;
         }
 
         /* ---------- Stat strip ---------- */
@@ -392,15 +500,15 @@ export default function ForexBots({ bots = [], onToggleBot }) {
         .fb-stat{
           padding:11px 12px;
           border-radius:11px;
-          background:${'var(--surface-2,#0a1220)'};
-          border:1px solid ${'var(--border,#16223a)'};
+          background:${cardElev};
+          border:1px solid ${border};
           position:relative;
           overflow:hidden;
           transition:border-color .2s ease, background .2s ease;
         }
         .fb-stat:hover{
-          border-color:var(--fb-accent-45);
-          background:${'var(--surface-hover,#111c2e)'};
+          border-color:var(--fb-accent-border);
+          background:${cardHover};
         }
         .fb-stat .k{
           display:block;
@@ -408,44 +516,40 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           font-weight:800;
           letter-spacing:1px;
           text-transform:uppercase;
-          color:${'var(--text-muted,#5a6b88)'};
-          margin-bottom:4px;
+          color:${textMuted};
+          margin-bottom:5px;
         }
         .fb-stat .v{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-size:14px;
           font-weight:800;
           letter-spacing:-.3px;
-          color:${'var(--text,#e8eefb)'};
+          color:${text};
           font-variant-numeric:tabular-nums;
         }
-        .fb-stat .v.pos{ color:${'var(--success,#00d68f)'}; }
-        .fb-stat .v.neg{ color:${'var(--danger,#ff4d6a)'}; }
+        .fb-stat .v.pos{ color:${success}; }
+        .fb-stat .v.neg{ color:${danger}; }
 
         /* ---------- Sparkline frame ---------- */
         .fb-spark-wrap{
           position:relative;
-          height:52px;
+          height:56px;
           border-radius:11px;
-          padding:6px 4px;
-          background:
-            linear-gradient(180deg, var(--fb-accent-08) 0%, transparent 100%),
-            ${'var(--surface-2,#0a1220)'};
-          border:1px solid ${'var(--border,#16223a)'};
+          padding:6px 4px 4px;
+          background:${cardElev};
+          border:1px solid ${border};
           overflow:hidden;
         }
-        .fb-spark-wrap::after{
+        .fb-spark-wrap::before{
           content:'';
           position:absolute;
           inset:0;
-          background:linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
-          background-size:60% 100%;
-          animation:fbShine 4s linear infinite;
+          background:linear-gradient(180deg, var(--fb-accent-soft) 0%, transparent 70%);
           pointer-events:none;
         }
         .fb-spark-label{
           position:absolute;
-          top:6px; right:9px;
+          top:7px; right:10px;
           z-index:2;
           font-size:9px;
           font-weight:800;
@@ -463,56 +567,65 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           justify-content:space-between;
           gap:12px;
           padding-top:14px;
-          border-top:1px solid ${'var(--border,#16223a)'};
+          border-top:1px solid ${border};
+          margin-top:auto;
         }
         .fb-dd{
           font-size:10.5px;
-          font-weight:600;
-          color:${'var(--text-muted,#5a6b88)'};
-          letter-spacing:.4px;
+          font-weight:700;
+          color:${textMuted};
+          letter-spacing:.5px;
           text-transform:uppercase;
         }
         .fb-dd strong{
-          color:${'var(--text,#e8eefb)'};
+          color:${text};
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           font-weight:800;
           letter-spacing:-.2px;
-          margin-left:4px;
+          margin-left:5px;
           text-transform:none;
         }
 
         /* ---------- Premium switch ---------- */
         .fb-switch{
           position:relative;
-          width:52px; height:28px;
+          width:54px; height:30px;
           border-radius:20px;
-          background:${'var(--surface-hover,#1d2a44)'};
-          border:1px solid ${'var(--border,#16223a)'};
+          background:${cardHover};
+          border:1px solid ${border};
           cursor:pointer;
-          transition:background .25s ease, border-color .25s ease, box-shadow .25s ease;
+          transition:
+            background .25s ease,
+            border-color .25s ease,
+            box-shadow .25s ease;
           flex-shrink:0;
+          padding:0;
         }
         .fb-switch::after{
           content:'';
           position:absolute;
-          top:2px; left:2px;
+          top:3px; left:3px;
           width:22px; height:22px;
           border-radius:50%;
-          background:${'var(--text-muted,#5a6b88)'};
-          transition:transform .28s cubic-bezier(.4,0,.2,1), background .25s ease, box-shadow .25s ease;
+          background:${textMuted};
+          transition:
+            transform .3s cubic-bezier(.4,0,.2,1),
+            background .25s ease,
+            box-shadow .25s ease,
+            width .2s ease;
         }
         .fb-switch:hover{
-          border-color:var(--fb-accent-45);
+          border-color:var(--fb-accent-border);
         }
         .fb-switch.on{
-          background:var(--fb-accent-20);
-          border-color:var(--fb-accent-45);
-          box-shadow:0 0 16px -4px var(--fb-accent);
+          background:var(--fb-accent-soft);
+          border-color:var(--fb-accent-border);
+          box-shadow:0 0 18px -4px var(--fb-accent);
         }
         .fb-switch.on::after{
           transform:translateX(24px);
           background:var(--fb-accent);
-          box-shadow:0 0 12px var(--fb-accent);
+          box-shadow:0 0 14px var(--fb-accent);
         }
         .fb-switch:active::after{
           width:26px;
@@ -520,24 +633,28 @@ export default function ForexBots({ bots = [], onToggleBot }) {
 
         /* ---------- Notice ---------- */
         .fb-notice{
-          display:flex; align-items:flex-start; gap:12px;
-          padding:16px 18px;
+          display:flex;
+          align-items:flex-start;
+          gap:12px;
+          padding:16px 20px;
           border-radius:13px;
-          background:${'var(--surface,#0d1524)'};
-          border:1px solid ${'var(--border,#16223a)'};
+          background:${card};
+          border:1px solid ${border};
+          transition:background .25s ease, border-color .25s ease;
         }
         .fb-notice svg{
           width:18px; height:18px; flex-shrink:0;
           margin-top:1px;
-          stroke:${'var(--warning,#f5a524)'};
+          stroke:${warning};
           fill:none;
           stroke-width:1.8;
           stroke-linecap:round;
           stroke-linejoin:round;
         }
         .fb-notice span{
-          font-size:12px; line-height:1.65;
-          color:${'var(--text-muted,#5a6b88)'};
+          font-size:12px;
+          line-height:1.65;
+          color:${textSecondary};
         }
 
         /* ============================================================
@@ -545,26 +662,33 @@ export default function ForexBots({ bots = [], onToggleBot }) {
            ============================================================ */
         @media (max-width:1180px){
           .fb-summary{ grid-template-columns:repeat(2,1fr); }
-          .fb-grid{ grid-template-columns:1fr; gap:16px; }
+          .fb-grid{ grid-template-columns:1fr; gap:18px; }
           .fb-img-wrap{ aspect-ratio:16/8; }
+          .fb-hero-title{ font-size:23px; }
         }
         @media (max-width:760px){
-          .fb-hero{ padding:20px 18px; border-radius:16px; }
+          .fb-hero{ padding:22px 20px; border-radius:16px; }
+          .fb-hero-icon{ width:46px; height:46px; border-radius:13px; }
           .fb-hero-title{ font-size:20px; letter-spacing:-.5px; }
-          .fb-hero-sub{ font-size:12px; }
-          .fb-hero-live{ width:100%; justify-content:center; }
+          .fb-hero-sub{ font-size:12.5px; }
+          .fb-hero-live{
+            width:100%;
+            justify-content:center;
+            margin-top:4px;
+          }
           .fb-summary{ grid-template-columns:1fr 1fr; gap:10px; }
           .fb-img-wrap{ aspect-ratio:16/10; }
-          .fb-title-block{ padding:18px 16px 14px; }
+          .fb-title-block{ padding:18px 16px 16px; }
           .fb-name{ font-size:17px; }
           .fb-tagline{ font-size:11px; }
-          .fb-avatar{ width:40px; height:40px; font-size:12.5px; border-radius:11px; }
-          .fb-body{ padding:16px 16px; }
-          .fb-stats{ gap:6px; }
-          .fb-stat{ padding:9px 10px; border-radius:10px; }
+          .fb-avatar{ width:42px; height:42px; font-size:13px; border-radius:12px; }
+          .fb-body{ padding:16px 16px 18px; }
+          .fb-stats{ gap:7px; }
+          .fb-stat{ padding:10px 10px; border-radius:10px; }
           .fb-stat .k{ font-size:8.5px; }
           .fb-stat .v{ font-size:13px; }
-          .fb-chip.badge{ bottom:82px; left:14px; font-size:9px; padding:5px 9px; }
+          .fb-top-bar{ top:12px; left:12px; right:12px; }
+          .fb-chip{ padding:5px 9px; font-size:9.5px; }
         }
         @media (max-width:480px){
           .fb-summary{ grid-template-columns:1fr; }
@@ -580,7 +704,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
         <div className="fb-hero">
           <div className="fb-hero-inner">
             <div className="fb-hero-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3.5" y="7.5" width="17" height="12" rx="3.5" />
                 <path d="M12 7.5V4" />
@@ -615,26 +739,26 @@ export default function ForexBots({ bots = [], onToggleBot }) {
             label="Active Bots"
             value={`${active} / ${orderedBots.length}`}
             sub="Automated strategies"
-            accent={c.success || '#00d68f'}
+            accent={success}
           />
           <StatCard
             label="Combined P/L"
             value={(totalPL >= 0 ? '+' : '') + fmtMoney(totalPL)}
             valueClass={totalPL >= 0 ? 'pos' : 'neg'}
             sub="Since inception"
-            accent={c.accent || '#3b82f6'}
+            accent={accent}
           />
           <StatCard
             label="Avg Win Rate"
             value={`${fmt(avgWin, 1)}%`}
             sub="Across all strategies"
-            accent={c.warning || '#f5a524'}
+            accent={warning}
           />
           <StatCard
             label="Total Trades"
             value={totalTrades.toLocaleString('en-US')}
             sub="Executed orders"
-            accent={c.accentSoft || '#a855f7'}
+            accent={purple}
           />
         </div>
 
@@ -645,12 +769,12 @@ export default function ForexBots({ bots = [], onToggleBot }) {
           {orderedBots.map((b) => {
             const pres = BOT_PRESENTATION[b.sym] || {};
             const up = (b.pnl || 0) >= 0;
-            const accent  = pres.accent  || (c.accent || '#3b82f6');
-            const accent2 = pres.accent2 || accent;
+            const botAccent = getBotAccent(b.sym);
+            const botAccent2 = withAlpha(botAccent, 1); // same hue for gradient endpoint
 
-            const base = b.sym.slice(0, 3);
+            const base  = b.sym.slice(0, 3);
             const quote = b.sym.slice(3, 6);
-            const baseFlag  = { EUR: '🇪🇺', BTC: '₿',  XAU: '🥇' }[base]  || '';
+            const baseFlag  = { EUR: '🇪🇺', BTC: '₿', XAU: '🥇' }[base] || '';
             const quoteFlag = { USD: '🇺🇸' }[quote] || '';
 
             return (
@@ -658,11 +782,11 @@ export default function ForexBots({ bots = [], onToggleBot }) {
                 key={b.id}
                 className={`fb-card ${b.on ? 'running' : ''}`}
                 style={{
-                  '--fb-accent': accent,
-                  '--fb-accent-2': accent2,
-                  '--fb-accent-20': accent + '33',
-                  '--fb-accent-45': accent + '73',
-                  '--fb-accent-08': accent + '15',
+                  '--fb-accent':        botAccent,
+                  '--fb-accent-2':      botAccent2,
+                  '--fb-accent-soft':   withAlpha(botAccent, 0.14),
+                  '--fb-accent-border': withAlpha(botAccent, 0.42),
+                  '--fb-accent-glow':   withAlpha(botAccent, 0.30),
                 }}
               >
                 {/* ---------- Image area ---------- */}
@@ -676,22 +800,24 @@ export default function ForexBots({ bots = [], onToggleBot }) {
                   />
                   <div className="fb-shine" />
 
-                  <span className={`fb-chip status ${b.on ? 'on' : ''}`}>
-                    <span className="dot" />
-                    {b.on ? 'Running' : 'Stopped'}
-                  </span>
-
-                  <span className="fb-chip symbol">
-                    {baseFlag && <span className="flag">{baseFlag}</span>}
-                    {base}/{quote}
-                  </span>
-
-                  <span className="fb-chip badge">{pres.badge || 'BOT'}</span>
+                  <div className="fb-top-bar">
+                    <span className={`fb-chip status ${b.on ? 'on' : ''}`}>
+                      <span className="dot" />
+                      {b.on ? 'Running' : 'Stopped'}
+                    </span>
+                    <span className="fb-chip symbol">
+                      {baseFlag && <span className="flag">{baseFlag}</span>}
+                      {base}/{quote}
+                    </span>
+                  </div>
 
                   <div className="fb-title-block">
                     <div className="fb-title-row">
                       <div className="fb-avatar">{pres.initials || 'AI'}</div>
-                      <h3 className="fb-name">{pres.name || b.name}</h3>
+                      <div className="fb-name-col">
+                        <h3 className="fb-name">{pres.name || b.name}</h3>
+                        <span className="fb-badge">{pres.badge || 'BOT'}</span>
+                      </div>
                     </div>
                     <p className="fb-tagline">{pres.tagline || b.tag}</p>
                   </div>
@@ -717,12 +843,12 @@ export default function ForexBots({ bots = [], onToggleBot }) {
                   </div>
 
                   <div className="fb-spark-wrap">
-                    <span className="fb-spark-label">Equity curve</span>
+                    <span className="fb-spark-label">Equity</span>
                     <Sparkline
                       values={b.history || []}
                       w={300}
                       h={44}
-                      color={up ? (c.success || '#00d68f') : (c.danger || '#ff4d6a')}
+                      color={up ? success : danger}
                     />
                   </div>
 
@@ -735,6 +861,7 @@ export default function ForexBots({ bots = [], onToggleBot }) {
                       onClick={() => onToggleBot && onToggleBot(b.id)}
                       aria-label={`Toggle ${pres.name || b.name}`}
                       aria-pressed={b.on}
+                      type="button"
                     />
                   </div>
                 </div>
