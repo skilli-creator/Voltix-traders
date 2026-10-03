@@ -6,6 +6,9 @@ import euroBotImg from '../assets/images/image14.png';
 import btcBotImg  from '../assets/images/image15.png';
 import goldBotImg from '../assets/images/image16.png';
 
+/* ================================================================ */
+/*  BOTS                                                            */
+/* ================================================================ */
 const BOTS_META = {
   EURUSD: { name: 'Euro Master',    image: euroBotImg, accentKey: 'info'    },
   BTCUSD: { name: 'Bitcoin Master', image: btcBotImg,  accentKey: 'warning' },
@@ -14,6 +17,7 @@ const BOTS_META = {
 
 const ORDER = ['EURUSD', 'BTCUSD', 'XAUUSD'];
 
+/* Alpha helper */
 const withAlpha = (color, a) => {
   if (typeof color !== 'string') return color;
   if (color.startsWith('rgb') || color.startsWith('hsl')) return color;
@@ -29,18 +33,21 @@ const withAlpha = (color, a) => {
   return color;
 };
 
+/* ================================================================ */
+/*  COMPONENT                                                       */
+/* ================================================================ */
 export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
   const theme = useTheme();
   const c = theme?.colors || {};
 
-  const accent       = c.accent      || '#f5b400';
-  const text         = c.text        || '#e8eefb';
-  const textMuted    = c.textMuted   || '#8b8b93';
-  const card         = c.surface     || '#111114';
-  const cardElev     = c.surfaceElevated || card;
-  const bg           = c.bg          || c.background || '#0a0a0a';
-  const border       = c.border      || 'rgba(255,255,255,0.08)';
-  const shadow       = c.shadow      || '0 12px 32px -12px rgba(0,0,0,0.55)';
+  /* Theme tokens */
+  const accent    = c.accent      || '#f5b400';
+  const text      = c.text        || '#e8eefb';
+  const textMuted = c.textMuted   || '#8b8b93';
+  const card      = c.surface     || '#111114';
+  const cardElev  = c.surfaceElevated || card;
+  const bg        = c.bg          || c.background || '#0a0a0a';
+  const border    = c.border      || 'rgba(255,255,255,0.08)';
 
   const getBotAccent = (sym) => {
     const themed = c.bots?.[sym];
@@ -90,15 +97,14 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
           border-radius:16px;
           background:${card};
           border:1px solid ${border};
-          transition:border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+          transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
         }
         .fb-card:hover{
           border-color:${withAlpha(accent, 0.35)};
-          box-shadow:${shadow};
           transform:translateY(-2px);
         }
 
-        /* ---------- Image (natural size, no stretch) ---------- */
+        /* ---------- Image (natural size) ---------- */
         .fb-img{
           display:block;
           width:100%;
@@ -122,9 +128,8 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
 
         /* ---------- Win rate ---------- */
         .fb-winrate{
-          display:flex;
+          display:inline-flex;
           align-items:center;
-          justify-content:center;
           gap:8px;
           padding:9px 18px;
           border-radius:10px;
@@ -168,8 +173,8 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
           transition:background .18s ease, border-color .18s ease, color .18s ease;
         }
         .fb-configure:hover{
-          background:${accent};
-          border-color:${accent};
+          background:var(--fb-accent);
+          border-color:var(--fb-accent);
           color:${bg};
         }
         .fb-configure:active{
@@ -200,7 +205,11 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
             const botAccent = getBotAccent(b.sym);
 
             return (
-              <article key={b.id} className="fb-card">
+              <article
+                key={b.id}
+                className="fb-card"
+                style={{ '--fb-accent': botAccent }}
+              >
                 <img
                   src={meta.image}
                   alt={meta.name || b.name}
@@ -224,9 +233,6 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
                       ? onConfigureBot(b.id)
                       : (onToggleBot && onToggleBot(b.id))
                   }
-                  style={{
-                    '--fb-accent': botAccent,
-                  }}
                   aria-label={`Configure ${meta.name || b.name}`}
                 >
                   <svg viewBox="0 0 24 24" fill="none"
