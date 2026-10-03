@@ -1051,7 +1051,7 @@ const TopBar = styled.header`
   flex-shrink: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
 
-  /* 🖥 Laptop — allow wrapping, left-align so wrapped rows sit flush */
+  /* Laptop — allow wrapping, left-align so wrapped rows sit flush */
   @media (max-width: 1024px) {
     padding: 12px 20px;
     flex-wrap: wrap;
@@ -1059,7 +1059,7 @@ const TopBar = styled.header`
     justify-content: flex-start;
   }
 
-    /* 📱 Phone — explicit stacked layout driven by child order */
+  /* Phone — explicit stacked layout driven by child order */
   @media (max-width: 768px) {
     position: sticky;
     top: 0;
@@ -1085,7 +1085,7 @@ const LeftSection = styled.div`
   flex-shrink: 0;
   min-width: 0;
 
-  /* 🖥 Laptop — order 1, natural width, can shrink if needed */
+  /* Laptop — order 1, natural width, can shrink if needed */
   @media (max-width: 1024px) {
     order: 1;
     gap: 12px;
@@ -1093,7 +1093,7 @@ const LeftSection = styled.div`
     min-width: 0;
   }
 
-  /* 📱 Phone — order 1, fills the top-left */
+  /* Phone — order 1, fills the top-left */
   @media (max-width: 768px) {
     order: 1;
     gap: clamp(8px, 2.6vw, 12px);
@@ -1112,7 +1112,7 @@ const RightSection = styled.div`
   gap: 10px;
   flex-wrap: wrap;
 
-  /* 🖥 Laptop — order 2, pushed right with margin-left: auto */
+  /* Laptop — order 2, pushed right with margin-left: auto */
   @media (max-width: 1024px) {
     order: 2;
     gap: 8px;
@@ -1120,7 +1120,7 @@ const RightSection = styled.div`
     margin-left: auto;
   }
 
-  /* 📱 Phone — order 2, stays top-right next to brand */
+  /* Phone — order 2, stays top-right next to brand */
   @media (max-width: 768px) {
     order: 2;
     gap: clamp(5px, 1.8vw, 8px);
@@ -1142,7 +1142,7 @@ const ForexNavWrapper = styled.nav`
   border-radius: 12px;
   flex-shrink: 0;
 
-  /* 🖥 Laptop — order 4, sits on its own row below the session pill */
+  /* Laptop — order 4, sits on its own row below the session pill */
   @media (max-width: 1024px) {
     order: 4;
     margin: 0;
@@ -1150,7 +1150,7 @@ const ForexNavWrapper = styled.nav`
     flex: 0 0 auto;
   }
 
-  /* 📱 Phone — full-width horizontal strip, order 4 (below session pill) */
+  /* Phone — full-width horizontal strip, order 4 (below session pill) */
   @media (max-width: 768px) {
     order: 4;
     width: 100%;
@@ -1229,14 +1229,14 @@ const SessionWrapper = styled.div`
   margin: 0 16px;
   flex-shrink: 0;
 
-  /* 🖥 Laptop — order 3, natural width */
+  /* Laptop — order 3, natural width */
   @media (max-width: 1024px) {
     order: 3;
     margin: 0;
     flex: 0 0 auto;
   }
 
-  /* 📱 Phone — full-width row, order 3 (above nav) */
+  /* Phone — full-width row, order 3 (above nav) */
   @media (max-width: 768px) {
     order: 3;
     width: 100%;
@@ -1463,12 +1463,12 @@ const SessionHero = styled.button`
     max-width: 100%;
     font-variant-numeric: tabular-nums;
 
-    /* 🎯 Inline percentage chip */
+    /* Inline percentage chip — written statement */
     .pct-chip {
       display: inline-flex;
       align-items: center;
       flex-shrink: 0;
-      padding: 1px 5px;
+      padding: 1px 6px;
       border-radius: 4px;
       font-size: 8.5px;
       font-weight: 800;
@@ -1479,6 +1479,7 @@ const SessionHero = styled.button`
       font-variant-numeric: tabular-nums;
       text-shadow: 0 0 6px ${p => p.$color + '70'};
       line-height: 1.1;
+      white-space: nowrap;
     }
   }
 
@@ -1523,7 +1524,7 @@ const SessionHero = styled.button`
     z-index: 2;
   }
 
-  /* 🔥 Progress bar pinned to the bottom of the pill */
+  /* Progress bar pinned to the bottom of the pill */
   .session-progress {
     position: absolute;
     left: 0;
@@ -1563,7 +1564,7 @@ const SessionHero = styled.button`
   }
 
   @media (max-width: 768px) {
-    /* 📱 No longer fills the whole row — shrink to content */
+    /* Phone — no longer fills the whole row, shrink to content */
     width: auto;
     max-width: 100%;
     min-height: 0;
@@ -1960,17 +1961,33 @@ const HeroSessionCard = styled.div`
   .progress-labels {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: 8px;
     margin-top: 8px;
-    font-size: 9px;
+    font-size: 9.5px;
     font-weight: 800;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
     color: ${p => p.theme?.colors?.textMuted || '#94A3B8'};
     position: relative;
     z-index: 1;
     font-variant-numeric: tabular-nums;
 
-    .pct { color: ${p => p.$color}; }
+    .label-left {
+      color: ${p => p.theme?.colors?.text || '#F8FAFC'};
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      .pct-accent { color: ${p => p.$color}; }
+    }
+
+    .label-right {
+      color: ${p => p.$color};
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-shadow: 0 0 8px ${p => p.$color + '50'};
+    }
   }
 
   @media (max-width: 768px) {
@@ -2222,7 +2239,6 @@ const GlassDropdownMenu = styled.div`
   }
 `;
 
-// ✅ All styled(GlassDropdownMenu) declarations MUST come AFTER GlassDropdownMenu
 const RightAnchoredDropdown = styled(GlassDropdownMenu)`
   left: auto;
   right: 0;
@@ -3026,7 +3042,7 @@ const TopPanel = ({
 
   const openSessions = sessionStates.filter(s => s.isOpen);
 
-  // ✅ Which forex nav item is active based on pathname
+  // Which forex nav item is active based on pathname
   const activeForexNav = (() => {
     const p = location.pathname;
     if (p === '/forexdash/strength') return 'strength';
@@ -3034,7 +3050,7 @@ const TopPanel = ({
     return 'home';
   })();
 
-  // ✅ Navigate between forex sub-routes
+  // Navigate between forex sub-routes
   const handleForexNav = (path) => {
     if (location.pathname !== path) navigate(path);
   };
@@ -3637,7 +3653,11 @@ const TopPanel = ({
                     {heroSession.isOpen
                       ? `Closes in ${formatDuration(heroSession.minUntil)}`
                       : `Opens in ${formatDuration(heroSession.minUntil)}`}
-                    <span className="pct-chip">{Math.round(heroSession.progress * 100)}%</span>
+                    {heroSession.isOpen && (
+                      <span className="pct-chip">
+                        {Math.round(heroSession.progress * 100)}% complete
+                      </span>
+                    )}
                   </span>
                 </div>
                 <div className="clock">
@@ -3646,7 +3666,7 @@ const TopPanel = ({
                 </div>
                 <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
 
-                {/* 🔥 Progress bar — always visible on the pill */}
+                {/* Progress bar — always visible on the pill */}
                 <div className="session-progress">
                   <div className="bar" />
                 </div>
@@ -3719,8 +3739,16 @@ const TopPanel = ({
                     <div className="progress-fill" />
                   </div>
                   <div className="progress-labels">
-                    <span>{heroSession.isOpen ? 'Session progress' : 'Waiting to open'}</span>
-                    <span className="pct">{Math.round(heroSession.progress * 100)}%</span>
+                    <span className="label-left">
+                      {heroSession.isOpen
+                        ? <>{Math.round(heroSession.progress * 100)}<span className="pct-accent">%</span> of session completed</>
+                        : <>Waiting for market to open</>}
+                    </span>
+                    <span className="label-right">
+                      {heroSession.isOpen
+                        ? `${formatDuration(heroSession.minUntil)} remaining`
+                        : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                    </span>
                   </div>
                 </HeroSessionCard>
 
