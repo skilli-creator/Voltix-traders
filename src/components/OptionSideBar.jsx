@@ -1937,6 +1937,7 @@ const TermsSection = styled.div`
 // SIDEBAR LAYOUT
 // ============================================
 const TOPBAR_HEIGHT = '76px';
+const SIDEBAR_WIDTH = '288px';
 
 const Overlay = styled.div`
   position: fixed;
@@ -1958,7 +1959,7 @@ const SidebarContainer = styled.aside`
      even when the bar wraps / grows on notched phones. */
   top: var(--topbar-h, ${TOPBAR_HEIGHT});
   left: 0;
-  width: 288px;
+  width: ${SIDEBAR_WIDTH};
   height: calc(100vh - var(--topbar-h, ${TOPBAR_HEIGHT}));
   height: calc(100dvh - var(--topbar-h, ${TOPBAR_HEIGHT}));
   background: ${props =>
@@ -2361,7 +2362,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       phone: userData.phone || '',
       date_of_birth: userData.date_of_birth || '',
       gender: userData.gender || '',
-      email: userData.email || 'tonnykyalo054@gmail.com'
+      email: userData.email || 'tonnykyallo054@gmail.com'
     });
     if (userData.date_of_birth) setCalculatedAge(calculateAge(userData.date_of_birth));
   }, []);
@@ -2372,6 +2373,24 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     window.addEventListener('tradeLogUpdated', loadJournal);
     return () => window.removeEventListener('tradeLogUpdated', loadJournal);
   }, []);
+
+  // ============================================
+  // Forex-only: push the main page content when the sidebar opens
+  // instead of overlapping it. Deriv keeps the overlay behaviour.
+  // ============================================
+  useEffect(() => {
+    const shouldPush = isForex && isOpen;
+
+    if (shouldPush) {
+      document.body.classList.add('forex-sidebar-push');
+    } else {
+      document.body.classList.remove('forex-sidebar-push');
+    }
+
+    return () => {
+      document.body.classList.remove('forex-sidebar-push');
+    };
+  }, [isForex, isOpen]);
 
   useEffect(() => {
     const open = searchParams.get('open');
@@ -3243,6 +3262,30 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
+      {/* ============================================================
+          FOREX — push the main content, do not overlap it
+          ============================================================ */}
+      <style>{`
+        @media (min-width: 769px) {
+          body.forex-sidebar-push .view.active {
+            margin-left: ${SIDEBAR_WIDTH};
+            width: calc(100% - ${SIDEBAR_WIDTH});
+            transition:
+              margin-left 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+              width       0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: margin-left, width;
+          }
+        }
+
+        /* Mobile keeps the overlay behaviour — no push, no width change */
+        @media (max-width: 768px) {
+          body.forex-sidebar-push .view.active {
+            margin-left: 0;
+            width: 100%;
+          }
+        }
+      `}</style>
+
       <FullPanelOverlay isOpen={isFullPanelOpen} onClick={closeFullPanel}>
         <FullPanelContainer onClick={(e) => e.stopPropagation()}>
           <FullPanelHeader>
