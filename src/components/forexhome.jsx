@@ -9,15 +9,22 @@ import {
 import tonnyPhoto from '../assets/images/image13.png';
 
 /* ================================================================ */
+/*  EXTERNAL LINKS                                                  */
+/*  Swap these once the real URLs are ready.                        */
+/* ================================================================ */
+const ABOUT_TONNYFX_URL   = '#';   // TODO: replace with the "More about Tonnyfx" link
+const COMMUNITY_URL       = '#';   // TODO: replace with the Telegram community invite link
+
+/* ================================================================ */
 /*  CONTENT                                                         */
 /* ================================================================ */
 const SERVICES = [
-  { key:'bots',     title:'Automated Trading Bots',    desc:'Six pre-built strategies tuned for EUR/USD, BTC/USD and XAU/USD. Toggle on and let them run.',              cta:'Manage bots', icon:'bot' },
-  { key:'lot',      title:'Lot Size Calculator',       desc:'Risk-based sizing on every instrument. Balance, risk % and stop-loss — instant lot size.',                  cta:'Calculate',   icon:'calc' },
-  { key:'strength', title:'Currency Strength Meter',   desc:'Rank the eight majors against a weighted basket. Spot the strongest and weakest in one glance.',           cta:'View strength', icon:'bars' },
-  { key:'signals',  title:'Live Signal Alerts',        desc:'Momentum, breakout and mean-reversion alerts the moment price structure shifts on your watchlist.',        cta:'See alerts',  icon:'bell' },
-  { key:'risk',     title:'Risk & Margin Manager',     desc:'Real-time margin level, free margin and exposure warnings — so one trade never takes down your account.',  cta:'Review risk', icon:'shield' },
-  { key:'journal',  title:'Trade Journal & Analytics', desc:'Every fill and every pip logged automatically. Win rate, expectancy, drawdown, equity curve.',              cta:'Open journal', icon:'journal' },
+  { key:'bots',     title:'Automated Trading Bots',    desc:'Six pre-built strategies tuned for EUR/USD, BTC/USD and XAU/USD. Toggle on and let them run.',              icon:'bot' },
+  { key:'lot',      title:'Lot Size Calculator',       desc:'Risk-based sizing on every instrument. Balance, risk % and stop-loss — instant lot size.',                  icon:'calc' },
+  { key:'strength', title:'Currency Strength Meter',   desc:'Rank the eight majors against a weighted basket. Spot the strongest and weakest in one glance.',           icon:'bars' },
+  { key:'signals',  title:'Live Signal Alerts',        desc:'Momentum, breakout and mean-reversion alerts the moment price structure shifts on your watchlist.',        icon:'bell' },
+  { key:'risk',     title:'Risk & Margin Manager',     desc:'Real-time margin level, free margin and exposure warnings — so one trade never takes down your account.',  icon:'shield' },
+  { key:'journal',  title:'Trade Journal & Analytics', desc:'Every fill and every pip logged automatically. Win rate, expectancy, drawdown, equity curve.',              icon:'journal' },
 ];
 
 const STATS = [
@@ -191,6 +198,16 @@ export default function ForexHome({
     return () => clearInterval(t);
   }, []);
 
+  /* Opens an external link in a safe way; ignores the placeholder '#' */
+  const openExternal = (url) => {
+    if (!url || url === '#') {
+      // eslint-disable-next-line no-alert
+      alert('Link coming soon — please check back later.');
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   /* ---------------------------------------------------------------- */
   /*  THEME-AWARE STYLE STRING                                        */
   /* ---------------------------------------------------------------- */
@@ -304,8 +321,33 @@ export default function ForexHome({
     .tf-founder-role{ font-size:13px; font-weight:700; letter-spacing:.9px;
       text-transform:uppercase; color:${C.gold}; margin-bottom:22px; }
     .tf-founder-bio{ font-size:14.5px; line-height:1.85; color:${C.text2};
-      margin:0 0 28px; }
+      margin:0 0 20px; }
     .tf-founder-bio strong{ color:${C.text}; font-weight:700; }
+
+    /* ---------- MORE ABOUT TONNYFX ---------- */
+    .tf-founder-more{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:13px; font-weight:800; letter-spacing:.3px;
+      color:${C.gold};
+      background:transparent;
+      border:none;
+      padding:0;
+      margin:0 0 28px;
+      cursor:pointer;
+      transition:gap .22s ease, color .22s ease;
+    }
+    .tf-founder-more svg{
+      width:14px; height:14px;
+      transition:transform .3s cubic-bezier(.16,1,.3,1);
+    }
+    .tf-founder-more:hover{ gap:12px; color:${C.gold2}; }
+    .tf-founder-more:hover svg{ transform:translateX(3px); }
+    .tf-founder-more::after{
+      content:'';
+      display:inline-block;
+      width:1.5px; height:14px;
+    }
+
     .tf-founder-stats{ display:grid; grid-template-columns:repeat(4,1fr);
       gap:20px; padding-top:26px; border-top:1px solid ${C.border}; }
     .tf-fstat .n{ font-family:'JetBrains Mono',monospace; font-size:26px;
@@ -316,7 +358,7 @@ export default function ForexHome({
     /* ---------- SERVICES ---------- */
     .tf-services{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
     .tf-service{ padding:28px 22px; border-radius:14px;
-      border:1px solid ${C.border}; background:${C.card}; cursor:pointer;
+      border:1px solid ${C.border}; background:${C.card};
       transition:.24s cubic-bezier(.16,1,.3,1);
       position:relative; overflow:hidden; }
     .tf-service::before{ content:''; position:absolute; top:0; left:0; right:0;
@@ -331,12 +373,7 @@ export default function ForexHome({
     .tf-service h3{ font-size:15px; font-weight:800; color:${C.text};
       margin:0 0 9px; letter-spacing:-.2px; }
     .tf-service p{ font-size:12.5px; line-height:1.65; color:${C.text2};
-      margin:0 0 16px; min-height:66px; }
-    .tf-service-cta{ display:inline-flex; align-items:center; gap:6px;
-      font-size:11.5px; font-weight:800; letter-spacing:.4px;
-      color:${C.gold}; text-transform:uppercase; }
-    .tf-service-cta::after{ content:'→'; transition:transform .2s; }
-    .tf-service:hover .tf-service-cta::after{ transform:translateX(4px); }
+      margin:0; min-height:66px; }
 
     /* ---------- BASICS ---------- */
     .tf-basics{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
@@ -656,8 +693,11 @@ export default function ForexHome({
               bots, calculators and risk tools in one place.
             </p>
             <div className="tf-hero-cta">
-              <button className="tf-btn tf-btn-gold" onClick={() => go('bots')}>
-                Join MyTradeApp <Icon name="arrow" size={16} />
+              <button
+                className="tf-btn tf-btn-gold"
+                onClick={() => openExternal(COMMUNITY_URL)}
+              >
+                Join MyTradeApp community <Icon name="arrow" size={16} />
               </button>
               <button className="tf-btn tf-btn-outline" onClick={() => go('lot')}>
                 Create Trading Account
@@ -703,6 +743,17 @@ export default function ForexHome({
                   <strong>EUR/USD, BTC/USD and XAU/USD</strong> — and every tool inside
                   MyTradeApp reflects that focus.
                 </p>
+
+                <button
+                  type="button"
+                  className="tf-founder-more"
+                  onClick={() => openExternal(ABOUT_TONNYFX_URL)}
+                  aria-label="More about Tonnyfx"
+                >
+                  More about Tonnyfx
+                  <Icon name="arrow" size={14} />
+                </button>
+
                 <div className="tf-founder-stats">
                   {STATS.map((s) => (
                     <div className="tf-fstat" key={s.l}>
@@ -717,7 +768,7 @@ export default function ForexHome({
         </div>
 
         {/* ============================================================
-            SERVICES
+            SERVICES — decorative, no navigation
            ============================================================ */}
         <div className="tf-sec tf-alt">
           <div className="tf-wrap">
@@ -731,13 +782,10 @@ export default function ForexHome({
             </div>
             <div className="tf-services">
               {SERVICES.map((s) => (
-                <div className="tf-service" key={s.key}
-                  onClick={() => go(s.key)} role="button" tabIndex={0}
-                  onKeyDown={(e) => { if (e.key === 'Enter') go(s.key); }}>
+                <div className="tf-service" key={s.key}>
                   <div className="tf-service-icon"><Icon name={s.icon} /></div>
                   <h3>{s.title}</h3>
                   <p>{s.desc}</p>
-                  <span className="tf-service-cta">{s.cta}</span>
                 </div>
               ))}
             </div>
@@ -907,8 +955,10 @@ export default function ForexHome({
                   </div>
                   <div className="desc">{p.desc}</div>
                   <ul>{p.features.map((f) => <li key={f}>{f}</li>)}</ul>
-                  <button className={`tf-btn ${p.highlight ? 'tf-btn-gold' : 'tf-btn-outline'}`}
-                    onClick={() => go('bots')}>
+                  <button
+                    className={`tf-btn ${p.highlight ? 'tf-btn-gold' : 'tf-btn-outline'}`}
+                    onClick={() => openExternal(COMMUNITY_URL)}
+                  >
                     {p.cta}
                   </button>
                 </div>
@@ -994,8 +1044,11 @@ export default function ForexHome({
               no hidden promises — just a better way to trade EUR/USD, BTC/USD and XAU/USD.
             </p>
             <div className="tf-cta-row">
-              <button className="tf-btn tf-btn-gold" onClick={() => go('bots')}>
-                Join MyTradeApp <Icon name="arrow" size={16} />
+              <button
+                className="tf-btn tf-btn-gold"
+                onClick={() => openExternal(COMMUNITY_URL)}
+              >
+                Join MyTradeApp community <Icon name="arrow" size={16} />
               </button>
               <button className="tf-btn tf-btn-outline" onClick={() => go('strength')}>
                 Check Currency Strength
