@@ -492,7 +492,7 @@ const HistoryList = styled.div`
 `;
 
 // ============================================
-// CORE CONTAINERS — Brand + Nav stacked on left
+// CORE CONTAINERS
 // ============================================
 const TopBar = styled.header`
   display: flex;
@@ -522,7 +522,6 @@ const TopBar = styled.header`
   }
 `;
 
-/* Left column: toggle + (brand + connection + nav) */
 const LeftColumn = styled.div`
   display: flex;
   align-items: center;
@@ -541,25 +540,25 @@ const LeftColumn = styled.div`
   }
 `;
 
-/* Brand block: brand row + optional nav row */
 const BrandBlock = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
   min-width: 0;
   flex: 1 1 auto;
+  align-items: center;
 `;
 
-/* Brand row: brand text + connection status inline */
 const BrandRow = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
   min-width: 0;
+  justify-content: center;
 
-  @media (max-width: 480px) {
-    gap: 8px;
+  @media (max-width: 900px) {
+    justify-content: flex-start;
   }
 `;
 
@@ -582,10 +581,11 @@ const RightSection = styled.div`
   }
 `;
 
-/* Nav — sits under the brand, subtle left accent line connects the two */
+/* Nav — centered under the brand */
 const ForexNavWrapper = styled.nav`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 3px;
   padding: 3px;
   background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
@@ -595,16 +595,13 @@ const ForexNavWrapper = styled.nav`
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  align-self: flex-start;
+  width: 100%;
 
   &::-webkit-scrollbar { display: none; }
 
-  /* Subtle accent left border to visually connect to the brand */
-  border-left: 2px solid ${p => p.theme?.colors?.accent || '#3b82f6'};
-
   @media (max-width: 900px) {
+    justify-content: flex-start;
     width: 100%;
-    align-self: stretch;
   }
 `;
 
@@ -793,17 +790,6 @@ const SessionHero = styled.button`
     letter-spacing: 0.3px; margin-top: 3px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     max-width: 100%; font-variant-numeric: tabular-nums;
-
-    .pct-chip {
-      display: inline-flex; align-items: center;
-      flex-shrink: 0; padding: 1px 5px; border-radius: 4px;
-      font-size: 8px; font-weight: 800; letter-spacing: 0.4px;
-      background: ${p => p.$color + '28'};
-      color: ${p => p.$color};
-      border: 1px solid ${p => p.$color + '55'};
-      font-variant-numeric: tabular-nums;
-      .pct-value { color: ${p => p.theme?.colors?.text || '#ffffff'}; font-weight: 900; margin: 0 2px; }
-    }
   }
 
   .clock {
@@ -851,7 +837,6 @@ const SessionHero = styled.button`
   @media (max-width: 480px) {
     padding: 8px 10px 12px 8px;
     .session-sub { font-size: 8.5px; }
-    .session-sub .pct-chip { display: none; }
     .clock .tz { display: none; }
   }
 `;
