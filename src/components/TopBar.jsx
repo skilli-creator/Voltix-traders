@@ -243,6 +243,20 @@ const BotsIcon = () => (
   </svg>
 );
 
+/* 🆕 TradingView icon (add only) */
+const TradingViewIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2.5" y="4" width="19" height="15" rx="2" />
+    <line x1="7"   y1="8"  x2="7"   y2="16" />
+    <rect  x="5.75" y="10" width="2.5" height="4" fill="currentColor" stroke="none" />
+    <line x1="12"  y1="7"  x2="12"  y2="15" />
+    <rect  x="10.75" y="9" width="2.5" height="3" fill="currentColor" stroke="none" />
+    <line x1="17"  y1="9"  x2="17"  y2="17" />
+    <rect  x="15.75" y="11" width="2.5" height="4" fill="currentColor" stroke="none" />
+    <line x1="8" y1="21" x2="16" y2="21" />
+  </svg>
+);
+
 // ============================================
 // FOREX SESSIONS — real UTC open/close windows.
 // `color` acts only as a FALLBACK; the live color is
@@ -256,12 +270,13 @@ const FOREX_SESSIONS = [
 ];
 
 // ============================================
-// FOREX NAV ITEMS — Home / Strength Meter / Bots
+// FOREX NAV ITEMS — Home / Strength Meter / Bots / TradingView
 // ============================================
 export const FOREX_NAV_ITEMS = [
-  { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
-  { key: 'strength', label: 'Strength Meter', path: '/forexdash/strength', icon: <StrengthIcon /> },
-  { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
+  { key: 'home',        label: 'Home',           path: '/forexdash',             icon: <DashboardIcon /> },
+  { key: 'strength',    label: 'Strength Meter', path: '/forexdash/strength',    icon: <StrengthIcon /> },
+  { key: 'bots',        label: 'Bots',           path: '/forexdash/bots',        icon: <BotsIcon /> },
+  { key: 'tradingview', label: 'TradingView',    path: '/forexdash/tradingview', icon: <TradingViewIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -1152,7 +1167,7 @@ const RightSection = styled.div`
   }
 `;
 
-/* ---- Forex navigation (Home / Strength Meter / Bots) ---- */
+/* ---- Forex navigation (Home / Strength Meter / Bots / TradingView) ---- */
 const ForexNavWrapper = styled.nav`
   display: flex;
   align-items: center;
@@ -3082,8 +3097,10 @@ const TopPanel = ({
   // Which forex nav item is active based on pathname
   const activeForexNav = (() => {
     const p = location.pathname;
+    if (p === '/forexdash/lot') return 'lot';
     if (p === '/forexdash/strength') return 'strength';
     if (p === '/forexdash/bots') return 'bots';
+    if (p === '/forexdash/tradingview') return 'tradingview';
     return 'home';
   })();
 
@@ -3643,7 +3660,7 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* ---------- Forex navigation (Home / Strength Meter / Bots) ---------- */}
+        {/* ---------- Forex navigation (Home / Strength Meter / Bots / TradingView) ---------- */}
         {isForex && (
           <ForexNavWrapper aria-label="Forex navigation">
             {FOREX_NAV_ITEMS.map((item) => (
