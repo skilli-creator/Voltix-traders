@@ -63,11 +63,6 @@ const auraDrift = keyframes`
   50%      { transform: translate3d(2%, -2%, 0) scale(1.08); opacity: 0.85; }
 `;
 
-const breathe = keyframes`
-  0%, 100% { opacity: 0.85; }
-  50%      { opacity: 1; }
-`;
-
 // ============================================
 // SVG ICONS
 // ============================================
@@ -522,17 +517,17 @@ const TopBar = styled.header`
   }
 `;
 
+/* Left column: sidebar toggle + brand block */
 const LeftColumn = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-width: 0;
 
   @media (max-width: 900px) {
     flex: 1 1 100%;
     gap: 10px;
-    align-items: flex-start;
   }
 
   @media (max-width: 480px) {
@@ -540,26 +535,28 @@ const LeftColumn = styled.div`
   }
 `;
 
+/* Brand block: brand text + connected below + nav centered below */
 const BrandBlock = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   flex: 1 1 auto;
-  align-items: center;
-`;
-
-const BrandRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  min-width: 0;
-  justify-content: center;
+  /* Center everything when forex (nav present), left-align otherwise */
+  align-items: ${p => (p.$centered ? 'center' : 'flex-start')};
 
   @media (max-width: 900px) {
-    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 6px;
   }
+`;
+
+/* Brand container — brand text on top, connection status below (original arrangement) */
+const BrandContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
 `;
 
 const RightSection = styled.div`
@@ -595,7 +592,8 @@ const ForexNavWrapper = styled.nav`
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  width: 100%;
+  width: auto;
+  max-width: 100%;
 
   &::-webkit-scrollbar { display: none; }
 
@@ -1165,10 +1163,6 @@ const Spinner = styled.div`
   margin: 0 auto 12px;
 `;
 
-const BrandContainer = styled.div`
-  display: flex; flex-direction: column; align-items: flex-start; min-width: 0;
-`;
-
 const BrandText = styled.div`
   display: flex; align-items: center;
   font-size: 1.3rem; font-weight: 800;
@@ -1200,10 +1194,29 @@ const PlatformOptionItem = styled.div`
   .platform-desc { font-size: 10px; font-style: normal; font-weight: 500; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; margin-left: auto; }
 `;
 
+/* Connection status — original position (below brand text inside BrandContainer) */
 const ConnectionStatus = styled.div`
-  display: flex; align-items: center; gap: 5px;
-  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: ${props => props.connected ? '#10b981' : '#ef4444'}; box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'}; }
-  .status-text { font-size: 10px; font-weight: 600; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; text-transform: uppercase; letter-spacing: 0.3px; }
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: ${props => props.connected ? '#10b981' : '#ef4444'};
+    box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'};
+    animation: ${pulseGlow} 2s ease-in-out infinite;
+  }
+
+  .status-text {
+    font-size: 10px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
 
   @media (max-width: 480px) {
     .status-text { font-size: 9.5px; }
@@ -1602,35 +1615,33 @@ const TopPanel = ({
               <span className="line" /><span className="line" /><span className="line" />
             </SidebarToggle>
           )}
-          <BrandBlock>
-            <BrandRow>
-              <BrandContainer>
-                <BrandText>
-                  <span className="voltix">MyTradeApp.</span>
-                  <DropdownContainer ref={platformRef}>
-                    <PlatformSelector onClick={togglePlatformDropdown} $color={PLATFORM_OPTIONS[platform].color}>
-                      <span>{PLATFORM_OPTIONS[platform].label}</span>
-                      <span className="platform-definition">({PLATFORM_OPTIONS[platform].definition})</span>
-                      <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
-                    </PlatformSelector>
-                    <PlatformDropdown isOpen={isPlatformOpen}>
-                      <MenuHeader>Select Platform</MenuHeader>
-                      {Object.entries(PLATFORM_OPTIONS).map(([key, opt]) => (
-                        <PlatformOptionItem key={key} $active={platform === key} $color={opt.color} onClick={() => handlePlatformSelect(key)}>
-                          <span className="platform-dot" />
-                          <span>{opt.label}</span>
-                          <span className="platform-desc">({opt.definition})</span>
-                        </PlatformOptionItem>
-                      ))}
-                    </PlatformDropdown>
-                  </DropdownContainer>
-                </BrandText>
-              </BrandContainer>
+          <BrandBlock $centered={isForex}>
+            <BrandContainer>
+              <BrandText>
+                <span className="voltix">MyTradeApp.</span>
+                <DropdownContainer ref={platformRef}>
+                  <PlatformSelector onClick={togglePlatformDropdown} $color={PLATFORM_OPTIONS[platform].color}>
+                    <span>{PLATFORM_OPTIONS[platform].label}</span>
+                    <span className="platform-definition">({PLATFORM_OPTIONS[platform].definition})</span>
+                    <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
+                  </PlatformSelector>
+                  <PlatformDropdown isOpen={isPlatformOpen}>
+                    <MenuHeader>Select Platform</MenuHeader>
+                    {Object.entries(PLATFORM_OPTIONS).map(([key, opt]) => (
+                      <PlatformOptionItem key={key} $active={platform === key} $color={opt.color} onClick={() => handlePlatformSelect(key)}>
+                        <span className="platform-dot" />
+                        <span>{opt.label}</span>
+                        <span className="platform-desc">({opt.definition})</span>
+                      </PlatformOptionItem>
+                    ))}
+                  </PlatformDropdown>
+                </DropdownContainer>
+              </BrandText>
               <ConnectionStatus connected={connected}>
                 <span className="status-dot" />
                 <span className="status-text">{connected ? 'Connected' : 'Disconnected'}</span>
               </ConnectionStatus>
-            </BrandRow>
+            </BrandContainer>
 
             {isForex && (
               <ForexNavWrapper aria-label="Forex navigation">
