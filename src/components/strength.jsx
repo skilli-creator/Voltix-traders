@@ -1,5 +1,5 @@
 // src/components/Strength.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTheme } from 'styled-components';
 import { CURRENCIES, PAIRS, fmt, currencyStrength } from '../pages/forexdash';
 
@@ -62,12 +62,27 @@ const getTier = (v, maxPos) => {
 /* ================================================================ */
 export default function Strength({ strength, onNavigate }) {
   const theme = useTheme();
+  const rootRef = useRef(null);
   const [tf, setTf]   = useState('4H');
   const [now, setNow] = useState(() => new Date());
 
+  /* Live clock */
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(id);
+  }, []);
+
+  /* Reset scroll to the top whenever this page mounts so the
+     browser's scroll restoration doesn't auto-scroll us to the
+     bottom of a previously visited page. */
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+    // Run after layout so the container has its final scrollHeight.
+    const raf = requestAnimationFrame(() => {
+      el.scrollTop = 0;
+    });
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   /* ================================================================
@@ -147,21 +162,25 @@ export default function Strength({ strength, onNavigate }) {
     <>
       <style>{`
         /* ============================================================
-           SCROLL — forces the parent .view container to scroll
-           on any display size (laptop, tablet, phone).
+           SCROLL — definite height (viewport minus topbar).
+           No scroll-behavior, no scroll anchoring — the browser
+           will not restore the previous page's scroll position.
            ============================================================ */
         .view.active.sm-root{
+          height: calc(100vh - var(--topbar-h, 76px)) !important;
+          height: calc(100dvh - var(--topbar-h, 76px)) !important;
+          max-height: calc(100vh - var(--topbar-h, 76px)) !important;
+          max-height: calc(100dvh - var(--topbar-h, 76px)) !important;
           overflow-y: auto !important;
           overflow-x: hidden !important;
-          height: 100% !important;
-          max-height: 100vh;
           -webkit-overflow-scrolling: touch;
-          scroll-behavior: smooth;
-          padding-bottom: 40px; /* room at the bottom so the last card never hugs the edge */
+          overscroll-behavior: contain;
+          overflow-anchor: none;   /* stops the "jump to bottom" behaviour */
+          scroll-padding-top: 8px;
+          padding: 0;              /* padding lives on .sm-root instead */
+          margin: 0;
         }
 
-        /* Optional — hide scrollbar on macOS-style for a cleaner look,
-           keep a subtle thumb on Windows/Linux via webkit fallback */
         .view.active.sm-root::-webkit-scrollbar{ width: 10px; }
         .view.active.sm-root::-webkit-scrollbar-track{ background: transparent; }
         .view.active.sm-root::-webkit-scrollbar-thumb{
@@ -172,7 +191,7 @@ export default function Strength({ strength, onNavigate }) {
           transition: background .25s ease;
         }
         .view.active.sm-root::-webkit-scrollbar-thumb:hover{
-          background: ${withAlpha(text, 0.20)};
+          background: ${withAlpha(text, 0.22)};
           background-clip: content-box;
         }
 
@@ -182,17 +201,15 @@ export default function Strength({ strength, onNavigate }) {
           color:${text};
           background:transparent;
           transition:color .25s ease;
+          /* Extra bottom padding so the last card is never clipped */
+          padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
         }
         .sm-root *{ box-sizing:border-box; }
 
-        /* Entrance animations for cards */
+        /* Entrance animations */
         @keyframes smFadeUp{
           from { opacity: 0; transform: translateY(14px); }
           to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes smFadeIn{
-          from { opacity: 0; }
-          to   { opacity: 1; }
         }
         @keyframes smPulse{
           0%,100%{ opacity:.6; transform:scale(1); }
@@ -224,9 +241,7 @@ export default function Strength({ strength, onNavigate }) {
           border-radius:12px;
           transition:background .25s ease, border-color .25s ease, box-shadow .25s ease;
         }
-        .sm-tabs:hover{
-          box-shadow: 0 6px 18px ${withAlpha(text, 0.04)};
-        }
+        .sm-tabs:hover{ box-shadow: 0 6px 18px ${withAlpha(text, 0.04)}; }
         .sm-tab{
           padding:8px 18px; border-radius:9px;
           font-family:inherit; font-size:12.5px; font-weight:700;
@@ -236,10 +251,7 @@ export default function Strength({ strength, onNavigate }) {
           white-space:nowrap;
           position: relative;
         }
-        .sm-tab:hover{
-          color:${text};
-          background:${withAlpha(text, 0.05)};
-        }
+        .sm-tab:hover{ color:${text}; background:${withAlpha(text, 0.05)}; }
         .sm-tab.active{
           background:linear-gradient(135deg, ${accent} 0%, ${accentHover} 100%);
           color:${bg};
@@ -276,7 +288,6 @@ export default function Strength({ strength, onNavigate }) {
           animation: smFadeUp .55s cubic-bezier(.16,1,.3,1) both;
         }
         .sm-card::before{
-          /* subtle top accent line */
           content:'';
           position:absolute; top:0; left:0; right:0;
           height:2px;
@@ -435,7 +446,6 @@ export default function Strength({ strength, onNavigate }) {
         }
         .sm-sumcard.watch:hover{ box-shadow:0 10px 28px -10px ${accentGlow}; }
 
-        /* Slow drifting aura behind the "watch" card */
         .sm-sumcard.watch::before{
           content:'';
           position:absolute;
@@ -563,6 +573,7 @@ export default function Strength({ strength, onNavigate }) {
           .sm-sumcard .sub{ font-size:10.5px; }
         }
         @media (max-width: 640px){
+          .sm-root{ padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
           .sm-topbar{ gap:12px; }
           .sm-tabs{ width:100%; justify-content:space-between; }
           .sm-tab{ flex:1; padding:8px 10px; font-size:12px; }
@@ -591,7 +602,7 @@ export default function Strength({ strength, onNavigate }) {
         }
       `}</style>
 
-      <section className="view active sm-root">
+      <section className="view active sm-root" ref={rootRef}>
 
         {/* ============================================================
             TOP BAR
