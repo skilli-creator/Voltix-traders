@@ -26,10 +26,6 @@ const TIMEFRAMES = [
 /* ================================================================ */
 /*  HELPERS                                                         */
 /* ================================================================ */
-
-/* Apply alpha (0..1) to a colour, tolerating hex/rgb/hsl and
-   already-alpha'd values. Returns the original string if it can't
-   be parsed, so a bad theme entry never throws. */
 const withAlpha = (color, a) => {
   if (typeof color !== 'string') return color;
   if (color.startsWith('rgb') || color.startsWith('hsl')) return color;
@@ -75,7 +71,7 @@ export default function Strength({ strength, onNavigate }) {
   }, []);
 
   /* ================================================================
-     THEME TOKENS — everything the styles need is resolved here.
+     THEME TOKENS
      ================================================================ */
   const c = theme?.colors || {};
 
@@ -111,10 +107,9 @@ export default function Strength({ strength, onNavigate }) {
   const borderHover  = c.borderHover  || border;
   const borderStrong = c.borderStrong || borderHover;
 
-  /* Tier visuals — all derived from the theme palette */
   const TIER_STYLES = {
     ultra:  {
-      bar:  `linear-gradient(90deg, ${success} 0%, ${accentHover === success ? success : success} 100%)`,
+      bar:  `linear-gradient(90deg, ${success} 0%, ${success} 100%)`,
       text: success,
       glow: successGlow,
     },
@@ -136,7 +131,7 @@ export default function Strength({ strength, onNavigate }) {
   };
 
   /* ================================================================
-     DERIVED DATA — safe against partial props
+     DERIVED DATA
      ================================================================ */
   const st = currencyStrength(strength) || {};
   const safe = (code) => (Number.isFinite(st[code]) ? st[code] : 0);
@@ -171,11 +166,25 @@ export default function Strength({ strength, onNavigate }) {
   return (
     <>
       <style>{`
+        /* ============================================================
+           SCROLL — makes the page scrollable on every screen size
+           ============================================================ */
+        .view.active.sm-root{
+          overflow-y:auto !important;
+          overflow-x:hidden !important;
+          height:100% !important;
+          max-height:100vh;
+          -webkit-overflow-scrolling:touch;
+          scroll-behavior:smooth;
+        }
+
         .sm-root{
           font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
           color:${text};
           background:transparent;
           transition:color .25s ease;
+          display:block;
+          padding: 8px 0 40px;
         }
         .sm-root *{ box-sizing:border-box; }
 
@@ -490,6 +499,7 @@ export default function Strength({ strength, onNavigate }) {
           .sm-sumcard .sub{ font-size:10.5px; }
         }
         @media (max-width: 640px){
+          .sm-root{ padding: 4px 0 32px; }
           .sm-topbar{ gap:12px; }
           .sm-tabs{ width:100%; justify-content:space-between; }
           .sm-tab{ flex:1; padding:8px 10px; font-size:12px; }
