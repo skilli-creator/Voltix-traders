@@ -487,46 +487,44 @@ const HistoryList = styled.div`
 `;
 
 // ============================================
-// CORE CONTAINERS
+// CORE CONTAINERS — Arrangement E
 // ============================================
 const TopBar = styled.header`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 24px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 10px 24px 8px;
   background: ${props => props.theme?.colors?.surface || '#0b0f19'};
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   position: sticky;
   top: 0;
   z-index: 200;
-  min-height: 72px;
   flex-shrink: 0;
-  gap: 16px;
-  flex-wrap: wrap;
+  gap: 8px 12px;
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
 
   @media (max-width: 900px) {
-    padding: 10px 16px;
-    gap: 10px;
-    align-items: flex-start;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
+    gap: 6px 8px;
   }
 
   @media (max-width: 480px) {
     padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px;
-    gap: 8px;
+    gap: 6px;
   }
 `;
 
-/* Left column: sidebar toggle + brand block */
-const LeftColumn = styled.div`
+/* Row 1 left: sidebar toggle + brand text (with connected under) */
+const LeftSection = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-width: 0;
+  order: 1;
 
   @media (max-width: 900px) {
-    flex: 1 1 100%;
+    flex: 1 1 auto;
     gap: 10px;
   }
 
@@ -535,23 +533,6 @@ const LeftColumn = styled.div`
   }
 `;
 
-/* Brand block: brand text + connected below + nav centered below */
-const BrandBlock = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  flex: 1 1 auto;
-  /* Center everything when forex (nav present), left-align otherwise */
-  align-items: ${p => (p.$centered ? 'center' : 'flex-start')};
-
-  @media (max-width: 900px) {
-    align-items: flex-start;
-    gap: 6px;
-  }
-`;
-
-/* Brand container — brand text on top, connection status below (original arrangement) */
 const BrandContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -559,17 +540,72 @@ const BrandContainer = styled.div`
   min-width: 0;
 `;
 
+const BrandText = styled.div`
+  display: flex; align-items: center;
+  font-size: 1.3rem; font-weight: 800;
+  user-select: none; cursor: default; gap: 2px; white-space: nowrap;
+  .voltix { color: ${props => props.theme?.colors?.text || '#ffffff'}; }
+
+  @media (max-width: 900px) { font-size: clamp(1.05rem, 4.6vw, 1.25rem); }
+  @media (max-width: 480px) { font-size: clamp(1rem, 4.4vw, 1.15rem); }
+`;
+
+const ConnectionStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: ${props => props.connected ? '#10b981' : '#ef4444'};
+    box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'};
+    animation: ${pulseGlow} 2s ease-in-out infinite;
+  }
+
+  .status-text {
+    font-size: 10px;
+    font-weight: 600;
+    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  @media (max-width: 480px) {
+    .status-text { font-size: 9.5px; }
+  }
+`;
+
+/* Session wrap — right-aligned on desktop, full-width row on mobile (order 4) */
+const SessionWrap = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin-left: auto;
+  order: 2;
+
+  @media (max-width: 900px) {
+    order: 4;
+    flex-basis: 100%;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 2px;
+  }
+`;
+
+/* Right section — theme + exit. Row 1 right on desktop; row 1 right on mobile too */
 const RightSection = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
   flex: 0 0 auto;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  flex-wrap: nowrap;
+  order: 3;
 
   @media (max-width: 900px) {
-    flex: 1 1 100%;
-    justify-content: flex-start;
+    order: 2;
     gap: 6px;
   }
 
@@ -578,7 +614,22 @@ const RightSection = styled.div`
   }
 `;
 
-/* Nav — centered under the brand */
+/* Divider — own row between row 1 and nav; on mobile between row 1 and session */
+const Divider = styled.div`
+  flex-basis: 100%;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.1)'}, transparent);
+  margin: 4px 0;
+  order: 4;
+
+  @media (max-width: 900px) {
+    order: 3;
+    margin: 2px 0;
+  }
+`;
+
+/* Nav — full-width row below divider, centered on desktop */
 const ForexNavWrapper = styled.nav`
   display: flex;
   align-items: center;
@@ -592,14 +643,14 @@ const ForexNavWrapper = styled.nav`
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  width: auto;
-  max-width: 100%;
+  flex-basis: 100%;
+  width: 100%;
+  order: 5;
 
   &::-webkit-scrollbar { display: none; }
 
   @media (max-width: 900px) {
     justify-content: flex-start;
-    width: 100%;
   }
 `;
 
@@ -639,17 +690,6 @@ const ForexNavButton = styled.button`
     font-size: 11.5px;
     gap: 5px;
     svg { width: 13px; height: 13px; }
-  }
-`;
-
-const SessionWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-
-  @media (max-width: 900px) {
-    width: 100%;
-    order: 10;
   }
 `;
 
@@ -1163,16 +1203,6 @@ const Spinner = styled.div`
   margin: 0 auto 12px;
 `;
 
-const BrandText = styled.div`
-  display: flex; align-items: center;
-  font-size: 1.3rem; font-weight: 800;
-  user-select: none; cursor: default; gap: 2px; white-space: nowrap;
-  .voltix { color: ${props => props.theme?.colors?.text || '#ffffff'}; }
-
-  @media (max-width: 900px) { font-size: clamp(1.05rem, 4.6vw, 1.25rem); }
-  @media (max-width: 480px) { font-size: clamp(1rem, 4.4vw, 1.15rem); }
-`;
-
 const PlatformSelector = styled.button`
   display: flex; align-items: center; gap: 4px;
   background: transparent; border: none;
@@ -1192,35 +1222,6 @@ const PlatformOptionItem = styled.div`
   &:hover { background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'}; color: ${props => props.$color}; }
   .platform-dot { width: 8px; height: 8px; border-radius: 50%; background: ${props => props.$color}; }
   .platform-desc { font-size: 10px; font-style: normal; font-weight: 500; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; margin-left: auto; }
-`;
-
-/* Connection status — original position (below brand text inside BrandContainer) */
-const ConnectionStatus = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 3px;
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: ${props => props.connected ? '#10b981' : '#ef4444'};
-    box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'};
-    animation: ${pulseGlow} 2s ease-in-out infinite;
-  }
-
-  .status-text {
-    font-size: 10px;
-    font-weight: 600;
-    color: ${props => props.theme?.colors?.textMuted || '#94a3b8'};
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-
-  @media (max-width: 480px) {
-    .status-text { font-size: 9.5px; }
-  }
 `;
 
 const SidebarToggle = styled.button`
@@ -1243,8 +1244,8 @@ const SidebarToggle = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: clamp(40px, 11vw, 48px);
-    height: clamp(40px, 11vw, 48px);
+    width: clamp(38px, 10.5vw, 46px);
+    height: clamp(38px, 10.5vw, 46px);
     border-radius: clamp(10px, 3vw, 12px);
   }
 `;
@@ -1609,158 +1610,143 @@ const TopPanel = ({
   return (
     <>
       <TopBar ref={topBarRef}>
-        <LeftColumn className="left-column">
+        {/* Row 1 left: sidebar toggle + brand (brand text top, connected below) */}
+        <LeftSection className="left-section">
           {showSidebarToggle && (
             <SidebarToggle isOpen={isSidebarOpen} onClick={onSidebarToggle} aria-label="Toggle sidebar">
               <span className="line" /><span className="line" /><span className="line" />
             </SidebarToggle>
           )}
-          <BrandBlock $centered={isForex}>
-            <BrandContainer>
-              <BrandText>
-                <span className="voltix">MyTradeApp.</span>
-                <DropdownContainer ref={platformRef}>
-                  <PlatformSelector onClick={togglePlatformDropdown} $color={PLATFORM_OPTIONS[platform].color}>
-                    <span>{PLATFORM_OPTIONS[platform].label}</span>
-                    <span className="platform-definition">({PLATFORM_OPTIONS[platform].definition})</span>
-                    <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
-                  </PlatformSelector>
-                  <PlatformDropdown isOpen={isPlatformOpen}>
-                    <MenuHeader>Select Platform</MenuHeader>
-                    {Object.entries(PLATFORM_OPTIONS).map(([key, opt]) => (
-                      <PlatformOptionItem key={key} $active={platform === key} $color={opt.color} onClick={() => handlePlatformSelect(key)}>
-                        <span className="platform-dot" />
-                        <span>{opt.label}</span>
-                        <span className="platform-desc">({opt.definition})</span>
-                      </PlatformOptionItem>
-                    ))}
-                  </PlatformDropdown>
-                </DropdownContainer>
-              </BrandText>
-              <ConnectionStatus connected={connected}>
-                <span className="status-dot" />
-                <span className="status-text">{connected ? 'Connected' : 'Disconnected'}</span>
-              </ConnectionStatus>
-            </BrandContainer>
+          <BrandContainer>
+            <BrandText>
+              <span className="voltix">MyTradeApp.</span>
+              <DropdownContainer ref={platformRef}>
+                <PlatformSelector onClick={togglePlatformDropdown} $color={PLATFORM_OPTIONS[platform].color}>
+                  <span>{PLATFORM_OPTIONS[platform].label}</span>
+                  <span className="platform-definition">({PLATFORM_OPTIONS[platform].definition})</span>
+                  <span className="chevron"><ChevronDownIcon open={isPlatformOpen} /></span>
+                </PlatformSelector>
+                <PlatformDropdown isOpen={isPlatformOpen}>
+                  <MenuHeader>Select Platform</MenuHeader>
+                  {Object.entries(PLATFORM_OPTIONS).map(([key, opt]) => (
+                    <PlatformOptionItem key={key} $active={platform === key} $color={opt.color} onClick={() => handlePlatformSelect(key)}>
+                      <span className="platform-dot" />
+                      <span>{opt.label}</span>
+                      <span className="platform-desc">({opt.definition})</span>
+                    </PlatformOptionItem>
+                  ))}
+                </PlatformDropdown>
+              </DropdownContainer>
+            </BrandText>
+            <ConnectionStatus connected={connected}>
+              <span className="status-dot" />
+              <span className="status-text">{connected ? 'Connected' : 'Disconnected'}</span>
+            </ConnectionStatus>
+          </BrandContainer>
+        </LeftSection>
 
-            {isForex && (
-              <ForexNavWrapper aria-label="Forex navigation">
-                {FOREX_NAV_ITEMS.map((item) => (
-                  <ForexNavButton
-                    key={item.key}
-                    className={activeForexNav === item.key ? 'active' : ''}
-                    onClick={() => handleForexNav(item.path)}
-                    aria-label={item.label}
-                  >
-                    {item.icon}
-                    <span>{item.label}</span>
-                  </ForexNavButton>
-                ))}
-              </ForexNavWrapper>
-            )}
-          </BrandBlock>
-        </LeftColumn>
+        {/* Row 1 right (desktop) / Row 2 (mobile): session pill */}
+        {isForex && (
+          <SessionWrap ref={sessionRef}>
+            <DropdownContainer style={{ position: 'relative' }}>
+              <SessionHero
+                onClick={toggleSessionDropdown}
+                aria-label="Forex market sessions"
+                $live={heroSession.isOpen}
+                $color={heroSession.color}
+                $progress={heroSession.progress}
+              >
+                <WavingFlag flag={heroSession.flag} color={heroSession.color} size={26} delay="0s" speed="3.2s" />
+                <div className="session-meta">
+                  <div className="session-row">
+                    <span className="session-name">{heroSession.name}</span>
+                    <span className="live-tag"><span className="dot" />{heroSession.isOpen ? 'Live' : 'Soon'}</span>
+                  </div>
+                  <span className="session-sub">
+                    {heroSession.isOpen ? `Closes in ${formatDuration(heroSession.minUntil)}` : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                  </span>
+                </div>
+                <div className="clock">
+                  <span className="time">{clock.full}</span>
+                  <span className="tz">UTC+3</span>
+                </div>
+                <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
+                <div className="session-progress"><div className="bar" /></div>
+              </SessionHero>
 
-        <RightSection>
-          {isForex && (
-            <SessionWrapper ref={sessionRef}>
-              <DropdownContainer style={{ position: 'relative' }}>
-                <SessionHero
-                  onClick={toggleSessionDropdown}
-                  aria-label="Forex market sessions"
-                  $live={heroSession.isOpen}
-                  $color={heroSession.color}
-                  $progress={heroSession.progress}
-                >
-                  <WavingFlag flag={heroSession.flag} color={heroSession.color} size={26} delay="0s" speed="3.2s" />
-                  <div className="session-meta">
-                    <div className="session-row">
-                      <span className="session-name">{heroSession.name}</span>
-                      <span className="live-tag"><span className="dot" />{heroSession.isOpen ? 'Live' : 'Soon'}</span>
+              <SessionDropdownMenu isOpen={isSessionOpen}>
+                <SessionHeader>
+                  <div className="title-block">
+                    <div className="globe-badge"><GlobeIcon size={16} /></div>
+                    <div className="titles">
+                      <div className="title">Forex Sessions</div>
+                      <div className="subtitle"><span className="pulse-dot" />{openSessions.length} of {FOREX_SESSIONS.length} markets open now</div>
                     </div>
-                    <span className="session-sub">
-                      {heroSession.isOpen ? `Closes in ${formatDuration(heroSession.minUntil)}` : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                  </div>
+                  <div className="clock-block">
+                    <div className="clock-time">{clock.precise}</div>
+                    <div className="clock-tz"><ClockIcon size={11} /> Nairobi · UTC+3</div>
+                  </div>
+                </SessionHeader>
+
+                <HeroSessionCard $color={heroSession.color} $progress={heroSession.progress}>
+                  <div className="hero-top">
+                    <div className="hero-left">
+                      <div className="flag-zone">
+                        <WavingFlag flag={heroSession.flag} color={heroSession.color} size={42} delay="0s" speed="2.8s" />
+                      </div>
+                      <div className="hero-info">
+                        <div className="hero-name">{heroSession.name}</div>
+                        <div className="hero-region"><GlobeIcon size={10} />{heroSession.region}<span className="hero-tag">{heroSession.tag}</span></div>
+                      </div>
+                    </div>
+                    <div className={`hero-status ${heroSession.isOpen ? '' : 'closed'}`}>
+                      <span className="dot" />
+                      {heroSession.isOpen ? 'Live Now' : 'Opens Soon'}
+                    </div>
+                  </div>
+                  <div className="hero-timing">
+                    <div className="time-range"><ClockIcon size={13} />{toUTC3(heroSession.startUTC)} – {toUTC3(heroSession.endUTC)} <span style={{ opacity: 0.6, marginLeft: 2 }}>EAT</span></div>
+                    <div className="countdown"><BoltIcon size={11} />{heroSession.isOpen ? `Closes in ${formatDuration(heroSession.minUntil)}` : `Opens in ${formatDuration(heroSession.minUntil)}`}</div>
+                  </div>
+                  <div className="progress-track"><div className="progress-fill" /></div>
+                  <div className="progress-labels">
+                    <span className="label-left">
+                      {heroSession.isOpen ? <>Session progress <span className="pct-accent">{Math.round(heroSession.progress * 100)}%</span> complete</> : <>Waiting for market to open</>}
+                    </span>
+                    <span className="label-right">
+                      {heroSession.isOpen ? `${formatDuration(heroSession.minUntil)} remaining` : `Opens in ${formatDuration(heroSession.minUntil)}`}
                     </span>
                   </div>
-                  <div className="clock">
-                    <span className="time">{clock.full}</span>
-                    <span className="tz">UTC+3</span>
-                  </div>
-                  <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
-                  <div className="session-progress"><div className="bar" /></div>
-                </SessionHero>
+                </HeroSessionCard>
 
-                <SessionDropdownMenu isOpen={isSessionOpen}>
-                  <SessionHeader>
-                    <div className="title-block">
-                      <div className="globe-badge"><GlobeIcon size={16} /></div>
-                      <div className="titles">
-                        <div className="title">Forex Sessions</div>
-                        <div className="subtitle"><span className="pulse-dot" />{openSessions.length} of {FOREX_SESSIONS.length} markets open now</div>
-                      </div>
-                    </div>
-                    <div className="clock-block">
-                      <div className="clock-time">{clock.precise}</div>
-                      <div className="clock-tz"><ClockIcon size={11} /> Nairobi · UTC+3</div>
-                    </div>
-                  </SessionHeader>
+                <SectionLabel>All markets</SectionLabel>
 
-                  <HeroSessionCard $color={heroSession.color} $progress={heroSession.progress}>
-                    <div className="hero-top">
-                      <div className="hero-left">
-                        <div className="flag-zone">
-                          <WavingFlag flag={heroSession.flag} color={heroSession.color} size={42} delay="0s" speed="2.8s" />
-                        </div>
-                        <div className="hero-info">
-                          <div className="hero-name">{heroSession.name}</div>
-                          <div className="hero-region"><GlobeIcon size={10} />{heroSession.region}<span className="hero-tag">{heroSession.tag}</span></div>
-                        </div>
-                      </div>
-                      <div className={`hero-status ${heroSession.isOpen ? '' : 'closed'}`}>
-                        <span className="dot" />
-                        {heroSession.isOpen ? 'Live Now' : 'Opens Soon'}
-                      </div>
+                {sessionStates.map((s, idx) => (
+                  <SessionListItem key={s.key} $live={s.isOpen} $color={s.color}>
+                    <div className="flag-zone">
+                      <WavingFlag flag={s.flag} color={s.color} size={28} delay={`${idx * 0.35}s`} speed="3.4s" />
                     </div>
-                    <div className="hero-timing">
-                      <div className="time-range"><ClockIcon size={13} />{toUTC3(heroSession.startUTC)} – {toUTC3(heroSession.endUTC)} <span style={{ opacity: 0.6, marginLeft: 2 }}>EAT</span></div>
-                      <div className="countdown"><BoltIcon size={11} />{heroSession.isOpen ? `Closes in ${formatDuration(heroSession.minUntil)}` : `Opens in ${formatDuration(heroSession.minUntil)}`}</div>
+                    <div className="list-info">
+                      <div className="name-row">
+                        <span className="name">{s.name}</span>
+                        {s.isOpen && <span className="live-chip"><span className="dot" />Live</span>}
+                      </div>
+                      <span className="range"><ClockIcon size={11} />{toUTC3(s.startUTC)} – {toUTC3(s.endUTC)} EAT</span>
                     </div>
-                    <div className="progress-track"><div className="progress-fill" /></div>
-                    <div className="progress-labels">
-                      <span className="label-left">
-                        {heroSession.isOpen ? <>Session progress <span className="pct-accent">{Math.round(heroSession.progress * 100)}%</span> complete</> : <>Waiting for market to open</>}
-                      </span>
-                      <span className="label-right">
-                        {heroSession.isOpen ? `${formatDuration(heroSession.minUntil)} remaining` : `Opens in ${formatDuration(heroSession.minUntil)}`}
-                      </span>
+                    <div className="list-right">
+                      <span className="status-label">{s.isOpen ? 'Closes in' : 'Opens in'}</span>
+                      <span className="status-value">{formatDuration(s.minUntil)}</span>
                     </div>
-                  </HeroSessionCard>
+                  </SessionListItem>
+                ))}
+              </SessionDropdownMenu>
+            </DropdownContainer>
+          </SessionWrap>
+        )}
 
-                  <SectionLabel>All markets</SectionLabel>
-
-                  {sessionStates.map((s, idx) => (
-                    <SessionListItem key={s.key} $live={s.isOpen} $color={s.color}>
-                      <div className="flag-zone">
-                        <WavingFlag flag={s.flag} color={s.color} size={28} delay={`${idx * 0.35}s`} speed="3.4s" />
-                      </div>
-                      <div className="list-info">
-                        <div className="name-row">
-                          <span className="name">{s.name}</span>
-                          {s.isOpen && <span className="live-chip"><span className="dot" />Live</span>}
-                        </div>
-                        <span className="range"><ClockIcon size={11} />{toUTC3(s.startUTC)} – {toUTC3(s.endUTC)} EAT</span>
-                      </div>
-                      <div className="list-right">
-                        <span className="status-label">{s.isOpen ? 'Closes in' : 'Opens in'}</span>
-                        <span className="status-value">{formatDuration(s.minUntil)}</span>
-                      </div>
-                    </SessionListItem>
-                  ))}
-                </SessionDropdownMenu>
-              </DropdownContainer>
-            </SessionWrapper>
-          )}
-
+        {/* Row 1 right: theme + exit (+ funds + account for deriv) */}
+        <RightSection>
           <DropdownContainer ref={themeRef}>
             <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
               <span className="theme-icon"><ThemeIcon /></span>
@@ -1843,6 +1829,26 @@ const TopPanel = ({
             <span>Exit</span>
           </ExitButton>
         </RightSection>
+
+        {/* Divider — full width row between top area and nav */}
+        {isForex && <Divider />}
+
+        {/* Nav — full-width row, centered on desktop */}
+        {isForex && (
+          <ForexNavWrapper aria-label="Forex navigation">
+            {FOREX_NAV_ITEMS.map((item) => (
+              <ForexNavButton
+                key={item.key}
+                className={activeForexNav === item.key ? 'active' : ''}
+                onClick={() => handleForexNav(item.path)}
+                aria-label={item.label}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </ForexNavButton>
+            ))}
+          </ForexNavWrapper>
+        )}
       </TopBar>
 
       {fundModalAction && createPortal(
