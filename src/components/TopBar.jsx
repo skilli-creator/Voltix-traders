@@ -7,29 +7,19 @@ import { useNavigate, useLocation } from 'react-router-dom';
 // ============================================
 // ANIMATION KEYFRAMES
 // ============================================
-const pulseRing = keyframes`
-  0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2.4); opacity: 0; }
-`;
-
-const rotateIn = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-`;
-
 const pulseGlow = keyframes`
   0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.08); }
+  50%      { opacity: 0.9; transform: scale(1.08); }
 `;
 
 const slideUp = keyframes`
   from { opacity: 0; transform: translateY(30px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 `;
 
 const fadeIn = keyframes`
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 `;
 
 const spin = keyframes`
@@ -37,8 +27,8 @@ const spin = keyframes`
 `;
 
 const livePulse = keyframes`
-  0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.55); }
-  70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
   100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 `;
 
@@ -223,7 +213,7 @@ const BotsIcon = () => (
   </svg>
 );
 
-/* 🆕 TradingView icon — candlestick + screen frame */
+/* 🆕 TradingView icon */
 const TradingViewIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2.5" y="4" width="19" height="15" rx="2" />
@@ -248,13 +238,13 @@ const FOREX_SESSIONS = [
 ];
 
 // ============================================
-// FOREX NAV ITEMS — Home / Strength Meter / Bots / 🆕 TradingView
+// FOREX NAV ITEMS
 // ============================================
 export const FOREX_NAV_ITEMS = [
-  { key: 'home',        label: 'Home',           path: '/forexdash',              icon: <DashboardIcon /> },
-  { key: 'strength',    label: 'Strength Meter', path: '/forexdash/strength',     icon: <StrengthIcon /> },
-  { key: 'bots',        label: 'Bots',           path: '/forexdash/bots',         icon: <BotsIcon /> },
-  { key: 'tradingview', label: 'TradingView',    path: '/forexdash/tradingview',  icon: <TradingViewIcon /> },
+  { key: 'home',        label: 'Home',           path: '/forexdash',             icon: <DashboardIcon /> },
+  { key: 'strength',    label: 'Strength Meter', path: '/forexdash/strength',    icon: <StrengthIcon /> },
+  { key: 'bots',        label: 'Bots',           path: '/forexdash/bots',        icon: <BotsIcon /> },
+  { key: 'tradingview', label: 'TradingView',    path: '/forexdash/tradingview', icon: <TradingViewIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -319,7 +309,7 @@ const getSessionColor = (session, theme) => {
 };
 
 // ============================================
-// FUNDS MODAL COMPONENTS (unchanged — kept full for completeness)
+// FUNDS MODAL COMPONENTS
 // ============================================
 const ModalOverlay = styled.div`
   position: fixed; inset: 0; background: transparent; z-index: 500;
@@ -540,80 +530,185 @@ const HistoryList = styled.div`
 // CORE CONTAINERS
 // ============================================
 const TopBar = styled.header`
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 12px 28px;
   background: ${props => props.theme?.colors?.surface || '#0b0f19'};
   border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
-  position: sticky; top: 0; z-index: 200;
-  min-height: 76px; flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  min-height: 76px;
+  flex-shrink: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+
   @media (max-width: 1024px) {
-    padding: 12px 20px; flex-wrap: wrap; gap: 10px 14px; justify-content: flex-start;
+    padding: 12px 20px;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    justify-content: flex-start;
   }
+
   @media (max-width: 768px) {
-    position: sticky; top: 0;
+    position: sticky;
+    top: 0;
     padding: calc(clamp(12px, 3.4vw, 18px) + env(safe-area-inset-top, 0px)) clamp(14px, 4vw, 20px) clamp(12px, 3.4vw, 16px);
-    min-height: auto; flex-wrap: wrap; gap: clamp(8px, 2.4vw, 12px);
-    align-items: center; justify-content: flex-start; z-index: 200;
+    min-height: auto;
+    flex-wrap: wrap;
+    gap: clamp(8px, 2.4vw, 12px);
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 200;
+  }
+
+  @media (max-width: 480px) {
+    padding: calc(clamp(10px, 3.2vw, 16px) + env(safe-area-inset-top, 0px)) clamp(12px, 3.6vw, 16px) clamp(10px, 3.2vw, 14px);
+    gap: clamp(6px, 2vw, 10px);
   }
 `;
 
 const LeftSection = styled.div`
-  display: flex; align-items: center; gap: 16px;
-  flex-shrink: 0; min-width: 0;
-  @media (max-width: 1024px) { order: 1; gap: 12px; flex: 0 1 auto; min-width: 0; }
-  @media (max-width: 768px) { order: 1; gap: clamp(8px, 2.6vw, 12px); flex: 0 1 auto; min-width: 0; }
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  min-width: 0;
+
+  @media (max-width: 1024px) {
+    order: 1;
+    gap: 12px;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    order: 1;
+    gap: clamp(8px, 2.6vw, 12px);
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  @media (max-width: 480px) {
+    gap: clamp(6px, 2vw, 10px);
+  }
 `;
 
 const RightSection = styled.div`
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  @media (max-width: 1024px) { order: 2; gap: 8px; flex: 0 0 auto; margin-left: auto; }
-  @media (max-width: 768px) { order: 2; gap: clamp(5px, 1.8vw, 8px); flex: 0 0 auto; flex-wrap: nowrap; margin-left: auto; }
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  @media (max-width: 1024px) {
+    order: 2;
+    gap: 8px;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  @media (max-width: 768px) {
+    order: 2;
+    gap: clamp(5px, 1.8vw, 8px);
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    margin-left: auto;
+  }
 `;
 
 const ForexNavWrapper = styled.nav`
-  display: flex; align-items: center; gap: 4px;
-  margin: 0 16px; padding: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 16px;
+  padding: 4px;
   background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
-  border-radius: 12px; flex-shrink: 0;
-  @media (max-width: 1024px) { order: 4; margin: 0; gap: 2px; flex: 0 0 auto; }
+  border-radius: 12px;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    order: 4;
+    margin: 0;
+    gap: 2px;
+    flex: 0 0 auto;
+  }
+
   @media (max-width: 768px) {
-    order: 4; width: 100%; flex: 0 0 100%; margin: 2px 0 0;
-    justify-content: flex-start; overflow-x: auto;
-    padding: clamp(5px, 1.6vw, 8px); gap: clamp(4px, 1.4vw, 8px);
-    border-radius: clamp(10px, 3vw, 14px); scrollbar-width: none;
+    order: 4;
+    width: 100%;
+    flex: 0 0 100%;
+    margin: 2px 0 0;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: clamp(5px, 1.6vw, 8px);
+    gap: clamp(4px, 1.4vw, 8px);
+    border-radius: clamp(10px, 3vw, 14px);
+    scrollbar-width: none;
+
     &::-webkit-scrollbar { display: none; }
   }
 `;
 
 const ForexNavButton = styled.button`
-  display: flex; align-items: center; gap: 7px;
-  padding: 7px 14px; border-radius: 9px;
-  border: 1px solid transparent; background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
   color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
-  font-family: inherit; font-size: 12.5px; font-weight: 600;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  white-space: nowrap; flex-shrink: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+
   svg { width: 15px; height: 15px; flex-shrink: 0; }
+
   &:hover {
     background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
     color: ${p => p.theme?.colors?.text || '#ffffff'};
   }
+
   &.active {
     background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.14)'};
     color: ${p => p.theme?.colors?.accent || '#3b82f6'};
     border-color: ${p => (p.theme?.colors?.accent || '#3b82f6') + '30'};
     box-shadow: 0 0 12px ${p => (p.theme?.colors?.accent || '#3b82f6') + '20'};
   }
+
+  @media (max-width: 768px) {
+    padding: clamp(9px, 2.6vw, 12px) clamp(12px, 3.6vw, 16px);
+    font-size: clamp(12.5px, 3.5vw, 14px);
+    border-radius: clamp(8px, 2.6vw, 12px);
+    gap: clamp(6px, 2vw, 10px);
+
+    svg { width: clamp(15px, 4.2vw, 18px); height: clamp(15px, 4.2vw, 18px); }
+  }
 `;
 
 const SessionWrapper = styled.div`
-  display: flex; align-items: center; margin: 0 16px; flex-shrink: 0;
-  @media (max-width: 1024px) { order: 3; margin: 0; flex: 0 0 auto; }
+  display: flex;
+  align-items: center;
+  margin: 0 16px;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    order: 3;
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
   @media (max-width: 768px) {
-    order: 3; width: 100%; flex: 0 0 100%; margin: 2px 0 0; justify-content: flex-start;
+    order: 3;
+    width: 100%;
+    flex: 0 0 100%;
+    margin: 2px 0 0;
+    justify-content: flex-start;
   }
 `;
 
@@ -621,9 +716,14 @@ const SessionWrapper = styled.div`
 // FLYING FLAG
 // ============================================
 const FlagWrap = styled.div`
-  position: relative; display: inline-flex; align-items: center; justify-content: flex-start;
-  padding-left: 6px; perspective: 180px; flex-shrink: 0;
-  width: ${p => p.$size || 26}px; height: ${p => p.$size || 26}px;
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: flex-start;
+  padding-left: 6px;
+  perspective: 180px;
+  flex-shrink: 0;
+  width: ${p => p.$size || 26}px;
+  height: ${p => p.$size || 26}px;
+
   &::before {
     content: ''; position: absolute; left: 0; top: -3px; bottom: -3px; width: 2px;
     border-radius: 2px;
@@ -631,6 +731,7 @@ const FlagWrap = styled.div`
     box-shadow: 0 0 6px ${p => p.$color + 'b0'}, 0 0 12px ${p => p.$color + '60'};
     z-index: 3;
   }
+
   &::after {
     content: ''; position: absolute; left: -2.5px; top: -5px; width: 7px; height: 7px;
     border-radius: 50%;
@@ -638,21 +739,29 @@ const FlagWrap = styled.div`
     box-shadow: 0 0 8px ${p => p.$color + 'cc'}, inset 0 0 2px rgba(255,255,255,0.6);
     z-index: 4;
   }
+
   .cloth {
     display: inline-flex; align-items: center; justify-content: center;
-    margin-left: 3px; font-size: ${p => p.$size || 26}px; line-height: 1;
-    transform-origin: 0% 50%; transform-style: preserve-3d;
+    margin-left: 3px;
+    font-size: ${p => p.$size || 26}px;
+    line-height: 1;
+    transform-origin: 0% 50%;
+    transform-style: preserve-3d;
     animation: ${flagWave} ${p => p.$speed || '3s'} ease-in-out infinite;
     animation-delay: ${p => p.$delay || '0s'};
     filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.45)) drop-shadow(0 0 6px ${p => p.$color + '40'});
+    will-change: transform;
     position: relative;
   }
+
   .cloth::after {
     content: ''; position: absolute; inset: 0;
     background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.35) 50%, transparent 65%);
     background-size: 220% 100%;
     animation: ${shimmer} 3.5s ease-in-out infinite;
-    mix-blend-mode: screen; pointer-events: none; border-radius: 2px;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    border-radius: 2px;
   }
 `;
 
@@ -666,23 +775,42 @@ const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
 // SESSION HERO PILL
 // ============================================
 const SessionHero = styled.button`
-  position: relative; display: flex; align-items: center; gap: 12px;
-  padding: 9px 14px 14px 10px; border-radius: 14px;
+  position: relative;
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 14px 14px 10px;
+  border-radius: 14px;
   border: 1px solid ${p => p.$live ? (p.$color + '66') : (p.theme?.colors?.border || 'rgba(255,255,255,0.08)')};
   background: ${p => p.$live
     ? `linear-gradient(135deg, ${p.$color}2e 0%, ${p.$color}0a 45%, ${p.theme?.colors?.background || 'rgba(255,255,255,0.03)'} 100%)`
     : (p.theme?.colors?.background || 'rgba(255,255,255,0.03)')};
   color: ${p => p.theme?.colors?.text || '#fff'};
-  font-family: inherit; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden; flex-shrink: 0; white-space: nowrap; width: 400px; min-height: 68px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 1px 0 rgba(0,0,0,0.2), ${p => p.$live ? `0 6px 20px -6px ${p.$color}80` : '0 4px 14px -6px rgba(0,0,0,0.6)'};
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  flex-shrink: 0;
+  white-space: nowrap;
+  width: 400px;
+  min-height: 68px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 1px 0 rgba(0,0,0,0.2),
+    ${p => p.$live ? `0 6px 20px -6px ${p.$color}80` : '0 4px 14px -6px rgba(0,0,0,0.6)'};
+
   &::before {
     content: ''; position: absolute; inset: 0;
     background: linear-gradient(110deg, transparent 30%, ${p => p.$live ? (p.$color + '1c') : 'rgba(255,255,255,0.05)'} 50%, transparent 70%);
-    background-size: 220% 100%; animation: ${shimmer} 5s ease-in-out infinite;
-    pointer-events: none; z-index: 1;
+    background-size: 220% 100%;
+    animation: ${shimmer} 5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
   }
-  &:hover { border-color: ${p => p.$color || '#3b82f6'}; transform: translateY(-1px); }
+
+  &:hover {
+    border-color: ${p => p.$color || p.theme?.colors?.accent || '#3b82f6'};
+    transform: translateY(-1px);
+  }
+
   .session-meta { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; min-width: 0; flex: 1; position: relative; z-index: 2; }
   .session-row { display: flex; align-items: center; gap: 7px; }
   .session-name { font-size: 13px; font-weight: 800; letter-spacing: -0.2px; color: ${p => p.theme?.colors?.text || '#fff'}; }
@@ -694,29 +822,26 @@ const SessionHero = styled.button`
     border: 1px solid ${p => p.$live ? 'rgba(34,197,94,0.45)' : 'rgba(148,163,184,0.25)'};
     animation: ${p => p.$live ? breathe : 'none'} 2.4s ease-in-out infinite;
     flex-shrink: 0;
-    .dot { width: 5px; height: 5px; border-radius: 50%; background: ${p => p.$live ? '#22c55e' : '#94a3b8'}; box-shadow: ${p => p.$live ? '0 0 6px #22c55e' : 'none'}; animation: ${p => p.$live ? livePulse : 'none'} 1.6s ease-out infinite; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: ${p => p.$live ? '#22c55e' : '#94a3b8'}; box-shadow: ${p => p.$live ? '0 0 6px #22c55e' : 'none'}; }
   }
   .session-sub {
-    display: inline-flex; align-items: center; gap: 5px; font-size: 9.5px; font-weight: 600;
-    color: ${p => p.theme?.colors?.textMuted || '#94a3b8'}; letter-spacing: 0.3px;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 9.5px; font-weight: 600;
+    color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
     margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     font-variant-numeric: tabular-nums;
-    .pct-chip {
-      display: inline-flex; align-items: center; flex-shrink: 0; padding: 1px 6px; border-radius: 4px;
-      font-size: 8.5px; font-weight: 800; letter-spacing: 0.4px;
-      background: ${p => p.$color + '28'}; color: ${p => p.$color};
-      border: 1px solid ${p => p.$color + '55'};
-      .pct-value { color: ${p => p.theme?.colors?.text || '#ffffff'}; font-weight: 900; margin: 0 2px; }
-    }
   }
   .clock {
-    display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15;
-    padding-left: 12px; border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
+    display: flex; flex-direction: column; align-items: flex-end;
+    line-height: 1.15;
+    padding-left: 12px;
+    border-left: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.08)'};
     position: relative; z-index: 2; flex-shrink: 0;
     .time { font-family: 'SF Mono', 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; color: ${p => p.$live ? p.$color : (p.theme?.colors?.text || '#fff')}; font-variant-numeric: tabular-nums; }
     .tz { font-size: 8px; font-weight: 800; letter-spacing: 0.8px; color: ${p => p.theme?.colors?.textMuted || '#94a3b8'}; margin-top: 2px; text-transform: uppercase; }
   }
   .chev { display: flex; align-items: center; margin-left: 4px; opacity: 0.6; flex-shrink: 0; position: relative; z-index: 2; }
+
   .session-progress {
     position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
     background: rgba(0,0,0,0.45); overflow: hidden; z-index: 3; pointer-events: none;
@@ -726,10 +851,12 @@ const SessionHero = styled.button`
       border-radius: 0 3px 3px 0;
       background: linear-gradient(90deg, ${p => p.$color}, ${p => p.$color}dd);
       box-shadow: 0 0 10px ${p => p.$color};
-      transition: width 1s linear; overflow: hidden;
+      transition: width 1s linear;
     }
   }
+
   @media (max-width: 1024px) { width: 360px; }
+
   @media (max-width: 768px) {
     width: auto; max-width: 100%; min-height: 0;
     border-radius: clamp(11px, 3.2vw, 15px);
@@ -800,7 +927,6 @@ const HeroSessionCard = styled.div`
   .progress-track { position: relative; height: 7px; border-radius: 7px; background: rgba(255,255,255,0.05); overflow: hidden; z-index: 1; }
   .progress-fill { position: absolute; top: 0; left: 0; bottom: 0; width: ${p => (p.$progress * 100) + '%'}; border-radius: 7px; background: linear-gradient(90deg, ${p => p.$color}, ${p => p.$color}cc); box-shadow: 0 0 12px ${p => p.$color + '90'}; transition: width 1s linear; }
   .progress-labels { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; font-size: 9.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: ${p => p.theme?.colors?.textMuted || '#94A3B8'}; position: relative; z-index: 1; }
-  .progress-labels .label-left .pct-accent { color: ${p => p.$color}; }
   .progress-labels .label-right { color: ${p => p.$color}; flex-shrink: 0; }
 `;
 
@@ -816,7 +942,6 @@ const SessionListItem = styled.div`
   padding: 10px 12px; border-radius: 12px; margin-bottom: 6px;
   border: 1px solid ${p => (p.$live ? p.$color + '40' : 'rgba(255,255,255,0.04)')};
   background: ${p => (p.$live ? `linear-gradient(90deg, ${p.$color}16, ${p.$color}05 50%, transparent)` : 'rgba(255,255,255,0.015)')};
-  &:hover { transform: translateX(2px); }
   &:last-child { margin-bottom: 0; }
   .flag-zone { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 11px; background: ${p => (p.$live ? `radial-gradient(circle at 30% 30%, ${p.$color}30, transparent 70%), ${p.$color}12` : 'rgba(255,255,255,0.04)')}; border: 1px solid ${p => (p.$live ? p.$color + '50' : 'rgba(255,255,255,0.06)')}; flex-shrink: 0; }
   .list-info { flex: 1; min-width: 0; }
@@ -833,7 +958,8 @@ const SessionListItem = styled.div`
 // DROPDOWN SHELLS
 // ============================================
 const DropdownContainer = styled.div`
-  position: relative; display: inline-block;
+  position: relative;
+  display: inline-block;
 `;
 
 const GlassDropdownMenu = styled.div`
@@ -849,7 +975,8 @@ const GlassDropdownMenu = styled.div`
   visibility: ${props => props.isOpen ? 'visible' : 'hidden'};
   transform: ${props => props.isOpen ? 'translateY(0) scale(1)' : 'translateY(-8px) scale(0.97)'};
   transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
-  z-index: 300; overflow-x: hidden; overflow-y: auto;
+  z-index: 300;
+  overflow-x: hidden; overflow-y: auto;
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
   @media (max-width: 768px) {
@@ -861,7 +988,12 @@ const GlassDropdownMenu = styled.div`
 
 const RightAnchoredDropdown = styled(GlassDropdownMenu)` left: auto; right: 0; `;
 const FundsDropdownMenu = styled(GlassDropdownMenu)` left: auto; right: 0; @media (max-width: 768px) { left: 0; right: auto; } `;
-const ThemeDropdownMenu = styled(GlassDropdownMenu)` left: 0; right: auto; min-width: 180px; width: max-content; `;
+const ThemeDropdownMenu = styled(GlassDropdownMenu)`
+  left: auto;
+  right: 0;
+  min-width: 190px;
+  width: max-content;
+`;
 const PlatformDropdown = styled(GlassDropdownMenu)` min-width: 210px; left: 0; right: auto; `;
 const SessionDropdownMenu = styled(GlassDropdownMenu)`
   min-width: 380px; left: 0; right: auto;
@@ -888,8 +1020,8 @@ const IconThemeButton = styled.button`
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.12)'};
   border-radius: 10px; cursor: pointer; color: ${props => props.theme?.colors?.text || '#ffffff'};
   padding: 0; flex-shrink: 0; transition: all 0.3s ease;
-  &:hover { border-color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
-  .theme-icon { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
+  &:hover { border-color: ${props => props.theme?.colors?.accent || '#3b82f6'}; box-shadow: 0 0 16px ${props => (props.theme?.colors?.accent || '#3b82f6') + '25'}; }
+  .theme-icon { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.accent || '#3b82f6'}; transition: all 0.3s ease; }
 `;
 
 const ThemeOptionItem = styled.div`
@@ -909,12 +1041,17 @@ const FundsButton = styled.button`
   border: 1px solid ${props => props.theme?.colors?.accent || '#3b82f6'};
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
   color: ${props => props.theme?.colors?.text || '#ffffff'}; font-size: 12.5px; font-weight: 700;
-  cursor: pointer; flex-shrink: 0;
+  cursor: pointer; flex-shrink: 0; transition: all 0.3s ease;
+  &:hover { box-shadow: 0 0 20px ${props => (props.theme?.colors?.accent || '#3b82f6') + '30'}; transform: translateY(-1px); }
   .funds-icon-wrapper { display: flex; align-items: center; justify-content: center; color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
   .funds-content { display: flex; flex-direction: column; line-height: 1.2; }
   .funds-title { font-size: 12.5px; font-weight: 700; white-space: nowrap; }
-  .funds-sub { font-size: 9px; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; font-weight: 500; white-space: nowrap; }
+  .funds-sub { font-size: 9px; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; font-weight: 500; }
   .arrow { display: flex; align-items: center; opacity: 0.8; margin-left: 2px; }
+  @media (max-width: 768px) {
+    padding: clamp(10px, 2.8vw, 14px) clamp(12px, 3.6vw, 16px);
+    .funds-sub { display: none; }
+  }
 `;
 
 const FundsOption = styled.div`
@@ -941,6 +1078,7 @@ const AccountBadge = styled.div`
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
   border-radius: 10px; cursor: pointer; font-size: 12.5px; font-weight: 700;
   color: ${props => props.theme?.colors?.text || '#ffffff'}; flex-shrink: 0;
+  transition: all 0.3s ease;
   &:hover { border-color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
   .flag-badge { font-size: 16px; }
   .balance-display { font-weight: 700; white-space: nowrap; }
@@ -955,9 +1093,12 @@ const AccountBadge = styled.div`
   .currency-tag {
     font-size: 9px; padding: 2px 6px; border-radius: 4px;
     background: ${props => props.theme?.colors?.accentLight || 'rgba(59,130,246,0.15)'};
-    color: ${props => props.theme?.colors?.accent || '#3b82f6'}; font-weight: 800; white-space: nowrap;
+    color: ${props => props.theme?.colors?.accent || '#3b82f6'}; font-weight: 800;
   }
   .chevron { display: flex; align-items: center; opacity: 0.6; }
+  @media (max-width: 480px) {
+    .currency-tag { display: none; }
+  }
 `;
 
 const CurrencyOptionItem = styled.div`
@@ -972,13 +1113,20 @@ const CurrencyOptionItem = styled.div`
   .check { color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
 `;
 
+/* ✅ EXIT BUTTON — never wrapped in conditional, always renders */
 const ExitButton = styled.button`
   display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 10px;
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
   background: ${props => props.theme?.colors?.surface || 'transparent'};
   color: ${props => props.theme?.colors?.textSecondary || '#cbd5e1'};
   cursor: pointer; font-size: 12.5px; font-weight: 600; flex-shrink: 0;
-  &:hover { border-color: ${props => props.theme?.colors?.danger || '#ef4444'}; color: ${props => props.theme?.colors?.danger || '#ef4444'}; }
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  &:hover {
+    border-color: ${props => props.theme?.colors?.danger || '#ef4444'};
+    color: ${props => props.theme?.colors?.danger || '#ef4444'};
+    background: ${props => (props.theme?.colors?.danger || '#ef4444') + '15'};
+    transform: translateX(-2px);
+  }
   .exit-icon { width: 16px; height: 16px; display: flex; }
   @media (max-width: 480px) {
     span:not(.exit-icon) { display: none; }
@@ -1038,7 +1186,7 @@ const PlatformOptionItem = styled.div`
 
 const ConnectionStatus = styled.div`
   display: flex; align-items: center; gap: 5px; margin-top: 3px;
-  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: ${props => props.connected ? '#10b981' : '#ef4444'}; box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'}; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: ${props => props.connected ? '#10b981' : '#ef4444'}; box-shadow: 0 0 6px ${props => props.connected ? '#10b981' : '#ef4444'}; animation: ${pulseGlow} 2s ease-in-out infinite; }
   .status-text { font-size: 10px; font-weight: 600; color: ${props => props.theme?.colors?.textMuted || '#94a3b8'}; text-transform: uppercase; }
 `;
 
@@ -1048,8 +1196,10 @@ const SidebarToggle = styled.button`
   background: ${props => props.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
   border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255,255,255,0.1)'};
   border-radius: 10px; cursor: pointer; padding: 0; flex-shrink: 0;
+  transition: all 0.25s ease;
   &:hover { border-color: ${props => props.theme?.colors?.accent || '#3b82f6'}; }
   .line { display: block; height: 2px; background: ${props => props.theme?.colors?.text || '#ffffff'}; border-radius: 4px;
+    transition: all 0.3s ease;
     &:nth-child(1) { width: 18px; transform: ${props => props.isOpen ? 'rotate(45deg) translate(4px, 4.5px)' : 'rotate(0)'}; }
     &:nth-child(2) { width: 14px; opacity: ${props => props.isOpen ? '0' : '1'}; }
     &:nth-child(3) { width: ${props => props.isOpen ? '18px' : '10px'}; transform: ${props => props.isOpen ? 'rotate(-45deg) translate(4px, -4.5px)' : 'rotate(0)'}; }
@@ -1114,7 +1264,6 @@ const TopPanel = ({
 
   const openSessions = sessionStates.filter(s => s.isOpen);
 
-  // 🆕 TradingView nav item uses key 'tradingview'
   const activeForexNav = (() => {
     const p = location.pathname;
     if (p === '/forexdash/strength') return 'strength';
@@ -1413,6 +1562,7 @@ const TopPanel = ({
   return (
     <>
       <TopBar ref={topBarRef}>
+        {/* LEFT — sidebar toggle + brand + connection status */}
         <LeftSection>
           {showSidebarToggle && (
             <SidebarToggle isOpen={isSidebarOpen} onClick={onSidebarToggle} aria-label="Toggle sidebar">
@@ -1447,7 +1597,7 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* Forex navigation — Home / Strength Meter / Bots / 🆕 TradingView */}
+        {/* MIDDLE (forex only) — nav + live session */}
         {isForex && (
           <ForexNavWrapper aria-label="Forex navigation">
             {FOREX_NAV_ITEMS.map((item) => (
@@ -1464,7 +1614,6 @@ const TopPanel = ({
           </ForexNavWrapper>
         )}
 
-        {/* Forex live session hero */}
         {isForex && (
           <SessionWrapper ref={sessionRef}>
             <DropdownContainer style={{ position: 'relative' }}>
@@ -1483,9 +1632,6 @@ const TopPanel = ({
                   </div>
                   <span className="session-sub">
                     {heroSession.isOpen ? `Closes in ${formatDuration(heroSession.minUntil)}` : `Opens in ${formatDuration(heroSession.minUntil)}`}
-                    {heroSession.isOpen && (
-                      <span className="pct-chip">Session progress<span className="pct-value">{Math.round(heroSession.progress * 100)}%</span>complete</span>
-                    )}
                   </span>
                 </div>
                 <div className="clock">
@@ -1534,9 +1680,7 @@ const TopPanel = ({
                   <div className="progress-track"><div className="progress-fill" /></div>
                   <div className="progress-labels">
                     <span className="label-left">
-                      {heroSession.isOpen
-                        ? <>Session progress <span className="pct-accent">{Math.round(heroSession.progress * 100)}%</span> complete</>
-                        : <>Waiting for market to open</>}
+                      {heroSession.isOpen ? <>Session {Math.round(heroSession.progress * 100)}% complete</> : <>Waiting for market to open</>}
                     </span>
                     <span className="label-right">
                       {heroSession.isOpen ? `${formatDuration(heroSession.minUntil)} remaining` : `Opens in ${formatDuration(heroSession.minUntil)}`}
@@ -1568,7 +1712,9 @@ const TopPanel = ({
           </SessionWrapper>
         )}
 
+        {/* RIGHT — THEME (always) + FUNDS/ACCOUNT (deriv only) + EXIT (always) */}
         <RightSection>
+          {/* ✅ THEME — unconditional, always visible in forex & deriv */}
           <DropdownContainer ref={themeRef}>
             <IconThemeButton onClick={toggleThemeDropdown} aria-label="Change theme">
               <span className="theme-icon"><ThemeIcon /></span>
@@ -1576,7 +1722,11 @@ const TopPanel = ({
             <ThemeDropdownMenu isOpen={isThemeOpen}>
               <MenuHeader>Choose Theme</MenuHeader>
               {THEME_OPTIONS.map((t) => (
-                <ThemeOptionItem key={t.key} onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }} className={currentTheme === t.key ? 'active' : ''}>
+                <ThemeOptionItem
+                  key={t.key}
+                  onClick={() => { if (onThemeChange) onThemeChange(t.key); setIsThemeOpen(false); }}
+                  className={currentTheme === t.key ? 'active' : ''}
+                >
                   <span className="color-dot" style={{ background: t.color }} />
                   <span className="theme-label">{t.name}</span>
                   {currentTheme === t.key && <span className="check-mark">✓</span>}
@@ -1585,11 +1735,15 @@ const TopPanel = ({
             </ThemeDropdownMenu>
           </DropdownContainer>
 
+          {/* Funds — only on deriv */}
           {!isForex && (
             <DropdownContainer ref={fundsRef}>
               <FundsButton onClick={toggleFundsDropdown}>
                 <span className="funds-icon-wrapper"><FundsIcon /></span>
-                <span className="funds-content"><span className="funds-title">Funds</span><span className="funds-sub">Manage your money</span></span>
+                <span className="funds-content">
+                  <span className="funds-title">Funds</span>
+                  <span className="funds-sub">Manage your money</span>
+                </span>
                 <span className="arrow"><ChevronDownIcon open={isFundsOpen} /></span>
               </FundsButton>
               <FundsDropdownMenu isOpen={isFundsOpen}>
@@ -1597,13 +1751,17 @@ const TopPanel = ({
                 {fundOptions.map((option, index) => (
                   <FundsOption key={index} onClick={() => handleFundAction(option.action)}>
                     <span className="fund-icon">{option.icon}</span>
-                    <span className="fund-info"><span className="fund-name">{option.name}</span><span className="fund-desc">{option.desc}</span></span>
+                    <span className="fund-info">
+                      <span className="fund-name">{option.name}</span>
+                      <span className="fund-desc">{option.desc}</span>
+                    </span>
                   </FundsOption>
                 ))}
               </FundsDropdownMenu>
             </DropdownContainer>
           )}
 
+          {/* Account badge — only on deriv */}
           {!isForex && (
             <DropdownContainer ref={dropdownRef}>
               <AccountBadge onClick={toggleDropdown} isDemo={isDemo}>
@@ -1616,18 +1774,25 @@ const TopPanel = ({
               <RightAnchoredDropdown isOpen={isDropdownOpen}>
                 <MenuHeader>Account</MenuHeader>
                 <ThemeOptionItem onClick={() => { setAccountType('real'); setIsDropdownOpen(false); }} className={accountType === 'real' ? 'active' : ''}>
-                  <span className="flag-badge">🏦</span><span className="theme-label">Real Account</span>
+                  <span className="flag-badge" style={{ fontSize: '16px' }}>🏦</span>
+                  <span className="theme-label">Real Account</span>
                   <span style={{ fontSize: '11px', opacity: 0.6, color: '#34d399' }}>{getFormattedBalance(accountData.real)}</span>
                 </ThemeOptionItem>
                 <ThemeOptionItem onClick={() => { setAccountType('demo'); setIsDropdownOpen(false); }} className={accountType === 'demo' ? 'active' : ''}>
-                  <span className="flag-badge">🎯</span><span className="theme-label">Demo Practice</span>
+                  <span className="flag-badge" style={{ fontSize: '16px' }}>🎯</span>
+                  <span className="theme-label">Demo Practice</span>
                   <span style={{ fontSize: '11px', opacity: 0.6, color: '#60a5fa' }}>{getFormattedBalance(accountData.demo)}</span>
                 </ThemeOptionItem>
                 <DropdownSection>
                   <MenuHeader style={{ marginBottom: '6px' }}>Display currency in</MenuHeader>
                   {DISPLAY_CURRENCIES.map((curr) => (
-                    <CurrencyOptionItem key={curr.code} onClick={() => { setSelectedCurrency(curr.code); setIsDropdownOpen(false); }} className={selectedCurrency === curr.code ? 'active' : ''}>
-                      <span className="flag">{curr.flag}</span><span className="code">{curr.code}</span>
+                    <CurrencyOptionItem
+                      key={curr.code}
+                      onClick={() => { setSelectedCurrency(curr.code); setIsDropdownOpen(false); }}
+                      className={selectedCurrency === curr.code ? 'active' : ''}
+                    >
+                      <span className="flag">{curr.flag}</span>
+                      <span className="code">{curr.code}</span>
                       <span className="name">{curr.name}</span>
                       {selectedCurrency === curr.code && <span className="check">✓</span>}
                     </CurrencyOptionItem>
@@ -1637,6 +1802,7 @@ const TopPanel = ({
             </DropdownContainer>
           )}
 
+          {/* ✅ EXIT — unconditional, always visible in forex & deriv */}
           <ExitButton onClick={() => navigate('/')} aria-label="Exit">
             <span className="exit-icon"><ExitIcon /></span>
             <span>Exit</span>
