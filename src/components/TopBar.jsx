@@ -243,10 +243,22 @@ const BotsIcon = () => (
   </svg>
 );
 
+/* 🆕 TradingView icon */
+const TradingViewIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2.5" y="4" width="19" height="15" rx="2" />
+    <line x1="7"   y1="8"  x2="7"   y2="16" />
+    <rect  x="5.75" y="10" width="2.5" height="4" fill="currentColor" stroke="none" />
+    <line x1="12"  y1="7"  x2="12"  y2="15" />
+    <rect  x="10.75" y="9" width="2.5" height="3" fill="currentColor" stroke="none" />
+    <line x1="17"  y1="9"  x2="17"  y2="17" />
+    <rect  x="15.75" y="11" width="2.5" height="4" fill="currentColor" stroke="none" />
+    <line x1="8" y1="21" x2="16" y2="21" />
+  </svg>
+);
+
 // ============================================
-// FOREX SESSIONS — real UTC open/close windows.
-// `color` acts only as a FALLBACK; the live color is
-// pulled from the active theme so the pill obeys themes.
+// FOREX SESSIONS
 // ============================================
 const FOREX_SESSIONS = [
   { key: 'sydney',  name: 'Sydney',   flag: '🇦🇺', country: 'Australia',      startUTC: 21, endUTC: 6,  color: '#22D3EE', region: 'Asia-Pacific', tag: 'AUD · NZD' },
@@ -256,12 +268,13 @@ const FOREX_SESSIONS = [
 ];
 
 // ============================================
-// FOREX NAV ITEMS — Home / Strength Meter / Bots
+// FOREX NAV ITEMS — Home / Strength / Bots / TradingView
 // ============================================
 export const FOREX_NAV_ITEMS = [
-  { key: 'home',     label: 'Home',           path: '/forexdash',          icon: <DashboardIcon /> },
-  { key: 'strength', label: 'Strength Meter', path: '/forexdash/strength', icon: <StrengthIcon /> },
-  { key: 'bots',     label: 'Bots',           path: '/forexdash/bots',     icon: <BotsIcon /> },
+  { key: 'home',        label: 'Home',           path: '/forexdash',             icon: <DashboardIcon /> },
+  { key: 'strength',    label: 'Strength Meter', path: '/forexdash/strength',    icon: <StrengthIcon /> },
+  { key: 'bots',        label: 'Bots',           path: '/forexdash/bots',        icon: <BotsIcon /> },
+  { key: 'tradingview', label: 'TradingView',    path: '/forexdash/tradingview', icon: <TradingViewIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -313,13 +326,6 @@ const formatDuration = (mins) => {
   return `${h}h ${m}m`;
 };
 
-/* ================================================================
-   Resolve a session's live display color from the current theme.
-   Order of precedence:
-     1) theme.colors.sessions[key]   (explicit per-theme override)
-     2) a themed family tone         (accent / info / danger / success)
-     3) the hardcoded fallback        (original hex on the session object)
-   ================================================================ */
 const getSessionColor = (session, theme) => {
   const tc = theme?.colors || {};
   if (tc.sessions && tc.sessions[session.key]) return tc.sessions[session.key];
@@ -1057,7 +1063,8 @@ const HistoryList = styled.div`
 `;
 
 // ============================================
-// CORE CONTAINERS
+// CORE CONTAINERS — wrap threshold raised to 1300px
+// so 4 nav items + theme + exit always fit
 // ============================================
 const TopBar = styled.header`
   display: flex;
@@ -1073,15 +1080,14 @@ const TopBar = styled.header`
   flex-shrink: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
 
-  /* Laptop — allow wrapping, left-align so wrapped rows sit flush */
-  @media (max-width: 1024px) {
+  /* Wrap at 1300px so brand+theme+exit stay on the first row */
+  @media (max-width: 1300px) {
     padding: 12px 20px;
     flex-wrap: wrap;
     gap: 10px 14px;
     justify-content: flex-start;
   }
 
-  /* Phone — explicit stacked layout driven by child order */
   @media (max-width: 768px) {
     position: sticky;
     top: 0;
@@ -1107,15 +1113,13 @@ const LeftSection = styled.div`
   flex-shrink: 0;
   min-width: 0;
 
-  /* Laptop — order 1, natural width, can shrink if needed */
-  @media (max-width: 1024px) {
+  @media (max-width: 1300px) {
     order: 1;
     gap: 12px;
     flex: 0 1 auto;
     min-width: 0;
   }
 
-  /* Phone — order 1, fills the top-left */
   @media (max-width: 768px) {
     order: 1;
     gap: clamp(8px, 2.6vw, 12px);
@@ -1133,16 +1137,16 @@ const RightSection = styled.div`
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  flex-shrink: 0;
 
-  /* Laptop — order 2, pushed right with margin-left: auto */
-  @media (max-width: 1024px) {
+  /* Row 1, right-aligned so theme + exit stay visible at all times */
+  @media (max-width: 1300px) {
     order: 2;
     gap: 8px;
     flex: 0 0 auto;
     margin-left: auto;
   }
 
-  /* Phone — order 2, stays top-right next to brand */
   @media (max-width: 768px) {
     order: 2;
     gap: clamp(5px, 1.8vw, 8px);
@@ -1152,7 +1156,7 @@ const RightSection = styled.div`
   }
 `;
 
-/* ---- Forex navigation (Home / Strength Meter / Bots) ---- */
+/* ---- Forex navigation (Home / Strength Meter / Bots / TradingView) ---- */
 const ForexNavWrapper = styled.nav`
   display: flex;
   align-items: center;
@@ -1164,15 +1168,13 @@ const ForexNavWrapper = styled.nav`
   border-radius: 12px;
   flex-shrink: 0;
 
-  /* Laptop — order 4, sits on its own row below the session pill */
-  @media (max-width: 1024px) {
+  @media (max-width: 1300px) {
     order: 4;
     margin: 0;
     gap: 2px;
     flex: 0 0 auto;
   }
 
-  /* Phone — full-width horizontal strip, order 4 (below session pill) */
   @media (max-width: 768px) {
     order: 4;
     width: 100%;
@@ -1251,14 +1253,12 @@ const SessionWrapper = styled.div`
   margin: 0 16px;
   flex-shrink: 0;
 
-  /* Laptop — order 3, natural width */
-  @media (max-width: 1024px) {
+  @media (max-width: 1300px) {
     order: 3;
     margin: 0;
     flex: 0 0 auto;
   }
 
-  /* Phone — full-width row, order 3 (above nav) */
   @media (max-width: 768px) {
     order: 3;
     width: 100%;
@@ -1365,7 +1365,7 @@ const WavingFlag = ({ flag, size = 26, color, delay = '0s', speed = '3s' }) => (
 );
 
 // ============================================
-// SESSION HERO — PREMIUM PILL (with in-pill progress + %)
+// SESSION HERO — PREMIUM PILL
 // ============================================
 const SessionHero = styled.button`
   position: relative;
@@ -1386,14 +1386,13 @@ const SessionHero = styled.button`
   overflow: hidden;
   flex-shrink: 0;
   white-space: nowrap;
-  width: 400px;
+  width: 380px;
   min-height: 68px;
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.08),
     0 1px 0 rgba(0,0,0,0.2),
     ${p => p.$live ? `0 6px 20px -6px ${p.$color}80` : '0 4px 14px -6px rgba(0,0,0,0.6)'};
 
-  /* Shimmer sweep */
   &::before {
     content: '';
     position: absolute;
@@ -1485,7 +1484,6 @@ const SessionHero = styled.button`
     max-width: 100%;
     font-variant-numeric: tabular-nums;
 
-    /* Inline percentage chip — written statement */
     .pct-chip {
       display: inline-flex;
       align-items: center;
@@ -1553,7 +1551,6 @@ const SessionHero = styled.button`
     z-index: 2;
   }
 
-  /* Progress bar pinned to the bottom of the pill */
   .session-progress {
     position: absolute;
     left: 0;
@@ -1588,12 +1585,15 @@ const SessionHero = styled.button`
     }
   }
 
+  @media (max-width: 1300px) {
+    width: 340px;
+  }
+
   @media (max-width: 1024px) {
-    width: 360px;
+    width: 320px;
   }
 
   @media (max-width: 768px) {
-    /* Phone — no longer fills the whole row, shrink to content */
     width: auto;
     max-width: 100%;
     min-height: 0;
@@ -1609,7 +1609,6 @@ const SessionHero = styled.button`
   }
 
   @media (max-width: 480px) {
-    /* Keep the sub visible but compact — percentage stays in view */
     .session-sub {
       font-size: 9px;
       max-width: 100%;
@@ -1753,7 +1752,6 @@ const HeroSessionCard = styled.div`
     inset 0 1px 0 rgba(255,255,255,0.08),
     0 12px 32px -14px ${p => p.$color + '90'};
 
-  /* Drifting aura */
   &::before {
     content: '';
     position: absolute;
@@ -1768,7 +1766,6 @@ const HeroSessionCard = styled.div`
     pointer-events: none;
   }
 
-  /* Shimmer sweep */
   &::after {
     content: '';
     position: absolute;
@@ -1817,7 +1814,6 @@ const HeroSessionCard = styled.div`
       inset 0 1px 0 rgba(255,255,255,0.1),
       0 0 20px -4px ${p => p.$color + '70'};
 
-    /* Pulsing live ring */
     &::after {
       content: '';
       position: absolute;
@@ -1976,7 +1972,6 @@ const HeroSessionCard = styled.div`
     transition: width 1s linear;
     overflow: hidden;
 
-    /* Shimmer on the fill */
     &::after {
       content: '';
       position: absolute;
@@ -3066,9 +3061,6 @@ const TopPanel = ({
   const isDeriv = location.pathname.startsWith('/deriv');
   const showSidebarToggle = !!onSidebarToggle;
 
-  /* ============================================================
-     Session state — recomputed live, colored from the active theme
-     ============================================================ */
   const sessionStates = useMemo(
     () => FOREX_SESSIONS.map(s => {
       const color = getSessionColor(s, theme);
@@ -3082,17 +3074,17 @@ const TopPanel = ({
   // Which forex nav item is active based on pathname
   const activeForexNav = (() => {
     const p = location.pathname;
+    if (p === '/forexdash/lot') return 'lot';
     if (p === '/forexdash/strength') return 'strength';
     if (p === '/forexdash/bots') return 'bots';
+    if (p === '/forexdash/tradingview') return 'tradingview';
     return 'home';
   })();
 
-  // Navigate between forex sub-routes
   const handleForexNav = (path) => {
     if (location.pathname !== path) navigate(path);
   };
 
-  // Hero = most recently opened live session, else soonest to open
   const heroSession = useMemo(() => {
     if (openSessions.length > 0) {
       return [...openSessions].sort((a, b) => b.startUTC - a.startUTC)[0];
@@ -3643,7 +3635,7 @@ const TopPanel = ({
           </BrandContainer>
         </LeftSection>
 
-        {/* ---------- Forex navigation (Home / Strength Meter / Bots) ---------- */}
+        {/* ---------- Forex navigation (Home / Strength Meter / Bots / TradingView) ---------- */}
         {isForex && (
           <ForexNavWrapper aria-label="Forex navigation">
             {FOREX_NAV_ITEMS.map((item) => (
@@ -3703,14 +3695,12 @@ const TopPanel = ({
                 </div>
                 <span className="chev"><ChevronDownIcon open={isSessionOpen} /></span>
 
-                {/* Progress bar — always visible on the pill */}
                 <div className="session-progress">
                   <div className="bar" />
                 </div>
               </SessionHero>
 
               <SessionDropdownMenu isOpen={isSessionOpen}>
-                {/* World clock header */}
                 <SessionHeader>
                   <div className="title-block">
                     <div className="globe-badge"><GlobeIcon size={16} /></div>
@@ -3728,7 +3718,6 @@ const TopPanel = ({
                   </div>
                 </SessionHeader>
 
-                {/* Hero — current or next session */}
                 <HeroSessionCard
                   $color={heroSession.color}
                   $progress={heroSession.progress}
@@ -3789,7 +3778,6 @@ const TopPanel = ({
                   </div>
                 </HeroSessionCard>
 
-                {/* All markets */}
                 <SectionLabel>All markets</SectionLabel>
 
                 {sessionStates.map((s, idx) => (
