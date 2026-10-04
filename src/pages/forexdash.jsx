@@ -8,6 +8,7 @@ import ForexHome from '../components/forexhome';
 import LotSize from '../components/lotsize';
 import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
+import TradingViewView from '../components/forex/TradingViewView';
 
 /* =========================================================
    THEMES (mirrors the ones defined in Derivdash.jsx)
@@ -686,9 +687,10 @@ export default function ForexDash() {
                 onViewChange={onViewChange}
               />
             )}
-            {view === 'lot'      && <LotSize  pairs={pairs} strength={strength} initialPair={selectedPair} />}
-            {view === 'strength' && <Strength strength={strength} />}
-            {view === 'bots'     && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
+            {view === 'lot'         && <LotSize pairs={pairs} strength={strength} initialPair={selectedPair} />}
+            {view === 'strength'    && <Strength strength={strength} />}
+            {view === 'bots'        && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
+            {view === 'tradingview' && <TradingViewView />}
           </div>
         </div>
       </>
