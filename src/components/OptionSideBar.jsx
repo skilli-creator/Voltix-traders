@@ -52,6 +52,19 @@ const slideInRight = keyframes`
   to { opacity: 1; transform: translateX(0); }
 `;
 
+/* Push-in bloom: darkens the pushed content softly as the sidebar opens */
+const pushBloom = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+/* Accent sweep along the sidebar's right edge on open */
+const edgeSweep = keyframes`
+  0%   { transform: translateY(-100%); opacity: 0; }
+  40%  { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+`;
+
 // ============================================
 // SVG ICONS
 // ============================================
@@ -1939,6 +1952,30 @@ const TermsSection = styled.div`
 const TOPBAR_HEIGHT = '76px';
 const SIDEBAR_WIDTH = '288px';
 
+/* Backdrop that appears over the pushed content in forex mode.
+   Sits behind the sidebar, above the content, and fades in softly. */
+const PushBloomLayer = styled.div`
+  position: fixed;
+  top: var(--topbar-h, ${TOPBAR_HEIGHT});
+  left: ${SIDEBAR_WIDTH};
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 98;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.28) 0%,
+    rgba(0, 0, 0, 0.10) 12%,
+    transparent 32%
+  );
+  opacity: ${props => (props.visible ? 1 : 0)};
+  transition: opacity 0.44s cubic-bezier(0.22, 1, 0.36, 1);
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
@@ -1955,8 +1992,6 @@ const Overlay = styled.div`
 
 const SidebarContainer = styled.aside`
   position: fixed;
-  /* Sits directly below the real, measured TopBar height — no overlap
-     even when the bar wraps / grows on notched phones. */
   top: var(--topbar-h, ${TOPBAR_HEIGHT});
   left: 0;
   width: ${SIDEBAR_WIDTH};
@@ -1968,16 +2003,62 @@ const SidebarContainer = styled.aside`
     '#0F172A'};
   border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   transform: ${props => (props.isOpen ? 'translateX(0)' : 'translateX(-100%)')};
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 0.44s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.44s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 99;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
+  will-change: transform;
+  box-shadow:
+    4px 0 32px rgba(0, 0, 0, 0.35),
+    ${props => props.isOpen
+      ? `18px 0 60px -12px ${(props.theme?.colors?.accent || '#3B82F6')}2e`
+      : '0 0 0 0 transparent'};
+
+  /* Accent glow line running down the right edge when open */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      ${props => props.theme?.colors?.accent || '#3B82F6'} 25%,
+      ${props => props.theme?.colors?.accent || '#3B82F6'} 75%,
+      transparent 100%
+    );
+    opacity: ${props => (props.isOpen ? 0.55 : 0)};
+    box-shadow: 0 0 18px ${props => props.theme?.colors?.accent || '#3B82F6'};
+    transition: opacity 0.5s ease 0.15s;
+    pointer-events: none;
+  }
+
+  /* Light sweep that runs down the edge on open */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -1px;
+    width: 3px;
+    height: 40%;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      ${props => props.theme?.colors?.accent || '#3B82F6'},
+      transparent
+    );
+    pointer-events: none;
+    z-index: 2;
+    opacity: ${props => (props.isOpen ? 1 : 0)};
+    animation: ${props => (props.isOpen ? edgeSweep : 'none')} 1.1s ease-out 1;
+  }
 
   @media (max-width: 768px) {
-    /* Sit directly below the real, measured TopBar height — no overlap
-       even when the bar wraps / grows on notched phones. */
     top: var(--topbar-h, ${TOPBAR_HEIGHT});
     width: min(85vw, 340px);
     height: calc(100vh - var(--topbar-h, ${TOPBAR_HEIGHT}));
@@ -1985,6 +2066,9 @@ const SidebarContainer = styled.aside`
     border-top-right-radius: 0;
     border-bottom-right-radius: 20px;
     box-shadow: 16px 0 48px rgba(0, 0, 0, 0.55);
+
+    /* Disable the edge sweep on phones — no push behaviour there */
+    &::before { display: none; }
   }
 
   @media (max-width: 380px) {
@@ -2362,7 +2446,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       phone: userData.phone || '',
       date_of_birth: userData.date_of_birth || '',
       gender: userData.gender || '',
-      email: userData.email || 'tonnykyallo054@gmail.com'
+      email: userData.email || 'tonnykyalo054@gmail.com'
     });
     if (userData.date_of_birth) setCalculatedAge(calculateAge(userData.date_of_birth));
   }, []);
@@ -3263,28 +3347,44 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   return (
     <>
       {/* ============================================================
-          FOREX — push the main content, do not overlap it
+          FOREX — GPU-accelerated smooth push + bloom + edge glow
           ============================================================ */}
       <style>{`
+        /* ---------- Forex desktop: push the main content with transform ---------- */
         @media (min-width: 769px) {
+          body.forex-sidebar-push {
+            overflow-x: hidden;
+          }
+
           body.forex-sidebar-push .view.active {
-            margin-left: ${SIDEBAR_WIDTH};
-            width: calc(100% - ${SIDEBAR_WIDTH});
-            transition:
-              margin-left 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-              width       0.32s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: margin-left, width;
+            /* transform is GPU-accelerated — no layout reflow, buttery 60fps */
+            transform: translateX(${SIDEBAR_WIDTH});
+            transition: transform 0.44s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform;
+            /* ensure the sliding content never creates an x-scrollbar */
+            overflow-x: hidden;
+          }
+
+          /* Reset everything cleanly when the sidebar closes */
+          body:not(.forex-sidebar-push) .view.active {
+            transform: translateX(0);
+            transition: transform 0.44s cubic-bezier(0.22, 1, 0.36, 1);
           }
         }
 
-        /* Mobile keeps the overlay behaviour — no push, no width change */
+        /* ---------- Phone: keep pure drawer behaviour, no push ---------- */
         @media (max-width: 768px) {
           body.forex-sidebar-push .view.active {
-            margin-left: 0;
-            width: 100%;
+            transform: none;
+            transition: none;
           }
         }
       `}</style>
+
+      {/* Soft bloom over the pushed content for depth (forex-only) */}
+      {isForex && (
+        <PushBloomLayer visible={isOpen} aria-hidden="true" />
+      )}
 
       <FullPanelOverlay isOpen={isFullPanelOpen} onClick={closeFullPanel}>
         <FullPanelContainer onClick={(e) => e.stopPropagation()}>
