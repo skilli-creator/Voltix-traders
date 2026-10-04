@@ -83,16 +83,12 @@ export default function Strength({ strength, onNavigate }) {
   const accentGlow   = withAlpha(accent, 0.30);
 
   const success      = c.success      || '#00d68f';
-  const successSoft  = withAlpha(success, 0.10);
   const successBorder= withAlpha(success, 0.25);
   const successGlow  = withAlpha(success, 0.35);
 
   const danger       = c.danger       || '#ff4d6a';
-  const dangerSoft   = withAlpha(danger, 0.10);
   const dangerBorder = withAlpha(danger, 0.25);
   const dangerGlow   = withAlpha(danger, 0.32);
-
-  const warning      = c.warning      || '#f5a524';
 
   const text         = c.text         || '#f5f5f7';
   const textSecondary= c.textSecondary|| c.textMuted || '#b0b0b8';
@@ -108,26 +104,10 @@ export default function Strength({ strength, onNavigate }) {
   const borderStrong = c.borderStrong || borderHover;
 
   const TIER_STYLES = {
-    ultra:  {
-      bar:  `linear-gradient(90deg, ${success} 0%, ${success} 100%)`,
-      text: success,
-      glow: successGlow,
-    },
-    strong: {
-      bar:  `linear-gradient(90deg, ${success} 0%, ${success} 100%)`,
-      text: success,
-      glow: successGlow,
-    },
-    mild:   {
-      bar:  `linear-gradient(90deg, ${accent} 0%, ${accentHover} 100%)`,
-      text: accent,
-      glow: accentGlow,
-    },
-    neg:    {
-      bar:  `linear-gradient(90deg, ${danger} 0%, ${danger} 100%)`,
-      text: danger,
-      glow: dangerGlow,
-    },
+    ultra:  { bar: `linear-gradient(90deg, ${success} 0%, ${success} 100%)`, text: success, glow: successGlow },
+    strong: { bar: `linear-gradient(90deg, ${success} 0%, ${success} 100%)`, text: success, glow: successGlow },
+    mild:   { bar: `linear-gradient(90deg, ${accent} 0%, ${accentHover} 100%)`, text: accent, glow: accentGlow },
+    neg:    { bar: `linear-gradient(90deg, ${danger} 0%, ${danger} 100%)`, text: danger, glow: dangerGlow },
   };
 
   /* ================================================================
@@ -167,46 +147,94 @@ export default function Strength({ strength, onNavigate }) {
     <>
       <style>{`
         /* ============================================================
-           SCROLL — makes the page scrollable on every screen size
+           SCROLL — forces the parent .view container to scroll
+           on any display size (laptop, tablet, phone).
            ============================================================ */
         .view.active.sm-root{
-          overflow-y:auto !important;
-          overflow-x:hidden !important;
-          height:100% !important;
-          max-height:100vh;
-          -webkit-overflow-scrolling:touch;
-          scroll-behavior:smooth;
+          overflow-y: auto !important;
+          overflow-x: hidden !important;
+          height: 100% !important;
+          max-height: 100vh;
+          -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
+          padding-bottom: 40px; /* room at the bottom so the last card never hugs the edge */
         }
 
+        /* Optional — hide scrollbar on macOS-style for a cleaner look,
+           keep a subtle thumb on Windows/Linux via webkit fallback */
+        .view.active.sm-root::-webkit-scrollbar{ width: 10px; }
+        .view.active.sm-root::-webkit-scrollbar-track{ background: transparent; }
+        .view.active.sm-root::-webkit-scrollbar-thumb{
+          background: ${withAlpha(text, 0.10)};
+          border-radius: 10px;
+          border: 2px solid transparent;
+          background-clip: content-box;
+          transition: background .25s ease;
+        }
+        .view.active.sm-root::-webkit-scrollbar-thumb:hover{
+          background: ${withAlpha(text, 0.20)};
+          background-clip: content-box;
+        }
+
+        /* ---------- Root ---------- */
         .sm-root{
           font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
           color:${text};
           background:transparent;
           transition:color .25s ease;
-          display:block;
-          padding: 8px 0 40px;
         }
         .sm-root *{ box-sizing:border-box; }
+
+        /* Entrance animations for cards */
+        @keyframes smFadeUp{
+          from { opacity: 0; transform: translateY(14px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes smFadeIn{
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes smPulse{
+          0%,100%{ opacity:.6; transform:scale(1); }
+          50%    { opacity:1;  transform:scale(1.15); }
+        }
+        @keyframes smShine{
+          0%  { background-position:-200% 0; }
+          100%{ background-position: 200% 0; }
+        }
+        @keyframes smRowIn{
+          from { opacity: 0; transform: translateX(-8px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes smAuraDrift{
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: .35; }
+          50%      { transform: translate3d(4%, -4%, 0) scale(1.08); opacity: .55; }
+        }
 
         /* ---------- Top bar ---------- */
         .sm-topbar{
           display:flex; align-items:center; justify-content:space-between;
           gap:16px; flex-wrap:wrap; margin-bottom:18px;
+          animation: smFadeUp .45s cubic-bezier(.16,1,.3,1) both;
         }
         .sm-tabs{
           display:inline-flex; gap:4px; padding:4px;
           background:${card};
           border:1px solid ${border};
           border-radius:12px;
-          transition:background .25s ease, border-color .25s ease;
+          transition:background .25s ease, border-color .25s ease, box-shadow .25s ease;
+        }
+        .sm-tabs:hover{
+          box-shadow: 0 6px 18px ${withAlpha(text, 0.04)};
         }
         .sm-tab{
           padding:8px 18px; border-radius:9px;
           font-family:inherit; font-size:12.5px; font-weight:700;
           color:${textMuted};
           background:transparent; border:none; cursor:pointer;
-          transition:all .2s cubic-bezier(.16,1,.3,1);
+          transition:all .25s cubic-bezier(.16,1,.3,1);
           white-space:nowrap;
+          position: relative;
         }
         .sm-tab:hover{
           color:${text};
@@ -229,10 +257,6 @@ export default function Strength({ strength, onNavigate }) {
           box-shadow:0 0 8px ${accent};
           animation:smPulse 2s ease-in-out infinite;
         }
-        @keyframes smPulse{
-          0%,100%{ opacity:.6; transform:scale(1); }
-          50%    { opacity:1;  transform:scale(1.15); }
-        }
         .sm-status .clock{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
           color:${text};
@@ -242,12 +266,28 @@ export default function Strength({ strength, onNavigate }) {
 
         /* ---------- Main card ---------- */
         .sm-card{
+          position: relative;
           background:${card};
           border:1px solid ${border};
           border-radius:16px;
           overflow:hidden;
           margin-bottom:16px;
-          transition:background .25s ease, border-color .25s ease;
+          transition:background .25s ease, border-color .25s ease, box-shadow .3s ease;
+          animation: smFadeUp .55s cubic-bezier(.16,1,.3,1) both;
+        }
+        .sm-card::before{
+          /* subtle top accent line */
+          content:'';
+          position:absolute; top:0; left:0; right:0;
+          height:2px;
+          background:linear-gradient(90deg, transparent, ${accent}, transparent);
+          background-size:200% 100%;
+          opacity:.55;
+          pointer-events:none;
+        }
+        .sm-card:hover{
+          border-color:${borderStrong};
+          box-shadow: 0 12px 36px -18px ${withAlpha(text, 0.35)};
         }
         .sm-card-head{
           display:flex; align-items:center; gap:12px;
@@ -261,6 +301,7 @@ export default function Strength({ strength, onNavigate }) {
           border:1px solid ${accentBorder};
           color:${accent};
           flex-shrink:0;
+          box-shadow: 0 0 12px -4px ${accentGlow};
         }
         .sm-card-head .title{
           font-size:14px; font-weight:800; letter-spacing:.6px;
@@ -269,14 +310,6 @@ export default function Strength({ strength, onNavigate }) {
         }
         .sm-card-head .title .accent{ color:${accent}; }
         .sm-card-head .sep{ color:${textMuted}; font-weight:400; margin:0 4px; }
-        .sm-card-head .tf-tag{
-          font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
-          font-size:11px; font-weight:800;
-          color:${accent};
-          padding:3px 9px; border-radius:6px;
-          background:${accentSoft};
-          border:1px solid ${accentBorder};
-        }
         .sm-card-head .spacer{ flex:1; }
         .sm-card-head .meta{
           font-size:11px;
@@ -292,10 +325,14 @@ export default function Strength({ strength, onNavigate }) {
           align-items:center;
           gap:14px;
           padding:11px 22px;
-          transition:background .18s ease;
+          transition:background .22s ease, transform .22s cubic-bezier(.16,1,.3,1);
           position:relative;
+          animation: smRowIn .5s cubic-bezier(.16,1,.3,1) both;
         }
-        .sm-row:hover{ background:${withAlpha(text, 0.02)}; }
+        .sm-row:hover{
+          background:${withAlpha(text, 0.03)};
+          transform: translateX(2px);
+        }
         .sm-row + .sm-row{ border-top:1px solid ${withAlpha(text, 0.03)}; }
         .sm-rank{
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
@@ -342,10 +379,6 @@ export default function Strength({ strength, onNavigate }) {
           animation:smShine 3.6s linear infinite;
           border-radius:8px;
         }
-        @keyframes smShine{
-          0%  { background-position:-200% 0; }
-          100%{ background-position: 200% 0; }
-        }
         .sm-val{
           display:flex; flex-direction:column;
           align-items:flex-end;
@@ -372,35 +405,55 @@ export default function Strength({ strength, onNavigate }) {
           margin-bottom:18px;
         }
         .sm-sumcard{
+          position: relative;
           background:${card};
           border:1px solid ${border};
           border-radius:14px;
           padding:18px 20px 20px;
-          position:relative;
           overflow:hidden;
           transition:
-            transform .22s cubic-bezier(.16,1,.3,1),
-            border-color .22s ease,
-            background .25s ease,
-            box-shadow .25s ease;
+            transform .28s cubic-bezier(.16,1,.3,1),
+            border-color .28s ease,
+            background .28s ease,
+            box-shadow .28s ease;
+          animation: smFadeUp .6s cubic-bezier(.16,1,.3,1) both;
         }
-        .sm-sumcard:hover{ transform:translateY(-2px); }
+        .sm-sumcard:nth-child(1){ animation-delay: .05s; }
+        .sm-sumcard:nth-child(2){ animation-delay: .12s; }
+        .sm-sumcard:nth-child(3){ animation-delay: .19s; }
+
+        .sm-sumcard:hover{ transform:translateY(-3px); }
         .sm-sumcard.strongest{ border-color:${successBorder}; }
-        .sm-sumcard.strongest:hover{ box-shadow:0 8px 24px -8px ${successGlow}; }
+        .sm-sumcard.strongest:hover{ box-shadow:0 10px 28px -10px ${successGlow}; }
         .sm-sumcard.weakest{ border-color:${dangerBorder}; }
-        .sm-sumcard.weakest:hover{ box-shadow:0 8px 24px -8px ${dangerGlow}; }
+        .sm-sumcard.weakest:hover{ box-shadow:0 10px 28px -10px ${dangerGlow}; }
         .sm-sumcard.watch{
           border-color:${accentBorderStrong};
           background:
             radial-gradient(ellipse at 100% 0%, ${withAlpha(accent, 0.09)}, transparent 60%),
             ${card};
         }
-        .sm-sumcard.watch:hover{ box-shadow:0 8px 24px -8px ${accentGlow}; }
+        .sm-sumcard.watch:hover{ box-shadow:0 10px 28px -10px ${accentGlow}; }
+
+        /* Slow drifting aura behind the "watch" card */
+        .sm-sumcard.watch::before{
+          content:'';
+          position:absolute;
+          top:-40%; right:-30%;
+          width:180px; height:180px;
+          border-radius:50%;
+          background:radial-gradient(circle, ${withAlpha(accent, 0.22)}, transparent 65%);
+          filter: blur(24px);
+          animation: smAuraDrift 9s ease-in-out infinite;
+          pointer-events:none;
+        }
+
         .sm-sumcard .label{
           display:flex; align-items:center; gap:7px;
           font-size:10px; font-weight:900; letter-spacing:1.1px;
           text-transform:uppercase;
           margin-bottom:12px;
+          position:relative; z-index:1;
         }
         .sm-sumcard.strongest .label{ color:${success}; }
         .sm-sumcard.weakest   .label{ color:${danger}; }
@@ -409,7 +462,7 @@ export default function Strength({ strength, onNavigate }) {
           content:'';
           width:6px; height:6px; border-radius:50%;
           background:currentColor;
-          box-shadow:0 0 6px currentColor;
+          box-shadow:0 0 8px currentColor;
         }
         .sm-sumcard .value{
           display:flex; align-items:center; gap:10px;
@@ -417,6 +470,7 @@ export default function Strength({ strength, onNavigate }) {
           font-size:22px; font-weight:900;
           letter-spacing:-.6px;
           color:${text};
+          position:relative; z-index:1;
         }
         .sm-sumcard .value .flag{ font-size:22px; line-height:1; }
         .sm-sumcard .sub{
@@ -424,6 +478,7 @@ export default function Strength({ strength, onNavigate }) {
           color:${textMuted};
           margin-top:8px;
           font-family:'JetBrains Mono','SF Mono','Courier New',monospace;
+          position:relative; z-index:1;
         }
         .sm-sumcard.watch .sub{ color:${accent}; }
 
@@ -433,7 +488,12 @@ export default function Strength({ strength, onNavigate }) {
           border:1px solid ${border};
           border-radius:14px;
           padding:22px 24px;
-          transition:background .25s ease, border-color .25s ease;
+          transition:background .25s ease, border-color .25s ease, box-shadow .3s ease;
+          animation: smFadeUp .65s cubic-bezier(.16,1,.3,1) .22s both;
+        }
+        .sm-howto:hover{
+          border-color:${borderStrong};
+          box-shadow: 0 12px 32px -20px ${withAlpha(text, 0.35)};
         }
         .sm-howto h4{
           font-size:12px; font-weight:900; letter-spacing:1.2px;
@@ -456,6 +516,7 @@ export default function Strength({ strength, onNavigate }) {
           width:5px; height:5px; border-radius:50%;
           background:${accent};
           margin-top:9px;
+          box-shadow: 0 0 8px ${accentGlow};
         }
         .sm-howto .cta-row{ display:flex; gap:10px; flex-wrap:wrap; }
         .sm-btn{
@@ -465,7 +526,7 @@ export default function Strength({ strength, onNavigate }) {
           font-family:inherit; font-size:12.5px; font-weight:800;
           letter-spacing:.2px;
           cursor:pointer;
-          transition:all .22s cubic-bezier(.16,1,.3,1);
+          transition:all .25s cubic-bezier(.16,1,.3,1);
           white-space:nowrap;
         }
         .sm-btn.primary{
@@ -476,8 +537,9 @@ export default function Strength({ strength, onNavigate }) {
         }
         .sm-btn.primary:hover{
           transform:translateY(-2px);
-          box-shadow:0 10px 24px ${withAlpha(accent, 0.4)};
+          box-shadow:0 12px 28px ${withAlpha(accent, 0.45)};
         }
+        .sm-btn.primary:active{ transform:translateY(0); }
         .sm-btn.ghost{
           background:transparent;
           color:${text};
@@ -488,7 +550,9 @@ export default function Strength({ strength, onNavigate }) {
           color:${accent};
           background:${accentSoft};
           transform:translateY(-2px);
+          box-shadow: 0 8px 20px -12px ${accentGlow};
         }
+        .sm-btn.ghost:active{ transform:translateY(0); }
 
         /* ---------- Responsive ---------- */
         @media (max-width: 900px){
@@ -499,7 +563,6 @@ export default function Strength({ strength, onNavigate }) {
           .sm-sumcard .sub{ font-size:10.5px; }
         }
         @media (max-width: 640px){
-          .sm-root{ padding: 4px 0 32px; }
           .sm-topbar{ gap:12px; }
           .sm-tabs{ width:100%; justify-content:space-between; }
           .sm-tab{ flex:1; padding:8px 10px; font-size:12px; }
@@ -585,7 +648,11 @@ export default function Strength({ strength, onNavigate }) {
               const isEdge = i === 0 || i === sorted.length - 1;
 
               return (
-                <div className={`sm-row ${isEdge ? 'top' : ''}`} key={cur}>
+                <div
+                  className={`sm-row ${isEdge ? 'top' : ''}`}
+                  key={cur}
+                  style={{ animationDelay: `${0.05 + i * 0.045}s` }}
+                >
                   <div className="sm-rank">{i + 1}</div>
                   <div className="sm-flag">{CURRENCY_META[cur]?.flag || '🏳️'}</div>
                   <div className="sm-sym">{cur}</div>
