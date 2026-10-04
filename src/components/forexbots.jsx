@@ -8,6 +8,8 @@ import goldBotImg from '../assets/images/image16.png';
 
 /* ================================================================ */
 /*  BOTS — three only, one per instrument                           */
+/*  BOTS_META guarantees all three always exist even if the parent  */
+/*  prop is missing an entry.                                       */
 /* ================================================================ */
 const BOTS_META = {
   EURUSD: {
@@ -16,6 +18,7 @@ const BOTS_META = {
     tagline: 'Precision scalping on the world’s most liquid pair',
     image: euroBotImg,
     accentKey: 'info',
+    defaultWinRate: 68.0,
   },
   BTCUSD: {
     name: 'Bitcoin Master',
@@ -23,6 +26,7 @@ const BOTS_META = {
     tagline: 'Momentum and breakout hunting on 24/7 crypto',
     image: btcBotImg,
     accentKey: 'warning',
+    defaultWinRate: 61.0,
   },
   XAUUSD: {
     name: 'Gold Master',
@@ -30,6 +34,7 @@ const BOTS_META = {
     tagline: 'Safe-haven reversal plays around US session flows',
     image: goldBotImg,
     accentKey: 'accent',
+    defaultWinRate: 57.0,
   },
 };
 
@@ -80,33 +85,86 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
     return c[key] || accent;
   };
 
-  const orderedBots = ORDER
-    .map((sym) => bots.find((b) => b.sym === sym))
-    .filter(Boolean);
+  /* ---------- GUARANTEE 3 BOTS ----------
+     Always render all three instruments in the fixed ORDER. If the
+     `bots` prop is missing an entry (or has a differently-cased sym),
+     we fall back to a sane default object so nothing disappears. */
+  const orderedBots = ORDER.map((sym) => {
+    const meta = BOTS_META[sym];
+    const match = Array.isArray(bots)
+      ? bots.find((b) => String(b?.sym || '').toUpperCase() === sym)
+      : null;
+    if (match) {
+      return {
+        id: match.id ?? sym,
+        sym,
+        on: !!match.on,
+        winRate: Number.isFinite(match.winRate) ? match.winRate : meta.defaultWinRate,
+      };
+    }
+    return {
+      id: sym,
+      sym,
+      on: false,
+      winRate: meta.defaultWinRate,
+    };
+  });
 
   /* ---------- RENDER ---------- */
   return (
     <>
       <style>{`
         /* ============================================================
-           SCROLL
+           SCROLL — the view is its own scroll container. Fixed height
+           based on viewport minus topbar, with smooth scroll behaviour.
            ============================================================ */
         .view.active.fb-root{
+          height: calc(100vh - var(--topbar-h, 76px)) !important;
+          height: calc(100dvh - var(--topbar-h, 76px)) !important;
+          max-height: calc(100vh - var(--topbar-h, 76px));
+          max-height: calc(100dvh - var(--topbar-h, 76px));
           overflow-y: auto !important;
           overflow-x: hidden !important;
-          height: 100% !important;
-          max-height: 100vh;
           -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
           scroll-behavior: smooth;
+          scroll-padding-top: 8px;
+          padding-bottom: env(safe-area-inset-bottom, 0px);
         }
 
+        /* Custom subtle scrollbar for the whole view */
+        .view.active.fb-root::-webkit-scrollbar{ width: 10px; }
+        .view.active.fb-root::-webkit-scrollbar-track{ background: transparent; }
+        .view.active.fb-root::-webkit-scrollbar-thumb{
+          background: ${withAlpha(text, 0.10)};
+          border-radius: 10px;
+          border: 2px solid transparent;
+          background-clip: content-box;
+          transition: background .25s ease;
+        }
+        .view.active.fb-root::-webkit-scrollbar-thumb:hover{
+          background: ${withAlpha(text, 0.22)};
+          background-clip: content-box;
+        }
+
+        /* ---------- Root ---------- */
         .fb-root{
           display: block;
-          padding: 8px 0 56px;
+          padding: 8px 0 64px;
           font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
           color: ${text};
         }
         .fb-root *{ box-sizing: border-box; }
+
+        /* Entrance animation */
+        @keyframes fbFadeUp{
+          from { opacity: 0; transform: translateY(14px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fbPulse{
+          0%,100%{ opacity: .6; transform: scale(1); }
+          50%    { opacity: 1;  transform: scale(1.15); }
+        }
 
         /* ============================================================
            HERO
@@ -119,6 +177,7 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
           margin-bottom: 26px;
           border: 1px solid ${border};
           background: ${card};
+          animation: fbFadeUp .55s cubic-bezier(.16, 1, .3, 1) both;
         }
         .fb-hero::before{
           content: '';
@@ -209,10 +268,6 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
           box-shadow: 0 0 10px ${accent};
           animation: fbPulse 2s ease-in-out infinite;
         }
-        @keyframes fbPulse{
-          0%,100%{ opacity: .6; transform: scale(1); }
-          50%    { opacity: 1;  transform: scale(1.15); }
-        }
 
         /* ============================================================
            BOT GRID
@@ -239,11 +294,15 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
           border: 1px solid ${border};
           overflow: hidden;
           isolation: isolate;
+          animation: fbFadeUp .55s cubic-bezier(.16, 1, .3, 1) both;
           transition:
             transform .32s cubic-bezier(.16, 1, .3, 1),
             border-color .3s ease,
             box-shadow .32s ease;
         }
+        .fb-card:nth-child(1){ animation-delay: .05s; }
+        .fb-card:nth-child(2){ animation-delay: .12s; }
+        .fb-card:nth-child(3){ animation-delay: .19s; }
 
         /* Soft accent aura behind the image */
         .fb-card::before{
@@ -438,7 +497,7 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
            PHONE
            ============================================================ */
         @media (max-width: 720px) {
-          .fb-root{ padding: 4px 0 44px; }
+          .fb-root{ padding: 4px 0 48px; }
 
           .fb-hero{
             padding: 22px 20px 22px;
@@ -561,7 +620,7 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
         </div>
 
         {/* ============================================================
-            BOTS
+            BOTS — always three
            ============================================================ */}
         <div className="fb-grid">
           {orderedBots.map((b) => {
@@ -583,14 +642,14 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
                 <div className="fb-img-wrap">
                   <img
                     src={meta.image}
-                    alt={meta.name || b.name}
+                    alt={meta.name || b.sym}
                     className="fb-img"
                     loading="lazy"
                     draggable="false"
                   />
                 </div>
 
-                <h3 className="fb-name">{meta.name || b.name}</h3>
+                <h3 className="fb-name">{meta.name || b.sym}</h3>
                 <span className="fb-pair">{meta.pair || b.sym}</span>
 
                 <div className="fb-winrate">
@@ -606,7 +665,7 @@ export default function ForexBots({ bots = [], onConfigureBot, onToggleBot }) {
                       ? onConfigureBot(b.id)
                       : (onToggleBot && onToggleBot(b.id))
                   }
-                  aria-label={`Configure ${meta.name || b.name}`}
+                  aria-label={`Configure ${meta.name || b.sym}`}
                 >
                   <svg viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2"
