@@ -6,35 +6,33 @@ import { useTheme } from 'styled-components';
    FOREX FACTORY — ECONOMIC CALENDAR VIEW
    ============================================================
    Forex Factory's XML feed does not set CORS headers, so the
-   browser blocks direct fetches. We try a chain of public CORS
-   proxies and validate that each response is actually XML
-   before trusting it (several proxies now return HTML error
-   pages that look like valid responses until parsed).
+   browser blocks direct fetches. We route through our own Vercel
+   serverless function at /api/forexfactory, which fetches the
+   feed server-side and returns it with the right CORS headers.
 
-   For production, create a backend proxy and set PROXY_URL.
+   The live calendar page (https://www.forexfactory.com/calendar)
+   cannot be embedded due to X-Frame-Options: SAMEORIGIN — we
+   offer a "View on Forex Factory" button instead, opening it in
+   a new tab.
+
+   See /api/forexfactory.js for the serverless handler.
    ============================================================ */
 
 const FEED_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
 const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
 
-/* Set to your own backend proxy for production, e.g.
-   '/api/proxy/forexfactory'. Leave null to use the public
-   fallback chain (fine for dev). */
-const PROXY_URL = null;
+/* Our own Vercel serverless route — proxies the feed with CORS
+   headers and 5-minute edge caching. See /api/forexfactory.js */
+const PROXY_URL = '/api/forexfactory';
 
-/* Public CORS proxies, tried in order. Order matters — we've put
-   the most reliable ones first. Each must return raw XML text. */
+/* Fallback public proxies, only used if the serverless route
+   fails (e.g. during local dev before `vercel dev` is running). */
 const PUBLIC_PROXIES = [
   (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-  (u) => `https://thingproxy.freeboard.io/fetch/${u}`,
 ];
 
 /* ---------- XML validation ---------- */
-/* A valid FF feed always contains <weeklyevents> and starts with
-   an XML declaration or the root tag. Proxies that return HTML
-   error pages fail this check, so we can try the next one. */
 const looksLikeXml = (text) => {
   if (!text || typeof text !== 'string') return false;
   const head = text.slice(0, 500).trim().toLowerCase();
@@ -91,7 +89,7 @@ const formatDayLabel = (date) => {
   return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
 };
 
-/* ---------- fetch with strict validation + fallback ---------- */
+/* ---------- fetch with validation + fallback ---------- */
 const fetchFeed = async () => {
   const attempt = async (url) => {
     const res = await fetch(url, { method: 'GET', mode: 'cors' });
@@ -105,32 +103,25 @@ const fetchFeed = async () => {
 
   const errors = [];
 
-  /* 1. Configured backend proxy takes priority */
-  if (PROXY_URL) {
-    return attempt(PROXY_URL);
-  }
-
-  /* 2. Direct feed (works if the browser already has the data
-        cached, or if you've set up a service worker) */
+  /* 1. Our own serverless proxy — the reliable path */
   try {
-    return await attempt(FEED_URL);
+    return await attempt(PROXY_URL);
   } catch (e) {
-    errors.push(`direct: ${e.message}`);
+    errors.push(`own proxy: ${e.message}`);
   }
 
-  /* 3. Public CORS proxies — validated before trusting each one */
+  /* 2. Public fallbacks (dev-only safety net) */
   for (let i = 0; i < PUBLIC_PROXIES.length; i++) {
-    const build = PUBLIC_PROXIES[i];
     try {
-      return await attempt(build(FEED_URL));
+      return await attempt(PUBLIC_PROXIES[i](FEED_URL));
     } catch (e) {
-      errors.push(`proxy ${i + 1}: ${e.message}`);
+      errors.push(`fallback ${i + 1}: ${e.message}`);
     }
   }
 
   throw new Error(
     'All feed sources failed. ' +
-      'Set PROXY_URL to your backend route for a permanent fix. ' +
+      'Make sure /api/forexfactory.js is deployed and reachable. ' +
       `Attempts: ${errors.join(' | ')}`
   );
 };
@@ -449,11 +440,11 @@ export default function ForexFactoryView() {
                 border: `1px solid ${accent}30`,
               }}
             >
-              <strong style={{ color: accent }}>Permanent fix:</strong> create a
-              backend route that fetches the feed and returns it with CORS
-              headers, then set{' '}
-              <code style={{ color: accent }}>PROXY_URL</code> at the top of
-              this file to that route. See the file header for details.
+              <strong style={{ color: accent }}>Permanent fix:</strong> make sure
+              the serverless function at{' '}
+              <code style={{ color: accent }}>/api/forexfactory.js</code> is
+              deployed. It proxies the feed with CORS headers and caches it at
+              the edge for 5 minutes.
             </div>
             <button
               onClick={openLive}
