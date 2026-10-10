@@ -529,11 +529,12 @@ const HistoryList = styled.div`
 `;
 
 // ============================================
-// CORE CONTAINERS — ORIGINAL single-row layout
+// CORE CONTAINERS
 // ============================================
 const TopBar = styled.header`
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   align-items: center;
   padding: 12px 28px;
   background: ${props => props.theme?.colors?.surface || '#0b0f19'};
@@ -547,8 +548,7 @@ const TopBar = styled.header`
 
   @media (max-width: 1024px) {
     padding: 12px 20px;
-    flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px 14px;
   }
 
   @media (max-width: 768px) {
@@ -556,37 +556,30 @@ const TopBar = styled.header`
     top: 0;
     padding: calc(clamp(12px, 3.4vw, 18px) + env(safe-area-inset-top, 0px)) clamp(14px, 4vw, 20px) clamp(12px, 3.4vw, 16px);
     min-height: auto;
-    flex-wrap: wrap;
-    gap: clamp(10px, 3vw, 14px);
-    align-items: center;
+    gap: clamp(8px, 2.4vw, 12px);
     z-index: 200;
   }
 
   @media (max-width: 480px) {
     padding: calc(clamp(10px, 3.2vw, 16px) + env(safe-area-inset-top, 0px)) clamp(12px, 3.6vw, 16px) clamp(10px, 3.2vw, 14px);
-    gap: clamp(8px, 2.6vw, 12px);
+    gap: clamp(6px, 2vw, 10px);
   }
 `;
 
 const LeftSection = styled.div`
+  order: 1;
   display: flex;
   align-items: center;
   gap: 16px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
   min-width: 0;
 
   @media (max-width: 1024px) {
-    order: 1;
     gap: 12px;
-    flex: 0 1 auto;
-    min-width: 0;
   }
 
   @media (max-width: 768px) {
-    order: 1;
     gap: clamp(8px, 2.6vw, 12px);
-    flex: 0 1 auto;
-    min-width: 0;
   }
 
   @media (max-width: 480px) {
@@ -595,61 +588,55 @@ const LeftSection = styled.div`
 `;
 
 const RightSection = styled.div`
+  order: 3;
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  flex-shrink: 0;
+  flex: 0 0 auto;
+  margin-left: auto;
 
   @media (max-width: 1024px) {
-    order: 2;
     gap: 8px;
-    flex: 0 0 auto;
-    margin-left: auto;
+  }
+
+  @media (max-width: 900px) {
+    order: 2;
   }
 
   @media (max-width: 768px) {
     order: 2;
     gap: clamp(5px, 1.8vw, 8px);
-    flex: 0 0 auto;
     flex-wrap: nowrap;
-    margin-left: auto;
   }
 `;
 
-/* Nav — shrinks & scrolls horizontally if it can't fit */
+/* Nav — always full-width on its own row, buttons centered, no scroll */
 const ForexNavWrapper = styled.nav`
+  order: 4;
+  flex: 1 1 100%;
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  margin: 0 16px;
+  margin: 10px 0 0;
   padding: 4px;
   background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 12px;
-  flex: 0 1 auto;
-  min-width: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
-
-  &::-webkit-scrollbar { display: none; }
 
   @media (max-width: 1024px) {
-    order: 4;
-    margin: 0;
-    gap: 2px;
-    flex: 0 0 auto;
+    margin: 8px 0 0;
+    gap: 3px;
+    padding: 3px;
   }
 
   @media (max-width: 768px) {
-    order: 4;
-    width: 100%;
-    flex: 0 0 100%;
-    margin: 2px 0 0;
-    justify-content: flex-start;
-    padding: clamp(5px, 1.6vw, 8px);
-    gap: clamp(4px, 1.4vw, 8px);
+    margin: 6px 0 0;
+    justify-content: space-between;
+    padding: clamp(4px, 1.4vw, 6px);
+    gap: clamp(3px, 1vw, 6px);
     border-radius: clamp(10px, 3vw, 14px);
   }
 `;
@@ -657,6 +644,7 @@ const ForexNavWrapper = styled.nav`
 const ForexNavButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
   padding: 7px 14px;
   border-radius: 9px;
@@ -685,42 +673,58 @@ const ForexNavButton = styled.button`
     box-shadow: 0 0 12px ${p => (p.theme?.colors?.accent || '#3b82f6') + '20'};
   }
 
-  @media (max-width: 768px) {
-    padding: clamp(9px, 2.6vw, 12px) clamp(12px, 3.6vw, 16px);
-    font-size: clamp(12.5px, 3.5vw, 14px);
-    border-radius: clamp(8px, 2.6vw, 12px);
-    gap: clamp(6px, 2vw, 10px);
-
-    svg { width: clamp(15px, 4.2vw, 18px); height: clamp(15px, 4.2vw, 18px); }
+  @media (max-width: 1024px) {
+    padding: 7px 12px;
+    font-size: 12px;
+    gap: 6px;
   }
 
-  @media (max-width: 480px) {
-    padding: clamp(8px, 2.4vw, 11px) clamp(10px, 3vw, 14px);
-    font-size: clamp(12px, 3.4vw, 13.5px);
-    gap: clamp(5px, 1.8vw, 8px);
+  @media (max-width: 900px) {
+    padding: 6px 10px;
+    font-size: 11.5px;
+    gap: 5px;
 
-    svg { width: clamp(14px, 4vw, 16px); height: clamp(14px, 4vw, 16px); }
+    svg { width: 14px; height: 14px; }
+  }
+
+  @media (max-width: 768px) {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: clamp(9px, 2.6vw, 12px) clamp(4px, 1.5vw, 8px);
+    gap: 0;
+    border-radius: clamp(8px, 2.6vw, 12px);
+
+    svg {
+      width: clamp(17px, 4.8vw, 21px);
+      height: clamp(17px, 4.8vw, 21px);
+    }
+
+    /* Icon-only on phones — labels hidden so all 5 buttons fit without scroll */
+    span { display: none; }
   }
 `;
 
 const SessionWrapper = styled.div`
+  order: 2;
   display: flex;
   align-items: center;
   margin: 0 16px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
 
   @media (max-width: 1024px) {
+    margin: 0 8px;
+  }
+
+  @media (max-width: 900px) {
     order: 3;
-    margin: 0;
-    flex: 0 0 auto;
+    flex: 1 1 100%;
+    width: 100%;
+    margin: 6px 0 0;
+    justify-content: flex-start;
   }
 
   @media (max-width: 768px) {
-    order: 3;
-    width: 100%;
-    flex: 0 0 100%;
-    margin: 2px 0 0;
-    justify-content: flex-start;
+    margin: 4px 0 0;
   }
 `;
 
@@ -987,6 +991,8 @@ const SessionHero = styled.button`
   }
 
   @media (max-width: 1024px) { width: 360px; }
+
+  @media (max-width: 900px) { width: 340px; }
 
   @media (max-width: 768px) {
     width: auto;
@@ -1816,6 +1822,7 @@ const TopPanel = ({
                 className={activeForexNav === item.key ? 'active' : ''}
                 onClick={() => handleForexNav(item.path)}
                 aria-label={item.label}
+                title={item.label}
               >
                 {item.icon}
                 <span>{item.label}</span>
