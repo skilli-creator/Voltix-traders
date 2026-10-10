@@ -15,7 +15,7 @@ import { useTheme } from 'styled-components';
    renders a theme-aware calendar that matches your app.
    ============================================================ */
 
-const FEED_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
+const FEED_URL = 'https://www.forexfactory.com/calendar';
 
 /* ---------- impact helpers ---------- */
 const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
