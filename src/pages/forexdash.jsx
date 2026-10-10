@@ -8,6 +8,7 @@ import ForexHome from '../components/forexhome';
 import LotSize from '../components/lotsize';
 import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
+import ForexFactoryView from '../components/forex/ForexFactoryView';
 import TradingViewView from '../components/forex/TradingViewView';
 
 /* =========================================================

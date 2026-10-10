@@ -250,6 +250,18 @@ const TradingViewIcon = () => (
   </svg>
 );
 
+const ForexFactoryIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="4.5" width="18" height="16.5" rx="2.5" />
+    <line x1="8"  y1="2.5" x2="8"  y2="6.5" />
+    <line x1="16" y1="2.5" x2="16" y2="6.5" />
+    <line x1="3"  y1="10"  x2="21" y2="10" />
+    <rect x="6"  y="13" width="2" height="5" rx="0.5" fill="currentColor" stroke="none" />
+    <rect x="11" y="15" width="2" height="3" rx="0.5" fill="currentColor" stroke="none" />
+    <rect x="16" y="12" width="2" height="6" rx="0.5" fill="currentColor" stroke="none" />
+  </svg>
+);
+
 // ============================================
 // FOREX SESSIONS
 // ============================================
@@ -260,12 +272,13 @@ const FOREX_SESSIONS = [
   { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States',  startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas',     tag: 'USD · CAD' },
 ];
 
-// TradingView is 3rd — right after Strength Meter
+// Order: Home · Strength Meter · Forex Factory · TradingView · Bots
 export const FOREX_NAV_ITEMS = [
-  { key: 'home',        label: 'Home',           path: '/forexdash',             icon: <DashboardIcon /> },
-  { key: 'strength',    label: 'Strength Meter', path: '/forexdash/strength',    icon: <StrengthIcon /> },
-  { key: 'tradingview', label: 'TradingView',    path: '/forexdash/tradingview', icon: <TradingViewIcon /> },
-  { key: 'bots',        label: 'Bots',           path: '/forexdash/bots',        icon: <BotsIcon /> },
+  { key: 'home',         label: 'Home',           path: '/forexdash',              icon: <DashboardIcon /> },
+  { key: 'strength',     label: 'Strength Meter', path: '/forexdash/strength',     icon: <StrengthIcon /> },
+  { key: 'forexfactory', label: 'Forex Factory',  path: '/forexdash/forexfactory', icon: <ForexFactoryIcon /> },
+  { key: 'tradingview',  label: 'TradingView',    path: '/forexdash/tradingview',  icon: <TradingViewIcon /> },
+  { key: 'bots',         label: 'Bots',           path: '/forexdash/bots',         icon: <BotsIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -1463,10 +1476,10 @@ const TopPanel = ({
 
   const activeForexNav = (() => {
     const p = location.pathname;
-    if (p === '/forexdash/lot') return 'lot';
-    if (p === '/forexdash/strength') return 'strength';
-    if (p === '/forexdash/tradingview') return 'tradingview';
-    if (p === '/forexdash/bots') return 'bots';
+    if (p.startsWith('/forexdash/strength'))     return 'strength';
+    if (p.startsWith('/forexdash/forexfactory')) return 'forexfactory';
+    if (p.startsWith('/forexdash/tradingview'))  return 'tradingview';
+    if (p.startsWith('/forexdash/bots'))         return 'bots';
     return 'home';
   })();
 
