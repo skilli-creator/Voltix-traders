@@ -676,7 +676,7 @@ export default function ForexDash() {
           />
 
           <div className="forex-content">
-            {view === 'home' && (
+            {view === 'home'         && (
               <ForexHome
                 pairs={pairs}
                 positions={positions}
@@ -688,10 +688,11 @@ export default function ForexDash() {
                 onViewChange={onViewChange}
               />
             )}
-            {view === 'lot'         && <LotSize pairs={pairs} strength={strength} initialPair={selectedPair} />}
-            {view === 'strength'    && <Strength strength={strength} />}
-            {view === 'bots'        && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
-            {view === 'tradingview' && <TradingViewView />}
+            {view === 'lot'          && <LotSize pairs={pairs} strength={strength} initialPair={selectedPair} />}
+            {view === 'strength'     && <Strength strength={strength} />}
+            {view === 'bots'         && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
+            {view === 'tradingview'  && <TradingViewView />}
+            {view === 'forexfactory' && <ForexFactoryView />}
           </div>
         </div>
       </>
