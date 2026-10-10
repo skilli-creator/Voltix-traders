@@ -5,37 +5,44 @@ import { useTheme } from 'styled-components';
 /* ============================================================
    FOREX FACTORY — ECONOMIC CALENDAR VIEW
    ============================================================
-   Forex Factory does not allow iframe embedding on their
-   calendar page (X-Frame-Options: SAMEORIGIN), and their XML
-   feed does not set CORS headers, so the browser blocks direct
-   fetches.
+   Forex Factory's XML feed does not set CORS headers, so the
+   browser blocks direct fetches. We try a chain of public CORS
+   proxies and validate that each response is actually XML
+   before trusting it (several proxies now return HTML error
+   pages that look like valid responses until parsed).
 
-   We solve this with a layered fetch strategy:
-     1. Try the direct feed URL first (works if you've set up
-        your own backend proxy that passes CORS headers).
-     2. Fall back to a public CORS proxy (works out of the box,
-        but rate-limited — use a real backend for production).
-     3. If both fail, show a clear error with a one-click link
-        to the live Forex Factory calendar.
-
-   Set PROXY_URL below to your own backend route for production.
+   For production, create a backend proxy and set PROXY_URL.
    ============================================================ */
 
 const FEED_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
 const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
 
-/* Set this to your backend proxy route for production, e.g.
+/* Set to your own backend proxy for production, e.g.
    '/api/proxy/forexfactory'. Leave null to use the public
-   CORS proxy fallback (fine for dev, may be rate-limited). */
+   fallback chain (fine for dev). */
 const PROXY_URL = null;
 
-/* Public CORS proxies, tried in order if PROXY_URL is null.
-   These add the missing Access-Control-Allow-Origin header. */
+/* Public CORS proxies, tried in order. Order matters — we've put
+   the most reliable ones first. Each must return raw XML text. */
 const PUBLIC_PROXIES = [
-  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
   (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+  (u) => `https://thingproxy.freeboard.io/fetch/${u}`,
 ];
+
+/* ---------- XML validation ---------- */
+/* A valid FF feed always contains <weeklyevents> and starts with
+   an XML declaration or the root tag. Proxies that return HTML
+   error pages fail this check, so we can try the next one. */
+const looksLikeXml = (text) => {
+  if (!text || typeof text !== 'string') return false;
+  const head = text.slice(0, 500).trim().toLowerCase();
+  if (head.startsWith('<!doctype html') || head.startsWith('<html')) return false;
+  if (!text.includes('<weeklyevents')) return false;
+  if (!text.includes('<event>')) return false;
+  return true;
+};
 
 /* ---------- impact helpers ---------- */
 const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
@@ -84,41 +91,48 @@ const formatDayLabel = (date) => {
   return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
 };
 
-/* ---------- fetch with layered fallback ---------- */
+/* ---------- fetch with strict validation + fallback ---------- */
 const fetchFeed = async () => {
   const attempt = async (url) => {
-    const res = await fetch(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: { Accept: 'text/xml, application/xml, text/plain, */*' },
-    });
+    const res = await fetch(url, { method: 'GET', mode: 'cors' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
-    if (!text || text.length < 50) throw new Error('Empty response');
+    if (!looksLikeXml(text)) {
+      throw new Error('Response was not valid Forex Factory XML');
+    }
     return text;
   };
 
-  // 1. Try direct / configured proxy
+  const errors = [];
+
+  /* 1. Configured backend proxy takes priority */
   if (PROXY_URL) {
     return attempt(PROXY_URL);
   }
 
+  /* 2. Direct feed (works if the browser already has the data
+        cached, or if you've set up a service worker) */
   try {
     return await attempt(FEED_URL);
   } catch (e) {
-    // fall through to public proxies
+    errors.push(`direct: ${e.message}`);
   }
 
-  // 2. Try each public proxy in sequence
-  let lastErr;
-  for (const build of PUBLIC_PROXIES) {
+  /* 3. Public CORS proxies — validated before trusting each one */
+  for (let i = 0; i < PUBLIC_PROXIES.length; i++) {
+    const build = PUBLIC_PROXIES[i];
     try {
       return await attempt(build(FEED_URL));
-    } catch (err) {
-      lastErr = err;
+    } catch (e) {
+      errors.push(`proxy ${i + 1}: ${e.message}`);
     }
   }
-  throw lastErr || new Error('All feed sources failed');
+
+  throw new Error(
+    'All feed sources failed. ' +
+      'Set PROXY_URL to your backend route for a permanent fix. ' +
+      `Attempts: ${errors.join(' | ')}`
+  );
 };
 
 /* ---------- main component ---------- */
@@ -180,11 +194,7 @@ export default function ForexFactoryView() {
         if (!cancelled) setEvents(parsed);
       } catch (err) {
         if (!cancelled) {
-          setError(
-            err?.message ||
-              'Could not reach the Forex Factory feed right now. ' +
-                'This can happen if the public proxy is rate-limited.'
-          );
+          setError(err?.message || String(err));
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -239,7 +249,6 @@ export default function ForexFactoryView() {
     window.open(FOREX_FACTORY_URL, '_blank', 'noopener,noreferrer');
   };
 
-  /* ---------- layout: simple, fills available space, never clips ---------- */
   return (
     <div
       style={{
@@ -380,7 +389,6 @@ export default function ForexFactoryView() {
           background: bg,
         }}
       >
-        {/* loading */}
         {loading && (
           <div
             style={{
@@ -409,7 +417,6 @@ export default function ForexFactoryView() {
           </div>
         )}
 
-        {/* error */}
         {!loading && error && (
           <div
             style={{
@@ -418,7 +425,7 @@ export default function ForexFactoryView() {
               border: `1px solid ${danger}44`,
               background: `${danger}12`,
               color: text,
-              maxWidth: 560,
+              maxWidth: 620,
               margin: '40px auto',
               textAlign: 'center',
             }}
@@ -426,23 +433,27 @@ export default function ForexFactoryView() {
             <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 6 }}>
               Calendar unavailable
             </div>
-            <div style={{ fontSize: 12, color: textMuted, lineHeight: 1.6 }}>
+            <div style={{ fontSize: 12, color: textMuted, lineHeight: 1.6, wordBreak: 'break-word' }}>
               {error}
             </div>
             <div
               style={{
                 fontSize: 11,
                 color: textMuted,
-                marginTop: 12,
+                marginTop: 14,
                 lineHeight: 1.6,
                 textAlign: 'left',
+                padding: '12px 14px',
+                borderRadius: 10,
+                background: `${accent}10`,
+                border: `1px solid ${accent}30`,
               }}
             >
-              <strong style={{ color: text }}>For production:</strong> create a
+              <strong style={{ color: accent }}>Permanent fix:</strong> create a
               backend route that fetches the feed and returns it with CORS
               headers, then set{' '}
               <code style={{ color: accent }}>PROXY_URL</code> at the top of
-              this file to that route.
+              this file to that route. See the file header for details.
             </div>
             <button
               onClick={openLive}
@@ -467,7 +478,6 @@ export default function ForexFactoryView() {
           </div>
         )}
 
-        {/* empty */}
         {!loading && !error && grouped.length === 0 && (
           <div
             style={{
@@ -482,7 +492,6 @@ export default function ForexFactoryView() {
           </div>
         )}
 
-        {/* events */}
         {!loading &&
           !error &&
           grouped.map(([dateKey, dayEvents]) => {
@@ -615,7 +624,6 @@ export default function ForexFactoryView() {
   );
 }
 
-/* ---------- small stat block ---------- */
 function Stat({ label, value, color, bold }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', minWidth: 48 }}>
