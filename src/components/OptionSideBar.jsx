@@ -180,13 +180,6 @@ const HelpIcon = () => (
   </svg>
 );
 
-const CloseXIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
-
 const EmailIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -2119,18 +2112,6 @@ const SidebarHeader = styled.div`
   .user-name { font-size: 13.5px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .user-email { font-size: 11px; color: ${props => props.theme?.colors?.textMuted || '#94A3B8'}; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .close-btn-mobile {
-    display: none; align-items: center; justify-content: center;
-    width: 32px; height: 32px; border-radius: 8px;
-    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-    background: transparent;
-    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
-    cursor: pointer; transition: all 0.2s ease; flex-shrink: 0;
-
-    &:hover { border-color: ${props => props.theme?.colors?.accent || '#3B82F6'}; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.08)'}; transform: rotate(90deg); }
-    @media (max-width: 768px) { display: flex; }
-  }
-
   @media (max-width: 768px) {
     padding: clamp(10px, 3vw, 14px) clamp(10px, 3vw, 14px) clamp(14px, 4vw, 20px);
     gap: clamp(12px, 3.4vw, 16px);
@@ -2142,11 +2123,6 @@ const SidebarHeader = styled.div`
     }
     .user-name { font-size: clamp(14px, 4vw, 16px); }
     .user-email { font-size: clamp(12px, 3.2vw, 14px); margin-top: clamp(2px, 0.8vw, 4px); }
-    .close-btn-mobile {
-      width: clamp(36px, 10vw, 44px);
-      height: clamp(36px, 10vw, 44px);
-      border-radius: clamp(8px, 2.6vw, 12px);
-    }
   }
 `;
 
@@ -3407,7 +3383,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <span className="title-text">{popupData?.title}</span>
               {popupData?.badge && <span className="title-badge">{popupData.badge}</span>}
             </div>
-            <button className="close-btn" onClick={closePopup}><CloseXIcon /></button>
+            <button className="close-btn" onClick={closePopup}><CloseIcon /></button>
           </ModalHeader>
           <ModalBody>{renderPopupContent()}</ModalBody>
         </ModalContainer>
@@ -3436,7 +3412,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               <div className="user-name">John Trader</div>
               <div className="user-email">john@mytradeapp.com</div>
             </div>
-            <button className="close-btn-mobile" onClick={onClose} aria-label="Close menu"><CloseXIcon /></button>
           </SidebarHeader>
 
           <NavSection>
