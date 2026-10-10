@@ -6,16 +6,29 @@ import { useTheme } from 'styled-components';
    FOREX FACTORY — ECONOMIC CALENDAR VIEW
    ============================================================
    Forex Factory does not offer an official embeddable widget.
-   Their calendar page blocks iframe embedding via X-Frame-Options.
+   Their calendar page (https://www.forexfactory.com/calendar)
+   blocks iframe embedding via X-Frame-Options headers.
 
    The public weekly XML feed is the sanctioned data source:
    https://nfs.faireconomy.media/ff_calendar_thisweek.xml
 
-   This component fetches that feed, parses it client-side, and
-   renders a theme-aware calendar that matches your app.
+   This component:
+   1. Fetches and parses that feed client-side.
+   2. Renders a theme-aware calendar matching your app.
+   3. Provides a "View on Forex Factory" button that opens the
+      live calendar page in a new tab.
+
+   NOTE: The feed is CORS-restricted. Browsers will block direct
+   fetches from this component unless you proxy the request
+   through your own backend. See the PROXY_URL constant below.
    ============================================================ */
 
-const FEED_URL = 'https://www.forexfactory.com/calendar';
+const FEED_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
+const FOREX_FACTORY_CALENDAR_URL = 'https://www.forexfactory.com/calendar';
+
+/* Optional: set this to your backend proxy route if the direct
+   fetch fails due to CORS. Example: '/api/proxy/forexfactory' */
+const PROXY_URL = null; // e.g. '/api/proxy/forexfactory'
 
 /* ---------- impact helpers ---------- */
 const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
@@ -81,6 +94,7 @@ export default function ForexFactoryView() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [corsBlocked, setCorsBlocked] = useState(false);
   const [impactFilter, setImpactFilter] = useState('all');
   const [currencyFilter, setCurrencyFilter] = useState('all');
 
@@ -91,9 +105,12 @@ export default function ForexFactoryView() {
     const load = async () => {
       setLoading(true);
       setError(null);
+      setCorsBlocked(false);
+
+      const url = PROXY_URL || FEED_URL;
 
       try {
-        const res = await fetch(FEED_URL, { mode: 'cors' });
+        const res = await fetch(url, { mode: 'cors' });
         if (!res.ok) throw new Error(`Feed responded with ${res.status}`);
         const xmlText = await res.text();
 
@@ -134,9 +151,18 @@ export default function ForexFactoryView() {
         if (!cancelled) setEvents(parsed);
       } catch (err) {
         if (!cancelled) {
+          // Detect CORS failures: these usually manifest as a
+          // TypeError("Failed to fetch") in the browser.
+          const isCors =
+            err instanceof TypeError &&
+            /failed to fetch|networkerror|load failed/i.test(err.message || '');
+
+          setCorsBlocked(isCors);
           setError(
-            err.message ||
-              'Could not load the Forex Factory calendar. The feed may be temporarily unavailable.'
+            isCors
+              ? 'The Forex Factory feed is CORS-restricted and cannot be fetched directly from the browser.'
+              : err.message ||
+                  'Could not load the Forex Factory calendar. The feed may be temporarily unavailable.'
           );
         }
       } finally {
@@ -161,7 +187,6 @@ export default function ForexFactoryView() {
       .filter((e) => impactFilter === 'all' || e.impact === impactFilter)
       .filter((e) => currencyFilter === 'all' || e.currency === currencyFilter)
       .sort((a, b) => {
-        // Sort by date first, then by time, then by impact rank
         if (a.dateObj && b.dateObj) {
           const d = a.dateObj - b.dateObj;
           if (d !== 0) return d;
@@ -190,7 +215,11 @@ export default function ForexFactoryView() {
   const text = c.text || '#f4f4f5';
   const textMuted = c.textMuted || '#94a3b8';
   const accent = c.accent || '#3b82f6';
-  const accentLight = c.accentLight || 'rgba(59,130,246,0.12)';
+  const danger = c.danger || '#ef4444';
+
+  const openForexFactory = () => {
+    window.open(FOREX_FACTORY_CALENDAR_URL, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div
@@ -319,6 +348,51 @@ export default function ForexFactoryView() {
             </option>
           ))}
         </select>
+
+        {/* view on forexfactory button */}
+        <button
+          onClick={openForexFactory}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            padding: '6px 14px',
+            borderRadius: 8,
+            border: `1px solid ${accent}55`,
+            background: `${accent}14`,
+            color: accent,
+            fontSize: 11.5,
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            transition: 'all 0.2s ease',
+            whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = `${accent}22`;
+            e.currentTarget.style.borderColor = `${accent}88`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = `${accent}14`;
+            e.currentTarget.style.borderColor = `${accent}55`;
+          }}
+        >
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+          View on Forex Factory
+        </button>
       </div>
 
       {/* ---------- body ---------- */}
@@ -367,10 +441,10 @@ export default function ForexFactoryView() {
             style={{
               padding: '28px 24px',
               borderRadius: 14,
-              border: `1px solid ${(c.danger || '#ef4444') + '44'}`,
-              background: `${c.danger || '#ef4444'}12`,
+              border: `1px solid ${danger}44`,
+              background: `${danger}12`,
               color: text,
-              maxWidth: 520,
+              maxWidth: 560,
               margin: '40px auto',
               textAlign: 'center',
             }}
@@ -381,17 +455,122 @@ export default function ForexFactoryView() {
             <div style={{ fontSize: 12, color: textMuted, lineHeight: 1.6 }}>
               {error}
             </div>
-            <div
+
+            {corsBlocked && (
+              <div
+                style={{
+                  marginTop: 16,
+                  padding: '12px 14px',
+                  borderRadius: 10,
+                  background: `${accent}10`,
+                  border: `1px solid ${accent}30`,
+                  textAlign: 'left',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 11.5,
+                    fontWeight: 700,
+                    color: accent,
+                    marginBottom: 6,
+                  }}
+                >
+                  Why is this happening?
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: textMuted,
+                    lineHeight: 1.65,
+                  }}
+                >
+                  Forex Factory does not set CORS headers on their XML feed,
+                  so browsers block direct requests from JavaScript. To fix
+                  this, proxy the feed through your own backend:
+                </div>
+                <div
+                  style={{
+                    marginTop: 8,
+                    padding: '8px 10px',
+                    borderRadius: 6,
+                    background: `${bg}`,
+                    border: `1px solid ${border}`,
+                    fontSize: 10.5,
+                    fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+                    color: text,
+                    overflowX: 'auto',
+                  }}
+                >
+                  {`// In your backend (Node/Express example):
+app.get('/api/proxy/forexfactory', async (req, res) => {
+  const r = await fetch('${FEED_URL}');
+  res.set('Content-Type', 'text/xml');
+  res.send(await r.text());
+});`}
+                </div>
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: textMuted,
+                    lineHeight: 1.65,
+                    marginTop: 8,
+                  }}
+                >
+                  Then set <code style={{ color: accent }}>PROXY_URL</code> at
+                  the top of this file to{' '}
+                  <code style={{ color: accent }}>'/api/proxy/forexfactory'</code>.
+                </div>
+              </div>
+            )}
+
+            {!corsBlocked && (
+              <div
+                style={{
+                  fontSize: 11,
+                  color: textMuted,
+                  marginTop: 12,
+                  opacity: 0.8,
+                }}
+              >
+                If this persists, the public feed may be rate-limited. Forex
+                Factory allows a limited number of requests per minute.
+              </div>
+            )}
+
+            <button
+              onClick={openForexFactory}
               style={{
-                fontSize: 11,
-                color: textMuted,
-                marginTop: 12,
-                opacity: 0.8,
+                marginTop: 18,
+                padding: '9px 18px',
+                borderRadius: 9,
+                border: `1px solid ${accent}55`,
+                background: `${accent}18`,
+                color: accent,
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 7,
               }}
             >
-              If this persists, the public feed may be rate-limited. Forex Factory
-              allows a limited number of requests per minute.
-            </div>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Open Forex Factory Calendar
+            </button>
           </div>
         )}
 
