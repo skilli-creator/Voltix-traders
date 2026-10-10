@@ -5,85 +5,120 @@ import { useTheme } from 'styled-components';
 /* ============================================================
    FOREX FACTORY — ECONOMIC CALENDAR VIEW
    ============================================================
-   Forex Factory does not offer an official embeddable widget.
-   Their calendar page (https://www.forexfactory.com/calendar)
-   blocks iframe embedding via X-Frame-Options headers.
+   Forex Factory does not allow iframe embedding on their
+   calendar page (X-Frame-Options: SAMEORIGIN), and their XML
+   feed does not set CORS headers, so the browser blocks direct
+   fetches.
 
-   The public weekly XML feed is the sanctioned data source:
-   https://nfs.faireconomy.media/ff_calendar_thisweek.xml
+   We solve this with a layered fetch strategy:
+     1. Try the direct feed URL first (works if you've set up
+        your own backend proxy that passes CORS headers).
+     2. Fall back to a public CORS proxy (works out of the box,
+        but rate-limited — use a real backend for production).
+     3. If both fail, show a clear error with a one-click link
+        to the live Forex Factory calendar.
 
-   This component:
-   1. Fetches and parses that feed client-side.
-   2. Renders a theme-aware calendar matching your app.
-   3. Provides a "View on Forex Factory" button that opens the
-      live calendar page in a new tab.
-
-   NOTE: The feed is CORS-restricted. Browsers will block direct
-   fetches from this component unless you proxy the request
-   through your own backend. See the PROXY_URL constant below.
+   Set PROXY_URL below to your own backend route for production.
    ============================================================ */
 
 const FEED_URL = 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml';
-const FOREX_FACTORY_CALENDAR_URL = 'https://www.forexfactory.com/calendar';
+const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
 
-/* Optional: set this to your backend proxy route if the direct
-   fetch fails due to CORS. Example: '/api/proxy/forexfactory' */
-const PROXY_URL = null; // e.g. '/api/proxy/forexfactory'
+/* Set this to your backend proxy route for production, e.g.
+   '/api/proxy/forexfactory'. Leave null to use the public
+   CORS proxy fallback (fine for dev, may be rate-limited). */
+const PROXY_URL = null;
+
+/* Public CORS proxies, tried in order if PROXY_URL is null.
+   These add the missing Access-Control-Allow-Origin header. */
+const PUBLIC_PROXIES = [
+  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+];
 
 /* ---------- impact helpers ---------- */
 const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
 
 const impactColor = (impact, c) => {
   switch ((impact || '').toLowerCase()) {
-    case 'high':
-      return c.danger || '#ef4444';
-    case 'medium':
-      return c.warning || '#f59e0b';
-    case 'low':
-      return c.success || '#22c55e';
-    default:
-      return c.textMuted || '#94a3b8';
+    case 'high':   return c.danger  || '#ef4444';
+    case 'medium': return c.warning || '#f59e0b';
+    case 'low':    return c.success || '#22c55e';
+    default:       return c.textMuted || '#94a3b8';
   }
 };
 
-const impactDot = (impact, c) => (
-  <span
-    style={{
-      display: 'inline-block',
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      background: impactColor(impact, c),
-      boxShadow: `0 0 6px ${impactColor(impact, c)}`,
-      flexShrink: 0,
-    }}
-  />
-);
+const ImpactDot = ({ impact, c }) => {
+  const color = impactColor(impact, c);
+  return (
+    <span
+      style={{
+        display: 'inline-block',
+        width: 8,
+        height: 8,
+        borderRadius: '50%',
+        background: color,
+        boxShadow: `0 0 6px ${color}`,
+        flexShrink: 0,
+      }}
+    />
+  );
+};
 
 /* ---------- date helpers ---------- */
 const parseEventDate = (raw) => {
   if (!raw) return null;
-  // FF feed format: "10-06-2026" (MM-DD-YYYY)
   const parts = raw.split('-');
   if (parts.length !== 3) return null;
   const [m, d, y] = parts.map(Number);
   return new Date(y, m - 1, d);
 };
 
-const formatTime = (raw) => {
-  if (!raw) return '—';
-  // FF feed time is typically "8:30am" or "All Day"
-  return raw.trim();
-};
+const formatTime = (raw) => (raw ? raw.trim() : '—');
 
 const formatDayLabel = (date) => {
   if (!date) return '';
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-  ];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+};
+
+/* ---------- fetch with layered fallback ---------- */
+const fetchFeed = async () => {
+  const attempt = async (url) => {
+    const res = await fetch(url, {
+      method: 'GET',
+      mode: 'cors',
+      headers: { Accept: 'text/xml, application/xml, text/plain, */*' },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    if (!text || text.length < 50) throw new Error('Empty response');
+    return text;
+  };
+
+  // 1. Try direct / configured proxy
+  if (PROXY_URL) {
+    return attempt(PROXY_URL);
+  }
+
+  try {
+    return await attempt(FEED_URL);
+  } catch (e) {
+    // fall through to public proxies
+  }
+
+  // 2. Try each public proxy in sequence
+  let lastErr;
+  for (const build of PUBLIC_PROXIES) {
+    try {
+      return await attempt(build(FEED_URL));
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr || new Error('All feed sources failed');
 };
 
 /* ---------- main component ---------- */
@@ -94,31 +129,26 @@ export default function ForexFactoryView() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [corsBlocked, setCorsBlocked] = useState(false);
   const [impactFilter, setImpactFilter] = useState('all');
   const [currencyFilter, setCurrencyFilter] = useState('all');
 
-  /* ---------- fetch + parse the XML feed ---------- */
   useEffect(() => {
     let cancelled = false;
 
     const load = async () => {
       setLoading(true);
       setError(null);
-      setCorsBlocked(false);
-
-      const url = PROXY_URL || FEED_URL;
 
       try {
-        const res = await fetch(url, { mode: 'cors' });
-        if (!res.ok) throw new Error(`Feed responded with ${res.status}`);
-        const xmlText = await res.text();
+        const xmlText = await fetchFeed();
+        if (cancelled) return;
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(xmlText, 'text/xml');
 
-        const parseError = doc.querySelector('parsererror');
-        if (parseError) throw new Error('Unable to parse the Forex Factory feed.');
+        if (doc.querySelector('parsererror')) {
+          throw new Error('Feed returned malformed XML.');
+        }
 
         const nodes = Array.from(doc.querySelectorAll('event'));
 
@@ -128,8 +158,8 @@ export default function ForexFactoryView() {
             return el ? el.textContent.trim() : '';
           };
 
-          const dateObj = parseEventDate(get('date'));
           const impact = get('impact') || 'Low';
+          const dateObj = parseEventDate(get('date'));
 
           return {
             id: `${get('date')}-${get('time')}-${get('currency')}-${get('title')}-${idx}`,
@@ -142,7 +172,6 @@ export default function ForexFactoryView() {
             forecast: get('forecast'),
             previous: get('previous'),
             actual: get('actual'),
-            detail: get('detail') || get('url'),
             dateObj,
             impactRank: IMPACT_ORDER[impact] ?? 99,
           };
@@ -151,18 +180,10 @@ export default function ForexFactoryView() {
         if (!cancelled) setEvents(parsed);
       } catch (err) {
         if (!cancelled) {
-          // Detect CORS failures: these usually manifest as a
-          // TypeError("Failed to fetch") in the browser.
-          const isCors =
-            err instanceof TypeError &&
-            /failed to fetch|networkerror|load failed/i.test(err.message || '');
-
-          setCorsBlocked(isCors);
           setError(
-            isCors
-              ? 'The Forex Factory feed is CORS-restricted and cannot be fetched directly from the browser.'
-              : err.message ||
-                  'Could not load the Forex Factory calendar. The feed may be temporarily unavailable.'
+            err?.message ||
+              'Could not reach the Forex Factory feed right now. ' +
+                'This can happen if the public proxy is rate-limited.'
           );
         }
       } finally {
@@ -176,7 +197,6 @@ export default function ForexFactoryView() {
     };
   }, []);
 
-  /* ---------- derived data ---------- */
   const currencies = useMemo(() => {
     const set = new Set(events.map((e) => e.currency).filter(Boolean));
     return ['all', ...Array.from(set).sort()];
@@ -197,7 +217,6 @@ export default function ForexFactoryView() {
       });
   }, [events, impactFilter, currencyFilter]);
 
-  /* ---------- group by day for rendering ---------- */
   const grouped = useMemo(() => {
     const map = new Map();
     for (const ev of filtered) {
@@ -208,7 +227,6 @@ export default function ForexFactoryView() {
     return Array.from(map.entries());
   }, [filtered]);
 
-  /* ---------- inline styles that follow the theme ---------- */
   const bg = c.bg || '#0b0a08';
   const surface = c.surfaceElevated || c.surface || '#141310';
   const border = c.border || 'rgba(255,255,255,0.08)';
@@ -217,38 +235,30 @@ export default function ForexFactoryView() {
   const accent = c.accent || '#3b82f6';
   const danger = c.danger || '#ef4444';
 
-  const openForexFactory = () => {
-    window.open(FOREX_FACTORY_CALENDAR_URL, '_blank', 'noopener,noreferrer');
+  const openLive = () => {
+    window.open(FOREX_FACTORY_URL, '_blank', 'noopener,noreferrer');
   };
 
+  /* ---------- layout: simple, fills available space, never clips ---------- */
   return (
     <div
       style={{
-        margin: '-24px -26px -60px',
-        width: 'calc(100% + 52px)',
+        width: '100%',
         minHeight: 'calc(100vh - 76px)',
         background: bg,
-        overflow: 'hidden',
         color: text,
         display: 'flex',
         flexDirection: 'column',
       }}
-      className="ff-fullbleed"
     >
       <style>{`
-        @media (max-width: 768px) {
-          .ff-fullbleed {
-            margin: -18px -14px -80px !important;
-            width: calc(100% + 28px) !important;
-            min-height: calc(100vh - 56px) !important;
-          }
-        }
         .ff-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .ff-scroll::-webkit-scrollbar-thumb {
           background: ${textMuted}40;
           border-radius: 10px;
         }
         .ff-scroll::-webkit-scrollbar-track { background: transparent; }
+        @keyframes ff-spin { to { transform: rotate(360deg); } }
       `}</style>
 
       {/* ---------- toolbar ---------- */}
@@ -264,30 +274,15 @@ export default function ForexFactoryView() {
           flexShrink: 0,
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', marginRight: 'auto' }}>
-          <span
-            style={{
-              fontSize: 15,
-              fontWeight: 800,
-              letterSpacing: '-0.3px',
-              color: text,
-            }}
-          >
+        <div style={{ display: 'flex', flexDirection: 'column', marginRight: 'auto', minWidth: 0 }}>
+          <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.3px', color: text }}>
             Economic Calendar
           </span>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 500,
-              color: textMuted,
-              marginTop: 1,
-            }}
-          >
+          <span style={{ fontSize: 11, fontWeight: 500, color: textMuted, marginTop: 1 }}>
             Powered by Forex Factory · current week
           </span>
         </div>
 
-        {/* impact filter */}
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {[
             { key: 'all', label: 'All' },
@@ -296,8 +291,7 @@ export default function ForexFactoryView() {
             { key: 'Low', label: 'Low' },
           ].map((f) => {
             const active = impactFilter === f.key;
-            const dot =
-              f.key !== 'all' ? impactColor(f.key, c) : accent;
+            const dot = f.key !== 'all' ? impactColor(f.key, c) : accent;
             return (
               <button
                 key={f.key}
@@ -318,14 +312,13 @@ export default function ForexFactoryView() {
                   transition: 'all 0.2s ease',
                 }}
               >
-                {f.key !== 'all' && impactDot(f.key, c)}
+                {f.key !== 'all' && <ImpactDot impact={f.key} c={c} />}
                 {f.label}
               </button>
             );
           })}
         </div>
 
-        {/* currency filter */}
         <select
           value={currencyFilter}
           onChange={(e) => setCurrencyFilter(e.target.value)}
@@ -349,9 +342,8 @@ export default function ForexFactoryView() {
           ))}
         </select>
 
-        {/* view on forexfactory button */}
         <button
-          onClick={openForexFactory}
+          onClick={openLive}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -365,28 +357,11 @@ export default function ForexFactoryView() {
             fontWeight: 700,
             cursor: 'pointer',
             fontFamily: 'inherit',
-            transition: 'all 0.2s ease',
             whiteSpace: 'nowrap',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = `${accent}22`;
-            e.currentTarget.style.borderColor = `${accent}88`;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = `${accent}14`;
-            e.currentTarget.style.borderColor = `${accent}55`;
-          }}
         >
-          <svg
-            width="13"
-            height="13"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
             <line x1="10" y1="14" x2="21" y2="3" />
@@ -401,7 +376,7 @@ export default function ForexFactoryView() {
         style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '16px 20px 60px',
+          padding: '16px 20px 40px',
           background: bg,
         }}
       >
@@ -428,7 +403,6 @@ export default function ForexFactoryView() {
                 animation: 'ff-spin 0.8s linear infinite',
               }}
             />
-            <style>{`@keyframes ff-spin { to { transform: rotate(360deg); } }`}</style>
             <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: 0.5 }}>
               Loading Forex Factory calendar…
             </span>
@@ -455,90 +429,23 @@ export default function ForexFactoryView() {
             <div style={{ fontSize: 12, color: textMuted, lineHeight: 1.6 }}>
               {error}
             </div>
-
-            {corsBlocked && (
-              <div
-                style={{
-                  marginTop: 16,
-                  padding: '12px 14px',
-                  borderRadius: 10,
-                  background: `${accent}10`,
-                  border: `1px solid ${accent}30`,
-                  textAlign: 'left',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 11.5,
-                    fontWeight: 700,
-                    color: accent,
-                    marginBottom: 6,
-                  }}
-                >
-                  Why is this happening?
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: textMuted,
-                    lineHeight: 1.65,
-                  }}
-                >
-                  Forex Factory does not set CORS headers on their XML feed,
-                  so browsers block direct requests from JavaScript. To fix
-                  this, proxy the feed through your own backend:
-                </div>
-                <div
-                  style={{
-                    marginTop: 8,
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    background: `${bg}`,
-                    border: `1px solid ${border}`,
-                    fontSize: 10.5,
-                    fontFamily: "'JetBrains Mono', 'Courier New', monospace",
-                    color: text,
-                    overflowX: 'auto',
-                  }}
-                >
-                  {`// In your backend (Node/Express example):
-app.get('/api/proxy/forexfactory', async (req, res) => {
-  const r = await fetch('${FEED_URL}');
-  res.set('Content-Type', 'text/xml');
-  res.send(await r.text());
-});`}
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: textMuted,
-                    lineHeight: 1.65,
-                    marginTop: 8,
-                  }}
-                >
-                  Then set <code style={{ color: accent }}>PROXY_URL</code> at
-                  the top of this file to{' '}
-                  <code style={{ color: accent }}>'/api/proxy/forexfactory'</code>.
-                </div>
-              </div>
-            )}
-
-            {!corsBlocked && (
-              <div
-                style={{
-                  fontSize: 11,
-                  color: textMuted,
-                  marginTop: 12,
-                  opacity: 0.8,
-                }}
-              >
-                If this persists, the public feed may be rate-limited. Forex
-                Factory allows a limited number of requests per minute.
-              </div>
-            )}
-
+            <div
+              style={{
+                fontSize: 11,
+                color: textMuted,
+                marginTop: 12,
+                lineHeight: 1.6,
+                textAlign: 'left',
+              }}
+            >
+              <strong style={{ color: text }}>For production:</strong> create a
+              backend route that fetches the feed and returns it with CORS
+              headers, then set{' '}
+              <code style={{ color: accent }}>PROXY_URL</code> at the top of
+              this file to that route.
+            </div>
             <button
-              onClick={openForexFactory}
+              onClick={openLive}
               style={{
                 marginTop: 18,
                 padding: '9px 18px',
@@ -555,26 +462,12 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
                 gap: 7,
               }}
             >
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                <polyline points="15 3 21 3 21 9" />
-                <line x1="10" y1="14" x2="21" y2="3" />
-              </svg>
               Open Forex Factory Calendar
             </button>
           </div>
         )}
 
-        {/* events */}
+        {/* empty */}
         {!loading && !error && grouped.length === 0 && (
           <div
             style={{
@@ -589,6 +482,7 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
           </div>
         )}
 
+        {/* events */}
         {!loading &&
           !error &&
           grouped.map(([dateKey, dayEvents]) => {
@@ -597,7 +491,6 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
 
             return (
               <div key={dateKey} style={{ marginBottom: 22 }}>
-                {/* day header */}
                 <div
                   style={{
                     display: 'flex',
@@ -630,7 +523,6 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
                   </span>
                 </div>
 
-                {/* event rows */}
                 <div
                   style={{
                     borderRadius: 12,
@@ -656,16 +548,7 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
                           background: isHigh ? `${color}08` : 'transparent',
                           transition: 'background 0.2s ease',
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = `${accent}0a`;
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = isHigh
-                            ? `${color}08`
-                            : 'transparent';
-                        }}
                       >
-                        {/* time */}
                         <span
                           style={{
                             fontSize: 11,
@@ -678,24 +561,9 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
                           {formatTime(ev.time)}
                         </span>
 
-                        {/* title + meta */}
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 3,
-                            minWidth: 0,
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 8,
-                              minWidth: 0,
-                            }}
-                          >
-                            {impactDot(ev.impact, c)}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                            <ImpactDot impact={ev.impact} c={c} />
                             <span
                               style={{
                                 fontSize: 12.5,
@@ -709,16 +577,7 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
                               {ev.title}
                             </span>
                           </div>
-
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 8,
-                              flexWrap: 'wrap',
-                            }}
-                          >
-                            {/* currency badge */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                             <span
                               style={{
                                 fontSize: 10,
@@ -734,31 +593,15 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
                               {ev.currency}
                             </span>
                             {ev.country && (
-                              <span style={{ fontSize: 10, color: textMuted }}>
-                                {ev.country}
-                              </span>
+                              <span style={{ fontSize: 10, color: textMuted }}>{ev.country}</span>
                             )}
                           </div>
                         </div>
 
-                        {/* values */}
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 14,
-                            flexShrink: 0,
-                          }}
-                        >
-                          {ev.actual !== '' && (
-                            <Stat label="Actual" value={ev.actual} color={color} bold />
-                          )}
-                          {ev.forecast !== '' && (
-                            <Stat label="Forecast" value={ev.forecast} color={textMuted} />
-                          )}
-                          {ev.previous !== '' && (
-                            <Stat label="Previous" value={ev.previous} color={textMuted} />
-                          )}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
+                          {ev.actual !== '' && <Stat label="Actual" value={ev.actual} color={color} bold />}
+                          {ev.forecast !== '' && <Stat label="Forecast" value={ev.forecast} color={textMuted} />}
+                          {ev.previous !== '' && <Stat label="Previous" value={ev.previous} color={textMuted} />}
                         </div>
                       </div>
                     );
@@ -772,17 +615,10 @@ app.get('/api/proxy/forexfactory', async (req, res) => {
   );
 }
 
-/* ---------- small stat block for Actual / Forecast / Previous ---------- */
+/* ---------- small stat block ---------- */
 function Stat({ label, value, color, bold }) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        minWidth: 48,
-      }}
-    >
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', minWidth: 48 }}>
       <span
         style={{
           fontSize: 9,
