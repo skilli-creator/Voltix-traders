@@ -1,5 +1,6 @@
 // api/forexfactory.js
-// Vercel serverless function — proxies the Forex Factory weekly XML feed.
+// Vercel serverless function — proxies the current-week Forex Factory XML feed.
+// Useful as a standalone endpoint and a health check.
 
 export const config = { maxDuration: 20 };
 

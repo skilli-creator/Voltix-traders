@@ -7,7 +7,6 @@
 //   • ff_calendar_nextweek.xml
 //
 // We fetch all three, merge them, and filter to the requested range.
-// This covers a rolling ~3-week window with no scraping and no 403s.
 
 export const config = { maxDuration: 30 };
 
@@ -37,8 +36,6 @@ const fetchFeed = async (url) => {
 };
 
 /* ---------- parse XML ---------- */
-/* FF feed format: <weeklyevents><event><title>..</title>...
-   Date format is "MM-DD-YYYY" in the <date> tag. */
 const parseEvents = (xml, source) => {
   const events = [];
   if (!xml || typeof xml !== 'string') return events;
@@ -111,7 +108,7 @@ export default async function handler(req, res) {
     if (ping === '1') {
       res.status(200).json({
         ok: true,
-        version: 'v4-2025-10-11',
+        version: 'v5-2025-10-11',
         node: process.version,
         feeds: Object.keys(FEEDS),
       });
@@ -131,7 +128,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    /* ---------- debug: inspect one feed ---------- */
+    /* ---------- debug mode ---------- */
     if (debug === '1') {
       const results = {};
       for (const [key, url] of Object.entries(FEEDS)) {
@@ -149,11 +146,11 @@ export default async function handler(req, res) {
           results[key] = { url, ok: false, error: String(e?.message || e) };
         }
       }
-      res.status(200).json({ version: 'v4-2025-10-11', results });
+      res.status(200).json({ version: 'v5-2025-10-11', results });
       return;
     }
 
-    /* ---------- normal: fetch all 3 feeds in parallel ---------- */
+    /* ---------- normal mode: fetch all 3 feeds ---------- */
     const feedResults = await Promise.allSettled(
       Object.entries(FEEDS).map(async ([key, url]) => {
         const xml = await fetchFeed(url);
@@ -175,11 +172,8 @@ export default async function handler(req, res) {
     }
 
     /* ---------- filter to requested range ---------- */
-    const startISO = start;
-    const endISO = end;
-
     const events = allEvents
-      .filter((ev) => ev.date >= startISO && ev.date <= endISO)
+      .filter((ev) => ev.date >= start && ev.date <= end)
       .sort((a, b) => {
         if (a.date !== b.date) return a.date < b.date ? -1 : 1;
         const ta = a.time === 'All Day' ? '00:00' : a.time;
@@ -192,14 +186,14 @@ export default async function handler(req, res) {
       events,
       count: events.length,
       totalParsed: allEvents.length,
-      range: { start: startISO, end: endISO },
-      version: 'v4-2025-10-11',
+      range: { start, end },
+      version: 'v5-2025-10-11',
     });
   } catch (err) {
     res.status(200).json({
       events: [],
       error: String(err?.message || err),
-      version: 'v4-2025-10-11',
+      version: 'v5-2025-10-11',
     });
   }
 }
