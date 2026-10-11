@@ -3,20 +3,20 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTheme } from 'styled-components';
 
 /* ============================================================
-   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v4)
+   FOREX FACTORY — MULTI-TAB VIEW (v5)
    ============================================================
-   Data comes from /api/forexfactory-range, which merges the
-   three public Forex Factory weekly XML feeds (last week,
-   this week, next week) and filters to the requested range.
+   Tabs: Calendar · News · Forum · Brokers · Market · Trades
 
-   This covers a rolling ~3-week window. Ranges outside that
-   window will show "no events" with a link to the live site.
-
-   Layout mirrors Forex Factory's real calendar:
-   Time | Currency | Impact | Event | Actual | Forecast | Previous
+   Calendar  → /api/forexfactory-range (public XML feeds)
+   News      → public financial news API
+   Others    → direct links to Forex Factory sections
    ============================================================ */
 
-const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
+const FOREX_FACTORY_URL = 'https://www.forexfactory.com';
+
+const NEWS_API_URL = 'https://api.marketaux.com/v1/news/all'; // Free tier available
+const NEWS_API_KEY = 'YOUR_MARKETAUX_API_KEY'; // Replace with your key
+
 const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
 
 /* ---------- impact helpers ---------- */
@@ -48,7 +48,7 @@ const formatDayShort = (iso) => {
   return `${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}`;
 };
 
-/* ---------- range presets ---------- */
+/* ---------- range presets (simplified) ---------- */
 const computeRange = (preset) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -61,10 +61,8 @@ const computeRange = (preset) => {
   };
 
   switch (preset) {
-    case 'today':
-      return { start: toISO(today), end: toISO(today) };
-    case 'thisWeek': {
-      const s = startOfWeek(today);
+    case 'lastWeek': {
+      const s = startOfWeek(today); s.setDate(s.getDate() - 7);
       const e = new Date(s); e.setDate(s.getDate() + 6);
       return { start: toISO(s), end: toISO(e) };
     }
@@ -73,22 +71,15 @@ const computeRange = (preset) => {
       const e = new Date(s); e.setDate(s.getDate() + 6);
       return { start: toISO(s), end: toISO(e) };
     }
-    case 'lastWeek': {
-      const s = startOfWeek(today); s.setDate(s.getDate() - 7);
+    default: { // 'thisWeek'
+      const s = startOfWeek(today);
       const e = new Date(s); e.setDate(s.getDate() + 6);
       return { start: toISO(s), end: toISO(e) };
     }
-    case 'thisMonth': {
-      const s = new Date(today.getFullYear(), today.getMonth(), 1);
-      const e = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      return { start: toISO(s), end: toISO(e) };
-    }
-    default:
-      return { start: toISO(today), end: toISO(today) };
   }
 };
 
-/* ---------- fetch ---------- */
+/* ---------- fetch calendar ---------- */
 const fetchRange = async (start, end) => {
   const url = `/api/forexfactory-range?start=${start}&end=${end}`;
   const res = await fetch(url, { method: 'GET', mode: 'cors' });
@@ -103,6 +94,25 @@ const fetchRange = async (start, end) => {
   return json.events;
 };
 
+/* ---------- fetch news ---------- */
+const fetchNews = async () => {
+  try {
+    const params = new URLSearchParams({
+      api_token: NEWS_API_KEY,
+      language: 'en',
+      limit: 20,
+      filter_entities: 'true',
+      entity_types: 'forex',
+    });
+    const res = await fetch(`${NEWS_API_URL}?${params.toString()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    return Array.isArray(json?.data) ? json.data : [];
+  } catch {
+    return [];
+  }
+};
+
 /* ============================================================
    MAIN COMPONENT
    ============================================================ */
@@ -110,9 +120,10 @@ export default function ForexFactoryView() {
   const theme = useTheme();
   const c = theme?.colors || {};
 
+  const [activeTab, setActiveTab] = useState('calendar');
+
+  // Calendar state
   const [preset, setPreset] = useState('thisWeek');
-  const [customStart, setCustomStart] = useState('');
-  const [customEnd, setCustomEnd] = useState('');
   const [range, setRange] = useState(() => computeRange('thisWeek'));
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -120,14 +131,14 @@ export default function ForexFactoryView() {
   const [impactFilter, setImpactFilter] = useState('all');
   const [currencyFilter, setCurrencyFilter] = useState('all');
 
-  /* Apply preset → range */
-  useEffect(() => {
-    if (preset === 'custom') return;
-    setRange(computeRange(preset));
-  }, [preset]);
+  // News state
+  const [news, setNews] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [newsError, setNewsError] = useState(null);
 
-  /* Load data whenever range changes */
+  // Load calendar data
   useEffect(() => {
+    if (activeTab !== 'calendar') return;
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -142,9 +153,33 @@ export default function ForexFactoryView() {
       }
     })();
     return () => { cancelled = true; };
-  }, [range.start, range.end]);
+  }, [range.start, range.end, activeTab]);
 
-  /* Derived */
+  // Load news data
+  useEffect(() => {
+    if (activeTab !== 'news') return;
+    let cancelled = false;
+    (async () => {
+      setNewsLoading(true);
+      setNewsError(null);
+      try {
+        const items = await fetchNews();
+        if (!cancelled) setNews(items);
+      } catch (err) {
+        if (!cancelled) setNewsError(err?.message || String(err));
+      } finally {
+        if (!cancelled) setNewsLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [activeTab]);
+
+  // Update range when preset changes
+  useEffect(() => {
+    setRange(computeRange(preset));
+  }, [preset]);
+
+  /* Derived calendar data */
   const currencies = useMemo(() => {
     const s = new Set(events.map((e) => e.currency).filter(Boolean));
     return ['all', ...Array.from(s).sort()];
@@ -183,28 +218,22 @@ export default function ForexFactoryView() {
   const accent = c.accent || '#3b82f6';
   const danger = c.danger || '#ef4444';
 
-  const openLive = () => {
-    window.open(FOREX_FACTORY_URL, '_blank', 'noopener,noreferrer');
+  const openLive = (path = '/calendar') => {
+    window.open(`${FOREX_FACTORY_URL}${path}`, '_blank', 'noopener,noreferrer');
   };
 
-  const applyCustom = () => {
-    if (!customStart || !customEnd) return;
-    if (customStart > customEnd) return;
-    setRange({ start: customStart, end: customEnd });
-  };
+  const TABS = [
+    { key: 'calendar', label: 'Calendar' },
+    { key: 'news', label: 'News' },
+    { key: 'forum', label: 'Forum' },
+    { key: 'brokers', label: 'Brokers' },
+    { key: 'market', label: 'Market' },
+    { key: 'trades', label: 'Trades' },
+  ];
 
-  const stepRange = useCallback((direction) => {
-    const s = new Date(range.start + 'T00:00:00');
-    const e = new Date(range.end + 'T00:00:00');
-    const len = Math.round((e - s) / 86400000) + 1;
-    s.setDate(s.getDate() + direction * len);
-    e.setDate(e.getDate() + direction * len);
-    setPreset('custom');
-    setCustomStart(toISO(s));
-    setCustomEnd(toISO(e));
-    setRange({ start: toISO(s), end: toISO(e) });
-  }, [range]);
-
+  /* ============================================================
+     RENDER
+     ============================================================ */
   return (
     <div
       style={{
@@ -218,177 +247,59 @@ export default function ForexFactoryView() {
     >
       <style>{`
         .ff-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-        .ff-scroll::-webkit-scrollbar-thumb {
-          background: ${textMuted}40;
-          border-radius: 10px;
-        }
+        .ff-scroll::-webkit-scrollbar-thumb { background: ${textMuted}40; border-radius: 10px; }
         .ff-scroll::-webkit-scrollbar-track { background: transparent; }
         @keyframes ff-spin { to { transform: rotate(360deg); } }
         .ff-row:hover { background: ${accent}0a !important; }
-        input[type="date"]::-webkit-calendar-picker-indicator {
-          filter: invert(0.7);
-          cursor: pointer;
-        }
+        .ff-tab:hover { background: ${accent}0d !important; }
+        .ff-news:hover { background: ${accent}0a !important; }
       `}</style>
 
-      {/* ===================== TOOLBAR ===================== */}
+      {/* ===================== TAB BAR ===================== */}
       <div
         style={{
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
-          gap: 10,
-          padding: '12px 20px',
+          gap: 4,
+          padding: '8px 20px',
           borderBottom: `1px solid ${border}`,
           background: surface,
           flexShrink: 0,
         }}
       >
-        {/* Prev / Today / Next */}
-        <div style={{ display: 'flex', gap: 4 }}>
-          <NavBtn onClick={() => stepRange(-1)} border={border} text={textSecondary} title="Previous period">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </NavBtn>
-          <NavBtn onClick={() => setPreset('today')} border={border} text={textSecondary} title="Jump to today">
-            Today
-          </NavBtn>
-          <NavBtn onClick={() => stepRange(1)} border={border} text={textSecondary} title="Next period">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </NavBtn>
-        </div>
+        {TABS.map((tab) => (
+          <button
+            key={tab.key}
+            className="ff-tab"
+            onClick={() => setActiveTab(tab.key)}
+            style={{
+              padding: '7px 16px',
+              borderRadius: 8,
+              border: `1px solid ${activeTab === tab.key ? accent + '66' : 'transparent'}`,
+              background: activeTab === tab.key ? `${accent}18` : 'transparent',
+              color: activeTab === tab.key ? accent : textMuted,
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
 
-        {/* Presets */}
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {[
-            { key: 'lastWeek', label: 'Last Week' },
-            { key: 'thisWeek', label: 'This Week' },
-            { key: 'nextWeek', label: 'Next Week' },
-            { key: 'thisMonth', label: 'This Month' },
-            { key: 'custom', label: 'Custom' },
-          ].map((p) => (
-            <Chip
-              key={p.key}
-              active={preset === p.key}
-              onClick={() => setPreset(p.key)}
-              accent={accent}
-              border={border}
-              textMuted={textMuted}
-            >
-              {p.label}
-            </Chip>
-          ))}
-        </div>
+        <span style={{ flex: 1 }} />
 
-        {/* Custom range pickers */}
-        {preset === 'custom' && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <DateInput value={customStart} onChange={setCustomStart} border={border} surface={surface} text={text} />
-            <span style={{ fontSize: 11, color: textMuted }}>→</span>
-            <DateInput value={customEnd} onChange={setCustomEnd} border={border} surface={surface} text={text} />
-            <Chip active onClick={applyCustom} accent={accent} border={border} textMuted={textMuted}>
-              Apply
-            </Chip>
-          </div>
-        )}
-
-        {/* Range label */}
-        <span
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: textMuted,
-            marginLeft: 'auto',
-            marginRight: 8,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {formatDayShort(range.start)} – {formatDayShort(range.end)}
-        </span>
-
-        {/* Impact filter */}
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {[
-            { key: 'all', label: 'All' },
-            { key: 'High', label: 'High' },
-            { key: 'Medium', label: 'Med' },
-            { key: 'Low', label: 'Low' },
-          ].map((f) => {
-            const active = impactFilter === f.key;
-            const meta = f.key !== 'all' ? impactMeta(f.key, c) : { color: accent };
-            return (
-              <button
-                key={f.key}
-                onClick={() => setImpactFilter(f.key)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5,
-                  padding: '5px 11px',
-                  borderRadius: 7,
-                  border: `1px solid ${active ? meta.color + '66' : border}`,
-                  background: active ? `${meta.color}18` : 'transparent',
-                  color: active ? meta.color : textMuted,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                {f.key !== 'all' && (
-                  <span
-                    style={{
-                      width: 7,
-                      height: 7,
-                      borderRadius: 2,
-                      background: meta.color,
-                      boxShadow: `0 0 5px ${meta.color}`,
-                    }}
-                  />
-                )}
-                {f.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Currency filter */}
-        <select
-          value={currencyFilter}
-          onChange={(e) => setCurrencyFilter(e.target.value)}
-          style={{
-            padding: '5px 9px',
-            borderRadius: 7,
-            border: `1px solid ${border}`,
-            background: surface,
-            color: text,
-            fontSize: 11,
-            fontWeight: 600,
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            outline: 'none',
-          }}
-        >
-          {currencies.map((cur) => (
-            <option key={cur} value={cur}>
-              {cur === 'all' ? 'All currencies' : cur}
-            </option>
-          ))}
-        </select>
-
-        {/* View live */}
         <button
-          onClick={openLive}
+          onClick={() => openLive('/calendar')}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: 6,
-            padding: '5px 12px',
-            borderRadius: 7,
+            padding: '6px 14px',
+            borderRadius: 8,
             border: `1px solid ${accent}55`,
             background: `${accent}14`,
             color: accent,
@@ -399,8 +310,7 @@ export default function ForexFactoryView() {
             whiteSpace: 'nowrap',
           }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
             <polyline points="15 3 21 3 21 9" />
             <line x1="10" y1="14" x2="21" y2="3" />
@@ -409,176 +319,391 @@ export default function ForexFactoryView() {
         </button>
       </div>
 
-      {/* ===================== TABLE HEADER ===================== */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
-          gap: 0,
-          padding: '0 20px',
-          background: surface,
-          borderBottom: `1px solid ${border}`,
-          fontSize: 10,
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: 0.5,
-          color: textMuted,
-          flexShrink: 0,
-        }}
-      >
-        <div style={headerCell(borderSoft)}>Time</div>
-        <div style={headerCell(borderSoft)}>Currency</div>
-        <div style={headerCell(borderSoft)}>Event</div>
-        <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Actual</div>
-        <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Forecast</div>
-        <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Previous</div>
-      </div>
-
-      {/* ===================== BODY ===================== */}
-      <div
-        className="ff-scroll"
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          background: bg,
-        }}
-      >
-        {loading && (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: textMuted, gap: 12 }}>
-            <div style={{ width: 26, height: 26, border: `3px solid ${border}`, borderTopColor: accent, borderRadius: '50%', animation: 'ff-spin 0.8s linear infinite' }} />
-            <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: 0.4 }}>
-              Loading calendar…
-            </span>
-          </div>
-        )}
-
-        {!loading && error && (
-          <div style={{ padding: '28px 24px', borderRadius: 14, border: `1px solid ${danger}44`, background: `${danger}12`, color: text, maxWidth: 620, margin: '40px auto', textAlign: 'center' }}>
-            <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 6 }}>Calendar unavailable</div>
-            <div style={{ fontSize: 12, color: textMuted, lineHeight: 1.6, wordBreak: 'break-word' }}>{error}</div>
-            <button onClick={openLive} style={{ marginTop: 18, padding: '9px 18px', borderRadius: 9, border: `1px solid ${accent}55`, background: `${accent}18`, color: accent, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-              Open Forex Factory Calendar
-            </button>
-          </div>
-        )}
-
-        {!loading && !error && grouped.length === 0 && (
+      {/* ===================== CALENDAR TAB ===================== */}
+      {activeTab === 'calendar' && (
+        <>
+          {/* Calendar toolbar */}
           <div
             style={{
-              textAlign: 'center',
-              padding: '60px 20px',
-              color: textMuted,
-              fontSize: 12.5,
-              fontWeight: 600,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: 10,
+              padding: '10px 20px',
+              borderBottom: `1px solid ${border}`,
+              background: bg,
+              flexShrink: 0,
             }}
           >
-            <div style={{ marginBottom: 8 }}>No events found for this range.</div>
-            <div style={{ fontSize: 11, fontWeight: 500, opacity: 0.75, marginBottom: 14, maxWidth: 480, margin: '0 auto 14px' }}>
-              Forex Factory's public feeds cover roughly three weeks
-              (last week, this week, next week). Ranges outside that
-              window won't have data here.
+            {/* Simplified duration tabs */}
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[
+                { key: 'lastWeek', label: 'Last Week' },
+                { key: 'thisWeek', label: 'This Week' },
+                { key: 'nextWeek', label: 'Next Week' },
+              ].map((p) => (
+                <Chip
+                  key={p.key}
+                  active={preset === p.key}
+                  onClick={() => setPreset(p.key)}
+                  accent={accent}
+                  border={border}
+                  textMuted={textMuted}
+                >
+                  {p.label}
+                </Chip>
+              ))}
             </div>
-            <a
-              href={FOREX_FACTORY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+
+            <span
               style={{
-                display: 'inline-block',
-                padding: '6px 14px',
-                borderRadius: 8,
+                fontSize: 11,
+                fontWeight: 600,
+                color: textMuted,
+                marginLeft: 8,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {formatDayShort(range.start)} – {formatDayShort(range.end)}
+            </span>
+
+            <span style={{ flex: 1 }} />
+
+            {/* Impact filter */}
+            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+              {[
+                { key: 'all', label: 'All' },
+                { key: 'High', label: 'High' },
+                { key: 'Medium', label: 'Med' },
+                { key: 'Low', label: 'Low' },
+              ].map((f) => {
+                const active = impactFilter === f.key;
+                const meta = f.key !== 'all' ? impactMeta(f.key, c) : { color: accent };
+                return (
+                  <button
+                    key={f.key}
+                    onClick={() => setImpactFilter(f.key)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 5,
+                      padding: '5px 11px',
+                      borderRadius: 7,
+                      border: `1px solid ${active ? meta.color + '66' : border}`,
+                      background: active ? `${meta.color}18` : 'transparent',
+                      color: active ? meta.color : textMuted,
+                      fontSize: 11,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                    }}
+                  >
+                    {f.key !== 'all' && (
+                      <span style={{ width: 7, height: 7, borderRadius: 2, background: meta.color, boxShadow: `0 0 5px ${meta.color}` }} />
+                    )}
+                    {f.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Currency filter */}
+            <select
+              value={currencyFilter}
+              onChange={(e) => setCurrencyFilter(e.target.value)}
+              style={{
+                padding: '5px 9px',
+                borderRadius: 7,
+                border: `1px solid ${border}`,
+                background: surface,
+                color: text,
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                outline: 'none',
+              }}
+            >
+              {currencies.map((cur) => (
+                <option key={cur} value={cur}>
+                  {cur === 'all' ? 'All currencies' : cur}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Calendar table header */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
+              gap: 0,
+              padding: '0 20px',
+              background: surface,
+              borderBottom: `1px solid ${border}`,
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: 0.5,
+              color: textMuted,
+              flexShrink: 0,
+            }}
+          >
+            <div style={headerCell(borderSoft)}>Time</div>
+            <div style={headerCell(borderSoft)}>Currency</div>
+            <div style={headerCell(borderSoft)}>Event</div>
+            <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Actual</div>
+            <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Forecast</div>
+            <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Previous</div>
+          </div>
+
+          {/* Calendar body */}
+          <div className="ff-scroll" style={{ flex: 1, overflowY: 'auto', background: bg }}>
+            {loading && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: textMuted, gap: 12 }}>
+                <div style={{ width: 26, height: 26, border: `3px solid ${border}`, borderTopColor: accent, borderRadius: '50%', animation: 'ff-spin 0.8s linear infinite' }} />
+                <span style={{ fontSize: 12, fontWeight: 600 }}>Loading calendar…</span>
+              </div>
+            )}
+
+            {!loading && error && (
+              <div style={{ padding: '28px 24px', borderRadius: 14, border: `1px solid ${danger}44`, background: `${danger}12`, color: text, maxWidth: 620, margin: '40px auto', textAlign: 'center' }}>
+                <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 6 }}>Calendar unavailable</div>
+                <div style={{ fontSize: 12, color: textMuted, lineHeight: 1.6, wordBreak: 'break-word' }}>{error}</div>
+                <button onClick={() => openLive('/calendar')} style={{ marginTop: 18, padding: '9px 18px', borderRadius: 9, border: `1px solid ${accent}55`, background: `${accent}18`, color: accent, fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Open Forex Factory Calendar
+                </button>
+              </div>
+            )}
+
+            {!loading && !error && grouped.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '60px 20px', color: textMuted, fontSize: 12.5, fontWeight: 600 }}>
+                <div style={{ marginBottom: 8 }}>No events found for this range.</div>
+                <div style={{ fontSize: 11, fontWeight: 500, opacity: 0.75, marginBottom: 14 }}>
+                  The public feeds cover last week, this week, and next week.
+                </div>
+                <a
+                  href={`${FOREX_FACTORY_URL}/calendar`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-block', padding: '6px 14px', borderRadius: 8, border: `1px solid ${accent}55`, background: `${accent}14`, color: accent, fontSize: 11.5, fontWeight: 700, textDecoration: 'none' }}
+                >
+                  Open full calendar on Forex Factory →
+                </a>
+              </div>
+            )}
+
+            {!loading && !error && grouped.map(([dateKey, dayEvents]) => (
+              <div key={dateKey}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 20px', background: `${accent}0d`, borderTop: `1px solid ${border}`, borderBottom: `1px solid ${borderSoft}` }}>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: accent, letterSpacing: 0.3 }}>{formatDayLong(dateKey)}</span>
+                  <span style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${accent}55, transparent)` }} />
+                  <span style={{ fontSize: 10, fontWeight: 700, color: textMuted }}>{dayEvents.length} event{dayEvents.length !== 1 ? 's' : ''}</span>
+                </div>
+
+                {dayEvents.map((ev) => {
+                  const meta = impactMeta(ev.impact, c);
+                  const isHigh = ev.impact === 'High';
+                  const isAllDay = ev.time === 'All Day';
+
+                  return (
+                    <div
+                      key={ev.id}
+                      className="ff-row"
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
+                        alignItems: 'center',
+                        padding: '8px 20px',
+                        borderBottom: `1px solid ${borderSoft}`,
+                        background: isHigh ? `${meta.color}06` : 'transparent',
+                        transition: 'background 0.15s ease',
+                        fontSize: 12.5,
+                      }}
+                    >
+                      <div style={{ color: isAllDay ? textMuted : textSecondary, fontWeight: isAllDay ? 500 : 700, fontVariantNumeric: 'tabular-nums', fontSize: isAllDay ? 11 : 12 }}>
+                        {ev.time}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ width: 8, height: 8, borderRadius: 2, background: meta.color, boxShadow: `0 0 5px ${meta.color}`, flexShrink: 0 }} />
+                        <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 0.4, color: text }}>{ev.currency}</span>
+                      </div>
+                      <div style={{ color: text, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>
+                        {ev.event}
+                      </div>
+                      <div style={{ textAlign: 'right', fontWeight: 800, color: ev.actual ? meta.color : textMuted, fontVariantNumeric: 'tabular-nums' }}>
+                        {ev.actual || '—'}
+                      </div>
+                      <div style={{ textAlign: 'right', color: textSecondary, fontVariantNumeric: 'tabular-nums' }}>
+                        {ev.forecast || '—'}
+                      </div>
+                      <div style={{ textAlign: 'right', color: textMuted, fontVariantNumeric: 'tabular-nums' }}>
+                        {ev.previous || '—'}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* ===================== NEWS TAB ===================== */}
+      {activeTab === 'news' && (
+        <div className="ff-scroll" style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+          {newsLoading && (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '80px 20px', color: textMuted, gap: 12 }}>
+              <div style={{ width: 26, height: 26, border: `3px solid ${border}`, borderTopColor: accent, borderRadius: '50%', animation: 'ff-spin 0.8s linear infinite' }} />
+              <span style={{ fontSize: 12, fontWeight: 600 }}>Loading news…</span>
+            </div>
+          )}
+
+          {!newsLoading && newsError && (
+            <div style={{ textAlign: 'center', padding: '60px 20px', color: textMuted }}>
+              <div style={{ marginBottom: 8 }}>{newsError}</div>
+              <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 14 }}>
+                Set your Marketaux API key in the component to load news.
+              </div>
+              <a href={`${FOREX_FACTORY_URL}/news`} target="_blank" rel="noopener noreferrer" style={{ color: accent, fontWeight: 700, textDecoration: 'none' }}>
+                Open Forex Factory News →
+              </a>
+            </div>
+          )}
+
+          {!newsLoading && !newsError && news.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '60px 20px', color: textMuted, fontSize: 12.5 }}>
+              No news articles available.
+            </div>
+          )}
+
+          {!newsLoading && !newsError && news.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {news.map((article, i) => (
+                <a
+                  key={i}
+                  href={article.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ff-news"
+                  style={{
+                    display: 'block',
+                    padding: '14px 16px',
+                    borderRadius: 12,
+                    border: `1px solid ${border}`,
+                    background: surface,
+                    textDecoration: 'none',
+                    color: text,
+                    transition: 'background 0.15s ease',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                    <span style={{ fontSize: 10, fontWeight: 800, color: accent, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+                      {article.source || 'Forex News'}
+                    </span>
+                    {article.published_at && (
+                      <span style={{ fontSize: 10, color: textMuted }}>
+                        {new Date(article.published_at).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 4, lineHeight: 1.35 }}>
+                    {article.title}
+                  </div>
+                  {article.description && (
+                    <div style={{ fontSize: 12, color: textSecondary, lineHeight: 1.5 }}>
+                      {article.description.slice(0, 200)}{article.description.length > 200 ? '…' : ''}
+                    </div>
+                  )}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ===================== LINK TABS (Forum, Brokers, Market, Trades) ===================== */}
+      {['forum', 'brokers', 'market', 'trades'].includes(activeTab) && (
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px 20px' }}>
+          <div style={{ maxWidth: 520, width: '100%', textAlign: 'center' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 64,
+              height: 64,
+              borderRadius: 18,
+              background: `${accent}14`,
+              border: `1px solid ${accent}33`,
+              color: accent,
+              margin: '0 auto 20px',
+            }}>
+              {activeTab === 'forum' && (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+              )}
+              {activeTab === 'brokers' && (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="7" width="18" height="14" rx="2" />
+                  <path d="M3 11h18" />
+                  <circle cx="12" cy="15" r="2" />
+                </svg>
+              )}
+              {activeTab === 'market' && (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                  <polyline points="17 6 23 6 23 12" />
+                </svg>
+              )}
+              {activeTab === 'trades' && (
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+              )}
+            </div>
+
+            <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8, color: text }}>
+              {activeTab === 'forum' && 'Forex Factory Forum'}
+              {activeTab === 'brokers' && 'Forex Broker Directory'}
+              {activeTab === 'market' && 'Live Market Data'}
+              {activeTab === 'trades' && 'Live Trade Feed'}
+            </h2>
+
+            <p style={{ fontSize: 13, color: textSecondary, lineHeight: 1.6, marginBottom: 24 }}>
+              {activeTab === 'forum' && 'Join the largest forex discussion forum on the web. Trading systems, strategies, broker reviews, and live market analysis from thousands of traders.'}
+              {activeTab === 'brokers' && 'Compare regulated forex brokers side by side. Spreads, commissions, swap rates, regulation, and platform features — all maintained by Forex Factory staff.'}
+              {activeTab === 'market' && 'Real-time forex market prices aggregated from leading brokers. Live quotes, charts, and market overview across all major pairs.'}
+              {activeTab === 'trades' && 'Watch live trades from thousands of traders around the world. See what the community is buying and selling in real time.'}
+            </p>
+
+            <button
+              onClick={() => openLive(`/${activeTab}`)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '12px 24px',
+                borderRadius: 10,
                 border: `1px solid ${accent}55`,
                 background: `${accent}14`,
                 color: accent,
-                fontSize: 11.5,
+                fontSize: 13,
                 fontWeight: 700,
-                textDecoration: 'none',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
               }}
             >
-              Open full calendar on Forex Factory →
-            </a>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+              Open on Forex Factory
+            </button>
           </div>
-        )}
-
-        {!loading && !error && grouped.map(([dateKey, dayEvents]) => (
-          <div key={dateKey}>
-            {/* Day header row */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '8px 20px',
-                background: `${accent}0d`,
-                borderTop: `1px solid ${border}`,
-                borderBottom: `1px solid ${borderSoft}`,
-              }}
-            >
-              <span style={{ fontSize: 12, fontWeight: 800, color: accent, letterSpacing: 0.3 }}>
-                {formatDayLong(dateKey)}
-              </span>
-              <span style={{ flex: 1, height: 1, background: `linear-gradient(90deg, ${accent}55, transparent)` }} />
-              <span style={{ fontSize: 10, fontWeight: 700, color: textMuted }}>
-                {dayEvents.length} event{dayEvents.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-
-            {/* Event rows */}
-            {dayEvents.map((ev) => {
-              const meta = impactMeta(ev.impact, c);
-              const isHigh = ev.impact === 'High';
-              const isAllDay = ev.time === 'All Day';
-
-              return (
-                <div
-                  key={ev.id}
-                  className="ff-row"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
-                    alignItems: 'center',
-                    padding: '8px 20px',
-                    borderBottom: `1px solid ${borderSoft}`,
-                    background: isHigh ? `${meta.color}06` : 'transparent',
-                    transition: 'background 0.15s ease',
-                    fontSize: 12.5,
-                  }}
-                >
-                  {/* Time */}
-                  <div style={{ color: isAllDay ? textMuted : textSecondary, fontWeight: isAllDay ? 500 : 700, fontVariantNumeric: 'tabular-nums', fontSize: isAllDay ? 11 : 12 }}>
-                    {ev.time}
-                  </div>
-
-                  {/* Currency + impact square */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ width: 8, height: 8, borderRadius: 2, background: meta.color, boxShadow: `0 0 5px ${meta.color}`, flexShrink: 0 }} />
-                    <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 0.4, color: text }}>{ev.currency}</span>
-                  </div>
-
-                  {/* Event title */}
-                  <div style={{ color: text, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>
-                    {ev.event}
-                  </div>
-
-                  {/* Actual */}
-                  <div style={{ textAlign: 'right', fontWeight: 800, color: ev.actual ? meta.color : textMuted, fontVariantNumeric: 'tabular-nums' }}>
-                    {ev.actual || '—'}
-                  </div>
-
-                  {/* Forecast */}
-                  <div style={{ textAlign: 'right', color: textSecondary, fontVariantNumeric: 'tabular-nums' }}>
-                    {ev.forecast || '—'}
-                  </div>
-
-                  {/* Previous */}
-                  <div style={{ textAlign: 'right', color: textMuted, fontVariantNumeric: 'tabular-nums' }}>
-                    {ev.previous || '—'}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -592,44 +717,17 @@ const headerCell = (borderSoft) => ({
   textAlign: 'left',
 });
 
-function NavBtn({ children, onClick, border, text, title }) {
-  return (
-    <button
-      onClick={onClick}
-      title={title}
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 4,
-        padding: '5px 10px',
-        borderRadius: 7,
-        border: `1px solid ${border}`,
-        background: 'transparent',
-        color: text,
-        fontSize: 11,
-        fontWeight: 700,
-        cursor: 'pointer',
-        fontFamily: 'inherit',
-        transition: 'all 0.15s ease',
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
 function Chip({ children, active, onClick, accent, border, textMuted }) {
   return (
     <button
       onClick={onClick}
       style={{
-        padding: '5px 11px',
+        padding: '6px 14px',
         borderRadius: 7,
         border: `1px solid ${active ? accent + '66' : border}`,
         background: active ? `${accent}18` : 'transparent',
         color: active ? accent : textMuted,
-        fontSize: 11,
+        fontSize: 11.5,
         fontWeight: 700,
         cursor: 'pointer',
         fontFamily: 'inherit',
@@ -639,28 +737,5 @@ function Chip({ children, active, onClick, accent, border, textMuted }) {
     >
       {children}
     </button>
-  );
-}
-
-function DateInput({ value, onChange, border, surface, text }) {
-  return (
-    <input
-      type="date"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      style={{
-        padding: '5px 9px',
-        borderRadius: 7,
-        border: `1px solid ${border}`,
-        background: surface,
-        color: text,
-        fontSize: 11,
-        fontWeight: 600,
-        fontFamily: 'inherit',
-        outline: 'none',
-        cursor: 'pointer',
-        colorScheme: 'dark',
-      }}
-    />
   );
 }
