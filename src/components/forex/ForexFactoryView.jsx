@@ -3,10 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 
 /* ============================================================
-   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.2)
+   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.3)
    ============================================================
    v6.1: fixed-position outer container → page scrolls.
-   v6.2: toolbar is now sticky at the top of the scroll area.
+   v6.2: toolbar is sticky at the top of the scroll area.
+   v6.3: added Holiday (bank holidays) to the impact filter.
    ============================================================ */
 
 const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
@@ -239,6 +240,7 @@ export default function ForexFactoryView() {
               { key: 'High', label: 'High' },
               { key: 'Medium', label: 'Med' },
               { key: 'Low', label: 'Low' },
+              { key: 'Holiday', label: 'Holiday' },
             ].map((f) => {
               const active = impactFilter === f.key;
               const meta = f.key !== 'all' ? impactMeta(f.key, c) : { color: accent };
