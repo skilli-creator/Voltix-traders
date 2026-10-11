@@ -12,7 +12,7 @@ const themes = {
   white: {
     name: 'White', category: 'light',
     colors: {
-      bg: '#f4f6f9', surface: '#ffffff', surfaceHover: '#f1f4f8', surfaceActive: '#e8edf4',
+      bg: '#156bed', surface: '#ffffff', surfaceHover: '#f1f4f8', surfaceActive: '#e8edf4',
       surfaceElevated: '#ffffff', surfaceGlass: 'rgba(255, 255, 255, 0.78)',
       glassBorder: 'rgba(15, 23, 42, 0.06)', glassBlur: '24px',
       border: '#e2e8f0', borderMuted: '#eef2f7',
