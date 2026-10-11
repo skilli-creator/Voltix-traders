@@ -3,11 +3,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 
 /* ============================================================
-   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.3)
-   ============================================================
-   v6.1: fixed-position outer container → page scrolls.
-   v6.2: toolbar is sticky at the top of the scroll area.
-   v6.3: added Holiday (bank holidays) to the impact filter.
+   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.5)
+   Columns: Time · Currency · Impact · Event · Actual · Forecast · Previous
    ============================================================ */
 
 const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
@@ -23,7 +20,29 @@ const impactMeta = (impact, c) => {
   }
 };
 
-/* ---------- date formatters ---------- */
+const COUNTRY_TO_CURRENCY = {
+  'United States': 'USD', 'United States of America': 'USD',
+  'United Kingdom': 'GBP', 'Euro Area': 'EUR', 'Euro Zone': 'EUR',
+  'European Union': 'EUR', 'Germany': 'EUR', 'France': 'EUR',
+  'Italy': 'EUR', 'Spain': 'EUR', 'Netherlands': 'EUR',
+  'Belgium': 'EUR', 'Austria': 'EUR', 'Portugal': 'EUR',
+  'Ireland': 'EUR', 'Finland': 'EUR', 'Greece': 'EUR',
+  'Japan': 'JPY', 'China': 'CNY', 'Australia': 'AUD',
+  'New Zealand': 'NZD', 'Canada': 'CAD', 'Switzerland': 'CHF',
+  'Sweden': 'SEK', 'Norway': 'NOK', 'Denmark': 'DKK',
+  'Poland': 'PLN', 'Russia': 'RUB', 'South Africa': 'ZAR',
+  'Brazil': 'BRL', 'Mexico': 'MXN', 'India': 'INR',
+  'South Korea': 'KRW', 'Singapore': 'SGD', 'Hong Kong': 'HKD',
+  'Turkey': 'TRY',
+};
+
+const resolveCurrency = (ev) => {
+  if (ev.currency && ev.currency.trim()) return ev.currency.trim();
+  const country = (ev.country || '').trim();
+  if (country && COUNTRY_TO_CURRENCY[country]) return COUNTRY_TO_CURRENCY[country];
+  return '';
+};
+
 const formatDayLong = (iso) => {
   if (!iso) return '';
   const d = new Date(iso + 'T00:00:00');
@@ -40,12 +59,9 @@ const formatDayShort = (iso) => {
   return `${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}`;
 };
 
-/* ---------- fetch ---------- */
 const fetchAllFeeds = async () => {
   const res = await fetch('/api/forexfactory-range', { method: 'GET', mode: 'cors' });
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}`);
-  }
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const json = await res.json();
   return {
     last: Array.isArray(json.last) ? json.last : [],
@@ -55,9 +71,6 @@ const fetchAllFeeds = async () => {
   };
 };
 
-/* ============================================================
-   MAIN COMPONENT
-   ============================================================ */
 export default function ForexFactoryView() {
   const theme = useTheme();
   const c = theme?.colors || {};
@@ -89,9 +102,11 @@ export default function ForexFactoryView() {
   }, []);
 
   const events = useMemo(() => {
-    if (preset === 'lastWeek') return data.last || [];
-    if (preset === 'nextWeek') return data.next || [];
-    return data.this || [];
+    const raw =
+      preset === 'lastWeek' ? (data.last || [])
+      : preset === 'nextWeek' ? (data.next || [])
+      : (data.this || []);
+    return raw.map((ev) => ({ ...ev, currency: resolveCurrency(ev) }));
   }, [preset, data]);
 
   const dateRange = useMemo(() => {
@@ -102,9 +117,7 @@ export default function ForexFactoryView() {
 
   const currencies = useMemo(() => {
     const set = new Set();
-    for (const ev of events) {
-      if (ev.currency) set.add(ev.currency);
-    }
+    for (const ev of events) if (ev.currency) set.add(ev.currency);
     return ['all', ...Array.from(set).sort()];
   }, [events]);
 
@@ -146,9 +159,10 @@ export default function ForexFactoryView() {
   const danger = c.danger || '#ef4444';
   const bg = c.bg || '#0b0a08';
 
-  const openLive = () => {
-    window.open(FOREX_FACTORY_URL, '_blank', 'noopener,noreferrer');
-  };
+  const openLive = () => window.open(FOREX_FACTORY_URL, '_blank', 'noopener,noreferrer');
+
+  /* Grid template — Time · Currency · Impact · Event · Actual · Forecast · Previous */
+  const GRID = '80px 80px 70px 1fr 90px 90px 90px';
 
   return (
     <div
@@ -340,7 +354,7 @@ export default function ForexFactoryView() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
+            gridTemplateColumns: GRID,
             gap: 0,
             padding: '10px 0',
             borderBottom: `1px solid ${border}`,
@@ -353,6 +367,7 @@ export default function ForexFactoryView() {
         >
           <div style={headerCell(borderSoft)}>Time</div>
           <div style={headerCell(borderSoft)}>Currency</div>
+          <div style={headerCell(borderSoft)}>Impact</div>
           <div style={headerCell(borderSoft)}>Event</div>
           <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Actual</div>
           <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Forecast</div>
@@ -437,7 +452,7 @@ export default function ForexFactoryView() {
                     className="ff-row"
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
+                      gridTemplateColumns: GRID,
                       alignItems: 'center',
                       padding: '10px 0',
                       borderBottom: `1px solid ${borderSoft}`,
@@ -446,6 +461,7 @@ export default function ForexFactoryView() {
                       fontSize: 12.5,
                     }}
                   >
+                    {/* Time */}
                     <div style={{
                       color: isAllDay ? textMuted : textSecondary,
                       fontWeight: isAllDay ? 500 : 700,
@@ -455,25 +471,32 @@ export default function ForexFactoryView() {
                       {ev.time}
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 2,
-                        background: meta.color,
-                        boxShadow: `0 0 5px ${meta.color}`,
-                        flexShrink: 0,
-                      }} />
-                      <span style={{
-                        fontSize: 11,
-                        fontWeight: 800,
-                        letterSpacing: 0.4,
-                        color: text,
-                      }}>
-                        {ev.currency || '—'}
-                      </span>
+                    {/* Currency */}
+                    <div style={{
+                      color: text,
+                      fontWeight: 800,
+                      letterSpacing: 0.4,
+                      fontSize: 12,
+                    }}>
+                      {ev.currency || '—'}
                     </div>
 
+                    {/* Impact */}
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <span
+                        title={meta.label}
+                        style={{
+                          display: 'inline-block',
+                          width: 10,
+                          height: 10,
+                          borderRadius: 3,
+                          background: meta.color,
+                          boxShadow: `0 0 6px ${meta.color}`,
+                        }}
+                      />
+                    </div>
+
+                    {/* Event */}
                     <div style={{
                       color: text,
                       fontWeight: 600,
@@ -485,6 +508,7 @@ export default function ForexFactoryView() {
                       {ev.event}
                     </div>
 
+                    {/* Actual */}
                     <div style={{
                       textAlign: 'right',
                       fontWeight: 800,
@@ -494,6 +518,7 @@ export default function ForexFactoryView() {
                       {ev.actual || '—'}
                     </div>
 
+                    {/* Forecast */}
                     <div style={{
                       textAlign: 'right',
                       color: textSecondary,
@@ -502,6 +527,7 @@ export default function ForexFactoryView() {
                       {ev.forecast || '—'}
                     </div>
 
+                    {/* Previous */}
                     <div style={{
                       textAlign: 'right',
                       color: textMuted,
@@ -520,9 +546,6 @@ export default function ForexFactoryView() {
   );
 }
 
-/* ============================================================
-   SUB-COMPONENTS
-   ============================================================ */
 const headerCell = (borderSoft) => ({
   padding: '0 0',
   borderRight: `1px solid ${borderSoft}`,
