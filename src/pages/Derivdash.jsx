@@ -12,10 +12,10 @@ const themes = {
   white: {
     name: 'White', category: 'light',
     colors: {
-      bg: '#156bed', surface: '#de1b1b', surfaceHover: '#0d70f2', surfaceActive: '#e8edf4',
+      bg: '#f4f6f9', surface: '#ffffff', surfaceHover: '#f1f4f8', surfaceActive: '#e8edf4',
       surfaceElevated: '#ffffff', surfaceGlass: 'rgba(255, 255, 255, 0.78)',
       glassBorder: 'rgba(15, 23, 42, 0.06)', glassBlur: '24px',
-      border: '#e2e8f0', borderMuted: '#1875e7',
+      border: '#e2e8f0', borderMuted: '#eef2f7',
       text: '#0f172a', textSecondary: '#475569', textMuted: '#94a3b8',
       accent: '#2563eb', accentHover: '#1d4ed8', accentSoft: '#3b82f6',
       accentLight: 'rgba(37, 99, 235, 0.08)', accentMuted: 'rgba(37, 99, 235, 0.16)',
