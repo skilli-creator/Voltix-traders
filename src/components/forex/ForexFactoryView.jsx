@@ -3,12 +3,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 
 /* ============================================================
-   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.1)
+   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.2)
    ============================================================
-   Scroll fix: the outer container uses position: fixed with
-   top: var(--topbar-h). This bypasses any ancestor overflow
-   or height constraints and gives the calendar its own
-   viewport-anchored scroll container.
+   v6.1: fixed-position outer container → page scrolls.
+   v6.2: toolbar is now sticky at the top of the scroll area.
    ============================================================ */
 
 const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
@@ -172,17 +170,26 @@ export default function ForexFactoryView() {
         .ff-row:hover { background: ${accent}0a !important; }
       `}</style>
 
-      <div style={{ maxWidth: 1600, margin: '0 auto', padding: '16px 26px 80px' }}>
-        {/* ===================== TOOLBAR ===================== */}
+      {/* ===================== STICKY TOOLBAR ===================== */}
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          background: bg,
+          borderBottom: `1px solid ${border}`,
+          boxShadow: `0 6px 14px -8px rgba(0,0,0,0.35)`,
+        }}
+      >
         <div
           style={{
+            maxWidth: 1600,
+            margin: '0 auto',
+            padding: '14px 26px',
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
             gap: 10,
-            padding: '0 0 14px',
-            borderBottom: `1px solid ${border}`,
-            marginBottom: 0,
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', marginRight: 8, minWidth: 0 }}>
@@ -323,8 +330,11 @@ export default function ForexFactoryView() {
             Live
           </button>
         </div>
+      </div>
 
-        {/* ===================== TABLE HEADER ===================== */}
+      {/* ===================== SCROLLABLE CONTENT ===================== */}
+      <div style={{ maxWidth: 1600, margin: '0 auto', padding: '0 26px 80px' }}>
+        {/* Table header */}
         <div
           style={{
             display: 'grid',
@@ -347,7 +357,7 @@ export default function ForexFactoryView() {
           <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Previous</div>
         </div>
 
-        {/* ===================== BODY ===================== */}
+        {/* Body */}
         <div>
           {loading && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: textMuted, gap: 12 }}>
