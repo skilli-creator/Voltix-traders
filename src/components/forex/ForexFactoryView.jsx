@@ -3,21 +3,20 @@ import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTheme } from 'styled-components';
 
 /* ============================================================
-   ECONOMIC CALENDAR VIEW (FXMacroData API)
+   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v4)
    ============================================================
-   Forex Factory blocks server-side scraping (HTTP 403).
-   This component uses FXMacroData, a free API for economic
-   calendar data, as a reliable alternative.
+   Data comes from /api/forexfactory-range, which merges the
+   three public Forex Factory weekly XML feeds (last week,
+   this week, next week) and filters to the requested range.
 
-   Free tier: USD data, no API key required.
-   Upgrade: Set API_KEY below for all 18 currencies.
+   This covers a rolling ~3-week window. Ranges outside that
+   window will show "no events" with a link to the live site.
+
+   Layout mirrors Forex Factory's real calendar:
+   Time | Currency | Impact | Event | Actual | Forecast | Previous
    ============================================================ */
 
-const API_BASE = 'https://api.fxmacrodata.com/v1';
-const API_KEY = null; // Set your key here for all currencies
-
 const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
-
 const IMPACT_ORDER = { High: 0, Medium: 1, Low: 2, Holiday: 3 };
 
 /* ---------- impact helpers ---------- */
@@ -74,6 +73,11 @@ const computeRange = (preset) => {
       const e = new Date(s); e.setDate(s.getDate() + 6);
       return { start: toISO(s), end: toISO(e) };
     }
+    case 'lastWeek': {
+      const s = startOfWeek(today); s.setDate(s.getDate() - 7);
+      const e = new Date(s); e.setDate(s.getDate() + 6);
+      return { start: toISO(s), end: toISO(e) };
+    }
     case 'thisMonth': {
       const s = new Date(today.getFullYear(), today.getMonth(), 1);
       const e = new Date(today.getFullYear(), today.getMonth() + 1, 0);
@@ -84,36 +88,19 @@ const computeRange = (preset) => {
   }
 };
 
-/* ---------- fetch FXMacroData calendar ---------- */
-const fetchCalendar = async (start, end) => {
-  const params = new URLSearchParams({
-    from: start,
-    to: end,
-  });
-  if (API_KEY) params.set('api_key', API_KEY);
-
-  const res = await fetch(`${API_BASE}/calendar?${params.toString()}`);
+/* ---------- fetch ---------- */
+const fetchRange = async (start, end) => {
+  const url = `/api/forexfactory-range?start=${start}&end=${end}`;
+  const res = await fetch(url, { method: 'GET', mode: 'cors' });
   if (!res.ok) {
-    throw new Error(`FXMacroData returned ${res.status}`);
+    const body = await res.text().catch(() => '');
+    throw new Error(`HTTP ${res.status}${body ? ' — ' + body.slice(0, 120) : ''}`);
   }
   const json = await res.json();
-
-  // The API returns an array of records. We map them to our format.
-  if (!Array.isArray(json)) {
-    throw new Error('Unexpected API response format');
+  if (!json || !Array.isArray(json.events)) {
+    throw new Error('Malformed response from server proxy');
   }
-
-  return json.map((r, i) => ({
-    id: `fmd-${r.event_id || i}-${r.date || ''}`,
-    date: (r.date || '').slice(0, 10),
-    time: r.time || 'All Day',
-    currency: (r.currency || '').toUpperCase(),
-    event: r.title || r.event || 'Economic Event',
-    actual: r.actual != null ? String(r.actual) : '',
-    forecast: r.forecast != null ? String(r.forecast) : '',
-    previous: r.previous != null ? String(r.previous) : '',
-    impact: r.impact || 'Low',
-  }));
+  return json.events;
 };
 
 /* ============================================================
@@ -133,18 +120,20 @@ export default function ForexFactoryView() {
   const [impactFilter, setImpactFilter] = useState('all');
   const [currencyFilter, setCurrencyFilter] = useState('all');
 
+  /* Apply preset → range */
   useEffect(() => {
     if (preset === 'custom') return;
     setRange(computeRange(preset));
   }, [preset]);
 
+  /* Load data whenever range changes */
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
       setError(null);
       try {
-        const ev = await fetchCalendar(range.start, range.end);
+        const ev = await fetchRange(range.start, range.end);
         if (!cancelled) setEvents(ev);
       } catch (err) {
         if (!cancelled) setError(err?.message || String(err));
@@ -155,6 +144,7 @@ export default function ForexFactoryView() {
     return () => { cancelled = true; };
   }, [range.start, range.end]);
 
+  /* Derived */
   const currencies = useMemo(() => {
     const s = new Set(events.map((e) => e.currency).filter(Boolean));
     return ['all', ...Array.from(s).sort()];
@@ -182,6 +172,7 @@ export default function ForexFactoryView() {
     return Array.from(map.entries());
   }, [filtered]);
 
+  /* Style tokens */
   const bg = c.bg || '#0b0a08';
   const surface = c.surfaceElevated || c.surface || '#141310';
   const border = c.border || 'rgba(255,255,255,0.08)';
@@ -240,6 +231,7 @@ export default function ForexFactoryView() {
         }
       `}</style>
 
+      {/* ===================== TOOLBAR ===================== */}
       <div
         style={{
           display: 'flex',
@@ -252,25 +244,27 @@ export default function ForexFactoryView() {
           flexShrink: 0,
         }}
       >
+        {/* Prev / Today / Next */}
         <div style={{ display: 'flex', gap: 4 }}>
-          <NavBtn onClick={() => stepRange(-1)} border={border} text={textSecondary}>
+          <NavBtn onClick={() => stepRange(-1)} border={border} text={textSecondary} title="Previous period">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </NavBtn>
-          <NavBtn onClick={() => setPreset('today')} border={border} text={textSecondary}>
+          <NavBtn onClick={() => setPreset('today')} border={border} text={textSecondary} title="Jump to today">
             Today
           </NavBtn>
-          <NavBtn onClick={() => stepRange(1)} border={border} text={textSecondary}>
+          <NavBtn onClick={() => stepRange(1)} border={border} text={textSecondary} title="Next period">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </NavBtn>
         </div>
 
+        {/* Presets */}
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {[
-            { key: 'today', label: 'Today' },
+            { key: 'lastWeek', label: 'Last Week' },
             { key: 'thisWeek', label: 'This Week' },
             { key: 'nextWeek', label: 'Next Week' },
             { key: 'thisMonth', label: 'This Month' },
@@ -289,6 +283,7 @@ export default function ForexFactoryView() {
           ))}
         </div>
 
+        {/* Custom range pickers */}
         {preset === 'custom' && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <DateInput value={customStart} onChange={setCustomStart} border={border} surface={surface} text={text} />
@@ -300,6 +295,7 @@ export default function ForexFactoryView() {
           </div>
         )}
 
+        {/* Range label */}
         <span
           style={{
             fontSize: 11,
@@ -313,6 +309,7 @@ export default function ForexFactoryView() {
           {formatDayShort(range.start)} – {formatDayShort(range.end)}
         </span>
 
+        {/* Impact filter */}
         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {[
             { key: 'all', label: 'All' },
@@ -359,6 +356,7 @@ export default function ForexFactoryView() {
           })}
         </div>
 
+        {/* Currency filter */}
         <select
           value={currencyFilter}
           onChange={(e) => setCurrencyFilter(e.target.value)}
@@ -382,6 +380,7 @@ export default function ForexFactoryView() {
           ))}
         </select>
 
+        {/* View live */}
         <button
           onClick={openLive}
           style={{
@@ -410,6 +409,7 @@ export default function ForexFactoryView() {
         </button>
       </div>
 
+      {/* ===================== TABLE HEADER ===================== */}
       <div
         style={{
           display: 'grid',
@@ -434,6 +434,7 @@ export default function ForexFactoryView() {
         <div style={{ ...headerCell(borderSoft), textAlign: 'right' }}>Previous</div>
       </div>
 
+      {/* ===================== BODY ===================== */}
       <div
         className="ff-scroll"
         style={{
@@ -471,12 +472,36 @@ export default function ForexFactoryView() {
               fontWeight: 600,
             }}
           >
-            No events found for this range.
+            <div style={{ marginBottom: 8 }}>No events found for this range.</div>
+            <div style={{ fontSize: 11, fontWeight: 500, opacity: 0.75, marginBottom: 14, maxWidth: 480, margin: '0 auto 14px' }}>
+              Forex Factory's public feeds cover roughly three weeks
+              (last week, this week, next week). Ranges outside that
+              window won't have data here.
+            </div>
+            <a
+              href={FOREX_FACTORY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-block',
+                padding: '6px 14px',
+                borderRadius: 8,
+                border: `1px solid ${accent}55`,
+                background: `${accent}14`,
+                color: accent,
+                fontSize: 11.5,
+                fontWeight: 700,
+                textDecoration: 'none',
+              }}
+            >
+              Open full calendar on Forex Factory →
+            </a>
           </div>
         )}
 
         {!loading && !error && grouped.map(([dateKey, dayEvents]) => (
           <div key={dateKey}>
+            {/* Day header row */}
             <div
               style={{
                 display: 'flex',
@@ -497,6 +522,7 @@ export default function ForexFactoryView() {
               </span>
             </div>
 
+            {/* Event rows */}
             {dayEvents.map((ev) => {
               const meta = impactMeta(ev.impact, c);
               const isHigh = ev.impact === 'High';
@@ -517,27 +543,33 @@ export default function ForexFactoryView() {
                     fontSize: 12.5,
                   }}
                 >
+                  {/* Time */}
                   <div style={{ color: isAllDay ? textMuted : textSecondary, fontWeight: isAllDay ? 500 : 700, fontVariantNumeric: 'tabular-nums', fontSize: isAllDay ? 11 : 12 }}>
                     {ev.time}
                   </div>
 
+                  {/* Currency + impact square */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                     <span style={{ width: 8, height: 8, borderRadius: 2, background: meta.color, boxShadow: `0 0 5px ${meta.color}`, flexShrink: 0 }} />
                     <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: 0.4, color: text }}>{ev.currency}</span>
                   </div>
 
+                  {/* Event title */}
                   <div style={{ color: text, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 10 }}>
                     {ev.event}
                   </div>
 
+                  {/* Actual */}
                   <div style={{ textAlign: 'right', fontWeight: 800, color: ev.actual ? meta.color : textMuted, fontVariantNumeric: 'tabular-nums' }}>
                     {ev.actual || '—'}
                   </div>
 
+                  {/* Forecast */}
                   <div style={{ textAlign: 'right', color: textSecondary, fontVariantNumeric: 'tabular-nums' }}>
                     {ev.forecast || '—'}
                   </div>
 
+                  {/* Previous */}
                   <div style={{ textAlign: 'right', color: textMuted, fontVariantNumeric: 'tabular-nums' }}>
                     {ev.previous || '—'}
                   </div>
@@ -551,16 +583,20 @@ export default function ForexFactoryView() {
   );
 }
 
+/* ============================================================
+   SUB-COMPONENTS
+   ============================================================ */
 const headerCell = (borderSoft) => ({
   padding: '9px 0',
   borderRight: `1px solid ${borderSoft}`,
   textAlign: 'left',
 });
 
-function NavBtn({ children, onClick, border, text }) {
+function NavBtn({ children, onClick, border, text, title }) {
   return (
     <button
       onClick={onClick}
+      title={title}
       style={{
         display: 'inline-flex',
         alignItems: 'center',

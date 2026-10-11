@@ -1,216 +1,205 @@
 // api/forexfactory-range.js
-// Vercel serverless function — fetches Forex Factory calendar HTML
-// for any date range and returns parsed JSON events.
-// Add ?debug=1 to inspect the raw response.
+// Vercel serverless function — returns Forex Factory events for a date range.
+//
+// Forex Factory publishes three public XML feeds:
+//   • ff_calendar_lastweek.xml
+//   • ff_calendar_thisweek.xml
+//   • ff_calendar_nextweek.xml
+//
+// We fetch all three, merge them, and filter to the requested range.
+// This covers a rolling ~3-week window with no scraping and no 403s.
 
-const FF_BASE = 'https://www.forexfactory.com/calendar';
+export const config = { maxDuration: 30 };
 
-/* ---------- impact detection ---------- */
-const detectImpact = (html) => {
-  if (/icon--ff-impact-red/.test(html)) return 'High';
-  if (/icon--ff-impact-ora/.test(html)) return 'Medium';
-  if (/icon--ff-impact-yel/.test(html)) return 'Low';
-  if (/icon--ff-impact-gra/.test(html)) return 'Holiday';
-  return 'Low';
+const FEEDS = {
+  last: 'https://nfs.faireconomy.media/ff_calendar_lastweek.xml',
+  this: 'https://nfs.faireconomy.media/ff_calendar_thisweek.xml',
+  next: 'https://nfs.faireconomy.media/ff_calendar_nextweek.xml',
 };
 
-/* ---------- HTML helpers ---------- */
-const strip = (s) =>
-  String(s || '')
-    .replace(/<[^>]*>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .trim();
+/* ---------- fetch ---------- */
+const fetchFeed = async (url) => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; MyTradeApp/1.0)',
+        Accept: 'text/xml, application/xml, text/plain, */*',
+      },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.text();
+  } finally {
+    clearTimeout(timer);
+  }
+};
 
-/* ---------- Parse the FF calendar HTML into event objects ----------
-   Tries multiple row-class variants because FF has used both
-   `calendar__row` and `calendar_row` at different times.
-   Each event row is identified by presence of `calendar__event`. */
-const parseHtml = (html, dateLabel) => {
+/* ---------- parse XML ---------- */
+/* FF feed format: <weeklyevents><event><title>..</title>...
+   Date format is "MM-DD-YYYY" in the <date> tag. */
+const parseEvents = (xml, source) => {
   const events = [];
+  if (!xml || typeof xml !== 'string') return events;
 
-  // Grab every <tr> that contains a calendar__event cell
-  const rowRegex = /<tr\b[^>]*>([\s\S]*?)<\/tr>/gi;
+  const eventRegex = /<event>([\s\S]*?)<\/event>/g;
   let match;
 
-  while ((match = rowRegex.exec(html)) !== null) {
-    const rowHtml = match[1];
-    if (!/calendar__event\b/.test(rowHtml)) continue;
+  while ((match = eventRegex.exec(xml)) !== null) {
+    const block = match[1];
 
-    const cell = (cls) => {
-      // Match a td whose class list contains the given class name
-      const re = new RegExp(
-        `<td[^>]*class="[^"]*\\b${cls}\\b[^"]*"[^>]*>([\\s\\S]*?)<\\/td>`,
-        'i'
-      );
-      const m = rowHtml.match(re);
-      return m ? m[1] : '';
+    const get = (tag) => {
+      const m = block.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, 'i'));
+      if (!m) return '';
+      return m[1]
+        .replace(/<!\[CDATA\[|\]\]>/g, '')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&nbsp;/g, ' ')
+        .trim();
     };
 
-    const time = strip(cell('calendar__time'));
-    const currency = strip(cell('calendar__currency'));
-    const event = strip(cell('calendar__event'));
-    const actual = strip(cell('calendar__actual'));
-    const forecast = strip(cell('calendar__forecast'));
-    const previous = strip(cell('calendar__previous'));
-    const impact = detectImpact(rowHtml);
+    const rawDate = get('date'); // MM-DD-YYYY
+    if (!rawDate) continue;
 
-    if (!event) continue;
+    const parts = rawDate.split('-');
+    if (parts.length !== 3) continue;
+    const [mm, dd, yyyy] = parts;
+    const isoDate = `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+
+    const title = get('title');
+    if (!title) continue;
+
+    const impact = get('impact') || 'Low';
+    const currency = get('currency') || '';
+    const time = get('time') || 'All Day';
+    const actual = get('actual');
+    const forecast = get('forecast');
+    const previous = get('previous');
+    const country = get('country');
 
     events.push({
-      id: `${dateLabel}-${time}-${currency}-${event}`.replace(/\s+/g, '-'),
-      date: dateLabel,
-      time: time || 'All Day',
+      id: `${isoDate}-${time}-${currency}-${title}`.replace(/\s+/g, '-'),
+      date: isoDate,
+      time,
       currency,
-      event,
+      country,
+      event: title,
       actual,
       forecast,
       previous,
       impact,
+      source,
     });
   }
 
   return events;
 };
 
-/* ---------- Build the FF day URL ----------
-   FF uses ?day=monDD.YYYY (e.g. apr3.2025). We try several
-   variants and return the first non-empty result. */
-const buildDayUrls = (date) => {
-  const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-  const mon = months[date.getMonth()];
-  const d = date.getDate();
-  const y = date.getFullYear();
-  const iso = `${y}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-  return [
-    `${FF_BASE}?day=${mon}${d}.${y}`,      // apr3.2025
-    `${FF_BASE}?day=${mon}${String(d).padStart(2, '0')}.${y}`, // apr03.2025
-    `${FF_BASE}?day=${iso}`,                // 2025-04-03
-  ];
-};
-
-const fetchText = async (url) => {
-  const res = await fetch(url, {
-    headers: {
-      'User-Agent':
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
-        '(KHTML, like Gecko) Chrome/120.0 Safari/537.36',
-      Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      'Accept-Language': 'en-US,en;q=0.9',
-    },
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-  return await res.text();
-};
-
-const fetchDay = async (date) => {
-  const urls = buildDayUrls(date);
-  const label = date.toISOString().slice(0, 10);
-
-  for (const url of urls) {
-    try {
-      const html = await fetchText(url);
-      const events = parseHtml(html, label);
-      if (events.length > 0) return events;
-    } catch (e) {
-      // try next URL
-    }
-  }
-  return [];
-};
-
-/* ---------- Handler ---------- */
+/* ---------- handler ---------- */
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
   try {
-    const { start, end, debug } = req.query;
+    const { start, end, debug, ping } = req.query || {};
+
+    if (ping === '1') {
+      res.status(200).json({
+        ok: true,
+        version: 'v4-2025-10-11',
+        node: process.version,
+        feeds: Object.keys(FEEDS),
+      });
+      return;
+    }
 
     if (!start || !end) {
-      res.status(400).json({ error: 'Missing start or end query parameter' });
+      res.status(400).json({ events: [], error: 'Missing start or end' });
       return;
     }
 
     const startDate = new Date(start + 'T00:00:00Z');
     const endDate = new Date(end + 'T00:00:00Z');
 
-    if (isNaN(startDate) || isNaN(endDate) || startDate > endDate) {
-      res.status(400).json({ error: 'Invalid date range' });
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) {
+      res.status(400).json({ events: [], error: 'Invalid date range' });
       return;
     }
 
-    /* ---------- DEBUG MODE ----------
-       Visit /api/forexfactory-range?start=YYYY-MM-DD&end=YYYY-MM-DD&debug=1
-       to see what FF actually returned. */
+    /* ---------- debug: inspect one feed ---------- */
     if (debug === '1') {
-      const sample = buildDayUrls(startDate)[0];
-      let info = { url: sample };
-      try {
-        const html = await fetchText(sample);
-        info.status = 'ok';
-        info.length = html.length;
-        info.first600 = html.slice(0, 600);
-        info.hasCalendarRow = /calendar__row/i.test(html);
-        info.hasCalendarEvent = /calendar__event/i.test(html);
-        info.hasCloudflare = /cloudflare|cf-browser|Just a moment/i.test(html);
-        info.hasTable = /<table/i.test(html);
-        info.rowCount = (html.match(/calendar__row/gi) || []).length;
-        info.eventCellCount = (html.match(/calendar__event/gi) || []).length;
-        info.parsedEvents = parseHtml(html, 'debug').slice(0, 3);
-      } catch (e) {
-        info.status = 'error';
-        info.error = e.message;
-      }
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.status(200).json(info);
-      return;
-    }
-
-    /* ---------- Normal range mode ---------- */
-    const days = Math.min(
-      Math.ceil((endDate - startDate) / 86400000) + 1,
-      90
-    );
-
-    const dates = [];
-    for (let i = 0; i < days; i++) {
-      const d = new Date(startDate);
-      d.setUTCDate(d.getUTCDate() + i);
-      dates.push(d);
-    }
-
-    // Dedupe key — the same event may appear on multiple day URLs
-    const seen = new Set();
-    const events = [];
-
-    const batchSize = 4;
-    for (let i = 0; i < dates.length; i += batchSize) {
-      const batch = dates.slice(i, i + batchSize);
-      const results = await Promise.all(batch.map(fetchDay));
-      for (const dayEvents of results) {
-        for (const ev of dayEvents) {
-          const key = `${ev.date}|${ev.time}|${ev.currency}|${ev.event}`;
-          if (seen.has(key)) continue;
-          seen.add(key);
-          events.push(ev);
+      const results = {};
+      for (const [key, url] of Object.entries(FEEDS)) {
+        try {
+          const xml = await fetchFeed(url);
+          const parsed = parseEvents(xml, key);
+          results[key] = {
+            url,
+            ok: true,
+            bytes: xml.length,
+            parsedEvents: parsed.length,
+            sample: parsed.slice(0, 2),
+          };
+        } catch (e) {
+          results[key] = { url, ok: false, error: String(e?.message || e) };
         }
       }
-      if (i + batchSize < dates.length) {
-        await new Promise((r) => setTimeout(r, 150));
+      res.status(200).json({ version: 'v4-2025-10-11', results });
+      return;
+    }
+
+    /* ---------- normal: fetch all 3 feeds in parallel ---------- */
+    const feedResults = await Promise.allSettled(
+      Object.entries(FEEDS).map(async ([key, url]) => {
+        const xml = await fetchFeed(url);
+        return parseEvents(xml, key);
+      })
+    );
+
+    const seen = new Set();
+    const allEvents = [];
+
+    for (const r of feedResults) {
+      if (r.status !== 'fulfilled') continue;
+      for (const ev of r.value) {
+        const key = `${ev.date}|${ev.time}|${ev.currency}|${ev.event}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        allEvents.push(ev);
       }
     }
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.setHeader(
-      'Cache-Control',
-      'public, s-maxage=300, stale-while-revalidate=600'
-    );
-    res.status(200).json({ events, count: events.length });
+    /* ---------- filter to requested range ---------- */
+    const startISO = start;
+    const endISO = end;
+
+    const events = allEvents
+      .filter((ev) => ev.date >= startISO && ev.date <= endISO)
+      .sort((a, b) => {
+        if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+        const ta = a.time === 'All Day' ? '00:00' : a.time;
+        const tb = b.time === 'All Day' ? '00:00' : b.time;
+        return ta < tb ? -1 : ta > tb ? 1 : 0;
+      });
+
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+    res.status(200).json({
+      events,
+      count: events.length,
+      totalParsed: allEvents.length,
+      range: { start: startISO, end: endISO },
+      version: 'v4-2025-10-11',
+    });
   } catch (err) {
-    res.status(502).json({ error: `Proxy error: ${err.message}` });
+    res.status(200).json({
+      events: [],
+      error: String(err?.message || err),
+      version: 'v4-2025-10-11',
+    });
   }
 }
