@@ -1,12 +1,7 @@
 // api/forexfactory-range.js
-// Vercel serverless function — returns Forex Factory events for a date range.
-//
-// Forex Factory publishes three public XML feeds:
-//   • ff_calendar_lastweek.xml
-//   • ff_calendar_thisweek.xml
-//   • ff_calendar_nextweek.xml
-//
-// We fetch all three, merge them, and filter to the requested range.
+// Vercel serverless function — returns the three Forex Factory weekly
+// XML feeds as separate JSON arrays. No date filtering — the feed itself
+// is authoritative for "last week", "this week", and "next week".
 
 export const config = { maxDuration: 30 };
 
@@ -16,7 +11,7 @@ const FEEDS = {
   next: 'https://nfs.faireconomy.media/ff_calendar_nextweek.xml',
 };
 
-/* ---------- fetch ---------- */
+/* ---------- fetch with timeout ---------- */
 const fetchFeed = async (url) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8000);
@@ -32,6 +27,14 @@ const fetchFeed = async (url) => {
     return await res.text();
   } finally {
     clearTimeout(timer);
+  }
+};
+
+const fetchFeedSafe = async (url) => {
+  try {
+    return await fetchFeed(url);
+  } catch {
+    return '';
   }
 };
 
@@ -71,28 +74,28 @@ const parseEvents = (xml, source) => {
     const title = get('title');
     if (!title) continue;
 
-    const impact = get('impact') || 'Low';
-    const currency = get('currency') || '';
-    const time = get('time') || 'All Day';
-    const actual = get('actual');
-    const forecast = get('forecast');
-    const previous = get('previous');
-    const country = get('country');
-
     events.push({
-      id: `${isoDate}-${time}-${currency}-${title}`.replace(/\s+/g, '-'),
+      id: `${isoDate}-${get('time')}-${get('currency')}-${title}`.replace(/\s+/g, '-'),
       date: isoDate,
-      time,
-      currency,
-      country,
+      time: get('time') || 'All Day',
+      currency: get('currency') || '',
+      country: get('country'),
       event: title,
-      actual,
-      forecast,
-      previous,
-      impact,
+      actual: get('actual'),
+      forecast: get('forecast'),
+      previous: get('previous'),
+      impact: get('impact') || 'Low',
       source,
     });
   }
+
+  /* Sort by date then time */
+  events.sort((a, b) => {
+    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    const ta = a.time === 'All Day' ? '00:00' : a.time;
+    const tb = b.time === 'All Day' ? '00:00' : b.time;
+    return ta < tb ? -1 : ta > tb ? 1 : 0;
+  });
 
   return events;
 };
@@ -103,97 +106,58 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
   try {
-    const { start, end, debug, ping } = req.query || {};
+    const { ping, debug } = req.query || {};
 
     if (ping === '1') {
-      res.status(200).json({
-        ok: true,
-        version: 'v5-2025-10-11',
-        node: process.version,
-        feeds: Object.keys(FEEDS),
-      });
+      res.status(200).json({ ok: true, version: 'v6-2025-10-11' });
       return;
     }
 
-    if (!start || !end) {
-      res.status(400).json({ events: [], error: 'Missing start or end' });
-      return;
-    }
-
-    const startDate = new Date(start + 'T00:00:00Z');
-    const endDate = new Date(end + 'T00:00:00Z');
-
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || startDate > endDate) {
-      res.status(400).json({ events: [], error: 'Invalid date range' });
-      return;
-    }
-
-    /* ---------- debug mode ---------- */
+    /* Debug: per-feed diagnostics */
     if (debug === '1') {
-      const results = {};
+      const diagnostics = {};
       for (const [key, url] of Object.entries(FEEDS)) {
-        try {
-          const xml = await fetchFeed(url);
-          const parsed = parseEvents(xml, key);
-          results[key] = {
-            url,
-            ok: true,
-            bytes: xml.length,
-            parsedEvents: parsed.length,
-            sample: parsed.slice(0, 2),
-          };
-        } catch (e) {
-          results[key] = { url, ok: false, error: String(e?.message || e) };
-        }
+        const xml = await fetchFeedSafe(url);
+        const parsed = parseEvents(xml, key);
+        diagnostics[key] = {
+          url,
+          ok: xml.length > 0,
+          bytes: xml.length,
+          events: parsed.length,
+          firstEventDate: parsed[0]?.date || null,
+          lastEventDate: parsed[parsed.length - 1]?.date || null,
+        };
       }
-      res.status(200).json({ version: 'v5-2025-10-11', results });
+      res.status(200).json({ version: 'v6-2025-10-11', diagnostics });
       return;
     }
 
-    /* ---------- normal mode: fetch all 3 feeds ---------- */
-    const feedResults = await Promise.allSettled(
-      Object.entries(FEEDS).map(async ([key, url]) => {
-        const xml = await fetchFeed(url);
-        return parseEvents(xml, key);
-      })
-    );
+    /* Normal: fetch all 3 feeds in parallel, return separately */
+    const [lastXml, thisXml, nextXml] = await Promise.all([
+      fetchFeedSafe(FEEDS.last),
+      fetchFeedSafe(FEEDS.this),
+      fetchFeedSafe(FEEDS.next),
+    ]);
 
-    const seen = new Set();
-    const allEvents = [];
-
-    for (const r of feedResults) {
-      if (r.status !== 'fulfilled') continue;
-      for (const ev of r.value) {
-        const key = `${ev.date}|${ev.time}|${ev.currency}|${ev.event}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        allEvents.push(ev);
-      }
-    }
-
-    /* ---------- filter to requested range ---------- */
-    const events = allEvents
-      .filter((ev) => ev.date >= start && ev.date <= end)
-      .sort((a, b) => {
-        if (a.date !== b.date) return a.date < b.date ? -1 : 1;
-        const ta = a.time === 'All Day' ? '00:00' : a.time;
-        const tb = b.time === 'All Day' ? '00:00' : b.time;
-        return ta < tb ? -1 : ta > tb ? 1 : 0;
-      });
+    const last = parseEvents(lastXml, 'last');
+    const thisWeek = parseEvents(thisXml, 'this');
+    const next = parseEvents(nextXml, 'next');
 
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
     res.status(200).json({
-      events,
-      count: events.length,
-      totalParsed: allEvents.length,
-      range: { start, end },
-      version: 'v5-2025-10-11',
+      last,
+      this: thisWeek,
+      next,
+      counts: { last: last.length, this: thisWeek.length, next: next.length },
+      version: 'v6-2025-10-11',
     });
   } catch (err) {
     res.status(200).json({
-      events: [],
+      last: [],
+      this: [],
+      next: [],
       error: String(err?.message || err),
-      version: 'v5-2025-10-11',
+      version: 'v6-2025-10-11',
     });
   }
 }
