@@ -3,13 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
 
 /* ============================================================
-   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.4)
+   FOREX FACTORY — ECONOMIC CALENDAR VIEW (v6.3)
    ============================================================
    v6.1: fixed-position outer container → page scrolls.
    v6.2: toolbar is sticky at the top of the scroll area.
    v6.3: added Holiday (bank holidays) to the impact filter.
-   v6.4: currency shown as a prominent badge, with country
-         fallback if the feed omits the currency tag.
    ============================================================ */
 
 const FOREX_FACTORY_URL = 'https://www.forexfactory.com/calendar';
@@ -23,54 +21,6 @@ const impactMeta = (impact, c) => {
     case 'holiday': return { color: c.textMuted || '#94a3b8', label: 'Holiday' };
     default:        return { color: c.textMuted || '#94a3b8', label: '—' };
   }
-};
-
-/* ---------- country → currency fallback ----------
-   Used when the FF feed omits the currency tag for an event. */
-const COUNTRY_TO_CURRENCY = {
-  'United States': 'USD',
-  'United Kingdom': 'GBP',
-  'United States of America': 'USD',
-  'Euro Area': 'EUR',
-  'Euro Zone': 'EUR',
-  'European Union': 'EUR',
-  'Germany': 'EUR',
-  'France': 'EUR',
-  'Italy': 'EUR',
-  'Spain': 'EUR',
-  'Netherlands': 'EUR',
-  'Belgium': 'EUR',
-  'Austria': 'EUR',
-  'Portugal': 'EUR',
-  'Ireland': 'EUR',
-  'Finland': 'EUR',
-  'Greece': 'EUR',
-  'Japan': 'JPY',
-  'China': 'CNY',
-  'Australia': 'AUD',
-  'New Zealand': 'NZD',
-  'Canada': 'CAD',
-  'Switzerland': 'CHF',
-  'Sweden': 'SEK',
-  'Norway': 'NOK',
-  'Denmark': 'DKK',
-  'Poland': 'PLN',
-  'Russia': 'RUB',
-  'South Africa': 'ZAR',
-  'Brazil': 'BRL',
-  'Mexico': 'MXN',
-  'India': 'INR',
-  'South Korea': 'KRW',
-  'Singapore': 'SGD',
-  'Hong Kong': 'HKD',
-  'Turkey': 'TRY',
-};
-
-const resolveCurrency = (ev) => {
-  if (ev.currency && ev.currency.trim()) return ev.currency.trim();
-  const country = (ev.country || '').trim();
-  if (country && COUNTRY_TO_CURRENCY[country]) return COUNTRY_TO_CURRENCY[country];
-  return '';
 };
 
 /* ---------- date formatters ---------- */
@@ -138,14 +88,10 @@ export default function ForexFactoryView() {
     return () => { cancelled = true; };
   }, []);
 
-  /* Raw events for the active tab, with currency resolved */
   const events = useMemo(() => {
-    const raw =
-      preset === 'lastWeek' ? (data.last || [])
-      : preset === 'nextWeek' ? (data.next || [])
-      : (data.this || []);
-
-    return raw.map((ev) => ({ ...ev, currency: resolveCurrency(ev) }));
+    if (preset === 'lastWeek') return data.last || [];
+    if (preset === 'nextWeek') return data.next || [];
+    return data.this || [];
   }, [preset, data]);
 
   const dateRange = useMemo(() => {
@@ -394,7 +340,7 @@ export default function ForexFactoryView() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: '90px 90px 1fr 1fr 1fr 1fr',
+            gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
             gap: 0,
             padding: '10px 0',
             borderBottom: `1px solid ${border}`,
@@ -484,7 +430,6 @@ export default function ForexFactoryView() {
                 const meta = impactMeta(ev.impact, c);
                 const isHigh = ev.impact === 'High';
                 const isAllDay = ev.time === 'All Day';
-                const hasCurrency = !!ev.currency;
 
                 return (
                   <div
@@ -492,7 +437,7 @@ export default function ForexFactoryView() {
                     className="ff-row"
                     style={{
                       display: 'grid',
-                      gridTemplateColumns: '90px 90px 1fr 1fr 1fr 1fr',
+                      gridTemplateColumns: '90px 70px 1fr 1fr 1fr 1fr',
                       alignItems: 'center',
                       padding: '10px 0',
                       borderBottom: `1px solid ${borderSoft}`,
@@ -510,36 +455,22 @@ export default function ForexFactoryView() {
                       {ev.time}
                     </div>
 
-                    {/* Currency badge — prominent, with impact color edge */}
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <span
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: 6,
-                          padding: '3px 9px 3px 6px',
-                          borderRadius: 6,
-                          background: hasCurrency ? `${meta.color}15` : 'rgba(255,255,255,0.04)',
-                          border: `1px solid ${hasCurrency ? meta.color + '55' : borderSoft}`,
-                          color: hasCurrency ? text : textMuted,
-                          fontSize: 11,
-                          fontWeight: 800,
-                          letterSpacing: 0.5,
-                          fontVariantNumeric: 'tabular-nums',
-                        }}
-                        title={ev.country ? `${ev.country}` : (hasCurrency ? ev.currency : 'Unknown currency')}
-                      >
-                        <span
-                          style={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: 2,
-                            background: meta.color,
-                            boxShadow: `0 0 5px ${meta.color}`,
-                            flexShrink: 0,
-                          }}
-                        />
-                        {hasCurrency ? ev.currency : '—'}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: 2,
+                        background: meta.color,
+                        boxShadow: `0 0 5px ${meta.color}`,
+                        flexShrink: 0,
+                      }} />
+                      <span style={{
+                        fontSize: 11,
+                        fontWeight: 800,
+                        letterSpacing: 0.4,
+                        color: text,
+                      }}>
+                        {ev.currency || '—'}
                       </span>
                     </div>
 
