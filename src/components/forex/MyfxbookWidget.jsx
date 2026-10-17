@@ -11,8 +11,8 @@ export default function MyfxbookWidget({ src, title }) {
   const accent = c.accent || '#3b82f6';
   const border = c.border || 'rgba(255,255,255,0.05)';
 
-  // If the theme is dark, we invert the iframe colors so it doesn't blind the user.
-  const isDarkTheme = theme?.category === 'dark';
+  // Fallback check ensures Gold, Ocean, etc., trigger the dark mode filter
+  const isDarkTheme = theme?.category === 'dark' || (theme?.name && theme.name !== 'White');
 
   return (
     <div
@@ -44,15 +44,31 @@ export default function MyfxbookWidget({ src, title }) {
             width: '100%',
             height: '100%',
             border: 'none',
-            /* 
-              This is the trick: We invert the colors of the iframe 
-              to force it into dark mode. We also rotate the hue so that 
-              reds stay red and greens stay green instead of turning into their opposites.
-            */
             filter: isDarkTheme ? 'invert(0.9) hue-rotate(180deg)' : 'none',
             transition: 'filter 0.3s ease',
           }}
         />
+
+        {/* 
+          THEME TINT OVERLAY
+          This overlays the iframe with your theme's accent color.
+          mix-blend-mode: 'color' applies the hue (Gold, Ocean, Red) 
+          without destroying the brightness of the iframe text.
+        */}
+        {isDarkTheme && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: accent,
+              opacity: 0.12, 
+              pointerEvents: 'none', // Allows clicking through to the iframe
+              mixBlendMode: 'color',
+              zIndex: 2,
+              transition: 'background-color 0.3s ease',
+            }}
+          />
+        )}
       </div>
 
       {/* Attribution Footer */}
