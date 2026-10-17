@@ -10,10 +10,9 @@ import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
 import TradingViewView from '../components/forex/TradingViewView';
 import MyfxbookWidget from '../components/forex/MyfxbookWidget';
-import MyfxbookSentimentWidget from '../components/forex/MyfxbookSentimentWidget'; // <-- NEW IMPORT
 
 /* =========================================================
-   THEMES (mirrors the ones defined in Derivdash.jsx)
+   THEMES
    ========================================================= */
 const themes = {
   white: {
@@ -138,7 +137,7 @@ const themes = {
 };
 
 /* =========================================================
-   SHARED CONSTANTS
+   SHARED CONSTANTS & HELPERS
    ========================================================= */
 export const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'AUD', 'NZD', 'CAD'];
 
@@ -162,9 +161,6 @@ export const PAIRS = [
 export const INSTRUMENTS = [...PAIRS, 'XAUUSD'];
 export const WATCHLIST = ['EURUSD', 'GBPUSD', 'USDJPY', 'AUDUSD', 'USDCAD', 'USDCHF', 'NZDUSD', 'XAUUSD'];
 
-/* =========================================================
-   SHARED HELPERS
-   ========================================================= */
 export const fmt = (n, d = 2) =>
   Number(n).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
@@ -344,10 +340,7 @@ export default function ForexDash() {
 
   const view = urlView || 'home';
 
-  // ✅ Sidebar state
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // ✅ Theme state — controlled here, changed by TopBar, consumed by every child
   const [currentTheme, setCurrentTheme] = useState('gold');
   const handleThemeChange = (name) => setCurrentTheme(name);
 
@@ -363,7 +356,6 @@ export default function ForexDash() {
   const [bots, setBots] = useState(createInitialBots);
   const [selectedPair, setSelectedPair] = useState('EURUSD');
 
-  // ✅ Sync page background + meta tags when theme changes (same pattern as Derivdash)
   useEffect(() => {
     const themeObj = themes[currentTheme] || themes.dark;
     const colors = themeObj.colors || {};
@@ -393,7 +385,6 @@ export default function ForexDash() {
     return () => {};
   }, [currentTheme]);
 
-  // Market simulation: strength walk
   useEffect(() => {
     const id = setInterval(() => {
       setStrength((prev) => {
@@ -407,7 +398,6 @@ export default function ForexDash() {
     return () => clearInterval(id);
   }, []);
 
-  // Reprice instruments
   useEffect(() => {
     setPairs((prev) => {
       const next = { ...prev };
@@ -427,7 +417,6 @@ export default function ForexDash() {
     });
   }, [strength]);
 
-  // Equity history
   useEffect(() => {
     const pl = totalPL(positions, pairs, strength);
     const equity = account.balance + pl;
@@ -438,7 +427,6 @@ export default function ForexDash() {
     });
   }, [positions, pairs, strength, account.balance]);
 
-  // Bot simulation
   useEffect(() => {
     const id = setInterval(() => {
       setBots((prev) =>
@@ -478,7 +466,6 @@ export default function ForexDash() {
   return (
     <ThemeProvider theme={t}>
       <>
-        {/* ============ SHARED DASHBOARD STYLES (theme-driven) ============ */}
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -520,7 +507,6 @@ export default function ForexDash() {
           .muted{color:${c.textSecondary}}
           .num{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
-          /* ---- Page shell ---- */
           .forex-page{
             min-height:100vh;
             background:${c.bg};
@@ -531,7 +517,6 @@ export default function ForexDash() {
           .forex-content{padding:24px 26px 60px;flex:1;max-width:1600px;margin:0 auto;width:100%}
           @media (max-width:768px){ .forex-content{padding:18px 14px 80px} }
 
-          /* ---- Cards ---- */
           .card{
             background:linear-gradient(180deg, ${c.surfaceElevated} 0%, ${c.surface} 100%);
             border:1px solid ${c.borderMuted};
@@ -553,7 +538,6 @@ export default function ForexDash() {
             border:1px solid ${c.border};
           }
 
-          /* ---- Stat cards ---- */
           .stat-card{
             background:linear-gradient(180deg, ${c.surfaceElevated} 0%, ${c.surface} 100%);
             border:1px solid ${c.borderMuted};
@@ -574,12 +558,10 @@ export default function ForexDash() {
           .stat-foot{font-size:11.5px;color:${c.textMuted};margin-top:6px;display:flex;align-items:center;gap:5px}
           .delta{font-weight:600;font-size:11.5px}
 
-          /* ---- Grids ---- */
           .grid-2{display:grid;grid-template-columns:1.85fr 1fr;gap:15px;margin-bottom:18px}
           .grid-eq{display:grid;grid-template-columns:1fr;gap:15px;margin-bottom:18px}
           @media (max-width:1180px){ .grid-2{grid-template-columns:1fr} }
 
-          /* ---- Tables ---- */
           .tbl{width:100%;border-collapse:collapse}
           .tbl th{
             text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.9px;
@@ -607,7 +589,6 @@ export default function ForexDash() {
           .spark{width:82px;height:28px;display:block}
           .chart{width:100%;height:100%;display:block}
 
-          /* ---- Side tag / buttons ---- */
           .side-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:5px}
           .side-tag.buy{background:${c.accentLight};color:${c.success}}
           .side-tag.sell{background:${c.accentLight};color:${c.danger}}
@@ -628,7 +609,6 @@ export default function ForexDash() {
           .icon-x{color:${c.textMuted};font-size:16px;line-height:1;padding:2px 7px;border-radius:6px}
           .icon-x:hover{background:${c.accentLight};color:${c.danger}}
 
-          /* ---- Strength bars ---- */
           .st-row{display:grid;grid-template-columns:44px 1fr 62px;align-items:center;gap:12px;padding:7px 18px}
           .st-cur{font-size:12px;font-weight:700;letter-spacing:.4px;color:${c.text}}
           .st-track{
@@ -644,7 +624,6 @@ export default function ForexDash() {
           .st-bar.neg{background:linear-gradient(270deg, ${c.accentLight}, ${c.danger})}
           .st-val{font-family:var(--mono);font-size:12px;text-align:right;font-weight:500}
 
-          /* ---- Notice ---- */
           .notice{
             display:flex;align-items:center;gap:10px;margin-top:18px;
             padding:12px 16px;border-radius:11px;
@@ -655,7 +634,6 @@ export default function ForexDash() {
           .notice svg{width:15px;height:15px;flex:none;stroke:${c.accent};fill:none;stroke-width:1.8;stroke-linecap:round}
           .empty{padding:36px;text-align:center;color:${c.textMuted};font-size:12.5px}
 
-          /* ---- View animation ---- */
           .view{display:block;animation:fade .28s ease}
           @keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
         `}</style>
@@ -668,8 +646,6 @@ export default function ForexDash() {
             onThemeChange={handleThemeChange}
           />
 
-          {/* ✅ OptionSideBar stays mounted; visibility is controlled by `isOpen`
-              and its internal styled-components read from ThemeProvider */}
           <OptionSideBar
             isOpen={sidebarOpen}
             onClose={() => setSidebarOpen(false)}
@@ -693,9 +669,6 @@ export default function ForexDash() {
             {view === 'bots'         && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
             {view === 'tradingview'  && <TradingViewView />}
 
-            {/* =========================================================
-                MYFXBOOK WIDGETS
-                ========================================================= */}
             {view === 'economic-calendar' && (
               <MyfxbookWidget 
                 title="Economic Calendar"
@@ -745,8 +718,12 @@ export default function ForexDash() {
               />
             )}
 
+            {/* ✅ SENTIMENT WIDGET – using the iframe version instead of the script */}
             {view === 'sentiment' && (
-              <MyfxbookSentimentWidget />
+              <MyfxbookWidget 
+                title="Market Sentiment"
+                src="https://widgets.myfxbook.com/widgets/outlook.html?type=1&symbols=,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,27,28,29,31,34,36,37,38,40,41,42,43,45,46,47,48,49,50,51,103,107,131,137,1233,1234,1236,1245,1246,1247,1815,1863,1893,2012,2076,2090,2114,2115,2119,2521,2603,2872,3005,3240,3473,5079,5435,5779" 
+              />
             )}
 
             {view === 'spreads' && (
