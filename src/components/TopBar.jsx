@@ -341,7 +341,46 @@ const formatUTC3Clock = (date) => {
   return { h, m, s, full: `${h}:${m}`, precise: `${h}:${m}:${s}` };
 };
 
+// ============================================
+// MARKET OPEN LOGIC
+// ============================================
+const isMarketOpen = (now) => {
+  const day = now.getUTCDay(); // 0 = Sunday, 5 = Friday, 6 = Saturday
+  const hour = now.getUTCHours();
+  
+  if (day === 6) return false; // Saturday - closed all day
+  if (day === 5 && hour >= 22) return false; // Friday - closes at 22:00 UTC
+  if (day === 0 && hour < 21) return false; // Sunday - opens at 21:00 UTC
+  
+  return true;
+};
+
+const getNextOpen = (session, now) => {
+  let test = new Date(now);
+  for (let i = 0; i <= 7; i++) {
+    test.setUTCDate(now.getUTCDate() + i);
+    test.setUTCHours(session.startUTC, 0, 0, 0);
+    
+    const day = test.getUTCDay();
+    // Sydney is the only session that opens on Sunday (21:00 UTC)
+    const isSundaySession = session.key === 'sydney';
+    
+    if (day === 6 || (day === 0 && !isSundaySession)) continue;
+    
+    if (test > now) return test;
+  }
+  return new Date(now.getTime() + 7 * 86400000);
+};
+
 const getSessionStatus = (session, now) => {
+  const marketOpen = isMarketOpen(now);
+  
+  if (!marketOpen) {
+    const nextOpen = getNextOpen(session, now);
+    const minUntil = (nextOpen - now) / 60000;
+    return { isOpen: false, minUntil, totalMin: 1, elapsedMin: 0, progress: 0 };
+  }
+
   const nowMin = now.getUTCHours() * 60 + now.getUTCMinutes() + now.getUTCSeconds() / 60;
   const openMin = session.startUTC * 60;
   const closeMin = session.endUTC * 60;
@@ -1512,6 +1551,8 @@ const TopPanel = ({
   const isForex = location.pathname.startsWith('/forex');
   const showSidebarToggle = !!onSidebarToggle;
 
+  const marketOpen = useMemo(() => isMarketOpen(now), [now]);
+
   const sessionStates = useMemo(
     () => FOREX_SESSIONS.map(s => {
       const color = getSessionColor(s, theme);
@@ -1893,10 +1934,17 @@ const TopPanel = ({
                 <div className="session-meta">
                   <div className="session-row">
                     <span className="session-name">{heroSession.name}</span>
-                    <span className="live-tag"><span className="dot" />{heroSession.isOpen ? 'Live' : 'Soon'}</span>
+                    <span className="live-tag">
+                      <span className="dot" />
+                      {heroSession.isOpen ? 'Live' : (!marketOpen ? 'Closed' : 'Soon')}
+                    </span>
                   </div>
                   <span className="session-sub">
-                    {heroSession.isOpen ? `Closes in ${formatDuration(heroSession.minUntil)}` : `Opens in ${formatDuration(heroSession.minUntil)}`}
+                    {heroSession.isOpen 
+                      ? `Closes in ${formatDuration(heroSession.minUntil)}` 
+                      : (!marketOpen 
+                          ? `Opens Monday in ${formatDuration(heroSession.minUntil)}`
+                          : `Opens in ${formatDuration(heroSession.minUntil)}`)}
                     {heroSession.isOpen && (
                       <span className="pct-chip">Session progress<span className="pct-value">{Math.round(heroSession.progress * 100)}%</span>complete</span>
                     )}
@@ -1916,7 +1964,12 @@ const TopPanel = ({
                     <div className="globe-badge"><GlobeIcon size={16} /></div>
                     <div className="titles">
                       <div className="title">Forex Sessions</div>
-                      <div className="subtitle"><span className="pulse-dot" />{openSessions.length} of {FOREX_SESSIONS.length} markets open now</div>
+                      <div className="subtitle">
+                        <span className="pulse-dot" />
+                        {marketOpen 
+                          ? `${openSessions.length} of ${FOREX_SESSIONS.length} markets open now`
+                          : 'Market closed for the weekend'}
+                      </div>
                     </div>
                   </div>
                   <div className="clock-block">
@@ -1938,7 +1991,7 @@ const TopPanel = ({
                     </div>
                     <div className={`hero-status ${heroSession.isOpen ? '' : 'closed'}`}>
                       <span className="dot" />
-                      {heroSession.isOpen ? 'Live Now' : 'Opens Soon'}
+                      {heroSession.isOpen ? 'Live Now' : (!marketOpen ? 'Market Closed' : 'Opens Soon')}
                     </div>
                   </div>
                   <div className="hero-timing">
