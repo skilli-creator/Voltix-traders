@@ -1,8 +1,8 @@
 // src/components/forex/MyfxbookWidget.jsx
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTheme } from 'styled-components';
 
-export default function MyfxbookWidget({ src, title, themeType = 'dark' }) {
+export default function MyfxbookWidget({ src, title }) {
   const theme = useTheme();
   const c = theme?.colors || {};
 
@@ -11,17 +11,8 @@ export default function MyfxbookWidget({ src, title, themeType = 'dark' }) {
   const accent = c.accent || '#3b82f6';
   const border = c.border || 'rgba(255,255,255,0.05)';
 
-  // Dynamically inject the theme parameter into the Myfxbook URL
-  const finalSrc = useMemo(() => {
-    try {
-      const url = new URL(src);
-      url.searchParams.set('theme', themeType === 'light' ? 'light' : 'dark');
-      return url.toString();
-    } catch (e) {
-      // Fallback if URL parsing fails
-      return src + (src.includes('?') ? '&' : '?') + `theme=${themeType === 'light' ? 'light' : 'dark'}`;
-    }
-  }, [src, themeType]);
+  // If the theme is dark, we invert the iframe colors so it doesn't blind the user.
+  const isDarkTheme = theme?.category === 'dark';
 
   return (
     <div
@@ -41,7 +32,7 @@ export default function MyfxbookWidget({ src, title, themeType = 'dark' }) {
       {/* Iframe Container */}
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         <iframe
-          src={finalSrc}
+          src={src}
           width="100%"
           height="100%"
           frameBorder="0"
@@ -53,7 +44,13 @@ export default function MyfxbookWidget({ src, title, themeType = 'dark' }) {
             width: '100%',
             height: '100%',
             border: 'none',
-            backgroundColor: 'transparent', // Allows the theme's bg to show through if the iframe is transparent
+            /* 
+              This is the trick: We invert the colors of the iframe 
+              to force it into dark mode. We also rotate the hue so that 
+              reds stay red and greens stay green instead of turning into their opposites.
+            */
+            filter: isDarkTheme ? 'invert(0.9) hue-rotate(180deg)' : 'none',
+            transition: 'filter 0.3s ease',
           }}
         />
       </div>
