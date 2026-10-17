@@ -212,23 +212,26 @@ export default function ForexHome({
   };
 
   const styles = useMemo(() => `
+    /* 
+      FIX: Make .tf-page the dedicated scroll container.
+      Using height: 100% allows it to fill the available space in .forex-content.
+      This ensures smooth scrolling on both mobile and desktop.
+    */
     .view.active,
     .view.active.tf-page {
       overflow-y: auto !important;
       overflow-x: hidden !important;
       height: 100% !important;
-      max-height: 100vh;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
     }
     .tf-page{
       background:${C.bg};
       color:${C.text};
-      min-height:100%;
       display:block;
       font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
       transition:background .25s ease, color .25s ease;
-      padding-bottom: 0; /* Ensure full scroll to bottom */
+      padding-bottom: 0;
     }
     .tf-page *{ box-sizing:border-box; }
 
@@ -465,7 +468,7 @@ export default function ForexHome({
     .tf-footer {
       border-top: 1px solid ${C.border};
       background: ${C.card};
-      padding: 40px 22px;
+      padding: 60px 22px; /* Added extra padding at bottom so it clears the viewport edge */
       text-align: center;
       color: ${C.text3};
     }
@@ -533,6 +536,8 @@ export default function ForexHome({
       
       .tf-feature-title { font-size: 24px; }
       .tf-feature-desc, .tf-feature-extra { font-size: 13.5px; }
+      
+      .tf-footer { padding: 40px 18px; }
     }
     @media (max-width:420px){
       .tf-hero h1{ font-size:32px; }
@@ -624,7 +629,7 @@ export default function ForexHome({
 
             <div className="tf-founder">
               <div className="tf-founder-photo">
-                <img src={tonnyPhoto} alt="Tonny — founder of MyTradingZone" loading="lazy" />
+                <img src={tonnyPhoto} alt="Tonny — founder of MyTradingZone" />
                 <span className="tf-founder-tag">Founder</span>
               </div>
               <div className="tf-founder-body">
@@ -677,7 +682,7 @@ export default function ForexHome({
                   
                   {/* Image */}
                   <div className="tf-feature-img-wrap">
-                    <img src={f.img} alt={f.title} loading="lazy" />
+                    <img src={f.img} alt={f.title} />
                   </div>
 
                   {/* Text */}
