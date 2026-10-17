@@ -212,15 +212,12 @@ export default function ForexHome({
   };
 
   const styles = useMemo(() => `
-    /* 
-      FIX: Let the page expand naturally. 
-      Removed the forced 100vh and internal overflow so the browser handles scrolling perfectly.
-    */
     .view.active,
     .view.active.tf-page {
-      overflow: visible !important;
-      height: auto !important;
-      max-height: none !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      height: 100% !important;
+      max-height: 100vh;
       -webkit-overflow-scrolling: touch;
       scroll-behavior: smooth;
     }
@@ -231,6 +228,7 @@ export default function ForexHome({
       display:block;
       font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
       transition:background .25s ease, color .25s ease;
+      padding-bottom: 0; /* Ensure full scroll to bottom */
     }
     .tf-page *{ box-sizing:border-box; }
 
