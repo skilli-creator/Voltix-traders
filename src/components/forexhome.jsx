@@ -6,27 +6,30 @@ import {
   fmt, fmtMoney, fmtPrice,
   currencyStrength, Sparkline,
 } from '../pages/forexdash';
+
+// Images
 import tonnyPhoto from '../assets/images/image13.png';
+import spreadsImg from '../assets/images/spreads.png';
+import heatmapImg from '../assets/images/heatmap.png';
+import correlationImg from '../assets/images/correlation.png';
+import sentimentsImg from '../assets/images/sentiments.png';
+import liquidityImg from '../assets/images/liquidity.png';
+import volatilityImg from '../assets/images/volatility.png';
+import calendarImg from '../assets/images/calender.png'; 
+import botsImg from '../assets/images/bots.png';
+import tradingviewImg from '../assets/images/tradingview.png';
+import patternsImg from '../assets/images/patterns.png';
+import currencyImg from '../assets/images/currency.png';
 
 /* ================================================================ */
 /*  EXTERNAL LINKS                                                  */
-/*  Swap these once the real URLs are ready.                        */
 /* ================================================================ */
-const ABOUT_TONNYFX_URL   = '#';   // TODO: replace with the "More about Tonnyfx" link
-const COMMUNITY_URL       = '#';   // TODO: replace with the Telegram community invite link
+const ABOUT_TONNYFX_URL   = '#';   
+const COMMUNITY_URL       = '#';   
 
 /* ================================================================ */
 /*  CONTENT                                                         */
 /* ================================================================ */
-const SERVICES = [
-  { key:'bots',     title:'Automated Trading Bots',    desc:'Six pre-built strategies tuned for EUR/USD, BTC/USD and XAU/USD. Toggle on and let them run.',              icon:'bot' },
-  { key:'lot',      title:'Lot Size Calculator',       desc:'Risk-based sizing on every instrument. Balance, risk % and stop-loss — instant lot size.',                  icon:'calc' },
-  { key:'strength', title:'Currency Strength Meter',   desc:'Rank the eight majors against a weighted basket. Spot the strongest and weakest in one glance.',           icon:'bars' },
-  { key:'signals',  title:'Live Signal Alerts',        desc:'Momentum, breakout and mean-reversion alerts the moment price structure shifts on your watchlist.',        icon:'bell' },
-  { key:'risk',     title:'Risk & Margin Manager',     desc:'Real-time margin level, free margin and exposure warnings — so one trade never takes down your account.',  icon:'shield' },
-  { key:'journal',  title:'Trade Journal & Analytics', desc:'Every fill and every pip logged automatically. Win rate, expectancy, drawdown, equity curve.',              icon:'journal' },
-];
-
 const STATS = [
   { n:'10+',   l:'Years trading' },
   { n:'3.2k+', l:'Traders mentored' },
@@ -41,15 +44,118 @@ const MILESTONES = [
   { n:'99.98%',  l:'Bot uptime' },
 ];
 
+/* ================================================================ */
+/*  FEATURE CONTENT (10 Sections)                                   */
+/* ================================================================ */
+const FEATURES = [
+  {
+    key: 'spreads',
+    title: 'Forex Spreads',
+    subtitle: 'Real-time broker comparison',
+    img: spreadsImg,
+    route: 'spreads',
+    desc: 'Forex brokers spread comparison in real time. Best spread is colored in green, worst spread is colored in red.',
+    extra: 'For overall best spreads, look for the row colored mostly with green cells.'
+  },
+  {
+    key: 'heatmap',
+    title: 'Market Heatmap',
+    subtitle: 'Strongest & weakest currencies',
+    img: heatmapImg,
+    route: 'heatmap',
+    desc: 'Use the heatmap table to view in real time the strongest and weakest currencies in each timeframe. You can switch the search mode to pips or percent.',
+    extra: 'Visualize momentum across all major pairs instantly.'
+  },
+  {
+    key: 'correlation',
+    title: 'Currency Correlation',
+    subtitle: 'Historical analysis & risk management',
+    img: correlationImg,
+    route: 'correlation',
+    desc: 'Correlation ranges from -100% to +100%, where -100% represents currencies moving in opposite directions (negative correlation) and +100% represents currencies moving in the same direction.',
+    extra: 'Click on a correlation number to view a historical correlation analysis and compare it against other currency correlations. Click on a currency to view the top correlations analysis.'
+  },
+  {
+    key: 'sentiment',
+    title: 'Market Sentiment',
+    subtitle: 'Understand the crowd',
+    img: sentimentsImg,
+    route: 'sentiment',
+    desc: 'Forex market sentiment can be measured using various tools and indicators. One of the most popular methods is using sentiment indicators. These indicators provide insights into market sentiment, such as the percentage of traders who are bullish or bearish on a particular currency.',
+    extra: 'By understanding the overall sentiment of the market, traders can better anticipate price movements, identify potential trading opportunities, and manage risk more effectively.'
+  },
+  {
+    key: 'liquidity',
+    title: 'Forex Liquidity',
+    subtitle: 'Real-time market pulse',
+    img: liquidityImg,
+    route: 'liquidity',
+    desc: 'Forex Liquidity refers to the ease with which a currency pair can be bought or sold in the market without causing a significant impact on its price. It is a measure of the market\'s ability to absorb large trading volumes without causing substantial price fluctuations.',
+    extra: 'Our platform gathers data from many brokers and the top 10 traded currencies to compute the liquidity per minute for the last 48 hours.'
+  },
+  {
+    key: 'volatility',
+    title: 'Market Volatility',
+    subtitle: 'Track price variation',
+    img: volatilityImg,
+    route: 'volatility',
+    desc: 'Volatility is a term used to statistically describe the variation in trading prices. The higher the number, the higher the market volatility is. Alternatively, the lower the number, the lower volatility is.',
+    extra: 'Volatility is the difference between the high and low values of a price in a symbol. Compare multiple symbols across different timeframes to save time.'
+  },
+  {
+    key: 'economic-calendar',
+    title: 'Economic Calendar',
+    subtitle: 'Stay ahead of market movers',
+    img: calendarImg,
+    route: 'economic-calendar',
+    desc: 'The Forex market is highly responsive to economic news and data. An Economic Calendar is a tool for traders that tracks and displays upcoming economic events, including releases of economic indicators, reports, and other financial data in real-time.',
+    extra: 'Set up personalized notifications for specific economic events. Each event is categorized by impact level - from no impact to high impact - facilitating the anticipation and reduction of risks.'
+  },
+  {
+    key: 'bots',
+    title: 'Automated Bots',
+    subtitle: 'Algorithmic trading 24/5',
+    img: botsImg,
+    route: 'bots',
+    desc: 'Execute proven strategies 24/5 with our pre-built and custom algorithmic bots. Manage risk, set stop-losses, and let the system work for you.',
+    extra: 'Our bots are tuned specifically for EUR/USD, BTC/USD, and XAU/USD, combining trend-following and mean-reversion logic to capture market moves without emotional interference.'
+  },
+  {
+    key: 'tradingview',
+    title: 'TradingView Charts',
+    subtitle: 'Institutional-grade charting',
+    img: tradingviewImg,
+    route: 'tradingview',
+    desc: 'Access institutional-grade charting with over 100 indicators, drawing tools, and real-time market data directly inside your dashboard.',
+    extra: 'Powered by TradingView, this integrated view allows you to perform deep technical analysis on any asset without ever leaving the platform.'
+  },
+  {
+    key: 'patterns',
+    title: 'Chart Patterns',
+    subtitle: 'Automated technical scanning',
+    img: patternsImg,
+    route: 'patterns',
+    desc: 'Patterns are being scanned in real time and presented in a table (refreshes automatically every 30 seconds).',
+    extra: 'Please note that some patterns should be confirmed with the price, for example a pattern may be valid only if occurs during an uptrend or a downtrend. Green = Bullish, Red = Bearish, Yellow = Uncertainty.'
+  },
+  {
+    key: 'currencies',
+    title: 'Live Currencies',
+    subtitle: 'Real-time forex rates',
+    img: currencyImg,
+    route: 'currencies',
+    desc: 'Forex exchange rates of most currencies\' value are determined by the market. Forex rates conversion may be as easy as exchanging one currency for another at a local bank.',
+    extra: 'There are multiple causes why forex exchange rates vary so often. Interest rates, inflation, geopolitical stability, and export and import levels are all significant factors.'
+  }
+];
+
 const FOREX_BASICS = [
   { t:'What is forex trading?',              d:'Forex is the global marketplace for exchanging national currencies. Roughly $7.5 trillion trades every single day — the largest and most liquid market in the world.' },
-  { t:'The major pairs explained',           d:'EUR/USD, USD/JPY, GBP/USD and USD/CHF are the majors. Tightest spreads, deepest liquidity — which is why MyTradeApp focuses on EUR/USD first.' },
+  { t:'The major pairs explained',           d:'EUR/USD, USD/JPY, GBP/USD and USD/CHF are the majors. Tightest spreads, deepest liquidity — which is why MyTradingZone focuses on EUR/USD first.' },
   { t:'What is a pip?',                      d:'The smallest standardised move in a currency pair — usually 0.0001 for most pairs and 0.01 for JPY pairs. Pip value depends on lot size and account currency.' },
   { t:'Lots, mini lots and micro lots',      d:'Standard lot = 100,000 units. Mini = 10,000. Micro = 1,000. Position sizing tools work in all three, so a $200 account can trade without over-leveraging.' },
   { t:'Leverage and margin',                 d:'Leverage lets you control a large position with a small deposit. It magnifies both profits and losses. Margin is the collateral your broker locks while the trade is open.' },
   { t:'Trading sessions',                    d:'Forex runs 24/5 across three overlapping sessions: Sydney/Tokyo, London, and New York. Volatility peaks during the London–New York overlap.' },
-  { t:'Technical vs fundamental analysis',   d:'Technical analysis studies price structure and momentum. Fundamental analysis studies interest rates, inflation and geopolitics. Serious traders use both.' },
-  { t:'Risk management rules',               d:'The golden rule: never risk more than 1–2% of your account on a single trade. The second rule: always use a stop-loss. MyTradeApp enforces both.' },
 ];
 
 const GLOSSARY = [
@@ -59,10 +165,6 @@ const GLOSSARY = [
   { k:'Drawdown',    v:'The peak-to-trough decline in your equity. The single most important risk metric.' },
   { k:'Stop-loss',   v:'A pre-set order that closes your trade automatically at a defined loss level.' },
   { k:'Take-profit', v:'A pre-set order that closes your trade once a profit target is hit.' },
-  { k:'Slippage',    v:'The difference between the expected price and the actual fill price on execution.' },
-  { k:'Win rate',    v:'The percentage of trades that close in profit. Meaningless without average risk/reward.' },
-  { k:'Expectancy',  v:'Average profit per trade: (win rate × avg win) − (loss rate × avg loss).' },
-  { k:'Sharpe ratio', v:'Return per unit of risk. Above 1.0 is good; above 2.0 is considered excellent.' },
 ];
 
 const SESSIONS = [
@@ -80,41 +182,12 @@ const PIP_TABLE = [
   { pair:'BTC/USD', pip:'$1.00',  std:'$1.00',  mini:'$0.10', micro:'$0.01' },
 ];
 
-const ARTICLES = [
-  { cat:'Risk',       title:'Why 1% risk per trade beats every indicator you will ever buy', read:'6 min',  date:'Oct 12, 2026' },
-  { cat:'Strategy',   title:'The London Breakout, explained step by step with real examples', read:'9 min',  date:'Oct 8, 2026'  },
-  { cat:'Psychology', title:'How to stop revenge trading after a loss — a practical framework', read:'5 min', date:'Oct 3, 2026'  },
-  { cat:'Gold',       title:'Trading XAU/USD around NFP: a practical, no-nonsense guide',    read:'7 min',  date:'Sep 28, 2026' },
-  { cat:'Crypto',     title:'Why BTC/USD behaves differently from every other market',       read:'8 min',  date:'Sep 22, 2026' },
-  { cat:'Systems',    title:'Backtesting your first strategy without fooling yourself',       read:'10 min', date:'Sep 15, 2026' },
-];
-
-const PRICING = [
-  { name:'Starter', price:'Free', period:'forever', highlight:false,
-    desc:'For traders who want the core tools before committing a cent.',
-    features:['Lot size calculator','Currency strength meter','Economic calendar','Pip value table','Community access','Mobile app access'],
-    cta:'Start free' },
-  { name:'Trader', price:'$29', period:'/ month', highlight:true,
-    desc:'For active retail traders running one or two live bots.',
-    features:['Everything in Starter','2 active bots','Live signal alerts','Trade journal & analytics','Backtesting engine','Priority email support','Mobile push alerts'],
-    cta:'Choose Trader' },
-  { name:'Pro', price:'$79', period:'/ month', highlight:false,
-    desc:'For serious traders running a full portfolio of automated strategies.',
-    features:['Everything in Trader','Unlimited bots','Strategy builder','VPS hosting included','1-on-1 coaching (1/mo)','Full API access','Priority chat support'],
-    cta:'Go Pro' },
-];
-
 const FAQS = [
-  { q:'Is MyTradeApp a broker?',                          a:'No. MyTradeApp is a third-party analytics and automation layer built by Tonny. You keep your own broker account and we give you the tools to trade it better.' },
+  { q:'Is MyTradingZone a broker?',                          a:'No. MyTradingZone is a third-party analytics and automation layer built by Tonny. You keep your own broker account and we give you the tools to trade it better.' },
   { q:'Which instruments do the bots trade?',             a:'Three only: EUR/USD, BTC/USD and XAU/USD. Focusing on a small set lets us tune each strategy far more precisely than a generic multi-asset bot.' },
   { q:'Do I need coding experience?',                     a:'None at all. Every bot is pre-built and configurable from the dashboard. If you can toggle a switch and type a risk %, you can run one.' },
   { q:'How is risk handled?',                             a:'Every position is sized from your balance and a stop-loss distance. The risk manager enforces a daily loss cap and warns you before margin gets dangerous.' },
   { q:'Can I run bots and manual trades together?',       a:'Yes. Both sit in the same book and the dashboard aggregates P/L, margin and exposure across both.' },
-  { q:'Do I need a VPS?',                                 a:'Not strictly, but recommended. A London or New York VPS keeps latency under 2ms and prevents the platform from going offline mid-trade.' },
-  { q:'Can I cancel my subscription anytime?',            a:'Yes. No lock-in contracts. Cancel from your dashboard with one click and keep full access until the end of your billing period.' },
-  { q:'What is the minimum account size?',                a:'You can run the tools on any account size, but we recommend at least $500 to trade the bots with sensible risk. Below that, the lot size calculator returns micro lots.' },
-  { q:'How do you handle slippage and spread?',           a:'Bots place limit orders where possible and use maximum-slippage caps. The journal logs exact fill versus intended price so you can see real execution quality.' },
-  { q:'Are the backtests realistic?',                     a:'Yes. The backtesting engine applies spread, commission and slippage models to historical tick data. Results are designed to be reproducible in the live market.' },
 ];
 
 const QUOTES = [
@@ -131,20 +204,9 @@ const Icon = ({ name, size = 20 }) => {
   const p = { width:size, height:size, viewBox:'0 0 24 24', fill:'none',
     stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' };
   switch (name) {
-    case 'book':  return <svg {...p}><path d="M4 19V5a2 2 0 012-2h11l3 3v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 7h7M8 11h7"/></svg>;
-    case 'chart': return <svg {...p}><path d="M3 17l5-6 4 4 8-9"/><path d="M15 6h5v5"/></svg>;
-    case 'users': return <svg {...p}><circle cx="9" cy="8" r="3.5"/><path d="M3 20v-1.5A4.5 4.5 0 017.5 14h3A4.5 4.5 0 0115 18.5V20"/><path d="M17 11a3 3 0 100-6"/><path d="M21 20v-1.5a4.5 4.5 0 00-3.5-4.36"/></svg>;
-    case 'medal': return <svg {...p}><circle cx="12" cy="15" r="5.5"/><path d="M8.5 9.5L6 3h12l-2.5 6.5"/></svg>;
-    case 'bot':   return <svg {...p}><rect x="3.5" y="7.5" width="17" height="12" rx="3.5"/><path d="M12 7.5V4"/><circle cx="12" cy="3.4" r="1"/><path d="M9 13h.01M15 13h.01"/><path d="M9.5 16.5h5"/></svg>;
-    case 'calc':  return <svg {...p}><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 7.5h8"/><path d="M8 12h1.5M12 12h1.5M16 12h.01M8 16h1.5M12 16h1.5M16 16h.01"/></svg>;
-    case 'bars':  return <svg {...p}><path d="M5 20v-8M12 20V4M19 20v-5"/></svg>;
-    case 'bell':  return <svg {...p}><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>;
-    case 'shield':return <svg {...p}><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>;
-    case 'journal':return <svg {...p}><path d="M4 19V5a2 2 0 012-2h11l3 3v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 8h7M8 12h7M8 16h4"/></svg>;
-    case 'flask': return <svg {...p}><path d="M3 20h18"/><path d="M6 20V9l4 4 4-8 4 6v9"/></svg>;
-    case 'user':  return <svg {...p}><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a4 4 0 014-4h8a4 4 0 014 4v2"/></svg>;
     case 'arrow': return <svg {...p}><path d="M5 12h14M13 6l6 6-6 6"/></svg>;
-    case 'star':  return <svg {...p} fill="currentColor" stroke="none"><path d="M12 3l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18l-5.9 3 1.2-6.5L2.5 9.9l6.6-.9z"/></svg>;
+    case 'users': return <svg {...p}><circle cx="9" cy="8" r="3.5"/><path d="M3 20v-1.5A4.5 4.5 0 017.5 14h3A4.5 4.5 0 0115 18.5V20"/><path d="M17 11a3 3 0 100-6"/><path d="M21 20v-1.5a4.5 4.5 0 00-3.5-4.36"/></svg>;
+    case 'shield':return <svg {...p}><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>;
     case 'phone': return <svg {...p}><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M12 18h.01"/></svg>;
     default: return null;
   }
@@ -160,9 +222,6 @@ export default function ForexHome({
   const go = (k) => onViewChange && onViewChange(k);
   const theme = useTheme();
 
-  /* ---------------------------------------------------------------- */
-  /*  THEME-AWARE COLOR TOKENS                                        */
-  /* ---------------------------------------------------------------- */
   const C = useMemo(() => {
     const tc = theme?.colors || {};
     const accent    = tc.accent      || '#f5b400';
@@ -198,23 +257,15 @@ export default function ForexHome({
     return () => clearInterval(t);
   }, []);
 
-  /* Opens an external link in a safe way; ignores the placeholder '#' */
   const openExternal = (url) => {
     if (!url || url === '#') {
-      // eslint-disable-next-line no-alert
       alert('Link coming soon — please check back later.');
       return;
     }
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  /* ---------------------------------------------------------------- */
-  /*  THEME-AWARE STYLE STRING                                        */
-  /* ---------------------------------------------------------------- */
   const styles = useMemo(() => `
-    /* ============================================================
-       FORCE THE VIEW CONTAINER TO SCROLL
-       ============================================================ */
     .view.active,
     .view.active.tf-page {
       overflow-y: auto !important;
@@ -234,7 +285,6 @@ export default function ForexHome({
     }
     .tf-page *{ box-sizing:border-box; }
 
-    /* ---------- wrappers ---------- */
     .tf-wrap{ max-width:1240px; margin:0 auto; width:100%; padding:0 22px; }
     .tf-sec{ padding:80px 0; }
     .tf-sec-sm{ padding:52px 0; }
@@ -253,7 +303,6 @@ export default function ForexHome({
     .tf-head{ text-align:center; margin-bottom:52px; }
     .tf-head .tf-eyebrow{ display:inline-flex; }
 
-    /* ---------- buttons ---------- */
     .tf-btn{ display:inline-flex; align-items:center; justify-content:center;
       gap:9px; padding:15px 30px; border-radius:10px; border:none;
       font-family:inherit; font-size:14.5px; font-weight:700;
@@ -265,10 +314,8 @@ export default function ForexHome({
     .tf-btn-outline{ background:transparent; color:${C.gold};
       border:1.5px solid ${C.gold}; }
     .tf-btn-outline:hover{ background:${C.goldSoft}; transform:translateY(-2px); }
-    .tf-btn-sm{ padding:10px 18px; font-size:12.5px; }
-    .pos{ color:${C.green}; } .neg{ color:${C.red}; }
 
-    /* ---------- HERO ---------- */
+    /* Hero */
     .tf-hero{ position:relative; overflow:hidden; padding:96px 0 108px;
       text-align:center;
       background:
@@ -298,7 +345,7 @@ export default function ForexHome({
       font-size:14px; color:${C.text2}; font-weight:600; }
     .tf-trust svg{ color:${C.gold}; flex-shrink:0; }
 
-    /* ---------- FOUNDER ---------- */
+    /* Founder */
     .tf-founder{ display:grid; grid-template-columns:320px 1fr; gap:44px;
       padding:44px; border-radius:20px; border:1px solid ${C.border};
       background:linear-gradient(180deg, ${C.card} 0%, ${C.bg2} 100%);
@@ -323,31 +370,6 @@ export default function ForexHome({
     .tf-founder-bio{ font-size:14.5px; line-height:1.85; color:${C.text2};
       margin:0 0 20px; }
     .tf-founder-bio strong{ color:${C.text}; font-weight:700; }
-
-    /* ---------- MORE ABOUT TONNYFX ---------- */
-    .tf-founder-more{
-      display:inline-flex; align-items:center; gap:8px;
-      font-size:13px; font-weight:800; letter-spacing:.3px;
-      color:${C.gold};
-      background:transparent;
-      border:none;
-      padding:0;
-      margin:0 0 28px;
-      cursor:pointer;
-      transition:gap .22s ease, color .22s ease;
-    }
-    .tf-founder-more svg{
-      width:14px; height:14px;
-      transition:transform .3s cubic-bezier(.16,1,.3,1);
-    }
-    .tf-founder-more:hover{ gap:12px; color:${C.gold2}; }
-    .tf-founder-more:hover svg{ transform:translateX(3px); }
-    .tf-founder-more::after{
-      content:'';
-      display:inline-block;
-      width:1.5px; height:14px;
-    }
-
     .tf-founder-stats{ display:grid; grid-template-columns:repeat(4,1fr);
       gap:20px; padding-top:26px; border-top:1px solid ${C.border}; }
     .tf-fstat .n{ font-family:'JetBrains Mono',monospace; font-size:26px;
@@ -355,27 +377,77 @@ export default function ForexHome({
     .tf-fstat .l{ font-size:10.5px; font-weight:700; letter-spacing:1px;
       text-transform:uppercase; color:${C.text3}; margin-top:8px; }
 
-    /* ---------- SERVICES ---------- */
-    .tf-services{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-    .tf-service{ padding:28px 22px; border-radius:14px;
-      border:1px solid ${C.border}; background:${C.card};
-      transition:.24s cubic-bezier(.16,1,.3,1);
-      position:relative; overflow:hidden; }
-    .tf-service::before{ content:''; position:absolute; top:0; left:0; right:0;
-      height:2px; background:${C.gold}; opacity:0; transition:opacity .25s; }
-    .tf-service:hover{ transform:translateY(-4px);
-      border-color:${C.goldBorder}; background:${C.card2}; }
-    .tf-service:hover::before{ opacity:1; }
-    .tf-service-icon{ width:46px; height:46px; border-radius:12px;
-      display:grid; place-items:center; margin-bottom:18px;
-      background:${C.goldSoft}; border:1px solid ${C.goldBorder};
-      color:${C.gold}; }
-    .tf-service h3{ font-size:15px; font-weight:800; color:${C.text};
-      margin:0 0 9px; letter-spacing:-.2px; }
-    .tf-service p{ font-size:12.5px; line-height:1.65; color:${C.text2};
-      margin:0; min-height:66px; }
+    /* Feature Rows */
+    .tf-feature-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-bottom: 80px;
+    }
+    .tf-feature-row:last-child { margin-bottom: 0; }
+    .tf-feature-row.reverse .tf-feature-img-wrap { order: 2; }
+    .tf-feature-row.reverse .tf-feature-text { order: 1; }
+    
+    .tf-feature-img-wrap {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid ${C.border};
+      box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+      background: ${C.card};
+      transition: transform 0.4s ease;
+    }
+    .tf-feature-img-wrap:hover { transform: translateY(-5px); }
+    .tf-feature-img-wrap img {
+      width: 100%;
+      display: block;
+      height: auto;
+      object-fit: cover;
+    }
 
-    /* ---------- BASICS ---------- */
+    .tf-feature-text {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .tf-feature-badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: ${C.gold};
+      margin-bottom: 12px;
+      background: ${C.goldSoft};
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid ${C.goldBorder};
+    }
+    .tf-feature-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: ${C.text};
+      margin-bottom: 18px;
+      line-height: 1.1;
+    }
+    .tf-feature-title .g { color: ${C.gold}; }
+    .tf-feature-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: ${C.text2};
+      margin-bottom: 16px;
+    }
+    .tf-feature-extra {
+      font-size: 14px;
+      line-height: 1.7;
+      color: ${C.text3};
+      margin-bottom: 28px;
+      padding-left: 16px;
+      border-left: 2px solid ${C.gold};
+    }
+
+    /* Basics */
     .tf-basics{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
     .tf-basic{ padding:24px 26px; border-radius:14px;
       border:1px solid ${C.border}; background:${C.card};
@@ -386,7 +458,7 @@ export default function ForexHome({
     .tf-basic p{ font-size:12.5px; line-height:1.7; color:${C.text2};
       margin:0; }
 
-    /* ---------- SESSIONS ---------- */
+    /* Sessions */
     .tf-sessions{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
     .tf-session{ padding:24px; border-radius:14px;
       border:1px solid ${C.border}; background:${C.card};
@@ -401,7 +473,7 @@ export default function ForexHome({
     .tf-session .nt{ font-size:11.5px; line-height:1.6;
       color:${C.text2}; }
 
-    /* ---------- PIP TABLE ---------- */
+    /* Pip Table */
     .tf-tbl-wrap{ border-radius:14px; border:1px solid ${C.border};
       background:${C.card}; overflow:hidden; }
     .tf-tbl{ width:100%; border-collapse:collapse; }
@@ -417,7 +489,7 @@ export default function ForexHome({
       font-size:12.5px; font-weight:700; color:${C.text}; }
     .tf-tbl tr:hover td{ background:${C.goldSoft}; }
 
-    /* ---------- GLOSSARY ---------- */
+    /* Glossary */
     .tf-gloss{ display:grid; grid-template-columns:repeat(2,1fr);
       gap:10px; }
     .tf-term{ display:flex; gap:16px; align-items:flex-start;
@@ -429,7 +501,7 @@ export default function ForexHome({
     .tf-term .v{ font-size:12.5px; line-height:1.65;
       color:${C.text2}; }
 
-    /* ---------- MILESTONES ---------- */
+    /* Milestones */
     .tf-miles{ display:grid; grid-template-columns:repeat(4,1fr);
       gap:14px; }
     .tf-mile{ padding:28px 22px; border-radius:14px;
@@ -442,77 +514,7 @@ export default function ForexHome({
       letter-spacing:1px; text-transform:uppercase;
       color:${C.text3}; }
 
-    /* ---------- PRICING ---------- */
-    .tf-pricing{ display:grid; grid-template-columns:repeat(3,1fr);
-      gap:16px; }
-    .tf-plan{ position:relative; padding:32px 28px 28px;
-      border-radius:18px; border:1px solid ${C.border};
-      background:${C.card}; transition:.24s; }
-    .tf-plan.hl{ border-color:${C.gold};
-      background:
-        radial-gradient(ellipse at 50% 0%, ${C.goldSoft}, transparent 60%),
-        ${C.card}; }
-    .tf-plan .pop{ position:absolute; top:-12px; left:50%;
-      transform:translateX(-50%); padding:6px 16px; border-radius:22px;
-      background:${C.gold}; color:${C.bg}; font-size:9.5px;
-      font-weight:900; letter-spacing:1.2px; text-transform:uppercase; }
-    .tf-plan h4{ font-size:14px; font-weight:800; letter-spacing:.7px;
-      text-transform:uppercase; color:${C.gold}; margin-bottom:14px; }
-    .tf-plan .price{ display:flex; align-items:baseline; gap:6px;
-      margin-bottom:16px; }
-    .tf-plan .price .a{ font-family:'JetBrains Mono',monospace;
-      font-size:38px; font-weight:800; letter-spacing:-1.6px;
-      color:${C.text}; line-height:1; }
-    .tf-plan .price .p{ font-size:12.5px; color:${C.text3};
-      font-weight:600; }
-    .tf-plan .desc{ font-size:12.5px; line-height:1.65;
-      color:${C.text2}; margin-bottom:22px; min-height:42px; }
-    .tf-plan ul{ list-style:none; padding:0; margin:0 0 22px;
-      display:flex; flex-direction:column; gap:10px; }
-    .tf-plan li{ display:flex; align-items:flex-start; gap:10px;
-      font-size:12.5px; line-height:1.5; color:${C.text2}; }
-    .tf-plan li::before{ content:'✓'; color:${C.gold};
-      font-weight:900; font-size:13px; flex-shrink:0;
-      margin-top:1px; }
-    .tf-plan .tf-btn{ width:100%; }
-
-    /* ---------- ARTICLES ---------- */
-    .tf-articles{ display:grid; grid-template-columns:repeat(3,1fr);
-      gap:14px; }
-    .tf-article{ padding:24px 22px; border-radius:14px;
-      border:1px solid ${C.border}; background:${C.card};
-      cursor:pointer; transition:.22s; }
-    .tf-article:hover{ border-color:${C.goldBorder};
-      transform:translateY(-3px); }
-    .tf-article .cat{ font-size:9.5px; font-weight:800;
-      letter-spacing:1.1px; text-transform:uppercase;
-      color:${C.gold}; margin-bottom:12px; }
-    .tf-article h5{ font-size:13.5px; font-weight:800;
-      color:${C.text}; line-height:1.45; margin-bottom:14px;
-      min-height:40px; }
-    .tf-article .meta{ display:flex; justify-content:space-between;
-      font-size:10.5px; color:${C.text3}; }
-
-    /* ---------- NEWSLETTER ---------- */
-    .tf-news{ padding:38px 34px; border-radius:16px;
-      border:1px solid ${C.goldBorder};
-      background:
-        radial-gradient(ellipse at 100% 0%, ${C.goldSoft}, transparent 60%),
-        ${C.card};
-      display:grid; grid-template-columns:1.2fr 1fr;
-      gap:32px; align-items:center; }
-    .tf-news h3{ font-size:20px; font-weight:800;
-      letter-spacing:-.5px; color:${C.text}; margin-bottom:10px; }
-    .tf-news p{ font-size:12.5px; line-height:1.65;
-      color:${C.text2}; margin:0; }
-    .tf-news-form{ display:flex; gap:10px; flex-wrap:wrap; }
-    .tf-news-form input{ flex:1 1 220px; padding:14px 16px;
-      border-radius:10px; font-family:inherit; font-size:13px;
-      color:${C.text}; background:${C.bg2};
-      border:1px solid ${C.border2}; outline:none; }
-    .tf-news-form input:focus{ border-color:${C.gold}; }
-
-    /* ---------- FAQ ---------- */
+    /* FAQ */
     .tf-faq{ display:grid; grid-template-columns:1fr 1fr;
       gap:12px; }
     .tf-faq details{ border-radius:12px;
@@ -532,7 +534,7 @@ export default function ForexHome({
       font-size:13px; line-height:1.7; color:${C.text2};
       margin:0; }
 
-    /* ---------- CTA ---------- */
+    /* CTA */
     .tf-cta{ position:relative; overflow:hidden;
       padding:84px 40px; border-radius:22px;
       text-align:center; border:1px solid ${C.goldBorder};
@@ -549,7 +551,7 @@ export default function ForexHome({
     .tf-cta-row{ display:flex; justify-content:center;
       gap:14px; flex-wrap:wrap; }
 
-    /* ---------- NOTICE ---------- */
+    /* Notice */
     .tf-notice{ display:flex; align-items:flex-start; gap:12px;
       padding:20px 22px; border-radius:12px;
       background:${C.goldSoft};
@@ -561,18 +563,12 @@ export default function ForexHome({
     .tf-notice span{ font-size:12.5px; line-height:1.7;
       color:${C.text2}; }
 
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
+    /* Responsive */
     @media (max-width:1100px){
       .tf-hero h1{ font-size:60px; letter-spacing:-2.4px; }
-      .tf-services{ grid-template-columns:repeat(2,1fr); }
       .tf-h2{ font-size:36px; letter-spacing:-1.2px; }
-      .tf-articles{ grid-template-columns:repeat(2,1fr); }
       .tf-sessions{ grid-template-columns:repeat(2,1fr); }
-      .tf-pricing{ grid-template-columns:1fr; max-width:520px; margin:0 auto; }
     }
-
     @media (max-width:900px){
       .tf-hero{ padding:72px 0 84px; }
       .tf-hero h1{ font-size:50px; letter-spacing:-1.9px; }
@@ -581,10 +577,18 @@ export default function ForexHome({
       .tf-founder-photo{ max-width:320px; }
       .tf-founder-stats{ grid-template-columns:repeat(2,1fr); gap:22px; }
       .tf-sec{ padding:60px 0; }
-      .tf-news{ grid-template-columns:1fr; gap:22px; padding:28px 26px; }
       .tf-miles{ grid-template-columns:repeat(2,1fr); }
-    }
 
+      /* Feature Rows Mobile/Tablet */
+      .tf-feature-row {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 60px;
+      }
+      .tf-feature-row.reverse .tf-feature-img-wrap { order: 1; }
+      .tf-feature-row.reverse .tf-feature-text { order: 2; }
+      .tf-feature-title { font-size: 28px; }
+    }
     @media (max-width:640px){
       .tf-wrap{ padding:0 16px; }
       .tf-hero{ padding:54px 0 64px; }
@@ -599,9 +603,6 @@ export default function ForexHome({
       .tf-sec{ padding:52px 0; }
       .tf-sec-sm{ padding:40px 0; }
       .tf-head{ margin-bottom:38px; }
-      .tf-services{ grid-template-columns:1fr; gap:12px; }
-      .tf-service{ padding:22px 18px; }
-      .tf-service p{ min-height:0; }
       .tf-founder{ padding:22px 18px; gap:26px; }
       .tf-founder-photo{ max-width:100%; }
       .tf-founder-name{ font-size:25px; }
@@ -612,18 +613,16 @@ export default function ForexHome({
       .tf-sessions{ grid-template-columns:1fr; gap:11px; }
       .tf-gloss{ grid-template-columns:1fr; gap:9px; }
       .tf-miles{ grid-template-columns:1fr 1fr; gap:11px; }
-      .tf-articles{ grid-template-columns:1fr; gap:11px; }
       .tf-tbl th, .tf-tbl td{ padding:12px 14px; font-size:12px; }
-      .tf-news{ padding:24px 20px; }
-      .tf-news h3{ font-size:18px; }
-      .tf-news-form input{ flex:1 1 100%; }
       .tf-cta{ padding:54px 22px; border-radius:18px; }
       .tf-cta h2{ font-size:27px; letter-spacing:-1px; }
       .tf-cta p{ font-size:13.5px; }
       .tf-faq summary{ font-size:12.5px; padding:15px 18px; }
       .tf-faq details p{ padding:0 18px 17px; font-size:12.5px; }
+      
+      .tf-feature-title { font-size: 24px; }
+      .tf-feature-desc, .tf-feature-extra { font-size: 13.5px; }
     }
-
     @media (max-width:420px){
       .tf-hero h1{ font-size:32px; }
       .tf-fstat .n{ font-size:19px; }
@@ -644,7 +643,6 @@ export default function ForexHome({
     <>
       <style>{styles}</style>
 
-      {/* ============ PAGE ROOT ============ */}
       <section className="view active tf-page">
 
         {/* ============================================================
@@ -689,15 +687,12 @@ export default function ForexHome({
             </h1>
             <p className="tf-hero-lead">
               Learn, trade and grow with proven strategies and real results.
-              MyTradeApp is the terminal I built for EUR/USD, BTC/USD and XAU/USD —
+              MyTradingZone is the terminal I built for EUR/USD, BTC/USD and XAU/USD —
               bots, calculators and risk tools in one place.
             </p>
             <div className="tf-hero-cta">
-              <button
-                className="tf-btn tf-btn-gold"
-                onClick={() => openExternal(COMMUNITY_URL)}
-              >
-                Join MyTradeApp community <Icon name="arrow" size={16} />
+              <button className="tf-btn tf-btn-gold" onClick={() => openExternal(COMMUNITY_URL)}>
+                Join MyTradingZone community <Icon name="arrow" size={16} />
               </button>
               <button className="tf-btn tf-btn-outline" onClick={() => go('lot')}>
                 Create Trading Account
@@ -718,40 +713,33 @@ export default function ForexHome({
           <div className="tf-wrap">
             <div className="tf-head">
               <div className="tf-eyebrow">About</div>
-              <h2 className="tf-h2">About <span className="g">MyTradeApp</span></h2>
+              <h2 className="tf-h2">About <span className="g">MyTradingZone</span></h2>
               <p className="tf-sub">
-                MyTradeApp is a results-driven forex automation and trading-tools brand by Tonnyfx,
+                MyTradingZone is a results-driven forex automation and trading-tools brand by Tonnyfx,
                 helping traders from beginner to advanced become consistently profitable.
-                We combine structured bots, live market analysis and a thriving community.
               </p>
             </div>
 
             <div className="tf-founder">
               <div className="tf-founder-photo">
-                <img src={tonnyPhoto} alt="Tonny — founder of MyTradeApp" loading="lazy" />
+                <img src={tonnyPhoto} alt="Tonny — founder of MyTradingZone" loading="lazy" />
                 <span className="tf-founder-tag">Founder</span>
               </div>
               <div className="tf-founder-body">
                 <h3 className="tf-founder-name">Tonny (Tonnyfx)</h3>
                 <div className="tf-founder-role">Forex Trader · Mentor · Founder</div>
                 <p className="tf-founder-bio">
-                  Tonny is a full-time forex trader, mentor and the founder of MyTradeApp,
+                  Tonny is a full-time forex trader, mentor and the founder of MyTradingZone,
                   with <strong>over 10 years of experience</strong> in the financial markets.
                   Known for his practical, no-hype approach to trading, he focuses on helping
                   traders develop discipline, consistency and profitable habits through
                   mentorship and real market execution. He trades three instruments only —{' '}
                   <strong>EUR/USD, BTC/USD and XAU/USD</strong> — and every tool inside
-                  MyTradeApp reflects that focus.
+                  MyTradingZone reflects that focus.
                 </p>
 
-                <button
-                  type="button"
-                  className="tf-founder-more"
-                  onClick={() => openExternal(ABOUT_TONNYFX_URL)}
-                  aria-label="More about Tonnyfx"
-                >
-                  More about Tonnyfx
-                  <Icon name="arrow" size={14} />
+                <button type="button" className="tf-founder-more" onClick={() => openExternal(ABOUT_TONNYFX_URL)} aria-label="More about Tonnyfx">
+                  More about Tonnyfx <Icon name="arrow" size={14} />
                 </button>
 
                 <div className="tf-founder-stats">
@@ -768,24 +756,40 @@ export default function ForexHome({
         </div>
 
         {/* ============================================================
-            SERVICES — decorative, no navigation
+            FEATURES (Zig-zag layout)
            ============================================================ */}
         <div className="tf-sec tf-alt">
           <div className="tf-wrap">
             <div className="tf-head">
-              <div className="tf-eyebrow">Our Services</div>
-              <h2 className="tf-h2">What <span className="g">MyTradeApp</span> provides</h2>
+              <div className="tf-eyebrow">Platform Features</div>
+              <h2 className="tf-h2">What <span className="g">MyTradingZone</span> provides</h2>
               <p className="tf-sub">
-                Choose the service that fits your trading journey — from free tools
-                to fully automated bots.
+                Explore the powerful suite of tools built directly into your dashboard. 
+                From real-time data to automated execution, everything is designed to give you an edge.
               </p>
             </div>
-            <div className="tf-services">
-              {SERVICES.map((s) => (
-                <div className="tf-service" key={s.key}>
-                  <div className="tf-service-icon"><Icon name={s.icon} /></div>
-                  <h3>{s.title}</h3>
-                  <p>{s.desc}</p>
+
+            <div className="tf-features-list">
+              {FEATURES.map((f, i) => (
+                <div className={`tf-feature-row ${i % 2 === 1 ? 'reverse' : ''}`} key={f.key}>
+                  
+                  {/* Image */}
+                  <div className="tf-feature-img-wrap">
+                    <img src={f.img} alt={f.title} loading="lazy" />
+                  </div>
+
+                  {/* Text */}
+                  <div className="tf-feature-text">
+                    <div className="tf-feature-badge">{f.subtitle}</div>
+                    <h3 className="tf-feature-title">{f.title}</h3>
+                    <p className="tf-feature-desc">{f.desc}</p>
+                    {f.extra && <p className="tf-feature-extra">{f.extra}</p>}
+                    
+                    <button className="tf-btn tf-btn-outline" onClick={() => go(f.route)}>
+                      Explore {f.title} <Icon name="arrow" size={14} />
+                    </button>
+                  </div>
+
                 </div>
               ))}
             </div>
@@ -923,93 +927,8 @@ export default function ForexHome({
             border:`1px solid ${C.border}`, background:C.card,
             display:'flex', alignItems:'center', gap:22,
           }}>
-            <div style={{
-              fontFamily:'Georgia,serif', fontSize:56, lineHeight:.55,
-              color:C.gold, opacity:.35, flexShrink:0,
-            }}>“</div>
-            <div style={{
-              fontSize:17, fontWeight:600, color:C.text,
-              letterSpacing:-.3, lineHeight:1.5,
-            }}>{QUOTES[quoteIdx]}</div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            PRICING
-           ============================================================ */}
-        <div className="tf-sec tf-alt">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">Pricing</div>
-              <h2 className="tf-h2">Simple plans. <span className="g">No lock-in.</span></h2>
-              <p className="tf-sub">Start free, upgrade when you are ready to run live bots.</p>
-            </div>
-            <div className="tf-pricing">
-              {PRICING.map((p) => (
-                <div className={`tf-plan ${p.highlight ? 'hl' : ''}`} key={p.name}>
-                  {p.highlight && <span className="pop">Most popular</span>}
-                  <h4>{p.name}</h4>
-                  <div className="price">
-                    <span className="a">{p.price}</span>
-                    <span className="p">{p.period}</span>
-                  </div>
-                  <div className="desc">{p.desc}</div>
-                  <ul>{p.features.map((f) => <li key={f}>{f}</li>)}</ul>
-                  <button
-                    className={`tf-btn ${p.highlight ? 'tf-btn-gold' : 'tf-btn-outline'}`}
-                    onClick={() => openExternal(COMMUNITY_URL)}
-                  >
-                    {p.cta}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            ARTICLES
-           ============================================================ */}
-        <div className="tf-sec">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">From the journal</div>
-              <h2 className="tf-h2">Latest <span className="g">articles & guides</span></h2>
-              <p className="tf-sub">
-                Written by Tonny and the community — practical, no-hype content, updated weekly.
-              </p>
-            </div>
-            <div className="tf-articles">
-              {ARTICLES.map((a) => (
-                <div className="tf-article" key={a.title}>
-                  <div className="cat">{a.cat}</div>
-                  <h5>{a.title}</h5>
-                  <div className="meta">
-                    <span>{a.date}</span>
-                    <span>{a.read}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            NEWSLETTER
-           ============================================================ */}
-        <div className="tf-wrap tf-sec-sm">
-          <div className="tf-news">
-            <div>
-              <h3>Get one useful forex idea each week.</h3>
-              <p>
-                No spam, no affiliate links. Just a short note on what moved in EUR/USD,
-                BTC/USD and XAU/USD, plus one practical risk tip. Unsubscribe anytime.
-              </p>
-            </div>
-            <form className="tf-news-form" onSubmit={(e) => e.preventDefault()}>
-              <input type="email" placeholder="you@email.com" aria-label="Email address" />
-              <button className="tf-btn tf-btn-gold" type="submit">Subscribe</button>
-            </form>
+            <div style={{ fontFamily:'Georgia,serif', fontSize:56, lineHeight:.55, color:C.gold, opacity:.35, flexShrink:0 }}>“</div>
+            <div style={{ fontSize:17, fontWeight:600, color:C.text, letterSpacing:-.3, lineHeight:1.5 }}>{QUOTES[quoteIdx]}</div>
           </div>
         </div>
 
@@ -1044,11 +963,8 @@ export default function ForexHome({
               no hidden promises — just a better way to trade EUR/USD, BTC/USD and XAU/USD.
             </p>
             <div className="tf-cta-row">
-              <button
-                className="tf-btn tf-btn-gold"
-                onClick={() => openExternal(COMMUNITY_URL)}
-              >
-                Join MyTradeApp community <Icon name="arrow" size={16} />
+              <button className="tf-btn tf-btn-gold" onClick={() => openExternal(COMMUNITY_URL)}>
+                Join MyTradingZone community <Icon name="arrow" size={16} />
               </button>
               <button className="tf-btn tf-btn-outline" onClick={() => go('strength')}>
                 Check Currency Strength
@@ -1067,7 +983,7 @@ export default function ForexHome({
               <path d="M12 8h.01M11 12h1v4h1" />
             </svg>
             <span>
-              MyTradeApp is a third-party analytics and automation platform created by Tonny
+              MyTradingZone is a third-party analytics and automation platform created by Tonny
               (Tonnyfx) — not a broker or investment advisor. All performance figures shown are
               simulated and for illustration only. Trading forex, crypto and metals carries
               significant risk of loss. Never risk capital you cannot afford to lose.
