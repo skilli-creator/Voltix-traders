@@ -5,7 +5,7 @@ import { useTheme } from 'styled-components';
 // Images
 import tonnyPhoto from '../assets/images/image13.png';
 import spreadsImg from '../assets/images/spreads.png';
-import strengthImg from '../assets/images/strength.png'; // Ensure this file exists
+import strengthImg from '../assets/images/strength.png'; 
 import heatmapImg from '../assets/images/heatmap.png';
 import correlationImg from '../assets/images/correlation.png';
 import sentimentsImg from '../assets/images/sentiments.png';
@@ -33,9 +33,6 @@ const STATS = [
   { n:'24/7',  l:'Community support' },
 ];
 
-/* ================================================================ */
-/*  FEATURE CONTENT (12 Sections)                                   */
-/* ================================================================ */
 const FEATURES = [
   {
     key: 'spreads',
@@ -231,6 +228,7 @@ export default function ForexHome({
       display:block;
       font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
       transition:background .25s ease, color .25s ease;
+      padding-bottom: 0; /* Ensure full scroll to bottom */
     }
     .tf-page *{ box-sizing:border-box; }
 
@@ -326,7 +324,7 @@ export default function ForexHome({
     .tf-fstat .l{ font-size:10.5px; font-weight:700; letter-spacing:1px;
       text-transform:uppercase; color:${C.text3}; margin-top:8px; }
 
-    /* Feature Rows */
+    /* Feature Rows with Special Image Effects */
     .tf-feature-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -341,18 +339,65 @@ export default function ForexHome({
     .tf-feature-img-wrap {
       position: relative;
       border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid ${C.border};
-      box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
       background: ${C.card};
-      transition: transform 0.4s ease;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1;
     }
-    .tf-feature-img-wrap:hover { transform: translateY(-5px); }
+    
+    /* Animated gradient border */
+    .tf-feature-img-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, ${C.border} 0%, ${C.gold} 50%, ${C.border} 100%);
+      background-size: 200% 200%;
+      z-index: -1;
+      opacity: 0.3;
+      transition: opacity 0.4s ease, animation 4s linear infinite;
+    }
+    
+    .tf-feature-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.08) 45%, transparent 60%);
+      background-size: 250% 100%;
+      background-position: 100% 0;
+      pointer-events: none;
+      transition: background-position 0.7s ease;
+      z-index: 2;
+    }
+
+    .tf-feature-img-wrap:hover {
+      transform: translateY(-8px) scale(1.01);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7), 0 0 30px ${C.goldSoft};
+    }
+
+    .tf-feature-img-wrap:hover::before {
+      opacity: 1;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    .tf-feature-img-wrap:hover::after {
+      background-position: -100% 0;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .tf-feature-img-wrap img {
       width: 100%;
       display: block;
       height: auto;
       object-fit: cover;
+      border-radius: 15px;
+      position: relative;
+      z-index: 1;
     }
 
     .tf-feature-text {
@@ -416,6 +461,30 @@ export default function ForexHome({
       font-size:13px; line-height:1.7; color:${C.text2};
       margin:0; }
 
+    /* Footer */
+    .tf-footer {
+      border-top: 1px solid ${C.border};
+      background: ${C.card};
+      padding: 40px 22px;
+      text-align: center;
+      color: ${C.text3};
+    }
+    .tf-footer-inner {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .tf-footer p {
+      font-size: 12px;
+      line-height: 1.7;
+      margin: 0 0 16px;
+    }
+    .tf-footer .copyright {
+      font-size: 12px;
+      font-weight: 600;
+      color: ${C.text2};
+      margin: 0;
+    }
+
     /* Responsive */
     @media (max-width:1100px){
       .tf-hero h1{ font-size:60px; letter-spacing:-2.4px; }
@@ -430,7 +499,6 @@ export default function ForexHome({
       .tf-founder-stats{ grid-template-columns:repeat(2,1fr); gap:22px; }
       .tf-sec{ padding:60px 0; }
 
-      /* Feature Rows Mobile/Tablet */
       .tf-feature-row {
         grid-template-columns: 1fr;
         gap: 32px;
@@ -649,6 +717,20 @@ export default function ForexHome({
             </div>
           </div>
         </div>
+
+        {/* ============================================================
+            FOOTER
+           ============================================================ */}
+        <footer className="tf-footer">
+          <div className="tf-footer-inner">
+            <p>
+              <strong>Risk Disclaimer:</strong> Trading forex, gold, and cryptocurrencies involves significant risk and may result in the loss of your capital. Market analysis and information provided on this platform are for informational and educational purposes only and do not constitute financial advice.
+            </p>
+            <p className="copyright">
+              © 2026 MyTradingZone. All rights reserved.
+            </p>
+          </div>
+        </footer>
 
       </section>
     </>
