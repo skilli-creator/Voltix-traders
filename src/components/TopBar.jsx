@@ -262,6 +262,49 @@ const ForexFactoryIcon = () => (
   </svg>
 );
 
+const HeatMapIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <rect x="14" y="14" width="7" height="7" rx="1" />
+  </svg>
+);
+
+const LiquidityIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+  </svg>
+);
+
+const VolatilityIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+  </svg>
+);
+
+const CorrelationIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="12" r="6" />
+    <circle cx="15" cy="12" r="6" />
+  </svg>
+);
+
+const ChartPatternsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 3v18h18" />
+    <path d="M7 14l4-4 4 4 4-4" />
+  </svg>
+);
+
+const CurrenciesIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v12" />
+    <path d="M15 9a3 3 0 1 0 0 6" />
+  </svg>
+);
+
 // ============================================
 // FOREX SESSIONS
 // ============================================
@@ -272,13 +315,19 @@ const FOREX_SESSIONS = [
   { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States',  startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas',     tag: 'USD · CAD' },
 ];
 
-// Order: Home · Strength Meter · Forex Factory · TradingView · Bots
+// Order: Home · Strength · Forex Factory · TradingView · Bots · HeatMap · Liquidity · Volatility · Correlation · Patterns · Currencies
 export const FOREX_NAV_ITEMS = [
   { key: 'home',         label: 'Home',           path: '/forexdash',              icon: <DashboardIcon /> },
   { key: 'strength',     label: 'Strength Meter', path: '/forexdash/strength',     icon: <StrengthIcon /> },
   { key: 'forexfactory', label: 'Forex Factory',  path: '/forexdash/forexfactory', icon: <ForexFactoryIcon /> },
   { key: 'tradingview',  label: 'TradingView',    path: '/forexdash/tradingview',  icon: <TradingViewIcon /> },
   { key: 'bots',         label: 'Bots',           path: '/forexdash/bots',         icon: <BotsIcon /> },
+  { key: 'heatmap',      label: 'Heat Map',       path: '/forexdash/heatmap',      icon: <HeatMapIcon /> },
+  { key: 'liquidity',    label: 'Liquidity',      path: '/forexdash/liquidity',    icon: <LiquidityIcon /> },
+  { key: 'volatility',   label: 'Volatility',     path: '/forexdash/volatility',   icon: <VolatilityIcon /> },
+  { key: 'correlation',  label: 'Correlation',    path: '/forexdash/correlation',  icon: <CorrelationIcon /> },
+  { key: 'patterns',     label: 'Chart Patterns', path: '/forexdash/patterns',     icon: <ChartPatternsIcon /> },
+  { key: 'currencies',   label: 'Currencies',     path: '/forexdash/currencies',   icon: <CurrenciesIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -611,7 +660,7 @@ const RightSection = styled.div`
   }
 `;
 
-/* Nav — always full-width on its own row, buttons centered, no scroll */
+/* Nav — always full-width on its own row, with horizontal scroll on small screens */
 const ForexNavWrapper = styled.nav`
   order: 4;
   flex: 1 1 100%;
@@ -626,17 +675,22 @@ const ForexNavWrapper = styled.nav`
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 12px;
 
+  /* Hide scrollbar across browsers */
+  scrollbar-width: none; 
+  &::-webkit-scrollbar { display: none; }
+
   @media (max-width: 1024px) {
     margin: 8px 0 0;
     gap: 3px;
     padding: 3px;
+    justify-content: flex-start;
+    overflow-x: auto;
   }
 
   @media (max-width: 768px) {
     margin: 6px 0 0;
-    justify-content: space-between;
     padding: clamp(4px, 1.4vw, 6px);
-    gap: clamp(3px, 1vw, 6px);
+    gap: clamp(4px, 1vw, 6px);
     border-radius: clamp(10px, 3vw, 14px);
   }
 `;
@@ -679,27 +733,17 @@ const ForexNavButton = styled.button`
     gap: 6px;
   }
 
-  @media (max-width: 900px) {
-    padding: 6px 10px;
-    font-size: 11.5px;
-    gap: 5px;
-
-    svg { width: 14px; height: 14px; }
-  }
-
   @media (max-width: 768px) {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: clamp(9px, 2.6vw, 12px) clamp(4px, 1.5vw, 8px);
+    /* Icon-only on phones */
+    padding: clamp(8px, 2.4vw, 11px);
     gap: 0;
     border-radius: clamp(8px, 2.6vw, 12px);
-
+    
     svg {
-      width: clamp(17px, 4.8vw, 21px);
-      height: clamp(17px, 4.8vw, 21px);
+      width: clamp(16px, 4.5vw, 20px);
+      height: clamp(16px, 4.5vw, 20px);
     }
 
-    /* Icon-only on phones — labels hidden so all 5 buttons fit without scroll */
     span { display: none; }
   }
 `;
@@ -1486,6 +1530,12 @@ const TopPanel = ({
     if (p.startsWith('/forexdash/forexfactory')) return 'forexfactory';
     if (p.startsWith('/forexdash/tradingview'))  return 'tradingview';
     if (p.startsWith('/forexdash/bots'))         return 'bots';
+    if (p.startsWith('/forexdash/heatmap'))      return 'heatmap';
+    if (p.startsWith('/forexdash/liquidity'))    return 'liquidity';
+    if (p.startsWith('/forexdash/volatility'))   return 'volatility';
+    if (p.startsWith('/forexdash/correlation'))  return 'correlation';
+    if (p.startsWith('/forexdash/patterns'))     return 'patterns';
+    if (p.startsWith('/forexdash/currencies'))   return 'currencies';
     return 'home';
   })();
 
