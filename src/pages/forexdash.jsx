@@ -10,6 +10,7 @@ import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
 import TradingViewView from '../components/forex/TradingViewView';
 import MyfxbookWidget from '../components/forex/MyfxbookWidget';
+import MyfxbookSentimentWidget from '../components/forex/MyfxbookSentimentWidget'; // <-- NEW IMPORT
 
 /* =========================================================
    THEMES (mirrors the ones defined in Derivdash.jsx)
@@ -698,7 +699,6 @@ export default function ForexDash() {
             {view === 'economic-calendar' && (
               <MyfxbookWidget 
                 title="Economic Calendar"
-                themeType={t.category}
                 src="https://widget.mfbcdn.net/widget/calendar.html?lang=en&impacts=0,1,2,3&symbols=AUD,CAD,CHF,CNY,EUR,GBP,JPY,NZD,USD" 
               />
             )}
@@ -706,7 +706,6 @@ export default function ForexDash() {
             {view === 'heatmap' && (
               <MyfxbookWidget 
                 title="Forex Heat Map"
-                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/heat-map.html?symbols=8,9,10,11,12,6,13,14,15,17,7,1,4,2,28,5,29,3,50,51&type=0" 
               />
             )}
@@ -714,7 +713,6 @@ export default function ForexDash() {
             {view === 'liquidity' && (
               <MyfxbookWidget 
                 title="Forex Liquidity"
-                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/liquidity.html?" 
               />
             )}
@@ -722,7 +720,6 @@ export default function ForexDash() {
             {view === 'volatility' && (
               <MyfxbookWidget 
                 title="Market Volatility"
-                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/market-volatility.html?symbols=8,9,10,11,12,6,13,14,15,17,7,1,4,2,28,5,29,3,50,51&type=0" 
               />
             )}
@@ -730,7 +727,6 @@ export default function ForexDash() {
             {view === 'correlation' && (
               <MyfxbookWidget 
                 title="Market Correlation"
-                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/market-correlation.html?rowSymbols=8,47,9,10,1234,11,103,12,46,1245,6,13,14,15,17,18,7,2114,19,20,21,22,1246,23,1,1233,107,24,25,4,2872,137,48,1236,1247,2012,2,1863,3240,26,49,27,28,2090,131,5,29,5779,31,34,3,36,37,38,2076,40,41,42,43,45,3005,3473,50,2115,2603,2119,1815,2521,51,5435,5079,1893&colSymbols=8,9,10,6,7,1,4,2,5,3&timeScale=1440" 
               />
             )}
@@ -738,7 +734,6 @@ export default function ForexDash() {
             {view === 'patterns' && (
               <MyfxbookWidget 
                 title="Chart Patterns"
-                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/patterns.html?symbols=1,2,5,3&indicators=27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,48,50,51,52,53,54,56,57,58,59,61,60,49,62,63,64,65,66,67,68,69,70,41,71,72,73,74,75,26,21,22,24,25,23,76,77,20,78,79,80&tType=patterns&timeFrame=1" 
               />
             )}
@@ -746,8 +741,18 @@ export default function ForexDash() {
             {view === 'currencies' && (
               <MyfxbookWidget 
                 title="Forex Rates"
-                themeType={t.category}
                 src="https://widget.mfbcdn.net/widget/market-quotes.html?symbols=AUDUSD,EURGBP,EURUSD,GBPUSD,USDCAD,USDCHF,USDJPY" 
+              />
+            )}
+
+            {view === 'sentiment' && (
+              <MyfxbookSentimentWidget />
+            )}
+
+            {view === 'spreads' && (
+              <MyfxbookWidget 
+                title="Forex Spreads"
+                src="https://widget.mfbcdn.net/widget/broker-spreads.html?symbols=AUDUSD,EURGBP,EURUSD,GBPUSD,USDCAD,USDCHF,USDCNY,USDHKD,USDJPY&mt4Servers=10018,1011,10281,10309,1038,1065,10708,1124,1131,11407,11475,11720,1212,12345,1271,12872,12920,13283,1420,1437,14398,1453,14635,14636,14657,1486,14868,14888,15050,15089,15159,15176,15267,15355,15476,15486,15546,15559,15560,15603,15651,15788,15794,1589,1606,16138,16140,16167,16358,16534,1673,16862,16870,169,1736,1768,187,1946,2015,2061,2185,229,2449,2461,2468,2512,2515,2545,2559,2641,27,2719,272,2768,2804,2824,2914,3036,3131,3228,3278,332,3381,3420,3451,3473,3505,3512,3622,3819,4214,4417,4552,4575,4582,4830,492,5000,5050,5081,5118,5119,5153,5168,5191,5204,5569,5895,5909,6015,6052,620,6211,6265,6391,6508,6529,716,727,757,790,792,808,8923,9280,930,9301&includeCommissions=false&promoteBroker=0" 
               />
             )}
           </div>

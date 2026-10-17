@@ -303,6 +303,21 @@ const CurrenciesIcon = () => (
   </svg>
 );
 
+const SentimentIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+    <path d="M22 12A10 10 0 0 0 12 2v10z" />
+  </svg>
+);
+
+const SpreadsIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 12h16" />
+    <path d="M8 8l-4 4 4 4" />
+    <path d="M16 8l4 4-4 4" />
+  </svg>
+);
+
 // ============================================
 // FOREX SESSIONS
 // ============================================
@@ -313,7 +328,7 @@ const FOREX_SESSIONS = [
   { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States',  startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas',     tag: 'USD · CAD' },
 ];
 
-// Order: Home · Strength · Economic Calendar · TradingView · Bots · HeatMap · Liquidity · Volatility · Correlation · Patterns · Currencies
+// Order: Home · Strength · Economic Calendar · TradingView · Bots · HeatMap · Liquidity · Volatility · Correlation · Patterns · Currencies · Sentiment · Spreads
 export const FOREX_NAV_ITEMS = [
   { key: 'home',                label: 'Home',                path: '/forexdash',                    icon: <DashboardIcon /> },
   { key: 'strength',            label: 'Strength Meter',      path: '/forexdash/strength',           icon: <StrengthIcon /> },
@@ -326,6 +341,8 @@ export const FOREX_NAV_ITEMS = [
   { key: 'correlation',         label: 'Correlation',         path: '/forexdash/correlation',        icon: <CorrelationIcon /> },
   { key: 'patterns',            label: 'Chart Patterns',      path: '/forexdash/patterns',           icon: <ChartPatternsIcon /> },
   { key: 'currencies',          label: 'Currencies',          path: '/forexdash/currencies',         icon: <CurrenciesIcon /> },
+  { key: 'sentiment',           label: 'Sentiment',           path: '/forexdash/sentiment',          icon: <SentimentIcon /> },
+  { key: 'spreads',             label: 'Spreads',             path: '/forexdash/spreads',            icon: <SpreadsIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -1575,6 +1592,8 @@ const TopPanel = ({
     if (p.startsWith('/forexdash/correlation'))         return 'correlation';
     if (p.startsWith('/forexdash/patterns'))            return 'patterns';
     if (p.startsWith('/forexdash/currencies'))          return 'currencies';
+    if (p.startsWith('/forexdash/sentiment'))           return 'sentiment';
+    if (p.startsWith('/forexdash/spreads'))             return 'spreads';
     return 'home';
   })();
 
