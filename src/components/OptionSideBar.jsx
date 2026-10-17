@@ -2493,7 +2493,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const handleHelpClick = () => { setActiveItem('help'); openPopup('help', { title: 'Help & Support', icon: <HelpIcon /> }); };
   const handleResponsibleTradingClick = () => { setActiveItem('responsible-trading'); openPopup('responsible-trading', { title: 'Responsible Trading', icon: <ShieldIcon /> }); };
-  const handleAboutClick = () => { setActiveItem('about'); openPopup('about', { title: 'About My TradingZone', icon: <CompanyIcon /> }); };
+  const handleAboutClick = () => { setActiveItem('about'); openPopup('about', { title: 'About MyTradingZone', icon: <CompanyIcon /> }); };
   const handleAcademyClick = () => { setActiveItem('academy'); setCurrentPanel('academy'); openFullPanel(<Academy />); };
 
   const handleRiskCalculatorClick = () => {
@@ -2809,13 +2809,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <AboutContent>
             <div className="about-logo">
               <span className="logo-icon"><LogoIcon /></span>
-              <span className="logo-text">My TradingZone</span>
+              <span className="logo-text">MyTradingZone</span>
             </div>
 
             <div className="about-section">
               <div className="about-title"><InfoIcon /> Our Mission</div>
               <div className="about-desc">
-                My TradingZone is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities across the platforms we support.
+                MyTradingZone is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities across the platforms we support.
               </div>
             </div>
 
@@ -3184,20 +3184,20 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       case 'terms':
         return (
           <>
-            <TermsSection><div className="terms-title">1. Introduction</div><div className="terms-text">Welcome to My TradingZone. By using our third-party trading application, you agree to these Terms and Conditions.</div></TermsSection>
-            <TermsSection><div className="terms-title">2. Acceptance of Terms</div><div className="terms-text">By accessing or using My TradingZone, you confirm that you have read, understood, and agree to be bound by these Terms.</div>
+            <TermsSection><div className="terms-title">1. Introduction</div><div className="terms-text">Welcome to MyTradingZone. By using our third-party trading application, you agree to these Terms and Conditions.</div></TermsSection>
+            <TermsSection><div className="terms-title">2. Acceptance of Terms</div><div className="terms-text">By accessing or using MyTradingZone, you confirm that you have read, understood, and agree to be bound by these Terms.</div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must be at least <strong style={{ color: '#F8FAFC' }}>18 years old</strong> to use this App.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
             </TermsSection>
-            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">In Deriv, My TradingZone provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data via Deriv API.  In Forex, My TradingZone provides automated trading bots and special tools such as Lotsize calculator for risk management.</div></TermsSection>
-            <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. My TradingZone does not store your login credentials.</div>
+            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">In Deriv, MyTradingZone provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data via Deriv API.  In Forex, MyTradingZone provides automated trading bots and special tools such as Lotsize calculator for risk management.</div></TermsSection>
+            <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradingZone does not store your login credentials.</div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
             </TermsSection>
-            <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">My TradingZone provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
+            <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradingZone provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
             <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your trading login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
-            <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where My TradingZone operates.</div></TermsSection>
+            <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradingZone operates.</div></TermsSection>
             <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>tonnykyalo054@gmail.com</strong></div></TermsSection>
           </>
         );
@@ -3295,7 +3295,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <div className="avatar">{isForex ? 'FX' : 'MT'}</div>
             <div className="user-info">
               <div className="user-name">John Trader</div>
-              <div className="user-email">john@mytradezone.com</div>
+              <div className="user-email">tonnykyalo054@gmail.com</div>
             </div>
           </SidebarHeader>
 
@@ -3396,7 +3396,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <NavSection>
             <SectionLabel>Company</SectionLabel>
             <SideCard>
-              <div className="card-title"><span className="icon"><CompanyIcon /></span>About My TradingZone</div>
+              <div className="card-title"><span className="icon"><CompanyIcon /></span>About MyTradingZone</div>
               <div className="card-item"><span className="bullet">•</span><span>Third-party trading application supporting multiple markets.</span></div>
               <div className="card-item"><span className="bullet">•</span><span>Provides real-time market streams and automated execution tools.</span></div>
               <div className="learn-more" onClick={handleAboutClick}>About us →</div>

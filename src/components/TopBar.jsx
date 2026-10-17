@@ -1898,7 +1898,7 @@ const TopPanel = ({
           )}
           <BrandContainer>
             <BrandText>
-              <span className="voltix">MyTradeApp.</span>
+              <span className="voltix">MyTradingZone.</span>
               <DropdownContainer ref={platformRef}>
                 <PlatformSelector onClick={togglePlatformDropdown} $color={PLATFORM_OPTIONS[platform].color}>
                   <span>{PLATFORM_OPTIONS[platform].label}</span>
