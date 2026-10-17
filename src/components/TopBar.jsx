@@ -250,15 +250,13 @@ const TradingViewIcon = () => (
   </svg>
 );
 
-const ForexFactoryIcon = () => (
+const EconomicCalendarIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4.5" width="18" height="16.5" rx="2.5" />
-    <line x1="8"  y1="2.5" x2="8"  y2="6.5" />
-    <line x1="16" y1="2.5" x2="16" y2="6.5" />
-    <line x1="3"  y1="10"  x2="21" y2="10" />
-    <rect x="6"  y="13" width="2" height="5" rx="0.5" fill="currentColor" stroke="none" />
-    <rect x="11" y="15" width="2" height="3" rx="0.5" fill="currentColor" stroke="none" />
-    <rect x="16" y="12" width="2" height="6" rx="0.5" fill="currentColor" stroke="none" />
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+    <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" />
   </svg>
 );
 
@@ -315,19 +313,19 @@ const FOREX_SESSIONS = [
   { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States',  startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas',     tag: 'USD · CAD' },
 ];
 
-// Order: Home · Strength · Forex Factory · TradingView · Bots · HeatMap · Liquidity · Volatility · Correlation · Patterns · Currencies
+// Order: Home · Strength · Economic Calendar · TradingView · Bots · HeatMap · Liquidity · Volatility · Correlation · Patterns · Currencies
 export const FOREX_NAV_ITEMS = [
-  { key: 'home',         label: 'Home',           path: '/forexdash',              icon: <DashboardIcon /> },
-  { key: 'strength',     label: 'Strength Meter', path: '/forexdash/strength',     icon: <StrengthIcon /> },
-  { key: 'forexfactory', label: 'Forex Factory',  path: '/forexdash/forexfactory', icon: <ForexFactoryIcon /> },
-  { key: 'tradingview',  label: 'TradingView',    path: '/forexdash/tradingview',  icon: <TradingViewIcon /> },
-  { key: 'bots',         label: 'Bots',           path: '/forexdash/bots',         icon: <BotsIcon /> },
-  { key: 'heatmap',      label: 'Heat Map',       path: '/forexdash/heatmap',      icon: <HeatMapIcon /> },
-  { key: 'liquidity',    label: 'Liquidity',      path: '/forexdash/liquidity',    icon: <LiquidityIcon /> },
-  { key: 'volatility',   label: 'Volatility',     path: '/forexdash/volatility',   icon: <VolatilityIcon /> },
-  { key: 'correlation',  label: 'Correlation',    path: '/forexdash/correlation',  icon: <CorrelationIcon /> },
-  { key: 'patterns',     label: 'Chart Patterns', path: '/forexdash/patterns',     icon: <ChartPatternsIcon /> },
-  { key: 'currencies',   label: 'Currencies',     path: '/forexdash/currencies',   icon: <CurrenciesIcon /> },
+  { key: 'home',                label: 'Home',                path: '/forexdash',                    icon: <DashboardIcon /> },
+  { key: 'strength',            label: 'Strength Meter',      path: '/forexdash/strength',           icon: <StrengthIcon /> },
+  { key: 'economic-calendar',   label: 'Economic Calendar',   path: '/forexdash/economic-calendar',  icon: <EconomicCalendarIcon /> },
+  { key: 'tradingview',         label: 'TradingView',         path: '/forexdash/tradingview',        icon: <TradingViewIcon /> },
+  { key: 'bots',                label: 'Bots',                path: '/forexdash/bots',               icon: <BotsIcon /> },
+  { key: 'heatmap',             label: 'Heat Map',            path: '/forexdash/heatmap',            icon: <HeatMapIcon /> },
+  { key: 'liquidity',           label: 'Liquidity',           path: '/forexdash/liquidity',          icon: <LiquidityIcon /> },
+  { key: 'volatility',          label: 'Volatility',          path: '/forexdash/volatility',         icon: <VolatilityIcon /> },
+  { key: 'correlation',         label: 'Correlation',         path: '/forexdash/correlation',        icon: <CorrelationIcon /> },
+  { key: 'patterns',            label: 'Chart Patterns',      path: '/forexdash/patterns',           icon: <ChartPatternsIcon /> },
+  { key: 'currencies',          label: 'Currencies',          path: '/forexdash/currencies',         icon: <CurrenciesIcon /> },
 ];
 
 const toUTC3 = (utcHour) => {
@@ -1526,16 +1524,16 @@ const TopPanel = ({
 
   const activeForexNav = (() => {
     const p = location.pathname;
-    if (p.startsWith('/forexdash/strength'))     return 'strength';
-    if (p.startsWith('/forexdash/forexfactory')) return 'forexfactory';
-    if (p.startsWith('/forexdash/tradingview'))  return 'tradingview';
-    if (p.startsWith('/forexdash/bots'))         return 'bots';
-    if (p.startsWith('/forexdash/heatmap'))      return 'heatmap';
-    if (p.startsWith('/forexdash/liquidity'))    return 'liquidity';
-    if (p.startsWith('/forexdash/volatility'))   return 'volatility';
-    if (p.startsWith('/forexdash/correlation'))  return 'correlation';
-    if (p.startsWith('/forexdash/patterns'))     return 'patterns';
-    if (p.startsWith('/forexdash/currencies'))   return 'currencies';
+    if (p.startsWith('/forexdash/strength'))            return 'strength';
+    if (p.startsWith('/forexdash/economic-calendar'))   return 'economic-calendar';
+    if (p.startsWith('/forexdash/tradingview'))         return 'tradingview';
+    if (p.startsWith('/forexdash/bots'))                return 'bots';
+    if (p.startsWith('/forexdash/heatmap'))             return 'heatmap';
+    if (p.startsWith('/forexdash/liquidity'))           return 'liquidity';
+    if (p.startsWith('/forexdash/volatility'))          return 'volatility';
+    if (p.startsWith('/forexdash/correlation'))         return 'correlation';
+    if (p.startsWith('/forexdash/patterns'))            return 'patterns';
+    if (p.startsWith('/forexdash/currencies'))          return 'currencies';
     return 'home';
   })();
 
