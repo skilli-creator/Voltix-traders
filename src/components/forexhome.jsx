@@ -213,13 +213,12 @@ export default function ForexHome({
 
   const styles = useMemo(() => `
     /* 
-      FIX: Override the global height constraints to allow natural window scrolling.
-      This ensures the page flows correctly and the footer is never cut off.
+      FIX: Removed overflow-y: auto from html, body, #root to restore sticky TopBar.
+      The browser window now handles scrolling natively.
     */
     html, body, #root {
       height: auto !important;
       min-height: 100% !important;
-      overflow-y: auto !important;
     }
     
     .forex-page {
