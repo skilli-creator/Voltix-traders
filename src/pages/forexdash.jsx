@@ -9,7 +9,7 @@ import LotSize from '../components/lotsize';
 import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
 import TradingViewView from '../components/forex/TradingViewView';
-import MyfxbookWidget from '../components/forex/MyfxbookWidget'; // <-- NEW IMPORT
+import MyfxbookWidget from '../components/forex/MyfxbookWidget';
 
 /* =========================================================
    THEMES (mirrors the ones defined in Derivdash.jsx)
@@ -698,6 +698,7 @@ export default function ForexDash() {
             {view === 'economic-calendar' && (
               <MyfxbookWidget 
                 title="Economic Calendar"
+                themeType={t.category}
                 src="https://widget.mfbcdn.net/widget/calendar.html?lang=en&impacts=0,1,2,3&symbols=AUD,CAD,CHF,CNY,EUR,GBP,JPY,NZD,USD" 
               />
             )}
@@ -705,6 +706,7 @@ export default function ForexDash() {
             {view === 'heatmap' && (
               <MyfxbookWidget 
                 title="Forex Heat Map"
+                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/heat-map.html?symbols=8,9,10,11,12,6,13,14,15,17,7,1,4,2,28,5,29,3,50,51&type=0" 
               />
             )}
@@ -712,6 +714,7 @@ export default function ForexDash() {
             {view === 'liquidity' && (
               <MyfxbookWidget 
                 title="Forex Liquidity"
+                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/liquidity.html?" 
               />
             )}
@@ -719,6 +722,7 @@ export default function ForexDash() {
             {view === 'volatility' && (
               <MyfxbookWidget 
                 title="Market Volatility"
+                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/market-volatility.html?symbols=8,9,10,11,12,6,13,14,15,17,7,1,4,2,28,5,29,3,50,51&type=0" 
               />
             )}
@@ -726,6 +730,7 @@ export default function ForexDash() {
             {view === 'correlation' && (
               <MyfxbookWidget 
                 title="Market Correlation"
+                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/market-correlation.html?rowSymbols=8,47,9,10,1234,11,103,12,46,1245,6,13,14,15,17,18,7,2114,19,20,21,22,1246,23,1,1233,107,24,25,4,2872,137,48,1236,1247,2012,2,1863,3240,26,49,27,28,2090,131,5,29,5779,31,34,3,36,37,38,2076,40,41,42,43,45,3005,3473,50,2115,2603,2119,1815,2521,51,5435,5079,1893&colSymbols=8,9,10,6,7,1,4,2,5,3&timeScale=1440" 
               />
             )}
@@ -733,6 +738,7 @@ export default function ForexDash() {
             {view === 'patterns' && (
               <MyfxbookWidget 
                 title="Chart Patterns"
+                themeType={t.category}
                 src="https://widgets.mfbcdn.net/widgets/patterns.html?symbols=1,2,5,3&indicators=27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,48,50,51,52,53,54,56,57,58,59,61,60,49,62,63,64,65,66,67,68,69,70,41,71,72,73,74,75,26,21,22,24,25,23,76,77,20,78,79,80&tType=patterns&timeFrame=1" 
               />
             )}
@@ -740,6 +746,7 @@ export default function ForexDash() {
             {view === 'currencies' && (
               <MyfxbookWidget 
                 title="Forex Rates"
+                themeType={t.category}
                 src="https://widget.mfbcdn.net/widget/market-quotes.html?symbols=AUDUSD,EURGBP,EURUSD,GBPUSD,USDCAD,USDCHF,USDJPY" 
               />
             )}

@@ -1,8 +1,8 @@
 // src/components/forex/MyfxbookWidget.jsx
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTheme } from 'styled-components';
 
-export default function MyfxbookWidget({ src, title }) {
+export default function MyfxbookWidget({ src, title, themeType = 'dark' }) {
   const theme = useTheme();
   const c = theme?.colors || {};
 
@@ -10,6 +10,18 @@ export default function MyfxbookWidget({ src, title }) {
   const textMuted = c.textMuted || '#94a3b8';
   const accent = c.accent || '#3b82f6';
   const border = c.border || 'rgba(255,255,255,0.05)';
+
+  // Dynamically inject the theme parameter into the Myfxbook URL
+  const finalSrc = useMemo(() => {
+    try {
+      const url = new URL(src);
+      url.searchParams.set('theme', themeType === 'light' ? 'light' : 'dark');
+      return url.toString();
+    } catch (e) {
+      // Fallback if URL parsing fails
+      return src + (src.includes('?') ? '&' : '?') + `theme=${themeType === 'light' ? 'light' : 'dark'}`;
+    }
+  }, [src, themeType]);
 
   return (
     <div
@@ -23,12 +35,13 @@ export default function MyfxbookWidget({ src, title }) {
         flexDirection: 'column',
         background: bg,
         zIndex: 1,
+        transition: 'background 0.3s ease',
       }}
     >
       {/* Iframe Container */}
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         <iframe
-          src={src}
+          src={finalSrc}
           width="100%"
           height="100%"
           frameBorder="0"
@@ -40,6 +53,7 @@ export default function MyfxbookWidget({ src, title }) {
             width: '100%',
             height: '100%',
             border: 'none',
+            backgroundColor: 'transparent', // Allows the theme's bg to show through if the iframe is transparent
           }}
         />
       </div>
@@ -53,6 +67,7 @@ export default function MyfxbookWidget({ src, title }) {
           background: bg,
           color: textMuted,
           borderTop: `1px solid ${border}`,
+          transition: 'all 0.3s ease',
         }}
       >
         <a
