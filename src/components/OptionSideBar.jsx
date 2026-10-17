@@ -52,13 +52,11 @@ const slideInRight = keyframes`
   to { opacity: 1; transform: translateX(0); }
 `;
 
-/* Push-in bloom: darkens the pushed content softly as the sidebar opens */
 const pushBloom = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
 `;
 
-/* Accent sweep along the sidebar's right edge on open */
 const edgeSweep = keyframes`
   0%   { transform: translateY(-100%); opacity: 0; }
   40%  { opacity: 1; }
@@ -72,22 +70,6 @@ const BellIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-  </svg>
-);
-
-const VoiceIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-  </svg>
-);
-
-const VoiceOffIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-    <line x1="23" y1="9" x2="17" y2="15" />
-    <line x1="17" y1="9" x2="23" y2="15" />
   </svg>
 );
 
@@ -549,7 +531,7 @@ const ModalBody = styled.div`
 `;
 
 // ============================================
-// JOURNAL SPECIFIC STYLES
+// JOURNAL & PERFORMANCE SPECIFIC STYLES
 // ============================================
 const JournalContainer = styled.div`
   display: flex; flex-direction: column; height: 100%;
@@ -663,6 +645,42 @@ const JournalTable = styled.table`
     th { font-size: clamp(10px, 2.8vw, 12px); }
     .notes-cell { max-width: 140px; }
   }
+`;
+
+const PerformanceContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: ${fadeUp} 0.4s ease;
+`;
+
+const PerformanceHero = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, ${p => p.theme?.colors?.accentLight} 0%, transparent 100%);
+  border-radius: 16px;
+  border: 1px solid ${p => p.theme?.colors?.border};
+  
+  .icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: ${p => p.theme?.colors?.accentLight};
+    color: ${p => p.theme?.colors?.accent};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    
+    svg { width: 32px; height: 32px; }
+  }
+  
+  .title { font-size: 24px; font-weight: 800; color: ${p => p.theme?.colors?.text}; margin-bottom: 8px; }
+  .desc { font-size: 14px; color: ${p => p.theme?.colors?.textSecondary}; max-width: 400px; line-height: 1.6; }
 `;
 
 const NoteModal = styled.div`
@@ -1765,115 +1783,6 @@ const NotificationItem = styled.div`
 `;
 
 // ============================================
-// VOICE SETTINGS
-// ============================================
-const VoiceToggleRow = styled.div`
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 12px;
-  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 10px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  margin-bottom: 10px;
-
-  .toggle-label { font-size: 12px; font-weight: 600; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; }
-  .toggle-status { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 999px; color: ${props => (props.active ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')}; background: ${props => props.active ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255, 255, 255, 0.04)'}; }
-
-  @media (max-width: 768px) {
-    padding: clamp(12px, 3.4vw, 16px) clamp(14px, 4vw, 18px);
-    border-radius: clamp(10px, 3vw, 14px);
-    margin-bottom: clamp(10px, 3vw, 14px);
-    .toggle-label { font-size: clamp(13px, 3.6vw, 15px); }
-    .toggle-status { font-size: clamp(10px, 2.8vw, 12px); padding: 3px clamp(8px, 2.4vw, 12px); }
-  }
-`;
-
-const ToggleSwitch = styled.button`
-  width: 42px; height: 24px; border-radius: 12px; border: none;
-  background: ${props => props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.scrollbar || '#2a2e3d'};
-  cursor: pointer; transition: background 0.25s ease; position: relative; flex-shrink: 0;
-
-  &::after {
-    content: ''; position: absolute; top: 2px;
-    left: ${props => (props.active ? '20px' : '2px')};
-    width: 20px; height: 20px; border-radius: 50%;
-    background: ${props => props.theme?.colors?.text || '#ffffff'};
-    transition: left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  }
-  &:hover { opacity: 0.9; }
-
-  @media (max-width: 768px) {
-    width: clamp(46px, 12.5vw, 54px);
-    height: clamp(26px, 7vw, 30px);
-    border-radius: clamp(13px, 3.6vw, 15px);
-    &::after {
-      width: clamp(22px, 6vw, 26px);
-      height: clamp(22px, 6vw, 26px);
-      left: ${props => (props.active ? 'calc(100% - clamp(24px, 6.5vw, 28px))' : '2px')};
-      top: 2px;
-    }
-  }
-`;
-
-const VolumeSlider = styled.div`
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
-  background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.02)'};
-  border-radius: 10px;
-  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.06)'};
-  margin-bottom: 10px;
-
-  .slider-label { font-size: 11px; font-weight: 600; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; min-width: 28px; }
-  input[type='range'] {
-    flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px;
-    background: ${props => props.theme?.colors?.scrollbar || '#2a2e3d'}; outline: none;
-
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
-      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
-      cursor: pointer;
-      border: 2px solid ${props => props.theme?.colors?.surface || '#0F172A'};
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    }
-    &:disabled { opacity: 0.4; }
-  }
-  .slider-value { font-size: 12px; font-weight: 700; color: ${props => props.theme?.colors?.text || '#F8FAFC'}; min-width: 28px; text-align: right; }
-
-  @media (max-width: 768px) {
-    padding: clamp(12px, 3.4vw, 16px) clamp(14px, 4vw, 18px);
-    border-radius: clamp(10px, 3vw, 14px);
-    margin-bottom: clamp(10px, 3vw, 14px);
-    gap: clamp(10px, 3vw, 14px);
-    .slider-label { font-size: clamp(12px, 3.4vw, 14px); min-width: clamp(32px, 9vw, 40px); }
-    input[type='range'] {
-      height: clamp(5px, 1.4vw, 7px);
-      &::-webkit-slider-thumb { width: clamp(18px, 5vw, 22px); height: clamp(18px, 5vw, 22px); }
-    }
-    .slider-value { font-size: clamp(13px, 3.6vw, 15px); min-width: clamp(32px, 9vw, 40px); }
-  }
-`;
-
-const VoiceEventItem = styled.div`
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.04)'};
-  &:last-child { border-bottom: none; }
-
-  .event-name { font-size: 11px; font-weight: 500; color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'}; display: flex; align-items: center; gap: 8px; }
-  .event-dot { width: 6px; height: 6px; border-radius: 50%; background: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')}; }
-  .event-status { font-size: 9px; font-weight: 700; color: ${props => (props.enabled ? '#10B981' : props.theme?.colors?.textMuted || '#94A3B8')}; cursor: pointer; padding: 3px 8px; border-radius: 6px; background: ${props => props.enabled ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.04)'}; transition: opacity 0.2s ease;
-    &:hover { opacity: 0.75; }
-  }
-
-  @media (max-width: 768px) {
-    padding: clamp(10px, 3vw, 14px) 0;
-    .event-name { font-size: clamp(12px, 3.4vw, 14px); gap: clamp(8px, 2.4vw, 12px); }
-    .event-dot { width: clamp(7px, 2vw, 9px); height: clamp(7px, 2vw, 9px); }
-    .event-status { font-size: clamp(10px, 2.8vw, 12px); padding: clamp(4px, 1.2vw, 6px) clamp(10px, 3vw, 14px); }
-  }
-`;
-
-// ============================================
 // ACCOUNT INFO
 // ============================================
 const AccountInfoRow = styled.div`
@@ -1945,8 +1854,6 @@ const TermsSection = styled.div`
 const TOPBAR_HEIGHT = '76px';
 const SIDEBAR_WIDTH = '288px';
 
-/* Backdrop that appears over the pushed content in forex mode.
-   Sits behind the sidebar, above the content, and fades in softly. */
 const PushBloomLayer = styled.div`
   position: fixed;
   top: var(--topbar-h, ${TOPBAR_HEIGHT});
@@ -2010,7 +1917,6 @@ const SidebarContainer = styled.aside`
       ? `18px 0 60px -12px ${(props.theme?.colors?.accent || '#3B82F6')}2e`
       : '0 0 0 0 transparent'};
 
-  /* Accent glow line running down the right edge when open */
   &::after {
     content: '';
     position: absolute;
@@ -2031,7 +1937,6 @@ const SidebarContainer = styled.aside`
     pointer-events: none;
   }
 
-  /* Light sweep that runs down the edge on open */
   &::before {
     content: '';
     position: absolute;
@@ -2060,7 +1965,6 @@ const SidebarContainer = styled.aside`
     border-bottom-right-radius: 20px;
     box-shadow: 16px 0 48px rgba(0, 0, 0, 0.55);
 
-    /* Disable the edge sweep on phones — no push behaviour there */
     &::before { display: none; }
   }
 
@@ -2375,10 +2279,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const [submitStatus, setSubmitStatus] = useState('');
   const [hasNotifications, setHasNotifications] = useState(true);
 
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [voiceVolume, setVoiceVolume] = useState(70);
-  const [voiceEvents, setVoiceEvents] = useState({ trade: true, price: true, market: false, system: true });
-
   const [popupType, setPopupType] = useState(null);
   const [popupData, setPopupData] = useState({});
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -2434,19 +2334,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     return () => window.removeEventListener('tradeLogUpdated', loadJournal);
   }, []);
 
-  // ============================================
-  // Forex-only: push the main page content when the sidebar opens
-  // instead of overlapping it. Deriv keeps the overlay behaviour.
-  // ============================================
   useEffect(() => {
     const shouldPush = isForex && isOpen;
-
     if (shouldPush) {
       document.body.classList.add('forex-sidebar-push');
     } else {
       document.body.classList.remove('forex-sidebar-push');
     }
-
     return () => {
       document.body.classList.remove('forex-sidebar-push');
     };
@@ -2599,7 +2493,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   const handleHelpClick = () => { setActiveItem('help'); openPopup('help', { title: 'Help & Support', icon: <HelpIcon /> }); };
   const handleResponsibleTradingClick = () => { setActiveItem('responsible-trading'); openPopup('responsible-trading', { title: 'Responsible Trading', icon: <ShieldIcon /> }); };
-  const handleAboutClick = () => { setActiveItem('about'); openPopup('about', { title: 'About MyTradeApp', icon: <CompanyIcon /> }); };
+  const handleAboutClick = () => { setActiveItem('about'); openPopup('about', { title: 'About My TradingZone', icon: <CompanyIcon /> }); };
   const handleAcademyClick = () => { setActiveItem('academy'); setCurrentPanel('academy'); openFullPanel(<Academy />); };
 
   const handleRiskCalculatorClick = () => {
@@ -2620,7 +2514,26 @@ const OptionSideBar = ({ isOpen, onClose }) => {
     openPopup('copy-trading', { title: 'Copy Trading', icon: <CopyTradeIcon />, badge: 'BETA' });
   };
 
-  const handlePerformanceClick = () => { setActiveItem('performance'); openPopup('performance', { title: 'Performance', icon: <PerformanceIcon /> }); };
+  const handlePerformanceClick = () => {
+    setActiveItem('performance'); 
+    setCurrentPanel('performance');
+    const performanceContent = (
+      <PerformanceContainer>
+        <PerformanceHero>
+          <div className="icon"><PerformanceIcon /></div>
+          <div className="title">Trading Performance</div>
+          <div className="desc">Your detailed trading performance metrics and analytics will appear here once you have enough historical data.</div>
+        </PerformanceHero>
+        <StatsRow>
+          <StatBox color="#10B981"><div className="stat-label">Total Return</div><div className="stat-value">+12.4%</div><div className="stat-sub">All time</div></StatBox>
+          <StatBox color="#3B82F6"><div className="stat-label">Win Rate</div><div className="stat-value">64.2%</div><div className="stat-sub">142 trades</div></StatBox>
+          <StatBox color="#F59E0B"><div className="stat-label">Profit Factor</div><div className="stat-value">1.85</div><div className="stat-sub">Gross profit / loss</div></StatBox>
+          <StatBox color="#EF4444"><div className="stat-label">Max Drawdown</div><div className="stat-value">-8.2%</div><div className="stat-sub">Peak to trough</div></StatBox>
+        </StatsRow>
+      </PerformanceContainer>
+    );
+    openFullPanel(performanceContent);
+  };
 
   const handleJournalClick = () => {
     setActiveItem('journal'); setCurrentPanel('journal');
@@ -2673,7 +2586,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   };
 
   const handleNotificationsClick = () => { setActiveItem('notifications'); setHasNotifications(false); openPopup('notifications', { title: 'Notifications', icon: <BellIcon />, badge: '2 New' }); };
-  const handleVoiceClick = () => { setActiveItem('voice'); openPopup('voice', { title: 'Voice Notifications', icon: voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />, badge: voiceEnabled ? 'Active' : 'Muted' }); };
 
   const handleAccountInfoClick = () => {
     setActiveItem('account-info');
@@ -2897,13 +2809,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <AboutContent>
             <div className="about-logo">
               <span className="logo-icon"><LogoIcon /></span>
-              <span className="logo-text">MyTradeApp</span>
+              <span className="logo-text">My TradingZone</span>
             </div>
 
             <div className="about-section">
               <div className="about-title"><InfoIcon /> Our Mission</div>
               <div className="about-desc">
-                MyTradeApp is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities across the platforms we support.
+                My TradingZone is a third-party trading application designed to provide traders with powerful tools, real-time market data, and automated execution capabilities across the platforms we support.
               </div>
             </div>
 
@@ -3187,17 +3099,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </CopyTradingWrapper>
         );
 
-      case 'performance':
-        return (
-          <div>
-            <div style={{ padding: '20px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
-              <div style={{ fontSize: '36px', marginBottom: '12px', color: '#3B82F6' }}><PerformanceIcon /></div>
-              <h3 style={{ color: '#F8FAFC', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>Trading Performance</h3>
-              <p style={{ color: '#94A3B8', fontSize: '13px' }}>Your trading performance metrics will appear here.</p>
-            </div>
-          </div>
-        );
-
       case 'notifications':
         return (
           <>
@@ -3238,28 +3139,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           </>
         );
 
-      case 'voice':
-        return (
-          <>
-            <VoiceToggleRow active={voiceEnabled}>
-              <span className="toggle-label">Voice Notifications</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span className="toggle-status">{voiceEnabled ? 'On' : 'Off'}</span>
-                <ToggleSwitch active={voiceEnabled} onClick={() => setVoiceEnabled(!voiceEnabled)} />
-              </div>
-            </VoiceToggleRow>
-            <VolumeSlider>
-              <span className="slider-label">Vol</span>
-              <input type="range" min="0" max="100" value={voiceVolume} onChange={(e) => setVoiceVolume(parseInt(e.target.value))} disabled={!voiceEnabled} />
-              <span className="slider-value">{voiceVolume}%</span>
-            </VolumeSlider>
-            <VoiceEventItem enabled={voiceEvents.trade}><span className="event-name"><span className="event-dot" />Trade Execution</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, trade: !voiceEvents.trade })}>{voiceEvents.trade ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
-            <VoiceEventItem enabled={voiceEvents.price}><span className="event-name"><span className="event-dot" />Price Alerts</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, price: !voiceEvents.price })}>{voiceEvents.price ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
-            <VoiceEventItem enabled={voiceEvents.market}><span className="event-name"><span className="event-dot" />Market Signals</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, market: !voiceEvents.market })}>{voiceEvents.market ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
-            <VoiceEventItem enabled={voiceEvents.system}><span className="event-name"><span className="event-dot" />System Updates</span><span className="event-status" onClick={() => setVoiceEvents({ ...voiceEvents, system: !voiceEvents.system })}>{voiceEvents.system ? 'Enabled' : 'Disabled'}</span></VoiceEventItem>
-          </>
-        );
-
       case 'account-info':
         return isForex ? (
           <>
@@ -3284,11 +3163,19 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         );
 
       case 'how-to-use':
-        return (
+        return isForex ? (
           <>
-            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Connect Your Account</div><div className="step-desc">Link your trading account to access live market data and execute trades directly.</div></div></StepItem>
-            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">Choose from the range of instruments available on your platform.</div></div></StepItem>
-            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Size Your Position</div><div className="step-desc">Use the built-in Risk / Lot Size Calculator to determine the correct position size for your risk tolerance.</div></div></StepItem>
+            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Analyze Markets</div><div className="step-desc">Use the Strength Meter and Heat Map to find strong currency pairs before entering a trade.</div></div></StepItem>
+            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Calculate Lot Size</div><div className="step-desc">Use the Lot Size Calculator to determine the correct position size based on your risk tolerance.</div></div></StepItem>
+            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Trade on TradingView</div><div className="step-desc">Execute your trades based on technical analysis using the integrated TradingView charts.</div></div></StepItem>
+            <StepItem><div className="step-number">4</div><div className="step-content"><div className="step-title">Monitor Economic Events</div><div className="step-desc">Keep an eye on the Economic Calendar to avoid trading during high-impact news releases.</div></div></StepItem>
+            <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Log Your Trades</div><div className="step-desc">Use the Trade Journal to track your performance and refine your strategy over time.</div></div></StepItem>
+          </>
+        ) : (
+          <>
+            <StepItem><div className="step-number">1</div><div className="step-content"><div className="step-title">Connect Your Account</div><div className="step-desc">Link your Deriv account to access live market data and execute trades directly.</div></div></StepItem>
+            <StepItem><div className="step-number">2</div><div className="step-content"><div className="step-title">Select a Market</div><div className="step-desc">Choose from the range of synthetic indices and other instruments available on Deriv.</div></div></StepItem>
+            <StepItem><div className="step-number">3</div><div className="step-content"><div className="step-title">Size Your Position</div><div className="step-desc">Use the Risk Calculator to determine the correct stake amount for your risk tolerance.</div></div></StepItem>
             <StepItem><div className="step-number">4</div><div className="step-content"><div className="step-title">Monitor Your Positions</div><div className="step-desc">Track open positions, view performance metrics, and manage risk in real-time.</div></div></StepItem>
             <StepItem><div className="step-number">5</div><div className="step-content"><div className="step-title">Customize Experience</div><div className="step-desc">Personalize themes, notification settings, and display preferences to suit your workflow.</div></div></StepItem>
           </>
@@ -3297,20 +3184,20 @@ const OptionSideBar = ({ isOpen, onClose }) => {
       case 'terms':
         return (
           <>
-            <TermsSection><div className="terms-title">1. Introduction</div><div className="terms-text">Welcome to MyTradeApp. By using our third-party trading application, you agree to these Terms and Conditions.</div></TermsSection>
-            <TermsSection><div className="terms-title">2. Acceptance of Terms</div><div className="terms-text">By accessing or using MyTradeApp, you confirm that you have read, understood, and agree to be bound by these Terms.</div>
+            <TermsSection><div className="terms-title">1. Introduction</div><div className="terms-text">Welcome to My TradingZone. By using our third-party trading application, you agree to these Terms and Conditions.</div></TermsSection>
+            <TermsSection><div className="terms-title">2. Acceptance of Terms</div><div className="terms-text">By accessing or using My TradingZone, you confirm that you have read, understood, and agree to be bound by these Terms.</div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must be at least <strong style={{ color: '#F8FAFC' }}>18 years old</strong> to use this App.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are <strong style={{ color: '#F8FAFC' }}>solely responsible</strong> for all trading decisions.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>Trading involves <strong style={{ color: '#EF4444' }}>significant financial risk</strong>.</span></div>
             </TermsSection>
-            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">In Deriv, MyTradeApp provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data via Deriv API.  In Forex, MyTradeApp provides automated trading bots and special tools such as Lotsize calculator for risk management.</div></TermsSection>
-            <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. MyTradeApp does not store your login credentials.</div>
+            <TermsSection><div className="terms-title">3. Services Provided</div><div className="terms-text">In Deriv, My TradingZone provides automated trading, AI-assisted analysis, manual trading, bot deployment, and real-time market data via Deriv API.  In Forex, My TradingZone provides automated trading bots and special tools such as Lotsize calculator for risk management.</div></TermsSection>
+            <TermsSection><div className="terms-title">4. Account Responsibility</div><div className="terms-text">You are fully responsible for all trades executed through the App. My TradingZone does not store your login credentials.</div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You must <strong style={{ color: '#F8FAFC' }}>not share</strong> your trading credentials.</span></div>
               <div className="terms-bullet"><span className="bullet-dot">•</span><span>You are responsible for <strong style={{ color: '#F8FAFC' }}>all financial losses</strong>.</span></div>
             </TermsSection>
-            <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">MyTradeApp provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
+            <TermsSection><div className="terms-title">5. Limitation of Liability</div><div className="terms-text">My TradingZone provides the App "as is" without any warranties. We are not liable for any financial losses, technical issues, or damages arising from your use of the App.</div></TermsSection>
             <TermsSection><div className="terms-title">6. Privacy Policy</div><div className="terms-text">We do not store your trading login credentials. We collect minimal data necessary for app functionality and never sell your personal data.</div></TermsSection>
-            <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where MyTradeApp operates.</div></TermsSection>
+            <TermsSection><div className="terms-title">7. Governing Law</div><div className="terms-text">These Terms shall be governed by the laws of the jurisdiction where My TradingZone operates.</div></TermsSection>
             <TermsSection><div className="terms-title">8. Contact Us</div><div className="terms-text">For questions or concerns, contact us at <strong style={{ color: '#3B82F6' }}>tonnykyalo054@gmail.com</strong></div></TermsSection>
           </>
         );
@@ -3322,33 +3209,25 @@ const OptionSideBar = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* ============================================================
-          FOREX — GPU-accelerated smooth push + bloom + edge glow
-          ============================================================ */}
       <style>{`
-        /* ---------- Forex desktop: push the main content with transform ---------- */
         @media (min-width: 769px) {
           body.forex-sidebar-push {
             overflow-x: hidden;
           }
 
           body.forex-sidebar-push .view.active {
-            /* transform is GPU-accelerated — no layout reflow, buttery 60fps */
             transform: translateX(${SIDEBAR_WIDTH});
             transition: transform 0.44s cubic-bezier(0.22, 1, 0.36, 1);
             will-change: transform;
-            /* ensure the sliding content never creates an x-scrollbar */
             overflow-x: hidden;
           }
 
-          /* Reset everything cleanly when the sidebar closes */
           body:not(.forex-sidebar-push) .view.active {
             transform: translateX(0);
             transition: transform 0.44s cubic-bezier(0.22, 1, 0.36, 1);
           }
         }
 
-        /* ---------- Phone: keep pure drawer behaviour, no push ---------- */
         @media (max-width: 768px) {
           body.forex-sidebar-push .view.active {
             transform: none;
@@ -3357,7 +3236,6 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         }
       `}</style>
 
-      {/* Soft bloom over the pushed content for depth (forex-only) */}
       {isForex && (
         <PushBloomLayer visible={isOpen} aria-hidden="true" />
       )}
@@ -3366,8 +3244,15 @@ const OptionSideBar = ({ isOpen, onClose }) => {
         <FullPanelContainer onClick={(e) => e.stopPropagation()}>
           <FullPanelHeader>
             <div className="panel-title-group">
-              <span className="panel-icon">{currentPanel === 'journal' ? <JournalIcon /> : <AcademyIcon />}</span>
-              <span className="panel-title">{currentPanel === 'journal' ? 'Trading Journal' : 'MyTradeApp Academy'}</span>
+              <span className="panel-icon">
+                {currentPanel === 'journal' ? <JournalIcon /> : 
+                 currentPanel === 'performance' ? <PerformanceIcon /> : <AcademyIcon />}
+              </span>
+              <span className="panel-title">
+                {currentPanel === 'journal' ? 'Trading Journal' : 
+                 currentPanel === 'performance' ? 'Trading Performance' : 
+                 (isForex ? 'Learn Forex Trading' : 'Learn Deriv Trading')}
+              </span>
             </div>
             <button className="panel-close-btn" onClick={closeFullPanel}><CloseIcon /></button>
           </FullPanelHeader>
@@ -3410,7 +3295,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
             <div className="avatar">{isForex ? 'FX' : 'MT'}</div>
             <div className="user-info">
               <div className="user-name">John Trader</div>
-              <div className="user-email">john@mytradeapp.com</div>
+              <div className="user-email">john@mytradezone.com</div>
             </div>
           </SidebarHeader>
 
@@ -3422,18 +3307,13 @@ const OptionSideBar = ({ isOpen, onClose }) => {
               {hasNotifications && <span className="notification-dot" />}
               <span className="badge">2</span>
             </NavItem>
-            <NavItem active={activeItem === 'voice'} onClick={handleVoiceClick}>
-              <span className="nav-icon">{voiceEnabled ? <VoiceIcon /> : <VoiceOffIcon />}</span>
-              <span className="nav-label">Voice Notifications</span>
-              <span className="badge" style={{ background: voiceEnabled ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)', color: voiceEnabled ? '#10B981' : '#EF4444' }}>{voiceEnabled ? 'On' : 'Off'}</span>
-            </NavItem>
           </NavSection>
 
           <NavSection>
             <SectionLabel>Learning</SectionLabel>
             <NavItem active={activeItem === 'academy'} onClick={handleAcademyClick}>
               <span className="nav-icon"><AcademyIcon /></span>
-              <span className="nav-label">MyTradeApp Academy</span>
+              <span className="nav-label">{isForex ? 'Learn Forex Trading' : 'Learn Deriv Trading'}</span>
               <span className="badge">NEW</span>
             </NavItem>
           </NavSection>
@@ -3516,7 +3396,7 @@ const OptionSideBar = ({ isOpen, onClose }) => {
           <NavSection>
             <SectionLabel>Company</SectionLabel>
             <SideCard>
-              <div className="card-title"><span className="icon"><CompanyIcon /></span>About MyTradeApp</div>
+              <div className="card-title"><span className="icon"><CompanyIcon /></span>About My TradingZone</div>
               <div className="card-item"><span className="bullet">•</span><span>Third-party trading application supporting multiple markets.</span></div>
               <div className="card-item"><span className="bullet">•</span><span>Provides real-time market streams and automated execution tools.</span></div>
               <div className="learn-more" onClick={handleAboutClick}>About us →</div>
