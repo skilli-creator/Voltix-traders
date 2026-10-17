@@ -213,25 +213,41 @@ export default function ForexHome({
 
   const styles = useMemo(() => `
     /* 
-      FIX: Make .tf-page the dedicated scroll container.
-      Using height: 100% allows it to fill the available space in .forex-content.
-      This ensures smooth scrolling on both mobile and desktop.
+      FIX: Override the global height constraints to allow natural window scrolling.
+      This ensures the page flows correctly and the footer is never cut off.
     */
+    html, body, #root {
+      height: auto !important;
+      min-height: 100% !important;
+      overflow-y: auto !important;
+    }
+    
+    .forex-page {
+      height: auto !important;
+      min-height: 100vh !important;
+    }
+
+    .forex-content {
+      height: auto !important;
+      max-width: 1600px !important;
+    }
+
     .view.active,
     .view.active.tf-page {
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      height: 100% !important;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
     }
+
     .tf-page{
       background:${C.bg};
       color:${C.text};
+      min-height:100%;
       display:block;
       font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;
       transition:background .25s ease, color .25s ease;
-      padding-bottom: 0;
     }
     .tf-page *{ box-sizing:border-box; }
 
@@ -468,7 +484,7 @@ export default function ForexHome({
     .tf-footer {
       border-top: 1px solid ${C.border};
       background: ${C.card};
-      padding: 60px 22px; /* Added extra padding at bottom so it clears the viewport edge */
+      padding: 60px 22px;
       text-align: center;
       color: ${C.text3};
     }
@@ -536,7 +552,7 @@ export default function ForexHome({
       
       .tf-feature-title { font-size: 24px; }
       .tf-feature-desc, .tf-feature-extra { font-size: 13.5px; }
-      
+
       .tf-footer { padding: 40px 18px; }
     }
     @media (max-width:420px){
