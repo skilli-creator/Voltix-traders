@@ -328,18 +328,18 @@ const FOREX_SESSIONS = [
   { key: 'newyork', name: 'New York', flag: '🇺🇸', country: 'United States',  startUTC: 13, endUTC: 22, color: '#34D399', region: 'Americas',     tag: 'USD · CAD' },
 ];
 
-// Order: Home · Strength · Economic Calendar · TradingView · Bots · HeatMap · Liquidity · Volatility · Correlation · Patterns · Currencies · Sentiment · Spreads
+// Order: Home · Strength · Calendar · TradingView · Bots · HeatMap · Liquidity · Volatility · Correlation · Patterns · Currencies · Sentiment · Spreads
 export const FOREX_NAV_ITEMS = [
   { key: 'home',                label: 'Home',                path: '/forexdash',                    icon: <DashboardIcon /> },
-  { key: 'strength',            label: 'Strength Meter',      path: '/forexdash/strength',           icon: <StrengthIcon /> },
-  { key: 'economic-calendar',   label: 'Economic Calendar',   path: '/forexdash/economic-calendar',  icon: <EconomicCalendarIcon /> },
+  { key: 'strength',            label: 'Strength',            path: '/forexdash/strength',           icon: <StrengthIcon /> },
+  { key: 'economic-calendar',   label: 'Calendar',            path: '/forexdash/economic-calendar',  icon: <EconomicCalendarIcon /> },
   { key: 'tradingview',         label: 'TradingView',         path: '/forexdash/tradingview',        icon: <TradingViewIcon /> },
   { key: 'bots',                label: 'Bots',                path: '/forexdash/bots',               icon: <BotsIcon /> },
   { key: 'heatmap',             label: 'Heat Map',            path: '/forexdash/heatmap',            icon: <HeatMapIcon /> },
   { key: 'liquidity',           label: 'Liquidity',           path: '/forexdash/liquidity',          icon: <LiquidityIcon /> },
   { key: 'volatility',          label: 'Volatility',          path: '/forexdash/volatility',         icon: <VolatilityIcon /> },
   { key: 'correlation',         label: 'Correlation',         path: '/forexdash/correlation',        icon: <CorrelationIcon /> },
-  { key: 'patterns',            label: 'Chart Patterns',      path: '/forexdash/patterns',           icon: <ChartPatternsIcon /> },
+  { key: 'patterns',            label: 'Patterns',            path: '/forexdash/patterns',           icon: <ChartPatternsIcon /> },
   { key: 'currencies',          label: 'Currencies',          path: '/forexdash/currencies',         icon: <CurrenciesIcon /> },
   { key: 'sentiment',           label: 'Sentiment',           path: '/forexdash/sentiment',          icon: <SentimentIcon /> },
   { key: 'spreads',             label: 'Spreads',             path: '/forexdash/spreads',            icon: <SpreadsIcon /> },
@@ -714,7 +714,7 @@ const RightSection = styled.div`
   }
 `;
 
-/* Nav — always full-width on its own row, with horizontal scroll on small screens */
+/* Nav — expanded to fit all 13 buttons without scrolling */
 const ForexNavWrapper = styled.nav`
   order: 4;
   flex: 1 1 100%;
@@ -722,30 +722,29 @@ const ForexNavWrapper = styled.nav`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  margin: 10px 0 0;
-  padding: 4px;
+  gap: 2px;
+  margin: 8px 0 0;
+  padding: 3px;
   background: ${p => p.theme?.colors?.background || 'rgba(255,255,255,0.03)'};
   border: 1px solid ${p => p.theme?.colors?.border || 'rgba(255,255,255,0.06)'};
   border-radius: 12px;
 
-  /* Hide scrollbar across browsers */
   scrollbar-width: none; 
   &::-webkit-scrollbar { display: none; }
 
   @media (max-width: 1024px) {
-    margin: 8px 0 0;
-    gap: 3px;
-    padding: 3px;
-    justify-content: flex-start;
-    overflow-x: auto;
+    margin: 6px 0 0;
+    gap: 2px;
+    padding: 2px;
+    justify-content: center;
   }
 
   @media (max-width: 768px) {
-    margin: 6px 0 0;
-    padding: clamp(4px, 1.4vw, 6px);
-    gap: clamp(4px, 1vw, 6px);
-    border-radius: clamp(10px, 3vw, 14px);
+    margin: 4px 0 0;
+    padding: 3px;
+    gap: 2px;
+    border-radius: clamp(8px, 2.4vw, 12px);
+    justify-content: space-between;
   }
 `;
 
@@ -753,21 +752,21 @@ const ForexNavButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 7px 14px;
-  border-radius: 9px;
+  gap: 5px;
+  padding: 6px 8px;
+  border-radius: 7px;
   border: 1px solid transparent;
   background: transparent;
   color: ${p => p.theme?.colors?.textMuted || '#94a3b8'};
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
   flex-shrink: 0;
 
-  svg { width: 15px; height: 15px; flex-shrink: 0; }
+  svg { width: 14px; height: 14px; flex-shrink: 0; }
 
   &:hover {
     background: ${p => p.theme?.colors?.accentLight || 'rgba(59,130,246,0.08)'};
@@ -782,20 +781,23 @@ const ForexNavButton = styled.button`
   }
 
   @media (max-width: 1024px) {
-    padding: 7px 12px;
-    font-size: 12px;
-    gap: 6px;
+    padding: 6px 6px;
+    font-size: 11px;
+    gap: 4px;
+    svg { width: 13px; height: 13px; }
   }
 
   @media (max-width: 768px) {
-    /* Icon-only on phones */
-    padding: clamp(8px, 2.4vw, 11px);
+    /* Force all 13 to share space evenly and fit perfectly */
+    flex: 1 1 0;
+    min-width: 0;
+    padding: clamp(6px, 1.8vw, 9px) 0;
     gap: 0;
-    border-radius: clamp(8px, 2.6vw, 12px);
+    border-radius: clamp(6px, 2vw, 10px);
     
     svg {
-      width: clamp(16px, 4.5vw, 20px);
-      height: clamp(16px, 4.5vw, 20px);
+      width: clamp(14px, 3.8vw, 18px);
+      height: clamp(14px, 3.8vw, 18px);
     }
 
     span { display: none; }
