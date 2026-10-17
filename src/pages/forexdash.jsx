@@ -8,13 +8,11 @@ import ForexHome from '../components/forexhome';
 import LotSize from '../components/lotsize';
 import Strength from '../components/strength';
 import ForexBots from '../components/forexbots';
-import ForexFactoryView from '../components/forex/ForexFactoryView';
 import TradingViewView from '../components/forex/TradingViewView';
 import MyfxbookWidget from '../components/forex/MyfxbookWidget'; // <-- NEW IMPORT
 
 /* =========================================================
    THEMES (mirrors the ones defined in Derivdash.jsx)
-   — keep these in sync if you ever add a new theme key
    ========================================================= */
 const themes = {
   white: {
@@ -693,11 +691,17 @@ export default function ForexDash() {
             {view === 'strength'     && <Strength strength={strength} />}
             {view === 'bots'         && <ForexBots bots={bots} onToggleBot={onToggleBot} />}
             {view === 'tradingview'  && <TradingViewView />}
-            {view === 'forexfactory' && <ForexFactoryView />}
-            
+
             {/* =========================================================
-                MYFXBOOK WIDGETS (Super Creative Reusable Approach)
+                MYFXBOOK WIDGETS
                 ========================================================= */}
+            {view === 'economic-calendar' && (
+              <MyfxbookWidget 
+                title="Economic Calendar"
+                src="https://widget.mfbcdn.net/widget/calendar.html?lang=en&impacts=0,1,2,3&symbols=AUD,CAD,CHF,CNY,EUR,GBP,JPY,NZD,USD" 
+              />
+            )}
+
             {view === 'heatmap' && (
               <MyfxbookWidget 
                 title="Forex Heat Map"
