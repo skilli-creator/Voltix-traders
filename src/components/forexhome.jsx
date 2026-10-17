@@ -213,24 +213,26 @@ export default function ForexHome({
 
   const styles = useMemo(() => `
     /* 
-      FIX: Removed overflow-y: auto from html, body, #root to restore sticky TopBar.
-      The browser window now handles scrolling natively.
+      FIX: Lock the window and use .forex-content as the scroll container.
+      This guarantees the TopBar stays fixed and the footer scrolls perfectly.
     */
     html, body, #root {
-      height: auto !important;
-      min-height: 100% !important;
+      height: 100% !important;
+      overflow: hidden !important;
+    }
+    .forex-page {
+      height: 100% !important;
+      min-height: 100vh !important;
+      overflow: hidden !important;
+    }
+    .forex-content {
+      flex: 1 !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      height: 100% !important;
+      -webkit-overflow-scrolling: touch;
     }
     
-    .forex-page {
-      height: auto !important;
-      min-height: 100vh !important;
-    }
-
-    .forex-content {
-      height: auto !important;
-      max-width: 1600px !important;
-    }
-
     .view.active,
     .view.active.tf-page {
       display: block !important;
