@@ -1,15 +1,11 @@
 // src/components/forexhome.jsx
 import { useState, useEffect, useMemo } from 'react';
 import { useTheme } from 'styled-components';
-import {
-  CURRENCIES, WATCHLIST,
-  fmt, fmtMoney, fmtPrice,
-  currencyStrength, Sparkline,
-} from '../pages/forexdash';
 
 // Images
 import tonnyPhoto from '../assets/images/image13.png';
 import spreadsImg from '../assets/images/spreads.png';
+import strengthImg from '../assets/images/strength.png'; // Ensure this file exists
 import heatmapImg from '../assets/images/heatmap.png';
 import correlationImg from '../assets/images/correlation.png';
 import sentimentsImg from '../assets/images/sentiments.png';
@@ -37,15 +33,8 @@ const STATS = [
   { n:'24/7',  l:'Community support' },
 ];
 
-const MILESTONES = [
-  { n:'12,400+', l:'Trades logged monthly' },
-  { n:'$48M+',   l:'Notional volume tracked' },
-  { n:'3,200+',  l:'Active traders' },
-  { n:'99.98%',  l:'Bot uptime' },
-];
-
 /* ================================================================ */
-/*  FEATURE CONTENT (10 Sections)                                   */
+/*  FEATURE CONTENT (12 Sections)                                   */
 /* ================================================================ */
 const FEATURES = [
   {
@@ -56,6 +45,15 @@ const FEATURES = [
     route: 'spreads',
     desc: 'Forex brokers spread comparison in real time. Best spread is colored in green, worst spread is colored in red.',
     extra: 'For overall best spreads, look for the row colored mostly with green cells.'
+  },
+  {
+    key: 'strength',
+    title: 'Strength Meter',
+    subtitle: 'Rank the majors',
+    img: strengthImg,
+    route: 'strength',
+    desc: 'Rank the eight major currencies against a weighted basket. Spot the strongest and weakest in one glance to find the best trading opportunities.',
+    extra: 'Use this tool to identify which currency pairs are trending the strongest and which are lagging, helping you trade with momentum.'
   },
   {
     key: 'heatmap',
@@ -149,52 +147,12 @@ const FEATURES = [
   }
 ];
 
-const FOREX_BASICS = [
-  { t:'What is forex trading?',              d:'Forex is the global marketplace for exchanging national currencies. Roughly $7.5 trillion trades every single day — the largest and most liquid market in the world.' },
-  { t:'The major pairs explained',           d:'EUR/USD, USD/JPY, GBP/USD and USD/CHF are the majors. Tightest spreads, deepest liquidity — which is why MyTradingZone focuses on EUR/USD first.' },
-  { t:'What is a pip?',                      d:'The smallest standardised move in a currency pair — usually 0.0001 for most pairs and 0.01 for JPY pairs. Pip value depends on lot size and account currency.' },
-  { t:'Lots, mini lots and micro lots',      d:'Standard lot = 100,000 units. Mini = 10,000. Micro = 1,000. Position sizing tools work in all three, so a $200 account can trade without over-leveraging.' },
-  { t:'Leverage and margin',                 d:'Leverage lets you control a large position with a small deposit. It magnifies both profits and losses. Margin is the collateral your broker locks while the trade is open.' },
-  { t:'Trading sessions',                    d:'Forex runs 24/5 across three overlapping sessions: Sydney/Tokyo, London, and New York. Volatility peaks during the London–New York overlap.' },
-];
-
-const GLOSSARY = [
-  { k:'Spread',      v:'The difference between the bid and ask price — your cost to enter a trade.' },
-  { k:'Leverage',    v:'A multiplier that lets you control a larger position than your deposit would allow.' },
-  { k:'Margin call', v:'A broker demand for additional funds when your equity falls below required margin.' },
-  { k:'Drawdown',    v:'The peak-to-trough decline in your equity. The single most important risk metric.' },
-  { k:'Stop-loss',   v:'A pre-set order that closes your trade automatically at a defined loss level.' },
-  { k:'Take-profit', v:'A pre-set order that closes your trade once a profit target is hit.' },
-];
-
-const SESSIONS = [
-  { name:'Sydney',   hours:'22:00 – 07:00 UTC', colorKey:'purple', note:'Thin liquidity · tight ranges · AUD & NZD most active' },
-  { name:'Tokyo',    hours:'00:00 – 09:00 UTC', colorKey:'blue',   note:'JPY pairs dominate · steady, methodical price action' },
-  { name:'London',   hours:'07:00 – 16:00 UTC', colorKey:'green',  note:'Highest volume · strongest trends · EUR & GBP active' },
-  { name:'New York', hours:'12:00 – 21:00 UTC', colorKey:'orange', note:'US data drops · high volatility · USD & gold move hard' },
-];
-
-const PIP_TABLE = [
-  { pair:'EUR/USD', pip:'0.0001', std:'$10.00', mini:'$1.00', micro:'$0.10' },
-  { pair:'GBP/USD', pip:'0.0001', std:'$10.00', mini:'$1.00', micro:'$0.10' },
-  { pair:'USD/JPY', pip:'0.01',   std:'$9.10',  mini:'$0.91', micro:'$0.09' },
-  { pair:'XAU/USD', pip:'0.01',   std:'$1.00',  mini:'$0.10', micro:'$0.01' },
-  { pair:'BTC/USD', pip:'$1.00',  std:'$1.00',  mini:'$0.10', micro:'$0.01' },
-];
-
 const FAQS = [
-  { q:'Is MyTradingZone a broker?',                          a:'No. MyTradingZone is a third-party analytics and automation layer built by Tonny. You keep your own broker account and we give you the tools to trade it better.' },
+  { q:'Is MyTradingZone a broker?',                       a:'No. MyTradingZone is a third-party analytics and automation layer built by Tonny. You keep your own broker account and we give you the tools to trade it better.' },
   { q:'Which instruments do the bots trade?',             a:'Three only: EUR/USD, BTC/USD and XAU/USD. Focusing on a small set lets us tune each strategy far more precisely than a generic multi-asset bot.' },
   { q:'Do I need coding experience?',                     a:'None at all. Every bot is pre-built and configurable from the dashboard. If you can toggle a switch and type a risk %, you can run one.' },
   { q:'How is risk handled?',                             a:'Every position is sized from your balance and a stop-loss distance. The risk manager enforces a daily loss cap and warns you before margin gets dangerous.' },
   { q:'Can I run bots and manual trades together?',       a:'Yes. Both sit in the same book and the dashboard aggregates P/L, margin and exposure across both.' },
-];
-
-const QUOTES = [
-  'Discipline beats prediction every single time.',
-  'The market pays patience, not activity.',
-  'Amateurs chase trades. Professionals size them.',
-  'Consistency compounds — recklessness compounds faster.',
 ];
 
 /* ================================================================ */
@@ -245,17 +203,8 @@ export default function ForexHome({
       text3: tc.textMuted     || '#6b6b6b',
       green: tc.success       || '#22c55e',
       red:   tc.danger        || '#ef4444',
-      purple: tc.purple || '#a855f7',
-      blue:   tc.info   || '#3b82f6',
-      orange: tc.warning || '#f5a524',
     };
   }, [theme]);
-
-  const [quoteIdx, setQuoteIdx] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setQuoteIdx((i) => (i + 1) % QUOTES.length), 5200);
-    return () => clearInterval(t);
-  }, []);
 
   const openExternal = (url) => {
     if (!url || url === '#') {
@@ -447,73 +396,6 @@ export default function ForexHome({
       border-left: 2px solid ${C.gold};
     }
 
-    /* Basics */
-    .tf-basics{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
-    .tf-basic{ padding:24px 26px; border-radius:14px;
-      border:1px solid ${C.border}; background:${C.card};
-      transition:.22s; }
-    .tf-basic:hover{ border-color:${C.goldBorder}; }
-    .tf-basic h4{ font-size:14px; font-weight:800; color:${C.text};
-      margin:0 0 8px; }
-    .tf-basic p{ font-size:12.5px; line-height:1.7; color:${C.text2};
-      margin:0; }
-
-    /* Sessions */
-    .tf-sessions{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
-    .tf-session{ padding:24px; border-radius:14px;
-      border:1px solid ${C.border}; background:${C.card};
-      position:relative; overflow:hidden; }
-    .tf-session::before{ content:''; position:absolute; top:0; left:0;
-      bottom:0; width:3px; background:var(--sc); }
-    .tf-session .nm{ font-size:15px; font-weight:800; color:${C.text};
-      margin-bottom:6px; }
-    .tf-session .hr{ font-family:'JetBrains Mono',monospace;
-      font-size:11.5px; font-weight:700; color:var(--sc);
-      margin-bottom:12px; }
-    .tf-session .nt{ font-size:11.5px; line-height:1.6;
-      color:${C.text2}; }
-
-    /* Pip Table */
-    .tf-tbl-wrap{ border-radius:14px; border:1px solid ${C.border};
-      background:${C.card}; overflow:hidden; }
-    .tf-tbl{ width:100%; border-collapse:collapse; }
-    .tf-tbl th{ text-align:left; padding:16px 22px;
-      font-size:10.5px; font-weight:800; letter-spacing:1px;
-      text-transform:uppercase; color:${C.text3};
-      background:${C.bg2}; border-bottom:1px solid ${C.border}; }
-    .tf-tbl th.r, .tf-tbl td.r{ text-align:right; }
-    .tf-tbl td{ padding:16px 22px; font-size:13px;
-      color:${C.text2}; border-bottom:1px solid ${C.border}; }
-    .tf-tbl tr:last-child td{ border-bottom:none; }
-    .tf-tbl td.num{ font-family:'JetBrains Mono',monospace;
-      font-size:12.5px; font-weight:700; color:${C.text}; }
-    .tf-tbl tr:hover td{ background:${C.goldSoft}; }
-
-    /* Glossary */
-    .tf-gloss{ display:grid; grid-template-columns:repeat(2,1fr);
-      gap:10px; }
-    .tf-term{ display:flex; gap:16px; align-items:flex-start;
-      padding:16px 18px; border-radius:12px;
-      border:1px solid ${C.border}; background:${C.card}; }
-    .tf-term .k{ font-family:'JetBrains Mono',monospace;
-      font-size:12px; font-weight:800; color:${C.gold};
-      min-width:100px; padding-top:2px; }
-    .tf-term .v{ font-size:12.5px; line-height:1.65;
-      color:${C.text2}; }
-
-    /* Milestones */
-    .tf-miles{ display:grid; grid-template-columns:repeat(4,1fr);
-      gap:14px; }
-    .tf-mile{ padding:28px 22px; border-radius:14px;
-      border:1px solid ${C.border}; background:${C.card};
-      text-align:center; }
-    .tf-mile .n{ font-family:'JetBrains Mono',monospace;
-      font-size:28px; font-weight:800; letter-spacing:-1.2px;
-      color:${C.gold}; line-height:1; margin-bottom:10px; }
-    .tf-mile .l{ font-size:10.5px; font-weight:700;
-      letter-spacing:1px; text-transform:uppercase;
-      color:${C.text3}; }
-
     /* FAQ */
     .tf-faq{ display:grid; grid-template-columns:1fr 1fr;
       gap:12px; }
@@ -534,40 +416,10 @@ export default function ForexHome({
       font-size:13px; line-height:1.7; color:${C.text2};
       margin:0; }
 
-    /* CTA */
-    .tf-cta{ position:relative; overflow:hidden;
-      padding:84px 40px; border-radius:22px;
-      text-align:center; border:1px solid ${C.goldBorder};
-      background:
-        radial-gradient(ellipse at 50% 0%, ${C.goldSoft}, transparent 62%),
-        linear-gradient(180deg, ${C.card} 0%, ${C.bg} 100%); }
-    .tf-cta h2{ font-size:40px; font-weight:900;
-      letter-spacing:-1.6px; color:${C.text};
-      margin:0 0 16px; line-height:1.1; }
-    .tf-cta h2 .g{ color:${C.gold}; }
-    .tf-cta p{ font-size:15px; line-height:1.65;
-      color:${C.text2}; max-width:580px;
-      margin:0 auto 34px; }
-    .tf-cta-row{ display:flex; justify-content:center;
-      gap:14px; flex-wrap:wrap; }
-
-    /* Notice */
-    .tf-notice{ display:flex; align-items:flex-start; gap:12px;
-      padding:20px 22px; border-radius:12px;
-      background:${C.goldSoft};
-      border:1px solid ${C.goldBorder}; }
-    .tf-notice svg{ width:18px; height:18px; flex-shrink:0;
-      margin-top:1px; stroke:${C.gold}; fill:none;
-      stroke-width:1.8; stroke-linecap:round;
-      stroke-linejoin:round; }
-    .tf-notice span{ font-size:12.5px; line-height:1.7;
-      color:${C.text2}; }
-
     /* Responsive */
     @media (max-width:1100px){
       .tf-hero h1{ font-size:60px; letter-spacing:-2.4px; }
       .tf-h2{ font-size:36px; letter-spacing:-1.2px; }
-      .tf-sessions{ grid-template-columns:repeat(2,1fr); }
     }
     @media (max-width:900px){
       .tf-hero{ padding:72px 0 84px; }
@@ -577,7 +429,6 @@ export default function ForexHome({
       .tf-founder-photo{ max-width:320px; }
       .tf-founder-stats{ grid-template-columns:repeat(2,1fr); gap:22px; }
       .tf-sec{ padding:60px 0; }
-      .tf-miles{ grid-template-columns:repeat(2,1fr); }
 
       /* Feature Rows Mobile/Tablet */
       .tf-feature-row {
@@ -609,14 +460,6 @@ export default function ForexHome({
       .tf-founder-bio{ font-size:13.5px; }
       .tf-founder-stats{ grid-template-columns:1fr 1fr; gap:18px; }
       .tf-fstat .n{ font-size:22px; }
-      .tf-basics{ grid-template-columns:1fr; gap:11px; }
-      .tf-sessions{ grid-template-columns:1fr; gap:11px; }
-      .tf-gloss{ grid-template-columns:1fr; gap:9px; }
-      .tf-miles{ grid-template-columns:1fr 1fr; gap:11px; }
-      .tf-tbl th, .tf-tbl td{ padding:12px 14px; font-size:12px; }
-      .tf-cta{ padding:54px 22px; border-radius:18px; }
-      .tf-cta h2{ font-size:27px; letter-spacing:-1px; }
-      .tf-cta p{ font-size:13.5px; }
       .tf-faq summary{ font-size:12.5px; padding:15px 18px; }
       .tf-faq details p{ padding:0 18px 17px; font-size:12.5px; }
       
@@ -627,17 +470,8 @@ export default function ForexHome({
       .tf-hero h1{ font-size:32px; }
       .tf-fstat .n{ font-size:19px; }
       .tf-founder-stats{ grid-template-columns:1fr; }
-      .tf-miles{ grid-template-columns:1fr; }
     }
   `, [C]);
-
-  const sessionColor = (key) => {
-    if (key === 'purple') return C.purple;
-    if (key === 'blue')   return C.blue;
-    if (key === 'green')  return C.green;
-    if (key === 'orange') return C.orange;
-    return C.gold;
-  };
 
   return (
     <>
@@ -797,145 +631,9 @@ export default function ForexHome({
         </div>
 
         {/* ============================================================
-            FOREX BASICS
-           ============================================================ */}
-        <div className="tf-sec">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">Forex 101</div>
-              <h2 className="tf-h2">Everything a new trader <span className="g">needs to know</span></h2>
-              <p className="tf-sub">
-                Straight answers to the questions every retail trader asks in their first month.
-              </p>
-            </div>
-            <div className="tf-basics">
-              {FOREX_BASICS.map((b) => (
-                <div className="tf-basic" key={b.t}>
-                  <h4>{b.t}</h4>
-                  <p>{b.d}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            SESSIONS
-           ============================================================ */}
-        <div className="tf-sec tf-alt">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">Market clock</div>
-              <h2 className="tf-h2">The four <span className="g">forex sessions</span></h2>
-              <p className="tf-sub">Know when the market moves — timing matters as much as direction.</p>
-            </div>
-            <div className="tf-sessions">
-              {SESSIONS.map((s) => (
-                <div className="tf-session" key={s.name} style={{ '--sc': sessionColor(s.colorKey) }}>
-                  <div className="nm">{s.name}</div>
-                  <div className="hr">{s.hours}</div>
-                  <div className="nt">{s.note}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            PIP TABLE
-           ============================================================ */}
-        <div className="tf-sec">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">Reference</div>
-              <h2 className="tf-h2">Pip value <span className="g">cheat-sheet</span></h2>
-              <p className="tf-sub">What one pip is worth per lot size, for the instruments you actually trade.</p>
-            </div>
-            <div className="tf-tbl-wrap">
-              <table className="tf-tbl">
-                <thead>
-                  <tr>
-                    <th>Instrument</th>
-                    <th className="r">1 Pip</th>
-                    <th className="r">Standard lot</th>
-                    <th className="r">Mini lot</th>
-                    <th className="r">Micro lot</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {PIP_TABLE.map((r) => (
-                    <tr key={r.pair}>
-                      <td><strong style={{ color: C.text }}>{r.pair}</strong></td>
-                      <td className="r num">{r.pip}</td>
-                      <td className="r num">{r.std}</td>
-                      <td className="r num">{r.mini}</td>
-                      <td className="r num">{r.micro}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            GLOSSARY
-           ============================================================ */}
-        <div className="tf-sec tf-alt">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">Glossary</div>
-              <h2 className="tf-h2">Forex terms, <span className="g">defined plainly</span></h2>
-            </div>
-            <div className="tf-gloss">
-              {GLOSSARY.map((g) => (
-                <div className="tf-term" key={g.k}>
-                  <div className="k">{g.k}</div>
-                  <div className="v">{g.v}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            MILESTONES
-           ============================================================ */}
-        <div className="tf-sec">
-          <div className="tf-wrap">
-            <div className="tf-head">
-              <div className="tf-eyebrow">By the numbers</div>
-              <h2 className="tf-h2">The platform in <span className="g">real numbers</span></h2>
-            </div>
-            <div className="tf-miles">
-              {MILESTONES.map((m) => (
-                <div className="tf-mile" key={m.l}>
-                  <div className="n">{m.n}</div>
-                  <div className="l">{m.l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            QUOTE ROTATOR
-           ============================================================ */}
-        <div className="tf-wrap tf-sec-sm">
-          <div style={{
-            padding:'30px 40px', borderRadius:16,
-            border:`1px solid ${C.border}`, background:C.card,
-            display:'flex', alignItems:'center', gap:22,
-          }}>
-            <div style={{ fontFamily:'Georgia,serif', fontSize:56, lineHeight:.55, color:C.gold, opacity:.35, flexShrink:0 }}>“</div>
-            <div style={{ fontSize:17, fontWeight:600, color:C.text, letterSpacing:-.3, lineHeight:1.5 }}>{QUOTES[quoteIdx]}</div>
-          </div>
-        </div>
-
-        {/* ============================================================
             FAQ
            ============================================================ */}
-        <div className="tf-sec tf-alt">
+        <div className="tf-sec">
           <div className="tf-wrap">
             <div className="tf-head">
               <div className="tf-eyebrow">FAQ</div>
@@ -949,45 +647,6 @@ export default function ForexHome({
                 </details>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            FINAL CTA
-           ============================================================ */}
-        <div className="tf-wrap tf-sec">
-          <div className="tf-cta">
-            <h2>Ready to trade with <span className="g">an edge</span>?</h2>
-            <p>
-              Start with the free tools, then let a bot handle the execution. No broker lock-in,
-              no hidden promises — just a better way to trade EUR/USD, BTC/USD and XAU/USD.
-            </p>
-            <div className="tf-cta-row">
-              <button className="tf-btn tf-btn-gold" onClick={() => openExternal(COMMUNITY_URL)}>
-                Join MyTradingZone community <Icon name="arrow" size={16} />
-              </button>
-              <button className="tf-btn tf-btn-outline" onClick={() => go('strength')}>
-                Check Currency Strength
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* ============================================================
-            NOTICE
-           ============================================================ */}
-        <div className="tf-wrap" style={{ paddingBottom: 60 }}>
-          <div className="tf-notice">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 8h.01M11 12h1v4h1" />
-            </svg>
-            <span>
-              MyTradingZone is a third-party analytics and automation platform created by Tonny
-              (Tonnyfx) — not a broker or investment advisor. All performance figures shown are
-              simulated and for illustration only. Trading forex, crypto and metals carries
-              significant risk of loss. Never risk capital you cannot afford to lose.
-            </span>
           </div>
         </div>
 
