@@ -47,8 +47,8 @@ export default function TradingViewView() {
       withdateranges: true,
       save_image: false,
       backgroundColor: c.bg || (isLight ? '#ffffff' : '#0b0a08'),
-      gridColor:       c.border || (isLight ? '#e2e8f0' : '#2a2620'),
-      container_id:    widgetId.current,
+      gridColor: c.border || (isLight ? '#e2e8f0' : '#2a2620'),
+      container_id: widgetId.current,
     });
 
     wrapper.appendChild(inner);
@@ -61,25 +61,17 @@ export default function TradingViewView() {
   return (
     <div
       style={{
-        // Break out of .forex-content padding so the chart fills the page
-        margin: '-24px -26px -60px',
-        width: 'calc(100% + 52px)',
-        height: 'calc(100vh - 76px)',
+        position: 'fixed',
+        top: 'var(--topbar-h, 76px)',
+        left: 0,
+        right: 0,
+        bottom: 0,
         background: c.bg || '#0b0a08',
-        overflow: 'hidden',
+        zIndex: 1, // Keeps it below your TopBar (z-index: 200)
+        display: 'flex',
+        flexDirection: 'column',
       }}
-      className="tv-fullbleed"
     >
-      <style>{`
-        @media (max-width: 768px) {
-          .tv-fullbleed {
-            margin: -18px -14px -80px !important;
-            width: calc(100% + 28px) !important;
-            height: calc(100vh - 56px) !important;
-          }
-        }
-      `}</style>
-
       <div
         ref={containerRef}
         style={{
