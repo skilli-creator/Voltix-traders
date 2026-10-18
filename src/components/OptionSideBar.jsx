@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import Academy from '../pages/Academy';
+import ForexCourse from '../pages/forexcourse'; // <--- ADDED THIS IMPORT
 
 // ============================================
 // KEYFRAMES
@@ -2494,7 +2495,17 @@ const OptionSideBar = ({ isOpen, onClose }) => {
   const handleHelpClick = () => { setActiveItem('help'); openPopup('help', { title: 'Help & Support', icon: <HelpIcon /> }); };
   const handleResponsibleTradingClick = () => { setActiveItem('responsible-trading'); openPopup('responsible-trading', { title: 'Responsible Trading', icon: <ShieldIcon /> }); };
   const handleAboutClick = () => { setActiveItem('about'); openPopup('about', { title: 'About MyTradingZone', icon: <CompanyIcon /> }); };
-  const handleAcademyClick = () => { setActiveItem('academy'); setCurrentPanel('academy'); openFullPanel(<Academy />); };
+  
+  // --- UPDATED ACADEMY CLICK FUNCTION ---
+  const handleAcademyClick = () => { 
+    setActiveItem('academy'); 
+    setCurrentPanel('academy'); 
+    if (isForex) {
+      openFullPanel(<ForexCourse />); 
+    } else {
+      openFullPanel(<Academy />); 
+    }
+  };
 
   const handleRiskCalculatorClick = () => {
     setActiveItem('risk-calculator');
