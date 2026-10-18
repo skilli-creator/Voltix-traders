@@ -1,6 +1,6 @@
 // src/pages/forexcourse.jsx
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { ChevronDown, ChevronRight, CheckCircle2, Circle, Clock, BookOpen, Menu, X } from 'lucide-react';
 
 // --- COURSE DATA ---
@@ -1464,22 +1464,45 @@ const courseData = [
   }
 ];
 
+// --- ANIMATIONS ---
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const pulse = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+`;
+
 // --- STYLED COMPONENTS ---
+
+// This wrapper removes any padding from the parent FullPanelBody
+const NoPaddingWrapper = styled.div`
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: ${props => props.theme?.colors?.bg || '#0F172A'};
+`;
 
 const CourseContainer = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1;
   height: 100%;
-  min-height: 100vh;
-  background: #f8fafc;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  border-radius: 12px;
+  min-height: 0; /* Crucial for flexbox scrolling */
   overflow: hidden;
+  background: ${props => props.theme?.colors?.bg || '#0F172A'};
+  color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   @media (min-width: 768px) {
     flex-direction: row;
-    height: 100%;
-    max-height: 100vh;
   }
 `;
 
@@ -1488,25 +1511,26 @@ const MobileHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  background: ${props => props.theme?.colors?.surface || '#1E293B'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
+  flex-shrink: 0;
 
   h1 {
     font-size: 18px;
     font-weight: 700;
-    color: #0f172a;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     margin: 0;
   }
 
   button {
-    background: #f1f5f9;
+    background: ${props => props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)'};
     border: none;
     padding: 8px;
     border-radius: 8px;
-    color: #475569;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -1514,8 +1538,8 @@ const MobileHeader = styled.div`
     transition: all 0.2s ease;
 
     &:hover {
-      background: #e2e8f0;
-      color: #0f172a;
+      background: ${props => props.theme?.colors?.accent || '#3B82F6'};
+      color: #fff;
     }
   }
 
@@ -1526,47 +1550,49 @@ const MobileHeader = styled.div`
 
 const Sidebar = styled.aside`
   width: 100%;
-  background: #ffffff;
-  border-right: 1px solid #e2e8f0;
-  overflow-y: auto;
-  display: ${props => (props.isOpen ? 'block' : 'none')};
+  background: ${props => props.theme?.colors?.surface || '#1E293B'};
+  border-right: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  display: ${props => (props.isOpen ? 'flex' : 'none')};
+  flex-direction: column;
   flex-shrink: 0;
   max-height: 50vh;
+  position: relative;
+  min-height: 0;
 
   @media (min-width: 768px) {
-    display: block;
+    display: flex;
     width: 340px;
     max-height: 100%;
   }
-
-  &::-webkit-scrollbar { width: 6px; }
-  &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
-  &::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 `;
 
 const ProgressSection = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 10;
   padding: 24px;
-  border-bottom: 1px solid #f1f5f9;
-  background: linear-gradient(to bottom, #ffffff, #f8fafc);
+  background: ${props => props.theme?.colors?.surface || '#1E293B'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
 
   h2 {
     font-size: 18px;
     font-weight: 700;
-    color: #0f172a;
-    margin: 0 0 8px 0;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
+    margin: 0 0 12px 0;
   }
 
   .stats-row {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: #64748b;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     margin-bottom: 8px;
     font-weight: 500;
 
     .percentage {
-      color: #3b82f6;
+      color: ${props => props.theme?.colors?.accent || '#3B82F6'};
       font-weight: 700;
     }
   }
@@ -1574,22 +1600,30 @@ const ProgressSection = styled.div`
   .progress-bar-bg {
     width: 100%;
     height: 8px;
-    background: #e2e8f0;
+    background: ${props => props.theme?.colors?.bg || '#0F172A'};
     border-radius: 99px;
     overflow: hidden;
   }
 
   .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6, #6366f1);
+    background: linear-gradient(90deg, ${props => props.theme?.colors?.accent || '#3B82F6'}, #6366f1);
     border-radius: 99px;
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 0 10px ${props => props.theme?.colors?.accent || 'rgba(59, 130, 246, 0.4)'};
   }
 `;
 
-const ModuleList = styled.div`
+const ScrollableList = styled.div`
+  flex: 1;
+  overflow-y: auto;
   padding: 12px 0;
+  min-height: 0;
+
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.border || '#334155'}; border-radius: 99px; }
+  &::-webkit-scrollbar-thumb:hover { background: ${props => props.theme?.colors?.textMuted || '#475569'}; }
 `;
 
 const ModuleWrapper = styled.div`
@@ -1611,25 +1645,24 @@ const ModuleButton = styled.button`
   span {
     font-size: 14px;
     font-weight: ${props => (props.active ? '600' : '500')};
-    color: ${props => (props.active ? '#1e40af' : '#334155')};
+    color: ${props => (props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.text || '#F8FAFC')};
     padding-right: 12px;
   }
 
   &:hover {
-    background: #f8fafc;
-    color: #0f172a;
+    background: ${props => props.theme?.colors?.bg || 'rgba(255, 255, 255, 0.03)'};
   }
 
   .icon {
-    color: ${props => (props.active ? '#3b82f6' : '#94a3b8')};
+    color: ${props => (props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.textMuted || '#94A3B8')};
     transition: transform 0.2s ease;
   }
 `;
 
 const LessonList = styled.div`
-  background: #f8fafc;
-  border-top: 1px solid #f1f5f9;
-  border-bottom: 1px solid #f1f5f9;
+  background: ${props => props.theme?.colors?.bg || 'rgba(0, 0, 0, 0.2)'};
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.05)'};
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.05)'};
   padding: 8px 0;
 `;
 
@@ -1638,9 +1671,9 @@ const LessonButton = styled.button`
   display: flex;
   align-items: flex-start;
   padding: 10px 24px 10px 32px;
-  background: ${props => (props.active ? '#eff6ff' : 'transparent')};
+  background: ${props => (props.active ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)' : 'transparent')};
   border: none;
-  border-right: 3px solid ${props => (props.active ? '#3b82f6' : 'transparent')};
+  border-right: 3px solid ${props => (props.active ? props.theme?.colors?.accent || '#3B82F6' : 'transparent')};
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
@@ -1648,7 +1681,7 @@ const LessonButton = styled.button`
   span {
     font-size: 13px;
     line-height: 1.4;
-    color: ${props => (props.active ? '#1d4ed8' : '#475569')};
+    color: ${props => (props.active ? props.theme?.colors?.accent || '#3B82F6' : props.theme?.colors?.textMuted || '#94A3B8')};
     font-weight: ${props => (props.active ? '600' : '400')};
   }
 
@@ -1657,48 +1690,53 @@ const LessonButton = styled.button`
     margin-top: 2px;
     flex-shrink: 0;
     color: ${props => {
-      if (props.completed) return '#10b981';
-      if (props.active) return '#3b82f6';
-      return '#cbd5e1';
+      if (props.completed) return '#10B981';
+      if (props.active) return props.theme?.colors?.accent || '#3B82F6';
+      return props.theme?.colors?.border || '#475569';
     }};
   }
 
   &:hover {
-    background: ${props => (props.active ? '#eff6ff' : '#f1f5f9')};
+    background: ${props => (props.active ? props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.03)')};
   }
 `;
 
 const MainContent = styled.main`
   flex: 1;
   overflow-y: auto;
-  width: 100%;
-  background: #f8fafc;
+  background: ${props => props.theme?.colors?.bg || '#0F172A'};
   position: relative;
+  min-height: 0;
 
   &::-webkit-scrollbar { width: 8px; }
   &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+  &::-webkit-scrollbar-thumb { background: ${props => props.theme?.colors?.border || '#334155'}; border-radius: 99px; }
 `;
 
 const ContentWrapper = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 40px 24px;
-  animation: fadeIn 0.4s ease;
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  animation: ${fadeIn} 0.4s ease;
 `;
 
 const LessonCard = styled.div`
-  background: #ffffff;
+  background: ${props => props.theme?.colors?.surface || '#1E293B'};
   border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+  border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   padding: 40px;
+  position: relative;
   overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, ${props => props.theme?.colors?.accent || '#3B82F6'}, transparent);
+    opacity: 0.5;
+  }
 
   @media (max-width: 640px) {
     padding: 24px;
@@ -1707,13 +1745,13 @@ const LessonCard = styled.div`
 
 const LessonHeader = styled.div`
   margin-bottom: 32px;
-  border-bottom: 2px solid #f1f5f9;
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   padding-bottom: 24px;
 
   .category {
     font-size: 12px;
     font-weight: 700;
-    color: #3b82f6;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 8px;
@@ -1723,7 +1761,7 @@ const LessonHeader = styled.div`
   h1 {
     font-size: 32px;
     font-weight: 800;
-    color: #0f172a;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     margin: 0 0 16px 0;
     line-height: 1.2;
     letter-spacing: -0.5px;
@@ -1738,7 +1776,7 @@ const LessonHeader = styled.div`
     align-items: center;
     gap: 16px;
     font-size: 13px;
-    color: #64748b;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
     font-weight: 500;
 
     .meta-item {
@@ -1752,12 +1790,12 @@ const LessonHeader = styled.div`
 const LessonBody = styled.div`
   font-size: 16px;
   line-height: 1.8;
-  color: #334155;
+  color: ${props => props.theme?.colors?.textSecondary || '#CBD5E1'};
 
   h3 {
     font-size: 20px;
     font-weight: 700;
-    color: #0f172a;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
     margin-top: 40px;
     margin-bottom: 16px;
     letter-spacing: -0.3px;
@@ -1769,7 +1807,7 @@ const LessonBody = styled.div`
 
   strong {
     font-weight: 600;
-    color: #0f172a;
+    color: ${props => props.theme?.colors?.text || '#F8FAFC'};
   }
 
   ul {
@@ -1785,17 +1823,17 @@ const LessonBody = styled.div`
 
   em {
     font-style: italic;
-    color: #475569;
+    color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
   }
 
   .formula {
-    background: #f1f5f9;
+    background: ${props => props.theme?.colors?.bg || '#0F172A'};
     padding: 16px;
     border-radius: 8px;
     font-family: 'Courier New', Courier, monospace;
     font-size: 14px;
-    color: #0f172a;
-    border: 1px solid #e2e8f0;
+    color: ${props => props.theme?.colors?.accent || '#3B82F6'};
+    border: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
     margin-bottom: 20px;
     display: block;
     overflow-x: auto;
@@ -1810,7 +1848,7 @@ const LessonBody = styled.div`
 const ActionArea = styled.div`
   margin-top: 48px;
   padding-top: 24px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid ${props => props.theme?.colors?.border || 'rgba(255, 255, 255, 0.08)'};
   display: flex;
   justify-content: flex-start;
 `;
@@ -1829,15 +1867,16 @@ const CompleteButton = styled.button`
   border: 1px solid transparent;
 
   ${props => props.completed ? `
-    background: #ecfdf5;
-    color: #047857;
-    border-color: #a7f3d0;
-    &:hover { background: #d1fae5; border-color: #6ee7b7; }
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+    border-color: rgba(16, 185, 129, 0.2);
+    &:hover { background: rgba(16, 185, 129, 0.2); }
   ` : `
-    background: #3b82f6;
+    background: ${props.theme?.colors?.accent || '#3B82F6'};
     color: #ffffff;
-    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
-    &:hover { background: #2563eb; box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); transform: translateY(-1px); }
+    box-shadow: 0 4px 14px ${props.theme?.colors?.accentLight || 'rgba(59, 130, 246, 0.3)'};
+    animation: ${pulse} 2s infinite;
+    &:hover { filter: brightness(1.1); transform: translateY(-1px); }
   `}
 
   &:active {
@@ -1851,12 +1890,12 @@ const EmptyState = styled.div`
   align-items: center;
   justify-content: center;
   height: 60vh;
-  color: #94a3b8;
+  color: ${props => props.theme?.colors?.textMuted || '#94A3B8'};
   text-align: center;
 
   svg {
     margin-bottom: 16px;
-    color: #cbd5e1;
+    color: ${props => props.theme?.colors?.border || '#334155'};
   }
 
   p {
@@ -1908,118 +1947,120 @@ export default function ForexCourse() {
   const progressPercentage = Math.round((completedLessons.length / totalLessons) * 100);
 
   return (
-    <CourseContainer>
-      
-      {/* Mobile Header */}
-      <MobileHeader>
-        <h1>Forex Course</h1>
-        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-          {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </MobileHeader>
+    <NoPaddingWrapper>
+      <CourseContainer>
+        
+        {/* Mobile Header */}
+        <MobileHeader>
+          <h1>Forex Course</h1>
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </MobileHeader>
 
-      {/* Sidebar */}
-      <Sidebar isOpen={isSidebarOpen}>
-        <ProgressSection>
-          <h2>Your Progress</h2>
-          <div className="stats-row">
-            <span>{completedLessons.length} of {totalLessons} completed</span>
-            <span className="percentage">{progressPercentage}%</span>
-          </div>
-          <div className="progress-bar-bg">
-            <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
-          </div>
-        </ProgressSection>
+        {/* Sidebar */}
+        <Sidebar isOpen={isSidebarOpen}>
+          <ProgressSection>
+            <h2>Your Progress</h2>
+            <div className="stats-row">
+              <span>{completedLessons.length} of {totalLessons} completed</span>
+              <span className="percentage">{progressPercentage}%</span>
+            </div>
+            <div className="progress-bar-bg">
+              <div className="progress-bar-fill" style={{ width: `${progressPercentage}%` }}></div>
+            </div>
+          </ProgressSection>
 
-        <ModuleList>
-          {courseData.map((module) => (
-            <ModuleWrapper key={module.id}>
-              <ModuleButton 
-                active={activeModule?.id === module.id}
-                onClick={() => toggleModule(module.id)}
-              >
-                <span>{module.title}</span>
-                {activeModuleId === module.id ? (
-                  <ChevronDown size={18} className="icon" />
-                ) : (
-                  <ChevronRight size={18} className="icon" />
-                )}
-              </ModuleButton>
-              
-              {activeModuleId === module.id && (
-                <LessonList>
-                  {module.lessons.map((lesson) => {
-                    const isCompleted = completedLessons.includes(lesson.id);
-                    const isActive = activeLessonId === lesson.id;
-                    
-                    return (
-                      <LessonButton
-                        key={lesson.id}
-                        active={isActive}
-                        completed={isCompleted}
-                        onClick={() => handleLessonClick(lesson.id)}
-                      >
-                        <div className="status-icon">
-                          {isCompleted ? (
-                            <CheckCircle2 size={16} />
-                          ) : (
-                            <Circle size={16} />
-                          )}
-                        </div>
-                        <span>{lesson.title}</span>
-                      </LessonButton>
-                    );
-                  })}
-                </LessonList>
-              )}
-            </ModuleWrapper>
-          ))}
-        </ModuleList>
-      </Sidebar>
-
-      {/* Main Content */}
-      <MainContent>
-        {activeLesson ? (
-          <ContentWrapper>
-            <LessonCard>
-              <LessonHeader>
-                <span className="category">{activeModule.title}</span>
-                <h1>{activeLesson.title}</h1>
-                <div className="meta">
-                  <div className="meta-item">
-                    <Clock size={16} /> {activeLesson.duration}
-                  </div>
-                  <div className="meta-item">
-                    <BookOpen size={16} /> Reading Material
-                  </div>
-                </div>
-              </LessonHeader>
-
-              <LessonBody 
-                dangerouslySetInnerHTML={{ __html: activeLesson.content }}
-              />
-
-              <ActionArea>
-                <CompleteButton 
-                  completed={completedLessons.includes(activeLesson.id)}
-                  onClick={() => toggleLessonComplete(activeLesson.id)}
+          <ScrollableList>
+            {courseData.map((module) => (
+              <ModuleWrapper key={module.id}>
+                <ModuleButton 
+                  active={activeModule?.id === module.id}
+                  onClick={() => toggleModule(module.id)}
                 >
-                  {completedLessons.includes(activeLesson.id) ? (
-                    <><CheckCircle2 size={18} /> Marked as Completed</>
+                  <span>{module.title}</span>
+                  {activeModuleId === module.id ? (
+                    <ChevronDown size={18} className="icon" />
                   ) : (
-                    <><Circle size={18} /> Mark as Completed</>
+                    <ChevronRight size={18} className="icon" />
                   )}
-                </CompleteButton>
-              </ActionArea>
-            </LessonCard>
-          </ContentWrapper>
-        ) : (
-          <EmptyState>
-            <BookOpen size={48} />
-            <p>Select a lesson from the sidebar to start learning.</p>
-          </EmptyState>
-        )}
-      </MainContent>
-    </CourseContainer>
+                </ModuleButton>
+                
+                {activeModuleId === module.id && (
+                  <LessonList>
+                    {module.lessons.map((lesson) => {
+                      const isCompleted = completedLessons.includes(lesson.id);
+                      const isActive = activeLessonId === lesson.id;
+                      
+                      return (
+                        <LessonButton
+                          key={lesson.id}
+                          active={isActive}
+                          completed={isCompleted}
+                          onClick={() => handleLessonClick(lesson.id)}
+                        >
+                          <div className="status-icon">
+                            {isCompleted ? (
+                              <CheckCircle2 size={16} />
+                            ) : (
+                              <Circle size={16} />
+                            )}
+                          </div>
+                          <span>{lesson.title}</span>
+                        </LessonButton>
+                      );
+                    })}
+                  </LessonList>
+                )}
+              </ModuleWrapper>
+            ))}
+          </ScrollableList>
+        </Sidebar>
+
+        {/* Main Content */}
+        <MainContent>
+          {activeLesson ? (
+            <ContentWrapper>
+              <LessonCard>
+                <LessonHeader>
+                  <span className="category">{activeModule.title}</span>
+                  <h1>{activeLesson.title}</h1>
+                  <div className="meta">
+                    <div className="meta-item">
+                      <Clock size={16} /> {activeLesson.duration}
+                    </div>
+                    <div className="meta-item">
+                      <BookOpen size={16} /> Reading Material
+                    </div>
+                  </div>
+                </LessonHeader>
+
+                <LessonBody 
+                  dangerouslySetInnerHTML={{ __html: activeLesson.content }}
+                />
+
+                <ActionArea>
+                  <CompleteButton 
+                    completed={completedLessons.includes(activeLesson.id)}
+                    onClick={() => toggleLessonComplete(activeLesson.id)}
+                  >
+                    {completedLessons.includes(activeLesson.id) ? (
+                      <><CheckCircle2 size={18} /> Marked as Completed</>
+                    ) : (
+                      <><Circle size={18} /> Mark as Completed</>
+                    )}
+                  </CompleteButton>
+                </ActionArea>
+              </LessonCard>
+            </ContentWrapper>
+          ) : (
+            <EmptyState>
+              <BookOpen size={48} />
+              <p>Select a lesson from the sidebar to start learning.</p>
+            </EmptyState>
+          )}
+        </MainContent>
+      </CourseContainer>
+    </NoPaddingWrapper>
   );
 }
