@@ -1,7 +1,7 @@
 // src/pages/forexcourse.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { ChevronDown, ChevronRight, CheckCircle2, Circle, Clock, BookOpen, Menu, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, CheckCircle2, Circle, Clock, BookOpen, Menu, X, Video } from 'lucide-react';
 
 // --- COURSE DATA ---
 const courseData = [
@@ -13,6 +13,7 @@ const courseData = [
         id: "what-is-forex",
         title: "What is Forex?",
         duration: "3 min read",
+        video: "/videos/whatsforex.mp4",
         content: `
           <h3>Forex Definition</h3>
           <p>Forex trading, also called foreign exchange trading, is buying and selling currencies on the foreign exchange market. The goal of foreign exchange trading is to make money when the value of one currency changes in relation to another.</p>
@@ -36,6 +37,7 @@ const courseData = [
         id: "history-of-forex",
         title: "History of the Forex Market",
         duration: "2 min read",
+        video: "/videos/HistoryOfForex.mp4",
         content: `
           <h3>The Forex Market</h3>
           <p>The foreign exchange market, or forex, is the global market where currencies are traded. The history of the forex market dates back to ancient times when people first began trading one form of currency for another. However, in the late 19th century, the foundations were laid for the present foreign exchange market.</p>
@@ -87,6 +89,7 @@ const courseData = [
         id: "centralized-vs-decentralized",
         title: "Centralized vs Decentralized Markets",
         duration: "3 min read",
+        video: "/videos/Decentralized.mp4",
         content: `
           <h3>What is a Market?</h3>
           <p>A market is an area for buyers and sellers to trade goods, services, or assets. The way in which a market is organized can be classified into two types: Centralized and Decentralized markets.</p>
@@ -223,6 +226,7 @@ const courseData = [
         id: "types-of-forex-markets",
         title: "Types of Forex Markets",
         duration: "2 min read",
+        video: "/videos/ForexMarkets.mp4",
         content: `
           <p>The foreign exchange market features a variety of trading methods, by understanding the different types of forex markets that constitute its structure, traders can make informed decisions and manage their currency risks effectively.</p>
           <ul>
@@ -323,6 +327,7 @@ const courseData = [
         id: "commercial-investment-banks",
         title: "Commercial And Investment Banks",
         duration: "1 min read",
+        video: "/videos/ForexMarketParticipants.mp4",
         content: `
           <h3>What are Commercial and Investment Banks?</h3>
           <p>Commercial and investment banks are the most important players in the forex market. These banks are involved in currency trading for various purposes such as hedging, speculation, and providing services to their clients.</p>
@@ -427,6 +432,7 @@ const courseData = [
         id: "forex-brokers",
         title: "Forex Brokers",
         duration: "2 min read",
+        video: "/videos/OnlineBrokers.mp4",
         content: `
           <h3>What is a Forex Broker?</h3>
           <p>As with any financial market, there are intermediaries who facilitate trades between buyers and sellers. These intermediaries are known as forex brokers. A forex broker is a financial services provider that enables clients to exchange currencies, commodities, and other financial products.</p>
@@ -574,6 +580,7 @@ const courseData = [
         id: "bear-and-bull-markets",
         title: "Bear and Bull Markets",
         duration: "2 min read",
+        video: "/videos/ForexTerm.mp4",
         content: `
           <h3>What are Bear and Bull Markets?</h3>
           <p>A bull market and a bear market are terms used in the financial world to describe the overall behavior of the stock market or other financial markets. A bull market is when the stock market is generally going up and investors have a lot of confidence in the market. On the other hand, a bear market is a period of time when the stock market is generally declining, and investor confidence is low.</p>
@@ -878,6 +885,7 @@ const courseData = [
         id: "fundamental-analysis",
         title: "Fundamental Analysis",
         duration: "3 min read",
+        video: "/videos/Technical Analysis.mp4",
         content: `
           <h3>What is Fundamental Analysis?</h3>
           <p>Fundamental Analysis in the realm of Forex involves evaluating a currency pair's intrinsic value by analyzing various economic, financial, and geopolitical factors that affect their exchange rates. Unlike Technical Analysis, which focuses on historical price data and chart patterns, Fundamental Analysis looks at the broader picture of a country's economic health and its impact on the currency.</p>
@@ -1008,6 +1016,7 @@ const courseData = [
         id: "technical-indicators",
         title: "Technical Indicators",
         duration: "2 min read",
+        video: "/videos/TechnicalIndicators.mp4",
         content: `
           <h3>What are Forex Technical Indicators?</h3>
           <p>Forex technical indicators are mathematical calculations and chart analysis tools that traders use to forecast the future price movements of currency pairs.</p>
@@ -1178,6 +1187,7 @@ const courseData = [
         id: "chart-patterns-intro",
         title: "Chart Patterns",
         duration: "3 min read",
+        video: "/videos/ChartPatterns.mp4",
         content: `
           <h3>What is a Chart Pattern?</h3>
           <p>A chart pattern is a graphical representation of price movements that forms a recognizable shape on a price chart. These shapes are created by the movement of prices over time and are used to predict future price movements. Chart patterns are based on the premise that market participants tend to repeat certain patterns of behavior in response to market conditions.</p>
@@ -1749,6 +1759,42 @@ const LessonHeader = styled.div`
   }
 `;
 
+const VideoWrapper = styled.div`
+  margin-bottom: 32px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #000;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  position: relative;
+
+  video {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  .video-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+  }
+`;
+
 const LessonBody = styled.div`
   font-size: 16px;
   line-height: 1.8;
@@ -1994,6 +2040,22 @@ export default function ForexCourse() {
                   </div>
                 </div>
               </LessonHeader>
+
+              {/* Video Player */}
+              {activeLesson.video && (
+                <VideoWrapper>
+                  <div className="video-badge">
+                    <Video size={14} /> Video Lesson
+                  </div>
+                  <video 
+                    controls 
+                    preload="metadata"
+                    src={activeLesson.video}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </VideoWrapper>
+              )}
 
               <LessonBody 
                 dangerouslySetInnerHTML={{ __html: activeLesson.content }}
