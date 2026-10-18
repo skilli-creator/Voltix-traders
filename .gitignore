@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 dist/
 .vercel
+src/assets/videos/
+*.mp4
