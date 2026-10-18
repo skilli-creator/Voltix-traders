@@ -3,18 +3,6 @@ import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { ChevronDown, ChevronRight, CheckCircle2, Circle, Clock, BookOpen, Menu, X, Video } from 'lucide-react';
 
-// --- IMPORT VIDEOS ---
-import whatsForexVideo from '../assets/videos/whatsforex.mp4';
-import historyForexVideo from '../assets/videos/The History of Forex.mp4';
-import centralizedDecentralizedVideo from '../assets/videos/Decentralized Exchange vs Centralized Exchange (Main Differences).mp4';
-import typesOfMarketsVideo from '../assets/videos/Types Of Forex Markets Part 1 - Mastering Your Understanding.mp4';
-import marketParticipantsVideo from '../assets/videos/Who Are the Forex Market Participants_ _ Market Structure #6.mp4';
-import onlineBrokersVideo from '../assets/videos/Trading 101_ How Online Brokers Work. Why You Need One..mp4';
-import technicalAnalysisVideo from '../assets/videos/How I Do Forex Technical Analysis (For BEGINNERS).mp4';
-import forexTermsVideo from '../assets/videos/Every Forex Term Explained.mp4';
-import chooseIndicatorsVideo from '../assets/videos/How to Choose Technical Indicators for Stock Trading.mp4';
-import chartPatternsVideo from '../assets/videos/Ultimate Chart Patterns Trading Course (EXPERT INSTANTLY).mp4';
-
 // --- COURSE DATA ---
 const courseData = [
   {
@@ -25,7 +13,7 @@ const courseData = [
         id: "what-is-forex",
         title: "What is Forex?",
         duration: "3 min read",
-        video: whatsForexVideo,
+        video: "/videos/whatsforex.mp4",
         content: `
           <h3>Forex Definition</h3>
           <p>Forex trading, also called foreign exchange trading, is buying and selling currencies on the foreign exchange market. The goal of foreign exchange trading is to make money when the value of one currency changes in relation to another.</p>
@@ -49,7 +37,7 @@ const courseData = [
         id: "history-of-forex",
         title: "History of the Forex Market",
         duration: "2 min read",
-        video: historyForexVideo,
+        video: "/videos/HistoryOfForex.mp4",
         content: `
           <h3>The Forex Market</h3>
           <p>The foreign exchange market, or forex, is the global market where currencies are traded. The history of the forex market dates back to ancient times when people first began trading one form of currency for another. However, in the late 19th century, the foundations were laid for the present foreign exchange market.</p>
@@ -101,7 +89,7 @@ const courseData = [
         id: "centralized-vs-decentralized",
         title: "Centralized vs Decentralized Markets",
         duration: "3 min read",
-        video: centralizedDecentralizedVideo,
+        video: "/videos/Decentralized.mp4",
         content: `
           <h3>What is a Market?</h3>
           <p>A market is an area for buyers and sellers to trade goods, services, or assets. The way in which a market is organized can be classified into two types: Centralized and Decentralized markets.</p>
@@ -238,7 +226,7 @@ const courseData = [
         id: "types-of-forex-markets",
         title: "Types of Forex Markets",
         duration: "2 min read",
-        video: typesOfMarketsVideo,
+        video: "/videos/ForexMarkets.mp4",
         content: `
           <p>The foreign exchange market features a variety of trading methods, by understanding the different types of forex markets that constitute its structure, traders can make informed decisions and manage their currency risks effectively.</p>
           <ul>
@@ -339,7 +327,7 @@ const courseData = [
         id: "commercial-investment-banks",
         title: "Commercial And Investment Banks",
         duration: "1 min read",
-        video: marketParticipantsVideo,
+        video: "/videos/ForexMarketParticipants.mp4",
         content: `
           <h3>What are Commercial and Investment Banks?</h3>
           <p>Commercial and investment banks are the most important players in the forex market. These banks are involved in currency trading for various purposes such as hedging, speculation, and providing services to their clients.</p>
@@ -444,7 +432,7 @@ const courseData = [
         id: "forex-brokers",
         title: "Forex Brokers",
         duration: "2 min read",
-        video: onlineBrokersVideo,
+        video: "/videos/OnlineBrokers.mp4",
         content: `
           <h3>What is a Forex Broker?</h3>
           <p>As with any financial market, there are intermediaries who facilitate trades between buyers and sellers. These intermediaries are known as forex brokers. A forex broker is a financial services provider that enables clients to exchange currencies, commodities, and other financial products.</p>
@@ -592,7 +580,7 @@ const courseData = [
         id: "bear-and-bull-markets",
         title: "Bear and Bull Markets",
         duration: "2 min read",
-        video: forexTermsVideo,
+        video: "/videos/ForexTerm.mp4",
         content: `
           <h3>What are Bear and Bull Markets?</h3>
           <p>A bull market and a bear market are terms used in the financial world to describe the overall behavior of the stock market or other financial markets. A bull market is when the stock market is generally going up and investors have a lot of confidence in the market. On the other hand, a bear market is a period of time when the stock market is generally declining, and investor confidence is low.</p>
@@ -897,7 +885,7 @@ const courseData = [
         id: "fundamental-analysis",
         title: "Fundamental Analysis",
         duration: "3 min read",
-        video: technicalAnalysisVideo,
+        video: "/videos/Technical Analysis.mp4",
         content: `
           <h3>What is Fundamental Analysis?</h3>
           <p>Fundamental Analysis in the realm of Forex involves evaluating a currency pair's intrinsic value by analyzing various economic, financial, and geopolitical factors that affect their exchange rates. Unlike Technical Analysis, which focuses on historical price data and chart patterns, Fundamental Analysis looks at the broader picture of a country's economic health and its impact on the currency.</p>
@@ -1028,7 +1016,7 @@ const courseData = [
         id: "technical-indicators",
         title: "Technical Indicators",
         duration: "2 min read",
-        video: chooseIndicatorsVideo,
+        video: "/videos/TechnicalIndicators.mp4",
         content: `
           <h3>What are Forex Technical Indicators?</h3>
           <p>Forex technical indicators are mathematical calculations and chart analysis tools that traders use to forecast the future price movements of currency pairs.</p>
@@ -1199,7 +1187,7 @@ const courseData = [
         id: "chart-patterns-intro",
         title: "Chart Patterns",
         duration: "3 min read",
-        video: chartPatternsVideo,
+        video: "/videos/ChartPatterns.mp4",
         content: `
           <h3>What is a Chart Pattern?</h3>
           <p>A chart pattern is a graphical representation of price movements that forms a recognizable shape on a price chart. These shapes are created by the movement of prices over time and are used to predict future price movements. Chart patterns are based on the premise that market participants tend to repeat certain patterns of behavior in response to market conditions.</p>
